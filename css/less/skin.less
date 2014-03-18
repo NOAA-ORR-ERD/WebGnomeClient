@@ -1,0 +1,45 @@
+img{
+    max-width: 100%;
+}
+
+.home{
+    .make-row();
+    .main{
+        .make-md-column(8);
+
+        .location, .load, .build{
+            .btn;
+            .btn-primary;
+        }
+
+        @media(max-width: @screen-sm){
+            a{
+                margin-bottom: 10px;
+            }
+        }
+    }
+    .side{
+        .make-md-column(4);
+    }
+}
+
+.notfound{
+    .make-row();
+    .main{
+        .make-md-column(8);
+    }
+    .side{
+        .make-md-column(4);
+    }
+}
+
+.modal-dialog{
+    .cancel{
+        .btn;
+        .btn-default;
+    }
+    .save{
+        .btn;
+        .btn-primary;
+    }
+}

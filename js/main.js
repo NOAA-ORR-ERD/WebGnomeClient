@@ -1,5 +1,5 @@
 // Configure RequireJS
-requirejs.config({
+require.config({
     baseUrl: "js",
     priority: ['lib/underscore', 'lib/jquery.ui'],
     paths: {
@@ -7,7 +7,8 @@ requirejs.config({
         jqueryui: 'lib/jquery-ui-1.9.2.custom.min',
         underscore: 'lib/underscore-min',
         backbone: 'lib/backbone-min',
-        sinon: 'lib/sinon-1.6.0'
+        sinon: 'lib/sinon-1.6.0',
+        rivets: 'lib/rivets.min'
     },
     shim: {
         'map_generator': ['jquery'],
@@ -21,13 +22,18 @@ requirejs.config({
         'lib/geo': {
             exports: "Geo"
         },
-        'lib/jquery.fileupload': ['lib/jquery.ui']
+        'lib/jquery.fileupload': ['lib/jquery.ui'],
+        'lib/jquery.imagesloaded.min': ['jquery'],
+        'lib/bootstrap.min': ['jquery'],
     }
 });
 
 // set up the app
 require([
-    'app'
-], function(App){
-    App.initialize();
+    'app',
+    'underscore',
+    'backbone'
+], function(App, _, Backbone){
+    window.webgnome = App;
+    webgnome.initialize();
 });
