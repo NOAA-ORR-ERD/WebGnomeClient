@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'lib/text!templates/default/menu.html',
-    'lib/bootstrap.min',
+    'lib/bootstrap.min'
  ], function($, _, Backbone, MenuTemplate) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
@@ -15,7 +15,6 @@ define([
      */
 
     var MenuView = Backbone.View.extend({
-        el: $('nav.navbar'),
         initialize: function() {
             $('body').append('<nav class="navbar navbar-default"></nav>');
             this.el = $('nav.navbar');
@@ -24,8 +23,8 @@ define([
         },
 
         events: {
-            'click .navbar-brand': 'null',
-            'click .new': 'new',
+            'click .navbar-brand': 'nothing',
+            'click .new': 'newModel',
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
@@ -36,14 +35,14 @@ define([
             'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial',
+            'click .tutorial': 'tutorial'
         },
 
-        null: function(event){
+        nothing: function(event){
             event.preventDefault();
         },
 
-        new: function(event){
+        newModel: function(event){
             event.preventDefault();
             webgnome.router.navigate('', true);
             //Backbone.history.navigate('route:index', true);

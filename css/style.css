@@ -5610,7 +5610,9 @@ button.close {
 .home:before,
 .home:after,
 .notfound:before,
-.notfound:after {
+.notfound:after,
+.locations .row:before,
+.locations .row:after {
   content: " ";
   display: table;
 }
@@ -5629,7 +5631,8 @@ button.close {
 .panel-body:after,
 .modal-footer:after,
 .home:after,
-.notfound:after {
+.notfound:after,
+.locations .row:after {
   clear: both;
 }
 .center-block {
@@ -5780,6 +5783,9 @@ button.close {
 }
 img {
   max-width: 100%;
+}
+nav.navbar {
+  border-radius: 0;
 }
 .home {
   margin-left: -15px;
@@ -6172,4 +6178,37 @@ fieldset[disabled] .modal-dialog .save.active {
 .modal-dialog .save .badge {
   color: #428bca;
   background-color: #ffffff;
+}
+.locations .row {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.locations .main {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 992px) {
+  .locations .main {
+    float: left;
+    width: 66.66666666666666%;
+  }
+}
+.locations .map {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  overflow: hidden;
+  height: 700px;
+}
+@media (min-width: 992px) {
+  .locations .map {
+    float: left;
+    width: 100%;
+  }
+}
+.locations .map .ol-viewport {
+  border: 1px solid #EDEDED;
 }

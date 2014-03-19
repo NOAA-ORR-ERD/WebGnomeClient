@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/default/index.html',
+    'lib/text!templates/default/index.html'
 ], function($, _, Backbone, IndexTemplate, LocationsModal){
     var indexView = Backbone.View.extend({
         initialize: function() {
@@ -20,7 +20,7 @@ define([
 
         chooseLocation: function(event) {
             event.preventDefault();
-            Backbone.history.navigate('route:locations', true);
+            Backbone.history.navigate('locations', true);
         },
 
         buildModel: function(event) {

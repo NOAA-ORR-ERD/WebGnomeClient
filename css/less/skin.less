@@ -2,6 +2,10 @@ img{
     max-width: 100%;
 }
 
+nav.navbar{
+    border-radius: 0;
+}
+
 .home{
     .make-row();
     .main{
@@ -41,5 +45,23 @@ img{
     .save{
         .btn;
         .btn-primary;
+    }
+}
+
+.locations{
+    .row{
+        .make-row();
+    }
+    .main{
+        .make-md-column(8);
+    }
+    .map{
+        .make-md-column(12);
+        overflow: hidden;
+        height: 700px;
+        .ol-viewport{
+            border: 1px solid #EDEDED;
+
+        }
     }
 }

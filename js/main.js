@@ -25,6 +25,9 @@ require.config({
         'lib/jquery.fileupload': ['lib/jquery.ui'],
         'lib/jquery.imagesloaded.min': ['jquery'],
         'lib/bootstrap.min': ['jquery'],
+        'lib/ol': {
+            exports: "ol"
+        }
     }
 });
 
