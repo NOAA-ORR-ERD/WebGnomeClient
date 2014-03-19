@@ -20,12 +20,12 @@ define([
 
         chooseLocation: function(event) {
             event.preventDefault();
-            Backbone.history.navigate('locations', true);
+            webgnome.router.navigate('locations', true);
         },
 
         buildModel: function(event) {
             event.preventDefault();
-            this.router.navigate('route:model', true);
+            webgnome.router.navigate('route:model', true);
         },
 
         loadModel: function(event) {

@@ -67,6 +67,9 @@ define([
 
             this.router = new Router();
             Backbone.history.start();
+        },
+        hasModel: function(){
+            return false;
         }
     };
 

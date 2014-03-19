@@ -71,11 +71,6 @@ define([
     //         this.appView.showSection('model');
     //     });
 
-    //     router.on('locations', function(){
-    //         var menuView = new MenuView();
-    //         var locationsView = new LocationsView();
-    //     });
-
     //     router.on('splash', function(){
     //         if (!this.newModel) {
     //             return this.navigate('model', true);
@@ -117,13 +112,6 @@ define([
     //         this.showForm(formId, id);
     //     });
 
-    //     router.on('route:notFound', function(actions){
-    //         var menuView = new MenuView();
-    //         var notFoundView = new NotFoundView();
-    //         console.log('Not found:', actions);
-    //     });
-
-    //     Backbone.history.start();
     // };
 
     var serverHandshake = function(){

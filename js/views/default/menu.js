@@ -20,6 +20,7 @@ define([
             this.el = $('nav.navbar');
             this.$el = $('nav.navbar');
             this.render();
+            this.contextualize();
         },
 
         events: {
@@ -88,16 +89,26 @@ define([
 
         },
 
+        enableMenuItem: function(item){
+            this.$el.find('.' + item).show();
+        },
+
+        disableMenuItem: function(item){
+            this.$el.find('.' + item).hide();
+        },
+
+        contextualize: function(){
+            if(!webgnome.hasModel()){
+                this.disableMenuItem('actions');
+                this.disableMenuItem('model');
+            }
+        },
+
         render: function(){
             var compiled = _.template(MenuTemplate);
             this.$el.html(compiled);
+
         }
-    }, {
-        // Event constants
-        NEW_ITEM_CLICKED: "menuView:newMenuItemClicked",
-        RUN_ITEM_CLICKED: "menuView:runMenuItemClicked",
-        RUN_UNTIL_ITEM_CLICKED: "menuView:runUntilMenuItemClicked",
-        LOCATION_FILE_ITEM_CLICKED: "menuView:locationFileItemClicked"
     });
 
     return MenuView;
