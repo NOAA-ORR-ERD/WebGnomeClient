@@ -24,7 +24,7 @@ define([
         },
 
         events: {
-            'click .navbar-brand': 'nothing',
+            'click .navbar-brand': 'newModel',
             'click .new': 'newModel',
             'click .load': 'load',
             'click .locations': 'locations',
