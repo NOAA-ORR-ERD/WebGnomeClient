@@ -9,11 +9,17 @@ define([
 ], function($, _, Backbone, Router, util, rivets) {
     "use strict";
     var app = {
+        api: 'http://127.0.0.1:6543',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
-                cache: false
+                cache: false,
+            });
+
+            // Filter json requestions to redirect them to the api server
+            $.ajaxPrefilter('json', function(options){
+                options.url = webgnome.api + options.url;
             });
 
             // Configure a Rivets adapter to work with Backbone

@@ -6,10 +6,9 @@ define([
     'lib/text!templates/locations/index.html'
 ], function($, _, Backbone, ol, LocationsTemplate){
     var locationsView = Backbone.View.extend({
+        className: 'container page locations',
+
         initialize: function(){
-            $('body').append('<div class="container page"></div>');
-            this.el = $('.page');
-            this.$el = $('.page');
             this.render();
         },
 
@@ -30,7 +29,7 @@ define([
 
         render: function(){
             compiled = _.template(LocationsTemplate);
-            this.$el.html(compiled);
+            $('body').append(this.$el.html(compiled));
             this.setupMap();
         }
     });

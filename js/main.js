@@ -34,9 +34,7 @@ require.config({
 // set up the app
 require([
     'app',
-    'underscore',
-    'backbone'
-], function(App, _, Backbone){
+], function(App){
     window.webgnome = App;
     webgnome.initialize();
 });

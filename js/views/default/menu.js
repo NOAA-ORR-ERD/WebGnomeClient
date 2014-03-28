@@ -14,11 +14,11 @@ define([
      calls the appropriate method for whatever functionality the user invoked.
      */
 
-    var MenuView = Backbone.View.extend({
+    var menuView = Backbone.View.extend({
+        tagName: 'nav',
+        className: 'navbar navbar-default',
+
         initialize: function() {
-            $('body').append('<nav class="navbar navbar-default"></nav>');
-            this.el = $('nav.navbar');
-            this.$el = $('nav.navbar');
             this.render();
             this.contextualize();
         },
@@ -100,16 +100,16 @@ define([
         contextualize: function(){
             if(!webgnome.hasModel()){
                 this.disableMenuItem('actions');
-                this.disableMenuItem('model');
+                this.disableMenuItem('save');
+                
             }
         },
 
         render: function(){
             var compiled = _.template(MenuTemplate);
-            this.$el.html(compiled);
-
+            $('body').append(this.$el.html(compiled));
         }
     });
 
-    return MenuView;
+    return menuView;
 });

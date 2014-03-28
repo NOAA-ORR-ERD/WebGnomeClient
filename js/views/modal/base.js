@@ -6,10 +6,10 @@ define([
     'lib/bootstrap.min'
 ], function($, _, Backbone, ModalTemplate){
     var baseModal = Backbone.View.extend({
+        className: 'modal fade modal-' + this.name,
+
         initialize: function(){
             if($('.modal-' + this.name).length === 0){
-                $('body').append('<div class="modal fade modal-' + this.name + '" role="dialog"></div>');
-                this.$el = $('.modal-' + this.name);
                 this.render();
             }
         },
@@ -40,7 +40,7 @@ define([
                 title: this.title,
                 body: this.body
             });
-            this.$el.html(compiled);
+            $('body').append(this.$el.html(compiled));
             this.$el.modal(this.options);
         }
     });

@@ -4,8 +4,9 @@ define([
     'views/default/menu',
     'views/default/index',
     'views/default/notfound',
-    'views/locations/index'
-], function(_, Backbone, MenuView, IndexView, NotFoundView, LocationsView) {
+    'views/locations/index',
+    'views/model/index'
+], function(_, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -38,6 +39,11 @@ define([
         locations: function(){
             this.views.push(new MenuView());
             this.views.push(new LocationsView());
+        },
+
+        model: function(){
+            this.views.push(new MenuView());
+            this.views.push(new ModelView());
         }
 
     });

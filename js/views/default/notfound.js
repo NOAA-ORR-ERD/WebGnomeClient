@@ -5,16 +5,15 @@ define([
     'lib/text!templates/default/notfound.html'
 ], function($, _, Backbone, NotFoundTemplate){
     var notFoundView = Backbone.View.extend({
+        className: 'container page notfound',
+
         initialize: function() {
-            $('body').append('<div class="container page"></div>');
-            this.el = $('.page');
-            this.$el = $('.page');
             this.render();
         },
 
         render: function(){
             var compiled = _.template(NotFoundTemplate, {email: 'localhost@localhost.com'});
-            this.$el.html(compiled);
+            $('body').append(this.$el.html(compiled));
         }
     });
     return notFoundView;

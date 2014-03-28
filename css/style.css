@@ -5607,12 +5607,12 @@ button.close {
 .panel-body:after,
 .modal-footer:before,
 .modal-footer:after,
-.home:before,
-.home:after,
-.notfound:before,
-.notfound:after,
-.locations .row:before,
-.locations .row:after {
+.page.home:before,
+.page.home:after,
+.page.notfound:before,
+.page.notfound:after,
+.page.locations .row:before,
+.page.locations .row:after {
   content: " ";
   display: table;
 }
@@ -5630,9 +5630,9 @@ button.close {
 .pager:after,
 .panel-body:after,
 .modal-footer:after,
-.home:after,
-.notfound:after,
-.locations .row:after {
+.page.home:after,
+.page.notfound:after,
+.page.locations .row:after {
   clear: both;
 }
 .center-block {
@@ -5786,26 +5786,27 @@ img {
 }
 nav.navbar {
   border-radius: 0;
+  margin-bottom: 0;
 }
-.home {
+.page.home {
   margin-left: -15px;
   margin-right: -15px;
 }
-.home .main {
+.page.home .main {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
 }
 @media (min-width: 992px) {
-  .home .main {
+  .page.home .main {
     float: left;
     width: 66.66666666666666%;
   }
 }
-.home .main .location,
-.home .main .load,
-.home .main .build {
+.page.home .main .location,
+.page.home .main .load,
+.page.home .main .build {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -5827,48 +5828,48 @@ nav.navbar {
   background-color: #428bca;
   border-color: #357ebd;
 }
-.home .main .location:focus,
-.home .main .load:focus,
-.home .main .build:focus,
-.home .main .location:active:focus,
-.home .main .load:active:focus,
-.home .main .build:active:focus,
-.home .main .location.active:focus,
-.home .main .load.active:focus,
-.home .main .build.active:focus {
+.page.home .main .location:focus,
+.page.home .main .load:focus,
+.page.home .main .build:focus,
+.page.home .main .location:active:focus,
+.page.home .main .load:active:focus,
+.page.home .main .build:active:focus,
+.page.home .main .location.active:focus,
+.page.home .main .load.active:focus,
+.page.home .main .build.active:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.home .main .location:hover,
-.home .main .load:hover,
-.home .main .build:hover,
-.home .main .location:focus,
-.home .main .load:focus,
-.home .main .build:focus {
+.page.home .main .location:hover,
+.page.home .main .load:hover,
+.page.home .main .build:hover,
+.page.home .main .location:focus,
+.page.home .main .load:focus,
+.page.home .main .build:focus {
   color: #333333;
   text-decoration: none;
 }
-.home .main .location:active,
-.home .main .load:active,
-.home .main .build:active,
-.home .main .location.active,
-.home .main .load.active,
-.home .main .build.active {
+.page.home .main .location:active,
+.page.home .main .load:active,
+.page.home .main .build:active,
+.page.home .main .location.active,
+.page.home .main .load.active,
+.page.home .main .build.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.home .main .location.disabled,
-.home .main .load.disabled,
-.home .main .build.disabled,
-.home .main .location[disabled],
-.home .main .load[disabled],
-.home .main .build[disabled],
-fieldset[disabled] .home .main .location,
-fieldset[disabled] .home .main .load,
-fieldset[disabled] .home .main .build {
+.page.home .main .location.disabled,
+.page.home .main .load.disabled,
+.page.home .main .build.disabled,
+.page.home .main .location[disabled],
+.page.home .main .load[disabled],
+.page.home .main .build[disabled],
+fieldset[disabled] .page.home .main .location,
+fieldset[disabled] .page.home .main .load,
+fieldset[disabled] .page.home .main .build {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -5876,131 +5877,132 @@ fieldset[disabled] .home .main .build {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
-.home .main .location:hover,
-.home .main .load:hover,
-.home .main .build:hover,
-.home .main .location:focus,
-.home .main .load:focus,
-.home .main .build:focus,
-.home .main .location:active,
-.home .main .load:active,
-.home .main .build:active,
-.home .main .location.active,
-.home .main .load.active,
-.home .main .build.active,
-.open .dropdown-toggle.home .main .location,
-.open .dropdown-toggle.home .main .load,
-.open .dropdown-toggle.home .main .build {
+.page.home .main .location:hover,
+.page.home .main .load:hover,
+.page.home .main .build:hover,
+.page.home .main .location:focus,
+.page.home .main .load:focus,
+.page.home .main .build:focus,
+.page.home .main .location:active,
+.page.home .main .load:active,
+.page.home .main .build:active,
+.page.home .main .location.active,
+.page.home .main .load.active,
+.page.home .main .build.active,
+.open .dropdown-toggle.page.home .main .location,
+.open .dropdown-toggle.page.home .main .load,
+.open .dropdown-toggle.page.home .main .build {
   color: #ffffff;
   background-color: #3276b1;
   border-color: #285e8e;
 }
-.home .main .location:active,
-.home .main .load:active,
-.home .main .build:active,
-.home .main .location.active,
-.home .main .load.active,
-.home .main .build.active,
-.open .dropdown-toggle.home .main .location,
-.open .dropdown-toggle.home .main .load,
-.open .dropdown-toggle.home .main .build {
+.page.home .main .location:active,
+.page.home .main .load:active,
+.page.home .main .build:active,
+.page.home .main .location.active,
+.page.home .main .load.active,
+.page.home .main .build.active,
+.open .dropdown-toggle.page.home .main .location,
+.open .dropdown-toggle.page.home .main .load,
+.open .dropdown-toggle.page.home .main .build {
   background-image: none;
 }
-.home .main .location.disabled,
-.home .main .load.disabled,
-.home .main .build.disabled,
-.home .main .location[disabled],
-.home .main .load[disabled],
-.home .main .build[disabled],
-fieldset[disabled] .home .main .location,
-fieldset[disabled] .home .main .load,
-fieldset[disabled] .home .main .build,
-.home .main .location.disabled:hover,
-.home .main .load.disabled:hover,
-.home .main .build.disabled:hover,
-.home .main .location[disabled]:hover,
-.home .main .load[disabled]:hover,
-.home .main .build[disabled]:hover,
-fieldset[disabled] .home .main .location:hover,
-fieldset[disabled] .home .main .load:hover,
-fieldset[disabled] .home .main .build:hover,
-.home .main .location.disabled:focus,
-.home .main .load.disabled:focus,
-.home .main .build.disabled:focus,
-.home .main .location[disabled]:focus,
-.home .main .load[disabled]:focus,
-.home .main .build[disabled]:focus,
-fieldset[disabled] .home .main .location:focus,
-fieldset[disabled] .home .main .load:focus,
-fieldset[disabled] .home .main .build:focus,
-.home .main .location.disabled:active,
-.home .main .load.disabled:active,
-.home .main .build.disabled:active,
-.home .main .location[disabled]:active,
-.home .main .load[disabled]:active,
-.home .main .build[disabled]:active,
-fieldset[disabled] .home .main .location:active,
-fieldset[disabled] .home .main .load:active,
-fieldset[disabled] .home .main .build:active,
-.home .main .location.disabled.active,
-.home .main .load.disabled.active,
-.home .main .build.disabled.active,
-.home .main .location[disabled].active,
-.home .main .load[disabled].active,
-.home .main .build[disabled].active,
-fieldset[disabled] .home .main .location.active,
-fieldset[disabled] .home .main .load.active,
-fieldset[disabled] .home .main .build.active {
+.page.home .main .location.disabled,
+.page.home .main .load.disabled,
+.page.home .main .build.disabled,
+.page.home .main .location[disabled],
+.page.home .main .load[disabled],
+.page.home .main .build[disabled],
+fieldset[disabled] .page.home .main .location,
+fieldset[disabled] .page.home .main .load,
+fieldset[disabled] .page.home .main .build,
+.page.home .main .location.disabled:hover,
+.page.home .main .load.disabled:hover,
+.page.home .main .build.disabled:hover,
+.page.home .main .location[disabled]:hover,
+.page.home .main .load[disabled]:hover,
+.page.home .main .build[disabled]:hover,
+fieldset[disabled] .page.home .main .location:hover,
+fieldset[disabled] .page.home .main .load:hover,
+fieldset[disabled] .page.home .main .build:hover,
+.page.home .main .location.disabled:focus,
+.page.home .main .load.disabled:focus,
+.page.home .main .build.disabled:focus,
+.page.home .main .location[disabled]:focus,
+.page.home .main .load[disabled]:focus,
+.page.home .main .build[disabled]:focus,
+fieldset[disabled] .page.home .main .location:focus,
+fieldset[disabled] .page.home .main .load:focus,
+fieldset[disabled] .page.home .main .build:focus,
+.page.home .main .location.disabled:active,
+.page.home .main .load.disabled:active,
+.page.home .main .build.disabled:active,
+.page.home .main .location[disabled]:active,
+.page.home .main .load[disabled]:active,
+.page.home .main .build[disabled]:active,
+fieldset[disabled] .page.home .main .location:active,
+fieldset[disabled] .page.home .main .load:active,
+fieldset[disabled] .page.home .main .build:active,
+.page.home .main .location.disabled.active,
+.page.home .main .load.disabled.active,
+.page.home .main .build.disabled.active,
+.page.home .main .location[disabled].active,
+.page.home .main .load[disabled].active,
+.page.home .main .build[disabled].active,
+fieldset[disabled] .page.home .main .location.active,
+fieldset[disabled] .page.home .main .load.active,
+fieldset[disabled] .page.home .main .build.active {
   background-color: #428bca;
   border-color: #357ebd;
 }
-.home .main .location .badge,
-.home .main .load .badge,
-.home .main .build .badge {
+.page.home .main .location .badge,
+.page.home .main .load .badge,
+.page.home .main .build .badge {
   color: #428bca;
   background-color: #ffffff;
 }
 @media (max-width: 768px) {
-  .home .main a {
+  .page.home .main a {
     margin-bottom: 10px;
   }
 }
-.home .side {
+.page.home .side {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
+  margin-top: 30px;
 }
 @media (min-width: 992px) {
-  .home .side {
+  .page.home .side {
     float: left;
     width: 33.33333333333333%;
   }
 }
-.notfound {
+.page.notfound {
   margin-left: -15px;
   margin-right: -15px;
 }
-.notfound .main {
+.page.notfound .main {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
 }
 @media (min-width: 992px) {
-  .notfound .main {
+  .page.notfound .main {
     float: left;
     width: 66.66666666666666%;
   }
 }
-.notfound .side {
+.page.notfound .side {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
 }
 @media (min-width: 992px) {
-  .notfound .side {
+  .page.notfound .side {
     float: left;
     width: 33.33333333333333%;
   }
@@ -6179,23 +6181,23 @@ fieldset[disabled] .modal-dialog .save.active {
   color: #428bca;
   background-color: #ffffff;
 }
-.locations .row {
+.page.locations .row {
   margin-left: -15px;
   margin-right: -15px;
 }
-.locations .main {
+.page.locations .main {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
 }
 @media (min-width: 992px) {
-  .locations .main {
+  .page.locations .main {
     float: left;
     width: 66.66666666666666%;
   }
 }
-.locations .map {
+.page.locations .map {
   position: relative;
   min-height: 1px;
   padding-left: 15px;
@@ -6204,11 +6206,70 @@ fieldset[disabled] .modal-dialog .save.active {
   height: 700px;
 }
 @media (min-width: 992px) {
-  .locations .map {
+  .page.locations .map {
     float: left;
     width: 100%;
   }
 }
-.locations .map .ol-viewport {
+.page.locations .map .ol-viewport {
   border: 1px solid #EDEDED;
+}
+.page.model {
+  position: absolute;
+  top: 52px;
+  bottom: 0;
+  width: 100%;
+}
+.page.model > div {
+  display: inline-block;
+}
+.page.model .tree {
+  width: 30%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+  background: white;
+}
+.page.model .tree .resize {
+  background-image: url('/img/grippy-show.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: absolute !important;
+  cursor: pointer;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.25);
+}
+.page.model .tree .resize:hover {
+  background-color: #f8f8f8;
+}
+.page.model .tree.opened .resize {
+  background-image: url('/img/grippy-hide.png');
+}
+.page.model .tree.closed .resize {
+  left: 0 !important;
+}
+.page.model .map {
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  width: 70%;
+}
+.page.model .map .controls {
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 0 0 4px 4px;
+  height: 45px;
+  position: absolute;
+  left: 45px;
+  right: 45px;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-top: 0;
 }

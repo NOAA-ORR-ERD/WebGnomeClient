@@ -2,13 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'models/model',
     'lib/text!templates/default/index.html'
-], function($, _, Backbone, IndexTemplate, LocationsModal){
+], function($, _, Backbone, Model, IndexTemplate){
     var indexView = Backbone.View.extend({
+        className: 'container page home',
+
         initialize: function() {
-            $('body').append('<div class="container page"></div>');
-            this.el = $('.page');
-            this.$el = $('.page');
             this.render();
         },
 
@@ -25,7 +25,9 @@ define([
 
         buildModel: function(event) {
             event.preventDefault();
-            webgnome.router.navigate('route:model', true);
+            webgnome.model = new Model();
+            webgnome.model.fetch();
+            webgnome.router.navigate('model', true);
         },
 
         loadModel: function(event) {
@@ -34,7 +36,7 @@ define([
 
         render: function(){
             var compiled = _.template(IndexTemplate);
-            this.$el.html(compiled);
+            $('body').append(this.$el.append(compiled));
         }
     });
     return indexView;

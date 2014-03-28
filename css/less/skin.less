@@ -4,9 +4,10 @@ img{
 
 nav.navbar{
     border-radius: 0;
+    margin-bottom: 0;
 }
 
-.home{
+.page.home{
     .make-row();
     .main{
         .make-md-column(8);
@@ -24,10 +25,11 @@ nav.navbar{
     }
     .side{
         .make-md-column(4);
+        margin-top: 30px;
     }
 }
 
-.notfound{
+.page.notfound{
     .make-row();
     .main{
         .make-md-column(8);
@@ -48,7 +50,7 @@ nav.navbar{
     }
 }
 
-.locations{
+.page.locations{
     .row{
         .make-row();
     }
@@ -62,6 +64,68 @@ nav.navbar{
         .ol-viewport{
             border: 1px solid #EDEDED;
 
+        }
+    }
+}
+
+.page.model{
+    position: absolute;
+    top: 52px;
+    bottom: 0;
+    width: 100%;
+
+    > div{
+        display: inline-block;
+    }
+    .tree{
+        width: 30%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        overflow: hidden;
+        z-index: 1;
+        background: white;
+        .resize{
+            background-image: url('/img/grippy-show.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            position: absolute !important;
+            cursor: pointer;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 7px;
+            box-shadow: 0 0 5px 2px rgba(0, 0, 0, .25);
+
+            &:hover{
+                background-color: #f8f8f8;
+            }
+        }
+        &.opened .resize{
+            background-image: url('/img/grippy-hide.png');
+        }
+        &.closed .resize{
+            left: 0 !important;
+        }
+    }
+    .map{
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        width: 70%;
+        .controls{
+            background: rgba(255, 255, 255, .75);
+            border-radius: 0 0 4px 4px;
+            height: 45px;
+            position: absolute;
+            left: 45px;
+            right: 45px;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, .85);
+            border-top: 0;
         }
     }
 }
