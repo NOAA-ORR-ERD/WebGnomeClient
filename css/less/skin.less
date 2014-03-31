@@ -117,15 +117,43 @@ nav.navbar{
         top: 0;
         width: 70%;
         .controls{
+            .make-row();
             background: rgba(255, 255, 255, .75);
             border-radius: 0 0 4px 4px;
             height: 45px;
             position: absolute;
-            left: 45px;
-            right: 45px;
+            left: 65px;
+            right: 65px;
             z-index: 1;
             border: 1px solid rgba(255, 255, 255, .85);
             border-top: 0;
+
+            > .buttons{
+                .make-sm-column(3);
+                .make-md-column(3);
+                .make-lg-column(2);
+                padding-top: 12px;
+                > a{
+                    .btn;
+                    .btn-xs;
+                    .btn-default;
+                }
+            }
+            .seek{
+                .make-sm-column(7);
+                .make-md-column(7);
+                .make-lg-column(8);
+                padding-top: 17px;
+            }
+            .position{
+                .make-md-column(1);
+                .make-sm-column(1);
+                padding-top: 9px;
+                font-size: 10px;
+            }
+            @media(max-width: 10){
+
+            }
         }
     }
 }

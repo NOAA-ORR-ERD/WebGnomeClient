@@ -2,8 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/ol'
-], function($, _, Backbone, ol){
+    'lib/text!templates/model/controls.html',
+    'lib/ol',
+    'jqueryui'
+], function($, _, Backbone, ControlsTemplate, ol){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
@@ -12,10 +14,14 @@ define([
 
         initialize: function(){
             this.render();
+            this.$('.seek > div').slider();
         },
 
         render: function(){
-            this.$el.html('<div class="controls"></div>');
+            var date = new Date();
+            date = date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ' ';
+            var compiled = _.template(ControlsTemplate, {date: date});
+            this.$el.html(compiled);
         },
 
         toggle: function(offset){
