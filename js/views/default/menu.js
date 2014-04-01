@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'lib/text!templates/default/menu.html',
+    'views/modal/about',
     'lib/bootstrap.min'
- ], function($, _, Backbone, MenuTemplate) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -46,7 +47,6 @@ define([
         newModel: function(event){
             event.preventDefault();
             webgnome.router.navigate('', true);
-            //Backbone.history.navigate('route:index', true);
         },
 
         load: function(event){
@@ -82,7 +82,8 @@ define([
         },
 
         about: function(event){
-
+            event.preventDefault();
+            new AboutModal();
         },
 
         tutorial: function(event){

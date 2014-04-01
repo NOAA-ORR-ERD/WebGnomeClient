@@ -2,25 +2,30 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/modal/base.html',
-    'lib/bootstrap.min'
-], function($, _, Backbone, ModalTemplate){
+    'lib/bootstrap.min',
+    'lib/text!templates/modal/base.html'
+], function($, _, Backbone, bs, ModalTemplate){
     var baseModal = Backbone.View.extend({
-        className: 'modal fade modal-' + this.name,
+        className: 'modal fade',
 
         initialize: function(){
-            if($('.modal-' + this.name).length === 0){
+            if($('.modal').length === 0){
                 this.render();
             }
         },
         name: 'default',
         title: 'Default Modal',
         body: '',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: true,
             keyboard: true,
             show: false,
             remote: false
+        },
+
+        events: {
+            'hidden.bs.modal': 'close',
         },
 
         show: function(){
@@ -38,7 +43,8 @@ define([
         render: function(){
             var compiled = _.template(ModalTemplate, {
                 title: this.title,
-                body: this.body
+                body: this.body(),
+                buttons: this.buttons
             });
             $('body').append(this.$el.html(compiled));
             this.$el.modal(this.options);
