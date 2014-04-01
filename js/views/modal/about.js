@@ -7,6 +7,7 @@ define([
 ], function($, _, Backbone, BaseModal, AboutTemplate){
     var aboutModal = BaseModal.extend({
         name: 'about',
+        size: 'sm',
         title: 'About WebGNOME&reg;',
         body: _.template(AboutTemplate),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',

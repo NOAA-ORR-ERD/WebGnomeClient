@@ -16,6 +16,7 @@ define([
         name: 'default',
         title: 'Default Modal',
         body: '',
+        size: 'reg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: true,
@@ -42,6 +43,7 @@ define([
 
         render: function(){
             var compiled = _.template(ModalTemplate, {
+                size: this.size,
                 title: this.title,
                 body: this.body(),
                 buttons: this.buttons
