@@ -22,7 +22,6 @@ define([
                 this.open = false;
                 this.offset = this.$('.resize').innerWidth();
                 this.$el.css({width: 0, paddingRight: this.offset}).removeClass('opened').addClass('closed');
-                console.log(this.width);
             } else {
                 this.open = true;
                 this.$el.css({width: this.width, paddingRight: 0}).addClass('opened').removeClass('closed');

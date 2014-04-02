@@ -14,19 +14,19 @@ require.config({
         'map_generator': ['jquery'],
         'lib/jquery.dynatree': ['lib/jquery.ui', 'lib/jquery.cookie'],
         'lib/rivets': {
-            exports: "rivets"
+            exports: 'rivets'
         },
         'lib/mousetrap': {
-            exports: "Mousetrap"
+            exports: 'Mousetrap'
         },
         'lib/geo': {
-            exports: "Geo"
+            exports: 'Geo'
         },
         'lib/jquery.fileupload': ['lib/jquery.ui'],
         'lib/jquery.imagesloaded.min': ['jquery'],
         'lib/bootstrap.min': ['jquery'],
         'lib/ol': {
-            exports: "ol"
+            exports: 'ol'
         }
     }
 });
