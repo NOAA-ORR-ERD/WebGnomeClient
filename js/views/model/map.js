@@ -43,11 +43,18 @@ define([
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
+                    }),
+                    new ol.layer.Vector({
+                        source: new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            url: '/sw_TX_jetties.json'
+                        })
                     })
                 ],
+                renderer: 'canvas',
                 view: new ol.View2D({
-                    center: ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857'),
-                    zoom: 4
+                    center: ol.proj.transform([-95.7, 28.5], 'EPSG:4326', 'EPSG:3857'),
+                    zoom: 8
                 })
             });
         },
