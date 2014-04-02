@@ -7291,6 +7291,9 @@ nav.navbar {
   border-radius: 0;
   margin-bottom: 0;
 }
+nav.navbar a {
+  white-space: nowrap;
+}
 .page.home {
   margin-left: -15px;
   margin-right: -15px;

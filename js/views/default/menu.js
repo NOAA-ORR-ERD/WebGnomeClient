@@ -109,6 +109,10 @@ define([
         render: function(){
             var compiled = _.template(MenuTemplate);
             $('body').append(this.$el.html(compiled));
+            this.$('a').tooltip({
+                placement: 'right',
+                container: 'body'
+            });
         }
     });
 

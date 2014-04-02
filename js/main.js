@@ -4,7 +4,7 @@ require.config({
     priority: ['lib/underscore', 'lib/jquery.ui'],
     paths: {
         jquery: 'lib/jquery-1.11.0.min',
-        jqueryui: 'lib/jquery-ui-1.9.2.custom.min',
+        jqueryui: 'lib/jquery-ui-1.10.4.custom.min',
         underscore: 'lib/underscore-min',
         backbone: 'lib/backbone-min',
         sinon: 'lib/sinon-1.6.0',
