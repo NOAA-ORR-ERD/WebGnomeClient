@@ -1,4 +1,5 @@
 define([
+    'jquery',
     'underscore',
     'backbone',
     'views/default/menu',
@@ -6,7 +7,7 @@ define([
     'views/default/notfound',
     'views/locations/index',
     'views/model/index'
-], function(_, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView) {
+], function($, _, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -20,6 +21,7 @@ define([
         },
         execute: function(callback, args){
             for(var view in this.views){
+                $('.tooltip').remove();
                 this.views[view].close();
             }
             if(callback) callback.apply(this, args);
