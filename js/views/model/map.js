@@ -47,8 +47,8 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            url: '/sw_TX_jetties.json'
-                        })
+                            url: '/Louisiana.json',
+                        }),
                     })
                 ],
                 renderer: 'canvas',
