@@ -40,6 +40,9 @@ define([
         renderMap: function(){
             webgnome.map = new ol.Map({
                 target: 'map',
+                controls: ol.control.defaults().extend([
+                    new ol.control.MeasureRuler()
+                ]),
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
