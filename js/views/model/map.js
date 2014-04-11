@@ -39,6 +39,9 @@ define([
 
         renderMap: function(){
             webgnome.map = new ol.Map({
+                controls: ol.control.defaults().extend([
+                    new ol.control.MeasureRuler()
+                ]),
                 target: 'map',
                 layers: [
                     new ol.layer.Tile({
