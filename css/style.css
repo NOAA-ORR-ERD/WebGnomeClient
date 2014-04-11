@@ -7942,3 +7942,17 @@ fieldset[disabled] .page.model .map .controls > .buttons > a.active {
     width: 8.333333333333332%;
   }
 }
+.page.model .map .ol-logo {
+  display: none;
+}
+.page.model .map .ol-mouse-position {
+  background: rgba(0, 60, 136, 0.3);
+  padding: 6px;
+  bottom: 0px;
+  left: 0px;
+  right: auto;
+  top: auto;
+  font-size: 10px;
+  color: #eeeeee;
+  font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
+}
