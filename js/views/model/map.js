@@ -39,6 +39,18 @@ define([
 
         renderMap: function(){
             webgnome.map = new ol.Map({
+                controls: ol.control.defaults().extend([
+                    new ol.control.MeasureRuler(),
+                    new ol.control.MousePosition({
+                        coordinateFormat: function(coordinates){
+                            if(coordinates){
+                                var coords = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+                                return 'Lat: ' + Math.round(coords[1] * 100) / 100 + ' Lng: ' + Math.round(coords[0] * 100) / 100;
+                            }
+                        },
+                        undefinedHTML: 'Mouse out of bounds'
+                    })
+                ]),
                 target: 'map',
                 controls: ol.control.defaults().extend([
                     new ol.control.MeasureRuler()
