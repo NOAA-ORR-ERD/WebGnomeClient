@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'lib/text!templates/model/controls.html',
-    'lib/ol',
+    'lib/ol-simple',
     'jqueryui'
 ], function($, _, Backbone, ControlsTemplate, ol){
     var mapView = Backbone.View.extend({
@@ -38,6 +38,24 @@ define([
         },
 
         renderMap: function(){
+            var icon = new ol.style.Circle({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, .2)'
+                }),
+                radius: 4,
+                stroke: new ol.style.Stroke({
+                    color: '#0099cc'
+                })
+            });
+            var part_icon = new ol.style.Circle({
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 0, .75)'
+                }),
+                radius: 1,
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(0, 0, 0, 1)'
+                })
+            });
             webgnome.map = new ol.Map({
                 controls: ol.control.defaults().extend([
                     new ol.control.MeasureRuler(),
@@ -52,9 +70,6 @@ define([
                     })
                 ]),
                 target: 'map',
-                controls: ol.control.defaults().extend([
-                    new ol.control.MeasureRuler()
-                ]),
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
@@ -62,8 +77,32 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            url: '/Louisiana.json',
+                            url: '/sw_TX_jetties.json',
+                        })
+                    }),
+                    new ol.layer.Vector({
+                        source: new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            url: '/COOPSu_NGOFS-step-1.json'
                         }),
+                        style: function(feature, resolution){
+                            if(resolution < 200){
+                                return [new ol.style.Style({
+                                    image: icon
+                                })];
+                            }
+                        }
+                    }),
+                    new ol.layer.Vector({
+                        source: new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            url: '/texas_particles-step-1.json'
+                        }),
+                        style: function(feature, resolution){
+                            return [new ol.style.Style({
+                                image: part_icon
+                            })];
+                        }
                     })
                 ],
                 renderer: 'canvas',
