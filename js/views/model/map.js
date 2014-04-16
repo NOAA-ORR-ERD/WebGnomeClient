@@ -15,6 +15,12 @@ define([
         initialize: function(){
             this.render();
             this.$('.seek > div').slider();
+
+            // check if the ui should be functional
+            if(!webgnome.hasModel() || !webgnome.validModel()){
+                this.$('.seek > div').slider('option', 'disabled', true);
+                this.$('.buttons a').addClass('disabled');
+            }
         },
 
         render: function(){

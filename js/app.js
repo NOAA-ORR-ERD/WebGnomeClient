@@ -76,6 +76,10 @@ define([
         },
         hasModel: function(){
             return false;
+        },
+        
+        validModel: function(){
+            return false;
         }
     };
 
