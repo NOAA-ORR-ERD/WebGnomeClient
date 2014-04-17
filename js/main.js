@@ -27,6 +27,9 @@ require.config({
         'lib/bootstrap.min': ['jquery'],
         'lib/ol': {
             exports: 'ol'
+        },
+        'lib/ol-simple': {
+            exports: 'ol'
         }
     }
 });

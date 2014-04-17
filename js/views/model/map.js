@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'lib/text!templates/model/controls.html',
-    'lib/ol',
+    'lib/ol-simple',
     'jqueryui'
 ], function($, _, Backbone, ControlsTemplate, ol){
     var mapView = Backbone.View.extend({
@@ -47,6 +47,7 @@ define([
             webgnome.map = new ol.Map({
                 controls: ol.control.defaults().extend([
                     new ol.control.MeasureRuler(),
+                    new ol.control.MeasureArea(),
                     new ol.control.MousePosition({
                         coordinateFormat: function(coordinates){
                             if(coordinates){
