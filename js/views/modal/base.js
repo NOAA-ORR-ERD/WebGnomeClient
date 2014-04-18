@@ -19,9 +19,9 @@ define([
         size: 'reg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
-            backdrop: true,
+            backdrop: 'static',
             keyboard: true,
-            show: false,
+            show: true,
             remote: false
         },
 

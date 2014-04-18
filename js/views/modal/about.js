@@ -11,9 +11,6 @@ define([
         title: 'About WebGNOME&reg;',
         body: _.template(AboutTemplate),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>',
-        options: {
-            show: true,
-        }
     });
 
     return aboutModal;
