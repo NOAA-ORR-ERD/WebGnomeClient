@@ -7942,3 +7942,357 @@ fieldset[disabled] .page.model .map .controls > .buttons > a.active {
   color: #eeeeee;
   font-family: 'Lucida Grande', Verdana, Geneva, Lucida, Arial, Helvetica, sans-serif;
 }
+.modal.new-wizard .sub-title {
+  color: #ccc;
+  margin-left: 15px;
+}
+.modal.new-wizard .cancel {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #ffffff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  float: left !important;
+}
+.modal.new-wizard .cancel:focus,
+.modal.new-wizard .cancel:active:focus,
+.modal.new-wizard .cancel.active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.modal.new-wizard .cancel:hover,
+.modal.new-wizard .cancel:focus {
+  color: #333333;
+  text-decoration: none;
+}
+.modal.new-wizard .cancel:active,
+.modal.new-wizard .cancel.active {
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.modal.new-wizard .cancel.disabled,
+.modal.new-wizard .cancel[disabled],
+fieldset[disabled] .modal.new-wizard .cancel {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal.new-wizard .cancel:hover,
+.modal.new-wizard .cancel:focus,
+.modal.new-wizard .cancel:active,
+.modal.new-wizard .cancel.active,
+.open .dropdown-toggle.modal.new-wizard .cancel {
+  color: #ffffff;
+  background-color: #d2322d;
+  border-color: #ac2925;
+}
+.modal.new-wizard .cancel:active,
+.modal.new-wizard .cancel.active,
+.open .dropdown-toggle.modal.new-wizard .cancel {
+  background-image: none;
+}
+.modal.new-wizard .cancel.disabled,
+.modal.new-wizard .cancel[disabled],
+fieldset[disabled] .modal.new-wizard .cancel,
+.modal.new-wizard .cancel.disabled:hover,
+.modal.new-wizard .cancel[disabled]:hover,
+fieldset[disabled] .modal.new-wizard .cancel:hover,
+.modal.new-wizard .cancel.disabled:focus,
+.modal.new-wizard .cancel[disabled]:focus,
+fieldset[disabled] .modal.new-wizard .cancel:focus,
+.modal.new-wizard .cancel.disabled:active,
+.modal.new-wizard .cancel[disabled]:active,
+fieldset[disabled] .modal.new-wizard .cancel:active,
+.modal.new-wizard .cancel.disabled.active,
+.modal.new-wizard .cancel[disabled].active,
+fieldset[disabled] .modal.new-wizard .cancel.active {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+.modal.new-wizard .cancel .badge {
+  color: #d9534f;
+  background-color: #ffffff;
+}
+.modal.new-wizard .next {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #ffffff;
+  background-color: #428bca;
+  border-color: #357ebd;
+}
+.modal.new-wizard .next:focus,
+.modal.new-wizard .next:active:focus,
+.modal.new-wizard .next.active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.modal.new-wizard .next:hover,
+.modal.new-wizard .next:focus {
+  color: #333333;
+  text-decoration: none;
+}
+.modal.new-wizard .next:active,
+.modal.new-wizard .next.active {
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.modal.new-wizard .next.disabled,
+.modal.new-wizard .next[disabled],
+fieldset[disabled] .modal.new-wizard .next {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal.new-wizard .next:hover,
+.modal.new-wizard .next:focus,
+.modal.new-wizard .next:active,
+.modal.new-wizard .next.active,
+.open .dropdown-toggle.modal.new-wizard .next {
+  color: #ffffff;
+  background-color: #3276b1;
+  border-color: #285e8e;
+}
+.modal.new-wizard .next:active,
+.modal.new-wizard .next.active,
+.open .dropdown-toggle.modal.new-wizard .next {
+  background-image: none;
+}
+.modal.new-wizard .next.disabled,
+.modal.new-wizard .next[disabled],
+fieldset[disabled] .modal.new-wizard .next,
+.modal.new-wizard .next.disabled:hover,
+.modal.new-wizard .next[disabled]:hover,
+fieldset[disabled] .modal.new-wizard .next:hover,
+.modal.new-wizard .next.disabled:focus,
+.modal.new-wizard .next[disabled]:focus,
+fieldset[disabled] .modal.new-wizard .next:focus,
+.modal.new-wizard .next.disabled:active,
+.modal.new-wizard .next[disabled]:active,
+fieldset[disabled] .modal.new-wizard .next:active,
+.modal.new-wizard .next.disabled.active,
+.modal.new-wizard .next[disabled].active,
+fieldset[disabled] .modal.new-wizard .next.active {
+  background-color: #428bca;
+  border-color: #357ebd;
+}
+.modal.new-wizard .next .badge {
+  color: #428bca;
+  background-color: #ffffff;
+}
+.modal.new-wizard .back {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #cccccc;
+  margin-right: 15px;
+}
+.modal.new-wizard .back:focus,
+.modal.new-wizard .back:active:focus,
+.modal.new-wizard .back.active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.modal.new-wizard .back:hover,
+.modal.new-wizard .back:focus {
+  color: #333333;
+  text-decoration: none;
+}
+.modal.new-wizard .back:active,
+.modal.new-wizard .back.active {
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.modal.new-wizard .back.disabled,
+.modal.new-wizard .back[disabled],
+fieldset[disabled] .modal.new-wizard .back {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal.new-wizard .back:hover,
+.modal.new-wizard .back:focus,
+.modal.new-wizard .back:active,
+.modal.new-wizard .back.active,
+.open .dropdown-toggle.modal.new-wizard .back {
+  color: #333333;
+  background-color: #ebebeb;
+  border-color: #adadad;
+}
+.modal.new-wizard .back:active,
+.modal.new-wizard .back.active,
+.open .dropdown-toggle.modal.new-wizard .back {
+  background-image: none;
+}
+.modal.new-wizard .back.disabled,
+.modal.new-wizard .back[disabled],
+fieldset[disabled] .modal.new-wizard .back,
+.modal.new-wizard .back.disabled:hover,
+.modal.new-wizard .back[disabled]:hover,
+fieldset[disabled] .modal.new-wizard .back:hover,
+.modal.new-wizard .back.disabled:focus,
+.modal.new-wizard .back[disabled]:focus,
+fieldset[disabled] .modal.new-wizard .back:focus,
+.modal.new-wizard .back.disabled:active,
+.modal.new-wizard .back[disabled]:active,
+fieldset[disabled] .modal.new-wizard .back:active,
+.modal.new-wizard .back.disabled.active,
+.modal.new-wizard .back[disabled].active,
+fieldset[disabled] .modal.new-wizard .back.active {
+  background-color: #ffffff;
+  border-color: #cccccc;
+}
+.modal.new-wizard .back .badge {
+  color: #ffffff;
+  background-color: #333333;
+}
+.modal.new-wizard .finish {
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  color: #ffffff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+.modal.new-wizard .finish:focus,
+.modal.new-wizard .finish:active:focus,
+.modal.new-wizard .finish.active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.modal.new-wizard .finish:hover,
+.modal.new-wizard .finish:focus {
+  color: #333333;
+  text-decoration: none;
+}
+.modal.new-wizard .finish:active,
+.modal.new-wizard .finish.active {
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.modal.new-wizard .finish.disabled,
+.modal.new-wizard .finish[disabled],
+fieldset[disabled] .modal.new-wizard .finish {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.65;
+  filter: alpha(opacity=65);
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.modal.new-wizard .finish:hover,
+.modal.new-wizard .finish:focus,
+.modal.new-wizard .finish:active,
+.modal.new-wizard .finish.active,
+.open .dropdown-toggle.modal.new-wizard .finish {
+  color: #ffffff;
+  background-color: #47a447;
+  border-color: #398439;
+}
+.modal.new-wizard .finish:active,
+.modal.new-wizard .finish.active,
+.open .dropdown-toggle.modal.new-wizard .finish {
+  background-image: none;
+}
+.modal.new-wizard .finish.disabled,
+.modal.new-wizard .finish[disabled],
+fieldset[disabled] .modal.new-wizard .finish,
+.modal.new-wizard .finish.disabled:hover,
+.modal.new-wizard .finish[disabled]:hover,
+fieldset[disabled] .modal.new-wizard .finish:hover,
+.modal.new-wizard .finish.disabled:focus,
+.modal.new-wizard .finish[disabled]:focus,
+fieldset[disabled] .modal.new-wizard .finish:focus,
+.modal.new-wizard .finish.disabled:active,
+.modal.new-wizard .finish[disabled]:active,
+fieldset[disabled] .modal.new-wizard .finish:active,
+.modal.new-wizard .finish.disabled.active,
+.modal.new-wizard .finish[disabled].active,
+fieldset[disabled] .modal.new-wizard .finish.active {
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+}
+.modal.new-wizard .finish .badge {
+  color: #5cb85c;
+  background-color: #ffffff;
+}

@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'models/model',
-    'lib/text!templates/default/index.html'
-], function($, _, Backbone, Model, IndexTemplate){
+    'lib/text!templates/default/index.html',
+    'views/wizard/new'
+], function($, _, Backbone, IndexTemplate, WizardNewView){
     var indexView = Backbone.View.extend({
         className: 'container page home',
 
@@ -25,9 +25,12 @@ define([
 
         buildModel: function(event) {
             event.preventDefault();
-            webgnome.model = new Model();
-            webgnome.model.fetch();
-            webgnome.router.navigate('model', true);
+
+            new WizardNewView();
+
+            // webgnome.model = new Model();
+            // webgnome.model.fetch();
+            // webgnome.router.navigate('model', true);
         },
 
         loadModel: function(event) {

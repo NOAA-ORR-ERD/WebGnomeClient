@@ -3,10 +3,10 @@ define([
     'backbone',
     'models/base'
 ], function(_, Backbone, BaseModel){
-    var model = BaseModel.extend({
+    var gnomeModel = BaseModel.extend({
         url: '/model',
         
     });
 
-    return model;
+    return gnomeModel;
 });
