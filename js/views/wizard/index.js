@@ -111,8 +111,8 @@ define([
         title: 'Model Settings <span class="sub-title">New Model Wizard</span>',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
         validate: function(){
-            if (this.$('form').length === 0) {
-                return 'No form present so of course I\'m invalid';
+            if (!this.$('#start_time').val().match(/^\d\d?\/\d\d?\/\d\d\d\d \d\d?:\d\d$/g)) {
+                return 'Start time must be a valid datetime string (mm/dd/yy hh:mm)';
             }
         }
     });

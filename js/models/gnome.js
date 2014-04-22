@@ -69,9 +69,7 @@ define([
             var start_time = this.get('start_time');
             var date = new Date(null);
             date.setSeconds(start_time);
-            console.log(date.toLocaleString());
-
-            return date.toLocaleString().replace(/-/g, '/').replace('T', ' ').replace(/:\d\d .*$/g, '')
+            return date.toLocaleString().replace(/-/g, '/').replace('T', ' ').replace(/:\d\d .*$/g, '');
         },
         
     });
