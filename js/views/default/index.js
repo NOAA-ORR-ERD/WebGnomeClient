@@ -3,8 +3,8 @@ define([
     'underscore',
     'backbone',
     'lib/text!templates/default/index.html',
-    'views/wizard/new'
-], function($, _, Backbone, IndexTemplate, WizardNewView){
+    'views/wizard/index'
+], function($, _, Backbone, IndexTemplate, WizardView){
     var indexView = Backbone.View.extend({
         className: 'container page home',
 
@@ -26,7 +26,7 @@ define([
         buildModel: function(event) {
             event.preventDefault();
 
-            new WizardNewView();
+            new WizardView();
 
             // webgnome.model = new Model();
             // webgnome.model.fetch();

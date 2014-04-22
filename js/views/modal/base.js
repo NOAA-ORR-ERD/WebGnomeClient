@@ -42,10 +42,14 @@ define([
         },
 
         render: function(){
+            if (!_.isString(this.body)){
+                this.body = this.body();
+            }
+            
             var compiled = _.template(ModalTemplate, {
                 size: this.size,
                 title: this.title,
-                body: this.body(),
+                body: this.body,
                 buttons: this.buttons
             });
             $('body').append(this.$el.html(compiled));

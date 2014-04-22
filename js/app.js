@@ -9,12 +9,15 @@ define([
 ], function($, _, Backbone, Router, util, rivets) {
     "use strict";
     var app = {
-        api: 'http://0.0.0.0:9899',
+        api: 'http://10.55.67.89:5001',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
                 cache: false,
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                }
             });
 
             // Filter json requestions to redirect them to the api server
@@ -64,6 +67,14 @@ define([
 
             Backbone.View.prototype.close = function(){
                 this.remove();
+                this.unbind();
+                if (this.onClose){
+                    this.onClose();
+                }
+            };
+
+            Backbone.Model.prototype.close = function(){
+                this.clear();
                 this.unbind();
                 if (this.onClose){
                     this.onClose();

@@ -3,27 +3,44 @@ define([
     'underscore',
     'backbone',
     'views/wizard/modal',
-    'lib/text!templates/wizard/new/step1.html',
-    'lib/text!templates/wizard/new/step2.html',
-    'lib/text!templates/wizard/new/step3.html',
-    'lib/text!templates/wizard/new/step4.html',
-    'models/wizard/new'
-], function($, _, Backbone, WizardModal, Step1Template, Step2Template, Step3Template, Step4Template, WizardNewModel){
-    var wizardNewView = Backbone.View.extend({
+    'lib/text!templates/wizard/step1.html',
+    'lib/text!templates/wizard/step2.html',
+    'lib/text!templates/wizard/step3.html',
+    'lib/text!templates/wizard/step4.html',
+    'models/gnome',
+    'lib/jquery.datetimepicker'
+], function($, _, Backbone, WizardModal, Step1Template, Step2Template, Step3Template, Step4Template, GnomeModel){
+    var wizardView = Backbone.View.extend({
         step_num: 1,
-        model: new WizardNewModel(),
 
         initialize: function(){
+            this.model = new GnomeModel();
+            //this.location = new GnomeLocation();
+            //this.spill = new GnomeSpill();
             this.step1();
-            this.model.fetch();
         },
 
         step1: function(){
             // setup the model settings
-            var step = new step1();
+            var step = new step1({
+                body: _.template(Step1Template, {
+                    start_time: this.model.formatStartTime(),
+                    duration: this.model.formatDuration()
+                })
+            });
+
+            step.$('#start_time').datetimepicker({
+                format: 'n/j/Y H:i'
+            });
 
             step.on('next', function(){
-                this.step2();
+                if(step.isValid()){
+                    step.hide();
+                    this.step2();
+                } else {
+                    step.error('Error!', step.validationError);
+                }
+                
             }, this);
 
             step.on('wizardclose', function(){
@@ -34,6 +51,7 @@ define([
         step2: function(){
             // setup the location for the model
             var step = new step2();
+
             step.on('back', function(){
                 this.step1();
             }, this);
@@ -48,7 +66,7 @@ define([
         },
 
         step3: function(){
-            // setup the spill location and attributes
+            // setup the spill and attributes
             var step = new step3();
 
             step.on('back', function(){
@@ -75,6 +93,15 @@ define([
             step.on('wizardclose', function(){
                 this.close();
             }, this);
+        },
+
+        close: function(){
+            //this.spill.close();
+            //this.location.close();
+            this.model.close();
+
+            this.unbind();
+            this.remove();
         }
 
     });
@@ -82,30 +109,31 @@ define([
     var step1 = WizardModal.extend({
         name: 'step1',
         title: 'Model Settings <span class="sub-title">New Model Wizard</span>',
-        body: _.template(Step1Template),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
+        validate: function(){
+            if (this.$('form').length === 0) {
+                return 'No form present so of course I\'m invalid';
+            }
+        }
     });
 
     var step2 = WizardModal.extend({
         name: 'step2',
         title: 'Location <span class="sub-title">New Model Wizard</span>',
-        body: _.template(Step2Template),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
     });
 
     var step3 = WizardModal.extend({
         name: 'step3',
         title: 'Spill <span class="sub-title">New Model Wizard</span>',
-        body: _.template(Step3Template),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
     });
 
     var step4 = WizardModal.extend({
         name: 'step4',
         title: 'Environment <span class="sub-title">New Model Wizard</span>',
-        body: _.template(Step4Template),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="finish">Finish</button>',
     });
 
-    return wizardNewView;
+    return wizardView;
 });
