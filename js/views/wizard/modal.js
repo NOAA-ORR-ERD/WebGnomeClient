@@ -25,10 +25,16 @@ define([
         },
 
         next: function(){
-            this.trigger('next');
+            if(this.isValid()){
+                this.hide();
+                this.trigger('next');
+            } else {
+                this.error('Error!', this.validationError);
+            }
         },
 
         back: function(){
+            this.hide();
             this.trigger('back');
         },
 
@@ -40,11 +46,11 @@ define([
         isValid: function(){
             if (_.isFunction(this.validate)){
                 var valid = this.validate();
-                this.validationError = valid;
-                console.log(valid);
                 if (_.isUndefined(valid)) {
+                    this.validationError = null;
                     return true;
                 }
+                this.validationError = valid;
                 return false;
             } else {
                 return true;

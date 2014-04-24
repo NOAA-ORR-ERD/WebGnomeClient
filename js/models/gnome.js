@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
+    'moment',
     'models/base'
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, moment, BaseModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         
@@ -19,7 +20,7 @@ define([
             'spills': null,
             'time_step': '50',
             'duration': '86400',
-            'uncertain': 'false',
+            'uncertain': false,
             'id': null
         },
 
@@ -63,13 +64,6 @@ define([
                 hours = 0;
             }
             return {days: days, hours: hours};
-        },
-
-        formatStartTime: function() {
-            var start_time = this.get('start_time');
-            var date = new Date(null);
-            date.setSeconds(start_time);
-            return date.toLocaleString().replace(/-/g, '/').replace('T', ' ').replace(/:\d\d .*$/g, '');
         },
         
     });

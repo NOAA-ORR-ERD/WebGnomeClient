@@ -62,7 +62,10 @@ define([
                 escape: /\{\{-(.+?)\}\}/g,
 
                 // {{ variable_name }} -- Does not escape output.
-                interpolate: /\{\{(.+?)\}\}/g
+                interpolate: /\{\{(.+?)\}\}/g,
+
+                // {{ javascript }}
+                evaluate: /\{\%(.+?)\%\}/g
             };
 
             Backbone.View.prototype.close = function(){

@@ -22,7 +22,11 @@
         <div class="col-sm-offset-3">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" value=""> Include the Minimum Regret (Uncertainty) solution.
+                    {% if(uncertainty){ %}
+                        <input type="checkbox" value="1" id="uncertainty" checked="checked"> Include the Minimum Regret (Uncertainty) solution.
+                    {% } else { %}
+                        <input type="checkbox" value="1" id="uncertainty"> Include the Minimum Regret (Uncertainty) solution.
+                    {% } %}
                 </label>
             </div>
         </div>
