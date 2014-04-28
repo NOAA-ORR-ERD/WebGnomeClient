@@ -10,12 +10,13 @@ define([
     'lib/text!templates/wizard/step3.html',
     'lib/text!templates/wizard/step4.html',
     'models/gnome',
-    'models/spill',
+    'models/map',
     'lib/jquery.datetimepicker',
     'lib/jquery.fileupload'
 ], function($, _, Backbone, moment, ol, WizardModal,
             Step1Template, Step2Template, Step3Template, Step4Template,
-            GnomeModel, GnomeSpill){
+            GnomeModel, GnomeMap){
+    
     var wizardView = Backbone.View.extend({
         step_num: 1,
 
@@ -173,7 +174,7 @@ define([
         name: 'step2',
         title: 'Map <span class="sub-title">New Model Wizard</span>',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-        model: new GnomeSpill(),
+        model: new GnomeMap(),
 
         events: function() {
             return _.defaults({

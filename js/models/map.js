@@ -3,7 +3,7 @@ define([
     'backbone',
     'models/base'
 ], function(_, Backbone, BaseModel){
-    var gnomeSpill = BaseModel.extend({
+    var gnomeMap = BaseModel.extend({
 
         defaults: {
             'object_type': 'gnome.map.MapFromBNA',
@@ -18,5 +18,5 @@ define([
         }
     });
 
-    return gnomeSpill;
+    return gnomeMap;
 });
