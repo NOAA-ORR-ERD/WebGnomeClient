@@ -20,8 +20,18 @@ define([
             'click .next': 'next',
             'click .back': 'back',
             'hidden.bs.modal': 'close',
+            'shown.bs.modal': 'ready',
+            'shown.bs.tab': 'tab_ready',
             'click .modal-header>.close': 'wizardclose',
             'click .cancel': 'wizardclose'
+        },
+
+        ready: function(){
+            this.trigger('ready');
+        },
+
+        tab_ready: function(event){
+            this.trigger('tab_ready');
         },
 
         next: function(){

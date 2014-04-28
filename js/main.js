@@ -8,7 +8,8 @@ require.config({
         underscore: 'lib/underscore-min',
         backbone: 'lib/backbone-min',
         sinon: 'lib/sinon-1.6.0',
-        rivets: 'lib/rivets.min'
+        rivets: 'lib/rivets.min',
+        moment: 'lib/moment'
     },
     shim: {
         'map_generator': ['jquery'],
@@ -22,7 +23,7 @@ require.config({
         'lib/geo': {
             exports: 'Geo'
         },
-        'lib/jquery.fileupload': ['lib/jquery.ui'],
+        'lib/jquery.fileupload': ['jqueryui'],
         'lib/jquery.imagesloaded.min': ['jquery'],
         'lib/bootstrap.min': ['jquery'],
         'lib/jquery.datetimepicker': ['jquery'],
@@ -31,7 +32,7 @@ require.config({
         },
         'lib/ol-simple': {
             exports: 'ol'
-        }
+        },
     }
 });
 
