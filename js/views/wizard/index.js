@@ -22,6 +22,7 @@ define([
 
         initialize: function(){
             this.model = new GnomeModel();
+            this.map = new GnomeMap();
             //this.location = new GnomeLocation();
             //this.spill = new GnomeSpill();
             this.step1();
@@ -33,7 +34,8 @@ define([
                 body: _.template(Step1Template, {
                     start_time: moment.unix(this.model.get('start_time')).format('YYYY/M/D H:mm'),
                     duration: this.model.formatDuration(),
-                    uncertainty: this.model.get('uncertain')
+                    uncertainty: this.model.get('uncertain'),
+                    time_steps: this.model.get('time_step')
                 })
             });
 
@@ -51,6 +53,9 @@ define([
                 var uncertainty = step.$('#uncertainty:checked').val();
                 this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
 
+                var time_steps = step.$('#time_steps').val();
+                this.model.set('time_step', time_steps);
+
                 this.step2();
             }, this);
 
@@ -65,13 +70,17 @@ define([
                 body: _.template(Step2Template, {
 
                 })
+            }, this.map);
+
+            step.on('success', function(file){
+                this.map.set('filename', file.name);
             });
 
             step.on('back', function(){
                 this.step1();
             }, this);
 
-            step.on('next', function(){
+            step.on('next', function(event){
                 this.step3();
             }, this);
 
@@ -150,6 +159,7 @@ define([
             var start_time = this.$('#start_time').val();
             var days = this.$('#days').val();
             var hours = this.$('#hours').val();
+            var steps = this.$('#time_steps').val();
 
             if (!moment(start_time, 'YYYY/M/D H:mm').isValid()) {
                 return 'Start time must be a valid datetime string (YYYY/M/D H:mm)';
@@ -161,6 +171,11 @@ define([
 
             if(parseInt(days, 10) === 0 && parseInt(hours, 10) === 0){
                 return 'Duration length should be greater than zero.';
+            }
+
+            if(parseInt(steps, 10) != steps){
+                console.log(parseInt(steps, 10));
+                return 'Time steps must be a whole number.';
             }
         },
 
@@ -174,20 +189,23 @@ define([
         name: 'step2',
         title: 'Map <span class="sub-title">New Model Wizard</span>',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-        model: new GnomeMap(),
 
         // @todo move gnomemap references to parent view.
 
         events: function() {
             return _.defaults({
                 'fileuploadadd .file': 'add',
-                'fileuploadfail .file': 'fail'
+                'fileuploadfail .file': 'fail',
+                'shown.bs.tab': 'tab_ready',
+                'shown.bs.collapse': 'tab_ready',
+                'click .panel-title a': 'select'
             }, WizardModal.prototype.events);
         },
 
-        initialize: function(options) {
+        initialize: function(options, model) {
             WizardModal.prototype.initialize.call(this, options);
             var dropZone = $('.file');
+            this.model = model;
 
             $(document).bind('drop', function(e) {
                 dropZone.removeClass('hover');
@@ -217,38 +235,12 @@ define([
             this.$('.file').fileupload({
                 url: webgnome.api + '/upload',
                 dropZone: this.$('.file'),
-                add: null
+                add: null,
             });
         },
 
-        add: function(e, data) {
-            // make sure the user only added one file.
-            if (data.originalFiles.length > 1){
-                this.error('Error!', 'Only a single file source for the map is supported.');
-                return false;
-            }
-
-            if(!data.files[0].name.match(/(\.|\/)(bna|json|geojson)$/i)) {
-                this.error('Invalid file type!', 'Only <code>.bna</code>, <code>.json</code>, and <code>.geojson</code> file types are supported.');
-                return false;
-            }
-
-            this.$('.file').addClass('hide');
-            this.$('.loading').addClass('show');
-            data.submit();
-        },
-
-        fail: function(e, data){
-            this.$('.file').removeClass('hide');
-            this.$('.loading').removeClass('show');
-            this.error('Upload Failed!', 'The API server could not be reached.');
-        },
-
-        success: function(e, data){
-        },
-
-        tab_ready: function(event) {
-            if (event.target.hash == '#coast'){
+        tab_ready: function(event){
+            if (event.target.hash == '#coast' || event.target.id == 'coast'){
                 if(_.isUndefined(this.coast_map)){
                     this.coast_map = new ol.Map({
                         target: 'map',
@@ -263,7 +255,7 @@ define([
                         })
                     });
                 }
-            } else if (event.target.hash == '#draw') {
+            } else if (event.target.hash == '#draw' || event.target.id == 'draw') {
                 if (_.isUndefined(this.draw_map)){
                     this.source = new ol.source.Vector();
                     this.draw_map = new ol.Map({
@@ -309,6 +301,38 @@ define([
                     });
                 }
             }
+        },
+
+        select: function(event){
+            console.log(event);
+            $(event.target).children('input')[0].checked = true;
+        },
+
+        add: function(e, data) {
+            // make sure the user only added one file.
+            if (data.originalFiles.length > 1){
+                this.error('Error!', 'Only a single file source for the map is supported.');
+                return false;
+            }
+
+            if(!data.files[0].name.match(/(\.|\/)(bna|json|geojson)$/i)) {
+                this.error('Invalid file type!', 'Only <code>.bna</code>, <code>.json</code>, and <code>.geojson</code> file types are supported.');
+                return false;
+            }
+
+            this.$('.file').addClass('hide');
+            this.$('.loading').addClass('show');
+            data.submit();
+        },
+
+        fail: function(e, data){
+            this.$('.file').removeClass('hide');
+            this.$('.loading').removeClass('show');
+            this.error('Upload Failed!', 'The API server could not be reached.');
+        },
+
+        success: function(e, data){
+            this.trigger('success', data.files[0]);
         },
 
         validate: function(){

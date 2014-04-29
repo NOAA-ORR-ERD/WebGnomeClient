@@ -1,11 +1,78 @@
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#upload" data-toggle="tab">Upload</a></li>
+<form>
+<div class="panel-group step2" id="accordion" data-toggle="false">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#empty" data-toggle="collapse" data-parent="#accordion"><input type="radio" name="map" value="empty" checked="checked">Empty</a>
+            </h4>
+        </div>
+        <div id="empty" class="panel-collapse collapse in">
+            <div class="panel-body">
+                An empty map with out any shoreline or collisionable areas.
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#upload" data-toggle="collapse" data-parent="#accordion"><input type="radio" name="map" value="upload">Upload</a>
+            </h4>
+        </div>
+        <div id="upload" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p>Upload a GeoJSON or BNA file. If you don't have one you can use <a href="http://gnome.orr.noaa.gov/goods/tools/coast_subset" target="_blank">GOODS</a> to generate one.</p>
+                <img src="/img/loading.gif" class="loading" />
+                <div class="file">
+                    <p>Drag &amp; drop the file here.</p>
+                    <input type="file">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#coast" data-toggle="collapse" data-parent="#accordion"><input type="radio" name="map" value="coast">Coast Line</a> <span class="label label-danger">incomplete</span>
+            </h4>
+        </div>
+        <div id="coast" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p>Use the map below to highlight the shoreline you would like to use in your model.</p>
+                <div class="map" id="map"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="#draw" data-toggle="collapse" data-parent="#accordion"><input type="radio" name="map" value="draw">Draw</a> <span class="label label-danger">incomplete</span>
+            </h4>
+        </div>
+        <div id="draw" class="panel-collapse collapse">
+            <div class="panel-body">
+                <p>Use the area below to draw the shape you would like to use in your model.</p>
+                <div class="map" id="draw-map"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</form>
+<!-- <ul class="nav nav-tabs">
+    <li class="active"><a href="#empty" data-toggle="tab">Empty</a></li>
+    <li><a href="#upload" data-toggle="tab">Upload</a></li>
     <li><a href="#coast" data-toggle="tab">Coast Line <span class="label label-danger">incomplete</span></a></li>
     <li><a href="#draw" data-toggle="tab">Draw <span class="label label-danger">incomplete</span></a></li>
 </ul>
 
 <div class="tab-content">
-    <div class="tab-pane active" id="upload">
+    <div class="tab-pane active" id="empty">
+
+    </div>
+    <div class="tab-pane" id="upload">
         <p>Upload a GeoJSON or BNA file. If you don't have one you can use <a href="http://gnome.orr.noaa.gov/goods/tools/coast_subset" target="_blank">GOODS</a> to generate one.</p>
         <img src="/img/loading.gif" class="loading" />
         <div class="file">
@@ -24,4 +91,4 @@
     <div class="tab-pane" id="upload">
         <p>Upload a GeoJSON or BNA file.</p>
     </div>
-</div>
+</div> -->

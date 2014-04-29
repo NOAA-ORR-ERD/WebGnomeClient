@@ -7,7 +7,7 @@ define([
 
         defaults: {
             'object_type': 'gnome.map.MapFromBNA',
-            'filename' : null,
+            'filename' : 'EmptyMap.BNA',
             'refloat_halflife': 1.0
         },
 
