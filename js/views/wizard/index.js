@@ -176,6 +176,8 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
         model: new GnomeMap(),
 
+        // @todo move gnomemap references to parent view.
+
         events: function() {
             return _.defaults({
                 'fileuploadadd .file': 'add',

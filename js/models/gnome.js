@@ -57,7 +57,7 @@ define([
                 if (days < 1){
                     days = 0;
                 } else {
-                    days = Math.round(days);
+                    days = parseInt(days);
                     hours = hours - (days * 24);
                 }
             } else {
