@@ -304,8 +304,9 @@ define([
         },
 
         select: function(event){
-            console.log(event);
-            $(event.target).children('input')[0].checked = true;
+            if (event.target.hash != ''){
+                $(event.target).siblings('input')[0].checked = true;
+            }
         },
 
         add: function(e, data) {
