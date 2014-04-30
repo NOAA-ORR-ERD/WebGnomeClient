@@ -304,7 +304,7 @@ define([
         },
 
         select: function(event){
-            if (event.target.hash != ''){
+            if (event.target.hash !== ''){
                 $(event.target).siblings('input')[0].checked = true;
             }
         },
