@@ -35,27 +35,12 @@ define([
                     start_time: moment.unix(this.model.get('start_time')).format('YYYY/M/D H:mm'),
                     duration: this.model.formatDuration(),
                     uncertainty: this.model.get('uncertain'),
-                    time_steps: this.model.get('time_step')
+                    time_steps: this.model.get('time_step') / 60
                 })
-            });
+            }, this.model);
 
             
             step.on('next', function(){
-                // save the form inforation into the model
-                var start_time = moment(step.$('#start_time').val(), 'YYYY/M/D H:mm').unix();
-                this.model.set('start_time', start_time);
-
-                var days = step.$('#days').val();
-                var hours = step.$('#hours').val();
-                var duration = (((days * 24) + parseInt(hours, 10)) * 60) * 60;
-                this.model.set('duration', duration);
-
-                var uncertainty = step.$('#uncertainty:checked').val();
-                this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
-
-                var time_steps = step.$('#time_steps').val();
-                this.model.set('time_step', time_steps);
-
                 this.step2();
             }, this);
 
@@ -147,35 +132,35 @@ define([
         title: 'Model Settings <span class="sub-title">New Model Wizard</span>',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
         
-        initialize: function(options){
+        initialize: function(options, model){
             WizardModal.prototype.initialize.call(this, options);
+
+            this.model = model;
 
             this.$('#start_time').datetimepicker({
                 format: 'Y/n/j G:i'
             });
         },
 
-        validate: function(){
-            var start_time = this.$('#start_time').val();
+        update: function() {
+            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').unix();
+            this.model.set('start_time', start_time);
+
             var days = this.$('#days').val();
             var hours = this.$('#hours').val();
-            var steps = this.$('#time_steps').val();
+            var duration = (((days * 24) + parseInt(hours, 10)) * 60) * 60;
+            this.model.set('duration', duration);
 
-            if (!moment(start_time, 'YYYY/M/D H:mm').isValid()) {
-                return 'Start time must be a valid datetime string (YYYY/M/D H:mm)';
-            }
+            var uncertainty = this.$('#uncertainty:checked').val();
+            this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
 
-            if(days != parseInt(days, 10) || hours != parseInt(hours, 10)){
-                return 'Duration values should be numbers only.';
-            }
+            var time_steps = this.$('#time_steps').val() * 60;
+            this.model.set('time_step', time_steps);
 
-            if(parseInt(days, 10) === 0 && parseInt(hours, 10) === 0){
-                return 'Duration length should be greater than zero.';
-            }
-
-            if(parseInt(steps, 10) != steps){
-                console.log(parseInt(steps, 10));
-                return 'Time steps must be a whole number.';
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
             }
         },
 
@@ -336,12 +321,6 @@ define([
             this.trigger('success', data.files[0]);
         },
 
-        validate: function(){
-            if(!this.model.isValid()){
-                return this.model.validationError;
-            }
-        },
-
         close: function() {
             WizardModal.prototype.close.call(this);
             this.draw_map = null;
@@ -349,7 +328,6 @@ define([
             this.source = null;
             this.$('#file').fileupload('destroy');
             $(document).unbind('drop dragover');
-            $('input[type="file"]').remove();
         }
 
     });

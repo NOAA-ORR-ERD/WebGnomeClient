@@ -18,7 +18,7 @@ define([
             'cache_enabled': 'false',
             'weatherers': null,
             'spills': null,
-            'time_step': '50',
+            'time_step': '900',
             'duration': '86400',
             'uncertain': false,
             'id': null
@@ -26,25 +26,37 @@ define([
 
 
         validate: function(attrs, options) {
-            if (attrs.map_id === null) {
-                return 'Model requires a map.';
+            if(attrs.duration <= 0 || isNaN(attrs.duration)){
+                return 'Duration values should be numbers only and greater than 0.';
             }
 
-            if (attrs.movers === null) {
-                return 'Model doesn\'t have any movers.';
+            if(parseInt(attrs.days, 10) === 0 && parseInt(attrs.hours, 10) === 0){
+                return 'Duration length should be greater than zero.';
             }
 
-            if (attrs.spills === null) {
-                return 'Model requires at least one spill.';
+            if(parseInt(attrs.time_step, 10) != attrs.time_step){
+                return 'Time steps must be a whole number.';
             }
 
-            if (attrs.environment === null) {
-                return 'Model doesn\'t have an environment.';
-            }
+            // if (attrs.map_id === null) {
+            //     return 'Model requires a map.';
+            // }
 
-            if (attrs.start_time === null || attrs.duration) {
-                return 'Model needs both start time and duration.';
-            }
+            // if (attrs.movers === null) {
+            //     return 'Model doesn\'t have any movers.';
+            // }
+
+            // if (attrs.spills === null) {
+            //     return 'Model requires at least one spill.';
+            // }
+
+            // if (attrs.environment === null) {
+            //     return 'Model doesn\'t have an environment.';
+            // }
+
+            // if (attrs.start_time === null || attrs.duration) {
+            //     return 'Model needs both start time and duration.';
+            // }
         },
 
         formatDuration: function() {
@@ -57,7 +69,7 @@ define([
                 if (days < 1){
                     days = 0;
                 } else {
-                    days = parseInt(days);
+                    days = parseInt(days, 10);
                     hours = hours - (days * 24);
                 }
             } else {

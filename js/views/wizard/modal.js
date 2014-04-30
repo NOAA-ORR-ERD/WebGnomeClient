@@ -22,35 +22,37 @@ define([
             'hidden.bs.modal': 'close',
             'shown.bs.modal': 'ready',
             'click .modal-header>.close': 'wizardclose',
-            'click .cancel': 'wizardclose'
+            'click .cancel': 'wizardclose',
+            'change input': 'update',
+            'keyup input': 'update'
         },
 
-        ready: function(){
+        ready: function() {
             this.trigger('ready');
         },
 
-
-
-        next: function(){
+        next: function() {
             if(this.isValid()){
                 this.hide();
                 this.trigger('next');
-            } else {
-                this.error('Error!', this.validationError);
             }
         },
 
-        back: function(){
+        back: function() {
             this.hide();
             this.trigger('back');
         },
 
-        error: function(strong, message){
+        error: function(strong, message) {
             this.$('.modal-body .alert').remove();
             this.$('.modal-body').prepend(_.template(AlertDangerTemplate, {strong: strong, message: message}));
         },
 
-        isValid: function(){
+        clearError: function() {
+            this.$('.modal-body .alert').remove();
+        },
+
+        isValid: function() {
             if (_.isFunction(this.validate)){
                 var valid = this.validate();
                 if (_.isUndefined(valid)) {
@@ -61,6 +63,15 @@ define([
                 return false;
             } else {
                 return true;
+            }
+        },
+
+        validate: function() {
+            if (!_.isUndefined(this.model)) {
+                if (this.model.isValid()) {
+                    return;
+                }
+                return this.model.validationError;
             }
         },
 
