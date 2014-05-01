@@ -5,15 +5,25 @@ define([
     'views/modal/base',
     'lib/text!templates/default/alert-danger.html'
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate){
-    wizardModal = BaseModal.extend({
+    formModal = BaseModal.extend({
         className: 'modal fade new-wizard',
 
         initialize: function(options){
-            if(options.body){
+            if(options.body) {
                 this.body = options.body;
             }
 
-            this.render();
+            if(options.name) {
+                this.name = options.name;
+            }
+
+            if(options.title) {
+                this.title = options.title;
+            }
+
+            if(options.buttons) {
+                this.buttons = options.buttons;
+            }
         },
 
         events: {
@@ -85,5 +95,5 @@ define([
         }
     });
 
-    return wizardModal;
+    return formModal;
 });

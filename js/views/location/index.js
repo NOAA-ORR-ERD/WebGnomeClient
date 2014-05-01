@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'lib/ol',
-    'lib/text!templates/locations/index.html'
+    'lib/text!templates/location/index.html'
 ], function($, _, Backbone, ol, LocationsTemplate){
     var locationsView = Backbone.View.extend({
         className: 'container page locations',

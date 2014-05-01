@@ -2,7 +2,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'models/base'
+    'model/base'
 ], function(_, Backbone, moment, BaseModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',

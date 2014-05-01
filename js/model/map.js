@@ -1,7 +1,7 @@
 define([
     'underscore',
     'backbone',
-    'models/base'
+    'model/base'
 ], function(_, Backbone, BaseModel){
     var gnomeMap = BaseModel.extend({
 

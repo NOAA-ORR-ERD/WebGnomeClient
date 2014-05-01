@@ -5,7 +5,7 @@ define([
     'views/default/menu',
     'views/default/index',
     'views/default/notfound',
-    'views/locations/index',
+    'views/location/index',
     'views/model/index'
 ], function($, _, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView) {
     var Router = Backbone.Router.extend({
