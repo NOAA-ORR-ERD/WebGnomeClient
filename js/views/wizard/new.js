@@ -48,10 +48,6 @@ define([
                 buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
             }, this.map);
 
-            step.on('success', function(file){
-                this.map.set('filename', file.name);
-            });
-
             step.on('back', function(){
                 this.step1();
             }, this);
