@@ -6,6 +6,9 @@ define([
     'lib/text!templates/form/spill.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
     var spillForm = FormModal.extend({
+        name: 'spill',
+        title: 'Spill',
+        
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
 

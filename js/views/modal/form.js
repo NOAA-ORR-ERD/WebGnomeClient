@@ -7,7 +7,8 @@ define([
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate){
     formModal = BaseModal.extend({
         className: 'modal fade new-wizard',
-
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        
         initialize: function(options){
             if(options.body) {
                 this.body = options.body;

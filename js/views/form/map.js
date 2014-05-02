@@ -6,8 +6,8 @@ define([
     'lib/text!templates/form/map.html'
 ], function(_, $, Backbone, FormModal, FormTemplate){
     var mapForm = FormModal.extend({
-        name: 'step2',
-        title: 'Map <span class="sub-title">New Model Wizard</span>',
+        name: 'map',
+        title: 'Map',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
 
         events: function() {
@@ -54,6 +54,13 @@ define([
             });
 
             this.render();
+
+            if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) == -1){
+                this.$('.upload').val(this.model.get('filename'));
+            }
+
+            this.$('input[value="' + this.model.get('filename') + '"]')[0].checked = true;
+            this.$('input[value="' + this.model.get('filename') + '"]').parents('.panel').find('.collapse').addClass('in');
 
             this.$('.file').fileupload({
                 url: webgnome.api + '/upload',
@@ -128,7 +135,12 @@ define([
 
         select: function(event){
             if (event.target.hash !== ''){
-                $(event.target).siblings('input')[0].checked = true;
+                this.$(event.target).siblings('input')[0].checked = true;
+                if(this.$(event.target).siblings('input').val()){
+                    this.model.set('filename', this.$(event.target).siblings('input').val());
+                } else {
+                    this.model.set('filename', 'EmptyMap.bna');
+                }
             }
         },
 
@@ -156,7 +168,8 @@ define([
         },
 
         success: function(e, data){
-            this.trigger('success', data.files[0]);
+            this.model.set('filename', data.files[0]);
+            this.$('input[type="radio"]:checked').val(this.model.get('filename'));
         },
 
         close: function() {
