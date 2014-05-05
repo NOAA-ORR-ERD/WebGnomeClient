@@ -4,8 +4,9 @@ define([
     'backbone',
     'lib/text!templates/default/menu.html',
     'views/modal/about',
+    'views/wizard/new',
     'lib/bootstrap.min'
- ], function($, _, Backbone, MenuTemplate, AboutModal) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, NewWizardForm) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -25,7 +26,7 @@ define([
         },
 
         events: {
-            'click .navbar-brand': 'newModel',
+            'click .navbar-brand': 'home',
             'click .new': 'newModel',
             'click .load': 'load',
             'click .locations': 'locations',
@@ -44,9 +45,14 @@ define([
             event.preventDefault();
         },
 
-        newModel: function(event){
+        home: function(event){
             event.preventDefault();
             webgnome.router.navigate('', true);
+        },
+
+        newModel: function(event){
+            event.preventDefault();
+            new NewWizardForm();
         },
 
         load: function(event){
