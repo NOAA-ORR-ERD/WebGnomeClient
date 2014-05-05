@@ -6,7 +6,7 @@ define([
     'lib/text!templates/default/alert-danger.html'
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate){
     formModal = BaseModal.extend({
-        className: 'modal fade new-wizard',
+        className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
         initialize: function(options){

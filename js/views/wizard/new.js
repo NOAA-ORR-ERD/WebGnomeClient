@@ -9,17 +9,17 @@ define([
     'views/form/environment',
     'model/gnome',
     'model/map',
+    'collection/spills',
     'lib/jquery.datetimepicker',
     'lib/jquery.fileupload'
-], function($, _, Backbone, moment, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap){
+], function($, _, Backbone, moment, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap, GnomeSpills){
     var newWizardView = Backbone.View.extend({
         step_num: 1,
 
         initialize: function(){
             this.model = new GnomeModel();
             this.map = new GnomeMap();
-            //this.location = new GnomeLocation();
-            //this.spill = new GnomeSpill();
+            this.spills = new GnomeSpills();
             this.step1();
         },
 
@@ -67,7 +67,7 @@ define([
                 name: 'step3',
                 title: 'Spill <span class="sub-title">New Model Wizard</span>',
                 buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-            });
+            }, this.spills, this.map);
 
             step.on('back', function(){
                 this.step2();

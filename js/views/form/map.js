@@ -6,6 +6,7 @@ define([
     'lib/text!templates/form/map.html'
 ], function(_, $, Backbone, FormModal, FormTemplate){
     var mapForm = FormModal.extend({
+        className: 'modal fade form-modal map-form',
         name: 'map',
         title: 'Map',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',

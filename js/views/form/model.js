@@ -6,7 +6,7 @@ define([
     'lib/text!templates/form/model.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
     var modelForm = FormModal.extend({
-        name: 'model',
+        className: 'modal fade form-modal model-form',
         title: 'Model Settings',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
