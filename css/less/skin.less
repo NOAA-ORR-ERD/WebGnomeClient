@@ -157,24 +157,26 @@ nav.navbar{
 
             }
         }
-        .ol-logo{
-            display: none;
-        }
-        .ol-mouse-position{
-            background: rgba(0, 60, 136, 0.3);
-            padding: 6px;
-            bottom: 0px;
-            left: 0px;
-            right: auto;
-            top: auto;
-            font-size: 10px;
-            color: rgba(238,238,238,1);
-            font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
-        }
     }
 }
 
-.modal.new-wizard{
+.map{
+    .ol-logo{
+        display: none;
+    }
+    .ol-mouse-position{
+        background: rgba(0, 60, 136, 0.3);
+        padding: 6px;
+        bottom: 0px;
+        left: 0px;
+        right: auto;
+        top: auto;
+        font-size: 10px;
+        color: rgba(238,238,238,1);
+        font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+    }
+}
+.modal.form-modal{
     .sub-title{
         color: #ccc;
         margin-left: 15px
@@ -185,6 +187,10 @@ nav.navbar{
         .pull-left;
     }
     .next{
+        .btn;
+        .btn-primary;
+    }
+    .save{
         .btn;
         .btn-primary;
     }
@@ -243,7 +249,7 @@ nav.navbar{
         }
     }
 
-    .step2{
+    &.map-form{
         input{
             margin-right: 5px;
         }
@@ -255,6 +261,12 @@ nav.navbar{
             a{
                 padding-left: 20px;
             }
+        }
+    }
+
+    &.spill-form{
+        .buttons{
+            margin-bottom: 15px;
         }
     }
 }
