@@ -71,6 +71,8 @@ define([
 
         ready: function() {
             this.ol.render();
+
+            // add hover listener to map
             this.$(this.ol.map.getViewport()).on('mousemove', _.bind(function(event){
                 var pixel = this.ol.map.getEventPixel(event.originalEvent);
                 var feature = this.ol.map.forEachFeatureAtPixel(pixel, function(feature, layer){
@@ -82,6 +84,14 @@ define([
                 } else {
                     this.ol.map.getViewport().style.cursor = '';
                 }
+            }, this));
+
+            // add click listener to map for selecting and editing spills
+            this.$(this.ol.map.getViewport()).on('mouseup', _.bind(function(event){
+                var pixel = this.ol.map.getEventPixel(event.originalEvent);
+                var feature = this.ol.map.forEachFeatureAtPixes(pixel, function(feature, layer){
+
+                });
             }, this));
         },
 
@@ -110,7 +120,9 @@ define([
             this.$('.map').css('height', '200px');
             this.ol.map.updateSize();
             this.ol.map.getView().setCenter(feature.getGeometry().getCoordinates());
-            this.select.getFeatures().push(feature);
+            setTimeout(_.bind(function(){
+                this.select.getFeatures().push(feature);
+            }, this), 400);
             this.$('.modal-body').append(_.template(SpillTemplate));
         },
 
