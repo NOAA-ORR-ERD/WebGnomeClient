@@ -73,7 +73,15 @@ define([
             this.ol.render();
             this.$(this.ol.map.getViewport()).on('mousemove', _.bind(function(event){
                 var pixel = this.ol.map.getEventPixel(event.originalEvent);
-                console.log('asdjkfl');
+                var feature = this.ol.map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                    return feature;
+                });
+
+                if(feature){
+                    this.ol.map.getViewport().style.cursor = 'pointer';
+                } else {
+                    this.ol.map.getViewport().style.cursor = '';
+                }
             }, this));
         },
 
