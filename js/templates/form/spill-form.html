@@ -1,0 +1,73 @@
+<form class="form-horizontal spill-form" role="form">
+
+    <div class="form-group">
+        <label for="name" class="col-sm-3 control-label">Spill Name</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" id="name" placeholder="" value="{{ name }}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Start Position</label>
+        <div class="col-sm-9">
+            <label for="start-lat" class="col-sm-1 control-label">Lat.</label>
+            <div class="col-sm-4"><input type="text" class="form-control" name="lat" id="start-lat" value="{{ start_lat }}"></div>
+            <label for="start-lng" class="col-sm-1 control-label">Lng.</label>
+            <div class="col-sm-4"><input type="text" class="form-control" name="lng" id="start-lng" value="{{ start_lng }}"></div>
+        </div>
+    </div>
+
+    <div class="form-group end-position">
+        <label class="col-sm-3 control-label">End Position</label>
+        <div class="col-sm-9">
+            <label for="end-lat" class="col-sm-1 control-label">Lat.</label>
+            <div class="col-sm-4"><input type="text" class="form-control" name="lat" id="end-lat" value="{{ end_lat }}"></div>
+            <label for="end-lng" class="col-sm-1 control-label">Lng.</label>
+            <div class="col-sm-4"><input type="text" class="form-control" name="lng" id="end-lng" value="{{ end_lng }}"></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="pollutant" class="col-sm-3 control-label">Pollutant</label>
+        <div class="col-sm-8">
+            <select id="pollutant" name="pollutant" class="form-control">
+                <option value="non-weathering">non-weathering</option>
+                <option value="fuel-oil-6">fuel oil #6</option>
+                <option value="medium-cruid">Medium Crude</option>
+                <option value="fuel-oil-4">fuel oil #4</option>
+                <option value="diesel">Diesel</option>
+                <option value="kerosene-jet-fuels">Kerosene/Jet Fuels</option>
+                <option value="gasoline">Gasoline</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="release-amount" class="col-sm-3 control-label">Amount Released</label>
+        <div class="col-sm-4">
+            <input type="number" id="release-amount" class="form-control" value="{{ release_amount }}">
+        </div>
+        <div class="col-sm-4">
+            <select name="release-unit" class="form-control" id="release-unit">
+                <option value="barrels">barrels</option>
+                <option value="kg">kg</option>
+                <option value="metric-tons">metric tons</option>
+                <option value="short-tons">short tons</option>
+                <option value="gallons">gallons</option>
+                <option value="m3">m**3</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="release-start" class="col-sm-3 control-label">Release Start</label>
+        <div class="col-sm-6"><input type="text" id="release-start" class="form-control" value="{{ release_start }}"></div>
+    </div>
+    <div class="form-group">
+        <label for="release-end" class="col-sm-3 control-label">Release End</label>
+        <div class="col-sm-6">
+            <input type="text" id="release-end" class="form-control" value="{{ release_end }}">
+        </div>
+    </div>
+    <button class="btn btn-danger remove">Remove Spill</button>
+</form> 

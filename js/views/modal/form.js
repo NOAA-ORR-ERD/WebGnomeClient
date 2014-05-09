@@ -6,8 +6,9 @@ define([
     'lib/text!templates/default/alert-danger.html'
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate){
     formModal = BaseModal.extend({
-        className: 'modal fade new-wizard',
-
+        className: 'modal fade form-modal',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        
         initialize: function(options){
             if(options.body) {
                 this.body = options.body;
@@ -34,7 +35,8 @@ define([
             'click .modal-header>.close': 'wizardclose',
             'click .cancel': 'wizardclose',
             'change input': 'update',
-            'keyup input': 'update'
+            'keyup input': 'update',
+            'change select': 'update'
         },
 
         ready: function() {
