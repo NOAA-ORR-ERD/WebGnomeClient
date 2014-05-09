@@ -28,7 +28,6 @@ define([
 
 
         initialize: function(options){
-
             if(!_.isUndefined(options)){
                 if(!_.isUndefined(options.id)){
                     this.id = options.id;

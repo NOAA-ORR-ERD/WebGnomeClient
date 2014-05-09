@@ -11,14 +11,15 @@ define([
         id: 'map',
         full: false,
         width: '70%',
-        map: new olMapView({
-            controls: 'full'
-        }),
+        map: null,
 
         initialize: function(){
             this.render();
             this.$('.seek > div').slider();
-
+            this.map = new olMapView({
+                controls: 'full'
+            });
+            
             // check if the ui should be functional
             if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.$('.seek > div').slider('option', 'disabled', true);

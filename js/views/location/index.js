@@ -7,10 +7,10 @@ define([
 ], function($, _, Backbone, olMapView, LocationsTemplate){
     var locationsView = Backbone.View.extend({
         className: 'container page locations',
-        map: new olMapView({
-        }),
+        map: null,
 
         initialize: function(){
+            this.map = new olMapView({});
             this.render();
             webgnome.map = this.map;
         },
