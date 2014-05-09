@@ -35,7 +35,8 @@ define([
             'click .modal-header>.close': 'wizardclose',
             'click .cancel': 'wizardclose',
             'change input': 'update',
-            'keyup input': 'update'
+            'keyup input': 'update',
+            'change select': 'update'
         },
 
         ready: function() {

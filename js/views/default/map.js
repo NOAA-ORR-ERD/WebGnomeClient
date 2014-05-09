@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/ol'
+    'lib/ol-simple'
 ], function($, _, Backbone, ol){
     var olMapView = Backbone.View.extend({
         className: 'map',

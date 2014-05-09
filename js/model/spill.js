@@ -1,23 +1,21 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
-    var gnomeSpills = BaseModel.extend({
+    'model/base',
+    'model/release',
+    'model/element'
+], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
+    var gnomeSpill = BaseModel.extend({
+        url: '/spill',
+
         defaults: {
             'on': true,
             'obj_type': 'gnome.spill.spill.Spill',
-            'element_type': {
-                'obj_type': 'gnome.spill.elements.ElementType',
-                'initializers': {
-                    'windages': {
-
-                    }
-                }
-            }
+            'release': new GnomeRelease(),
+            'element_type': new GnomeElement(),
         }
     });
 
-    return gnomeSpills;
+    return gnomeSpill;
     
 });
