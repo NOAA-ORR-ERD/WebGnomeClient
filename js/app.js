@@ -4,9 +4,7 @@ define([
     'underscore',
     'backbone',
     'router',
-    'util',
-    'rivets',
-], function($, _, Backbone, Router, util, rivets) {
+], function($, _, Backbone, Router) {
     "use strict";
     var app = {
         api: 'http://0.0.0.0:9899',
@@ -25,36 +23,6 @@ define([
                 options.url = webgnome.api + options.url;
             });
 
-            // Configure a Rivets adapter to work with Backbone
-            // per http://rivetsjs.com/
-            rivets.configure({
-                adapter: {
-                    subscribe: function(obj, keypath, callback) {
-                        callback.wrapped = function(m, v) {
-                            callback(v);
-                        };
-                        obj.on('change:' + keypath, callback.wrapped);
-                    },
-                    unsubscribe: function(obj, keypath, callback) {
-                        obj.off('change:' + keypath, callback.wrapped);
-                    },
-                    read: function(obj, keypath) {
-                        return obj.get(keypath);
-                    },
-                    /*
-                     When setting a value, if it's parsable as a float, use a
-                     float value instead. This is to support JSON Schema
-                     validation of float types.
-                     */
-                    publish: function(obj, keypath, value) {
-                        var floatVal = parseFloat(value);
-                        if (!isNaN(floatVal)) {
-                            value = floatVal;
-                        }
-                        obj.set(keypath, value);
-                    }
-                }
-            });
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user

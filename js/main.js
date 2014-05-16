@@ -7,24 +7,18 @@ require.config({
         jqueryui: 'lib/jquery-ui-1.10.4.custom.min',
         underscore: 'lib/underscore-min',
         backbone: 'lib/backbone-min',
-        sinon: 'lib/sinon-1.6.0',
-        rivets: 'lib/rivets.min',
         moment: 'lib/moment'
     },
     shim: {
-        'map_generator': ['jquery'],
-        'lib/jquery.dynatree': ['lib/jquery.ui', 'lib/jquery.cookie'],
-        'lib/rivets': {
-            exports: 'rivets'
-        },
+        // figure out what key was pressed during a mousedown event.
         'lib/mousetrap': {
             exports: 'Mousetrap'
         },
+        // convert geo positional information into different formats
         'lib/geo': {
             exports: 'Geo'
         },
         'lib/jquery.fileupload': ['jqueryui'],
-        'lib/jquery.imagesloaded.min': ['jquery'],
         'lib/bootstrap.min': ['jquery'],
         'lib/jquery.datetimepicker': ['jquery'],
         'lib/ol': {
