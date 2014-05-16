@@ -9,7 +9,7 @@ define([
 ], function($, _, Backbone, Router, util, rivets) {
     "use strict";
     var app = {
-        api: 'http://10.55.67.89:5001',
+        api: 'http://0.0.0.0:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.

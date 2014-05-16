@@ -14,7 +14,6 @@ define([
     'lib/jquery.fileupload'
 ], function($, _, Backbone, moment, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap, GnomeSpills){
     var newWizardView = Backbone.View.extend({
-        step_num: 1,
 
         initialize: function(){
             this.model = new GnomeModel();

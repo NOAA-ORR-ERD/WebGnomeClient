@@ -33,6 +33,7 @@ define([
             'hidden.bs.modal': 'close',
             'shown.bs.modal': 'ready',
             'click .modal-header>.close': 'wizardclose',
+            'click .save': 'save',
             'click .cancel': 'wizardclose',
             'change input': 'update',
             'keyup input': 'update',
@@ -47,6 +48,12 @@ define([
             if(this.isValid()){
                 this.hide();
                 this.trigger('next');
+            }
+        },
+
+        save: function(){
+            if(this.isValid()){
+                this.hide();
             }
         },
 
