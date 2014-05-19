@@ -1,7 +1,0 @@
-{
-    "name": "WebGnomeClient",
-    "main": "index.html",
-    "scripts": {
-        "start": "nodewebkit"
-    }
-}

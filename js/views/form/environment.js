@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
-    'lib/text!templates/form/environment.html'
+    'text!templates/form/environment.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
     var environmentForm = FormModal.extend({
         initialize: function(options, modal){

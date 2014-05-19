@@ -3,7 +3,8 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
-    'lib/text!templates/form/model.html'
+    'text!templates/form/model.html',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, FormModal, FormTemplate){
     var modelForm = FormModal.extend({
         className: 'modal fade form-modal model-form',

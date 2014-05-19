@@ -2,8 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/bootstrap.min',
-    'lib/text!templates/modal/base.html'
+    'bootstrap',
+    'text!templates/modal/base.html'
 ], function($, _, Backbone, bs, ModalTemplate){
     var baseModal = Backbone.View.extend({
         className: 'modal fade',

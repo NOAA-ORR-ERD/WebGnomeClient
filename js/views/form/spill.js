@@ -3,11 +3,11 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'lib/ol-simple',
+    'ol',
     'views/modal/form',
     'views/default/map',
-    'lib/text!templates/form/spill-map.html',
-    'lib/text!templates/form/spill-form.html',
+    'text!templates/form/spill-map.html',
+    'text!templates/form/spill-form.html',
 ], function($, _, Backbone, moment, ol, FormModal, olMapView, MapTemplate, SpillTemplate) {
     var spillForm = FormModal.extend({
         className: 'modal fade form-modal spill-form',

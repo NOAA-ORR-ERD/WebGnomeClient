@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/model/controls.html',
+    'text!templates/model/controls.html',
     'views/default/map',
-    'jqueryui'
+    'jqueryui',
+    'jqueryFileupload'
 ], function($, _, Backbone, ControlsTemplate, olMapView){
     var mapView = Backbone.View.extend({
         className: 'map',
