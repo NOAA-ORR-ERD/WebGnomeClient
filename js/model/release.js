@@ -7,6 +7,7 @@ define([
         url: '/release',
 
         defaults: {
+            'json_': 'webapi',
             'obj_type': 'gnome.spill.release.PointLineRelease',
             'end_position': [],
             'start_position': [],

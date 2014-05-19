@@ -9,6 +9,7 @@ define([
         url: '/spill',
 
         defaults: {
+            'json_': 'webapi',
             'on': true,
             'obj_type': 'gnome.spill.spill.Spill',
             'release': new GnomeRelease(),

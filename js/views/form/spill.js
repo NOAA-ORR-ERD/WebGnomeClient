@@ -74,7 +74,7 @@ define([
             }, this);
 
             this.select.getFeatures().on('remove', function(event){
-                this.unloadSpill();
+                this.unloadSpill(event);
             }, this);
 
             this.modify = new ol.interaction.Modify({
@@ -161,6 +161,9 @@ define([
 
         loadSpill: function(feature){
             if (this.$('.spill-form').length === 0){
+                // disable the modals buttons until the spill is finished being edited.
+                this.$('.modal-footer button').addClass('disabled');
+
                 var spill = this.GnomeSpills.get(feature.get('cid'));
                 this.$('.map').css('height', '200px');
                 this.ol.map.updateSize();
@@ -171,8 +174,8 @@ define([
                     end_lng: spill.get('release').get('end_position')[0],
                     name: spill.get('name'),
                     release_amount: spill.get('release-amount'),
-                    release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment.unix(spill.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                    release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format('YYYY/M/D H:mm') : moment.unix(spill.get('release').get('end_release_time')).format('YYYY/M/D H:mm')
+                    release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                    release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('end_release_time')).format('YYYY/M/D H:mm')
                 }));
                 this.$('#release-start').datetimepicker({
                     format: 'Y/n/j G:i',
@@ -205,15 +208,31 @@ define([
                     e.preventDefault();
                     this.removeSpill();
                 }, this));
+
+                this.update();
             }
         },
 
-        unloadSpill: function(){
-            this.$('.map').css('height', '');
-            this.ol.map.updateSize();
-            this.$('.spill-form').remove();
-            $('.xdsoft_datetimepicker').remove();
-            //this.ol.map.unByKey(this.dragkey);
+        unloadSpill: function(event){
+            var spill = this.GnomeSpills.get(event.element.get('cid'));
+            var release = spill.get('release');
+            if(release.get('start_position').length < 3){
+                release.get('start_position').push(0);
+            }
+            if(release.get('end_position').length < 3){
+                release.get('end_position').push(0);
+            }
+
+            if(spill.save()){
+                this.$('.map').css('height', '');
+                this.ol.map.updateSize();
+                this.$('.spill-form').remove();
+                $('.xdsoft_datetimepicker').remove();
+                //this.ol.map.unByKey(this.dragkey);
+
+                // enable the modals buttons until the spill is finished being edited.
+                this.$('.modal-footer button').removeClass('disabled');
+            }
         },
 
         update: function(){
@@ -222,25 +241,28 @@ define([
             var feature = this.select.getFeatures().getArray()[0];
             if(feature){
                 var spill = this.GnomeSpills.get(feature.get('cid'));
+                var release = spill.get('release');
 
                 spill.set('name', this.$('#name').val());
 
                 // if this is a point update the end position to be the same as the start position
                 if(feature.getGeometry().getType() === 'Point'){
-                    spill.get('release').set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
-                    spill.get('release').set('end_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
+                    release.set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
+                    release.set('end_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
                     this.$('#end-lng').val(spill.get('release').get('start_position')[0]);
                     this.$('#end-lat').val(spill.get('release').get('start_position')[1]);
                 } else {
-                    spill.get('release').set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
-                    spill.get('release').set('end_position', [parseFloat(this.$('#end-lng').val()), parseFloat(this.$('#end-lat').val())]);
+                    release.set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
+                    release.set('end_position', [parseFloat(this.$('#end-lng').val()), parseFloat(this.$('#end-lat').val())]);
                 }
                 
                 spill.set('pollutant', this.$('#pollutant').val());
                 spill.set('release-amount', this.$('#release-amount').val());
                 spill.set('release-unit', this.$('#release-unit').val());
-                spill.get('release').set('release_time', moment(this.$('#release-start').val(), 'YYYY/M/D H:mm').unix());
-                spill.get('release').set('end_release_time', moment(this.$('#release-end').val(), 'YYYY/M/D H:mm').unix());
+                var release_start = $('#release-start').val();
+                var release_end = $('#release-end').val();
+                release.set('release_time', moment(release_start, 'YYYY/M/D H:mm').format());
+                release.set('end_release_time', moment(release_end, 'YYYY/M/D H:mm').format());
 
                 // update the features lat lng on the map to match the one in the map
                 var start_coords = ol.proj.transform(spill.get('release').get('start_position'), 'EPSG:4326', 'EPSG:3857');
