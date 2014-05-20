@@ -1,0 +1,12 @@
+{
+    "name": "WebGnomeClient",
+    "main": "index.html",
+    "scripts": {
+        "start": "start.sh",
+        "test": "tests/test.js",
+        "postinstall": "bower install"
+    },
+    "dependencies": {
+        "bower": "*"
+    }
+}
