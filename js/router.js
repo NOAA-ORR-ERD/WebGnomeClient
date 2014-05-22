@@ -6,8 +6,9 @@ define([
     'views/default/index',
     'views/default/notfound',
     'views/location/index',
-    'views/model/index'
-], function($, _, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView) {
+    'views/model/index',
+    'views/tests/index'
+], function($, _, Backbone, MenuView, IndexView, NotFoundView, LocationsView, ModelView, TestView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -15,8 +16,7 @@ define([
             '': 'index',
             'model': 'model',
             'locations': 'locations',
-            'wind/:id': 'wind',
-            'spill/:id': 'spill',
+            'test': 'test',
             '*actions': 'notfound'
         },
         execute: function(callback, args){
@@ -30,6 +30,14 @@ define([
         index: function(){
             this.views.push(new MenuView());
             this.views.push(new IndexView());
+        },
+
+        test: function(){
+            // if this isn't the development environment ignore the test request.
+            if(window.location.href.indexOf('0.0.0.0') == -1){
+                this.navigate('', true, false);
+            }
+            this.views.push(new TestView());
         },
 
         notfound: function(actions){

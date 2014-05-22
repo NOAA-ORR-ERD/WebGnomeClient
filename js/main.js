@@ -16,14 +16,26 @@ require.config({
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
+        qunit: 'lib/qunit/qunit/qunit'
     },
     shim: {
-        'jqueryui': ['jquery'],
-        'jqueryDatetimepicker': ['jquery'],
-        'ol': {
+        jquery: {
+            exports: '$'
+        },
+        bootstrap: ['jquery'],
+        jqueryui: ['jquery'],
+        jqueryDatetimepicker: ['jquery'],
+        ol: {
             exports: 'ol'
         },
-    }
+        qunit: {
+            exports: 'QUnit',
+            init: function() {
+                QUnit.config.autoload = false;
+                QUnit.config.autostart = false;
+            }
+        }
+    },
 });
 
 // set up the app
