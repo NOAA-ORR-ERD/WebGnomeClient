@@ -52,6 +52,15 @@ define([
                 }
             };
 
+            Backbone.Model.prototype.parse = function(response){
+                for(var key in this.model){
+                    var embeddedClass = this.model[key];
+                    var embeddedData = response[key];
+                    response[key] = new embeddedClass(embeddedData, {parse:true});
+                }
+                return response;
+            };
+
 
             this.router = new Router();
             Backbone.history.start();
