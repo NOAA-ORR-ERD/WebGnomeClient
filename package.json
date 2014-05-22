@@ -2,11 +2,14 @@
     "name": "WebGnomeClient",
     "main": "index.html",
     "scripts": {
-        "start": "start.sh",
-        "test": "tests/test.js",
-        "postinstall": "bower install"
+        "prestart": "./node_modules/requirejs/bin/r.js -o mainConfigFile=js/main.js baseUrl=js name=main out=js/build.js",
+        "start": "http-server",
+        "postinstall": "bower install",
+        "postupdate": "bower update"
     },
     "dependencies": {
-        "bower": "*"
+        "bower": "*",
+        "http-server": "*",
+        "requirejs": "*"
     }
 }

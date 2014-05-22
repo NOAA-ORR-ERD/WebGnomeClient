@@ -19,6 +19,6 @@
         "respond": "1.4.2"
     },
     "devDependencies": {
-
+        "qunit": "1.14.0"
     }
 }
