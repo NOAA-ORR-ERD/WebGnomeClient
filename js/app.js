@@ -4,7 +4,8 @@ define([
     'underscore',
     'backbone',
     'router',
-], function($, _, Backbone, Router) {
+    'model/session'
+], function($, _, Backbone, Router, SessionModel) {
     "use strict";
     var app = {
         api: 'http://0.0.0.0:9899',
@@ -13,8 +14,8 @@ define([
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
                 cache: false,
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
+                xhrFields: {
+                    withCredentials: true
                 }
             });
 
@@ -63,7 +64,10 @@ define([
 
 
             this.router = new Router();
-            Backbone.history.start();
+
+            new SessionModel(function(){
+                Backbone.history.start();
+            });
         },
         hasModel: function(){
             return false;
