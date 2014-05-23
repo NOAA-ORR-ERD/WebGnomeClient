@@ -6,7 +6,7 @@ define([
     'model/element'
 ], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
     var gnomeSpill = BaseModel.extend({
-        url: '/spill',
+        urlRoot: '/spill/',
 
         defaults: {
             'on': true,
