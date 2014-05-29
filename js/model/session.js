@@ -3,12 +3,12 @@ define([
     'backbone'
 ], function(_, Backbone){
     var sessionModel = Backbone.Model.extend({
-        url: '/model',
+        url: '/session',
         defaults: {
             'id': null,
         },
         initialize: function(callback){
-            this.fetch({
+            this.save(null, {
                 success: callback
             });
         }
