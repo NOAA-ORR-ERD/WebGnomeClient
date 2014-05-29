@@ -57,7 +57,7 @@ define([
                         equal(response.id, spill_id, "The same spill was updated.");
                         equal(response.release.id, release_id, "The same release was updated.");
                         equal(response.on, false, "Spill was turned off successfully");
-                        //deepEqual(model.get('release').get('start_position'), [1,1,0], "The release start position was updated");
+                        deepEqual(model.get('release').get('start_position'), [1,1,0], "The release start position was updated");
                     });
                 };
                 var update_start = function(model, response, options){
@@ -69,7 +69,7 @@ define([
                             success: update_test
                         });
                     }, model));
-                    //model.get('release').set('start_position', [1,1,0]);
+                    model.get('release').set('start_position', [1,1,0]);
                     model.set('on', false);
 
                 };
