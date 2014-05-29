@@ -15,7 +15,7 @@ define([
                     ok(spill.get('element_type'), "Spill has an element_type");
                 });
 
-            // persist spill
+             // persist spill
                 var persist_spill = new GnomeSpill();
                 var persist_test = function(model, response, options){
                     test('Persist spill to server', function(){
@@ -28,7 +28,8 @@ define([
                     error: persist_test,
                     success: persist_test
                 });
-
+            
+    
             // get spill
                 var get_test = function(model, response, options){
                     test('Get spill from server', function(){
@@ -46,7 +47,7 @@ define([
                     error: start_get,
                     success: start_get
                 });
-                    
+            
             // update spill
                 var spill_id;
                 var release_id;
@@ -55,27 +56,28 @@ define([
                     test('Update spill', function(){
                         equal(response.id, spill_id, "The same spill was updated.");
                         equal(response.release.id, release_id, "The same release was updated.");
-                        deepEqual(response.release.get('start_position'), [1,1,0], "The release start position was updated");
+                        equal(response.on, false, "Spill was turned off successfully");
+                        //deepEqual(model.get('release').get('start_position'), [1,1,0], "The release start position was updated");
                     });
                 };
                 var update_start = function(model, response, options){
-                    model.parse(response);
                     spill_id = model.id;
                     release_id = model.get('release').id;
-                    console.log(model);
-                    model.get('release').on('change', _.bind(function(){
+                    model.once('change', _.bind(function(){
                         this.save(null, {
                             error: update_test,
                             success: update_test
                         });
                     }, model));
-                    model.get('release').set('start_position', [1,1,0]);
+                    //model.get('release').set('start_position', [1,1,0]);
+                    model.set('on', false);
 
                 };
                 update_spill.save(null, {
                     error: update_start,
                     success: update_start
                 });
+            
         }
     };
 
