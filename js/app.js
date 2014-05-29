@@ -13,7 +13,6 @@ define([
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
-                cache: false,
                 xhrFields: {
                     withCredentials: true
                 }
