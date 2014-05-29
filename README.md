@@ -6,6 +6,8 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models.
 ## Setup
 [Node.js](http://nodejs.org/) and [npm](https://www.npmjs.org/) are required to install and manage this application. Assuming both are installed on your system a simple `npm install` from inside the `WebGnomeClient` directory should install and prep everything for the app.
 
+As of 05/27/2014 the `WebGnomeClient` requires that `WebGnomeApi` be running on the same computer you're loading the client. Specifically port `9899`.
+
 ## Commands
 <dl>
     <dt>`npm install`</dt>
