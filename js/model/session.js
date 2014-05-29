@@ -7,10 +7,18 @@ define([
         defaults: {
             'id': null,
         },
+
         initialize: function(callback){
             this.save(null, {
-                success: callback
+                success: callback,
+                error: this.error
             });
+        },
+
+        error: function(){
+            var msg = 'Error establishing a session with the API Server';
+            console.log(msg);
+            alert(msg);
         }
     });
 
