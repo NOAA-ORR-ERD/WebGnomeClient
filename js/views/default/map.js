@@ -25,6 +25,7 @@ define([
             })
         ],
         center: [-99.6, 40.6],
+        overlays: [],
 
 
         initialize: function(options){
@@ -64,8 +65,11 @@ define([
                 if(!_.isUndefined(options.center)){
                     this.center = options.center;
                 }
-            }
 
+                if(!_.isUndefined(options.center)){
+                    this.overlays = options.overlays;
+                }
+            }
         },
 
         render: function(){
