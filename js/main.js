@@ -1,39 +1,41 @@
 // Configure RequireJS
 require.config({
-    baseUrl: "js",
-    priority: ['lib/underscore', 'lib/jquery.ui'],
+    baseUrl: 'js',
+    priority: ['underscore', 'jqueryui', 'bootstrap'],
     paths: {
-        jquery: 'lib/jquery-1.11.0.min',
-        jqueryui: 'lib/jquery-ui-1.10.4.custom.min',
-        underscore: 'lib/underscore-min',
-        backbone: 'lib/backbone-min',
-        sinon: 'lib/sinon-1.6.0',
-        rivets: 'lib/rivets.min',
-        moment: 'lib/moment'
+        jquery: 'lib/jquery/dist/jquery',
+        jqueryui: 'lib/jquery-ui/ui/jquery.ui.core',
+        'jquery.ui.widget': 'lib/jquery-file-upload/js/vendor/jquery.ui.widget',
+        underscore: 'lib/underscore/underscore',
+        backbone: 'lib/backbone/backbone',
+        moment: 'lib/moment/moment',
+        mousetrap: 'lib/mousetrap/mousetrap',
+        geolib: 'lib/geolib/dist/geolib',
+        text: 'lib/requirejs-text/text',
+        ol: 'lib/openlayers/build/ol-simple',
+        bootstrap: 'lib/bootstrap/dist/js/bootstrap',
+        jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
+        jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
+        qunit: 'lib/qunit/qunit/qunit'
     },
     shim: {
-        'map_generator': ['jquery'],
-        'lib/jquery.dynatree': ['lib/jquery.ui', 'lib/jquery.cookie'],
-        'lib/rivets': {
-            exports: 'rivets'
+        jquery: {
+            exports: '$'
         },
-        'lib/mousetrap': {
-            exports: 'Mousetrap'
-        },
-        'lib/geo': {
-            exports: 'Geo'
-        },
-        'lib/jquery.fileupload': ['jqueryui'],
-        'lib/jquery.imagesloaded.min': ['jquery'],
-        'lib/bootstrap.min': ['jquery'],
-        'lib/jquery.datetimepicker': ['jquery'],
-        'lib/ol': {
+        bootstrap: ['jquery'],
+        jqueryui: ['jquery'],
+        jqueryDatetimepicker: ['jquery'],
+        ol: {
             exports: 'ol'
         },
-        'lib/ol-simple': {
-            exports: 'ol'
-        },
-    }
+        qunit: {
+            exports: 'QUnit',
+            init: function() {
+                QUnit.config.autoload = false;
+                QUnit.config.autostart = false;
+            }
+        }
+    },
 });
 
 // set up the app

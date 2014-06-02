@@ -3,7 +3,7 @@ define([
     'jquery',
     'backbone',
     'views/modal/form',
-    'lib/text!templates/form/map.html'
+    'text!templates/form/map.html'
 ], function(_, $, Backbone, FormModal, FormTemplate){
     var mapForm = FormModal.extend({
         className: 'modal fade form-modal map-form',

@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'views/modal/base',
-    'lib/text!templates/modal/about.html'
+    'text!templates/modal/about.html'
 ], function($, _, Backbone, BaseModal, AboutTemplate){
     var aboutModal = BaseModal.extend({
         name: 'about',

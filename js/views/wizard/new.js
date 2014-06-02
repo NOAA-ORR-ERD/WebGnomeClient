@@ -2,7 +2,6 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'moment',
     'views/form/model',
     'views/form/map',
     'views/form/spill',
@@ -10,11 +9,8 @@ define([
     'model/gnome',
     'model/map',
     'collection/spills',
-    'lib/jquery.datetimepicker',
-    'lib/jquery.fileupload'
-], function($, _, Backbone, moment, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap, GnomeSpills){
+], function($, _, Backbone, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap, GnomeSpills){
     var newWizardView = Backbone.View.extend({
-        step_num: 1,
 
         initialize: function(){
             this.model = new GnomeModel();

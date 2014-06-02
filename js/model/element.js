@@ -7,7 +7,19 @@ define([
         url: '/element',
 
         defaults: {
+            'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
+            'initializers': {
+                'windages': {
+                    'json_': 'save',
+                    'windage_range': [
+                         0.01,
+                         0.04
+                    ],
+                    'obj_type': 'gnome.spill.elements.InitWindages',
+                    'windage_persist': 900
+                }
+            }
         }
     });
 

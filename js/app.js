@@ -4,19 +4,17 @@ define([
     'underscore',
     'backbone',
     'router',
-    'util',
-    'rivets',
-], function($, _, Backbone, Router, util, rivets) {
+    'model/session'
+], function($, _, Backbone, Router, SessionModel) {
     "use strict";
     var app = {
-        api: 'http://10.55.67.89:5001',
+        api: 'http://0.0.0.0:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
-                cache: false,
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
+                xhrFields: {
+                    withCredentials: true
                 }
             });
 
@@ -25,36 +23,6 @@ define([
                 options.url = webgnome.api + options.url;
             });
 
-            // Configure a Rivets adapter to work with Backbone
-            // per http://rivetsjs.com/
-            rivets.configure({
-                adapter: {
-                    subscribe: function(obj, keypath, callback) {
-                        callback.wrapped = function(m, v) {
-                            callback(v);
-                        };
-                        obj.on('change:' + keypath, callback.wrapped);
-                    },
-                    unsubscribe: function(obj, keypath, callback) {
-                        obj.off('change:' + keypath, callback.wrapped);
-                    },
-                    read: function(obj, keypath) {
-                        return obj.get(keypath);
-                    },
-                    /*
-                     When setting a value, if it's parsable as a float, use a
-                     float value instead. This is to support JSON Schema
-                     validation of float types.
-                     */
-                    publish: function(obj, keypath, value) {
-                        var floatVal = parseFloat(value);
-                        if (!isNaN(floatVal)) {
-                            value = floatVal;
-                        }
-                        obj.set(keypath, value);
-                    }
-                }
-            });
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user
@@ -84,9 +52,21 @@ define([
                 }
             };
 
+            Backbone.Model.prototype.parse = function(response){
+                for(var key in this.model){
+                    var embeddedClass = this.model[key];
+                    var embeddedData = response[key];
+                    response[key] = new embeddedClass(embeddedData, {parse:true});
+                }
+                return response;
+            };
+
 
             this.router = new Router();
-            Backbone.history.start();
+
+            new SessionModel(function(){
+                Backbone.history.start();
+            });
         },
         hasModel: function(){
             return false;

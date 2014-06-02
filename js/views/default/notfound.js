@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/default/notfound.html'
+    'text!templates/default/notfound.html'
 ], function($, _, Backbone, NotFoundTemplate){
     var notFoundView = Backbone.View.extend({
         className: 'container page notfound',

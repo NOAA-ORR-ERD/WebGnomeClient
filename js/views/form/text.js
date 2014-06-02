@@ -3,17 +3,14 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
-    'text!templates/form/environment.html'
-], function($, _, Backbone, FormModal, FormTemplate){
-    var environmentForm = FormModal.extend({
+], function($, _, Backbone, FormModal){
+    var textForm = FormModal.extend({
         initialize: function(options, modal){
             FormModal.prototype.initialize.call(this, options);
-
-            this.body = _.template(FormTemplate);
 
             this.render();
         }
     });
 
-    return environmentForm;
+    return textForm;
 });

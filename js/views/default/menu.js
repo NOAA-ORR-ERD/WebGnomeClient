@@ -2,10 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/default/menu.html',
+    'text!templates/default/menu.html',
     'views/modal/about',
     'views/wizard/new',
-    'lib/bootstrap.min'
+    'bootstrap'
  ], function($, _, Backbone, MenuTemplate, AboutModal, NewWizardForm) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object

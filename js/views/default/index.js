@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'lib/text!templates/default/index.html',
+    'text!templates/default/index.html',
     'views/wizard/new'
 ], function($, _, Backbone, IndexTemplate, NewWizardForm){
     var indexView = Backbone.View.extend({
