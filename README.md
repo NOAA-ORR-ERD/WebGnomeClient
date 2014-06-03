@@ -10,13 +10,13 @@ As of 05/27/2014 the `WebGnomeClient` requires that `WebGnomeApi` be running on 
 
 ## Commands
 <dl>
-    <dt>`npm install`</dt>
+    <dt>npm install</dt>
     <dd>Installs all of the applications dependencies described in `package.json` using npm and `bower.json` using bower</dd>
 </dl>
 
 <dl>
-    <dt>`npm start`</dt>
-    <dd>Compiles the backbone application into `js/build.js` and starts a node http server to serve the application. *Currently `js/build.js` isn't referenced by any thing and start it just used to build it, this needs reevaluation.*
+    <dt>npm start</dt>
+    <dd>Compiles the backbone application into `js/build.js` and starts a node http server to serve the application. *Currently `js/build.js` isn't referenced by anything and start it just used to build it, this needs reevaluation.*
 <dl>
 
 
