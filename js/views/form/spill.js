@@ -100,8 +100,6 @@ define([
                     ]
                 });
             }
-
-            this.render();
         },
 
         ready: function() {
