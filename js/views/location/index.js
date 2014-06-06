@@ -12,11 +12,6 @@ define([
         mapView: null,
         popup: null,
 
-        events: {
-            'click .load': 'load'
-        },
-
-
         /**
          * @todo decomp the popover into a new view? How else to get load click event?
          */
@@ -74,6 +69,7 @@ define([
                         this.$('.load').on('click', _.bind(function(){
                             var slug = this.$('.load').data('slug');
                             this.load(slug);
+                            this.$('.popup').popover('destroy');
                         }, this));
                     }, this));
 

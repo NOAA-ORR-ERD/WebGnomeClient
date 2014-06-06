@@ -19,6 +19,12 @@ define([
         },
 
         found: function(){
+            // clear any previously loaded steps
+            _.each(this.steps, function(el, ind, ar){
+                el.close();
+            });
+            this.steps = [];
+
             // set up each step described in the location file.
             _.each(this.location.get('steps'), _.bind(function(el, ind, ar){
                 if(ind == 'text' || ind == 'welcome'){
@@ -33,7 +39,6 @@ define([
                     }));
                 }
             }, this));
-
             console.log(this.steps);
         },
 
