@@ -3,37 +3,38 @@ define([
     'underscore',
     'backbone',
     'model/gnome',
-    'model/location'
-], function($, _, Backbone, GnomeModel, GnomeLocation){
+    'model/location',
+    'views/form/text'
+], function($, _, Backbone, GnomeModel, GnomeLocation, TextForm){
     var locationWizardView = Backbone.View.extend({
         steps: [],
 
-        initialize: function(slug){
+        initialize: function(opts){
             this.model = new GnomeModel();
-            this.location = new GnomeLocation();
-            this.location.set('id', slug);
+            this.location = new GnomeLocation({id: opts.slug});
             this.location.fetch({
-                success: this.found,
+                success: _.bind(this.found, this),
                 error: this.notfound
             });
         },
 
         found: function(){
             // set up each step described in the location file.
-            this.location.get('steps').forEach(_.bind(function(el, ind, ar){
+            _.each(this.location.get('steps'), _.bind(function(el, ind, ar){
                 if(ind == 'text' || ind == 'welcome'){
-                    define([
-                        'views/form/text'
-                    ], _.bind(function(TextForm){
-                        this.steps.push(TestForm({
-                            name: el.name,
-                            title: el.title,
-                            body: el.body,
-                            buttons: el.buttons
-                        }));
-                    }, this));
+                    if(!el.title){
+                        el.title = 'Welcome';
+                    }
+                    this.steps.push(new TextForm({
+                        name: el.name,
+                        title: el.title,
+                        body: el.body,
+                        buttons: el.buttons
+                    }));
                 }
             }, this));
+
+            console.log(this.steps);
         },
 
         notfound: function(){

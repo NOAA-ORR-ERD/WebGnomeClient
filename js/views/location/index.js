@@ -89,7 +89,7 @@ define([
         },
 
         load: function(slug){
-            new LocationWizard();
+            this.wizard = new LocationWizard({slug: slug});
         },
 
         render: function(){
