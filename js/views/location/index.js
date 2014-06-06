@@ -29,24 +29,7 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            //url: webgnome.api + '/locations',
-                            object: {
-                                "type": "FeatureCollection",
-                                "features": [
-                                    {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "title": "Long Island Sound",
-                                            "content": "Some history about Long Island Sound.",
-                                            "slug": "long_island_sound"
-                                        },
-                                        "geometry": {
-                                            "type": "Point",
-                                            "coordinates": [-72.879489, 41.117006]
-                                        }
-                                    }
-                                ]
-                            }
+                            url: webgnome.api + '/location',
                         }),
                         style: new ol.style.Style({
                             image: new ol.style.Icon({
@@ -79,6 +62,7 @@ define([
                 });
                 if(feature){
                     this.popup.setPosition(feature.getGeometry().getCoordinates());
+                    this.$('.popup').popover('destroy');
                     this.$('.popup').popover({
                         placement: 'top',
                         html: true,
@@ -99,7 +83,7 @@ define([
 
                     this.$('.popup').popover('show');
                 } else {
-                    this.$('.popup').popover('hide');
+                    this.$('.popup').popover('destroy');
                 }
             }, this);
         },
