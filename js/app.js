@@ -54,9 +54,18 @@ define([
 
             Backbone.Model.prototype.parse = function(response){
                 for(var key in this.model){
-                    var embeddedClass = this.model[key];
-                    var embeddedData = response[key];
-                    response[key] = new embeddedClass(embeddedData, {parse:true});
+                    if(_.isArray(response[key])){
+                        var embeddedClass = this.model[key];
+                        var embeddedData = response[key];
+                        response[key] = new Backbone.Collection();
+                        for(i = 0; i > embeddedData.length; i++){
+                            response[key].add(new embeddedClass(embeddedData[i], {parse:true}));
+                        }
+                    } else {
+                        var embeddedClass = this.model[key];
+                        var embeddedData = response[key];
+                        response[key] = new embeddedClass(embeddedData, {parse:true});    
+                    }
                 }
                 return response;
             };
