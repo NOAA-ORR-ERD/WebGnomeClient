@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/wizard/default',
     'model/gnome',
     'model/location',
     'views/form/text'
-], function($, _, Backbone, GnomeModel, GnomeLocation, TextForm){
-    var locationWizardView = Backbone.View.extend({
+], function($, _, Backbone, DefaultWizard, GnomeModel, GnomeLocation, TextForm){
+    var locationWizardView = DefaultWizard.extend({
         steps: [],
 
         initialize: function(opts){
@@ -39,7 +40,8 @@ define([
                     }));
                 }
             }, this));
-            console.log(this.steps);
+
+            this.start();
         },
 
         notfound: function(){

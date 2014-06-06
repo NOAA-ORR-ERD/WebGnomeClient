@@ -30,7 +30,6 @@ define([
         events: {
             'click .next': 'next',
             'click .back': 'back',
-            'hidden.bs.modal': 'close',
             'shown.bs.modal': 'ready',
             'click .modal-header>.close': 'wizardclose',
             'click .save': 'save',
