@@ -104,6 +104,11 @@ define([
             this.mapView.render();
             this.mapView.map.addOverlay(this.popup);
 
+        },
+
+        close: function(){
+            this.mapView.close();
+            Backbone.View.prototype.close.call(this);
         }
     });
 
