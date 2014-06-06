@@ -26,6 +26,8 @@ define([
                 title: 'Model Settings <span class="sub-title">New Model Wizard</span>',
                 buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
             }, this.model);
+
+            step.render();
             
             step.on('next', function(){
                 this.step2();
@@ -43,6 +45,8 @@ define([
                 title: 'Map <span class="sub-title">New Model Wizard</span>',
                 buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
             }, this.map);
+
+            step.render();
 
             step.on('back', function(){
                 this.step1();
@@ -64,6 +68,8 @@ define([
                 title: 'Spill <span class="sub-title">New Model Wizard</span>',
                 buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
             }, this.spills, this.map);
+
+            step.render();
 
             step.on('back', function(){
                 this.step2();

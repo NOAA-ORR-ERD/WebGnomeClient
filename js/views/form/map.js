@@ -53,8 +53,10 @@ define([
             }).bind('dragend', function(e) {
                 $('.file').removeClass('hover');
             });
+        },
 
-            this.render();
+        render: function(options){
+            FormModal.prototype.render.call(this, options);
 
             if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) == -1){
                 this.$('.upload').val(this.model.get('filename'));

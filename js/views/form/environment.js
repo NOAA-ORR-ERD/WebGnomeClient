@@ -11,7 +11,6 @@ define([
 
             this.body = _.template(FormTemplate);
 
-            this.render();
         }
     });
 

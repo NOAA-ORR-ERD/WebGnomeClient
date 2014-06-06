@@ -22,8 +22,10 @@ define([
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
             });
+        },
 
-            this.render();
+        render: function(options){
+            FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({
                 format: 'Y/n/j G:i'
