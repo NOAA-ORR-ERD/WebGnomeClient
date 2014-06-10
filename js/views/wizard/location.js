@@ -5,8 +5,9 @@ define([
     'views/wizard/default',
     'model/gnome',
     'model/location',
-    'views/form/text'
-], function($, _, Backbone, DefaultWizard, GnomeModel, GnomeLocation, TextForm){
+    'views/form/text',
+    'views/form/model'
+], function($, _, Backbone, DefaultWizard, GnomeModel, GnomeLocation, TextForm, ModelForm){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
 
@@ -38,7 +39,16 @@ define([
                         body: el.body,
                         buttons: el.buttons
                     }));
+                } else if (ind == 'model') {
+                    this.steps.push(new ModelForm({
+                        name: el.name,
+                        title: el.title,
+                        body: el.body,
+                        buttons: el.buttons
+                    }, this.model));
                 }
+
+
             }, this));
 
             this.start();
