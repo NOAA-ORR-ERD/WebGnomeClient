@@ -27,8 +27,6 @@ define([
             
             this.model = model;
 
-            this.body = _.template(FormTemplate);
-
             $(document).bind('drop', function(e) {
                 dropZone.removeClass('hover');
                 e.preventDefault();
@@ -56,6 +54,8 @@ define([
         },
 
         render: function(options){
+            this.body = _.template(FormTemplate);
+
             FormModal.prototype.render.call(this, options);
 
             if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) == -1){

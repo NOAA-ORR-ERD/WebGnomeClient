@@ -13,18 +13,17 @@ define([
         
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
-
             this.model = model;
+        },
 
+        render: function(options){
             this.body = _.template(FormTemplate, {
                 start_time: moment.unix(this.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
             });
-        },
 
-        render: function(options){
             FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({

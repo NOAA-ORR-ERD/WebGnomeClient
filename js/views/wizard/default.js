@@ -14,19 +14,21 @@ define([
 
         start: function(){
             this.steps[this.step].render();
-            this.register(this.steps[this.step]);
+            _.each(this.steps, function(el){
+                el.on('next', this.next, this);
+                el.on('back', this.prev, this);
+                el.on('wizardclose', this.close, this);
+            }, this);
         },
 
         next: function(){
             this.step++;
             this.steps[this.step].render();
-            this.register(this.steps[this.step]);
         },
 
         prev: function(){
             this.step--;
             this.steps[this.step].render();
-            this.register(this.steps[this.step]);
         },
 
         goto: function(step){

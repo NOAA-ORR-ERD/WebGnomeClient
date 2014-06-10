@@ -308,9 +308,9 @@ define([
             this.source.removeFeature(feature);
         },
 
-        remove: function(){
-            this.ol.remove();
-            FormModal.prototype.remove.call(this);
+        close: function(){
+            this.ol.close();
+            FormModal.prototype.close.call(this);
         }
     });
 
