@@ -64,7 +64,7 @@ define([
                     } else {
                         var embeddedClass = this.model[key];
                         var embeddedData = response[key];
-                        response[key] = new embeddedClass(embeddedData, {parse:true});    
+                        response[key] = new embeddedClass(embeddedData, {parse:true});
                     }
                 }
                 return response;
