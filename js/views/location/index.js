@@ -17,6 +17,7 @@ define([
          */
         initialize: function(){
             this.mapView = new olMapView({
+                controls: [],
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
@@ -91,7 +92,6 @@ define([
         render: function(){
             compiled = _.template(LocationsTemplate);
             $('body').append(this.$el.html(compiled));
-            window.map = this.mapView;
 
             this.popup = new ol.Overlay({
                 position: 'bottom-center',

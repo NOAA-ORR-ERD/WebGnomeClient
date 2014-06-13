@@ -76,7 +76,7 @@ define([
             if (event.target.hash == '#coast' || event.target.id == 'coast'){
                 if(_.isUndefined(this.coast_map)){
                     this.coast_map = new ol.Map({
-                        target: 'map',
+                        target: 'map-form-coast-map',
                         layers: [
                             new ol.layer.Tile({
                                 source: new ol.source.MapQuest({layer: 'osm'})
@@ -92,7 +92,7 @@ define([
                 if (_.isUndefined(this.draw_map)){
                     this.source = new ol.source.Vector();
                     this.draw_map = new ol.Map({
-                        target: 'draw-map',
+                        target: 'map-form-draw-map',
                         renderer: 'canvas',
                         views: new ol.View2D({
                             center: [0, 0],

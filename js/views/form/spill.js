@@ -92,6 +92,7 @@ define([
 
             if(this.GnomeMap.get('filename') == 'EmptyMap.bna'){
                 this.ol = new olMapView({
+                    id: 'spill-form-map',
                     interactions: ol.interaction.defaults().extend([
                         this.select
                     ]),
