@@ -8,10 +8,6 @@ define([
         steps: [],
         step: 0,
 
-        initialize: function(){
-            this.model = new GnomeModel();
-        },
-
         start: function(){
             this.steps[this.step].render();
             _.each(this.steps, function(el){
