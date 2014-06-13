@@ -8,10 +8,22 @@ define([
 ], function(_, Backbone, moment, BaseModel, MapModel, SpillModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',
-
-        initialize: function(options){
-            BaseModel.prototype.initialize.call(this, options);
-            this.save(null, {validate: false});
+        
+        defaults: {
+            'outputters': null,
+            'obj_type': 'gnome.model.Model',
+            'weathering_substeps': null,
+            'map': new MapModel(),
+            'movers': null,
+            'start_time': Math.round(Date.now() / 1000),
+            'environment': null,
+            'cache_enabled': 'false',
+            'weatherers': null,
+            'spills': [new SpillModel()],
+            'time_step': '900',
+            'duration': '86400',
+            'uncertain': false,
+            'id': null
         },
 
         model: {
@@ -31,6 +43,26 @@ define([
             if(parseInt(attrs.time_step, 10) != attrs.time_step){
                 return 'Time steps must be a whole number.';
             }
+
+            // if (attrs.map_id === null) {
+            //     return 'Model requires a map.';
+            // }
+
+            // if (attrs.movers === null) {
+            //     return 'Model doesn\'t have any movers.';
+            // }
+
+            // if (attrs.spills === null) {
+            //     return 'Model requires at least one spill.';
+            // }
+
+            // if (attrs.environment === null) {
+            //     return 'Model doesn\'t have an environment.';
+            // }
+
+            // if (attrs.start_time === null || attrs.duration) {
+            //     return 'Model needs both start time and duration.';
+            // }
         },
 
         formatDuration: function() {
