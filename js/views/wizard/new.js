@@ -14,6 +14,14 @@ define([
     var newWizardView = DefaultWizard.extend({
         initialize: function(){
             webgnome.model = new GnomeModel();
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(this.setup, this),
+                error: this.fail
+            });
+        },
+
+        setup: function(){
             this.steps = [
                 new ModelForm({
                     name: 'step1',
@@ -32,7 +40,13 @@ define([
                 }, webgnome.model.get('spills'), webgnome.model.get('map'))
             ];
             this.start();
+        },
+
+        fail: function(){
+            alert('Unabled to setup a new model on the server!');
+            console.log('Unable to setup a new model on the server!');
         }
+
     });
 
     return newWizardView;
