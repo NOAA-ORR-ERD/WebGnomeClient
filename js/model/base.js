@@ -13,7 +13,10 @@ define([
                     this.set(key, new embeddedClass());
                 } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
                     var collection = new Backbone.Collection();
-                    collection.add(new embeddedClass());
+                    if(!_.isNull(embeddedClass)){
+                        collection.add(new embeddedClass());
+                    }
+                    
                     this.set(key, collection);
                 }
             }

@@ -63,13 +63,14 @@ define([
                         placement: 'top',
                         html: true,
                         title: feature.get('title'),
-                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '">Load</button>'
+                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
                     });
                     
                     this.$('.popup').one('shown.bs.popover', _.bind(function(){
                         this.$('.load').on('click', _.bind(function(){
                             var slug = this.$('.load').data('slug');
-                            this.load(slug);
+                            var name = this.$('.load').data('name');
+                            this.load({slug: slug, name: name});
                             this.$('.popup').popover('destroy');
                         }, this));
                     }, this));
@@ -85,8 +86,8 @@ define([
             }, this);
         },
 
-        load: function(slug){
-            this.wizard = new LocationWizard({slug: slug});
+        load: function(options){
+            this.wizard = new LocationWizard(options);
         },
 
         render: function(){

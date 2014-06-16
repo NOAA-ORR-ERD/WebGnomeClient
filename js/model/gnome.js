@@ -20,6 +20,7 @@ define([
             'cache_enabled': 'false',
             'weatherers': null,
             'spills': [],
+            'environments': [],
             'time_step': '900',
             'duration': '86400',
             'uncertain': false,
@@ -28,7 +29,8 @@ define([
 
         model: {
             map: MapModel,
-            spills: SpillModel
+            spills: SpillModel,
+            environments: null
         },
 
         validate: function(attrs, options) {
