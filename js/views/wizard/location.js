@@ -58,7 +58,7 @@ define([
                         title[0] = 'Wind';
                     }
                     var wind = new GnomeWind();
-                    webgnome.model.get('environments').add(wind);
+                    webgnome.model.get('environment').add(wind);
                     this.steps.push(new WindForm({
                         name: el.name,
                         title: title.join(' '),
