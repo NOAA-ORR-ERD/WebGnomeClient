@@ -58,7 +58,7 @@ define([
                         var embeddedClass = this.model[key];
                         var embeddedData = response[key];
                         response[key] = new Backbone.Collection();
-                        for(i = 0; i > embeddedData.length; i++){
+                        for(var i = 0; i > embeddedData.length; i++){
                             response[key].add(new embeddedClass(embeddedData[i], {parse:true}));
                         }
                     } else {
