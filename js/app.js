@@ -54,19 +54,21 @@ define([
 
             Backbone.Model.prototype.parse = function(response){
                 for(var key in this.model){
-                    if(_.isArray(response[key])){
-                        // parse a model array into a collection
-                        var embeddedClass = this.model[key];
-                        var embeddedData = response[key];
-                        response[key] = new Backbone.Collection();
-                        for(var i = 0; i > embeddedData.length; i++){
-                            response[key].add(new embeddedClass[i](embeddedData[i], {parse:true}));
+                    if(response[key]){
+                        if(_.isArray(response[key])){
+                            // parse a model array into a collection
+                            var embeddedClass = this.model[key];
+                            var embeddedData = response[key];
+                            response[key] = new Backbone.Collection();
+                            for(var i = 0; i > embeddedData.length; i++){
+                                response[key].add(new embeddedClass[i](embeddedData[i], {parse:true}));
+                            }
+                        } else {
+                            // parse a object noted as a child into it's appropriate backbone model
+                            var embeddedClass = this.model[key];
+                            var embeddedData = response[key];
+                            response[key] = new embeddedClass(embeddedData, {parse:true});
                         }
-                    } else {
-                        // parse a object noted as a child into it's appropriate backbone model
-                        var embeddedClass = this.model[key];
-                        var embeddedData = response[key];
-                        response[key] = new embeddedClass(embeddedData, {parse:true});
                     }
                 }
                 return response;
