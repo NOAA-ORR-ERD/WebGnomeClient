@@ -4,15 +4,18 @@ define([
     'moment',
     'model/base',
     'model/map',
-    'model/spill'
-], function(_, Backbone, moment, BaseModel, MapModel, SpillModel){
+    'model/spill',
+    'model/wind'
+], function(_, Backbone, moment, BaseModel, MapModel, SpillModel, WindModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',
 
         model: {
             map: MapModel,
             spills: SpillModel,
-            environment: null
+            environment: [
+                WindModel
+            ],
         },
 
         validate: function(attrs, options) {
