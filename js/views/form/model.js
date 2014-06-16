@@ -18,7 +18,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                start_time: moment.unix(this.model.get('start_time')).format('YYYY/M/D H:mm'),
+                start_time: moment(this.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
@@ -32,7 +32,7 @@ define([
         },
 
         update: function() {
-            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').unix();
+            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
