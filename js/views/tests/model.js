@@ -9,12 +9,14 @@ define([
 
         test: function(){
             // Gnome Model
-                test('Gnome Model Creation', function(){
-                    model = new GnomeModel();
-                    model.save(null, {validate: false});
-                    ok(model.id, 'Gnome model has an api given id');
-                    ok(_.isObject(model.get('map_id')), 'Gnome model has a hydrated map object');
-                });
+                window.model = new GnomeModel();
+                model.save(null, {validate: false, success: function(){
+                    asyncTest('Gnome Model Creation', function(){
+                        ok(model.id, 'Gnome model has an api given id');
+                        equal(model.get('map_id').get('obj_type'), 'gnome.map.GnomeMap', 'Gnome model has a hydrated map object');
+                        start();
+                    });
+                }});
         }
     };
 

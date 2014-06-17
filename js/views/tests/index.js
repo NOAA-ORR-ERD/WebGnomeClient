@@ -12,10 +12,7 @@ define([
         initialize: function(){
             this.render();
 
-            module('Model Tests');
             ModelTests.run();
-
-            module('GnomeSpill');
             SpillTests.run();
             
             qunit.load();
