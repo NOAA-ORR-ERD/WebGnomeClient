@@ -7,6 +7,8 @@ define([
             Backbone.Model.prototype.initialize.call(options, this);
 
             for(var key in this.model){
+                // general object hydration 
+                // loads the objects described in the defaults and model spec
                 var embeddedClass = this.model[key];
 
                 if(_.isNull(this.get(key))){
