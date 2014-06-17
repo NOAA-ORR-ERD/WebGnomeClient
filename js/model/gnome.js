@@ -5,17 +5,40 @@ define([
     'model/base',
     'model/map',
     'model/spill',
-    'model/wind'
-], function(_, Backbone, moment, BaseModel, MapModel, SpillModel, WindModel){
+    'model/environment'
+], function(_, Backbone, moment, BaseModel, MapModel, SpillModel, EnvironmentModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',
 
         model: {
-            map: MapModel,
             spills: SpillModel,
-            environment: [
-                WindModel
-            ],
+            environment: EnvironmentModel,
+            map_id: MapModel
+        },
+
+        parse: function(response){
+            // model needs a special parse function to turn object id's into objects
+            for(var key in this.model){
+                if(response[key]){
+                    var embeddedClass = this.model[key];
+                    var embeddedData = response[key];
+
+                    if(_.isArray(embeddedData)){
+                        response[key] = new Backbone.Collection();
+                        for(var id in embeddedData){
+                            var obj = new embeddedClass({id: id}, {parse: true});
+                            obj.fetch();
+                            response[key].add(obj);
+                        }
+                    } else {
+                        response[key] = new embeddedClass({id: embeddedData}, {parse: true});
+                        response[key].fetch();
+                    }
+                }
+            }
+            
+            
+            return response;
         },
 
         validate: function(attrs, options) {
