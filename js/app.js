@@ -53,6 +53,9 @@ define([
             };
 
             Backbone.Model.prototype.parse = function(response){
+                // special parse that will recursively build an array of data
+                // into it's associated colloction and data object
+                // or just into it's data object if it's not an array.
                 for(var key in this.model){
                     if(response[key]){
                         if(_.isArray(response[key])){
