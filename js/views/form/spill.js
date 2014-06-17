@@ -310,7 +310,9 @@ define([
         },
 
         close: function(){
-            this.ol.close();
+            if(this.ol){
+                this.ol.close();
+            }
             FormModal.prototype.close.call(this);
         }
     });
