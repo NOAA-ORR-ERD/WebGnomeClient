@@ -16,6 +16,28 @@ define([
             map_id: MapModel
         },
 
+        sync: function(method, model, options){
+            // because of the unique structure of the gnome model, it's relation to other child object
+            // via ids, we need to dehydrate any child objects into just an id before sending it to the
+            // server.
+            if(_.indexOf(['create', 'update'], method) != -1){
+                for(var key in model.model){
+                    if(model.get(key)){
+                        if(model.get(key).models){
+                            var array = model.get(key);
+                            model.set(key, []);
+                            _.forEach(array, function(element){
+                                model.get(key).push(element.get('id'));
+                            });
+                        } else {
+                            model.set(key, model.get(key).get('id'));
+                        }
+                    }
+                }
+            }
+            return BaseModel.prototype.sync.call(this, method, model, options);
+        },
+
         parse: function(response){
             // model needs a special parse function to turn object id's into objects
             for(var key in this.model){
@@ -36,8 +58,7 @@ define([
                     }
                 }
             }
-            
-            
+
             return response;
         },
 
