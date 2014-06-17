@@ -9,7 +9,7 @@ define([
 
         test: function(){
             // Gnome Model
-                window.model = new GnomeModel();
+                model = new GnomeModel();
                 model.save(null, {validate: false, success: function(){
                     asyncTest('Gnome Model Creation', function(){
                         ok(model.id, 'Gnome model has an api given id');
