@@ -4,7 +4,7 @@ define([
 ], function(_, Backbone){
     var baseModel = Backbone.Model.extend({
         initialize: function(options){
-            Backbone.Model.prototype.initialize.call(options, this);
+            Backbone.Model.prototype.initialize.call(this, options);
 
             for(var key in this.model){
                 // general object hydration 
