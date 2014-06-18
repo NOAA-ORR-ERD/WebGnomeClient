@@ -1,26 +1,31 @@
 define([
     'underscore',
+    'jquery',
     'backbone',
     'moment',
     'model/base',
     'model/map',
     'model/spill',
-    'model/environment'
-], function(_, Backbone, moment, BaseModel, MapModel, SpillModel, EnvironmentModel){
+    'model/environment/tide',
+    'model/environment/wind'
+], function(_, $, Backbone, moment, BaseModel, MapModel, SpillModel, TideModel, WindModel){
     var gnomeModel = BaseModel.extend({
         url: '/model',
-
+        ajax: [],
         model: {
             spills: SpillModel,
-            environment: EnvironmentModel,
-            map_id: MapModel
+            map_id: MapModel,
+            environment: {
+                'gnome.environment.wind.Wind': WindModel,
+                'gnome.environment.tide.Tide': TideModel
+            }
         },
 
         sync: function(method, model, options){
             // because of the unique structure of the gnome model, it's relation to other child object
             // via ids, we need to dehydrate any child objects into just an id before sending it to the
             // server.
-            if(_.indexOf(['create', 'update'], method) != -1){
+            if(_.indexOf(['update'], method) != -1){
                 for(var key in model.model){
                     if(model.get(key)){
                         if(model.get(key).models){
@@ -47,19 +52,30 @@ define([
 
                     if(_.isArray(embeddedData)){
                         response[key] = new Backbone.Collection();
-                        for(var id in embeddedData){
-                            var obj = new embeddedClass({id: id}, {parse: true});
-                            obj.fetch();
-                            response[key].add(obj);
+                        if(!_.isObject(embeddedClass)){
+                            for(var id in embeddedData){
+                                var obj = new embeddedClass({id: id}, {parse: true, key: key});
+                                this.ajax.push(obj.fetch({success: _.bind(function(model, response, options){
+                                    this.key.add(new this.model[key][response.get('obj_type')](response), {parse: true});
+                                }, this)}));
+                            }
+                        } else {
+                            for(var id in embeddedData){
+                                var obj = new Backbone.Model({id: id, urlRoot: '/' + key + '/'}, {parse: true});
+                                this.ajax.push(obj.fetch());
+                                
+                            }
                         }
                     } else {
                         response[key] = new embeddedClass({id: embeddedData}, {parse: true});
-                        response[key].fetch();
+                        this.ajax.push(response[key].fetch());
                     }
                 }
             }
-
-            return response;
+            $.when.apply($, this.ajax).done(_.bind(function(){
+                this.set(response);
+                this.trigger('ready');
+            }, this));
         },
 
         validate: function(attrs, options) {

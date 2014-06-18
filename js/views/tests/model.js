@@ -12,8 +12,8 @@ define([
                 model = new GnomeModel();
                 model.save(null, {validate: false, success: function(){
                     asyncTest('Gnome Model Creation', function(){
-                        ok(model.id, 'Gnome model has an api given id');
-                        model.get('map_id').on('change', function(){
+                        ok(model.get('id') !== '', 'Gnome model has an api given id');
+                        model.on('ready', function(){
                             equal(model.get('map_id').get('obj_type'), 'gnome.map.GnomeMap', 'Gnome model has a hydrated map object');
 
                             model.set('duration', 2);
