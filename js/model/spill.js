@@ -13,6 +13,7 @@ define([
             'obj_type': 'gnome.spill.spill.Spill',
             'release': null,
             'element_type': null,
+            'name': 'Spill'
         },
 
         model: {
