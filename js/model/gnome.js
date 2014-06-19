@@ -55,14 +55,14 @@ define([
                         if(!_.isObject(embeddedClass)){
                             for(var id in embeddedData){
                                 var obj = new embeddedClass({id: id}, {parse: true, key: key});
-                                this.ajax.push(obj.fetch({success: _.bind(function(model, response, options){
-                                    this.key.add(new this.model[key][response.get('obj_type')](response), {parse: true});
-                                }, this)}));
+                                this.ajax.push(obj.fetch());
                             }
                         } else {
                             for(var id in embeddedData){
                                 var obj = new Backbone.Model({id: id, urlRoot: '/' + key + '/'}, {parse: true});
-                                this.ajax.push(obj.fetch());
+                                this.ajax.push(obj.fetch({success: _.bind(function(model, response, options){
+                                    this.key.add(new this.model[key][response.get('obj_type')](response), {parse: true});
+                                }, this)}));
                                 
                             }
                         }
