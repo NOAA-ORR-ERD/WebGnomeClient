@@ -16,9 +16,9 @@ define([
             webgnome.model = new GnomeModel();
             webgnome.model.save(null, {
                 validate: false,
-                success: _.bind(this.setup, this),
                 error: this.fail
             });
+            wegnome.model.once('ready', _.bind(this.setup, this));
         },
 
         setup: function(){
@@ -32,12 +32,12 @@ define([
                     name: 'step2',
                     title: 'Map <span class="sub-title">New Model Wizard</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-                }, webgnome.model.get('map')),
+                }, webgnome.model.get('map_id')),
                 new SpillForm({
                     name: 'step3',
                     title: 'Spill <span class="sub-title">New Model Wizard</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-                }, webgnome.model.get('spills'), webgnome.model.get('map'))
+                }, webgnome.model.get('spills'), webgnome.model.get('map_id'))
             ];
             this.start();
         },

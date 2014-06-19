@@ -5,10 +5,10 @@ define([
     'views/wizard/default',
     'model/gnome',
     'model/location',
-    'model/wind',
+    'model/environment/wind',
     'views/form/text',
     'views/form/model',
-    'views/form/wind'
+    'views/form/wind',
 ], function($, _, Backbone, DefaultWizard, GnomeModel, GnomeLocation, GnomeWind, TextForm, ModelForm, WindForm){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
@@ -16,12 +16,15 @@ define([
         initialize: function(opts){
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({validation: null});
-            this.location = new GnomeLocation({id: opts.slug});
-            this.name = opts.name;
-            this.location.fetch({
-                success: _.bind(this.found, this),
-                error: this.notfound
-            });
+            webgnome.model.once('ready', _.bind(function(){
+                this.location = new GnomeLocation({id: opts.slug});
+                this.name = opts.name;
+                this.location.fetch({
+                    success: _.bind(this.found, this),
+                    error: this.notfound
+                });
+            }, this));
+            
         },
 
         found: function(){
