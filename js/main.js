@@ -16,7 +16,8 @@ require.config({
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
-        qunit: 'lib/qunit/qunit/qunit'
+        qunit: 'lib/qunit/qunit/qunit',
+        compassui: 'lib/compass-rose-ui/compass-rose-ui'
     },
     shim: {
         jquery: {
@@ -34,6 +35,10 @@ require.config({
                 QUnit.config.autoload = false;
                 QUnit.config.autostart = false;
             }
+        },
+        compassui: {
+            exports: '$',
+            deps: ['jquery']
         }
     },
 });
