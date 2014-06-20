@@ -6,10 +6,13 @@ define([
     'model/gnome',
     'model/location',
     'model/environment/wind',
+    'model/movers/wind',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
-], function($, _, Backbone, DefaultWizard, GnomeModel, GnomeLocation, GnomeWind, TextForm, ModelForm, WindForm){
+], function($, _, Backbone, DefaultWizard, GnomeModel,
+    GnomeLocation, GnomeWind, GnomeWindMover,
+    TextForm, ModelForm, WindForm){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
 
@@ -62,7 +65,9 @@ define([
                         title[0] = 'Wind';
                     }
                     var wind = new GnomeWind();
+                    var windMover = new GnomeWindMover({wind: wind});
                     webgnome.model.get('environment').add(wind);
+                    webgnome.model.get('movers').add(windMover);
                     this.steps.push(new WindForm({
                         name: el.name,
                         title: title.join(' '),

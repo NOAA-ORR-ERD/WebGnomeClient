@@ -7,8 +7,11 @@ define([
     'model/map',
     'model/spill',
     'model/environment/tide',
-    'model/environment/wind'
-], function(_, $, Backbone, moment, BaseModel, MapModel, SpillModel, TideModel, WindModel){
+    'model/environment/wind',
+    'model/movers/wind'
+], function(_, $, Backbone, moment,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel,
+    WindMover){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -18,6 +21,9 @@ define([
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel
+            },
+            movers: {
+                'gnome.movers.wind_movers.WindMover': WindMover
             }
         },
 
