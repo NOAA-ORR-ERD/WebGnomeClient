@@ -8,7 +8,8 @@ define([
     formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
-        
+        form: [],
+
         initialize: function(options){
             if(options.body) {
                 this.body = options.body;

@@ -18,7 +18,7 @@ define([
                 validate: false,
                 error: this.fail
             });
-            wegnome.model.once('ready', _.bind(this.setup, this));
+            webgnome.model.once('ready', _.bind(this.setup, this));
         },
 
         setup: function(){
