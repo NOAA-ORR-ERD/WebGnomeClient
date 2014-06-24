@@ -55,7 +55,17 @@ define([
 
         next: function(){
             FormModal.prototype.next.call(this);
-            $('.xdsoft_datetimepicker').remove();
+            this.$('#start_time').datetimepicker('destroy');
+        },
+
+        close: function(){
+            FormModal.prototype.close.call(this);
+            this.$('#start_time').datetimepicker('destroy');
+        },
+
+        back: function(){
+            FormModal.prototype.back.call(this);
+            this.$('#start_time').datetimepicker('destroy');
         }
     });
     
