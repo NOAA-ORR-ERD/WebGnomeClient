@@ -277,9 +277,22 @@ nav.navbar{
     }
 
     &.wind-form{
-        .compass{
+        .constant-compass, .variable-compass{
             height: 200px;
             cursor: pointer;
         }
+        
+        table{
+            span{
+                opacity: 0;
+            }
+            tr:hover{
+                cursor: pointer;
+                span{
+                    opacity: 1;
+                }
+            }
+        }
+
     }
 }
