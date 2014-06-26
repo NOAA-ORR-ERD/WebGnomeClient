@@ -17,7 +17,7 @@ define([
         ajax: [],
         model: {
             spills: SpillModel,
-            map_id: MapModel,
+            map: MapModel,
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel
@@ -72,6 +72,9 @@ define([
                                 
                             }
                         }
+                    } else if(embeddedData.obj_type.match('gnome.map') != -1){
+                        // special case for map object as it is the only fully composed child of a model.
+                        response[key] = new embeddedClass(embeddedData, {parse: true});
                     } else {
                         response[key] = new embeddedClass({id: embeddedData}, {parse: true});
                         this.ajax.push(response[key].fetch());
