@@ -34,7 +34,7 @@ define([
             if(_.indexOf(['update'], method) != -1){
                 for(var key in model.model){
                     if(model.get(key)){
-                        if(model.get(key).models){
+                        if(_.isArray(model.get(key))){
                             var array = model.get(key);
                             model.set(key, []);
                             _.forEach(array, function(element){
