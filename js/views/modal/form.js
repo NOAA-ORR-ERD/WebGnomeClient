@@ -29,7 +29,7 @@ define([
         },
 
         events: {
-            'click .next': 'next',
+            'click .next': 'save',
             'click .back': 'back',
             'shown.bs.modal': 'ready',
             'click .modal-header>.close': 'wizardclose',
@@ -44,16 +44,10 @@ define([
             this.trigger('ready');
         },
 
-        next: function() {
-            if(this.isValid()){
-                this.hide();
-                this.trigger('next');
-            }
-        },
-
         save: function(){
             if(this.isValid()){
                 this.hide();
+                this.trigger('save');
             }
         },
 

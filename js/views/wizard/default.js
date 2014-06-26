@@ -11,7 +11,7 @@ define([
         start: function(){
             this.steps[this.step].render();
             _.each(this.steps, function(el){
-                el.on('next', this.next, this);
+                el.on('save', this.next, this);
                 el.on('back', this.prev, this);
                 el.on('wizardclose', this.close, this);
             }, this);
