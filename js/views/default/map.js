@@ -26,6 +26,7 @@ define([
         ],
         center: [-99.6, 40.6],
         overlays: [],
+        zoom: 3.5,
 
 
         initialize: function(options){
@@ -80,7 +81,7 @@ define([
                 layers: this.layers,
                 view: new ol.View2D({
                     center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
-                    zoom: 3.5
+                    zoom: this.zoom
                 })
             });
         }
