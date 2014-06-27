@@ -53,9 +53,13 @@ define([
             }
         },
 
-        next: function(){
-            FormModal.prototype.next.call(this);
-            this.$('#start_time').datetimepicker('destroy');
+        save: function(){
+            // this.model.save(null, {
+            //     success: _.bind(function(){
+                    $('.xdsoft_datetimepicker').remove();
+                    FormModal.prototype.save.call(this);
+            //     }, this),
+            // });
         },
 
         close: function(){
