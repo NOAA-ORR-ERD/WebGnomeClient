@@ -80,7 +80,7 @@ define([
                 layers: this.layers,
                 view: new ol.View2D({
                     center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
-                    zoom: 4
+                    zoom: 3.5
                 })
             });
         }
