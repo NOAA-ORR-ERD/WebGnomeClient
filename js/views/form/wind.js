@@ -75,10 +75,10 @@ define([
                         'move': _.bind(this.variableCompassUpdate, this)
                     });
                 }
-                if(this.model.get('timeseries').length <= 1){
+                if(this.model.get('timeseries').length == 1){
                     this.model.set('timeseries', []);
-                    this.renderTimeseries();
                 }
+                this.renderTimeseries();
             }
         },
 
