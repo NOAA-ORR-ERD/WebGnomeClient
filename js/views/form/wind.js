@@ -41,14 +41,18 @@ define([
             this.form.variable['direction'] = this.$('#variable-direction');
             this.form.variable['datetime'] = this.$('#datetime');
 
+            this.$('#datetime').datetimepicker({
+                format: 'Y/n/j G:i',
+            });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
+            this.renderTimeseries();
         },
 
         rendered: function(){
             if(this.model.get('timeseries').length <= 1){
-                this.$('.nav-tabs li:first a').tab('show');
+                this.$('.nav-tabs a[href="#constant"]').tab('show');
             } else {
-                this.$('.nav-tabs li:last a').tab('show');
+                this.$('.nav-tabs a[href="#variable"]').tab('show');
             }
         },
 
@@ -65,11 +69,6 @@ define([
                     });
                 }
             } else if (e.target.hash == '#variable') {
-                if($('.xdsoft_datetimepicker').length === 0){
-                    this.$('#datetime').datetimepicker({
-                        format: 'Y/n/j G:i',
-                    });
-                }
                 if(this.$('.variable-compass canvas').length === 0){
                     this.$('.variable-compass').compassRoseUI({
                         'arrow-direction': 'in',
@@ -187,18 +186,18 @@ define([
         },
 
         next: function(){
+            $('.xdsoft_datetimepicker').remove();
             FormModal.prototype.next.call(this);
-            this.$('#datetime').datetimepicker('destroy');
         },
 
         back: function(){
+            $('.xdsoft_datetimepicker').remove();
             FormModal.prototype.back.call(this);
-            this.$('#datetime').datetimepicker('destroy');
         },
 
         close: function(){
+            $('.xdsoft_datetimepicker').remove();
             FormModal.prototype.close.call(this);
-            this.$('#datetime').datetimepicker('destroy');
         },
 
 

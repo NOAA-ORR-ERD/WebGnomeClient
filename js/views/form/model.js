@@ -59,13 +59,13 @@ define([
         },
 
         close: function(){
+            $('.xdsoft_datetimepicker').remove();
             FormModal.prototype.close.call(this);
-            this.$('#start_time').datetimepicker('destroy');
         },
 
         back: function(){
+            $('.xdsoft_datetimepicker').remove();
             FormModal.prototype.back.call(this);
-            this.$('#start_time').datetimepicker('destroy');
         }
     });
     
