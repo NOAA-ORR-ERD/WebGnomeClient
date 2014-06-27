@@ -32,12 +32,12 @@ define([
                     name: 'step2',
                     title: 'Map <span class="sub-title">New Model Wizard</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-                }, webgnome.model.get('map_id')),
+                }, webgnome.model.get('map')),
                 new SpillForm({
                     name: 'step3',
                     title: 'Spill <span class="sub-title">New Model Wizard</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-                }, webgnome.model.get('spills'), webgnome.model.get('map_id'))
+                }, webgnome.model.get('spills'), webgnome.model.get('map'))
             ];
             this.start();
         },
