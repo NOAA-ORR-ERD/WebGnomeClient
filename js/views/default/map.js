@@ -70,6 +70,10 @@ define([
                 if(!_.isUndefined(options.center)){
                     this.overlays = options.overlays;
                 }
+
+                if(!_.isUndefined(options.zoom)){
+                    this.zoom = options.zoom;
+                }
             }
         },
 
