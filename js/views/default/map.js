@@ -39,7 +39,7 @@ define([
                     if(options.controls === 'full'){
                         ol.control.defaults().extend([
                             new ol.control.MeasureRuler(),
-                            new ol.control.MeasureArea(),
+                            //new ol.control.MeasureArea(),
                             new ol.control.MousePosition({
                                 coordinateFormat: function(coordinates){
                                     if(coordinates){
