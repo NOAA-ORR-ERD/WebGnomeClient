@@ -3,11 +3,14 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'ol',
     'views/modal/form',
     'text!templates/form/wind.html',
+    'views/default/map',
+    'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, FormModal, FormTemplate){
+], function($, _, Backbone, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         className: 'modal fade form-modal wind-form',
         events: function(){
@@ -23,6 +26,40 @@ define([
         initialize: function(options, GnomeWind){
             FormModal.prototype.initialize.call(this, options);
             this.model = GnomeWind;
+            this.source = new ol.source.Vector();
+            this.layer = new ol.layer.Vector({
+                source: this.source,
+                style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [0.5, 1.0],
+                        src: '/img/map-pin.png',
+                        size: [32, 40]
+                    })
+                })
+            });
+            this.ol = new olMapView({
+                id: "wind-form-map",
+                zoom: 2,
+                center: [-128.6, 42.7],
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'})
+                    }),
+                    new ol.layer.Vector({
+                        source: new ol.source.GeoJSON({
+                            url: '/resource/nws_coast.json',
+                            projection: 'EPSG:3857'
+                        }),
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                width: 2,
+                                color: '#428bca'
+                            })
+                        })
+                    }),
+                    this.layer
+                ]
+            });
         },
 
         render: function(options){
@@ -79,6 +116,21 @@ define([
                     this.model.set('timeseries', []);
                 }
                 this.renderTimeseries();
+            } else if (e.target.hash == '#nws'){
+                if(this.$('#wind-form-map canvas').length === 0){
+                    this.ol.render();
+                    this.ol.map.on('click', _.bind(function(e){
+                        this.source.forEachFeature(function(feature){
+                            this.source.removeFeature(feature);
+                        }, this);
+
+                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                        var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                        this.source.addFeature(feature);
+                        this.nws = new nwsWind({lat: coords[1], lon: coords[0]});
+                        this.nws.fetch();
+                    }, this));
+                }
             }
         },
 
@@ -187,16 +239,19 @@ define([
 
         next: function(){
             $('.xdsoft_datetimepicker').remove();
+            this.ol.close();
             FormModal.prototype.next.call(this);
         },
 
         back: function(){
             $('.xdsoft_datetimepicker').remove();
+            this.ol.close();
             FormModal.prototype.back.call(this);
         },
 
         close: function(){
             $('.xdsoft_datetimepicker').remove();
+            this.ol.close();
             FormModal.prototype.close.call(this);
         },
 
