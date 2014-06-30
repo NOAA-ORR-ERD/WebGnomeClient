@@ -21,7 +21,9 @@ define([
 
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
-                options.url = webgnome.api + options.url;
+                if(options.url.indexOf('http://') === -1){
+                    options.url = webgnome.api + options.url;
+                }
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
