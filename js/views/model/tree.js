@@ -43,11 +43,15 @@ define([
                             var form = webgnome.getForm(data.node.data.obj_type);
                             var object = data.node.data.object;
 
-                            var Form = require(form);
-                            var view = new Form(null, object);
-                            view.on('hidden', view.close);
-                            view.on('hidden', this.renderModel, this);
-                            view.render();
+                            if(action === 'edit'){
+                                var Form = require(form);
+                                var view = new Form(null, object);
+                                view.on('hidden', view.close);
+                                view.on('hidden', this.renderModel, this);
+                                view.render();
+                            } else {
+                                // how am I going to create an object/know what object needs to be created
+                            }
                             return false;
                         }, this)
                     });
