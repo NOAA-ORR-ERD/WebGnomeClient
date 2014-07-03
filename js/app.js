@@ -4,8 +4,9 @@ define([
     'underscore',
     'backbone',
     'router',
-    'model/session'
-], function($, _, Backbone, Router, SessionModel) {
+    'model/session',
+    'model/gnome'
+], function($, _, Backbone, Router, SessionModel, GnomeModel) {
     "use strict";
     var app = {
         api: 'http://0.0.0.0:9899',
@@ -122,7 +123,23 @@ define([
             this.router = new Router();
 
             new SessionModel(function(){
-                Backbone.history.start();
+                // check if there's an active model on the server
+                // if there is attempt to load it and route to the map view.
+                var gnomeModel = new GnomeModel();
+                gnomeModel.fetch({
+                    success: function(model){
+                        if(model.id){
+                            window.webgnome.model = model;
+                        }
+                        Backbone.history.start();
+                        webgnome.router.navigate('model', true);
+                    },
+                    error: function(){
+                        Backbone.history.start();
+                    }
+                });
+
+
             });
         },
         hasModel: function(){
