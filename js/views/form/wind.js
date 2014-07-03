@@ -150,7 +150,7 @@ define([
                 this.model.set('timeseries', [['2013-02-13T09:00:00', [speed, direction]]]);
             }
 
-            this.model.set('units', this.$(active + ' select[name="units"]').val());
+            this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -193,6 +193,7 @@ define([
                 }
                 this.renderTimeseries();
             }
+            this.update();
         },
 
         modifyTimeseriesEntry: function(e){

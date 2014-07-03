@@ -8,7 +8,30 @@ define([
         urlRoot: '/environment/',
 
         defaults: {
-            timeseries: []
+            timeseries: [[0, [1, 0]]],
+            units: 'm/s'
+        },
+
+        validate: function(attrs, options){
+            if(!_.isUndefined(attrs.timeseries)) {
+                var msg;
+                _.each(attrs.timeseries, function(el, ind, arr){
+                    if(el[1][0] < 1){
+                        msg = 'Speed must be greater than or equal to 1';
+                    }
+
+                    if(el[1][1] < 0 || el[1][1] > 360){
+                        msg = 'Direction must be between 0 and 360 degrees';
+                    }
+                });
+                if (msg) {
+                    return msg;
+                }
+            }
+
+            if (_.isUndefined(attrs.units)) {
+                return 'Speed unit definition is required.';
+            }
         },
 
         sortTimeseries: function(){
