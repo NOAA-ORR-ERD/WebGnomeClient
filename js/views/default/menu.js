@@ -105,10 +105,9 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel()){
+            if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.disableMenuItem('actions');
                 this.disableMenuItem('save');
-                
             }
         },
 
