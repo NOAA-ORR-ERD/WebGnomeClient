@@ -143,6 +143,9 @@ define([
             });
         },
         hasModel: function(){
+            if(_.has(webgnome, 'model') && !_.isUndefined(webgnome.model) && _.isObject(webgnome.model)){
+                return true;
+            }
             return false;
         },
         
