@@ -132,7 +132,11 @@ define([
                             window.webgnome.model = model;
                         }
                         Backbone.history.start();
-                        webgnome.router.navigate('model', true);
+                        if(webgnome.hasModel()){
+                            webgnome.router.navigate('model', true);
+                        } else {
+                            webgnome.router.navigate('', true);
+                        }
                     },
                     error: function(){
                         Backbone.history.start();
@@ -144,7 +148,7 @@ define([
             });
         },
         hasModel: function(){
-            if(_.has(webgnome, 'model') && !_.isUndefined(webgnome.model) && _.isObject(webgnome.model)){
+            if(_.has(webgnome, 'model') && !_.isUndefined(webgnome.model) && _.isObject(webgnome.model) && !_.isUndefined(webgnome.model.get('id'))){
                 return true;
             }
             return false;
