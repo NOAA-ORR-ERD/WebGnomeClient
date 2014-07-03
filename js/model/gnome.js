@@ -24,7 +24,9 @@ define([
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover
-            }
+            },
+            outputters: Backbone.Collection,
+            weatherers: Backbone.Collection
         },
 
         sync: function(method, model, options){
@@ -139,6 +141,10 @@ define([
             }
             return {days: days, hours: hours};
         },
+
+        // toTree: function(){
+            
+        // }
         
     });
 

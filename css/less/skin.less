@@ -92,6 +92,7 @@ nav.navbar{
         z-index: 1;
         background: white;
         .resize{
+            background-color: white;
             background-image: url('/img/grippy-show.png');
             background-repeat: no-repeat;
             background-position: center center;
@@ -112,6 +113,21 @@ nav.navbar{
         }
         &.closed .resize{
             left: 0 !important;
+        }
+
+        .model-tree{
+            .ui-fancytree{
+                border: 0;
+                &.fancytree-treefocus{
+                    outline: 0;
+                }
+                span.fancytree-icon{
+                    display: none;
+                }
+                span.fancytree-title{
+                    margin-left: 0;
+                }
+            }
         }
     }
     .map{

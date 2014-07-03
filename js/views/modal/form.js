@@ -32,6 +32,7 @@ define([
             'click .next': 'save',
             'click .back': 'back',
             'shown.bs.modal': 'ready',
+            'hidden.bs.modal': 'hidden',
             'click .modal-header>.close': 'wizardclose',
             'click .save': 'save',
             'click .cancel': 'wizardclose',
@@ -42,6 +43,10 @@ define([
 
         ready: function() {
             this.trigger('ready');
+        },
+
+        hidden: function() {
+            this.trigger('hidden');
         },
 
         save: function(){

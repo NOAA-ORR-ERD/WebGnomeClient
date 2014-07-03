@@ -80,7 +80,44 @@ define([
                 return response;
             };
 
+            /**
+             * Convert the model's or collection's attributes into the format needed by
+             * fancy tree for rendering in a view
+             * @return {Object} formated json object for fancy tree
+             */
+            Backbone.Collection.prototype.toTree = Backbone.Model.prototype.toTree = function(name){
+                var attrs = _.clone(this.attributes);
+                var tree = [];
+                var children = [];
 
+                if(_.isUndefined(name)){
+                    name = 'Model';
+                }
+
+                for(var key in attrs){
+                    var el = attrs[key];
+                    if(!_.isObject(el)){
+                        // flat attribute just set the index and value
+                        // on the tree. Should map to the objects edit form.
+                        tree.push({title:key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
+                    } else if(!_.isArray(el)) {
+                        // child collection/array of children or single child object
+                        children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                    }
+                }
+                tree = tree.concat(children);
+                return tree;
+            };
+
+            webgnome.getForm = function(obj_type){
+                var map = {
+                    'gnome.model.Model': 'views/form/model',
+                    'gnome.map.GnomeMap': 'views/form/map',
+                    'gnome.spill.Spill': 'views/form/spill',
+                };
+
+                return map[obj_type];
+            };
 
             this.router = new Router();
 
