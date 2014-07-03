@@ -136,6 +136,7 @@ define([
                     },
                     error: function(){
                         Backbone.history.start();
+                        webgnome.router.navigate('', true);
                     }
                 });
 
