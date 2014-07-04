@@ -8,7 +8,7 @@ define([
         urlRoot: '/environment/',
 
         defaults: {
-            timeseries: [[0, [1, 0]]],
+            timeseries: [[0, [0, 0]]],
             units: 'm/s'
         },
 
@@ -16,8 +16,8 @@ define([
             if(!_.isUndefined(attrs.timeseries)) {
                 var msg;
                 _.each(attrs.timeseries, function(el, ind, arr){
-                    if(el[1][0] < 1){
-                        msg = 'Speed must be greater than or equal to 1';
+                    if(el[1][0] < 0){
+                        msg = 'Speed must be greater than or equal to 0';
                     }
 
                     if(el[1][1] < 0 || el[1][1] > 360){

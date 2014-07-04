@@ -64,7 +64,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                timeseries: this.model.get('timeseries').length === 0 ? [['', [0, 0]]] : this.model.get('timeseries'),
+                timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units')
             });
             
