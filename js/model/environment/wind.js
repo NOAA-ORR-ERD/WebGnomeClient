@@ -8,8 +8,9 @@ define([
         urlRoot: '/environment/',
 
         defaults: {
-            timeseries: [[0, [0, 0]]],
-            units: 'm/s'
+            timeseries: [['2014-07-07T12:00:00', [0, 0]]],
+            units: 'm/s',
+            obj_type: 'gnome.environment.wind.Wind'
         },
 
         validate: function(attrs, options){
