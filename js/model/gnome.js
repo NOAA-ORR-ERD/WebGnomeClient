@@ -36,14 +36,20 @@ define([
             if(_.indexOf(['update'], method) != -1){
                 for(var key in model.model){
                     if(model.get(key)){
-                        if(_.isArray(model.get(key))){
-                            var array = model.get(key);
+                        if(model.get(key) instanceof Backbone.Collection){
+                            var array = model.get(key).toArray();
                             model.set(key, []);
-                            _.forEach(array, function(element){
-                                model.get(key).push(element.get('id'));
-                            });
+                            if(array.length > 0){
+                                _.each(array, function(element){
+                                    if(!_.isUndefined(element.get('id'))){
+                                        model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
+                                    } else {
+                                        model.get(key).push(element);
+                                    }
+                                });
+                            }
                         } else {
-                            model.set(key, model.get(key).get('id'));
+                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')});
                         }
                     }
                 }
