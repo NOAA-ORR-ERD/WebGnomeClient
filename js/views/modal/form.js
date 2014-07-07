@@ -49,11 +49,14 @@ define([
             this.trigger('hidden');
         },
 
-        save: function(){
-            if(this.isValid()){
-                this.hide();
-                this.trigger('save');
-            }
+        save: function(callback){
+            webgnome.model.save(null, {
+                success: _.bind(function(){
+                    this.hide();
+                    this.trigger('save');
+                    if(_.isFunction(callback)) callback();
+                }, this)
+            });
         },
 
         back: function() {

@@ -54,12 +54,9 @@ define([
         },
 
         save: function(){
-            // this.model.save(null, {
-            //     success: _.bind(function(){
-                    $('.xdsoft_datetimepicker').remove();
-                    FormModal.prototype.save.call(this);
-            //     }, this),
-            // });
+            FormModal.prototype.save.call(this, function(){
+                $('.xdsoft_datetimepicker').remove();
+            });
         },
 
         close: function(){
