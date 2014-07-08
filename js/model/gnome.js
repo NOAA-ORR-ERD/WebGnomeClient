@@ -66,26 +66,25 @@ define([
 
                     if(_.isArray(embeddedData)){
                         response[key] = new Backbone.Collection();
+                        // if the embedded class isn't an object it can only have one type of object in
+                        // the given collection, so set it.
+
                         if(!_.isObject(embeddedClass)){
-                            for(var id in embeddedData){
-                                var obj = new embeddedClass({id: id}, {parse: true, key: key});
-                                this.ajax.push(obj.fetch());
+                            for(var obj in embeddedData){
+                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true}));
                             }
                         } else {
-                            for(var id in embeddedData){
-                                var obj = new Backbone.Model({id: id, urlRoot: '/' + key + '/'}, {parse: true});
-                                this.ajax.push(obj.fetch({success: _.bind(function(model, response, options){
-                                    this.key.add(new this.model[key][response.get('obj_type')](response), {parse: true});
-                                }, this)}));
-                                
+                            // the embedded class is an object there for we can assume
+                            // that the collection can have several types of objects
+                            // I.E. environment with wind and tide, figure out which one we have
+                            // by looking at it's obj_type and cast it appropriatly.
+
+                            for(var obj in embeddedData){
+                                response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true}));
                             }
                         }
-                    } else if(embeddedData.obj_type.match('gnome.map') != -1){
-                        // special case for map object as it is the only fully composed child of a model.
-                        response[key] = new embeddedClass(embeddedData, {parse: true});
                     } else {
-                        response[key] = new embeddedClass({id: embeddedData}, {parse: true});
-                        this.ajax.push(response[key].fetch());
+                        response[key] = new embeddedClass(embeddedData, {parse: true});
                     }
                 }
             }
