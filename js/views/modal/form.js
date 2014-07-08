@@ -38,7 +38,8 @@ define([
             'click .cancel': 'wizardclose',
             'change input': 'update',
             'keyup input': 'update',
-            'change select': 'update'
+            'change select': 'update',
+            'click .finish': 'finish'
         },
 
         ready: function() {
@@ -107,6 +108,15 @@ define([
                 webgnome.model.fetch();
             }
             this.trigger('wizardclose');
+        },
+
+        finish: function(){
+            this.on('hidden', function(){
+                this.trigger('finish');
+                webgnome.router.navigate('model', true);
+            });
+            this.hide();
+            
         },
 
         close: function(){

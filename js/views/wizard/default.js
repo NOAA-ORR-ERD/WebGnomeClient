@@ -14,6 +14,7 @@ define([
                 el.on('save', this.next, this);
                 el.on('back', this.prev, this);
                 el.on('wizardclose', this.close, this);
+                el.on('finish', this.close, this);
             }, this);
         },
 
