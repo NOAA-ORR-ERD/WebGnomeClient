@@ -60,7 +60,7 @@ define([
         close: function(){
             this.remove();
             this.unbind();
-            this.map = {};
+            this.ol.close();
         }
     });
 
