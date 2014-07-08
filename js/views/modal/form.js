@@ -97,6 +97,9 @@ define([
         },
 
         wizardclose: function(){
+            if(webgnome.hasModel()){
+                webgnome.model.fetch();
+            }
             this.trigger('wizardclose');
         },
 
