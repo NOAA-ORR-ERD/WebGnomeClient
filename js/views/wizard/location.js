@@ -65,9 +65,19 @@ define([
                         title[0] = 'Wind';
                     }
                     var wind = new GnomeWind();
-                    var windMover = new GnomeWindMover({wind: wind});
-                    webgnome.model.get('environment').add(wind);
-                    webgnome.model.get('movers').add(windMover);
+                    wind.save(null, {
+                        success: function(){
+                            webgnome.model.get('environment').add(wind);
+                            var windMover = new GnomeWindMover({wind: wind});
+                            windMover.save(null, {
+                                success: function(){
+                                    webgnome.model.get('movers').add(windMover);
+                                    webgnome.model.save();
+                                }
+                            });
+                        }
+                    });
+
                     this.steps.push(new WindForm({
                         name: el.name,
                         title: title.join(' '),
