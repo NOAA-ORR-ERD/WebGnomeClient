@@ -1,29 +1,98 @@
 define([
     'underscore',
+    'jquery',
     'backbone',
     'moment',
-    'model/base'
-], function(_, Backbone, moment, BaseModel){
+    'model/base',
+    'model/map',
+    'model/spill',
+    'model/environment/tide',
+    'model/environment/wind',
+    'model/movers/wind'
+], function(_, $, Backbone, moment,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel,
+    WindMover){
     var gnomeModel = BaseModel.extend({
         url: '/model',
-        
-        defaults: {
-            'outputters': null,
-            'obj_type': 'gnome.model.Model',
-            'weathering_substeps': null,
-            'map_id': null,
-            'movers': null,
-            'start_time': Math.round(Date.now() / 1000),
-            'environment': null,
-            'cache_enabled': 'false',
-            'weatherers': null,
-            'spills': null,
-            'time_step': '900',
-            'duration': '86400',
-            'uncertain': false,
-            'id': null
+        ajax: [],
+        model: {
+            spills: SpillModel,
+            map: MapModel,
+            environment: {
+                'gnome.environment.wind.Wind': WindModel,
+                'gnome.environment.tide.Tide': TideModel
+            },
+            movers: {
+                'gnome.movers.wind_movers.WindMover': WindMover
+            },
+            outputters: Backbone.Collection,
+            weatherers: Backbone.Collection
         },
 
+        sync: function(method, model, options){
+            // because of the unique structure of the gnome model, it's relation to other child object
+            // via ids, we need to dehydrate any child objects into just an id before sending it to the
+            // server.
+            if(_.indexOf(['update'], method) != -1){
+                for(var key in model.model){
+                    if(model.get(key)){
+                        if(model.get(key) instanceof Backbone.Collection){
+                            var array = model.get(key).toArray();
+                            model.set(key, []);
+                            if(array.length > 0){
+                                _.each(array, function(element){
+                                    if(!_.isUndefined(element.get('id'))){
+                                        model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
+                                    } else {
+                                        model.get(key).push(element);
+                                    }
+                                });
+                            }
+                        } else {
+                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')});
+                        }
+                    }
+                }
+            }
+            return BaseModel.prototype.sync.call(this, method, model, options);
+        },
+
+        parse: function(response){
+            // model needs a special parse function to turn object id's into objects
+            for(var key in this.model){
+                if(response[key]){
+                    var embeddedClass = this.model[key];
+                    var embeddedData = response[key];
+
+                    if(_.isArray(embeddedData)){
+                        response[key] = new Backbone.Collection();
+                        // if the embedded class isn't an object it can only have one type of object in
+                        // the given collection, so set it.
+
+                        if(!_.isObject(embeddedClass)){
+                            for(var obj in embeddedData){
+                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true}));
+                            }
+                        } else {
+                            // the embedded class is an object there for we can assume
+                            // that the collection can have several types of objects
+                            // I.E. environment with wind and tide, figure out which one we have
+                            // by looking at it's obj_type and cast it appropriatly.
+
+                            for(var obj in embeddedData){
+                                response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true}));
+                            }
+                        }
+                    } else {
+                        response[key] = new embeddedClass(embeddedData, {parse: true});
+                    }
+                }
+            }
+            $.when.apply($, this.ajax).done(_.bind(function(){
+                this.set(response);
+                this.trigger('ready');
+            }, this));
+        },
 
         validate: function(attrs, options) {
             if(attrs.duration <= 0 || isNaN(attrs.duration)){
@@ -77,6 +146,10 @@ define([
             }
             return {days: days, hours: hours};
         },
+
+        // toTree: function(){
+            
+        // }
         
     });
 

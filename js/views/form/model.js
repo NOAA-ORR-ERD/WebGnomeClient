@@ -13,17 +13,18 @@ define([
         
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
-
             this.model = model;
+        },
 
+        render: function(options){
             this.body = _.template(FormTemplate, {
-                start_time: moment.unix(this.model.get('start_time')).format('YYYY/M/D H:mm'),
+                start_time: moment(this.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
             });
 
-            this.render();
+            FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({
                 format: 'Y/n/j G:i'
@@ -31,7 +32,7 @@ define([
         },
 
         update: function() {
-            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').unix();
+            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
@@ -52,9 +53,20 @@ define([
             }
         },
 
-        next: function(){
-            FormModal.prototype.next.call(this);
+        save: function(){
+            FormModal.prototype.save.call(this, function(){
+                $('.xdsoft_datetimepicker').remove();
+            });
+        },
+
+        close: function(){
             $('.xdsoft_datetimepicker').remove();
+            FormModal.prototype.close.call(this);
+        },
+
+        back: function(){
+            $('.xdsoft_datetimepicker').remove();
+            FormModal.prototype.back.call(this);
         }
     });
     

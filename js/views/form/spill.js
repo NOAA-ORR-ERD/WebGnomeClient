@@ -92,6 +92,7 @@ define([
 
             if(this.GnomeMap.get('filename') == 'EmptyMap.bna'){
                 this.ol = new olMapView({
+                    id: 'spill-form-map',
                     interactions: ol.interaction.defaults().extend([
                         this.select
                     ]),
@@ -100,8 +101,6 @@ define([
                     ]
                 });
             }
-
-            this.render();
         },
 
         ready: function() {
@@ -310,9 +309,11 @@ define([
             this.source.removeFeature(feature);
         },
 
-        remove: function(){
-            this.ol.remove();
-            FormModal.prototype.remove.call(this);
+        close: function(){
+            if(this.ol){
+                this.ol.close();
+            }
+            FormModal.prototype.close.call(this);
         }
     });
 

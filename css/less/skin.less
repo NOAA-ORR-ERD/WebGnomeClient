@@ -15,9 +15,13 @@ nav.navbar{
     .main{
         .make-md-column(8);
 
-        .location, .load, .build{
+        .location, .load, .build, .resume{
             .btn;
             .btn-primary;
+        }
+
+        .resume{
+            .btn-success;
         }
 
         @media(max-width: @screen-sm){
@@ -92,6 +96,7 @@ nav.navbar{
         z-index: 1;
         background: white;
         .resize{
+            background-color: white;
             background-image: url('/img/grippy-show.png');
             background-repeat: no-repeat;
             background-position: center center;
@@ -112,6 +117,21 @@ nav.navbar{
         }
         &.closed .resize{
             left: 0 !important;
+        }
+
+        .model-tree{
+            .ui-fancytree{
+                border: 0;
+                &.fancytree-treefocus{
+                    outline: 0;
+                }
+                span.fancytree-icon{
+                    display: none;
+                }
+                span.fancytree-title{
+                    margin-left: 0;
+                }
+            }
         }
     }
     .map{
@@ -274,5 +294,29 @@ nav.navbar{
         .spill-form{
             margin-top: 15px;
         }
+    }
+
+    &.wind-form{
+        .constant-compass, .variable-compass{
+            height: 200px;
+            cursor: pointer;
+        }
+        
+        table{
+            span{
+                opacity: 0;
+            }
+            tr:hover{
+                cursor: pointer;
+                span{
+                    opacity: 1;
+                }
+            }
+        }
+
+        .map{
+            cursor: pointer;
+        }
+
     }
 }

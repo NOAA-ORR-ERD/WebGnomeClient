@@ -12,16 +12,12 @@ define([
         mapView: null,
         popup: null,
 
-        events: {
-            'click .load': 'load'
-        },
-
-
         /**
          * @todo decomp the popover into a new view? How else to get load click event?
          */
         initialize: function(){
             this.mapView = new olMapView({
+                controls: [],
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
@@ -29,24 +25,7 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            //url: webgnome.api + '/locations',
-                            object: {
-                                "type": "FeatureCollection",
-                                "features": [
-                                    {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "title": "Long Island Sound",
-                                            "content": "Some history about Long Island Sound.",
-                                            "slug": "long_island_sound"
-                                        },
-                                        "geometry": {
-                                            "type": "Point",
-                                            "coordinates": [-72.879489, 41.117006]
-                                        }
-                                    }
-                                ]
-                            }
+                            url: webgnome.api + '/location',
                         }),
                         style: new ol.style.Style({
                             image: new ol.style.Icon({
@@ -79,17 +58,20 @@ define([
                 });
                 if(feature){
                     this.popup.setPosition(feature.getGeometry().getCoordinates());
+                    this.$('.popup').popover('destroy');
                     this.$('.popup').popover({
                         placement: 'top',
                         html: true,
                         title: feature.get('title'),
-                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '">Load</button>'
+                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
                     });
                     
                     this.$('.popup').one('shown.bs.popover', _.bind(function(){
                         this.$('.load').on('click', _.bind(function(){
                             var slug = this.$('.load').data('slug');
-                            this.load(slug);
+                            var name = this.$('.load').data('name');
+                            this.load({slug: slug, name: name});
+                            this.$('.popup').popover('destroy');
                         }, this));
                     }, this));
 
@@ -99,19 +81,18 @@ define([
 
                     this.$('.popup').popover('show');
                 } else {
-                    this.$('.popup').popover('hide');
+                    this.$('.popup').popover('destroy');
                 }
             }, this);
         },
 
-        load: function(slug){
-            new LocationWizard();
+        load: function(options){
+            this.wizard = new LocationWizard(options);
         },
 
         render: function(){
             compiled = _.template(LocationsTemplate);
             $('body').append(this.$el.html(compiled));
-            window.map = this.mapView;
 
             this.popup = new ol.Overlay({
                 position: 'bottom-center',
@@ -124,6 +105,11 @@ define([
             this.mapView.render();
             this.mapView.map.addOverlay(this.popup);
 
+        },
+
+        close: function(){
+            this.mapView.close();
+            Backbone.View.prototype.close.call(this);
         }
     });
 

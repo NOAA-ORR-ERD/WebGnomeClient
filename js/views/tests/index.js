@@ -4,14 +4,15 @@ define([
     'backbone',
     'qunit',
     'text!templates/tests/index.html',
+    'views/tests/model',
     'views/tests/spill'
-], function($, _, Backbone, qunit, TestTemplate, SpillTests){
+], function($, _, Backbone, qunit, TestTemplate, ModelTests, SpillTests){
     testView = Backbone.View.extend({
         className: 'container page',
         initialize: function(){
             this.render();
 
-            module('GnomeSpill');
+            ModelTests.run();
             SpillTests.run();
             
             qunit.load();

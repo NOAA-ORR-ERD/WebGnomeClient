@@ -11,8 +11,9 @@ define([
         defaults: {
             'on': true,
             'obj_type': 'gnome.spill.spill.Spill',
-            'release': new GnomeRelease(),
-            'element_type': new GnomeElement(),
+            'release': null,
+            'element_type': null,
+            'name': 'Spill'
         },
 
         model: {

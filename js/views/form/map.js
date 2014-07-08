@@ -9,7 +9,6 @@ define([
         className: 'modal fade form-modal map-form',
         name: 'map',
         title: 'Map',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
 
         events: function() {
             return _.defaults({
@@ -26,8 +25,6 @@ define([
             var dropZone = $('.file');
             
             this.model = model;
-
-            this.body = _.template(FormTemplate);
 
             $(document).bind('drop', function(e) {
                 dropZone.removeClass('hover');
@@ -53,8 +50,12 @@ define([
             }).bind('dragend', function(e) {
                 $('.file').removeClass('hover');
             });
+        },
 
-            this.render();
+        render: function(options){
+            this.body = _.template(FormTemplate);
+
+            FormModal.prototype.render.call(this, options);
 
             if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) == -1){
                 this.$('.upload').val(this.model.get('filename'));
@@ -74,7 +75,7 @@ define([
             if (event.target.hash == '#coast' || event.target.id == 'coast'){
                 if(_.isUndefined(this.coast_map)){
                     this.coast_map = new ol.Map({
-                        target: 'map',
+                        target: 'map-form-coast-map',
                         layers: [
                             new ol.layer.Tile({
                                 source: new ol.source.MapQuest({layer: 'osm'})
@@ -90,7 +91,7 @@ define([
                 if (_.isUndefined(this.draw_map)){
                     this.source = new ol.source.Vector();
                     this.draw_map = new ol.Map({
-                        target: 'draw-map',
+                        target: 'map-form-draw-map',
                         renderer: 'canvas',
                         views: new ol.View2D({
                             center: [0, 0],

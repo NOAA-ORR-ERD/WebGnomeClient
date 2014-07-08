@@ -26,6 +26,7 @@ define([
         ],
         center: [-99.6, 40.6],
         overlays: [],
+        zoom: 3.5,
 
 
         initialize: function(options){
@@ -38,7 +39,7 @@ define([
                     if(options.controls === 'full'){
                         ol.control.defaults().extend([
                             new ol.control.MeasureRuler(),
-                            new ol.control.MeasureArea(),
+                            //new ol.control.MeasureArea(),
                             new ol.control.MousePosition({
                                 coordinateFormat: function(coordinates){
                                     if(coordinates){
@@ -69,6 +70,10 @@ define([
                 if(!_.isUndefined(options.center)){
                     this.overlays = options.overlays;
                 }
+
+                if(!_.isUndefined(options.zoom)){
+                    this.zoom = options.zoom;
+                }
             }
         },
 
@@ -80,7 +85,8 @@ define([
                 layers: this.layers,
                 view: new ol.View2D({
                     center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
-                    zoom: 4
+                    zoom: this.zoom,
+                    extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
                 })
             });
         }

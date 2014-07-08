@@ -2,22 +2,22 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'text!templates/model/controls.html',
     'views/default/map',
-    'jqueryui',
+    'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, ControlsTemplate, olMapView){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
         width: '70%',
-        map: null,
 
         initialize: function(){
             this.render();
             this.$('.seek > div').slider();
-            this.map = new olMapView({
+            this.ol = new olMapView({
                 controls: 'full'
             });
             
@@ -29,8 +29,13 @@ define([
         },
 
         render: function(){
-            var date = new Date();
-            date = date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ' ';
+            var date;
+            if(webgnome.hasModel()){
+                date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:MM');
+            } else {
+                date = moment().format('M/DD/YYYY HH:MM');
+            }
+
             var compiled = _.template(ControlsTemplate, {date: date});
             this.$el.html(compiled);
         },
@@ -45,17 +50,17 @@ define([
                 this.full = true;
                 this.$el.css({width: '100%', paddingLeft: offset});
             }
-            webgnome.map.updateSize();
+            this.ol.map.updateSize();
         },
 
         renderMap: function(){
-            this.map.render();
+            this.ol.render();
         },
 
         close: function(){
             this.remove();
             this.unbind();
-            webgnome.map = {};
+            this.ol.close();
         }
     });
 

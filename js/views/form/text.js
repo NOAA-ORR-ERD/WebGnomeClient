@@ -7,8 +7,6 @@ define([
     var textForm = FormModal.extend({
         initialize: function(options, modal){
             FormModal.prototype.initialize.call(this, options);
-
-            this.render();
         }
     });
 

@@ -3,9 +3,9 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-    var gnomeLocation = BaseModel.extend({
-        urlRoot: '/location/',
+    var tideModel = BaseModel.extend({
+        urlRoot: '/environment/'
     });
 
-    return gnomeLocation;
+    return tideModel;
 });

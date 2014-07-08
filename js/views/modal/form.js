@@ -8,7 +8,8 @@ define([
     formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
-        
+        form: [],
+
         initialize: function(options){
             if(options.body) {
                 this.body = options.body;
@@ -28,10 +29,10 @@ define([
         },
 
         events: {
-            'click .next': 'next',
+            'click .next': 'save',
             'click .back': 'back',
-            'hidden.bs.modal': 'close',
             'shown.bs.modal': 'ready',
+            'hidden.bs.modal': 'hidden',
             'click .modal-header>.close': 'wizardclose',
             'click .save': 'save',
             'click .cancel': 'wizardclose',
@@ -44,16 +45,23 @@ define([
             this.trigger('ready');
         },
 
-        next: function() {
-            if(this.isValid()){
-                this.hide();
-                this.trigger('next');
-            }
+        hidden: function() {
+            this.trigger('hidden');
         },
 
-        save: function(){
-            if(this.isValid()){
+        save: function(callback){
+            if(this.model){
+                this.model.save(null, {
+                    success: _.bind(function(){
+                        this.hide();
+                        this.trigger('save');
+                        if(_.isFunction(callback)) callback();
+                    }, this)
+                });
+            } else {
                 this.hide();
+                this.trigger('save');
+                if(_.isFunction(callback)) callback();
             }
         },
 
@@ -95,6 +103,9 @@ define([
         },
 
         wizardclose: function(){
+            if(webgnome.hasModel()){
+                webgnome.model.fetch();
+            }
             this.trigger('wizardclose');
         },
 
