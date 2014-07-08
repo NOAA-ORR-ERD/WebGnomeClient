@@ -15,7 +15,8 @@ define([
         events: {
             'click .location': 'chooseLocation',
             'click .build': 'buildModel',
-            'click .load': 'loadModel'
+            'click .load': 'loadModel',
+            'click .resume': 'resumeModel'
         },
 
         chooseLocation: function(event) {
@@ -27,18 +28,21 @@ define([
             event.preventDefault();
 
             new NewWizardForm();
-
-            // webgnome.model = new Model();
-            // webgnome.model.fetch();
-            // webgnome.router.navigate('model', true);
         },
 
         loadModel: function(event) {
             event.preventDefault();
         },
 
+        resumeModel: function(event) {
+            event.preventDefault();
+            webgnome.router.navigate('model', true);
+        },
+
         render: function(){
-            var compiled = _.template(IndexTemplate);
+            var compiled = _.template(IndexTemplate, {
+                hasModel: webgnome.hasModel()
+            });
             $('body').append(this.$el.append(compiled));
         }
     });
