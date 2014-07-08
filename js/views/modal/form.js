@@ -50,13 +50,19 @@ define([
         },
 
         save: function(callback){
-            webgnome.model.save(null, {
-                success: _.bind(function(){
-                    this.hide();
-                    this.trigger('save');
-                    if(_.isFunction(callback)) callback();
-                }, this)
-            });
+            if(this.model){
+                this.model.save(null, {
+                    success: _.bind(function(){
+                        this.hide();
+                        this.trigger('save');
+                        if(_.isFunction(callback)) callback();
+                    }, this)
+                });
+            } else {
+                this.hide();
+                this.trigger('save');
+                if(_.isFunction(callback)) callback();
+            }
         },
 
         back: function() {
