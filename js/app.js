@@ -86,7 +86,7 @@ define([
              * fancy tree for rendering in a view
              * @return {Object} formated json object for fancy tree
              */
-            Backbone.Collection.prototype.toTree = Backbone.Model.prototype.toTree = function(name){
+            Backbone.Model.prototype.toTree = function(name){
                 var attrs = _.clone(this.attributes);
                 var tree = [];
                 var children = [];
@@ -100,13 +100,25 @@ define([
                     if(!_.isObject(el)){
                         // flat attribute just set the index and value
                         // on the tree. Should map to the objects edit form.
-                        tree.push({title:key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
+                        tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
                     } else if(!_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
                     }
                 }
                 tree = tree.concat(children);
+                return tree;
+            };
+
+            Backbone.Collection.prototype.toTree = function(name){
+                var models = _.clone(this.models);
+                var tree = [];
+
+                for(var model in models){
+                    var el = models[model];
+                    tree.push({title: el.get('name'), children: el.toTree()});
+                }
+
                 return tree;
             };
 
