@@ -95,6 +95,7 @@ nav.navbar{
         overflow: hidden;
         z-index: 1;
         background: white;
+        overflow-y: scroll;
         .resize{
             background-color: white;
             background-image: url('/img/grippy-show.png');
@@ -107,6 +108,8 @@ nav.navbar{
             bottom: 0;
             width: 7px;
             box-shadow: 0 0 5px 2px rgba(0, 0, 0, .25);
+            z-index: 1;
+            display: none;
 
             &:hover{
                 background-color: #f8f8f8;
@@ -117,10 +120,12 @@ nav.navbar{
         }
         &.closed .resize{
             left: 0 !important;
+
         }
 
         .model-tree{
             .ui-fancytree{
+                overflow: hidden;
                 border: 0;
                 &.fancytree-treefocus{
                     outline: 0;

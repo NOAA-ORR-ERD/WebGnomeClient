@@ -14,7 +14,7 @@ define([
         },
 
         render: function(){
-            this.$el.html('<div class="model-tree"></div><div class="resize"></div>');
+            this.$el.html('<div class="model-tree"><div class="resize"></div></div>');
             this.renderModel();
         },
 
