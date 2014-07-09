@@ -8,10 +8,12 @@ define([
     'model/spill',
     'model/environment/tide',
     'model/environment/wind',
-    'model/movers/wind'
+    'model/movers/wind',
+    'model/movers/random',
+    'model/movers/cats'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel,
-    WindMover){
+    WindMover, RandomMover, CatsMover){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -23,7 +25,9 @@ define([
                 'gnome.environment.tide.Tide': TideModel
             },
             movers: {
-                'gnome.movers.wind_movers.WindMover': WindMover
+                'gnome.movers.wind_movers.WindMover': WindMover,
+                'gnome.movers.random_movers.RandomMover': RandomMover,
+                'gnome.movers.current_movers.CatsMover': CatsMover
             },
             outputters: Backbone.Collection,
             weatherers: Backbone.Collection
