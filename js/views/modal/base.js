@@ -7,12 +7,6 @@ define([
 ], function($, _, Backbone, bs, ModalTemplate){
     var baseModal = Backbone.View.extend({
         className: 'modal fade',
-
-        initialize: function(){
-            if($('.modal').length === 0){
-                this.render();
-            }
-        },
         name: 'default',
         title: 'Default Modal',
         body: '',
@@ -23,6 +17,24 @@ define([
             keyboard: true,
             show: true,
             remote: false
+        },
+
+        initialize: function(options){
+            if(options.body) {
+                this.body = options.body;
+            }
+
+            if(options.name) {
+                this.name = options.name;
+            }
+
+            if(options.title) {
+                this.title = options.title;
+            }
+
+            if(options.buttons) {
+                this.buttons = options.buttons;
+            }
         },
 
         events: {
