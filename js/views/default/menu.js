@@ -89,7 +89,7 @@ define([
 
         about: function(event){
             event.preventDefault();
-            new AboutModal();
+            new AboutModal().render();
         },
 
         tutorial: function(event){

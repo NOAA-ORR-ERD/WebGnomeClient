@@ -20,20 +20,22 @@ define([
         },
 
         initialize: function(options){
-            if(options.body) {
-                this.body = options.body;
-            }
+            if(options){
+                if(options.body) {
+                    this.body = options.body;
+                }
 
-            if(options.name) {
-                this.name = options.name;
-            }
+                if(options.name) {
+                    this.name = options.name;
+                }
 
-            if(options.title) {
-                this.title = options.title;
-            }
+                if(options.title) {
+                    this.title = options.title;
+                }
 
-            if(options.buttons) {
-                this.buttons = options.buttons;
+                if(options.buttons) {
+                    this.buttons = options.buttons;
+                }
             }
         },
 
