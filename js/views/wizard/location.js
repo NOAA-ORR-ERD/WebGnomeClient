@@ -18,7 +18,7 @@ define([
 
         initialize: function(opts){
             webgnome.model = new GnomeModel();
-            webgnome.model.save(null, {validate: false});
+            webgnome.model.fetch();
             webgnome.model.once('ready', _.bind(function(){
                 this.location = new GnomeLocation({id: opts.slug});
                 this.name = opts.name;
