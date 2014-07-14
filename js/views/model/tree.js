@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/modal/base',
     'fancytree'
-], function($, _, Backbone){
+], function($, _, Backbone, ModalView){
     var treeView = Backbone.View.extend({
         className: 'tree opened',
         open: true,
@@ -43,14 +44,23 @@ define([
                             var form = webgnome.getForm(data.node.data.obj_type);
                             var object = data.node.data.object;
 
-                            if(action === 'edit'){
-                                var Form = require(form);
-                                var view = new Form(null, object);
-                                view.on('hidden', view.close);
-                                view.on('hidden', this.renderModel, this);
-                                view.render();
+                            if(form){
+                                if(action === 'edit'){
+                                    var Form = require(form);
+                                    var view = new Form(null, object);
+                                    view.on('hidden', view.close);
+                                    view.on('hidden', this.renderModel, this);
+                                    view.render();
+                                } else {
+                                    // how am I going to create an object/know what object needs to be created
+                                }
                             } else {
-                                // how am I going to create an object/know what object needs to be created
+                                this.modal = new ModalView({
+                                    title: 'No Form Found',
+                                    body: 'No form was found to edit or create the object you selected',
+                                    buttons: '<a href="" data-dismiss="modal" class="btn btn-primary">Ok</a>'
+                                });
+                                this.modal.render();
                             }
                             return false;
                         }, this)
