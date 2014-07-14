@@ -116,7 +116,7 @@ define([
 
                 for(var model in models){
                     var el = models[model];
-                    tree.push({title: el.get('name'), children: el.toTree()});
+                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toTree()});
                 }
 
                 return tree;
