@@ -10,24 +10,6 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],
 
-        initialize: function(options){
-            if(options.body) {
-                this.body = options.body;
-            }
-
-            if(options.name) {
-                this.name = options.name;
-            }
-
-            if(options.title) {
-                this.title = options.title;
-            }
-
-            if(options.buttons) {
-                this.buttons = options.buttons;
-            }
-        },
-
         events: {
             'click .next': 'save',
             'click .back': 'back',
@@ -116,7 +98,6 @@ define([
                 webgnome.router.navigate('model', true);
             });
             this.hide();
-            
         },
 
         close: function(){
