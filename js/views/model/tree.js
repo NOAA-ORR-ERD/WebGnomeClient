@@ -41,7 +41,7 @@ define([
                         source: model_tree,
                         dblclick: _.bind(function(event, data){
                             var action = data.node.data.action;
-                            var form = webgnome.getForm(data.node.data.obj_type);
+                            var form = webgnome.getForm(data.node.data.object.get('obj_type'));
                             var object = data.node.data.object;
 
                             if(form){
@@ -61,6 +61,7 @@ define([
                                     buttons: '<a href="" data-dismiss="modal" class="btn btn-primary">Ok</a>'
                                 });
                                 this.modal.render();
+                                console.log('did not find form for ' + object.get('obj_type'));
                             }
                             return false;
                         }, this)
