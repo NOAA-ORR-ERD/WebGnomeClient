@@ -41,7 +41,7 @@ define([
                         source: model_tree,
                         dblclick: _.bind(function(event, data){
                             var action = data.node.data.action;
-                            var form = webgnome.getForm(data.node.data.obj_type);
+                            var form = webgnome.getForm(data.node.data.object.get('obj_type'));
                             var object = data.node.data.object;
 
                             if(form){
@@ -49,7 +49,7 @@ define([
                                     var Form = require(form);
                                     var view = new Form(null, object);
                                     view.on('hidden', view.close);
-                                    view.on('hidden', this.renderModel, this);
+                                    view.on('hidden', this.updateModel, this);
                                     view.render();
                                 } else {
                                     // how am I going to create an object/know what object needs to be created
@@ -61,6 +61,7 @@ define([
                                     buttons: '<a href="" data-dismiss="modal" class="btn btn-primary">Ok</a>'
                                 });
                                 this.modal.render();
+                                console.log('did not find form for ' + object.get('obj_type'));
                             }
                             return false;
                         }, this)
@@ -70,6 +71,14 @@ define([
                     this.tree.reload(model_tree);
                 }
             }
+        },
+
+        updateModel: function(){
+            webgnome.model.fetch({
+                success: _.bind(function(){
+                    this.renderModel();
+                }, this)
+            });
         }
     });
 

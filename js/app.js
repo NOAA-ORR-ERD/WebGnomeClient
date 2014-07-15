@@ -116,7 +116,7 @@ define([
 
                 for(var model in models){
                     var el = models[model];
-                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toTree()});
+                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toTree(), action: 'edit', object: el, expanded: true});
                 }
 
                 return tree;
@@ -127,6 +127,7 @@ define([
                     'gnome.model.Model': 'views/form/model',
                     'gnome.map.GnomeMap': 'views/form/map',
                     'gnome.spill.Spill': 'views/form/spill',
+                    'gnome.environment.wind.Wind': 'views/form/wind'
                 };
 
                 return map[obj_type];
