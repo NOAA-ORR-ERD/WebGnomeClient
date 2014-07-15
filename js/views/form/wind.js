@@ -181,8 +181,7 @@ define([
             var speed = this.form.variable['speed'].val();
             var direction = this.form.variable['direction'].val();
             var entry = [date, [speed, direction]];
-            var incrementer = this.form.variable['increment'].val();
-            var incrementNum = parseInt(incrementer, 10);
+            var incrementer = parseInt(this.form.variable['increment'].val(), 10);
 
             if(this.variableFormValidation(entry)){
                 var not_replaced = true;
@@ -195,7 +194,7 @@ define([
 
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
-                    dateObj.add('h', incrementNum);
+                    dateObj.add('h', incrementer);
                     this.form.variable['datetime'].val(dateObj.format('YYYY/M/D H:mm'));
                 }
                 this.renderTimeseries();
