@@ -17,20 +17,30 @@ define([
         steps: [],
 
         initialize: function(opts){
-            webgnome.model = new GnomeModel();
-            webgnome.model.fetch();
-            webgnome.model.once('ready', _.bind(function(){
-                this.location = new GnomeLocation({id: opts.slug});
-                this.name = opts.name;
-                this.location.fetch({
-                    success: _.bind(this.found, this),
-                    error: this.notfound
-                });
-            }, this));
+            this.location = new GnomeLocation({id: opts.slug});
+            this.name = opts.name;
+            this.location.fetch({
+                success: _.bind(this.found, this),
+                error: this.notfound
+            });
             
         },
 
         found: function(){
+            webgnome.model = new GnomeModel();
+            webgnome.model.fetch({
+                success: _.bind(this.loaded, this),
+                error: _.bind(this.failed_load, this)
+            });
+        },
+
+        failed_load: function(){
+            console.log('Location model failed to load');
+            alert('Location model failed to load.');
+        },
+
+        loaded: function(){
+
             // clear any previously loaded steps
             _.each(this.steps, function(el, ind, ar){
                 el.close();
