@@ -49,7 +49,7 @@ define([
                                     var Form = require(form);
                                     var view = new Form(null, object);
                                     view.on('hidden', view.close);
-                                    view.on('hidden', this.renderModel, this);
+                                    view.on('hidden', this.updateModel, this);
                                     view.render();
                                 } else {
                                     // how am I going to create an object/know what object needs to be created
@@ -71,6 +71,14 @@ define([
                     this.tree.reload(model_tree);
                 }
             }
+        },
+
+        updateModel: function(){
+            webgnome.model.fetch({
+                success: _.bind(function(){
+                    this.renderModel();
+                }, this)
+            });
         }
     });
 
