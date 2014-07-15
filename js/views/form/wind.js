@@ -196,7 +196,7 @@ define([
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
                     dateObj.add('h', incrementNum);
-                    this.form.variable['datetime'].val(dateObj.format('YYYY-MM-DDTHH:mm:ss'));
+                    this.form.variable['datetime'].val(dateObj.format('YYYY/M/D H:mm'));
                 }
                 this.renderTimeseries();
             }
