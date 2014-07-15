@@ -77,6 +77,7 @@ define([
             this.form.variable['speed'] = this.$('#variable-speed');
             this.form.variable['direction'] = this.$('#variable-direction');
             this.form.variable['datetime'] = this.$('#datetime');
+            this.form.variable['increment'] = this.$('#incrementCount');
 
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
@@ -174,10 +175,13 @@ define([
 
         addTimeseriesEntry: function(e){
             e.preventDefault();
-            var date = moment(this.form.variable['datetime'].val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var dateObj = moment(this.form.variable['datetime'].val(), 'YYYY/M/D H:mm');
+            var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
             var speed = this.form.variable['speed'].val();
             var direction = this.form.variable['direction'].val();
             var entry = [date, [speed, direction]];
+            var incrementer = this.form.variable['increment'].val();
+            var incrementNum = parseInt(incrementer, 10);
 
             if(this.variableFormValidation(entry)){
                 var not_replaced = true;
@@ -190,6 +194,8 @@ define([
 
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
+                    dateObj.add('h', incrementNum);
+                    this.form.variable['datetime'].val(dateObj.format('YYYY-MM-DDTHH:mm:ss'));
                 }
                 this.renderTimeseries();
             }
@@ -233,7 +239,11 @@ define([
             if(!this.form.variable['datetime'].val() || !this.form.variable['speed'].val() || !this.form.variable['direction'].val()){
                 valid = false;
             }
-            
+            var incrementVal = this.form.variable['increment'].val();
+
+            if(incrementVal != parseInt(incrementVal, 10)) {
+                valid = false;
+            }
 
             return valid;
         },
