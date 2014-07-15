@@ -12,6 +12,7 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
+        title: 'Wind',
         className: 'modal fade form-modal wind-form',
         events: function(){
             return _.defaults({
