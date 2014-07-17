@@ -16,17 +16,18 @@ define([
     TextForm, ModelForm, WindForm, LoadingModal){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
-
         initialize: function(opts){
+            var that = this;
             this.loadingGif = new LoadingModal();
             this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
             this.name = opts.name;
             this.location.fetch({
                 success: _.bind(this.found, this),
-                error: this.notfound
+                error: _.bind(this.notfound, this)
+            }).fail(function() {
+                that.loadingGif.hide();
             });
-            
         },
 
         found: function(){
@@ -43,6 +44,7 @@ define([
         failed_load: function(){
             console.log('Location model failed to load');
             alert('Location model failed to load.');
+            this.loadingGif.hide();
         },
 
         loaded: function(){
