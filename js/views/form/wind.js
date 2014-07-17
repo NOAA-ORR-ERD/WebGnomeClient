@@ -194,6 +194,7 @@ define([
 
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
+                    // Code for time incrementer updates assuming values in form are in hours
                     dateObj.add('h', incrementer);
                     this.form.variable['datetime'].val(dateObj.format('YYYY/M/D H:mm'));
                 }
