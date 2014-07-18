@@ -78,7 +78,7 @@ define([
                                 response[key].add(new embeddedClass(embeddedData[obj], {parse: true}));
                             }
                         } else {
-                            // the embedded class is an object there for we can assume
+                            // the embedded class is an object therefore we can assume
                             // that the collection can have several types of objects
                             // I.E. environment with wind and tide, figure out which one we have
                             // by looking at it's obj_type and cast it appropriatly.
