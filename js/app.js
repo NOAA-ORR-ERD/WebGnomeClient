@@ -120,7 +120,11 @@ define([
                                     }
                                 }
                             } else {
-                                el = hours + " hours";
+                                if (hours ===  1) {
+                                    el = hours + " hour";
+                                } else {
+                                    el = hours + " hours";
+                                }
                             }
                         }
                         // Formats start_time to a more human readable layout
