@@ -112,6 +112,7 @@ define([
                                 if (hours < 1) {
                                     hours *= 60;
                                     el = hours + " minutes";
+                                    if (hours === 1) el = hours + " minute"; 
                                 } else {
                                     if (hours === 1) {
                                         el = hours + " hour";
