@@ -99,26 +99,29 @@ define([
 
                 for(var key in attrs){
                     var el = attrs[key];
+                    // flat attribute just set the index and value
+                    // on the tree. Should map to the objects edit form.
                     if(!_.isObject(el)){
-                        // flat attribute just set the index and value
-                        // on the tree. Should map to the objects edit form.
-                        if (key === "duration") {
+                        if (key === "duration" || key === "time_step") {
                             var hours = el / 3600;
-                            var days = hours / 24;
+                            var hourText = " hour";
 
-                            if (Math.round(days) != days) {
-                                if (days < 1) {
-                                    days = 0;
+                            if (Math.round(hours) != hours) {
+                                if (hours < 1) {
+                                    hours *= 60;
+                                    el = hours + " minutes";
                                 } else {
-                                    days = parseInt(days, 10);
-                                    hours = hours - (days * 24);
+                                    if (hours === 1) {
+                                        el = hours + " hour";
+                                    } else {
+                                        el = hours + " hours";
+                                    }
                                 }
                             } else {
-                                hours = 0;
+                                el = hours + " hours";
                             }
-                            el = {"days": days, "hours": hours};
                         }
-
+                        // Formats start_time to a more human readable layout
                         if (key === "start_time") {
                             el = moment(el).format('llll');
                         }
