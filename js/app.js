@@ -106,26 +106,17 @@ define([
                         // with largest time unit being hours to better mimic
                         // desktop GNOME
                         if (key === "duration" || key === "time_step") {
-                            var hours = el / 3600;
-
-                            if (Math.round(hours) != hours) {
-                                if (hours < 1) {
-                                    hours *= 60;
-                                    el = hours + " minutes";
-                                    if (hours === 1) el = hours + " minute"; 
-                                } else {
-                                    if (hours === 1) {
-                                        el = hours + " hour";
-                                    } else {
-                                        el = hours + " hours";
-                                    }
-                                }
+                            var millisecs = el * 1000;
+                            var duration = moment.duration(millisecs);
+                            var durationMins = duration.asMinutes();
+                            var durationHrs = duration.asHours();
+                            
+                            if (key === "duration") {
+                                el = durationHrs + " hours";
+                                if (durationHrs === 1) el = durationHrs + " hour";
                             } else {
-                                if (hours ===  1) {
-                                    el = hours + " hour";
-                                } else {
-                                    el = hours + " hours";
-                                }
+                                el = durationMins + " minutes";
+                                if (durationMins === 1) el = durationMins + " minute";
                             }
                         }
                         // Formats start_time to a more human readable layout
