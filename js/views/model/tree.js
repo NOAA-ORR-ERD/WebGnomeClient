@@ -35,7 +35,6 @@ define([
         renderModel: function(){
             if(webgnome.hasModel()){
                 var model_tree = webgnome.model.toTree();
-
                 if(this.$('.model-tree .ui-fancytree').length === 0){
                     this.$('.model-tree').fancytree({
                         source: model_tree,

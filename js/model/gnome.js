@@ -149,10 +149,11 @@ define([
                 hours = 0;
             }
             return {days: days, hours: hours};
-        },
+        }
 
-        // toTree: function(){
-            
+        // toTree2: function(){
+        //     var val = this.formatDuration();
+        //     console.log(val);
         // }
         
     });
