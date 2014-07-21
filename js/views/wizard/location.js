@@ -10,33 +10,41 @@ define([
     'views/form/text',
     'views/form/model',
     'views/form/wind',
+    'views/modal/loading'
 ], function($, _, Backbone, DefaultWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    TextForm, ModelForm, WindForm){
+    TextForm, ModelForm, WindForm, LoadingModal){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
-
         initialize: function(opts){
+            var that = this;
+            this.loadingGif = new LoadingModal();
+            this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
             this.name = opts.name;
             this.location.fetch({
                 success: _.bind(this.found, this),
-                error: this.notfound
+                error: _.bind(this.notfound, this)
+            }).fail(function() {
+                that.loadingGif.hide();
             });
-            
         },
 
         found: function(){
+            var that = this;
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),
                 error: _.bind(this.failed_load, this)
+            }).done(function() {
+                that.loadingGif.hide();
             });
         },
 
         failed_load: function(){
             console.log('Location model failed to load');
             alert('Location model failed to load.');
+            this.loadingGif.hide();
         },
 
         loaded: function(){

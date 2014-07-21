@@ -17,7 +17,7 @@
         "jquery-file-upload": "*",
         "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git",
         "respond": "1.4.2",
-        "compass-rose-ui": "1.0.2",
+        "compass-rose-ui": "1.0.3",
         "fancytree": "2.2.0"
     },
     "devDependencies": {
