@@ -83,6 +83,9 @@ define([
                 return response;
             };
 
+            String.prototype.capitalize = function() {
+                return this.charAt(0).toUpperCase() + this.slice(1);
+            };
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
@@ -110,7 +113,7 @@ define([
                             var duration = moment.duration(millisecs);
                             var durationMins = duration.asMinutes();
                             var durationHrs = duration.asHours();
-                            
+
                             if (key === "duration") {
                                 el = durationHrs + " hours";
                                 if (durationHrs === 1) el = durationHrs + " hour";
@@ -123,6 +126,7 @@ define([
                         if (key === "start_time") {
                             el = moment(el).format('llll');
                         }
+                        key = key.capitalize().replace(/_/g, " ");
 
                         tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
                     } else if(!_.isArray(el)) {
