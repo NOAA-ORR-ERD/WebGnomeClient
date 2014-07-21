@@ -4,13 +4,15 @@ define([
     'underscore',
     'backbone',
     'router',
+    'moment',
     'model/session',
     'model/gnome'
-], function($, _, Backbone, Router, SessionModel, GnomeModel) {
+], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     "use strict";
     var app = {
-        api: 'http://0.0.0.0:9899',
-        // api: 'http://hazweb2.orr.noaa.gov:7450',
+        //api: 'http://0.0.0.0:9899',
+        api: 'http://hazweb2.orr.noaa.gov:7450',
+        //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
@@ -100,6 +102,27 @@ define([
                     if(!_.isObject(el)){
                         // flat attribute just set the index and value
                         // on the tree. Should map to the objects edit form.
+                        if (key === "duration") {
+                            var hours = el / 3600;
+                            var days = hours / 24;
+
+                            if (Math.round(days) != days) {
+                                if (days < 1) {
+                                    days = 0;
+                                } else {
+                                    days = parseInt(days, 10);
+                                    hours = hours - (days * 24);
+                                }
+                            } else {
+                                hours = 0;
+                            }
+                            el = {"days": days, "hours": hours};
+                        }
+
+                        if (key === "start_time") {
+                            el = moment(el).format('llll');
+                        }
+
                         tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
                     } else if(!_.isArray(el)) {
                         // child collection/array of children or single child object
