@@ -124,16 +124,16 @@ define([
                         }
                         // Formats start_time to a more human readable layout
                         if (key === "start_time") {
-                            el = moment(el).format('llll');
+                            el = moment(el).format('lll');
                         }
-                        key = key.capitalize().replace(/_/g, " ");
-
+                        key = key.replace(/_/g, " ");
                         tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
-                    } else if(!_.isArray(el)) {
+                    } else if (!_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
                     }
                 }
+
                 tree = tree.concat(children);
                 return tree;
             };
