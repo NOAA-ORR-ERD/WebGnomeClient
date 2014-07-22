@@ -111,6 +111,9 @@ define([
                         // Formats duration and time_step into more readable forms
                         // with largest time unit being hours to better mimic
                         // desktop GNOME
+                        if (!_.isNull(el) && el.toString().indexOf("inf") !== -1) {
+                            el += "inity";
+                        }
                         if (key === "duration" || key === "time_step") {
                             var millisecs = el * 1000;
                             var duration = moment.duration(millisecs);
