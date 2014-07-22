@@ -126,6 +126,19 @@ define([
                         if (key === "start_time") {
                             el = moment(el).format('lll');
                         }
+                        // Format unit text output to be more readable
+                        if (key === "units") {
+                            switch (el) {
+                                case "mph":
+                                    el = "miles / hour";
+                                    break;
+                                case "m/s":
+                                    el = "meters / sec";
+                                    break;
+                                default:
+                                    el = el;
+                            }
+                        }
                         key = key.replace(/_/g, " ");
                         tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
                     } else if (!_.isArray(el)) {
