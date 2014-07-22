@@ -86,6 +86,9 @@ define([
             String.prototype.capitalize = function() {
                 return this.charAt(0).toUpperCase() + this.slice(1);
             };
+            String.prototype.splice = function(idx, rem, s) {
+                return (this.slice(0,idx)) + s + this.slice(idx + Math.abs(rem));
+            };
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
@@ -121,6 +124,11 @@ define([
                                 el = durationMins + " minutes";
                                 if (durationMins === 1) el = durationMins + " minute";
                             }
+                        }
+                        // Expanding cur abbrevation to current in tree output
+                        if (key.indexOf("cur") !== -1) {
+                            var curIndex = key.indexOf("cur") + 3;
+                            key = key.splice(curIndex, 0, "rent");
                         }
                         // Formats start_time to a more human readable layout
                         if (key === "start_time") {
