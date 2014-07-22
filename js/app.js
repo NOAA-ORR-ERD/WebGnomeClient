@@ -126,6 +126,9 @@ define([
                         if (key === "start_time") {
                             el = moment(el).format('lll');
                         }
+                        if (key === "diffusion_coef" || key === "uncertain_eddy_diffusion") {
+                            el += " cm^2 / s";
+                        }
                         // Format unit text output to be more readable
                         if (key === "units") {
                             switch (el) {
