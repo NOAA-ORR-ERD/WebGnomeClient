@@ -108,12 +108,13 @@ define([
                     // flat attribute just set the index and value
                     // on the tree. Should map to the objects edit form.
                     if(!_.isObject(el)){
-                        // Formats duration and time_step into more readable forms
-                        // with largest time unit being hours to better mimic
-                        // desktop GNOME
+                        // Appends ending to inf to have output appear as infinity
                         if (!_.isNull(el) && el.toString().indexOf("inf") !== -1) {
                             el += "inity";
                         }
+                        // Formats duration and time_step into more readable forms
+                        // with largest time unit being hours to better mimic
+                        // desktop GNOME
                         if (key === "duration" || key === "time_step") {
                             var millisecs = el * 1000;
                             var duration = moment.duration(millisecs);
