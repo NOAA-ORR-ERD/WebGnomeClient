@@ -6,6 +6,7 @@ define([
     'text!templates/form/random.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
 	   var randomForm = FormModal.extend({
+      title: "Diffusion Settings",
 		  initialize: function(options, modal){
            FormModal.prototype.initialize.call(this, options);
 

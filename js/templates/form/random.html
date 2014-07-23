@@ -1,19 +1,25 @@
 <form class="form-horizontal random-form" role="form">
 
 	<div class="form-group">
-		<label for="name" class="col-sm-3 control-label">Random Mover Name</label>
-		<div class="col-sm-8">
+		<label for="name" class="col-sm-4 control-label">Name</label>
+		<div class="col-sm-4">
 			<input type="text" class="form-control" id="name" placeholder="" value="{{ name }}">
 		</div>
-
-	<div class="form-group">
-		<input type="checkbox" name="active" value="on">Active
 	</div>
 
 	<div class="form-group">
-		<label class="col-sm-3 control-label">Diffusion Coefficient</label>
-		<div class="col-sm-4"><input type="text" class="form-control" name="diffusioncoef" id="diffusCoef" value="">cm^2 / sec</div>
-		<label class="col-sm-1 control-label" for="uncertainty">Uncertainty Factor</label>
+		<div class="col-sm-4 control-label">
+			<input type="checkbox" name="active" value="on"> Active
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label">Diffusion Coefficient</label>
+		<div class="col-sm-4"><input type="text" class="form-control" name="diffusioncoef" id="diffusCoef" value=""></div><div class="col-sm-1 control-label">cm^2/sec</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="uncertainty">Uncertainty Factor</label>
 		<div class="col-sm-4"><input type="text" class="form-control" name="uncertainty" id="uncertFact" value=""></div>
 	</div>
 </form>
