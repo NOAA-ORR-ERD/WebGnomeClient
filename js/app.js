@@ -154,7 +154,7 @@ define([
                                     el = el;
                             }
                         }
-                        key = key.replace(/_/g, " ");
+                        //key = key.replace(/_/g, " ");
                         tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
                     } else if (!_.isArray(el)) {
                         // child collection/array of children or single child object
