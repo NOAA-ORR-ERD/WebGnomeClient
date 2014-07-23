@@ -17,7 +17,7 @@ define([
     var locationWizardView = DefaultWizard.extend({
         steps: [],
         initialize: function(opts){
-            var that = this;
+            var that = this;  // Use this variable to save local context (could probably used bind)
             this.loadingGif = new LoadingModal();
             this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
@@ -31,7 +31,7 @@ define([
         },
 
         found: function(){
-            var that = this;
+            var that = this;  // Use this variable to save local context (could probably used bind)
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),

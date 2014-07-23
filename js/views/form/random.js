@@ -6,7 +6,14 @@ define([
     'text!templates/form/random.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
 	var randomForm = FormModal.extend({
-		className: 'modal fade form-modal random-form',
-		title: 'Random Mover'
+		initialize: function(options, modal){
+           FormModal.prototype.initialize.call(this, options);
+
+           this.body = _.template(FormTemplate, {
+            
+           });
+
+        }
 	});
+	return randomForm;
 });
