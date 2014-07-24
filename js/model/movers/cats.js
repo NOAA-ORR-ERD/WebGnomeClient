@@ -5,7 +5,7 @@ define([
     'model/environment/tide'
 ], function(_, Backbone, BaseModel, GnomeTide){
     var currentMover = BaseModel.extend({
-        urlRoot: '/movers/',
+        urlRoot: '/mover/',
 
         defaults: {
             obj_type: 'gnome.movers.current_movers.CatsMover'

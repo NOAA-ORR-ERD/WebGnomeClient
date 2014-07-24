@@ -13,12 +13,21 @@ define([
 
           }, FormModal.prototype.events);
       },
-		  initialize: function(options, modal){
+		  initialize: function(options, GnomeRandom){
            FormModal.prototype.initialize.call(this, options);
+           this.model = GnomeRandom;
+      },
 
-           this.body = _.template(FormTemplate);
+      render: function(options){
+        this.body = _.template(FormTemplate);
+        
+        FormModal.prototype.render.call(this, options);
 
-        }
+        this.form['name'] = this.$('#name');
+        this.form['active'] = this.$('#active'); // need to finish this one
+        this.form['diffusion_coef'] = this.$('#diffusCoef');
+        this.form['uncertain_factor'] = this.$('#uncertFact');
+      }
 	});
 	   return randomForm;
 });
