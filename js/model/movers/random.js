@@ -11,7 +11,6 @@ define([
         },
 
         validate: function(attrs, options) {
-            console.log(attrs);
             var diffuse = attrs.diffusion_coef;
             var uncertain = attrs.uncertain_factor;
             if (!isNaN(parseInt(diffuse, 10)) && !isNaN(parseInt(uncertain, 10))){
