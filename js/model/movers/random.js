@@ -8,7 +8,7 @@ define([
 
         defaults: {
             obj_type: 'gnome.movers.random_movers.RandomMover'
-        },
+        }
 
     });
 

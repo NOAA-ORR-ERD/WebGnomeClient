@@ -19,14 +19,22 @@ define([
       },
 
       render: function(options){
-        this.body = _.template(FormTemplate);
+        this.body = _.template(FormTemplate, {
+          name: this.model.get('name'),
+          diffusion_coef: this.model.get('diffusion_coef'),
+          uncertain_factor: this.model.get('uncertain_factor')
+        });
         
         FormModal.prototype.render.call(this, options);
 
         this.form['name'] = this.$('#name');
-        this.form['active'] = this.$('#active'); // need to finish this one
         this.form['diffusion_coef'] = this.$('#diffusCoef');
         this.form['uncertain_factor'] = this.$('#uncertFact');
+
+        if (this.model.get('on')) {
+          this.$('input[name="active"]').prop('checked', true);
+        } 
+
       }
 	});
 	   return randomForm;
