@@ -22,7 +22,7 @@ define([
                 }
             } else {
                 if (diffuse === '' || uncertain === ''){
-                    return 'These fields cannot be blank!';
+                    return 'That field cannot be blank!';
                 }
                 return 'Diffusion coefficient and Uncertainty factor must be numbers!';
             }
