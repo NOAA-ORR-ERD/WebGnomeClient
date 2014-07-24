@@ -27,14 +27,21 @@ define([
         
         FormModal.prototype.render.call(this, options);
 
-        this.form['name'] = this.$('#name');
-        this.form['diffusion_coef'] = this.$('#diffusCoef');
-        this.form['uncertain_factor'] = this.$('#uncertFact');
-
         if (this.model.get('on')) {
           this.$('input[name="active"]').prop('checked', true);
         } 
 
+      },
+
+      update: function() {
+        var mover_name = this.$('#name').val();
+        this.model.set('name', mover_name);
+
+        var diffusion_coef = this.$('#diffusCoef').val();
+        this.model.set('diffusion_coef', diffusion_coef);
+
+        var uncertain_factor = this.$('#uncertFact').val();
+        this.model.set('uncertain_factor', uncertain_factor);
       }
 	});
 	   return randomForm;
