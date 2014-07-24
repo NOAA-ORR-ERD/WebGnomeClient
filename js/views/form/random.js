@@ -33,7 +33,7 @@ define([
 
       },
 
-      update: function() {
+      update: function(){
         var mover_name = this.$('#name').val();
         this.model.set('name', mover_name);
 
@@ -42,6 +42,15 @@ define([
 
         var uncertain_factor = this.$('#uncertFact').val();
         this.model.set('uncertain_factor', uncertain_factor);
+
+        var active = this.$('#active').is(':checked');
+        this.model.set('on', active);
+
+        if(!this.model.isValid()){
+          this.error('Error!', this.model.validationError);
+        } else {
+          this.clearError();
+        }
       }
 	});
 	   return randomForm;
