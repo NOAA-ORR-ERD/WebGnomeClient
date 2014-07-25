@@ -17,7 +17,8 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-2 control-label">Reference Point</div>
+		<div class="row"><div class="col-sm-12"><hr></div></div>
+		<div class="col-sm-4 control-label">Reference Point</div>
 	</div>
 
 	<ul class="nav nav-tabs">
@@ -25,10 +26,10 @@
 			<a href="#decimalDegs" data-toggle="tab">Decimal Degrees</a>
 		</li>
 		<li class="degMin">
-			<a href="#degMin" data-toggle="tab">Degree per Minute</a>
+			<a href="#degMin" data-toggle="tab">Deg / Min</a>
 		</li>
 		<li class="degMinSec">
-			<a href="#degMinSec" data-toggle="tab">Degree / Mins / Sec</a>
+			<a href="#degMinSec" data-toggle="tab">Degree / Min / Sec</a>
 		</li>
 	</ul>
 
@@ -39,9 +40,9 @@
 					<div class="form-horizontal">
 						<div class="form-group">
 							<div class="col-sm-3"><label class="control-label" for="deciLat">Latitude:</label></div>
-							<div class="col-sm-4"><input type="number" id="deciLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2">
-								<select>
+							<div class="col-sm-5"><input type="number" id="deciLat" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-4">
+								<select class="form-control col-xs-2">
 									<option value="north">North</option>
 									<option value="south">South</option>
 								</select>
@@ -49,9 +50,9 @@
 						</div>
 						<div class="form-group">
 							<div class="col-sm-3"><label class="control-label" for="deciLon">Longitude:</label></div>
-							<div class="col-sm-4"><input type="number" id="deciLon" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2">
-								<select>
+							<div class="col-sm-5"><input type="number" id="deciLon" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-4">
+								<select class="form-control col-xs-2">
 									<option value="west">West</option>
 									<option value="east">East</option>
 								</select>
@@ -67,12 +68,12 @@
 					<div class="form-horizontal">
 						<div class="form-group">
 							<div class="col-sm-12"><label class="control-label" for="Latitude">Latitude</label></div>
-							<div class="col-sm-2"><label class="control-label" for="degLat">Deg:</label></div>
+							<div class="col-sm-1"><label class="control-label" for="degLat">Deg:</label></div>
 							<div class="col-sm-3"><input type="number" id="degLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2"><label class="control-label" for="minLat">Min:</label></div>
+							<div class="col-sm-1"><label class="control-label" for="minLat">Min:</label></div>
 							<div class="col-sm-3"><input type="number" id="minLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2">
-								<select>
+							<div class="col-sm-3">
+								<select class="form-control col-xs-3">
 									<option value="north">North</option>
 									<option value="south">South</option>
 								</select>
@@ -85,7 +86,7 @@
 							<div class="col-sm-2"><label class="control-label" for"minLon">Min:</label></div>
 							<div class="col-sm-3"><input type="number" id="minLon" class="form-control col-xs-3" value=""></div>
 							<div class="col-sm-2">
-								<select>
+								<select class="form-control col-xs-3">
 									<option value="west">West</option>
 									<option value="east">East</option>
 								</select>
@@ -97,36 +98,56 @@
 		</div>
 		<div class="tab-pane" id="degMinSec">
 			<div class="row">
-				<div class="col-sm-7">
-					<div class="form-horizontal">
-						<div class="form-group">
-							<h5>Latitude</h5>
-							<div class="col-sm-1"><label class="control-label" for="degLat">Lat:</label></div>
-							<div class="col-sm-3"><input type="number" id="degLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-1"><label class="control-label" for="minLat">Min:</label></div>
-							<div class="col-sm-3"><input type="number" id="minLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-1"><label class="control-label" for="secLat">Sec:</label></div>
-							<div class="col-sm-3"><input type="number" id="secLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2">
-								<select>
-									<option value="north">North</option>
-									<option value="south">South</option>
-								</select>
+				<div class="col-sm-12">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<div class="col-sm-12"><label class="control-label" for="Latitude">Latitude</label></div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="degLat">Deg:</label></div>
+									<div class="col-sm-5"><input type="number" id="degLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="minLat">Min:</label></div>
+									<div class="col-sm-5"><input type="number" id="minLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="secLat">Sec:</label></div>
+									<div class="col-sm-5"><input type="number" id="secLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-7">
+										<select class="form-control col-xs-3">
+											<option value="north">North</option>
+											<option value="south">South</option>
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
-						<div class="form-group">
-							<h5>Longitude</h5>
-							<div class="col-sm-2"><label class="control-label" for="degLon">Long:</label></div>
-							<div class="col-sm-4"><input type="number" id="degLon" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2"><label class="control-label" for"minLon">Min:</label></div>
-							<div class="col-sm-4"><input type="number" id="minLon" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-4"><label class="control-label" for="secLon">Sec:</label></div>
-							<div class="col-sm-4"><input type="number" id="secLon" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-4">
-								<select>
-									<option value="west">West</option>
-									<option value="east">East</option>
-								</select>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<div class="col-sm-12"><label class="control-label" for="Latitude">Longitude</label></div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="degLat">Deg:</label></div>
+									<div class="col-sm-5"><input type="number" id="degLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="minLat">Min:</label></div>
+									<div class="col-sm-5"><input type="number" id="minLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-3"><label class="control-label" for="secLat">Sec:</label></div>
+									<div class="col-sm-5"><input type="number" id="secLat" class="form-control col-xs-3" value=""></div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-7">
+										<select class="form-control col-xs-3">
+											<option value="west">West</option>
+											<option value="east">East</option>
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
