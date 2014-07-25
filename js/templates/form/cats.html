@@ -1,3 +1,84 @@
-<h3>
-	Hello Cats!
-</h3>
+<form class="form-horizontal random-form" role="form">
+
+	<div class="form-group">
+		<div class="col-sm-4 control-label">
+			Current File:
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-2 control-label">
+			<input type="checkbox" name="active" value="on" id="active"> Active
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-4 control-label"><input type="checkbox" name="showVelo" value="" id="showVelo">Show Velocities &commat; 1 in = </div><div class="col-sm-4 control-label"><input type="number" id="veloNum" class="form-control col-xs-3" value="">m/s</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-2 control-label">Reference Point</div>
+	</div>
+
+	<ul class="nav nav-tabs">
+		<li class="decimalDegs">
+			<a href="#decimalDegs" data-toggle="tab">Decimal Degrees</a>
+		</li>
+		<li class="degMin">
+			<a href="#degMin" data-toggle="tab">Degree per Minute</a>
+		</li>
+		<li class="degMinSec">
+			<a href="#degMinSec" data-toggle="tab">Degree / Mins / Sec</a>
+		</li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane" id="decimalDegs">
+			<div class="row">
+				<div class="col-sm-7">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-2"><label class="control-label" for="deciLat">Lat:</label></div>
+							<div class="col-sm-4"><input type="number" id="deciLat" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-2"><label class="control-label" for="deciLon">Long:</label></div>
+							<div class="col-sm-4"><input type="number" id="deciLon" class="form-control col-xs-3" value=""></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane" id="degMin">
+			<div class="row">
+				<div class="col-sm-7">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<div class="col-sm-2"><label class="control-label" for="degLat">Lat:</label></div>
+							<div class="col-sm-4"><input type="number" id="degLat" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-2"><label class="control-label" for="minLat">Min:</label></div>
+							<div class="col-sm-4"><input type="number" id="minLat" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-4">
+								<select>
+									<option value="north">North</option>
+									<option value="south">South</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-2"><label class="control-label" for="degLon">Long:</label></div>
+							<div class="col-sm-4"><input type="number" id="degLon" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-2"><label class="control-label" for"minLon">Min:</label></div>
+							<div class="col-sm-4"><input type="number" id="minLon" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-4">
+								<select>
+									<option value="west">West</option>
+									<option value="east">East</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</form>
