@@ -185,7 +185,8 @@ define([
                     'gnome.spill.Spill': 'views/form/spill',
                     'gnome.environment.wind.Wind': 'views/form/wind',
                     'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover'
+                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                    'gnome.movers.current_movers.CatsMover': 'views/form/cats'
                 };
 
                 return map[obj_type];

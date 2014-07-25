@@ -10,10 +10,11 @@ define([
     'views/form/text',
     'views/form/model',
     'views/form/wind',
-    'views/modal/loading'
+    'views/modal/loading',
+    'views/form/cats'
 ], function($, _, Backbone, DefaultWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    TextForm, ModelForm, WindForm, LoadingModal){
+    TextForm, ModelForm, WindForm, LoadingModal, CatsForm){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
         initialize: function(opts){
