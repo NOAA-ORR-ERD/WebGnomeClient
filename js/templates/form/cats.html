@@ -38,10 +38,24 @@
 				<div class="col-sm-7">
 					<div class="form-horizontal">
 						<div class="form-group">
-							<div class="col-sm-2"><label class="control-label" for="deciLat">Lat:</label></div>
+							<div class="col-sm-3"><label class="control-label" for="deciLat">Latitude:</label></div>
 							<div class="col-sm-4"><input type="number" id="deciLat" class="form-control col-xs-3" value=""></div>
-							<div class="col-sm-2"><label class="control-label" for="deciLon">Long:</label></div>
+							<div class="col-sm-2">
+								<select>
+									<option value="north">North</option>
+									<option value="south">South</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-3"><label class="control-label" for="deciLon">Longitude:</label></div>
 							<div class="col-sm-4"><input type="number" id="deciLon" class="form-control col-xs-3" value=""></div>
+							<div class="col-sm-2">
+								<select>
+									<option value="west">West</option>
+									<option value="east">East</option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
