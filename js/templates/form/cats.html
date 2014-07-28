@@ -1,8 +1,8 @@
 <form class="form-horizontal random-form" role="form">
 
 	<div class="form-group">
-		<div class="col-sm-4 control-label">
-			Current File:
+		<div class="col-sm-12">
+			Current File: {{currentFile}}
 		</div>
 	</div>
 
@@ -30,13 +30,13 @@
 
 	<div class="form-group">
 		<div class="col-sm-3 control-label">
-			File Name:
+			File Name: {{ fileName }}
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-sm-3 control-label">
-			Time File Units:
+			Time File Units: {{ fileUnits }}
 		</div>
 	</div>
 
@@ -46,8 +46,18 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-4 control-label">
-			Unscaled Value at Reference Point:
+		<div class="col-sm-12">
+			Unscaled Value at Reference Point: {{ unscaleRefPoint }}
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-sm-12">
+			<input type="checkbox" name="refPointScale" value="noRef">No Reference Point Scaling
+		</div>
+		<div class="col-sm-12">
+			<div class="col-sm-4"><input type="checkbox" name="refPointScale" value="scaleToNum">Scale To:</div>
+			<div class="col-sm-2"><input type="number" id="refScaleNum" class="form-control col-xs-3" value="">*file value at reference point</div>
 		</div>
 	</div>
 
