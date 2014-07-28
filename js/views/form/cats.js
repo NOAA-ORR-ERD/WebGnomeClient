@@ -12,13 +12,12 @@ define([
 		initialize: function(options, GnomeTide){
 			FormModal.prototype.initialize.call(this, options);
 			this.model = GnomeTide;
-			this.tide = this.model.toJSON().tide.attributes;
 		},
 
 		render: function(options){
 			this.body = _.template(FormTemplate, {
 				currentFile: this.model.get('filename'),
-				fileName: this.tide.name,
+				fileName: this.model.get('tide').attributes.name,
 				fileUnits: "knots",
 				unscaleRefPoint: "0.545547 m/s"
 			});

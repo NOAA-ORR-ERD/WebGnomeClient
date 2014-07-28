@@ -7,13 +7,13 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-2 control-label">
+		<div class="col-sm-2">
 			<input type="checkbox" name="active" value="on" id="active"> Active
 		</div>
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-4 control-label"><input type="checkbox" name="showVelo" value="" id="showVelo">Show Velocities &commat; 1 in = </div><div class="col-sm-4 control-label"><input type="number" id="veloNum" class="form-control col-xs-3" value="">m/s</div>
+		<div class="col-sm-5"><input type="checkbox" name="showVelo" value="" id="showVelo"> Show Velocities &commat; 1 in = </div><div class="col-sm-4"><input type="number" id="veloNum" class="form-control col-xs-3" value=""></div>m/s
 	</div>
 
 	<div class="form-group">
@@ -29,13 +29,13 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-3 control-label">
+		<div class="col-sm-6 control-label">
 			File Name: {{ fileName }}
 		</div>
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-3 control-label">
+		<div class="col-sm-6 control-label">
 			Time File Units: {{ fileUnits }}
 		</div>
 	</div>
@@ -53,11 +53,16 @@
 
 	<div class="form-group">
 		<div class="col-sm-12">
-			<input type="checkbox" name="refPointScale" value="noRef">No Reference Point Scaling
+			<input type="checkbox" name="refPointScale" value="noRef"> No Reference Point Scaling
 		</div>
 		<div class="col-sm-12">
-			<div class="col-sm-4"><input type="checkbox" name="refPointScale" value="scaleToNum">Scale To:</div>
-			<div class="col-sm-2"><input type="number" id="refScaleNum" class="form-control col-xs-3" value="">*file value at reference point</div>
+			<div class="form-group">
+				<div class="col-sm-3"><input type="checkbox" name="refPointScale" value="scaleToNum"> Scale To:</div>
+				<div class="col-sm-6"><input type="number" id="refScaleNum" class="form-control col-xs-6" value="">*file value at reference point</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			<input type="checkbox" name="refPointScale" value="otherRef"> Scale to Other Grid:
 		</div>
 	</div>
 
