@@ -11,7 +11,7 @@ define([
     "use strict";
     var app = {
         //api: 'http://0.0.0.0:9899',
-        api: 'http://hazweb2.orr.noaa.gov:7450',
+        api: 'http://hazweb2.orr.noaa.gov:9899',
         //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
