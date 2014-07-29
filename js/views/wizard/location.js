@@ -19,7 +19,9 @@ define([
         steps: [],
         initialize: function(opts){
             // Using local variable "that" to save local context (could probably used bind)
-            var that = this; 
+            var that = this;
+            // Initializes loading modal upon location wizard's initialization
+            // and calls render on it so it appears to the user
             this.loadingGif = new LoadingModal();
             this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
@@ -27,8 +29,8 @@ define([
             this.location.fetch({
                 success: _.bind(this.found, this),
                 error: _.bind(this.notfound, this)
-            }).fail(function() {
-                that.loadingGif.hide();
+            }).fail(function() {                      // Uses promises to remove loading modal
+                that.loadingGif.hide();               // if the location cannot be found
             });
         },
 
@@ -39,8 +41,8 @@ define([
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),
                 error: _.bind(this.failed_load, this)
-            }).done(function() {
-                that.loadingGif.hide();
+            }).done(function() {                      // Uses promises to remove loading modal
+                that.loadingGif.hide();               // when location retrieval is successful
             });
         },
 

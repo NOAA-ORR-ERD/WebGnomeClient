@@ -27,12 +27,17 @@ define([
         
         FormModal.prototype.render.call(this, options);
 
+        /* Checks to see if the Random mover object is active and if so
+        * checks the checkbox to indicate that on modal render
+        */
         if (this.model.get('on')) {
           this.$('input[name="active"]').prop('checked', true);
         } 
 
       },
 
+      // Method used to grab inputted changes and set them to the Random model on 
+      // the click save event
       update: function(){
         var mover_name = this.$('#name').val();
         this.model.set('name', mover_name);
