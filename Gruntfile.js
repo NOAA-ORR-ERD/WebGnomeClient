@@ -10,11 +10,11 @@ module.exports = function(grunt) {
 		},
 		watch: {
 			scripts: {
-				files: ['js/**/*.js'],
-				tasks: ['jshint']
-			},
+				files: ['js/**/*', '!**/lib/**']  // Watch all files inside js/ except
+			},                                    // files in lib/
 			options: {
-				livereload: true
+				livereload: true,      // Automatically refresh the page on change
+				interval: 5007         // Set long interval to not drain system resources
 			}
 		},
 		requirejs: {
