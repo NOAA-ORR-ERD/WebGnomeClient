@@ -21,7 +21,8 @@ module.exports = function(grunt) {
 			compile: {
 				options: {
 					baseUrl: 'js',
-					mainConfigFile: 'js/main.js'
+					mainConfigFile: 'js/main.js',
+					out: 'build/optimized.js'
 				}
 			}
 		}
