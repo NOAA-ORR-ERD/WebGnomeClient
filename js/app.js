@@ -18,9 +18,10 @@ define([
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
                 xhrFields: {
-                    withCredentials: true
+                   withCredentials: true
                 }
             });
+
 
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
@@ -91,7 +92,7 @@ define([
             * instance of "cur" concat "rents" after the r in "cur" to have the output
             * "currents"
             */
-            String.prototype.splice = function(idx, rem, s) {
+            String.prototype.splice2 = function(idx, rem, s) {
                 return (this.slice(0,idx)) + s + this.slice(idx + Math.abs(rem));
             };
             /**
@@ -137,7 +138,7 @@ define([
                         // Expanding cur abbrevation to current in tree output
                         if (key.indexOf("cur") !== -1) {
                             var curIndex = key.indexOf("cur") + 3;
-                            key = key.splice(curIndex, 0, "rent");
+                            key = key.splice2(curIndex, 0, "rent");
                         }
                         // Formats start_time to a more human readable layout
                         if (key === "start_time") {
