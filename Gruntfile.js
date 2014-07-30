@@ -15,8 +15,7 @@ module.exports = function(grunt) {
 			},
 			options: {
 				livereload: true
-			},
-
+			}
 		},
 		requirejs: {
 			compile: {
@@ -32,6 +31,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-	grunt.registerTask('build', [''])
+	grunt.registerTask('build', ['requirejs', 'watch']);
 	grunt.registerTask('test', ['jshint']);
 };
