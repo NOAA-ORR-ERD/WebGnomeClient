@@ -161,19 +161,9 @@ define([
             var attrs = [];
             var startTime = moment(this.get('start_time')).format('lll');
 
-            if (timeStepTime === 1) {
-                timeStepTime += ' minute';
-            }
-            else {
-                timeStepTime += ' minutes';
-            }
+            timeStepTime += (timeStepTime === 1) ? ' minute' : ' minutes';
 
-            if (duration === 1) {
-                duration += ' hour';
-            }
-            else {
-                duration += ' hours';
-            }
+            duration += (duration === 1) ? ' hour' : ' hours';
 
             attrs.push({title: 'Start Time: ' + startTime, key: 'Start Time',
                          obj_type: this.get('start_time'), action: 'edit', object: this});
