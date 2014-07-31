@@ -149,13 +149,45 @@ define([
                 hours = 0;
             }
             return {days: days, hours: hours};
-        }
+        },
 
-        // toTree2: function(){
-        //     var val = this.formatDuration();
-        //     console.log(val);
-        // }
-        
+        toTree: function(){
+
+            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var millisecsDur = this.get('duration') * 1000;
+            var millisecsTime = this.get('time_step') * 1000;
+            var duration = moment.duration(millisecsDur).asHours();
+            var timeStepTime = moment.duration(millisecsTime).asMinutes();
+            var attrs = [];
+            var startTime = moment(this.get('start_time')).format('lll');
+
+            if (timeStepTime === 1) {
+                timeStepTime += ' minute';
+            }
+            else {
+                timeStepTime += ' minutes';
+            }
+
+            if (duration === 1) {
+                duration += ' hour';
+            }
+            else {
+                duration += ' hours';
+            }
+
+            attrs.push({title: 'Start Time: ' + startTime, key: 'Start Time',
+                         obj_type: this.get('start_time'), action: 'edit', object: this});
+
+            attrs.push({title: 'Duration: ' + duration, key: 'Duration',
+                         obj_type: this.get('obj_type'), action: 'edit', object: this});
+
+            attrs.push({title: 'Time Step: ' + timeStepTime, key: 'Time Step',
+                         obj_type: this.get('time_step'), action: 'edit', object: this});
+
+            tree = attrs.concat(tree);
+
+            return tree;
+        }
     });
 
     return gnomeModel;

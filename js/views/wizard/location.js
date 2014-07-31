@@ -29,8 +29,6 @@ define([
             this.location.fetch({
                 success: _.bind(this.found, this),
                 error: _.bind(this.notfound, this)
-            }).fail(function() {                      // Uses promises to remove loading modal
-                that.loadingGif.hide();               // if the location cannot be found
             });
         },
 
@@ -41,8 +39,6 @@ define([
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),
                 error: _.bind(this.failed_load, this)
-            }).done(function() {                      // Uses promises to remove loading modal
-                that.loadingGif.hide();               // when location retrieval is successful
             });
         },
 
@@ -59,6 +55,7 @@ define([
                 el.close();
             });
             this.steps = [];
+            this.loadingGif.hide();
 
             // set up each step described in the location file.
             _.each(this.location.get('steps'), _.bind(function(el, ind, ar){
@@ -117,6 +114,7 @@ define([
         notfound: function(){
             console.log('location was not found');
             alert('There was not a location found with that id.');
+            this.loadingGif.hide();
         }
     });
 

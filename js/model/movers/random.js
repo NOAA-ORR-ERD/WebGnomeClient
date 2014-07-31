@@ -26,7 +26,24 @@ define([
                 }
                 return 'Diffusion coefficient and Uncertainty factor must be numbers!';
             }
-        }    
+        },
+
+        toTree: function() {
+            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var attrs = [];
+            var diffuseCoef = this.get('diffusion_coef') + ' cm^2 / s';
+            var uncertFactor = this.get('uncertain_factor');
+
+            attrs.push({title: 'Diffusion Coefficient: ' + diffuseCoef, key: 'Diffusion Coefficient',
+                         obj_type: this.get('diffusion_coef'), action: 'edit', object: this});
+
+            attrs.push({title: 'Uncertain Factor: ' + uncertFactor, key: 'Uncertain Factor',
+                         obj_type: this.get('uncertain_factor'), action: 'edit', object: this});
+
+            tree = attrs.concat(tree);
+
+            return tree;
+        }   
     });
 
     return randomMover;

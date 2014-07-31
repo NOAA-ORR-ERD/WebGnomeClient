@@ -100,72 +100,28 @@ define([
              * fancy tree for rendering in a view
              * @return {Object} formated json object for fancy tree
              */
-            Backbone.Model.prototype.toTree = function(name){
+            Backbone.Model.prototype.toTree = function(use_attrs){
                 var attrs = _.clone(this.attributes);
                 var tree = [];
                 var children = [];
 
-                if(_.isUndefined(name)){
-                    name = 'Model';
+                if(_.isUndefined(use_attrs)){
+                    use_attrs = true;
                 }
 
                 for(var key in attrs){
                     var el = attrs[key];
                     // flat attribute just set the index and value
                     // on the tree. Should map to the objects edit form.
-                    if(!_.isObject(el)){
-                        // Appends ending to inf to have output appear as infinity
-                        if (!_.isNull(el) && el.toString().indexOf("inf") !== -1) {
-                            el += "inity";
-                        }
-                        // Formats duration and time_step into more readable forms
-                        // with largest time unit being hours to better mimic
-                        // desktop GNOME
-                        if (key === "duration" || key === "time_step") {
-                            var millisecs = el * 1000;
-                            var duration = moment.duration(millisecs);
-                            var durationMins = duration.asMinutes();
-                            var durationHrs = duration.asHours();
+                    if(!_.isObject(el) && use_attrs === true){
 
-                            if (key === "duration") {
-                                el = durationHrs + " hours";
-                                if (durationHrs === 1) el = durationHrs + " hour";
-                            } else {
-                                el = durationMins + " minutes";
-                                if (durationMins === 1) el = durationMins + " minute";
-                            }
-                        }
-                        // Expanding cur abbrevation to current in tree output
-                        if (key.indexOf("cur") !== -1) {
-                            var curIndex = key.indexOf("cur") + 3;
-                            key = key.splice2(curIndex, 0, "rent");
-                        }
-                        // Formats start_time to a more human readable layout
-                        if (key === "start_time") {
-                            el = moment(el).format('lll');
-                        }
-                        if (key === "diffusion_coef" || key === "uncertain_eddy_diffusion") {
-                            el += " cm^2 / s";
-                        }
-                        // Format unit text output to be more readable
-                        if (key === "units") {
-                            switch (el) {
-                                case "mph":
-                                    el = "miles / hour";
-                                    break;
-                                case "m/s":
-                                    el = "meters / sec";
-                                    break;
-                                default:
-                                    el = el;
-                            }
-                        }
-                        //key = key.replace(/_/g, " ");
-                        tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
-                    } else if (!_.isArray(el)) {
+                        tree.push({title: key + ': ' + el, key: el,
+                                   obj_type: attrs.obj_type, action: 'edit', object: this});
+                        
+                    } else if (_.isObject(el) && !_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
-                    }
+                    } 
                 }
 
                 tree = tree.concat(children);
