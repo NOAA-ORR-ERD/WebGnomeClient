@@ -31,7 +31,7 @@ define([
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
-            'click .preferences': 'preferences',
+            'click .debugView': 'debugView',
 
             'click .run': 'run',
             'click .step': 'step',
@@ -70,9 +70,9 @@ define([
             webgnome.router.navigate('save', true);
         },
 
-        preferences: function(event){
+        debugView: function(event){
             event.preventDefault();
-            webgnome.router.navigate('preferences', true);
+            webgnome.router.navigate('debug', true);
         },
 
         run: function(event){
