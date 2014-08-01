@@ -21,10 +21,6 @@ define([
             this.render();
             
             webgnome.model.on('change', this.render, this);
-            this.$('.layers .title').click(_.bind(function(){
-                this.$('.layers').toggleClass('expanded');
-            }, this));
-            this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
         },
 
         render: function(){
@@ -38,6 +34,10 @@ define([
             var compiled = _.template(ControlsTemplate, {date: date});
             this.$el.html(compiled);
 
+            this.$('.layers .title').click(_.bind(function(){
+                this.$('.layers').toggleClass('expanded');
+            }, this));
+            this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
             this.ol.render();
 
             this.$('.seek > div').slider();
