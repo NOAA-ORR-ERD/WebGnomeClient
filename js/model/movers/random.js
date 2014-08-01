@@ -16,7 +16,7 @@ define([
             if (!isNaN(parseInt(diffuse, 10)) && !isNaN(parseInt(uncertain, 10))){
                 if (attrs.diffusion_coef < 0){
                     return 'Diffusion coefficient must be greater than zero!';
-                } 
+                }
                 if (attrs.uncertain_factor < 0){
                     return 'Uncertainty factor must be greater than zero!';
                 }
@@ -33,9 +33,12 @@ define([
             var attrs = [];
             var diffuseCoef = this.get('diffusion_coef') + ' cm^2 / s';
             var uncertFactor = this.get('uncertain_factor');
+            var on = this.get('on');
 
             attrs.push({title: 'Diffusion Coefficient: ' + diffuseCoef, key: 'Diffusion Coefficient',
                          obj_type: this.get('diffusion_coef'), action: 'edit', object: this});
+
+            attrs.push({title: 'On: ' + on, key: 'On', obj_type: this.get('on'), action: 'edit', object: this});
 
             attrs.push({title: 'Uncertain Factor: ' + uncertFactor, key: 'Uncertain Factor',
                          obj_type: this.get('uncertain_factor'), action: 'edit', object: this});
@@ -43,7 +46,7 @@ define([
             tree = attrs.concat(tree);
 
             return tree;
-        }   
+        }  
     });
 
     return randomMover;
