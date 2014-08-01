@@ -10,8 +10,8 @@ define([
 ], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     'use strict';
     var app = {
-        //api: 'http://0.0.0.0:9899',
-        api: 'http://hazweb2.orr.noaa.gov:9899',
+        api: 'http://0.0.0.0:9899',
+        // api: 'http://hazweb2.orr.noaa.gov:9899',
         //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
@@ -165,12 +165,15 @@ define([
                         if(model.id){
                             window.webgnome.model = model;
                         }
-                        Backbone.history.start();
                         if(webgnome.hasModel()){
+                            Backbone.history.start();
                             webgnome.router.navigate('model', true);
+                        } else if(window.location.href.split('#').length > 1) {
+                            window.location.href = window.location.href.split('#')[0];
                         } else {
-                            webgnome.router.navigate('', true);
+                            Backbone.history.start();
                         }
+
                     },
                     error: function(){
                         Backbone.history.start();
