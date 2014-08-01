@@ -83,18 +83,6 @@ define([
                 }
                 return response;
             };
-            // String method used to capitialize string output in the toTree method below
-            String.prototype.capitalize = function() {
-                return this.charAt(0).toUpperCase() + this.slice(1);
-            };
-            /** String method used to append ending letters to incomplete words to make the 
-            * toTree output more human readable.  A working case of this is for every
-            * instance of "cur" concat "rents" after the r in "cur" to have the output
-            * "currents"
-            */
-            String.prototype.splice2 = function(idx, rem, s) {
-                return (this.slice(0,idx)) + s + this.slice(idx + Math.abs(rem));
-            };
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
