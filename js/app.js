@@ -4,21 +4,24 @@ define([
     'underscore',
     'backbone',
     'router',
+    'moment',
     'model/session',
     'model/gnome'
-], function($, _, Backbone, Router, SessionModel, GnomeModel) {
+], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     "use strict";
     var app = {
-        api: 'http://0.0.0.0:9899',
-        // api: 'http://hazweb2.orr.noaa.gov:7450',
+        //api: 'http://0.0.0.0:9899',
+        api: 'http://hazweb2.orr.noaa.gov:9899',
+        //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
                 xhrFields: {
-                    withCredentials: true
+                   withCredentials: true
                 }
             });
+
 
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
@@ -80,32 +83,47 @@ define([
                 }
                 return response;
             };
-
+            // String method used to capitialize string output in the toTree method below
+            String.prototype.capitalize = function() {
+                return this.charAt(0).toUpperCase() + this.slice(1);
+            };
+            /** String method used to append ending letters to incomplete words to make the 
+            * toTree output more human readable.  A working case of this is for every
+            * instance of "cur" concat "rents" after the r in "cur" to have the output
+            * "currents"
+            */
+            String.prototype.splice2 = function(idx, rem, s) {
+                return (this.slice(0,idx)) + s + this.slice(idx + Math.abs(rem));
+            };
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
              * @return {Object} formated json object for fancy tree
              */
-            Backbone.Model.prototype.toTree = function(name){
+            Backbone.Model.prototype.toTree = function(use_attrs){
                 var attrs = _.clone(this.attributes);
                 var tree = [];
                 var children = [];
 
-                if(_.isUndefined(name)){
-                    name = 'Model';
+                if(_.isUndefined(use_attrs)){
+                    use_attrs = true;
                 }
 
                 for(var key in attrs){
                     var el = attrs[key];
-                    if(!_.isObject(el)){
-                        // flat attribute just set the index and value
-                        // on the tree. Should map to the objects edit form.
-                        tree.push({title: key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
-                    } else if(!_.isArray(el)) {
+                    // flat attribute just set the index and value
+                    // on the tree. Should map to the objects edit form.
+                    if(!_.isObject(el) && use_attrs === true){
+
+                        tree.push({title: key + ': ' + el, key: el,
+                                   obj_type: attrs.obj_type, action: 'edit', object: this});
+                        
+                    } else if (_.isObject(el) && !_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
-                    }
+                    } 
                 }
+
                 tree = tree.concat(children);
                 return tree;
             };
@@ -127,7 +145,10 @@ define([
                     'gnome.model.Model': 'views/form/model',
                     'gnome.map.GnomeMap': 'views/form/map',
                     'gnome.spill.Spill': 'views/form/spill',
-                    'gnome.environment.wind.Wind': 'views/form/wind'
+                    'gnome.environment.wind.Wind': 'views/form/wind',
+                    'gnome.movers.random_movers.RandomMover': 'views/form/random',
+                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                    'gnome.movers.current_movers.CatsMover': 'views/form/cats'
                 };
 
                 return map[obj_type];

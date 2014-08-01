@@ -4,7 +4,7 @@ define([
     'model/base',
 ], function(_, Backbone, BaseModel){
     var gnomeElement = BaseModel.extend({
-        url: '/element',
+        url: '/element_type',
 
         defaults: {
             'json_': 'webapi',

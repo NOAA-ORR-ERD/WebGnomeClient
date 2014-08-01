@@ -40,6 +40,30 @@ define([
                 return moment(entry[0]).unix();
             });
             this.set('timeseries', ts);
+        },
+
+        toTree: function(){
+            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var units = this.get('units');
+            var attrs = [];
+
+            switch (units) {
+                case "mph":
+                    units = "miles / hour";
+                    break;
+                case "m/s":
+                    units = "meters / sec";
+                    break;
+                default:
+                    units = units;
+            }
+
+            attrs.push({title: 'Units: ' + units, key: 'Units',
+                         obj_type: this.get('units'), action: 'edit', object: this});
+
+            tree = attrs.concat(tree);
+
+            return tree;
         }
     });
 
