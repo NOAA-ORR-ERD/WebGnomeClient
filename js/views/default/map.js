@@ -21,7 +21,8 @@ define([
         ]),
         layers: [
             new ol.layer.Tile({
-                source: new ol.source.MapQuest({layer: 'osm'})
+                source: new ol.source.MapQuest({layer: 'osm'}),
+                name: 'basemap'
             })
         ],
         center: [-99.6, 40.6],

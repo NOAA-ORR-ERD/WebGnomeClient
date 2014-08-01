@@ -146,6 +146,7 @@ nav.navbar{
         bottom: 0;
         top: 0;
         width: 70%;
+
         .controls{
             .make-row();
             background: rgba(255, 255, 255, .75);
@@ -182,6 +183,36 @@ nav.navbar{
                 font-size: 10px;
             }
             @media(max-width: 10){
+
+            }
+        }
+
+        .layers{
+            top: 75px;
+            right: -120px;
+            width: 120px;
+            position: absolute;
+            z-index: 1;
+            .transition(all .2s);
+
+            &.expanded{
+                right: 0;
+            }
+
+            form{
+                background: rgba(255, 255, 255, .75);
+                padding: 10px;
+            }
+            
+            .title{
+                background: rgba(255, 255, 255, .75);
+                .rotate(-90deg);
+                position: absolute;
+                left: -44px;
+                top: 18px;
+                padding: 3px 10px;
+                color: lighten(black, 10%);
+                cursor: pointer;
 
             }
         }

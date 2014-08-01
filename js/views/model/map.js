@@ -15,17 +15,16 @@ define([
         width: '70%',
 
         initialize: function(){
-            this.render();
-            this.$('.seek > div').slider();
             this.ol = new olMapView({
                 controls: 'full'
             });
+            this.render();
             
-            // check if the ui should be functional
-            if(!webgnome.hasModel() || !webgnome.validModel()){
-                this.$('.seek > div').slider('option', 'disabled', true);
-                this.$('.buttons a').addClass('disabled');
-            }
+            webgnome.model.on('change', this.render, this);
+            this.$('.layers .title').click(_.bind(function(){
+                this.$('.layers').toggleClass('expanded');
+            }, this));
+            this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
         },
 
         render: function(){
@@ -38,6 +37,16 @@ define([
 
             var compiled = _.template(ControlsTemplate, {date: date});
             this.$el.html(compiled);
+
+            this.ol.render();
+
+            this.$('.seek > div').slider();
+            
+            // check if the ui should be functional
+            if(!webgnome.hasModel() || !webgnome.validModel()){
+                this.$('.seek > div').slider('option', 'disabled', true);
+                this.$('.buttons a').addClass('disabled');
+            }
         },
 
         toggle: function(offset){
@@ -55,6 +64,22 @@ define([
 
         renderMap: function(){
             this.ol.render();
+        },
+
+        toggleLayer: function(event){
+            var layer = event.target.id;
+
+            if(layer){
+                this.ol.map.getLayers().forEach(function(el, ind, ar){
+                    if(el.get('name') == layer){
+                        if(el.getVisible()){
+                            el.setVisible(false);
+                        } else {
+                            el.setVisible(true);
+                        }
+                    }
+                });
+            }
         },
 
         close: function(){
