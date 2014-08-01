@@ -2,21 +2,23 @@
 
 	<div class="form-group">
 		<div class="col-sm-12">
-			<div class="col-xs-3">Current File: </div><div class="col-xs-9"><input class="col-xs-6 form-control" type="text" value="{{ currentFile }}" disabled></div>
+			<label class="control-label col-xs-3" for="currentFile">Current File: </label><div class="col-xs-9"><input class="col-xs-6 form-control" type="text" id="currentFile" value="{{ currentFile }}" disabled></div>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-2">
-			<input type="checkbox" name="active" value="on" id="active"> Active
+		<div class="col-sm-5">
+			<input type="checkbox" name="active" value="on" id="active" class="col-xs-1"><label class="control-form col-xs-4" for="active">Active</label>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-5"><input type="checkbox" name="showVelo" value="" id="showVelo"> Show Velocities &commat; 1 in = </div><div class="col-sm-3"><input type="number" id="veloNum" class="form-control col-xs-2" value=""></div>m/s
+		<div class="col-sm-5">
+			<input class="col-xs-1" type="checkbox" name="showVelo" value="" id="showVelo"><label for="veloNum" class="control-form col-xs-10">Show Velocities &commat; 1 in = </label></div><div class="col-sm-3"><input type="number" id="veloNum" class="form-control col-xs-2" value=""></div>m/s
 	</div>
 
 	<div class="form-group">
+		<label class="control-label col-sm-5">Coefficients/Time Series</label>
 		<div class="col-sm-6">
 			<select class="form-control col-xs-6">
 				<option value="none">No Time Series</option>
@@ -30,13 +32,13 @@
 
 	<div class="form-group">
 		<div class="col-sm-6">
-			<div class="col-xs-6">File Name: </div><div class="col-xs-6"><input class="col-xs-6 form-control" type="text" value="{{ fileName }}" disabled></div>
+			<div class="col-xs-6"><label for="fileName" class="control-label">File Name: </label></div><div class="col-xs-6"><input class="col-xs-6 form-control" id="fileName" type="text" value="{{ fileName }}" disabled></div>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-sm-6">
-			<div class="col-xs-6">Time File Units: </div><div class="col-xs-6"><input class="col-xs-6 form-control" type="text" value="{{ fileUnits }}" disabled></div>
+			<div class="col-xs-6"><label for="fileUnits">Time File Units: </label></div><div class="col-xs-6"><input class="col-xs-6 form-control" id="fileUnits" type="text" value="{{ fileUnits }}" disabled></div>
 		</div>
 	</div>
 
@@ -47,22 +49,19 @@
 
 	<div class="form-group">
 		<div class="col-sm-12">
-			<div class="col-xs-6">Unscaled Value at Reference Point: </div><div class="col-xs-4"><input class="col-xs-4 form-control" type="text" value="{{ unscaleRefPoint }}" disabled></div>
+			<div class="col-xs-6"><label class="control-label" for="unscaleRef">Unscaled Value at Reference Point: </label></div><div class="col-xs-4"><input class="col-xs-4 form-control" type="text" value="{{ unscaleRefPoint }}" id="unscaleRef" disabled></div>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-sm-12">
-			<input type="radio" name="refPointScale" value="noRef"> No Reference Point Scaling
+			<input type="radio" class="col-xs-1" name="refPointScale" value="noRef" id="refPointScale"><label for="refPointScale">No Reference Point Scaling</label>
+		
+				<div class="col-sm-3"><input type="radio" name="refPointScale" value="scaleToNum" id="refPointScale" class="col-xs-1"><label for="refPointScale" class="control-label">Scale To:</label></div>
+				<div class="col-sm-2"><input for="refPointScale" type="number" id="refScaleNum" class="form-control col-xs-3" value=""></div><div class="col-sm-5">*file value at reference point</div>
 		</div>
 		<div class="col-sm-12">
-			<div class="form-group">
-				<div class="col-sm-3"><input type="radio" name="refPointScale" value="scaleToNum"> Scale To:</div>
-				<div class="col-sm-2"><input type="number" id="refScaleNum" class="form-control col-xs-3" value=""></div><div class="col-sm-5">*file value at reference point</div>
-			</div>
-		</div>
-		<div class="col-sm-12">
-			<input type="radio" name="refPointScale" value="otherRef"> Scale to Other Grid:
+			<input type="radio" class="col-xs-1" name="refPointScale" value="otherRef" id="refPointScale"><label for="refPointScale" class="control-label">Scale to Other Grid:</label>
 		</div>
 	</div>
 
