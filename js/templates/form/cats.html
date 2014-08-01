@@ -54,14 +54,33 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-12">
-			<input type="radio" class="col-xs-1" name="refPointScale" value="noRef" id="refPointScale"><label for="refPointScale">No Reference Point Scaling</label>
-		
-				<div class="col-sm-3"><input type="radio" name="refPointScale" value="scaleToNum" id="refPointScale" class="col-xs-1"><label for="refPointScale" class="control-label">Scale To:</label></div>
-				<div class="col-sm-2"><input for="refPointScale" type="number" id="refScaleNum" class="form-control col-xs-3" value=""></div><div class="col-sm-5">*file value at reference point</div>
+		<div class="col-sm-6">
+			<div class="radio">
+				<label for="refPointScale" class="control-label">
+					<input type="radio" class="col-xs-1" name="refPointScale" value="noRef" id="refPointScale">No Reference Point Scaling
+				</label>
+			</div>
 		</div>
-		<div class="col-sm-12">
-			<input type="radio" class="col-xs-1" name="refPointScale" value="otherRef" id="refPointScale"><label for="refPointScale" class="control-label">Scale to Other Grid:</label>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-6">
+			<div class="radio">
+				<label for="refPointScale" class="control-label">
+					<input type="radio" name="refPointScale" value="scaleToNum" id="refPointScale" class="col-xs-1">Scale To: 
+				</label>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<input for="refPointScale" type="number" id="refScaleNum" class="form-control col-xs-2" value="">
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-6">
+			<div class="radio">
+				<label for="refPointScale" class="control-label">
+					<input type="radio" class="col-xs-1" name="refPointScale" value="otherRef" id="refPointScale">Scale to Other Grid:
+				</label>
+			</div>
 		</div>
 	</div>
 
