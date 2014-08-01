@@ -38,7 +38,7 @@ define([
 
                 if(!_.isUndefined(options.controls)){
                     if(options.controls === 'full'){
-                        ol.control.defaults().extend([
+                        this.controls = ol.control.defaults().extend([
                             new ol.control.MeasureRuler(),
                             //new ol.control.MeasureArea(),
                             new ol.control.MousePosition({
