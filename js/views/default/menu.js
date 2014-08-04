@@ -71,8 +71,11 @@ define([
         },
 
         debugView: function(event){
-            event.preventDefault();
-            webgnome.router.navigate('debug', true);
+            if (event.target.className === "debugView") {
+                event.preventDefault();
+                var that = this;
+                this.$('input[type="checkbox"]').prop('checked', !that.$('input[type="checkbox"]').is(':checked'));
+            }
         },
 
         run: function(event){
