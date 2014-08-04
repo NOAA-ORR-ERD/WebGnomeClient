@@ -31,7 +31,7 @@ define([
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
-            'click .debugView': 'debugView',
+            'click a.debugView': 'debugView',
 
             'click .run': 'run',
             'click .step': 'step',
@@ -71,10 +71,14 @@ define([
         },
 
         debugView: function(event){
-            if (event.target.className === "debugView") {
-                event.preventDefault();
-                var that = this;
-                this.$('input[type="checkbox"]').prop('checked', !that.$('input[type="checkbox"]').is(':checked'));
+            event.preventDefault();
+            var checkbox = this.$('input[type="checkbox"]');           
+            if (checkbox.prop('checked')) {
+                checkbox.prop('checked', false);
+                this.trigger('debugTreeOff');
+            } else {
+                checkbox.prop('checked', true);
+                this.trigger('debugTreeOn');
             }
         },
 

@@ -11,6 +11,8 @@ define([
         width: '30%',
 
         initialize: function(){
+            webgnome.router.views[0].on('debugTreeOn', _.bind(function(){this.renderModel(true);}, this), this);
+            webgnome.router.views[0].on('debugTreeOff', _.bind(function(){this.renderModel(false);}, this), this);
             this.render();
         },
 
@@ -32,9 +34,16 @@ define([
             return this.offset;
         },
 
-        renderModel: function(){
+        renderModel: function(debugTree){
+            console.log("rendermodel fires outside if");
             if(webgnome.hasModel()){
-                var model_tree = webgnome.model.toTree();
+                if (debugTree){
+                    var model_tree = webgnome.model.toDebugTree();
+                    console.log("debug on");
+                } else {
+                    var model_tree = webgnome.model.toTree();
+                    console.log("debug off");
+                }
                 if(this.$('.model-tree .ui-fancytree').length === 0){
                     this.$('.model-tree').fancytree({
                         source: model_tree,

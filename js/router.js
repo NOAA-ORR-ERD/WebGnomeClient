@@ -28,8 +28,8 @@ define([
         },
 
         index: function(){
-            this.views.push(new MenuView());
-            this.views.push(new IndexView());
+            this.views.unshift(new MenuView());
+            this.views.unshift(new IndexView());
         },
 
         test: function(){
@@ -37,23 +37,23 @@ define([
             if(window.location.href.indexOf('0.0.0.0') == -1){
                 this.navigate('', true, false);
             }
-            this.views.push(new TestView());
+            this.views.unshift(new TestView());
         },
 
         notfound: function(actions){
-            this.views.push(new MenuView());
-            this.views.push(new NotFoundView());
+            this.views.unshift(new MenuView());
+            this.views.unshift(new NotFoundView());
             console.log('Not found:', actions);
         },
 
         locations: function(){
-            this.views.push(new MenuView());
-            this.views.push(new LocationsView());
+            this.views.unshift(new MenuView());
+            this.views.unshift(new LocationsView());
         },
 
         model: function(){
-            this.views.push(new MenuView());
-            this.views.push(new ModelView());
+            this.views.unshift(new MenuView());
+            this.views.unshift(new ModelView());
         }
 
     });

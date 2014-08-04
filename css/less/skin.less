@@ -10,14 +10,24 @@ nav.navbar{
         white-space: nowrap;
     }
 
+    li {
+        position: relative;
+    }
+
     .debugView {
+        &:hover {
+            background: none;
+        }
         padding-left: 4px;
         input {
             float: left;
             padding-left: 2px;
+            position: absolute;
+            z-index: -1;
         }
         label {
             font-weight: normal;
+            float: right;
         }
     }
 }
