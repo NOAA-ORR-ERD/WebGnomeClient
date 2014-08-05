@@ -3,8 +3,9 @@ define([
     'jquery',
     'backbone',
     'views/modal/form',
-    'text!templates/form/windMover.html'
-], function(_, $, Backbone, FormModal, FormTemplate){
+    'text!templates/form/windMover.html',
+    'views/form/wind'
+], function(_, $, Backbone, FormModal, FormTemplate, WindForm){
 	var windMoverForm = FormModal.extend({
 		title: 'Wind Mover Settings',
 		className: 'modal fade form-modal wind-form',
@@ -25,8 +26,12 @@ define([
 			});
 
 			FormModal.prototype.render.call(this, options);
-		}
+		},
 
+		renderWindForm: function(){
+			var windForm = new WindForm();
+			windForm.render();
+		}
 
 	});
 
