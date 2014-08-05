@@ -34,11 +34,7 @@ define([
             return this.offset;
         },
 
-<<<<<<< HEAD
-        renderModel: function(debugTree){
-=======
         renderModel: function(attrs){
->>>>>>> toggleTreeView
             if(webgnome.hasModel()){
                 if (attrs){
                 this.debugOn = !this.debugOn;
