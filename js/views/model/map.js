@@ -5,20 +5,42 @@ define([
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
+    'ol',
+    'model/spill',
+    'views/form/spill',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
         width: '70%',
 
+        events: {
+            'click .spill-button': 'toggleSpill',
+            'mouseout .spill-button': 'toggleSpillBlur',
+            'focusout .spill-button': 'toggleSpillBlur'
+        },
+
         initialize: function(){
+            this.SpillIndexLayer = new ol.source.Vector();
+
             this.ol = new olMapView({
-                controls: 'full'
+                controls: 'full',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'}),
+                        name: 'basemap'
+                    }),
+                    new ol.layer.Vector({
+                        source: this.SpillIndexLayer,
+                        name: 'spills'
+                    })
+                ]
             });
             this.render();
+            window.map = this.ol.map;
             
             webgnome.model.on('change', this.render, this);
         },
@@ -70,7 +92,7 @@ define([
             var layer = event.target.id;
 
             if(layer){
-                this.ol.map.getLayers().forEach(function(el, ind, ar){
+                this.ol.map.getLayers().forEach(function(el){
                     if(el.get('name') == layer){
                         if(el.getVisible()){
                             el.setVisible(false);
@@ -80,6 +102,38 @@ define([
                     }
                 });
             }
+        },
+
+        toggleSpill: function(){
+            if(this.spillToggle){
+                this.ol.map.getViewport().style.cursor = '';
+                this.spillToggle = false;
+                this.ol.map.un('click', this.addSpill, this);
+            } else {
+                this.ol.map.getViewport().style.cursor = 'crosshair';
+                this.spillToggle = true;
+                this.ol.map.on('click', this.addSpill, this);
+            }
+
+            this.$('.spill-button').toggleClass('on');
+        },
+
+        toggleSpillBlur: function(event){
+            event.target.blur();
+        },
+
+        addSpill: function(){
+            var spill = new GnomeSpill();
+            spill.save(null, {
+                validate: false,
+                success: function(){
+                    console.log('added spill');
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.save();
+                }
+            });
+
+            this.toggleSpill();
         },
 
         close: function(){

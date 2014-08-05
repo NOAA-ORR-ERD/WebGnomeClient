@@ -2,9 +2,16 @@ define([
     'underscore',
     'backbone',
     'model/base',
-], function(_, Backbone, BaseModel){
+    'model/initializers/windages'
+], function(_, Backbone, BaseModel, GnomeWindages){
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
+
+        model: {
+            initializers: {
+                'gnome.spill.elements.InitWindages': GnomeWindages
+            }
+        },
 
         defaults: {
             'json_': 'webapi',

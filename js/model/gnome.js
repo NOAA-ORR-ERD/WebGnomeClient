@@ -18,7 +18,9 @@ define([
         url: '/model',
         ajax: [],
         model: {
-            spills: SpillModel,
+            spills: {
+                'gnome.spill.spill.Spill': SpillModel
+            },
             map: MapModel,
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
