@@ -9,10 +9,10 @@ define([
         className: 'tree opened',
         open: true,
         width: '30%',
+        debugOn: false,
 
         initialize: function(){
-            webgnome.router.views[0].on('debugTreeOn', _.bind(function(){this.renderModel(true);}, this), this);
-            webgnome.router.views[0].on('debugTreeOff', _.bind(function(){this.renderModel(false);}, this), this);
+            webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel(true);}, this), this);
             this.render();
         },
 
@@ -34,10 +34,12 @@ define([
             return this.offset;
         },
 
-        renderModel: function(debugTree){
-            console.log("rendermodel fires outside if");
+        renderModel: function(attrs){
             if(webgnome.hasModel()){
-                if (debugTree){
+                if (attrs){
+                this.debugOn = !this.debugOn;
+                }
+                if (this.debugOn){
                     var model_tree = webgnome.model.toDebugTree();
                 } else {
                     var model_tree = webgnome.model.toTree();
