@@ -75,11 +75,11 @@ define([
             var checkbox = this.$('input[type="checkbox"]');           
             if (checkbox.prop('checked')) {
                 checkbox.prop('checked', false);
-                this.trigger('debugTreeOff');
             } else {
                 checkbox.prop('checked', true);
-                this.trigger('debugTreeOn');
+                //this.trigger('debugTreeOn');
             }
+            this.trigger('debugTreeToggle');
         },
 
         run: function(event){
