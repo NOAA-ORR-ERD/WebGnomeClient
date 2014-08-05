@@ -116,6 +116,30 @@ define([
                 return tree;
             };
 
+            Backbone.Model.prototype.toDebugTree = function(){
+                var attrs = _.clone(this.attributes);
+                var tree = [];
+                var children = [];
+
+                for(var key in attrs){
+                    var el = attrs[key];
+                    // flat attribute just set the index and value
+                    // on the tree. Should map to the objects edit form.
+                    if(!_.isObject(el)){
+
+                        tree.push({title: key + ': ' + el, key: el,
+                                   obj_type: attrs.obj_type, action: 'edit', object: this});
+                        
+                    } else if (_.isObject(el) && !_.isArray(el)) {
+                        // child collection/array of children or single child object
+                        children.push({title: key + ':', children: el.toDebugTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                    } 
+                }
+
+                tree = tree.concat(children);
+                return tree;
+            };
+
             Backbone.Collection.prototype.toTree = function(name){
                 var models = _.clone(this.models);
                 var tree = [];
@@ -127,6 +151,18 @@ define([
 
                 return tree;
             };
+
+            Backbone.Collection.prototype.toDebugTree = function(){
+                var models = _.clone(this.models);
+                var tree = [];
+
+                for(var model in models){
+                    var el = models[model];
+                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toDebugTree(), action: 'edit', object: el, expanded: true});
+                }
+
+                return tree;
+            }
 
             webgnome.getForm = function(obj_type){
                 var map = {
