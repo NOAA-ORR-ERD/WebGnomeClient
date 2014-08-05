@@ -24,12 +24,13 @@ define([
                 $('.tooltip').remove();
                 this.views[view].close();
             }
+            this.views = [];
             if(callback) callback.apply(this, args);
         },
 
         index: function(){
-            this.views.unshift(new MenuView());
-            this.views.unshift(new IndexView());
+            this.views.push(new MenuView());
+            this.views.push(new IndexView());
         },
 
         test: function(){
@@ -37,23 +38,23 @@ define([
             if(window.location.href.indexOf('0.0.0.0') == -1){
                 this.navigate('', true, false);
             }
-            this.views.unshift(new TestView());
+            this.views.push(new TestView());
         },
 
         notfound: function(actions){
-            this.views.unshift(new MenuView());
-            this.views.unshift(new NotFoundView());
+            this.views.push(new MenuView());
+            this.views.push(new NotFoundView());
             console.log('Not found:', actions);
         },
 
         locations: function(){
-            this.views.unshift(new MenuView());
-            this.views.unshift(new LocationsView());
+            this.views.push(new MenuView());
+            this.views.push(new LocationsView());
         },
 
         model: function(){
-            this.views.unshift(new MenuView());
-            this.views.unshift(new ModelView());
+            this.views.push(new MenuView());
+            this.views.push(new ModelView());
         }
 
     });
