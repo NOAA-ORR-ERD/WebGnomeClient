@@ -35,7 +35,6 @@ define([
         },
 
         renderModel: function(debugTree){
-            console.log("rendermodel fires outside if");
             if(webgnome.hasModel()){
                 if (debugTree){
                     var model_tree = webgnome.model.toDebugTree();
