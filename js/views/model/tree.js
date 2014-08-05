@@ -51,11 +51,13 @@ define([
 
                             if(form){
                                 if(action === 'edit'){
-                                    var Form = require(form);
-                                    var view = new Form(null, object);
-                                    view.on('hidden', view.close);
-                                    view.on('hidden', this.updateModel, this);
-                                    view.render();
+                                    require([form], _.bind(function(Form){
+                                        var view = new Form(null, object);
+                                        view.on('hidden', view.close);
+                                        view.on('hidden', this.updateModel, this);
+                                        view.render();
+                                    }, this));
+                                    
                                 } else {
                                     // how am I going to create an object/know what object needs to be created
                                 }
