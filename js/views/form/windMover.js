@@ -21,16 +21,50 @@ define([
 		},
 
 		render: function(options){
-			this.body = _.template(FormTemplate, {
+			var start_time = this.model.get('uncertain_time_delay');
 
+			start_time = (start_time === '-inf') ? 0 : start_time;
+
+			this.body = _.template(FormTemplate, {
+				active_start: start_time,
+				duration: this.model.get('uncertain_duration'),
+				speed_scale: this.model.get('uncertain_speed_scale'),
+				angle_scale: this.model.get('uncertain_angle_scale')
 			});
 
 			FormModal.prototype.render.call(this, options);
+
+			if (this.model.get('on')) {
+          		this.$('input[name="active"]').prop('checked', true);
+        	} 
 		},
 
 		renderWindForm: function(){
 			var windForm = new WindForm();
 			windForm.render();
+		},
+
+		update: function(){
+			var start_time = this.$('#startTime').val();
+			this.model.set('uncertain_time_delay', start_time);
+
+			var uncert_duration = this.$('#duration').val();
+        	this.model.set('uncertain_duration', uncert_duration);
+
+	        var speed_scale = this.$('#speedScale').val();
+	        this.model.set('uncertain_speed_scale', speed_scale);
+
+	        var angle_scale = this.$('#angleScale').val();
+	        this.model.set('uncertain_angle_scale', angle_scale);
+
+	        var active = this.$('#active').is(':checked');
+	        this.model.set('on', active);
+
+	        if(!this.model.isValid()){
+	          this.error('Error!', this.model.validationError);
+	        } else {
+	          this.clearError();
+	        }
 		}
 
 	});

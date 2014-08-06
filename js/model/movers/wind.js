@@ -5,7 +5,7 @@ define([
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, GnomeWind){
     var windMover = BaseModel.extend({
-        urlRoot: '/movers/',
+        urlRoot: '/mover/',
 
         defaults: {
             obj_type: 'gnome.movers.wind_movers.WindMover'
@@ -13,6 +13,26 @@ define([
 
         model: {
             wind: GnomeWind
+        },
+
+        validate: function(attrs, options){
+            var uncertTimeDelay = attrs.uncertain_time_delay;
+            var uncertDuration = attrs.uncertain_duration;
+            var uncertAngle = attrs.uncertain_angle_scale;
+
+            if (!isNaN(parseInt(uncertTimeDelay, 10)) && !isNaN(parseInt(uncertDuration, 10)) && !isNaN(parseInt(uncertAngle, 10))){
+                if (uncertTimeDelay < 0){
+                    return 'Start Time must be greater than or equal to zero!';
+                }
+                if (uncertDuration < 0){
+                    return 'Duration must be greater than or equal to zero!';
+                }
+                if (uncertAngle < 0){
+                    return 'Angle Scale must be greater than or equal to zero!';
+                }
+            } else {
+                return 'All input fields must be numbers and cannot be left blank!';
+            }
         },
 
         toTree: function(){
@@ -26,8 +46,17 @@ define([
             var uncertTimeDelay = this.get('uncertain_time_delay');
             var attrs = [];
 
+            // Ternary expressions to parse active start and stop into more human readable forms
+            // if they are returned as infinity values
+
             activeStart = activeStart === "-inf" ? "-infinity" : activeStart;
             activeStop = activeStop === "inf" ? "infinity" : activeStop;
+
+            // Ternary expressions to add time units to the returned attributes uncertain_duration
+            // and uncertain_time_delay
+
+            uncertDuration += uncertDuration === 1 ? ' hour' : ' hours';
+            uncertTimeDelay += uncertTimeDelay === 1 ? ' hour' : ' hours';
 
             attrs.push({title: 'Name: ' + name, key: 'Name',
                          obj_type: this.get('name'), action: 'edit', object: this});

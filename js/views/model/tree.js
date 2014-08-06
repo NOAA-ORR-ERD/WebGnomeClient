@@ -37,7 +37,7 @@ define([
         renderModel: function(attrs){
             if(webgnome.hasModel()){
                 if (attrs){
-                this.debugOn = !this.debugOn;
+                    this.debugOn = !this.debugOn;
                 }
                 if (this.debugOn){
                     var model_tree = webgnome.model.toDebugTree();
