@@ -40,10 +40,10 @@ define([
             attrs.push({title: 'Uncertain Eddy Diffusion: ' + uncertEddyDiff, key: 'Uncertain Eddy Diffusion',
                          obj_type: this.get('uncertain_eddy_diffusion'), action: 'edit', object: this});
 
-            attrs.push({title: 'Active Start ' + activeStart, key: 'Active Start',
+            attrs.push({title: 'Active Start: ' + activeStart, key: 'Active Start',
                          obj_type: this.get('active_start'), action: 'edit', object: this});
 
-            attrs.push({title: 'Active Stop ' + activeStop, key: 'Active Stop',
+            attrs.push({title: 'Active Stop: ' + activeStop, key: 'Active Stop',
                          obj_type: this.get('active_stop'), action: 'edit', object: this});
 
             tree = attrs.concat(tree);

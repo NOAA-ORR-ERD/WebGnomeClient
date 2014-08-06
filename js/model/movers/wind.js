@@ -49,8 +49,8 @@ define([
             // Ternary expressions to parse active start and stop into more human readable forms
             // if they are returned as infinity values
 
-            activeStart = activeStart === "-inf" ? "-infinity" : activeStart;
-            activeStop = activeStop === "inf" ? "infinity" : activeStop;
+            activeStart = (activeStart === "-inf") ? "-infinity" : activeStart;
+            activeStop = (activeStop === "inf") ? "infinity" : activeStop;
 
             // Ternary expressions to add time units to the returned attributes uncertain_duration
             // and uncertain_time_delay
@@ -80,7 +80,6 @@ define([
                          obj_type: this.get('uncertain_time_delay'), action: 'edit', object: this});
 
             tree = attrs.concat(tree);
-
             return tree;
         }
     });
