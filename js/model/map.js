@@ -15,7 +15,7 @@ define([
 
         getGeoJSON: function(callback){
             var url = webgnome.api + this.urlRoot + this.get('id') + '/geojson';
-            $.get(url, callback);
+            $.get(url, null, callback);
         },
 
         toTree: function(){

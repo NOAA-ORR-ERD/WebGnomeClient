@@ -35,15 +35,16 @@ define([
                 if (webgnome.model.get('map').get('obj_type') == 'gnome.map.MapFromBNA') {
                     webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                         this.shorelineSource = new ol.source.GeoJSON({
-                            object: geojson
+                            object: geojson,
+                            projection: 'EPSG:3857'
                         });
-
                         this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource
+                            source: this.shorelineSource,
+                            name: 'modelmap'
                         });
 
                         if(this.ol.map){
-                            
+                            this.ol.map.addLayer(this.shorelineLayer);
                         } else {
                             this.ol.layers.push(this.shorelineLayer);
                         }
