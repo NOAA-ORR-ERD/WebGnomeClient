@@ -37,7 +37,7 @@ define([
         renderModel: function(attrs){
             if(webgnome.hasModel()){
                 if (attrs){
-                this.debugOn = !this.debugOn;
+                    this.debugOn = !this.debugOn;
                 }
                 if (this.debugOn){
                     var model_tree = webgnome.model.toDebugTree();
@@ -57,6 +57,11 @@ define([
                                     require([form], _.bind(function(Form){
                                         var view = new Form(null, object);
                                         view.on('hidden', view.close);
+                                        // add a listener to update the entire model once the form is completed
+                                        // this will allow all objects to stay insync on the tree, ex.
+                                        // update a wind object, without update model will 
+                                        // leave any other instance of the wind object (like on a wind mover)
+                                        // out of date.
                                         view.on('hidden', this.updateModel, this);
                                         view.render();
                                     }, this));

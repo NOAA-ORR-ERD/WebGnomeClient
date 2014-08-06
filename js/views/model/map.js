@@ -33,15 +33,21 @@ define([
                 // if it does load it's geojson and put it in a layer on the map
                 // named modelmap
                 if (webgnome.model.get('map').get('obj_type') == 'gnome.map.MapFromBNA') {
-                    this.shorelineSource = new ol.source.GeoJSON({
-                        url: webgnome.api + '/map/' + webgnome.model.get('map').get('id') + '/geojson'
-                    });
+                    webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: geojson
+                        });
 
-                    this.shorelineLayer = new ol.layer.Vector({
-                        source: this.shorelineSource
-                    });
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource
+                        });
 
-                    this.ol.layers.push(this.shorelineLayer);
+                        if(this.ol.map){
+                            
+                        } else {
+                            this.ol.layers.push(this.shorelineLayer);
+                        }
+                    }, this));
                 }
             } else {
                 date = moment().format('M/DD/YYYY HH:MM');

@@ -1,8 +1,9 @@
 define([
     'underscore',
+    'jquery',
     'backbone',
     'model/base'
-], function(_, Backbone, BaseModel){
+], function(_, $, Backbone, BaseModel){
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
 
@@ -10,6 +11,11 @@ define([
             if(_.isNull(attrs.filename)){
                 return 'A BNA/GeoJSON/JSON file must be associated with the model.';
             }
+        },
+
+        getGeoJSON: function(callback){
+            var url = webgnome.api + this.urlRoot + this.get('id') + '/geojson';
+            $.get(url, callback);
         },
 
         toTree: function(){
