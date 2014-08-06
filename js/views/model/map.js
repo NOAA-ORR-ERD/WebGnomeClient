@@ -21,7 +21,7 @@ define([
             });
             this.render();
             
-            webgnome.model.on('change', this.render, this);
+            webgnome.model.on('ready', this.render, this);
         },
 
         render: function(){
