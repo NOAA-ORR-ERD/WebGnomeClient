@@ -5,9 +5,10 @@ define([
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
+    'ol',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
@@ -27,6 +28,21 @@ define([
             var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:MM');
+
+                // check if the model has a map, specifically a bna map that has a geojson output
+                // if it does load it's geojson and put it in a layer on the map
+                // named modelmap
+                if (webgnome.model.get('map').get('obj_type') == 'gnome.map.MapFromBNA') {
+                    this.shorelineSource = new ol.source.GeoJSON({
+                        url: webgnome.api + '/map/' + webgnome.model.get('map').get('id') + '/geojson'
+                    });
+
+                    this.shorelineLayer = new ol.layer.Vector({
+                        source: this.shorelineSource
+                    });
+
+                    this.ol.layers.push(this.shorelineLayer);
+                }
             } else {
                 date = moment().format('M/DD/YYYY HH:MM');
             }
