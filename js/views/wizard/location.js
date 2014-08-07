@@ -87,6 +87,7 @@ define([
                             webgnome.model.get('environment').add(wind);
                             var windMover = new GnomeWindMover({wind: wind});
                             windMover.save(null, {
+                                validate: false,
                                 success: function(){
                                     webgnome.model.get('movers').add(windMover);
                                     webgnome.model.save();
