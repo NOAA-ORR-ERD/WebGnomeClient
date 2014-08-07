@@ -84,7 +84,7 @@ define([
                 controls: this.controls,
                 target: this.id,
                 layers: this.layers,
-                view: new ol.View2D({
+                view: new ol.View({
                     center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
                     zoom: this.zoom,
                     extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
