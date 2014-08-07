@@ -99,12 +99,16 @@ define([
         },
 
         validate: function(attrs, options) {
-            if(attrs.duration <= 0 || isNaN(attrs.duration)){
-                return 'Duration values should be numbers only and greater than 0.';
+            // if(attrs.duration <= 0 || isNaN(attrs.duration)){
+            //     return 'Duration values should be numbers only and greater than 0.';
+            // }
+
+            if(attrs.duration <= 0){
+                return 'Duration values should be positive values.';
             }
 
-            if(parseInt(attrs.days, 10) === 0 && parseInt(attrs.hours, 10) === 0){
-                return 'Duration length should be greater than zero.';
+            if(isNaN(attrs.duration)){
+                return 'Duration values should be numbers only.';
             }
 
             if(attrs.time_step % 60 !== 0){

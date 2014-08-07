@@ -37,7 +37,7 @@ define([
 
             var days = this.$('#days').val();
             var hours = this.$('#hours').val();
-            var duration = (((days * 24) + parseInt(hours, 10)) * 60) * 60;
+            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             this.model.set('duration', duration);
 
             var uncertainty = this.$('#uncertainty:checked').val();
