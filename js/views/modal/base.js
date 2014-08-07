@@ -26,6 +26,8 @@ define([
 
             Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
 
+            Mousetrap.bind('esc', _.bind(this.cancelByEsc, this));
+
             if(options){
                 if(options.body) {
                     this.body = options.body;
@@ -80,7 +82,6 @@ define([
 
             this.$('input').addClass('mousetrap');
             this.$('select').addClass('mousetrap');
-            this.on('submit', _.bind(this.preventSubmit, this));
         },
 
         submitByEnter: function(e){
@@ -89,6 +90,11 @@ define([
             // Method below fires a click event on the save button of the form
         
             this.$('.save').click();
+        },
+
+        cancelByEsc: function(e){
+            e.preventDefault();
+            this.$('.cancel').click();
         }
     });
 
