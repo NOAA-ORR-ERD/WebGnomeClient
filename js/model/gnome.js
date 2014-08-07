@@ -107,7 +107,7 @@ define([
                 return 'Duration length should be greater than zero.';
             }
 
-            if(parseInt(attrs.time_step, 10) != attrs.time_step){
+            if(attrs.time_step % 60 !== 0){
                 return 'Time steps must be a whole number.';
             }
 
