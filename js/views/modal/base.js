@@ -79,6 +79,7 @@ define([
             // field is focused at the time. Link to docs here: http://craig.is/killing/mice#api.bind.text-fields
 
             this.$('input').addClass('mousetrap');
+            this.$('select').addClass('mousetrap');
             this.on('submit', _.bind(this.preventSubmit, this));
         },
 
