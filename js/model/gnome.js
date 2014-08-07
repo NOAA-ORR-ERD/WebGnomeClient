@@ -152,7 +152,6 @@ define([
         },
 
         toTree: function(){
-
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var millisecsDur = this.get('duration') * 1000;
             var millisecsTime = this.get('time_step') * 1000;
@@ -179,6 +178,6 @@ define([
             return tree;
         }
     });
-
+    
     return gnomeModel;
 });

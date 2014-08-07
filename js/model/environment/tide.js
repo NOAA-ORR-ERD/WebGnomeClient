@@ -22,7 +22,7 @@ define([
             attrs.push({title: 'Name: ' + name, key: 'Name',
                          obj_type: this.get('name'), action: 'edit', object: this});
 
-            attrs.push({title: 'Scale Factor ' + scaleFactor, key: 'Scale Factor',
+            attrs.push({title: 'Scale Factor: ' + scaleFactor, key: 'Scale Factor',
                          obj_type: this.get('scale_factor'), action: 'edit', object: this});
 
             tree = attrs.concat(tree);
