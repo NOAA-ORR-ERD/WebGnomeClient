@@ -5,9 +5,10 @@ define([
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
+    'ol',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
@@ -20,10 +21,12 @@ define([
             });
             this.render();
             
-            webgnome.model.on('change', this.render, this);
+            webgnome.model.on('ready', this.render, this);
         },
 
         render: function(){
+            webgnome.model.get('map').on('change', this.resetMap, this);
+
             var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:MM');
@@ -31,22 +34,27 @@ define([
                 date = moment().format('M/DD/YYYY HH:MM');
             }
 
-            var compiled = _.template(ControlsTemplate, {date: date});
-            this.$el.html(compiled);
+            // only compile the template if the map isn't drawn yet
+            // or if there is a redraw request because of the map object changing
+            if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
+                var compiled = _.template(ControlsTemplate, {date: date});
+                this.$el.html(compiled);
+                this.$('.layers .title').click(_.bind(function(){
+                    this.$('.layers').toggleClass('expanded');
+                }, this));
+                this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
 
-            this.$('.layers .title').click(_.bind(function(){
-                this.$('.layers').toggleClass('expanded');
-            }, this));
-            this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
-            this.ol.render();
-
-            this.$('.seek > div').slider();
+                this.$('.seek > div').slider();
+            }
             
             // check if the ui should be functional
             if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.$('.seek > div').slider('option', 'disabled', true);
                 this.$('.buttons a').addClass('disabled');
             }
+            // add a 250ms timeout to the map render to give js time to add the compiled
+            // to the dom before trying to draw the map.
+            setTimeout(_.bind(this.renderMap, this), 250);
         },
 
         toggle: function(offset){
@@ -63,7 +71,38 @@ define([
         },
 
         renderMap: function(){
-            this.ol.render();
+            // check if the model has a map, specifically a bna map that has a geojson output
+            // if it does load it's geojson and put it in a layer on the map
+            // named modelmap
+                        
+            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
+                webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                    // the map isn't rendered yet, so draw it before adding the layer.
+                    // but don't draw it agian for a normal render if the map is undefined redraw it.
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
+                        this.ol.render();
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: geojson,
+                            projection: 'EPSG:3857'
+                        });
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource,
+                            name: 'modelmap'
+                        });
+
+                        var extent = this.shorelineSource.getExtent();
+                        if(this.ol.map){
+                            this.ol.map.addLayer(this.shorelineLayer);
+                            this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
+                        }
+                    }
+                }, this));
+            } else {
+                // if the model doens't have a renderable map yet just render the base layer
+                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
+                    this.ol.render();
+                }
+            }
         },
 
         toggleLayer: function(event){
@@ -80,6 +119,11 @@ define([
                     }
                 });
             }
+        },
+
+        resetMap: function(){
+            this.ol.redraw = true;
+            this.render();
         },
 
         close: function(){
