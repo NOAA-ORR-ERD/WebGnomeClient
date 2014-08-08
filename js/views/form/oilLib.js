@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'chosen',
+    'jqueryui/core',
     'views/modal/form',
     'text!templates/form/oilLib.html'
-], function($, _, Backbone, chosen, FormModal, OilTemplate){
+], function($, _, Backbone, chosen, jqueryui, FormModal, OilTemplate){
     var oilLibForm = FormModal.extend({
         name: 'oillib',
         title: 'Oil Query Form',
@@ -18,7 +19,8 @@ define([
             this.body = _.template(OilTemplate);
             var chosen = jQuery.fn.chosen;
             FormModal.prototype.render.call(this, options);
-            this.$('.chosen-select').chosen();
+            this.$('.chosen-select').chosen({width: '350px'});
+            this.$('.slider').slider({values: [0, 10]});
         }
     });
 

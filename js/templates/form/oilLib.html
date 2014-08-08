@@ -9,7 +9,7 @@
 	<div class="form-group">
 		<label for="productType" class="col-sm-4 control-label">Product Type:</label>
 		<div class="col-sm-8">
-			<select id="productType" class="chosen-select" style="width:350px;">
+			<select id="productType" class="form-control" style="width: 350px;">
 				<option value="non-weathering">non-weathering</option>
 				<option value="fuel-oil-6">fuel oil #6</option>
 				<option value="medium-crude">Medium Crude</option>
@@ -19,7 +19,47 @@
                 <option value="gasoline">Gasoline</option>
             </select>
         </div>
-        <div class="chosen-container chosen-container-single chosen-with-drop chosen-container-active"></div>
+	</div>
+
+	<div class="form-group">
+		<label for="oilClass" class="col-sm-4 control-label">Oil Class:</label>
+		<div class="col-sm-8">
+			<select id="oilClass" class="form-control" style="width: 350px;">
+				<option value="one">One</option>
+				<option value="two">Two</option>
+				<option value="three">Three</option>
+				<option value="four">Four</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="location" class="col-sm-4 control-label">Location:</label>
+		<div class="col-sm-8">
+			<select id="location" class="chosen-select form-control" style="width: 350px;">
+				<option value="usa">United States</option>
+				<option value="algeria">Algeria</option>
+				<option value="Venezuela">Venezuela</option>
+				<option value="Mexico">Mexico</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="oilFieldName" class="col-sm-4 control-label">Oil Field Name:</label>
+		<div class="col-sm-8">
+			<select id="oilFieldName" class="chosen-select form-control" style="width: 350px;">
+				<option value="anwar">ANWAR</option>
+				<option value="slovakia1">Slovakia One</option>
+				<option value="abu_sassar">Abu Sassar</option>
+				<option value="el_parajo">El Parajo</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="api" class="col-sm-4 control-label">API:</label>
+		<div class="slider col-sm-8" id="api"></div>
 	</div>
 
 </form>
