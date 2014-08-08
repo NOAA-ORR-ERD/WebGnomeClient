@@ -30,9 +30,12 @@ define([
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
 
-            this.$('.slider').slider({range: true, min: -2, max: 180});
-            this.$('.slider').slider('values', 0, -2);
-            this.$('.slider').slider('values', 1, 180);
+            this.$('.slider').slider({
+                        range: true, 
+                        min: -2, 
+                        max: 180,
+                        values: [-2,180]
+                    });
         }
     });
 
