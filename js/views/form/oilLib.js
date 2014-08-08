@@ -17,9 +17,19 @@ define([
 
         render: function(options){
             this.body = _.template(OilTemplate);
+
+            // Placeholder value for chosen that allows it to be properly scoped aka usable by the view
+
             var chosen = jQuery.fn.chosen;
             FormModal.prototype.render.call(this, options);
+
+            // Initialize the select menus of class chosen-select to use the chose jquery plugin
+
             this.$('.chosen-select').chosen({width: '350px'});
+
+            // Use the jquery-ui slider to enable a slider so the user can select the range of API
+            // values they would want to search for
+
             this.$('.slider').slider({range: true, min: -2, max: 180});
             this.$('.slider').slider('values', 0, -2);
             this.$('.slider').slider('values', 1, 180);
