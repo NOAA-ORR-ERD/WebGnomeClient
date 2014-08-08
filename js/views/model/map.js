@@ -16,15 +16,15 @@ define([
         width: '70%',
 
         initialize: function(){
-            this.ol = new olMapView({
-                controls: 'full'
-            });
             this.render();
             
             webgnome.model.on('ready', this.render, this);
         },
 
         render: function(){
+            this.ol = new olMapView({
+                controls: 'full'
+            });
             webgnome.model.get('map').on('change', this.resetMap, this);
 
             var date;
