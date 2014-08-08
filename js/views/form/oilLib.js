@@ -34,7 +34,15 @@ define([
                         range: true, 
                         min: -2, 
                         max: 180,
-                        values: [-2,180]
+                        values: [-2,180],
+                        create: function(){
+                            var handle = $(this).find('.ui-slider-handle');
+                            var bubble = $('<div class="valuebox"></div>');
+                            handle.append(bubble);
+                        },
+                        slide: function(event, ui){
+                            ui.handle.childNodes[0].innerHTML = ui.value;
+                        }
                     });
         }
     });
