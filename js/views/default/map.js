@@ -29,7 +29,7 @@ define([
         center: ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857'),
         overlays: [],
         extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
-        zoom: 3.5,
+        zoom: 10,
 
 
         initialize: function(options){
@@ -93,6 +93,7 @@ define([
                 view: new ol.View({
                     center: this.center,
                     zoom: this.zoom,
+                    zoomFactor: 1.25,
                     extent: this.extent
                 })
             });
