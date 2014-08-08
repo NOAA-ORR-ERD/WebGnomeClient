@@ -35,13 +35,15 @@ define([
                         min: -2, 
                         max: 180,
                         values: [-2,180],
-                        create: function(){
-                            var handle = $(this).find('.ui-slider-handle');
-                            var bubble = $('<div class="valuebox"></div>');
-                            handle.append(bubble);
-                        },
-                        slide: function(event, ui){
-                            ui.handle.childNodes[0].innerHTML = ui.value;
+                        // create: function(e, ui){
+                        //    $('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[0] + '</div></div>');
+                        //    $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + ui.values[1] + '</div></div>');
+                        // },
+                        slide: function(e, ui){
+                           $('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             ui.values[0] + '</div></div>');
+                           $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             ui.values[1] + '</div></div>');
                         }
                     });
         }
