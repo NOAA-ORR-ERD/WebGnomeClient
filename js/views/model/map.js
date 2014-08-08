@@ -36,7 +36,7 @@ define([
 
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
-            if(_.isUndefined(this.ol.map) && this.redraw === false || this.ol.redraw){
+            if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
                 var compiled = _.template(ControlsTemplate, {date: date});
                 this.$el.html(compiled);
                 this.$('.layers .title').click(_.bind(function(){
