@@ -18,7 +18,8 @@ require.config({
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
         qunit: 'lib/qunit/qunit/qunit',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
-        fancytree: 'lib/fancytree/dist/jquery.fancytree'
+        fancytree: 'lib/fancytree/dist/jquery.fancytree',
+        chosen: 'lib/chosen/chosen.jquery'
     },
     shim: {
         jquery: {
@@ -43,6 +44,10 @@ require.config({
         },
         fancytree: {
             deps: ['jquery', 'jqueryui/core', 'jqueryui/widget']
+        },
+        chosen: {
+            deps: ['jquery'],
+            exports: 'jQuery.fn.chosen'
         }
     },
 });
