@@ -7,6 +7,7 @@ define([
     var olMapView = Backbone.View.extend({
         className: 'map',
         id:'map',
+        redraw: false,
         interactions: ol.interaction.defaults(),
         controls: ol.control.defaults().extend([
             new ol.control.MousePosition({
@@ -25,8 +26,9 @@ define([
                 name: 'basemap'
             })
         ],
-        center: [-99.6, 40.6],
+        center: ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857'),
         overlays: [],
+        extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
         zoom: 3.5,
 
 
@@ -75,6 +77,10 @@ define([
                 if(!_.isUndefined(options.zoom)){
                     this.zoom = options.zoom;
                 }
+
+                if(!_.isUndefined(options.extent)){
+                    this.extent = options.extent;
+                }
             }
         },
 
@@ -85,9 +91,9 @@ define([
                 target: this.id,
                 layers: this.layers,
                 view: new ol.View({
-                    center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
+                    center: this.center,
                     zoom: this.zoom,
-                    extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
+                    extent: this.extent
                 })
             });
         }
