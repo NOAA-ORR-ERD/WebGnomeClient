@@ -20,7 +20,9 @@ define([
             var chosen = jQuery.fn.chosen;
             FormModal.prototype.render.call(this, options);
             this.$('.chosen-select').chosen({width: '350px'});
-            this.$('.slider').slider({values: [0, 10]});
+            this.$('.slider').slider({range: true, min: -2, max: 180});
+            this.$('.slider').slider('values', 0, -2);
+            this.$('.slider').slider('values', 1, 180);
         }
     });
 
