@@ -41,7 +41,7 @@ define([
 
             // change mouse to pointer when hovering over a feature.
             this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature, layer){
+                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
                     return true;
                 });
                 if(pointer){
@@ -53,7 +53,7 @@ define([
 
             // clicking a location creates a popover with it's related information displayed
             this.mapView.map.on('click', function(e){
-                var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature, layer){
+                var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                     return feature;
                 });
                 if(feature){
