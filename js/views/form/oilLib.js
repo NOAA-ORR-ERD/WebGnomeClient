@@ -30,10 +30,10 @@ define([
 
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
-            this.createSliders();
+            this.createSliders(-2, 180);
         },
 
-        createSliders: function(){
+        createSliders: function(minNum, maxNum){
             this.$('.slider').slider({
                         range: true, 
                         min: -2, 
@@ -41,9 +41,9 @@ define([
                         values: [-2,180],
                         create: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             -2 + '</div></div>');
+                                                             minNum + '</div></div>');
                            this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             180 + '</div></div>');
+                                                             maxNum + '</div></div>');
                         }, this),
                         slide: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
