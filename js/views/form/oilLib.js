@@ -19,7 +19,7 @@ define([
         render: function(options){
             this.body = _.template(OilTemplate);
 
-            // Placeholder value for chosen that allows it to be properly scoped aka usable by the view
+            // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
             var chosen = jQuery.fn.chosen;
             FormModal.prototype.render.call(this, options);
@@ -31,6 +31,10 @@ define([
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
             this.createSliders();
+            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             -2 + '</div></div>');
+            this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             180 + '</div></div>');
         },
 
         createSliders: function(){
@@ -39,12 +43,13 @@ define([
                         min: -2, 
                         max: 180,
                         values: [-2,180],
-                        create: _.bind(function(e, ui){
-                           this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             ui.values[0] + '</div></div>');
-                           this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             ui.values[1] + '</div></div>');
-                        }, this),
+                        // create: _.bind(function(e, ui){
+                        //    ui.values[0] = -2;
+                        //    this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                        //                                      ui.values[0] + '</div></div>');
+                        //    this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                        //                                      ui.values[1] + '</div></div>');
+                        // }, this),
                         slide: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[0] + '</div></div>');
