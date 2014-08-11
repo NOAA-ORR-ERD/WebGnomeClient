@@ -39,19 +39,21 @@ define([
                         min: -2, 
                         max: 180,
                         values: [-2,180],
-                        create: function(e, ui){
-                           $('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                        create: _.bind(function(e, ui){
+                           this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[0] + '</div></div>');
-                           $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[1] + '</div></div>');
-                        },
-                        slide: function(e, ui){
-                           $('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$('.ui-slider-handle').tooltip({show: false});
+                           this.$('.tooltip-arrow').tooltip({show: false});
+                        }, this),
+                        slide: _.bind(function(e, ui){
+                           this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[0] + '</div></div>');
-                           $('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[1] + '</div></div>');
                            console.log(ui);
-                        }
+                        }, this)
                     });
         }
     });
