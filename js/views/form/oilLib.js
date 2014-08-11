@@ -42,7 +42,6 @@ define([
                         create: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              -2 + '</div></div>');
-                           console.log(this);
                            this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              180 + '</div></div>');
                         }, this),
