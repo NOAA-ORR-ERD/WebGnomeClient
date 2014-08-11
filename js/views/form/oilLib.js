@@ -36,8 +36,8 @@ define([
         createSliders: function(minNum, maxNum){
             this.$('.slider').slider({
                         range: true, 
-                        min: -2, 
-                        max: 180,
+                        min: minNum, 
+                        max: maxNum,
                         values: [-2,180],
                         create: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
