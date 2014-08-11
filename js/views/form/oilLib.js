@@ -31,10 +31,6 @@ define([
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
             this.createSliders();
-            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             -2 + '</div></div>');
-            this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                                                             180 + '</div></div>');
         },
 
         createSliders: function(){
@@ -43,13 +39,13 @@ define([
                         min: -2, 
                         max: 180,
                         values: [-2,180],
-                        // create: _.bind(function(e, ui){
-                        //    ui.values[0] = -2;
-                        //    this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                        //                                      ui.values[0] + '</div></div>');
-                        //    this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
-                        //                                      ui.values[1] + '</div></div>');
-                        // }, this),
+                        create: _.bind(function(e, ui){
+                           this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             -2 + '</div></div>');
+                           console.log(this);
+                           this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                                                             180 + '</div></div>');
+                        }, this),
                         slide: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[0] + '</div></div>');
