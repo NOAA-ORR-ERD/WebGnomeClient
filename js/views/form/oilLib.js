@@ -10,6 +10,7 @@ define([
     var oilLibForm = FormModal.extend({
         name: 'oillib',
         title: 'Oil Query Form',
+        size: 'lg',
         
         initialize: function(options){
             FormModal.prototype.initialize.call(this, options);
@@ -25,7 +26,7 @@ define([
 
             // Initialize the select menus of class chosen-select to use the chose jquery plugin
 
-            this.$('.chosen-select').chosen({width: '350px'});
+            this.$('.chosen-select').chosen({width: '265px'});
 
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
