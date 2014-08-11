@@ -27,8 +27,6 @@ define([
         render: function(){
             this.$el.append(this.TreeView.$el).append(this.MapView.$el);
             $('body').append(this.$el);
-
-            this.MapView.renderMap();
         },
 
         close: function(){
