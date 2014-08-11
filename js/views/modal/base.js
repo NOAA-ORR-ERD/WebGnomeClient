@@ -87,10 +87,6 @@ define([
         submitByEnter: function(e){
             e.preventDefault();
             this.$('.save').click();
-            // Method below fires a click event on the save button of the form
-            // if (this.$('.save').length > 0){
-            //     this.$('.save').click();
-            // }
             if (this.$('.next').length > 0){
                 this.$('.next').click();
             }
