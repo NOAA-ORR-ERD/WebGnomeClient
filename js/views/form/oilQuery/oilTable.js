@@ -8,12 +8,13 @@ define([
         className: 'oilTable',
 
         initialize: function() {
-            this.render();
+
         },
 
         render: function(){
             var compiled = _.template(OilTableTemplate);
-            $('#tableContainer').append(this.$el.html(compiled));
+            //this.$('#tableContainer').append(this.$el.html(compiled));
+            return compiled;
         }
     });
     return oilTableView;

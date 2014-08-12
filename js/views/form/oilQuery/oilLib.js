@@ -33,7 +33,7 @@ define([
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
             this.createSliders(-2, 180);
-            //this.generateTable();
+            this.generateTable();
         },
 
         createSliders: function(minNum, maxNum){
