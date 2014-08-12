@@ -16,6 +16,9 @@ define([
         width: '70%',
 
         initialize: function(){
+            this.graticule = new ol.Graticule({
+                maxLines: 50,
+            });
             this.render();
             
             webgnome.model.on('ready', this.render, this);
@@ -110,12 +113,15 @@ define([
                             this.ol.map.addLayer(this.shorelineLayer);
                             this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
                         }
+
+                        this.graticule.setMap(this.ol.map);
                     }
                 }, this));
             } else {
                 // if the model doens't have a renderable map yet just render the base layer
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
                     this.ol.render();
+                    this.graticule.setMap(this.ol.map);
                 }
             }
         },
