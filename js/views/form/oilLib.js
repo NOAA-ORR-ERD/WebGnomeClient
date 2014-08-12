@@ -38,7 +38,7 @@ define([
                         range: true, 
                         min: minNum, 
                         max: maxNum,
-                        values: [-2,180],
+                        values: [minNum, maxNum],
                         create: _.bind(function(e, ui){
                            this.$('.ui-slider-handle:first').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              minNum + '</div></div>');
