@@ -23,7 +23,13 @@ define([
 
         render: function(){
             this.ol = new olMapView({
-                controls: 'full'
+                controls: 'full',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'}),
+                        name: 'basemap'
+                    })
+                ]
             });
             webgnome.model.get('map').on('change', this.resetMap, this);
 
