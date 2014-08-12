@@ -87,7 +87,16 @@ define([
                         });
                         this.shorelineLayer = new ol.layer.Vector({
                             source: this.shorelineSource,
-                            name: 'modelmap'
+                            name: 'modelmap',
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [64, 188, 237, 0.35]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [64, 188, 236, 1],
+                                    width: 1
+                                })
+                            })
                         });
 
                         var extent = this.shorelineSource.getExtent();
