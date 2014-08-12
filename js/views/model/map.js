@@ -99,10 +99,10 @@ define([
                             name: 'modelmap',
                             style: new ol.style.Style({
                                 fill: new ol.style.Fill({
-                                    color: [64, 188, 237, 0.35]
+                                    color: [228, 195, 140, 0.6]
                                 }),
                                 stroke: new ol.style.Stroke({
-                                    color: [64, 188, 236, 1],
+                                    color: [228, 195, 140, 0.75],
                                     width: 1
                                 })
                             })
