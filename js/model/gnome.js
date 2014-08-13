@@ -112,7 +112,15 @@ define([
             }
 
             if(attrs.time_step % 60 !== 0){
-                return 'Time steps must be a whole number.';
+                return 'Time step must be a whole number.';
+            }
+
+            if(attrs.time_step <= 0){
+                return 'Time step must be a positive number.';
+            }
+
+            if(isNaN(attrs.time_step)){
+                return 'Time step values should be numbers only.';
             }
 
             // if (attrs.map_id === null) {
