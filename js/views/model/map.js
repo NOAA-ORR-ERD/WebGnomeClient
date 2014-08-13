@@ -16,14 +16,23 @@ define([
         width: '70%',
 
         initialize: function(){
+            this.graticule = new ol.Graticule({
+                maxLines: 50,
+            });
             this.render();
             
-            webgnome.model.on('ready', this.render, this);
+            webgnome.model.once('ready', this.render, this);
         },
 
         render: function(){
             this.ol = new olMapView({
-                controls: 'full'
+                controls: 'full',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'}),
+                        name: 'basemap'
+                    })
+                ]
             });
             webgnome.model.get('map').on('change', this.resetMap, this);
 
@@ -71,6 +80,7 @@ define([
         },
 
         renderMap: function(){
+            console.log('render map');
             // check if the model has a map, specifically a bna map that has a geojson output
             // if it does load it's geojson and put it in a layer on the map
             // named modelmap
@@ -90,10 +100,10 @@ define([
                             name: 'modelmap',
                             style: new ol.style.Style({
                                 fill: new ol.style.Fill({
-                                    color: [64, 188, 237, 0.35]
+                                    color: [228, 195, 140, 0.6]
                                 }),
                                 stroke: new ol.style.Stroke({
-                                    color: [64, 188, 236, 1],
+                                    color: [228, 195, 140, 0.75],
                                     width: 1
                                 })
                             })
@@ -104,12 +114,15 @@ define([
                             this.ol.map.addLayer(this.shorelineLayer);
                             this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
                         }
+
+                        this.graticule.setMap(this.ol.map);
                     }
                 }, this));
             } else {
                 // if the model doens't have a renderable map yet just render the base layer
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
                     this.ol.render();
+                    this.graticule.setMap(this.ol.map);
                 }
             }
         },
@@ -131,6 +144,7 @@ define([
         },
 
         resetMap: function(){
+            console.log('map reset');
             this.ol.redraw = true;
             this.render();
         },
