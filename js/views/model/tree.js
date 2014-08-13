@@ -19,6 +19,7 @@ define([
         render: function(){
             this.$el.html('<div class="model-tree"><div class="resize"></div></div>');
             this.renderModel();
+            webgnome.model.on('ready', this.renderModel, this);
         },
 
         toggle: function(){
@@ -57,12 +58,6 @@ define([
                                     require([form], _.bind(function(Form){
                                         var view = new Form(null, object);
                                         view.on('hidden', view.close);
-                                        // add a listener to update the entire model once the form is completed
-                                        // this will allow all objects to stay insync on the tree, ex.
-                                        // update a wind object, without update model will 
-                                        // leave any other instance of the wind object (like on a wind mover)
-                                        // out of date.
-                                        view.on('hidden', this.updateModel, this);
                                         view.render();
                                     }, this));
                                     
@@ -86,14 +81,6 @@ define([
                     this.tree.reload(model_tree);
                 }
             }
-        },
-
-        updateModel: function(){
-            webgnome.model.fetch({
-                success: _.bind(function(){
-                    this.renderModel();
-                }, this)
-            });
         }
     });
 
