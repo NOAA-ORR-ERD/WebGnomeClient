@@ -34,6 +34,7 @@ define([
             outputters: Backbone.Collection,
             weatherers: Backbone.Collection
         },
+        ready: false,
 
         sync: function(method, model, options){
             // because of the unique structure of the gnome model, it's relation to other child object
@@ -97,6 +98,7 @@ define([
             $.when.apply($, this.ajax).done(_.bind(function(){
                 this.set(response);
                 this.trigger('ready');
+                this.ready = true;
             }, this));
         },
 
