@@ -97,6 +97,7 @@ define([
                     extent: this.extent
                 })
             });
+            this.redraw = false;
         }
     });
 

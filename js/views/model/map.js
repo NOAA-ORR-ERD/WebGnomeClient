@@ -45,7 +45,7 @@ define([
             });
             this.render();
             
-            webgnome.model.on('ready', this.render, this);
+            webgnome.model.once('ready', this.render, this);
         },
 
         render: function(){
@@ -104,6 +104,7 @@ define([
         },
 
         renderMap: function(){
+            console.log('render map');
             // check if the model has a map, specifically a bna map that has a geojson output
             // if it does load it's geojson and put it in a layer on the map
             // named modelmap
@@ -199,6 +200,7 @@ define([
         },
 
         resetMap: function(){
+            console.log('map reset');
             this.ol.redraw = true;
             this.render();
         },
