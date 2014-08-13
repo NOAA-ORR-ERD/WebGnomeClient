@@ -10,18 +10,13 @@ define([
     'views/form/text',
     'views/form/model',
     'views/form/wind',
-    'views/modal/loading',
-    'views/form/cats'
+    'views/modal/loading'
 ], function($, _, Backbone, DefaultWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    TextForm, ModelForm, WindForm, LoadingModal, CatsForm){
+    TextForm, ModelForm, WindForm, LoadingModal){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
         initialize: function(opts){
-            // Using local variable "that" to save local context (could probably used bind)
-            var that = this;
-            // Initializes loading modal upon location wizard's initialization
-            // and calls render on it so it appears to the user
             this.loadingGif = new LoadingModal();
             this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
@@ -33,8 +28,6 @@ define([
         },
 
         found: function(){
-            // Using local variable "that" to save local context (could probably used bind)
-            var that = this;  
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),
@@ -51,14 +44,14 @@ define([
         loaded: function(){
 
             // clear any previously loaded steps
-            _.each(this.steps, function(el, ind, ar){
+            _.each(this.steps, function(el){
                 el.close();
             });
             this.steps = [];
             this.loadingGif.hide();
 
             // set up each step described in the location file.
-            _.each(this.location.get('steps'), _.bind(function(el, ind, ar){
+            _.each(this.location.get('steps'), _.bind(function(el){
                 var title = [];
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
@@ -90,6 +83,7 @@ define([
                             webgnome.model.get('environment').add(wind);
                             var windMover = new GnomeWindMover({wind: wind});
                             windMover.save(null, {
+                                validate: false,
                                 success: function(){
                                     webgnome.model.get('movers').add(windMover);
                                     webgnome.model.save();

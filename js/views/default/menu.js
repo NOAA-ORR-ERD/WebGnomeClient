@@ -31,7 +31,7 @@ define([
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
-            'click .preferences': 'preferences',
+            'click a.debugView': 'debugView',
 
             'click .run': 'run',
             'click .step': 'step',
@@ -70,9 +70,16 @@ define([
             webgnome.router.navigate('save', true);
         },
 
-        preferences: function(event){
+        debugView: function(event){
             event.preventDefault();
-            webgnome.router.navigate('preferences', true);
+            var checkbox = this.$('input[type="checkbox"]');           
+            if (checkbox.prop('checked')) {
+                checkbox.prop('checked', false);
+            } else {
+                checkbox.prop('checked', true);
+                //this.trigger('debugTreeOn');
+            }
+            this.trigger('debugTreeToggle');
         },
 
         run: function(event){

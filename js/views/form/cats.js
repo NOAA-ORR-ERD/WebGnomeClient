@@ -25,6 +25,16 @@ define([
 			});                                                     // when model is updated
 
 			FormModal.prototype.render.call(this, options);
+
+			if (this.model.get('on')) {
+          		this.$('input[name="active"]').prop('checked', true);
+        	} 
+		},
+
+		update: function(){
+			var active = this.$('#active').is(':checked');
+        	this.model.set('on', active);
+        	
 		}
 	});
 

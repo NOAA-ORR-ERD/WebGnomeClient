@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'text!templates/default/index.html',
-    'views/wizard/new'
-], function($, _, Backbone, IndexTemplate, NewWizardForm){
+    'views/wizard/new',
+    'views/form/oilLib'
+], function($, _, Backbone, IndexTemplate, NewWizardForm, OilLibForm){
     var indexView = Backbone.View.extend({
         className: 'container page home',
 
@@ -16,7 +17,8 @@ define([
             'click .location': 'chooseLocation',
             'click .build': 'buildModel',
             'click .load': 'loadModel',
-            'click .resume': 'resumeModel'
+            'click .resume': 'resumeModel',
+            'click .oilLib': 'loadOilForm'
         },
 
         chooseLocation: function(event) {
@@ -44,6 +46,11 @@ define([
                 hasModel: webgnome.hasModel()
             });
             $('body').append(this.$el.append(compiled));
+        },
+
+        loadOilForm: function(event){
+            event.preventDefault();
+            new OilLibForm().render();
         }
     });
     return indexView;

@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'bootstrap',
-    'text!templates/modal/base.html'
-], function($, _, Backbone, bs, ModalTemplate){
+    'text!templates/modal/base.html',
+    'mousetrap'
+], function($, _, Backbone, bs, ModalTemplate, Mousetrap){
     var baseModal = Backbone.View.extend({
         className: 'modal fade',
         name: 'default',
@@ -20,6 +21,7 @@ define([
         },
 
         initialize: function(options){
+
             if(options){
                 if(options.body) {
                     this.body = options.body;
@@ -40,7 +42,7 @@ define([
         },
 
         events: {
-            'hidden.bs.modal': 'close',
+            'hidden.bs.modal': 'close'
         },
 
         show: function(){
@@ -68,6 +70,31 @@ define([
             });
             $('body').append(this.$el.html(compiled));
             this.$el.modal(this.options);
+
+            // Bound enter event to submit the form modal in the same way as if a user clicked the save button
+
+            Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
+
+            Mousetrap.bind('esc', _.bind(this.cancelByEsc, this));
+
+            // Added mousetrap class to all of the input elements so that enter will still fire even if an input
+            // field is focused at the time. Link to docs here: http://craig.is/killing/mice#api.bind.text-fields
+
+            this.$('input').addClass('mousetrap');
+            this.$('select').addClass('mousetrap');
+        },
+
+        submitByEnter: function(e){
+            e.preventDefault();
+            this.$('.save').click();
+            if (this.$('.next').length > 0){
+                this.$('.next').click();
+            }
+        },
+
+        cancelByEsc: function(e){
+            e.preventDefault();
+            this.$('.cancel').click();
         }
     });
 

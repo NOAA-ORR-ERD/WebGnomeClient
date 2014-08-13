@@ -1,8 +1,7 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'lib/moment'
+    'backbone'
 ], function($, _, Backbone) {
     /*
      A base class for views.

@@ -9,8 +9,10 @@ define([
         className: 'tree opened',
         open: true,
         width: '30%',
+        debugOn: false,
 
         initialize: function(){
+            webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel(true);}, this), this);
             this.render();
         },
 
@@ -32,9 +34,16 @@ define([
             return this.offset;
         },
 
-        renderModel: function(){
+        renderModel: function(attrs){
             if(webgnome.hasModel()){
-                var model_tree = webgnome.model.toTree();
+                if (attrs){
+                    this.debugOn = !this.debugOn;
+                }
+                if (this.debugOn){
+                    var model_tree = webgnome.model.toDebugTree();
+                } else {
+                    var model_tree = webgnome.model.toTree();
+                }
                 if(this.$('.model-tree .ui-fancytree').length === 0){
                     this.$('.model-tree').fancytree({
                         source: model_tree,
@@ -45,11 +54,18 @@ define([
 
                             if(form){
                                 if(action === 'edit'){
-                                    var Form = require(form);
-                                    var view = new Form(null, object);
-                                    view.on('hidden', view.close);
-                                    view.on('hidden', this.updateModel, this);
-                                    view.render();
+                                    require([form], _.bind(function(Form){
+                                        var view = new Form(null, object);
+                                        view.on('hidden', view.close);
+                                        // add a listener to update the entire model once the form is completed
+                                        // this will allow all objects to stay insync on the tree, ex.
+                                        // update a wind object, without update model will 
+                                        // leave any other instance of the wind object (like on a wind mover)
+                                        // out of date.
+                                        view.on('hidden', this.updateModel, this);
+                                        view.render();
+                                    }, this));
+                                    
                                 } else {
                                     // how am I going to create an object/know what object needs to be created
                                 }

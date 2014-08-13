@@ -101,15 +101,19 @@ define([
         },
 
         validate: function(attrs, options) {
-            if(attrs.duration <= 0 || isNaN(attrs.duration)){
-                return 'Duration values should be numbers only and greater than 0.';
+            // if(attrs.duration <= 0 || isNaN(attrs.duration)){
+            //     return 'Duration values should be numbers only and greater than 0.';
+            // }
+
+            if(attrs.duration <= 0){
+                return 'Duration values should be positive values.';
             }
 
-            if(parseInt(attrs.days, 10) === 0 && parseInt(attrs.hours, 10) === 0){
-                return 'Duration length should be greater than zero.';
+            if(isNaN(attrs.duration)){
+                return 'Duration values should be numbers only.';
             }
 
-            if(parseInt(attrs.time_step, 10) != attrs.time_step){
+            if(attrs.time_step % 60 !== 0){
                 return 'Time steps must be a whole number.';
             }
 
@@ -154,7 +158,6 @@ define([
         },
 
         toTree: function(){
-
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var millisecsDur = this.get('duration') * 1000;
             var millisecsTime = this.get('time_step') * 1000;
@@ -181,6 +184,6 @@ define([
             return tree;
         }
     });
-
+    
     return gnomeModel;
 });

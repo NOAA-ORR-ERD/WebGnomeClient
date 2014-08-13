@@ -24,6 +24,7 @@ define([
                 $('.tooltip').remove();
                 this.views[view].close();
             }
+            this.views = [];
             if(callback) callback.apply(this, args);
         },
 

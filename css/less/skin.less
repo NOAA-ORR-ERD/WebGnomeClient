@@ -9,13 +9,34 @@ nav.navbar{
     a{
         white-space: nowrap;
     }
+
+    li {
+        position: relative;
+    }
+
+    .debugView {
+        &:hover {
+            background: none;
+        }
+        padding-left: 4px;
+        input {
+            float: left;
+            padding-left: 2px;
+            position: absolute;
+            z-index: -1;
+        }
+        label {
+            font-weight: normal;
+            float: right;
+        }
+    }
 }
 
 .page.home{
     .main{
         .make-md-column(8);
 
-        .location, .load, .build, .resume{
+        .location, .load, .build, .resume, .oilLib{
             .btn;
             .btn-primary;
         }
@@ -59,6 +80,11 @@ nav.navbar{
 .page.locations{
     .popover{
         width: 350px;
+
+        &.top{
+            margin-top: -32px;
+            margin-left: -2px;
+        }
     }
     .row{
         .make-row();
@@ -140,6 +166,7 @@ nav.navbar{
         }
     }
     .map{
+        background: url(images/mapbg.png);
         overflow: hidden;
         position: absolute;
         right: 0;
@@ -150,7 +177,7 @@ nav.navbar{
         .spill-button{
             position: absolute;
             left: .5em;
-            top: 7.25em;
+            top: 10em;
             z-index: 1;
             background-color: rgba(255,255,255,0.4);
             border-radius: 4px;
@@ -394,4 +421,10 @@ nav.navbar{
         }
 
     }
+}
+
+.slider-tip {
+    opacity:1;
+    bottom:120%;
+    margin-left: -7px;
 }
