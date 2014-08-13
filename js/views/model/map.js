@@ -45,7 +45,9 @@ define([
             });
             this.render();
             
-            webgnome.model.once('ready', this.render, this);
+            if(!webgnome.model.ready){
+                webgnome.model.once('ready', this.render, this);
+            }
         },
 
         render: function(){
@@ -190,7 +192,6 @@ define([
             spill.save(null, {
                 validate: false,
                 success: function(){
-                    console.log('added spill');
                     webgnome.model.get('spills').add(spill);
                     webgnome.model.save();
                 }
