@@ -111,15 +111,17 @@ define([
                 return 'Duration values should be numbers only.';
             }
 
-            if(attrs.time_step % 60 !== 0){
-                return 'Time step must be a whole number.';
-            }
+            if (!isNaN(attrs.time_step)){
 
-            if(attrs.time_step <= 0){
-                return 'Time step must be a positive number.';
-            }
+                if(attrs.time_step % 60 !== 0){
+                    return 'Time step must be a whole number.';
+                }
 
-            if(isNaN(attrs.time_step)){
+                if(attrs.time_step <= 0){
+                    return 'Time step must be a positive number.';
+                }
+            }
+            else {
                 return 'Time step values should be numbers only.';
             }
 
