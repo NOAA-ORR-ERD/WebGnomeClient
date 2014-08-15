@@ -20,6 +20,10 @@ define([
             release: GnomeRelease,
             element_type: GnomeElement
         },
+
+        validate: function(attrs, options){
+            
+        }
     });
 
     return gnomeSpill;

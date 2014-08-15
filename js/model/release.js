@@ -14,8 +14,8 @@ define([
             'num_elements': 1000,
             'num_released': 0,
             'start_time_invalid': true,
-            'release_time': "2013-02-13T15:00:00",
-            'end_release_time': "2013-02-13T15:00:00"
+            'release_time': '2013-02-13T15:00:00',
+            'end_release_time': '2013-02-13T15:00:00'
         }
     });
 
