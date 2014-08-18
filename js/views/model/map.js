@@ -205,7 +205,7 @@ define([
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
                 if(start_position.length > 2){
-                    start_position.pop();
+                    start_position = [start_position[0], start_position[1]];
                 }
                 var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 var feature = new ol.Feature({
@@ -233,14 +233,18 @@ define([
             // add the dummy z-index thing
             coord.push(0);
             spill.get('release').set('start_position', coord);
+            spill.get('release').set('release_time', webgnome.model.get('start_time'));
+            spill.get('release').set('end_release_time', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
 
             spill.save(null, {
                 validate: false,
                 success: function(){
-                    webgnome.model.get('spills').add(spill);
-                    new SpillForm(null, spill).render();
-
-                    webgnome.model.save();
+                    var spillform = new SpillForm(null, spill);
+                    spillform.render();
+                    spillform.on('save', function(){
+                        webgnome.model.get('spills').add(spill);
+                        webgnome.model.save();
+                    });
                 }
             });
 

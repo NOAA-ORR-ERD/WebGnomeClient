@@ -12,6 +12,12 @@ define([
         name: 'spill',
         title: 'Spill',
 
+        events: function() {
+            return _.defaults({
+                'click .remove': 'remove'
+            }, FormModal.prototype.events);
+        },
+
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
 
@@ -26,7 +32,7 @@ define([
                 end_lat: spill.get('release').get('end_position')[1],
                 end_lng: spill.get('release').get('end_position')[0],
                 name: spill.get('name'),
-                release_amount: spill.get('release-amount'),
+                release_amount: spill.get('release').get('num_elements'),
                 release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('end_release_time')).format('YYYY/M/D H:mm')
             });
@@ -50,24 +56,22 @@ define([
         },
 
         update: function(){
-            var spill = this.spill;
+            var spill = this.model;
             var release = spill.get('release');
 
             spill.set('name', this.$('#name').val());
 
-            // if this is a point update the end position to be the same as the start position
-            release.set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
-            release.set('end_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val())]);
-            this.$('#end-lng').val(spill.get('release').get('start_position')[0]);
-            this.$('#end-lat').val(spill.get('release').get('start_position')[1]);
+            release.set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val()), 0]);
+            release.set('end_position', [parseFloat(this.$('#end-lng').val()), parseFloat(this.$('#end-lat').val()), 0]);
             
-            spill.set('pollutant', this.$('#pollutant').val());
-            spill.set('release-amount', this.$('#release-amount').val());
-            spill.set('release-unit', this.$('#release-unit').val());
             var release_start = $('#release-start').val();
             var release_end = $('#release-end').val();
             release.set('release_time', moment(release_start, 'YYYY/M/D H:mm').format());
             release.set('end_release_time', moment(release_end, 'YYYY/M/D H:mm').format());
+            release.set('num_elements',this.$('#release-amount').val());
+
+            spill.set('pollutant', this.$('#pollutant').val());
+            //spill.set('release-unit', this.$('#release-unit').val());
 
             if(!spill.isValid()){
                 this.error('Error!', spill.validationError);
@@ -80,6 +84,13 @@ define([
             FormModal.prototype.save.call(this, function(){
                 $('.xdsoft_datetimepicker').remove();
             });
+        },
+
+        remove: function(e){
+            e.preventDefault();
+            webgnome.model.get('spills').remove(this.model);
+            webgnome.model.save();
+            this.hide();
         },
 
         close: function(){
