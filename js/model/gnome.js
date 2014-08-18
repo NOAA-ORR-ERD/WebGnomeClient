@@ -10,10 +10,12 @@ define([
     'model/environment/wind',
     'model/movers/wind',
     'model/movers/random',
-    'model/movers/cats'
+    'model/movers/cats',
+    'model/outputters/geojson'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel,
-    WindMover, RandomMover, CatsMover){
+    WindMover, RandomMover, CatsMover,
+    GeojsonOutputter){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -29,7 +31,9 @@ define([
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
-            outputters: Backbone.Collection,
+            outputters: {
+                'gnome.outputters.geo_json.GeoJSON': GeojsonOutputter
+            },
             weatherers: Backbone.Collection
         },
 
