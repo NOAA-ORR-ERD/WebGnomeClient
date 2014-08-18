@@ -43,8 +43,9 @@ define([
             var uncertainty = this.$('#uncertainty:checked').val();
             this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
 
-            var time_steps = this.$('#time_steps').val() * 60;
-            this.model.set('time_step', time_steps);
+            var time_steps = this.$('#time_steps').val();
+            var time_steps_mins = parseFloat(time_steps, 10) * 60;
+            this.model.set('time_step', time_steps_mins);
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);

@@ -10,10 +10,12 @@ define([
     'model/environment/wind',
     'model/movers/wind',
     'model/movers/random',
-    'model/movers/cats'
+    'model/movers/cats',
+    'model/outputters/geojson'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel,
-    WindMover, RandomMover, CatsMover){
+    WindMover, RandomMover, CatsMover,
+    GeojsonOutputter){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -31,7 +33,9 @@ define([
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
-            outputters: Backbone.Collection,
+            outputters: {
+                'gnome.outputters.geo_json.GeoJSON': GeojsonOutputter
+            },
             weatherers: Backbone.Collection
         },
         ready: false,
@@ -115,8 +119,18 @@ define([
                 return 'Duration values should be numbers only.';
             }
 
-            if(attrs.time_step % 60 !== 0){
-                return 'Time steps must be a whole number.';
+            if (!isNaN(attrs.time_step)){
+
+                if(attrs.time_step % 60 !== 0){
+                    return 'Time step must be a whole number.';
+                }
+
+                if(attrs.time_step <= 0){
+                    return 'Time step must be a positive number.';
+                }
+            }
+            else {
+                return 'Time step values should be numbers only.';
             }
 
             // if (attrs.map_id === null) {

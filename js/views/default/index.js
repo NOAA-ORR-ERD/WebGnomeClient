@@ -4,7 +4,7 @@ define([
     'backbone',
     'text!templates/default/index.html',
     'views/wizard/new',
-    'views/form/oilLib'
+    'views/form/oilQuery/oilLib'
 ], function($, _, Backbone, IndexTemplate, NewWizardForm, OilLibForm){
     var indexView = Backbone.View.extend({
         className: 'container page home',
