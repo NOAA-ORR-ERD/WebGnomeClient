@@ -5,16 +5,12 @@ define([
     'text!templates/default/oilTable.html'
 ], function($, _, Backbone, OilTableTemplate){
     var oilTableView = Backbone.View.extend({
-        className: 'oilTable',
+        //className: 'oilTable',
+        id: 'tableContainer',
 
         initialize: function() {
-
-        },
-
-        render: function(){
             var compiled = _.template(OilTableTemplate);
-            //this.$('#tableContainer').append(this.$el.html(compiled));
-            return compiled;
+            this.$el.append(compiled);
         }
     });
     return oilTableView;

@@ -40,8 +40,7 @@ define([
 		},
 
 		renderWindForm: function(){
-			var windForm = new WindForm();
-			windForm.render();
+			WindForm.prototype.initialize.call(this, options);
 		},
 
 		update: function(){

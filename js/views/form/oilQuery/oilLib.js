@@ -15,11 +15,14 @@ define([
         // data: [{name: 'oil1', api: 30}, {name: 'oil2', api: 40}, {name: 'oil3', api: 50}],
         
         initialize: function(options){
+            this.oilTable = new OilTable();
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(options){
-            this.body = _.template(OilTemplate);
+            this.body = _.template(OilTemplate, {
+                oilTable: this.oilTable.$el.html()
+            });
 
             // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
@@ -33,7 +36,6 @@ define([
             // Use the jquery-ui slider to enable a slider so the user can select the range of API
             // values they would want to search for
             this.createSliders(-2, 180);
-            this.generateTable();
         },
 
         createSliders: function(minNum, maxNum){
@@ -55,11 +57,6 @@ define([
                                                              ui.values[1] + '</div></div>');
                         }, this)
                     });
-        },
-
-        generateTable: function(){
-            this.oilTable = new OilTable();
-            this.oilTable.render();
         }
     });
 
