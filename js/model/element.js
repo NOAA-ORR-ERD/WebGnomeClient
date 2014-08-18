@@ -7,12 +7,6 @@ define([
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
 
-        model: {
-            initializers: {
-                'gnome.spill.elements.InitWindages': GnomeWindages
-            }
-        },
-
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
