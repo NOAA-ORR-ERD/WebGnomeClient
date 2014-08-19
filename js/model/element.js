@@ -21,6 +21,10 @@ define([
                     'windage_persist': 900
                 }
             ]
+        },
+
+        validate: function(){
+            
         }
     });
 
