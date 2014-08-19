@@ -11,6 +11,7 @@ define([
             'name': 'Outputter',
             'output_timestep': '1800.0',
             'output_last_step': 'true',
+            'output_dir': './models/images',
             'output_zero_step': 'true',
         }
     });
