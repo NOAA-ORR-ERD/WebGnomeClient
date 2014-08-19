@@ -21,8 +21,7 @@ define([
         render: function(options){
             if(this.oilTable.ready){
                 this.body = _.template(OilTemplate, {
-                    oilTable: this.oilTable.$el.html(),
-                    data2: this.data2
+                    oilTable: this.oilTable.$el.html()
                 });
 
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
@@ -40,6 +39,11 @@ define([
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
+        },
+
+        update: function(){
+            this.oilTable = new OilTable();
+            FormModal.prototype.initialize.call(this, options);
         },
 
         createSliders: function(minNum, maxNum){
