@@ -12,7 +12,7 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
-        // data: [{name: 'oil1', api: 30}, {name: 'oil2', api: 40}, {name: 'oil3', api: 50}],
+        data2: [{name: 'oil1', api: 30}, {name: 'oil2', api: 40}, {name: 'oil3', api: 50}],
         
         initialize: function(options){
             this.oilTable = new OilTable();
@@ -20,22 +20,27 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(OilTemplate, {
-                oilTable: this.oilTable.$el.html()
-            });
+            if(this.oilTable.ready){
+                this.body = _.template(OilTemplate, {
+                    oilTable: this.oilTable.$el.html(),
+                    data2: this.data2
+                });
 
-            // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
+                // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
-            var chosen = jQuery.fn.chosen;
-            FormModal.prototype.render.call(this, options);
+                var chosen = jQuery.fn.chosen;
+                FormModal.prototype.render.call(this, options);
 
-            // Initialize the select menus of class chosen-select to use the chose jquery plugin
+                // Initialize the select menus of class chosen-select to use the chose jquery plugin
 
-            this.$('.chosen-select').chosen({width: '265px'});
+                this.$('.chosen-select').chosen({width: '265px'});
 
-            // Use the jquery-ui slider to enable a slider so the user can select the range of API
-            // values they would want to search for
-            this.createSliders(-2, 180);
+                // Use the jquery-ui slider to enable a slider so the user can select the range of API
+                // values they would want to search for
+                this.createSliders(-2, 180);
+            } else {
+                this.oilTable.on('ready', this.render, this);
+            }
         },
 
         createSliders: function(minNum, maxNum){
