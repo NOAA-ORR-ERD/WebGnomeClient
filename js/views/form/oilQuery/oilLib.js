@@ -12,7 +12,6 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
-        data2: [{name: 'oil1', api: 30}, {name: 'oil2', api: 40}, {name: 'oil3', api: 50}],
         
         initialize: function(options){
             this.oilTable = new OilTable();
@@ -31,7 +30,7 @@ define([
                 var chosen = jQuery.fn.chosen;
                 FormModal.prototype.render.call(this, options);
 
-                // Initialize the select menus of class chosen-select to use the chose jquery plugin
+                // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
                 this.$('.chosen-select').chosen({width: '265px'});
 
@@ -60,6 +59,9 @@ define([
                                                              ui.values[0] + '</div></div>');
                            this.$('.ui-slider-handle:last').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[1] + '</div></div>');
+                        }, this),
+                        stop: _.bind(function(e, ui){
+                            console.log(ui.values);
                         }, this)
                     });
         }

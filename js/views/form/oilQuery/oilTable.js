@@ -24,7 +24,7 @@ define([
         },
 
         setupRows: function(){
-            var totalCompiled = "";
+            var totalCompiled = '';
             for (var i = 0; i < this.oilLib.length; i++){
                 var compiled = _.template(OilRowTemplate, {data: this.oilLib.at(i)});
                 totalCompiled += compiled;
