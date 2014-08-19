@@ -34,7 +34,7 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
             outputters: {
-                'gnome.outputters.geo_json.GeoJSON': GeojsonOutputter
+                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter
             },
             weatherers: Backbone.Collection
         },

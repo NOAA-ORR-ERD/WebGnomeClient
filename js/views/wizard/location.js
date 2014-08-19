@@ -7,12 +7,14 @@ define([
     'model/location',
     'model/environment/wind',
     'model/movers/wind',
+    'model/outputters/geojson',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
     'views/modal/loading'
 ], function($, _, Backbone, DefaultWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
+    GeojsonOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
     var locationWizardView = DefaultWizard.extend({
         steps: [],
@@ -42,7 +44,18 @@ define([
         },
 
         loaded: function(){
+            outputter = new GeojsonOutputter();
+            outputter.save(null, {
+                success: _.bind(function(outputter){
+                    webgnome.model.get('outputters').add(outputter);
+                    webgnome.model.save(null, {
+                        success: _.bind(this.load_location, this)
+                    });
+                }, this)
+            });
+        },
 
+        load_location: function(){
             // clear any previously loaded steps
             _.each(this.steps, function(el){
                 el.close();
