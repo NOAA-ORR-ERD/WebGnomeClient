@@ -10,12 +10,14 @@ define([
         //className: 'oilTable',
         id: 'tableContainer',
         ready: false,
-        filter: {location: 'SAUDI ARABIA'},
+        filter: {},
+        el: 'table',
+        className: 'table',
 
         initialize: function(obj) {
             this.$el.empty();
             this.oilLib = new OilLib(_.bind(this.setReady,this));
-            //this.filter = obj;
+            this.filter = obj;
         },
 
         setReady: function(){
@@ -30,11 +32,17 @@ define([
             var totalCompiled = '';
             var oils = this.oilLib;
             if(this.filter){
+                console.log(oils);
                 oils = oils.where(this.filter);
-            }
-            for (var i = 0; i < oils.length; i++){
-                var compiled = _.template(OilRowTemplate, {data: this.oilLib.at(i)});
-                totalCompiled += compiled;
+                for (var i = 0; i < oils.length; i++){
+                    var compiled = _.template(OilRowTemplate, {data: oils[i]});
+                    totalCompiled += compiled;
+                }
+            } else {
+                for (var i = 0; i < oils.length; i++){
+                    var compiled = _.template(OilRowTemplate, {data: oils.at(i)});
+                    totalCompiled += compiled;
+                }
             }
             return totalCompiled;
         }

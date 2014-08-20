@@ -21,7 +21,7 @@ define([
             if(!_.has(options, 'data')){
                 options.data = {};
             }
-            Backbone.Model.prototype.fetch.call(this, options);
+            Backbone.Collection.prototype.fetch.call(this, options);
         }
 
     });
