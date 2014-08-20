@@ -44,7 +44,7 @@ define([
         },
 
         loaded: function(){
-            outputter = new GeojsonOutputter({'output_timestep': webgnome.model.get('time_step')});
+            outputter = new GeojsonOutputter();
             outputter.save(null, {
                 success: _.bind(function(outputter){
                     webgnome.model.get('outputters').add(outputter);
