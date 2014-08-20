@@ -4,18 +4,17 @@ define([
     'backbone',
     'model/resources/oilLib',
     'text!templates/default/oilTable.html',
-    'text!templates/default/oilRow.html'
-], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate){
+    'text!templates/default/oilRow.html',
+    'datatables'
+], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate, datatables){
     var oilTableView = Backbone.View.extend({
         //className: 'oilTable',
         id: 'tableContainer',
         ready: false,
-        filter: {},
         el: 'table',
         className: 'table',
 
         initialize: function(obj) {
-            this.$el.empty();
             this.oilLib = new OilLib(_.bind(this.setReady,this));
             this.filter = obj;
         },

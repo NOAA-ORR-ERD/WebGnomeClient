@@ -15,13 +15,12 @@ define([
         size: 'lg',
         
         initialize: function(options){
-            this.oilTable = new OilTable({location: 'ALASKA'});
+            this.oilTable = new OilTable();
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(options){
             if(this.oilTable.ready){
-                console.log(this.oilTable.$el);
                 this.body = _.template(OilTemplate, {
                     oilTable: this.oilTable.$el.html()
                 });
@@ -44,9 +43,7 @@ define([
         },
 
         update: function(){
-            this.oilTable = new OilTable({location: 'ALASKA'});
-            FormModal.prototype.initialize.call(this, options);
-            console.log("updated!");
+
         },
 
         createSliders: function(minNum, maxNum){
