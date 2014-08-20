@@ -4,11 +4,11 @@ define([
     'backbone',
     'chosen',
     'jqueryui/core',
+    'model/resources/oilDistinct',
     'views/modal/form',
     'views/form/oilQuery/oilTable',
-    'text!templates/form/oilLib.html',
-    'datatables'
-], function($, _, Backbone, chosen, jqueryui, FormModal, OilTable, OilTemplate, datatables){
+    'text!templates/form/oilLib.html'
+], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, OilTemplate){
     var oilLibForm = FormModal.extend({
         name: 'oillib',
         title: 'Oil Query Form',
@@ -16,6 +16,7 @@ define([
         
         initialize: function(options){
             this.oilTable = new OilTable();
+            this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -40,6 +41,10 @@ define([
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
+        },
+
+        setUpOptions: function(){
+
         },
 
         update: function(){

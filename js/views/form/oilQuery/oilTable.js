@@ -4,9 +4,8 @@ define([
     'backbone',
     'model/resources/oilLib',
     'text!templates/default/oilTable.html',
-    'text!templates/default/oilRow.html',
-    'datatables'
-], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate, datatables){
+    'text!templates/default/oilRow.html'
+], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate){
     var oilTableView = Backbone.View.extend({
         //className: 'oilTable',
         id: 'tableContainer',
@@ -31,7 +30,6 @@ define([
             var totalCompiled = '';
             var oils = this.oilLib;
             if(this.filter){
-                console.log(oils);
                 oils = oils.where(this.filter);
                 for (var i = 0; i < oils.length; i++){
                     var compiled = _.template(OilRowTemplate, {data: oils[i]});

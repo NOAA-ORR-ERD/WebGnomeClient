@@ -19,8 +19,7 @@
     "respond": "1.4.2",
     "compass-rose-ui": "1.0.*",
     "fancytree": "2.2.0",
-    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip",
-    "datatables-bootstrap3": "*"
+    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip"
   },
   "devDependencies": {
     "qunit": "1.14.0"
