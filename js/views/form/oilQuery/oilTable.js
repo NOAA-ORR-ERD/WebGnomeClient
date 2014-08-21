@@ -10,8 +10,6 @@ define([
         //className: 'oilTable',
         id: 'tableContainer',
         ready: false,
-        el: 'table',
-        className: 'table',
 
         initialize: function(obj){
             this.oilLib = new OilLib();
