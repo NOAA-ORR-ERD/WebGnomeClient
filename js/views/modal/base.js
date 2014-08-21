@@ -57,17 +57,19 @@ define([
             this.$el.modal('toggle');
         },
 
-        render: function(){
+        render: function(options){
             if (!_.isString(this.body)){
                 this.body = this.body();
             }
-            
+
             var compiled = _.template(ModalTemplate, {
                 size: this.size,
                 title: this.title,
                 body: this.body,
                 buttons: this.buttons
             });
+
+
             $('body').append(this.$el.html(compiled));
             this.$el.modal(this.options);
 

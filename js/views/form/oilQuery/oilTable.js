@@ -7,9 +7,11 @@ define([
     'text!templates/default/oilRow.html'
 ], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate){
     var oilTableView = Backbone.View.extend({
-        //className: 'oilTable',
         id: 'tableContainer',
         ready: false,
+        events: {
+            'click th': 'sortTable'
+        },
 
         initialize: function(obj){
             this.oilLib = new OilLib();
@@ -28,14 +30,9 @@ define([
             this.trigger('ready');
         },
 
-        setupRows: function(){
-            var totalCompiled = '';
-            var oils = this.oilLib;
-            
-            var compiled = _.template(OilRowTemplate, {data: oils});
-
-            return compiled;
-        },
+        sortTable: function(e){
+            this.oilLib.sortOils(e.target.className);
+        }
 
     });
     return oilTableView;

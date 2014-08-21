@@ -13,14 +13,10 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
-        events: function(){
-          return _.defaults({
-            'click th': 'sortTable'
-          }, FormModal.prototype.events);
-        },
         
         initialize: function(options){
             this.oilTable = new OilTable();
+            this.events = _.defaults(this.oilTable.events, FormModal.prototype.events);
             this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
             FormModal.prototype.initialize.call(this, options);
         },
@@ -57,7 +53,7 @@ define([
         },
 
         sortTable: function(e){
-            e.target.attributes[0].value;
+            this.oilTable.sortTable(e);
         },
 
         createSliders: function(minNum, maxNum){
