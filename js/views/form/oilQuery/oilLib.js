@@ -52,8 +52,8 @@ define([
 
         },
 
-        sortTable: function(e){
-            this.oilTable.sortTable(e);
+        headerClick: function(e){
+            this.oilTable.headerClick(e);
         },
 
         createSliders: function(minNum, maxNum){

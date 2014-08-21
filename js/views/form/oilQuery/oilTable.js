@@ -10,12 +10,13 @@ define([
         id: 'tableContainer',
         ready: false,
         events: {
-            'click th': 'sortTable'
+            'click th': 'headerClick'
         },
 
         initialize: function(obj){
             this.oilLib = new OilLib();
             this.oilLib.on('ready', this.setReady, this);
+            this.on('sort', this.setReady);
             this.filter = obj;
         },
 
@@ -30,8 +31,18 @@ define([
             this.trigger('ready');
         },
 
-        sortTable: function(e){
-            this.oilLib.sortOils(e.target.className);
+        headerClick: function(e){
+            var ns = e.target.className,
+                cs = this.oilLib.sortAttr;
+
+            if (ns == cs){
+                this.oilLib.sortDir *= -1;
+            } else {
+                this.oilLib.sortDir = 1;
+            }
+
+            this.oilLib.sortOils(ns);
+            this.trigger('sort');
         }
 
     });
