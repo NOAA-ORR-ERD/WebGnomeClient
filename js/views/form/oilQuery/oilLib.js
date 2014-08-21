@@ -13,6 +13,11 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
+        events: function(){
+          return _.defaults({
+            'click th': 'sortTable'
+          }, FormModal.prototype.events);
+        },
         
         initialize: function(options){
             this.oilTable = new OilTable();
@@ -49,6 +54,10 @@ define([
 
         update: function(){
 
+        },
+
+        sortTable: function(e){
+            e.target.attributes[0].value;
         },
 
         createSliders: function(minNum, maxNum){

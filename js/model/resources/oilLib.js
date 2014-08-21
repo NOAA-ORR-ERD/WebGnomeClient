@@ -4,16 +4,38 @@ define([
     'backbone'
 ], function(_, $, Backbone){
     var oilLib = Backbone.Collection.extend({
-        initialize: function(cb){
+
+        ready: false,
+
+        initialize: function(){
             this.fetch({
-                success: cb
+                success: _.bind(this.setReady, this)
             });
         },
         url: function(){
             return 'http://0.0.0.0:9898/oil';
         },
 
-        comparator: 'api',
+        sortAttr: 'name',
+        sortDir: 1,
+
+        comparator: function(a, b){
+            var a = a.get(this.sortAttr),
+                b = b.get(this.sortAttr);
+
+            if (a == b) return 0;
+
+            if (this.sortDir == 1) {
+                return a > b ? 1 : -1;
+            } else {
+                return a < b ? 1 : -1;
+            }
+        },
+
+        setReady: function(){
+            this.ready = true;
+            this.trigger('ready');
+        },
 
         fetch: function(options){
         
@@ -23,7 +45,12 @@ define([
             if(!_.has(options, 'data')){
                 options.data = {};
             }
-            Backbone.Model.prototype.fetch.call(this, options);
+            Backbone.Collection.prototype.fetch.call(this, options);
+        },
+
+        sortOils: function(attr){
+            this.sortAttr = attr;
+            this.sort();
         }
 
     });

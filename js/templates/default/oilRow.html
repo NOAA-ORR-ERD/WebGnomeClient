@@ -1,8 +1,10 @@
-<tr>
-	<td>{{ data.get('name') }}</td>
-	<td>{{ data.get('location') }}</td>
-	<td>{{ data.get('field_name') }}</td>
-	<td>{{ data.get('oil_class') }}</td>
-	<td>{{ data.get('product_type') }}</td>
-	<td>{{ data.get('api') }}</td>
-</tr>
+{% for (var i = 0; i < data.length; i++){
+	<tr>
+		<td>{{ data.at(i).get('name') }}</td>
+		<td>{{ data.at(i).get('location') }}</td>
+		<td>{{ data.at(i).get('field_name') }}</td>
+		<td>{{ data.at(i).get('oil_class') }}</td>
+		<td>{{ data.at(i).get('product_type') }}</td>
+		<td>{{ data.at(i).get('api') }}</td>
+	</tr>
+	} %}

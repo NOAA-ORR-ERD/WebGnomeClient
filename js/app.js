@@ -10,8 +10,8 @@ define([
 ], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     'use strict';
     var app = {
-        api: 'http://0.0.0.0:9899',
-        // api: 'http://hazweb2.orr.noaa.gov:9899',
+          api: 'http://0.0.0.0:9899',
+        //api: 'http://hazweb2.orr.noaa.gov:7450',
         //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
@@ -28,6 +28,7 @@ define([
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.api + options.url;
                 }
+                
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
@@ -162,7 +163,15 @@ define([
                 }
 
                 return tree;
-            }
+            };
+
+            // Extension of Backbone class to add filter method that returns a Backbone collection 
+            // instead of a simple array.  Used in js/views/form/oilQuery/oilTable.js
+
+            Backbone.Collection.prototype.whereCollection = function(obj){
+                var results = this.where(obj);
+                return new this.constructor(results);
+            };
 
             webgnome.getForm = function(obj_type){
                 var map = {

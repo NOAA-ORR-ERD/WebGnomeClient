@@ -13,36 +13,31 @@ define([
         el: 'table',
         className: 'table',
 
-        initialize: function(obj) {
-            this.oilLib = new OilLib(_.bind(this.setReady,this));
+        initialize: function(obj){
+            this.oilLib = new OilLib();
+            this.oilLib.on('ready', this.setReady, this);
             this.filter = obj;
         },
 
         setReady: function(){
+            var oils = this.oilLib;
+            if(this.filter){
+                oils = oils.whereCollection(this.filter);
+            }
+            var compiled = _.template(OilTableTemplate, {data: oils});
+            this.$el.html(compiled);
             this.ready = true;
-            var oilRows = this.setupRows();
-            var compiled = _.template(OilTableTemplate, {rows: oilRows});
-            this.$el.append(compiled);
             this.trigger('ready');
         },
 
         setupRows: function(){
             var totalCompiled = '';
             var oils = this.oilLib;
-            if(this.filter){
-                oils = oils.where(this.filter);
-                for (var i = 0; i < oils.length; i++){
-                    var compiled = _.template(OilRowTemplate, {data: oils[i]});
-                    totalCompiled += compiled;
-                }
-            } else {
-                for (var i = 0; i < oils.length; i++){
-                    var compiled = _.template(OilRowTemplate, {data: oils.at(i)});
-                    totalCompiled += compiled;
-                }
-            }
-            return totalCompiled;
-        }
+            
+            var compiled = _.template(OilRowTemplate, {data: oils});
+
+            return compiled;
+        },
 
     });
     return oilTableView;
