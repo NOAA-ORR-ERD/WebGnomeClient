@@ -14,9 +14,24 @@ define([
             'num_elements': 1000,
             'num_released': 0,
             'start_time_invalid': true,
-            'release_time': "2013-02-13T15:00:00",
-            'end_release_time': "2013-02-13T15:00:00"
+            'release_time': '2013-02-13T15:00:00',
+            'end_release_time': '2013-02-13T15:00:00'
+        },
+
+        validate: function(attrs, options){
+            if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
+                return 'Start position must be in decimal degrees.';
+            }
+
+            if(parseFloat(attrs.end_position[0]) != attrs.end_position[0] || parseFloat(attrs.end_position[1]) != attrs.end_position[1]){
+                return 'Start position must be in decimal degrees.';
+            }
+
+            if(isNaN(attrs.num_elements)){
+                return 'Release amount must be a number.';
+            }
         }
+
     });
 
     return gnomeRelease;

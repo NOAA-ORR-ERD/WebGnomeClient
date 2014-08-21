@@ -174,6 +174,45 @@ nav.navbar{
         top: 0;
         width: 70%;
 
+        .spill-button{
+            position: absolute;
+            left: .5em;
+            top: 10em;
+            z-index: 1;
+            background-color: rgba(255,255,255,0.4);
+            border-radius: 4px;
+            padding: 2px;
+
+            &.on{
+                button{
+                    background-color: #fc3;
+                }
+            }
+
+            button{
+                background-repeat: no-repeat;
+                background-position: center center;
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAB7CAAAewgFu0HU+AAAAB3RJTUUH3ggBFRgHar6XOgAAAxRJREFUSMe1ll9o1mUUxz9nezfmO8xky8rFQpPAN43yppJuvFlBCRVB0KQbSSj0pi4iEUEDQYmoCCICJUH6RxRIiRddpBZIURmRQ9C0pDHnvxzv3jnf9unmSD+Gc/5e6MADv+d5znnOv+855xeUIHUAWJXbAxGxj/+D1J3+Rx+UkW0rqWtu4btaRrAyiwdVYDVwVx7VCtc1dWN+Hwf2RsR4K2HqUGvqV2pdHVbPqedzncuzevLU1I6Z3osZlATwBLAZuBs4AWwHRqex3gK8AiwGjgFbgS8iwjKhq2aoTgEHgK8jYniaQbcDDwGdyVstG7ZQBzNE69TOwl1FrRT2nerzyTuY0SgHhqQrQJvaD9wHPJAKDgM/A2eAZquoC6ADaAceBu4BVma+5ifPhczLd3nWnjIBeCNh61VXq7vVpjrp7HQ5eXenbO9sSuapO9QxdcryNJWyO9R51+sMDWAYmJgJ+rNQ5Jtj+cZ1vZqvblIvtuBRQ31DXXij8K6q29UrJZQ01bfVnjJNtQH8AkyVCNs/wGHg/IzwziJbkN25mbXRKlXUW4EuYBL4KyKaFfUm4ClgMOvkIrAfqLegpBfYADwN9GVv/EzdGeo64DVgHPgeuCM7wAhw5zT0NbJA61nAPYX7KeAo0A+cBo4AS9P4jaivqwfVJ9V2dYn6zjWSPaFuUxeoc9QX1RPX4NujPpj9crn6vrot1JVAPSKOFCEOrAUeydz9DnwOfBwRE8nTBgwAz2WLagDfAO9GxMnCW7cBPZEC3cAKYEn2sJ9yPNycgJkELmUYlmWihxKZXbnMQp2bb/UDfwI/AqOofYn/k+pZ9Yy6V31UbU+rutS16qG8H1V/Uzen91dHS03dpZ7OCTyifqKuqABrgBeAfcChtGQNsAh4T/0hQ7g+QbAL+Bt4DHgV6FE/Aham3OPApxmVpcCzwBBp1VtqX1o2R31JHcqWMpLd+aD6TA6+UO9XP1TH1T/UC7nezLxc7TBb1JdDXQxcioizxSmaA24gwXAK+BL4tfg/oC5Kz+5Nb78F9kfEWIGnG+j+F7h1MAuvGRARAAAAAElFTkSuQmCC');
+                overflow: hidden;
+                color: transparent;
+                background-size: 70%;
+                display: block;
+                margin: 1px;
+                padding: 0;
+                font-size: 1.14em;
+                font-weight: bold;
+                text-decoration: none;
+                text-align: center;
+                height: 1.375em;
+                width: 1.375em;
+                line-height: .4em;
+                background-color: #7b98bc;
+                background-color: rgba(0,60,136,0.5);
+                border: none;
+                border-radius: 2px;
+            }
+        }
+
         .controls{
             .make-row();
             background: rgba(255, 255, 255, .75);

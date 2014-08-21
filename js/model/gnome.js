@@ -10,15 +10,19 @@ define([
     'model/environment/wind',
     'model/movers/wind',
     'model/movers/random',
-    'model/movers/cats'
+    'model/movers/cats',
+    'model/outputters/geojson'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel,
-    WindMover, RandomMover, CatsMover){
+    WindMover, RandomMover, CatsMover,
+    GeojsonOutputter){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
         model: {
-            spills: SpillModel,
+            spills: {
+                'gnome.spill.spill.Spill': SpillModel
+            },
             map: MapModel,
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
@@ -29,9 +33,12 @@ define([
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
-            outputters: Backbone.Collection,
+            outputters: {
+                'gnome.outputters.geo_json.GeoJSON': GeojsonOutputter
+            },
             weatherers: Backbone.Collection
         },
+        ready: false,
 
         sync: function(method, model, options){
             // because of the unique structure of the gnome model, it's relation to other child object
@@ -95,6 +102,7 @@ define([
             $.when.apply($, this.ajax).done(_.bind(function(){
                 this.set(response);
                 this.trigger('ready');
+                this.ready = true;
             }, this));
         },
 

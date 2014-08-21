@@ -6,22 +6,39 @@ define([
     'text!templates/model/controls.html',
     'views/default/map',
     'ol',
+    'model/spill',
+    'views/form/spill',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
         width: '70%',
+        spillToggle: false,
+
+        events: {
+            'click .spill-button': 'toggleSpill',
+            'mouseout .spill-button': 'toggleSpillBlur',
+            'focusout .spill-button': 'toggleSpillBlur'
+        },
 
         initialize: function(){
-            this.graticule = new ol.Graticule({
-                maxLines: 50,
-            });
-            this.render();
+            webgnome.model.on('ready', this.modelListeners, this);
             
-            webgnome.model.once('ready', this.render, this);
+            if(webgnome.model.ready){
+                this.render();
+                this.modelListeners();
+            } else {
+                webgnome.model.once('ready', this.render, this);
+            }
+        },
+
+        modelListeners: function(){
+            webgnome.model.get('map').on('change', this.resetMap, this);
+            webgnome.model.get('spills').on('add', this.resetSpills, this);
+            webgnome.model.get('spills').on('remove', this.resetSpills, this);
         },
 
         render: function(){
@@ -34,7 +51,23 @@ define([
                     })
                 ]
             });
-            webgnome.model.get('map').on('change', this.resetMap, this);
+
+            this.SpillIndexSource = new ol.source.Vector();
+            this.SpillIndexLayer = new ol.layer.Vector({
+                source: this.SpillIndexSource,
+                name: 'spills',
+                style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [0.5, 1.0],
+                        src: '/img/spill-pin.png',
+                        size: [32, 40]
+                    })
+                })
+            });
+            
+            this.graticule = new ol.Graticule({
+                maxLines: 50,
+            });
 
             var date;
             if(webgnome.hasModel()){
@@ -80,7 +113,6 @@ define([
         },
 
         renderMap: function(){
-            console.log('render map');
             // check if the model has a map, specifically a bna map that has a geojson output
             // if it does load it's geojson and put it in a layer on the map
             // named modelmap
@@ -116,6 +148,10 @@ define([
                         }
 
                         this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
                     }
                 }, this));
             } else {
@@ -123,6 +159,8 @@ define([
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
                     this.ol.render();
                     this.graticule.setMap(this.ol.map);
+                    this.ol.map.addLayer(this.SpillIndexLayer);
+                    this.resetSpills();
                 }
             }
         },
@@ -131,7 +169,7 @@ define([
             var layer = event.target.id;
 
             if(layer){
-                this.ol.map.getLayers().forEach(function(el, ind, ar){
+                this.ol.map.getLayers().forEach(function(el){
                     if(el.get('name') == layer){
                         if(el.getVisible()){
                             el.setVisible(false);
@@ -143,8 +181,109 @@ define([
             }
         },
 
+        toggleSpill: function(){
+            if(this.spillToggle){
+                this.ol.map.getViewport().style.cursor = '';
+                this.spillToggle = false;
+                this.ol.map.un('click', this.addSpill, this);
+            } else {
+                this.ol.map.getViewport().style.cursor = 'crosshair';
+                this.spillToggle = true;
+                this.ol.map.on('click', this.addSpill, this);
+            }
+
+            this.$('.spill-button').toggleClass('on');
+        },
+
+        toggleSpillBlur: function(event){
+            event.target.blur();
+        },
+
+        renderSpills: function(){
+            // foreach spill add at feature to the source
+            spills = webgnome.model.get('spills');
+            spills.forEach(function(spill){
+                var start_position = spill.get('release').get('start_position');
+                if(start_position.length > 2){
+                    start_position = [start_position[0], start_position[1]];
+                }
+                var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+                var feature = new ol.Feature({
+                    geometry: geom,
+                    spill: spill
+                });
+
+                this.SpillIndexSource.addFeature(feature);
+            }, this);
+
+            this.ol.map.on('pointermove', this.spillHover, this);
+            this.ol.map.on('click', this.spillClick, this);
+        },
+
+        resetSpills: function(){
+            // remove all spills from the source.
+            this.SpillIndexSource.clear();
+            this.renderSpills();
+        },
+
+        addSpill: function(e){
+            // add a spill to the model.
+            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+            var spill = new GnomeSpill();
+            // add the dummy z-index thing
+            coord.push(0);
+            spill.get('release').set('start_position', coord);
+            spill.get('release').set('release_time', webgnome.model.get('start_time'));
+            spill.get('release').set('end_release_time', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+
+            spill.save(null, {
+                validate: false,
+                success: function(){
+                    var spillform = new SpillForm(null, spill);
+                    spillform.render();
+                    spillform.on('save', function(){
+                        webgnome.model.get('spills').add(spill);
+                        webgnome.model.save();
+                    });
+                }
+            });
+
+            this.toggleSpill();
+        },
+
+        spillHover: function(e){
+            if(!this.spillToggle){
+                var pointer = this.ol.map.forEachFeatureAtPixel(e.pixel, function(){
+                    return true;
+                }, null, function(layer){
+                    if(layer.get('name') == 'spills'){
+                        return layer;
+                    }
+                    return false;
+                });
+                if (pointer) {
+                    this.ol.map.getViewport().style.cursor = 'pointer';
+                } else if(this.ol.map.getViewport().style.cursor == 'pointer') {
+                    this.ol.map.getViewport().style.cursor = '';
+                }
+            }
+        },
+
+        spillClick: function(e){
+            var spill = this.ol.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                return feature.get('spill');
+            }, null, function(layer){
+                if(layer.get('name') == 'spills'){
+                    return layer;
+                }
+                return false;
+            });
+            if(spill){
+                new SpillForm(null, spill).render();
+            }
+        },
+
         resetMap: function(){
-            console.log('map reset');
             this.ol.redraw = true;
             this.render();
         },

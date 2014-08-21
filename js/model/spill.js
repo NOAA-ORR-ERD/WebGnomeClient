@@ -20,6 +20,16 @@ define([
             release: GnomeRelease,
             element_type: GnomeElement
         },
+
+        validate: function(attrs, options){
+            if(!attrs.release.isValid()){
+                return attrs.release.validationError;
+            }
+
+            if(!attrs.element_type.isValid()){
+                return attr.element_type.validationError;
+            }
+        }
     });
 
     return gnomeSpill;
