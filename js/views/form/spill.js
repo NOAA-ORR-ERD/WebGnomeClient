@@ -14,7 +14,7 @@ define([
 
         events: function() {
             return _.defaults({
-                'click .remove': 'remove'
+                'click .remove': 'removeSpill'
             }, FormModal.prototype.events);
         },
 
@@ -86,7 +86,7 @@ define([
             });
         },
 
-        remove: function(e){
+        removeSpill: function(e){
             e.preventDefault();
             webgnome.model.get('spills').remove(this.model);
             webgnome.model.save();
