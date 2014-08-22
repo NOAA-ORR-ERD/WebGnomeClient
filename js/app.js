@@ -217,6 +217,11 @@ define([
         },
         
         validModel: function(){
+            if(webgnome.hasModel()){
+                if(webgnome.model.isValid() && webgnome.model.get('outputters').length > 0 && webgnome.model.get('spills').length > 0){
+                    return true;
+                }
+            }
             return false;
         }
     };
