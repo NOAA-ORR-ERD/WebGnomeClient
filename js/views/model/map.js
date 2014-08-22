@@ -9,9 +9,10 @@ define([
     'model/spill',
     'views/form/spill',
     'model/step',
+    'mousetrap',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
@@ -166,6 +167,14 @@ define([
             }
         },
 
+        togglePlay: function(){
+            if (this.state == 'play') {
+                this.pause();
+            } else {
+                this.play();
+            }
+        },
+
         play: function(){
             this.state = 'play';
             this.controls.play.addClass('pause').removeClass('play');
@@ -250,12 +259,14 @@ define([
             // visually disable the interface and remove listeners
             this.controls.seek.slider('option', 'disabled', true);
             this.$('.buttons a').addClass('disabled');
+            Mousetrap.unbind('space', _.bind(this.togglePlay, this));
         },
 
         enableUI: function(){
             // visusally enable the interface and add listeners
             this.controls.seek.slider('option', 'disabled', false);
             this.$('.buttons a').removeClass('disabled');
+            Mousetrap.bind('space', _.bind(this.togglePlay, this));
         },
 
         toggle: function(offset){
