@@ -395,8 +395,9 @@ define([
             // add the dummy z-index thing
             coord.push(0);
             spill.get('release').set('start_position', coord);
+            spill.get('release').set('end_position', coord);
             spill.get('release').set('release_time', webgnome.model.get('start_time'));
-            spill.get('release').set('end_release_time', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+            spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
 
             spill.save(null, {
                 validate: false,
