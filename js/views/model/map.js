@@ -8,20 +8,30 @@ define([
     'ol',
     'model/spill',
     'views/form/spill',
+    'model/step',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm){
+], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep){
     var mapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
         width: '70%',
         spillToggle: false,
+        state: 'pause',
+        step: new GnomeStep(),
+        frame: 0,
 
         events: {
             'click .spill-button': 'toggleSpill',
             'mouseout .spill-button': 'toggleSpillBlur',
-            'focusout .spill-button': 'toggleSpillBlur'
+            'focusout .spill-button': 'toggleSpillBlur',
+            'click .play': 'play',
+            'click .pause': 'pause',
+            'click .fastforward': 'fastforward',
+            'click .rewind': 'rewind',
+            'slide .seek > div': 'seek',
+            'slidechange .seek > div': 'loop'
         },
 
         initialize: function(){
@@ -39,6 +49,7 @@ define([
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.get('spills').on('add', this.resetSpills, this);
             webgnome.model.get('spills').on('remove', this.resetSpills, this);
+            webgnome.model.on('change', this.contextualize, this);
         },
 
         render: function(){
@@ -64,6 +75,23 @@ define([
                     })
                 })
             });
+
+            this.SpillGroupLayers = new ol.Collection();
+            this.SpillGroupLayer = new ol.layer.Group({
+                name:'spills',
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(0, 0, 0, .75)'
+                        }),
+                        radius: 1,
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 1)'
+                        })
+                    })
+                }),
+                layers: this.SpillGroupLayers
+            });
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -85,18 +113,149 @@ define([
                     this.$('.layers').toggleClass('expanded');
                 }, this));
                 this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
+                this.controls = {
+                    'play': this.$('.controls .play'),
+                    'pause': this.$('.controls .play'),
+                    'seek': this.$('.seek > div'),
+                    'fastforward' : this.$('.controls .fastfoward'),
+                    'rewind': this.$('.controls .rewind')
+                };
 
-                this.$('.seek > div').slider();
+                this.controls.seek.slider();
             }
+
+            this.contextualize();
             
-            // check if the ui should be functional
-            if(!webgnome.hasModel() || !webgnome.validModel()){
-                this.$('.seek > div').slider('option', 'disabled', true);
-                this.$('.buttons a').addClass('disabled');
-            }
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
+        },
+
+        contextualize: function(){
+            if(!webgnome.hasModel() || !webgnome.validModel()){
+                this.disableUI();
+            } else {
+                this.enableUI();
+            }
+
+            // set the slider to the correct number of steps
+            this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps'));
+            this.SpillGroupLayers.clear();
+            this.rewind();
+        },
+
+        loop: function(){
+            if (this.state == 'play' && this.SpillGroupLayers.item(this.controls.seek.slider('value'))) {
+                this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
+                    setTimeout(_.bind(function(){
+                        this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
+                    }, this), 60);
+                }, this));
+                this.renderStep({step: this.controls.seek.slider('value')});
+
+            } else if(this.state == 'play' && this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
+                this.step.fetch({
+                    success: _.bind(this.renderStep, this),
+                    error: _.bind(function(){
+                        this.pause();
+                        console.log('error loading step');
+                    }, this)
+                });
+            } else {
+                this.pause();
+            }
+        },
+
+        play: function(){
+            this.state = 'play';
+            this.controls.play.addClass('pause').removeClass('play');
+            this.loop();
+        },
+
+        pause: function(){
+            this.state = 'pause';
+            this.controls.play.addClass('play').removeClass('pause');
+        },
+
+        rewind: function(){
+            this.pause();
+            this.controls.seek.slider('value', 0);
+            $.get(webgnome.api + '/rewind');
+
+            // clean up the spill ... ha
+            this.SpillGroupLayers.clear();
+        },
+
+        fastforward: function(){
+            this.pause();
+            this.controls.seek.slider('value', webgnome.model.get('num_time_steps'));
+        },
+
+        seek: function(e, ui){
+            this.pause();
+            this.controls.seek.slider('value', ui.value);
+            this.renderStep({step: ui.value});
+        },
+
+        resetSeek: function(){
+            this.controls.seek.slider('value', this.frame);
+        },
+
+        renderStep: function(options){
+            if(!_.isUndefined(options.step)) {
+                // if the map has the requested frame render it while seeking
+                if(this.SpillGroupLayers.item(options.step)){
+                    this.SpillGroupLayers.item(this.frame).setVisible(false);
+                    this.SpillGroupLayers.item(options.step).setVisible(true);
+                    this.frame = options.step;
+                } else {
+                    // if the map doens't have the requested timestep rest the seeker
+                    this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+                }
+            } else if(this.step.get('GeoJson')){
+                var layer = new ol.layer.Vector({
+                    step: this.step.get('GeoJson').step_num,
+                    style: new ol.style.Style({
+                        image: new ol.style.Circle({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(0, 0, 0, .75)'
+                            }),
+                            radius: 1,
+                            stroke: new ol.style.Stroke({
+                                color: 'rgba(0, 0, 0, 1)'
+                            })
+                        })
+                    }),
+                    source: new ol.source.GeoJSON({
+                        // url: ''
+                        projection: 'EPSG:3857',
+                        object: this.step.get('GeoJson').feature_collection
+                    })
+                });
+                
+                layer.once('render', _.bind(function(){
+                    if(this.step.get('GeoJson').step_num > 0){
+                        this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
+                        this.frame = this.step.get('GeoJson').step_num;
+                    }
+
+                    this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
+                }, this));
+                
+                this.SpillGroupLayers.push(layer);
+            }
+        },
+
+        disableUI: function(){
+            // visually disable the interface and remove listeners
+            this.controls.seek.slider('option', 'disabled', true);
+            this.$('.buttons a').addClass('disabled');
+        },
+
+        enableUI: function(){
+            // visusally enable the interface and add listeners
+            this.controls.seek.slider('option', 'disabled', false);
+            this.$('.buttons a').removeClass('disabled');
         },
 
         toggle: function(offset){
@@ -148,6 +307,7 @@ define([
                         }
 
                         this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillGroupLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
                     }
                     if(this.ol.redraw === false){
@@ -160,6 +320,8 @@ define([
                     this.ol.render();
                     this.graticule.setMap(this.ol.map);
                     this.ol.map.addLayer(this.SpillIndexLayer);
+                    this.ol.map.addLayer(this.SpillGroupLayer);
+                    this.ol.map.render();
                     this.resetSpills();
                 }
             }
@@ -289,6 +451,7 @@ define([
         },
 
         close: function(){
+            this.pause();
             this.remove();
             this.unbind();
             this.ol.close();
