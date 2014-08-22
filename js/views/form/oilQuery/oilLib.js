@@ -17,17 +17,32 @@ define([
         
         initialize: function(options){
             this.oilTable = new OilTable();
-            this.loadingGif = new LoadingModal()
+
+            // Initialize and render loading modal following request to view Oil Library collection
+
+            this.loadingGif = new LoadingModal();
             this.loadingGif.render();
+
+            // Passed oilTable's events hash to this view's events
+            
             this.events = _.defaults(this.oilTable.events, FormModal.prototype.events);
             this.oilTable.on('renderTable', this.render, this);
+
+            // Initialized oilDistinct collection so it is available for the view render
+
             this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(options){
             if(this.oilTable.ready){
+
+                // Removes loading modal upon successful render of oilLib
+
                 this.loadingGif.hide();
+                
+                // Template in oilTable's html to oilLib's template prior to render call
+
                 this.body = _.template(OilTemplate, {
                     oilTable: this.oilTable.$el.html()
                 });
