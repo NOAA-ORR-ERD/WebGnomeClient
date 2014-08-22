@@ -35,7 +35,7 @@ define([
             } else {
                 this.activeIcon = this.sortDnIcon;
             }
-            this.$('.' + this.oilLib.sortAttr).append('<span>' + this.activeIcon + '</span>');
+            this.$('.' + this.oilLib.sortAttr + " span").html(this.activeIcon);
             this.ready = true;
             this.trigger('ready');
         },
@@ -57,7 +57,7 @@ define([
                 this.oilLib.sortDir = 1;
             }
 
-            $(e.currentTarget).closest('thead').find('span').remove();
+            $(e.currentTarget).closest('thead').find('span').empty();
 
             this.oilLib.sortOils(ns);
             this.trigger('sort');

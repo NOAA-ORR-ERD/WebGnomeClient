@@ -37,7 +37,7 @@ define([
         render: function(options){
             if(this.oilTable.ready){
 
-                // Removes loading modal upon successful render of oilLib
+                // Removes loading modal just prior to render call of oilLib
 
                 this.loadingGif.hide();
                 
