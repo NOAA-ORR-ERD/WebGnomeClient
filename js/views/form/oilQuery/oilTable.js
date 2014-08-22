@@ -12,12 +12,13 @@ define([
         events: {
             'click th': 'headerClick'
         },
+        sortUpIcon: '&#9650;',
+        sortDnIcon: '&#9660;',
 
         initialize: function(obj){
-            this.oilLib = new OilLib();
+            this.oilLib = new OilLib(obj);
             this.oilLib.on('ready', this.setReady, this);
             this.on('sort', this.setReady);
-            this.filter = obj;
         },
 
         setReady: function(){
@@ -25,10 +26,19 @@ define([
             if(this.filter){
                 oils = oils.whereCollection(this.filter);
             }
+            var filter = this.filter
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
+            this.$('.' + this.oilLib.sortAttr).append('<span>' + this.sortUpIcon + '</span>');
             this.ready = true;
             this.trigger('ready');
+        },
+
+        sortTable: function(){
+            var oils = this.oilLib;
+            var compiled = _.template(OilTableTemplate, {data: oils});
+            this.$el.html(compiled);
+            this.trigger('renderTable');
         },
 
         headerClick: function(e){
@@ -40,6 +50,8 @@ define([
             } else {
                 this.oilLib.sortDir = 1;
             }
+
+            $(e.currentTarget).closest('thead').find('span').remove();
 
             this.oilLib.sortOils(ns);
             this.trigger('sort');

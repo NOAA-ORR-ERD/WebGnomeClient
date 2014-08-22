@@ -17,6 +17,7 @@ define([
         initialize: function(options){
             this.oilTable = new OilTable();
             this.events = _.defaults(this.oilTable.events, FormModal.prototype.events);
+            this.oilTable.on('renderTable', this.render, this);
             this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
             FormModal.prototype.initialize.call(this, options);
         },

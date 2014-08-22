@@ -7,10 +7,11 @@ define([
 
         ready: false,
 
-        initialize: function(){
+        initialize: function(obj){
             this.fetch({
                 success: _.bind(this.setReady, this)
             });
+            this.filter = obj;
         },
         url: function(){
             return 'http://0.0.0.0:9898/oil';
