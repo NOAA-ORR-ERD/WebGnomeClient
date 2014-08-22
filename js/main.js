@@ -12,7 +12,7 @@ require.config({
         mousetrap: 'lib/mousetrap/mousetrap',
         geolib: 'lib/geolib/dist/geolib',
         text: 'lib/requirejs-text/text',
-        ol: 'lib/openlayers/build/ol-debug',
+        ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
