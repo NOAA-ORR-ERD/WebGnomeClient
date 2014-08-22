@@ -7,8 +7,9 @@ define([
     'model/resources/oilDistinct',
     'views/modal/form',
     'views/form/oilQuery/oilTable',
+    'views/modal/loading',
     'text!templates/form/oilLib.html'
-], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, OilTemplate){
+], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, OilTemplate){
     var oilLibForm = FormModal.extend({
         name: 'oillib',
         title: 'Oil Query Form',
@@ -16,6 +17,8 @@ define([
         
         initialize: function(options){
             this.oilTable = new OilTable();
+            this.loadingGif = new LoadingModal()
+            this.loadingGif.render();
             this.events = _.defaults(this.oilTable.events, FormModal.prototype.events);
             this.oilTable.on('renderTable', this.render, this);
             this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
@@ -24,6 +27,7 @@ define([
 
         render: function(options){
             if(this.oilTable.ready){
+                this.loadingGif.hide();
                 this.body = _.template(OilTemplate, {
                     oilTable: this.oilTable.$el.html()
                 });
