@@ -29,7 +29,7 @@ define([
             'focusout .spill-button': 'toggleSpillBlur',
             'click .play': 'play',
             'click .pause': 'pause',
-            'click .fastforward': 'fastforward',
+            'click .next': 'next',
             'click .rewind': 'rewind',
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop'
@@ -146,24 +146,29 @@ define([
         },
 
         loop: function(){
-            if (this.state == 'play' && this.SpillGroupLayers.item(this.controls.seek.slider('value'))) {
-                this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
-                    setTimeout(_.bind(function(){
-                        this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                    }, this), 60);
-                }, this));
-                this.renderStep({step: this.controls.seek.slider('value')});
+            if(this.state == 'play'){
+                if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
+                    // the step already exists in the index, make it visible.
+                    this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
+                        setTimeout(_.bind(function(){
+                            this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
+                        }, this), 60);
+                    }, this));
+                    this.renderStep({step: this.controls.seek.slider('value')});
 
-            } else if(this.state == 'play' && this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
-                this.step.fetch({
-                    success: _.bind(this.renderStep, this),
-                    error: _.bind(function(){
-                        this.pause();
-                        console.log('error loading step');
-                    }, this)
-                });
-            } else {
-                this.pause();
+                } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
+                    // the step doesn't already exist on the map and it's with in the number of 
+                    // time steps this model should have so load
+                    this.step.fetch({
+                        success: _.bind(this.renderStep, this),
+                        error: _.bind(function(){
+                            this.pause();
+                            console.log('error loading step');
+                        }, this)
+                    });
+                } else {
+                    this.pause();
+                }
             }
         },
 
@@ -195,19 +200,28 @@ define([
             this.SpillGroupLayers.clear();
         },
 
-        fastforward: function(){
+        prev: function(){
             this.pause();
-            this.controls.seek.slider('value', webgnome.model.get('num_time_steps'));
+            this.controls.seek.slider('value', this.frame - 1);
+            this.renderStep({step: this.frame - 1});
+        },
+
+        next: function(){
+            this.pause();
+            this.controls.seek.slider('value', this.frame + 1);
+            this.renderStep({step: this.frame + 1});
         },
 
         seek: function(e, ui){
             this.pause();
+            this.state = 'seek';
             this.controls.seek.slider('value', ui.value);
             this.renderStep({step: ui.value});
         },
 
         resetSeek: function(){
             this.controls.seek.slider('value', this.frame);
+            this.state = 'pause';
         },
 
         renderStep: function(options){
@@ -218,41 +232,48 @@ define([
                     this.SpillGroupLayers.item(options.step).setVisible(true);
                     this.frame = options.step;
                 } else {
-                    // if the map doens't have the requested timestep rest the seeker
-                    this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+                    if(this.state == 'seek'){
+                        // map doesn't have the requested frame layer
+                        // if the user drops it outside the loaded range reset it.
+                        this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+                    }
                 }
             } else if(this.step.get('GeoJson')){
-                var layer = new ol.layer.Vector({
-                    step: this.step.get('GeoJson').step_num,
-                    style: new ol.style.Style({
-                        image: new ol.style.Circle({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(0, 0, 0, .75)'
-                            }),
-                            radius: 1,
-                            stroke: new ol.style.Stroke({
-                                color: 'rgba(0, 0, 0, 1)'
-                            })
-                        })
-                    }),
-                    source: new ol.source.GeoJSON({
-                        // url: ''
-                        projection: 'EPSG:3857',
-                        object: this.step.get('GeoJson').feature_collection
-                    })
-                });
-                
-                layer.once('render', _.bind(function(){
-                    if(this.step.get('GeoJson').step_num > 0){
-                        this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
-                        this.frame = this.step.get('GeoJson').step_num;
-                    }
-
-                    this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                }, this));
-                
-                this.SpillGroupLayers.push(layer);
+                this.getStepLayer();
             }
+        },
+
+        getStepLayer: function(){
+            var layer = new ol.layer.Vector({
+                step: this.step.get('GeoJson').step_num,
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(0, 0, 0, .75)'
+                        }),
+                        radius: 1,
+                        stroke: new ol.style.Stroke({
+                            color: 'rgba(0, 0, 0, 1)'
+                        })
+                    })
+                }),
+                source: new ol.source.GeoJSON({
+                    // url: ''
+                    projection: 'EPSG:3857',
+                    object: this.step.get('GeoJson').feature_collection
+                })
+            });
+        
+            layer.once('render', _.bind(function(){
+                if(this.step.get('GeoJson').step_num > 0){
+                    this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
+                    this.frame = this.step.get('GeoJson').step_num;
+                }
+
+                this.controls.seek.slider('value', this.frame + 1);
+            }, this));
+            
+            this.SpillGroupLayers.push(layer);
         },
 
         disableUI: function(){
@@ -267,6 +288,8 @@ define([
             this.controls.seek.slider('option', 'disabled', false);
             this.$('.buttons a').removeClass('disabled');
             Mousetrap.bind('space', _.bind(this.togglePlay, this));
+            Mousetrap.bind('right', _.bind(this.next, this));
+            Mousetrap.bind('left', _.bind(this.prev, this));
         },
 
         toggle: function(offset){
