@@ -14,6 +14,7 @@ define([
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',
+        activeIcon: null,
 
         initialize: function(obj){
             this.oilLib = new OilLib(obj);
@@ -29,7 +30,12 @@ define([
             var filter = this.filter
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
-            this.$('.' + this.oilLib.sortAttr).append('<span>' + this.sortUpIcon + '</span>');
+            if (this.oilLib.sortDir === 1){
+                this.activeIcon = this.sortUpIcon;
+            } else {
+                this.activeIcon = this.sortDnIcon;
+            }
+            this.$('.' + this.oilLib.sortAttr).append('<span>' + this.activeIcon + '</span>');
             this.ready = true;
             this.trigger('ready');
         },
