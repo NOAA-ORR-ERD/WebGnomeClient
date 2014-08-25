@@ -4,8 +4,6 @@
             <th class="name">Name<span class="name"></span></th>
             <th class="location">Location<span class="location"></span></th>
             <th class="field_name">Field Name<span class="field_name"></span></th>
-            <th class="oil_class">Oil Class<span class="oil_class"></span></th>
-            <th class="product_type">Product Type<span class="product_type"></span></th>
             <th class="api">API<span class="api"></span></th>
         </tr>
     </thead>
@@ -15,8 +13,6 @@
             <td>{{ data.at(i).get('name') }}</td>
             <td>{{ data.at(i).get('location') }}</td>
             <td>{{ data.at(i).get('field_name') }}</td>
-            <td>{{ data.at(i).get('oil_class') }}</td>
-            <td>{{ data.at(i).get('product_type') }}</td>
             <td>{{ data.at(i).get('api') }}</td>
         </tr>
         {% } %}

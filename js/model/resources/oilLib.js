@@ -8,16 +8,13 @@ define([
         ready: false,
         loaded: false,
 
-        initialize: function(obj){
-            this.filterCollect = obj;
-            if (!this.loaded){
+        initialize: function(){
                 this.fetch({
                     success: _.bind(this.setReady, this)
                 });
-            }
             this.loaded = true;
         },
-        
+
         url: function(){
             return 'http://0.0.0.0:9898/oil';
         },
@@ -25,8 +22,12 @@ define([
         sortAttr: 'name',
         sortDir: 1,
 
-        filterCollection: function(){
-            this.whereCollection(this.filterCollect);
+
+        bySearch: function(obj){
+            var nameCollection = this.whereCollection();
+
+
+
         },
 
         comparator: function(a, b){

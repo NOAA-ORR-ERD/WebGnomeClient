@@ -17,7 +17,7 @@ define([
         activeIcon: null,
 
         initialize: function(obj){
-            this.oilLib = new OilLib({location: 'IRAN'});
+            this.oilLib = new OilLib();
             this.oilLib.on('ready', this.setReady, this);
             this.on('sort', this.setReady);
         },
@@ -41,6 +41,10 @@ define([
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
             this.trigger('renderTable');
+        },
+
+        update: function(){
+
         },
 
         headerClick: function(e){

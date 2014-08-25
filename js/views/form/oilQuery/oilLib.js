@@ -55,7 +55,13 @@ define([
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
                 this.$('.chosen-select').chosen({width: '265px'});
-
+                $.each(this.oilDistinct.models[2].attributes.values, function(key, value){
+                    $('.chosen-select')
+                        .append($('<option class="category"></option>')
+                            .attr('value', key)
+                            .text(value));
+                });
+                this.$('.chosen-select').trigger('chosen:updated');
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
                 this.createSliders(-2, 180);
@@ -64,12 +70,22 @@ define([
             }
         },
 
+        populateSelect: function(){
+            
+        },
+
         setUpOptions: function(){
 
         },
 
-        update: function(){
+        update: function(api){
+            var search = {
+                text: $.trim(this.$('#search').val()),
+                category: this.$('select.chosen-select option:selected').val(),
+                api: api
+            };
 
+            this.oilTable.oilLib.bySearch(search);
         },
 
         headerClick: function(e){
@@ -96,6 +112,7 @@ define([
                         }, this),
                         stop: _.bind(function(e, ui){
                             console.log(ui.values);
+                            this.update(ui.values);
                         }, this)
                     });
         }
