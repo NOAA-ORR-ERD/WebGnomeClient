@@ -101,9 +101,9 @@ define([
 
             var date;
             if(webgnome.hasModel()){
-                date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:MM');
+                date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             } else {
-                date = moment().format('M/DD/YYYY HH:MM');
+                date = moment().format('M/DD/YYYY HH:mm');
             }
 
             // only compile the template if the map isn't drawn yet
@@ -121,7 +121,8 @@ define([
                     'seek': this.$('.seek > div:first'),
                     'fastforward' : this.$('.controls .fastfoward'),
                     'rewind': this.$('.controls .rewind'),
-                    'progress': this.$('.controls .progress-bar')
+                    'progress': this.$('.controls .progress-bar'),
+                    'date': this.$('.controls .position')
                 };
 
                 this.controls.seek.slider();
@@ -242,6 +243,7 @@ define([
                     this.SpillGroupLayers.item(this.frame).setVisible(false);
                     this.SpillGroupLayers.item(options.step).setVisible(true);
                     this.frame = options.step;
+                    this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
                 } else {
                     if(this.state == 'seek'){
                         // map doesn't have the requested frame layer
@@ -257,6 +259,7 @@ define([
         getStepLayer: function(){
             var layer = new ol.layer.Vector({
                 step: this.step.get('GeoJson').step_num,
+                ts: moment(this.step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
                 style: new ol.style.Style({
                     image: new ol.style.Circle({
                         fill: new ol.style.Fill({
@@ -279,6 +282,7 @@ define([
                 if(this.step.get('GeoJson').step_num > 0){
                     this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
                     this.frame = this.step.get('GeoJson').step_num;
+                    this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
                 }
 
                 this.controls.seek.slider('value', this.frame + 1);
