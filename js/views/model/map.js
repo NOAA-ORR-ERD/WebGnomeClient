@@ -220,8 +220,10 @@ define([
 
         next: function(){
             this.pause();
-            this.controls.seek.slider('value', this.frame + 1);
-            this.renderStep({step: this.frame + 1});
+            if(this.SpillGroupLayers.item(this.frame + 1)){
+                this.controls.seek.slider('value', this.frame + 1);
+                this.renderStep({step: this.frame + 1});
+            }
         },
 
         seek: function(e, ui){
