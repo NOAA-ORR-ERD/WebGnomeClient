@@ -32,7 +32,8 @@ define([
             'click .next': 'next',
             'click .rewind': 'rewind',
             'slide .seek > div': 'seek',
-            'slidechange .seek > div': 'loop'
+            'slidechange .seek > div': 'loop',
+            'slidestop .seek > div': 'blur'
         },
 
         initialize: function(){
@@ -493,6 +494,10 @@ define([
         resetMap: function(){
             this.ol.redraw = true;
             this.render();
+        },
+
+        blur: function(e, ui){
+            ui.handle.blur();
         },
 
         close: function(){
