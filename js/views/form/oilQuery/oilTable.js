@@ -17,17 +17,13 @@ define([
         activeIcon: null,
 
         initialize: function(obj){
-            this.oilLib = new OilLib(obj);
+            this.oilLib = new OilLib({location: 'IRAN'});
             this.oilLib.on('ready', this.setReady, this);
             this.on('sort', this.setReady);
         },
 
         setReady: function(){
             var oils = this.oilLib;
-            if(this.filter){
-                oils = oils.whereCollection(this.filter);
-            }
-            var filter = this.filter
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
             if (this.oilLib.sortDir === 1){
@@ -35,7 +31,7 @@ define([
             } else {
                 this.activeIcon = this.sortDnIcon;
             }
-            this.$('.' + this.oilLib.sortAttr + " span").html(this.activeIcon);
+            this.$('.' + this.oilLib.sortAttr + ' span').html(this.activeIcon);
             this.ready = true;
             this.trigger('ready');
         },

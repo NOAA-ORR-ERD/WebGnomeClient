@@ -6,19 +6,28 @@ define([
     var oilLib = Backbone.Collection.extend({
 
         ready: false,
+        loaded: false,
 
         initialize: function(obj){
-            this.fetch({
-                success: _.bind(this.setReady, this)
-            });
-            this.filter = obj;
+            this.filterCollect = obj;
+            if (!this.loaded){
+                this.fetch({
+                    success: _.bind(this.setReady, this)
+                });
+            }
+            this.loaded = true;
         },
+        
         url: function(){
             return 'http://0.0.0.0:9898/oil';
         },
 
         sortAttr: 'name',
         sortDir: 1,
+
+        filterCollection: function(){
+            this.whereCollection(this.filterCollect);
+        },
 
         comparator: function(a, b){
             var a = a.get(this.sortAttr),
@@ -36,6 +45,7 @@ define([
         setReady: function(){
             this.ready = true;
             this.trigger('ready');
+            this.loaded = true;
         },
 
         fetch: function(options){

@@ -9,6 +9,7 @@ define([
                 success: cb
             });
         },
+        
         url: function(){
             return 'http://0.0.0.0:9898/distinct';
         },
