@@ -71,7 +71,7 @@ define([
         },
 
         populateSelect: function(){
-            
+
         },
 
         setUpOptions: function(){
@@ -86,6 +86,7 @@ define([
             };
 
             this.oilTable.oilLib.bySearch(search);
+            this.oilTable.trigger('ready');
         },
 
         headerClick: function(e){

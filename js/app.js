@@ -170,7 +170,7 @@ define([
 
             Backbone.Collection.prototype.whereCollection = function(obj){
                 var results = this.where(obj);
-                return new this.constructor(results);
+                return new Backbone.Collection(results);
             };
 
             webgnome.getForm = function(obj_type){

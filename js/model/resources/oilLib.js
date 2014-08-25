@@ -9,10 +9,12 @@ define([
         loaded: false,
 
         initialize: function(){
+            if(!this.loaded){
                 this.fetch({
                     success: _.bind(this.setReady, this)
                 });
             this.loaded = true;
+            }
         },
 
         url: function(){
@@ -24,9 +26,16 @@ define([
 
 
         bySearch: function(obj){
-            var nameCollection = this.whereCollection();
+            var nameCollection = this.whereCollection({'name': obj.text});
+            var fieldCollection = this.whereCollection({'field_name': obj.text});
+            var locationCollection = this.whereCollection({'location': obj.text});
+            var unionCollection = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
+            this.ready = true;
+            var answer = new this.constructor(unionCollection, {loaded: true});
+            return answer;
+        },
 
-
+        fuzzyFilter: function(){
 
         },
 
