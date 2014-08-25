@@ -286,10 +286,11 @@ define([
                     this.frame = this.step.get('GeoJson').step_num;
                     this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
                 }
-                if(this.frame < webgnome.model.get('num_time_steps')){
+                if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
                     this.controls.seek.slider('value', this.frame + 1);
                 } else {
                     this.pause();
+                    this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
                 }
             }, this));
             
