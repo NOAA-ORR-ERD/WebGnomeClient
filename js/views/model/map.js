@@ -143,13 +143,13 @@ define([
             }
 
             // set the slider to the correct number of steps
-            this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps'));
+            this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
             this.SpillGroupLayers.clear();
             this.rewind();
         },
 
         loop: function(){
-            if(this.state == 'play'){
+            if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
                     // the step already exists in the index, make it visible.
                     this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
@@ -164,7 +164,7 @@ define([
                     // time steps this model should have so load
 
                     this.controls.progress.addClass('active').addClass('progress-bar-striped');
-                    var percent = Math.round((this.frame + 1) / webgnome.model.get('num_time_steps') * 100);
+                    var percent = Math.round(((this.frame + 1) / (webgnome.model.get('num_time_steps') - 1)) * 100);
                     this.controls.progress.css('width', percent + '%');
                     this.step.fetch({
                         success: _.bind(this.renderStep, this),
@@ -284,8 +284,11 @@ define([
                     this.frame = this.step.get('GeoJson').step_num;
                     this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
                 }
-
-                this.controls.seek.slider('value', this.frame + 1);
+                if(this.frame < webgnome.model.get('num_time_steps')){
+                    this.controls.seek.slider('value', this.frame + 1);
+                } else {
+                    this.pause();
+                }
             }, this));
             
             this.SpillGroupLayers.push(layer);
