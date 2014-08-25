@@ -117,9 +117,10 @@ define([
                 this.controls = {
                     'play': this.$('.controls .play'),
                     'pause': this.$('.controls .play'),
-                    'seek': this.$('.seek > div'),
+                    'seek': this.$('.seek > div:first'),
                     'fastforward' : this.$('.controls .fastfoward'),
-                    'rewind': this.$('.controls .rewind')
+                    'rewind': this.$('.controls .rewind'),
+                    'progress': this.$('.controls .progress-bar')
                 };
 
                 this.controls.seek.slider();
@@ -159,6 +160,10 @@ define([
                 } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
                     // the step doesn't already exist on the map and it's with in the number of 
                     // time steps this model should have so load
+
+                    this.controls.progress.addClass('active').addClass('progress-bar-striped');
+                    var percent = Math.round((this.frame + 1) / webgnome.model.get('num_time_steps') * 100);
+                    this.controls.progress.css('width', percent + '%');
                     this.step.fetch({
                         success: _.bind(this.renderStep, this),
                         error: _.bind(function(){
@@ -168,7 +173,10 @@ define([
                     });
                 } else {
                     this.pause();
+                    this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
                 }
+            } else {
+                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
         },
 
@@ -194,6 +202,8 @@ define([
         rewind: function(){
             this.pause();
             this.controls.seek.slider('value', 0);
+            this.controls.progress.css('width', 0);
+            this.frame = 0;
             $.get(webgnome.api + '/rewind');
 
             // clean up the spill ... ha
