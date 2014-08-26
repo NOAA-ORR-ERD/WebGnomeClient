@@ -37,14 +37,11 @@ define([
         },
 
         initialize: function(){
-            webgnome.model.on('ready', this.modelListeners, this);
-            
-            if(webgnome.model.ready){
-                this.render();
+            if(webgnome.hasModel()){
                 this.modelListeners();
-            } else {
-                webgnome.model.once('ready', this.render, this);
             }
+            
+            this.render();
         },
 
         modelListeners: function(){

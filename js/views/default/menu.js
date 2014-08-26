@@ -23,7 +23,9 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
-            webgnome.model.on('sync', this.contextualize, this);
+            if(webgnome.hasModel()){
+                webgnome.model.on('sync', this.contextualize, this);
+            }
         },
 
         events: {

@@ -58,9 +58,9 @@ define([
                                     require([form], _.bind(function(Form){
                                         var view = new Form(null, object);
                                         view.on('hidden', view.close);
-                                        view.on('hidden', function(){
+                                        view.once('hidden', function(){
                                             webgnome.model.trigger('sync');
-                                        })
+                                        });
                                         view.render();
                                     }, this));
                                     
