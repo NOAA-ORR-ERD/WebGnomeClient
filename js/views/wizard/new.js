@@ -17,9 +17,9 @@ define([
             webgnome.model = new GnomeModel();
             webgnome.model.save(null, {
                 validate: false,
-                error: this.fail
+                error: this.fail,
+                success: _.bind(this.setup, this)
             });
-            webgnome.model.once('ready', _.bind(this.setup, this));
         },
 
         setup: function(){
