@@ -36,13 +36,12 @@ define([
                     var apiCollection = this.filterCollection(obj.api);
                     this.models = _.intersection(this.models, apiCollection.models);
                 } 
-                this.length = this.models.length;
             }
             if (!obj.text && obj.api.length === 2){
                 var apiCollection = this.filterCollection(obj.api);
                 this.models = _.intersection(this.models, apiCollection.models);
-                this.length = this.models.length;
             }
+            this.length = this.models.length;
             this.ready = true;
             return this;
         },
