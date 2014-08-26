@@ -26,13 +26,14 @@ define([
 
 
         bySearch: function(obj){
+            this.models = this.originalModels;
             var nameCollection = this.whereCollection({'name': obj.text});
             var fieldCollection = this.whereCollection({'field_name': obj.text});
             var locationCollection = this.whereCollection({'location': obj.text});
-            var unionCollection = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
+            this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
+            this.length = this.models.length;
             this.ready = true;
-            var answer = new this.constructor(unionCollection, {loaded: true});
-            return answer;
+            return this;
         },
 
         fuzzyFilter: function(){
@@ -56,6 +57,7 @@ define([
             this.ready = true;
             this.trigger('ready');
             this.loaded = true;
+            this.originalModels = this.models;
         },
 
         fetch: function(options){

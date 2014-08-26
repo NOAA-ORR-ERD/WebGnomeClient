@@ -86,7 +86,7 @@ define([
             };
 
             this.oilTable.oilLib.bySearch(search);
-            this.oilTable.trigger('ready');
+            this.oilTable.render();
         },
 
         headerClick: function(e){

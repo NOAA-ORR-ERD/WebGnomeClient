@@ -43,8 +43,12 @@ define([
             this.trigger('renderTable');
         },
 
-        update: function(){
-
+        render: function(){
+            var oils = this.oilLib;
+            var compiled = _.template(OilTableTemplate, {
+                data: oils
+            });
+            $('#tableContainer').html(this.$el.html(compiled));
         },
 
         headerClick: function(e){
