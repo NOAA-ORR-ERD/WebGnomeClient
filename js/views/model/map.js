@@ -48,7 +48,7 @@ define([
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.get('spills').on('add', this.resetSpills, this);
             webgnome.model.get('spills').on('remove', this.resetSpills, this);
-            webgnome.model.on('sync', this.contextualize, this);
+            webgnome.model.on('change', this.contextualize, this);
         },
 
         render: function(){
