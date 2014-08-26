@@ -19,7 +19,7 @@ define([
         render: function(){
             this.$el.html('<div class="model-tree"><div class="resize"></div></div>');
             this.renderModel();
-            webgnome.model.on('ready', this.renderModel, this);
+            webgnome.model.on('sync', this.renderModel, this);
         },
 
         toggle: function(){
@@ -58,6 +58,9 @@ define([
                                     require([form], _.bind(function(Form){
                                         var view = new Form(null, object);
                                         view.on('hidden', view.close);
+                                        view.on('hidden', function(){
+                                            webgnome.model.trigger('sync');
+                                        })
                                         view.render();
                                     }, this));
                                     

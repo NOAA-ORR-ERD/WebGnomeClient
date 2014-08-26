@@ -51,7 +51,7 @@ define([
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.get('spills').on('add', this.resetSpills, this);
             webgnome.model.get('spills').on('remove', this.resetSpills, this);
-            webgnome.model.on('change', this.contextualize, this);
+            webgnome.model.on('sync', this.contextualize, this);
         },
 
         render: function(){
@@ -427,7 +427,7 @@ define([
                 var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 var feature = new ol.Feature({
                     geometry: geom,
-                    spill: spill
+                    spill: spill.get('id')
                 });
 
                 this.SpillIndexSource.addFeature(feature);
@@ -497,7 +497,11 @@ define([
                 return false;
             });
             if(spill){
-                new SpillForm(null, spill).render();
+                var spillform = new SpillForm(null, webgnome.model.get('spills').get(spill));
+                spillform.on('hidden', function(){
+                    webgnome.model.trigger('sync');
+                });
+                spillform.render();
             }
         },
 

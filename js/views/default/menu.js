@@ -23,6 +23,7 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
+            webgnome.model.on('sync', this.contextualize, this);
         },
 
         events: {
@@ -114,6 +115,9 @@ define([
         contextualize: function(){
             if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.disableMenuItem('actions');
+                this.disableMenuItem('save');
+            } else {
+                this.enableMenuItem('actions');
                 this.disableMenuItem('save');
             }
         },
