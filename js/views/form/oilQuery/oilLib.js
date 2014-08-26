@@ -58,7 +58,7 @@ define([
                 $.each(this.oilDistinct.models[2].attributes.values, function(key, value){
                     $('.chosen-select')
                         .append($('<option class="category"></option>')
-                            .attr('value', key)
+                            .attr('value', value)
                             .text(value));
                 });
                 this.$('.chosen-select').trigger('chosen:updated');
@@ -84,7 +84,8 @@ define([
                 category: this.$('select.chosen-select option:selected').val(),
                 api: api
             };
-            if(!search.text){
+            console.log(search);
+            if(!search.text && search.api.length !== 2){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }
@@ -117,7 +118,11 @@ define([
                                                              ui.values[1] + '</div></div>');
                         }, this),
                         stop: _.bind(function(e, ui){
-                            console.log(ui.values);
+                            if (ui.values.length !== 2){
+                                ui.values = [minNum, maxNum];
+                            } else {
+                                ui.values = ui.values;
+                            }
                             this.update(ui.values);
                         }, this)
                     });

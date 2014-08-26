@@ -173,6 +173,17 @@ define([
                 return new Backbone.Collection(results);
             };
 
+            Backbone.Collection.prototype.filterCollection = function(arr){
+                var results = this.filter(function(model){
+                    if (model.attributes.api >= arr[0] && model.attributes.api <= arr[1]){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                return new Backbone.Collection(results);
+            };
+
             webgnome.getForm = function(obj_type){
                 var map = {
                     'gnome.model.Model': 'views/form/model',

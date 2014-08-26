@@ -27,11 +27,16 @@ define([
 
         bySearch: function(obj){
             this.models = this.originalModels;
-            var nameCollection = this.whereCollection({'name': obj.text});
-            var fieldCollection = this.whereCollection({'field_name': obj.text});
-            var locationCollection = this.whereCollection({'location': obj.text});
-            this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
-            this.length = this.models.length;
+            if (obj.text){
+                var nameCollection = this.whereCollection({'name': obj.text});
+                var fieldCollection = this.whereCollection({'field_name': obj.text});
+                var locationCollection = this.whereCollection({'location': obj.text});
+                this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
+                this.length = this.models.length;
+            }
+            if (obj.api.length === 2){
+                console.log("Works!");
+            }
             this.ready = true;
             return this;
         },
