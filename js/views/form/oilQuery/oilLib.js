@@ -66,8 +66,8 @@ define([
                 // Grabbing the minimum and maximum api values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
 
-                var min = _.min(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api;
-                var max = _.max(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api;
+                var min = Math.floor(_.min(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api);
+                var max = Math.ceil(_.max(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api);
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
 
