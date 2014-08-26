@@ -38,7 +38,6 @@ define([
             },
             weatherers: Backbone.Collection
         },
-        ready: false,
 
         sync: function(method, model, options){
             // because of the unique structure of the gnome model, it's relation to other child object
@@ -49,7 +48,7 @@ define([
                     if(model.get(key)){
                         if(model.get(key) instanceof Backbone.Collection){
                             var array = model.get(key).toArray();
-                            model.set(key, []);
+                            model.set(key, [], {silent: true});
                             if(array.length > 0){
                                 _.each(array, function(element){
                                     if(!_.isUndefined(element.get('id'))){
@@ -60,7 +59,7 @@ define([
                                 });
                             }
                         } else {
-                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')});
+                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')}, {silent: true});
                         }
                     }
                 }
@@ -82,7 +81,7 @@ define([
 
                         if(!_.isObject(embeddedClass)){
                             for(var obj in embeddedData){
-                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true}));
+                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true, silent: true}));
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
@@ -91,19 +90,15 @@ define([
                             // by looking at it's obj_type and cast it appropriatly.
 
                             for(var obj in embeddedData){
-                                response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true}));
+                                response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
                             }
                         }
                     } else {
-                        response[key] = new embeddedClass(embeddedData, {parse: true});
+                        response[key] = new embeddedClass(embeddedData, {parse: true, silent: true});
                     }
                 }
             }
-            $.when.apply($, this.ajax).done(_.bind(function(){
-                this.set(response);
-                this.trigger('ready');
-                this.ready = true;
-            }, this));
+            return response;
         },
 
         validate: function(attrs, options) {
