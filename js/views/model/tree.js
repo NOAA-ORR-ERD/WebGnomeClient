@@ -12,7 +12,7 @@ define([
         debugOn: false,
 
         initialize: function(){
-            webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel(true);}, this), this);
+            webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel({attrs: true});}, this), this);
             this.render();
         },
 
@@ -35,9 +35,9 @@ define([
             return this.offset;
         },
 
-        renderModel: function(attrs){
+        renderModel: function(opts){
             if(webgnome.hasModel()){
-                if (attrs){
+                if (!_.isUndefined(opts) && _.has(opts, 'attrs')){
                     this.debugOn = !this.debugOn;
                 }
                 if (this.debugOn){
