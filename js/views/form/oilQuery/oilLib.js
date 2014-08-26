@@ -91,7 +91,6 @@ define([
                 category: this.$('select.chosen-select option:selected').val(),
                 api: api
             };
-            console.log(search);
             if(!search.text && search.api.length !== 2){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
