@@ -36,7 +36,6 @@ define([
 
         render: function(options){
             if(this.oilTable.ready){
-                console.trace();
                 // Removes loading modal just prior to render call of oilLib
 
                 this.loadingGif.hide();
@@ -55,12 +54,19 @@ define([
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
                 this.$('.chosen-select').chosen({width: '265px'});
-                $.each(this.oilDistinct.models[2].attributes.values, function(key, value){
-                    $('.chosen-select')
-                        .append($('<option class="category"></option>')
-                            .attr('value', value)
-                            .text(value));
-                });
+                var valueObj = this.oilDistinct.models[2].attributes.values;
+                this.$('.chosen-select').append($('<option class="category"></option>').attr('value', 'All').text('All'));
+                for (var key in valueObj){
+                    this.$('.chosen-select')
+                        .append($('<optgroup class="category" id="' + key + '"></optgroup>')
+                            .attr('value', key)
+                            .attr('label', key));
+                    for (var i = 0; i < valueObj[key].length; i++){
+                        this.$('#' + key).append($('<option class="subcategory"></option>')
+                            .attr('value', valueObj[key][i])
+                            .text(valueObj[key][i]));
+                    }
+                }
                 this.$('.chosen-select').trigger('chosen:updated');
 
                 // Grabbing the minimum and maximum api values from the fetched collection
@@ -99,8 +105,8 @@ define([
                 category: this.$('select.chosen-select option:selected').val(),
                 api: this.$('.slider').slider('values')
             };
-            console.log(search);
-            if(!search.text && search.api.length !== 2){
+
+            if(!search.text){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }
