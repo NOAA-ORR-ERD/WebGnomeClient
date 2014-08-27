@@ -35,9 +35,7 @@ define([
                 var locationCollection = this.whereCollection({'location': obj.text});
                 this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
             }
-            if (obj.category.child !== 'All'){
-                var array = [obj.category.parent, obj.category.child];
-                var str = array.join('-');
+            if (obj.category.child !== 'All' || obj.category.child === undefined){
                 categoryCollection = this.whereCollection({'product_type': obj.category['parent']});
             }
             this.models = _.intersection(this.models, apiCollection.models, categoryCollection.models);
