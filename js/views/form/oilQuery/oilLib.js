@@ -53,7 +53,7 @@ define([
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
-                this.$('.chosen-select').chosen({width: '265px'});
+                this.$('.chosen-select').chosen({width: '265px', no_results_text: "No results match: "});
                 var valueObj = this.oilDistinct.models[2].attributes.values;
                 this.$('.chosen-select').append($('<option class="category"></option>').attr('value', 'All').text('All'));
                 for (var key in valueObj){
@@ -102,10 +102,11 @@ define([
         update: function(){
             var search = {
                 text: $.trim(this.$('#search').val()),
-                category: this.$('select.chosen-select option:selected').val(),
+                category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'), 
+                           'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider').slider('values')
             };
-
+            console.log(search);
             if(!search.text){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
