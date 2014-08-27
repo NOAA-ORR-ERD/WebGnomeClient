@@ -68,6 +68,7 @@ define([
             this.trigger('ready');
             this.loaded = true;
             this.originalModels = this.models;
+            console.log('collection set ready run!');
         },
 
         fetch: function(options){

@@ -19,7 +19,7 @@ define([
         initialize: function(obj){
             this.oilLib = new OilLib();
             this.oilLib.on('ready', this.setReady, this);
-            this.on('sort', this.setReady);
+            this.on('sort', this.sortTable);
         },
 
         setReady: function(){
@@ -34,6 +34,7 @@ define([
             this.$('.' + this.oilLib.sortAttr + ' span').html(this.activeIcon);
             this.ready = true;
             this.trigger('ready');
+            console.log("Set ready run!");
         },
 
         sortTable: function(){
