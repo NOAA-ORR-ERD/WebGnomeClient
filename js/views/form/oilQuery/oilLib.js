@@ -66,8 +66,10 @@ define([
                 // Grabbing the minimum and maximum api values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
                 if (!min && !max){
-                    var min = Math.floor(_.min(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api);
-                    var max = Math.ceil(_.max(this.oilTable.oilLib.models, function(model){ return model.attributes.api; }).attributes.api);
+                    var min = Math.floor(_.min(this.oilTable.oilLib.models, 
+                                function(model){ return model.attributes.api; }).attributes.api);
+                    var max = Math.ceil(_.max(this.oilTable.oilLib.models, 
+                                function(model){ return model.attributes.api; }).attributes.api);
                 }
 
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
@@ -91,12 +93,13 @@ define([
 
         },
 
-        update: function(api){
+        update: function(){
             var search = {
                 text: $.trim(this.$('#search').val()),
                 category: this.$('select.chosen-select option:selected').val(),
-                api: api
+                api: this.$('.slider').slider('values')
             };
+            console.log(search);
             if(!search.text && search.api.length !== 2){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
@@ -130,12 +133,7 @@ define([
                                                              ui.values[1] + '</div></div>');
                         }, this),
                         stop: _.bind(function(e, ui){
-                            if (ui.values.length !== 2){
-                                ui.values = [minNum, maxNum];
-                            } else {
-                                ui.values = ui.values;
-                            }
-                            this.update(ui.values);
+                            this.update();
                         }, this)
                     });
         }

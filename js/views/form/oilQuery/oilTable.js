@@ -34,7 +34,6 @@ define([
             this.$('.' + this.oilLib.sortAttr + ' span').html(this.activeIcon);
             this.ready = true;
             this.trigger('ready');
-            console.log("Set ready run!");
         },
 
         sortTable: function(){
@@ -50,6 +49,7 @@ define([
                 data: oils
             });
             $('#tableContainer').html(this.$el.html(compiled));
+            this.trigger('sort');
         },
 
         headerClick: function(e){
