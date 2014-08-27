@@ -27,20 +27,20 @@ define([
 
         bySearch: function(obj){
             this.models = this.originalModels;
+            var categoryCollection = this.models;
+            var apiCollection = this.filterCollection(obj.api);
             if (obj.text){
                 var nameCollection = this.whereCollection({'name': obj.text});
                 var fieldCollection = this.whereCollection({'field_name': obj.text});
                 var locationCollection = this.whereCollection({'location': obj.text});
                 this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
-                if (obj.api.length === 2){
-                    var apiCollection = this.filterCollection(obj.api);
-                    this.models = _.intersection(this.models, apiCollection.models);
-                } 
             }
-            if (!obj.text && obj.api.length === 2){
-                var apiCollection = this.filterCollection(obj.api);
-                this.models = _.intersection(this.models, apiCollection.models);
+            if (obj.category.child !== 'All'){
+                var array = [obj.category.parent, obj.category.child];
+                var str = array.join('-');
+                categoryCollection = this.whereCollection({'product_type': obj.category['parent']});
             }
+            this.models = _.intersection(this.models, apiCollection.models, categoryCollection.models);
             this.length = this.models.length;
             this.ready = true;
             return this;
@@ -68,7 +68,6 @@ define([
             this.trigger('ready');
             this.loaded = true;
             this.originalModels = this.models;
-            console.log('collection set ready run!');
         },
 
         fetch: function(options){

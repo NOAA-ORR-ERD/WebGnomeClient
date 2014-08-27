@@ -106,8 +106,7 @@ define([
                            'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider').slider('values')
             };
-            console.log(search);
-            if(!search.text){
+            if(!search.text && search.category.child === 'All'){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }
