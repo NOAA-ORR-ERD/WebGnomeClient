@@ -441,8 +441,7 @@ nav.navbar{
     font-weight: bold;
 }
 
-#window {
-    height: 300px;
+#oilTable {
     thead, tbody, tr, td, th {
         display: block;
     }
@@ -450,11 +449,11 @@ nav.navbar{
         width: 100%;
     }
     tbody {
-        height: 300px;
+        height: 600px;
         overflow-y: auto;
         td {
-            float: left;
             width: 19.2%;
+            float: left;
         }
     }
     thead {
@@ -464,11 +463,13 @@ nav.navbar{
             width: 19.2%;
         }
     }
-    tr:after {
-        content: ' ';
-        display: block;
-        visibility: hidden;
-        clear: both;
+    tr {
+        &:after {
+            content: ' ';
+            visibility: hidden;
+            display: block;
+            clear: both;
+        }
     }
     th {
         cursor: pointer;
@@ -476,5 +477,20 @@ nav.navbar{
         span {
             cursor: pointer;
         }
+    }
+}
+
+#oilTable2 {
+    tr {
+        display: inline-table;
+    }
+    table {
+        height: 300px;
+        width: 100%;
+    }
+    tbody {
+        overflow-y: scroll;
+        height: 200px;
+        display: block;
     }
 }

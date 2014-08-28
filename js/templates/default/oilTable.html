@@ -1,20 +1,26 @@
-<table class="table" id="tableContainer">
-    <thead>
-        <tr>
-            <th class="name">Name<span class="name"></span></th>
-            <th class="location">Location<span class="location"></span></th>
-            <th class="field_name">Field Name<span class="field_name"></span></th>
-            <th class="api">API<span class="api"></span></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for (var i = 0; i < data.length; i++){ %}
-        <tr>
-            <td>{{ data.at(i).get('name') }}</td>
-            <td>{{ data.at(i).get('location') }}</td>
-            <td>{{ data.at(i).get('field_name') }}</td>
-            <td>{{ data.at(i).get('api') }}</td>
-        </tr>
-        {% } %}
-    </tbody>
-</table>
+<div id="tableContainer">
+    <table class="table table-condensed" style="table-layout:fixed;">
+        <thead>
+            <tr>
+                <th class="name">Name<span class="name"></span></th>
+                <th class="location">Location<span class="location"></span></th>
+                <th class="field_name">Field Name<span class="field_name"></span></th>
+                <th class="api">API<span class="api"></span></th>
+            </tr>
+        </thead>
+    </table>
+    <div id="dataTable" style="overflow-y: auto; height: 300px;">
+        <table id="tableContainer" class="table table-condensed table-hover" style="table-layout:fixed;">
+            <tbody>
+                {% for (var i = 0; i < data.length; i++){ %}
+                <tr>
+                    <td>{{ data.at(i).get('name') }}</td>
+                    <td>{{ data.at(i).get('location') }}</td>
+                    <td>{{ data.at(i).get('field_name') }}</td>
+                    <td>{{ data.at(i).get('api') }}</td>
+                </tr>
+                {% } %}
+            </tbody>
+        </table>
+    </div>
+</div>

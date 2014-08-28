@@ -10,7 +10,8 @@ define([
         id: 'tableContainer',
         ready: false,
         events: {
-            'click th': 'headerClick'
+            'click th': 'headerClick',
+            'click tr': 'oilSelect'
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',
@@ -66,6 +67,10 @@ define([
 
             this.oilLib.sortOils(ns);
             this.trigger('sort');
+        },
+
+        oilSelect: function(e){
+            
         }
 
     });

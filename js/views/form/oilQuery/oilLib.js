@@ -55,7 +55,7 @@ define([
 
                 this.$('.chosen-select').chosen({width: '265px', no_results_text: "No results match: "});
                 var valueObj = this.oilDistinct.models[2].attributes.values;
-                this.$('.chosen-select').append($('<option class="category"></option>').attr('value', 'All').text('All'));
+                this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
                 for (var key in valueObj){
                     this.$('.chosen-select')
                         .append($('<optgroup class="category" id="' + key + '"></optgroup>')
