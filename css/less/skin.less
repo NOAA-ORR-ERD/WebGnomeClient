@@ -437,14 +437,44 @@ nav.navbar{
     margin-top: 10px;
 }
 
-th {
-    cursor: pointer;
-
-    span {
-        cursor: pointer;
-    }
-}
-
 .category {
     font-weight: bold;
+}
+
+#window {
+    height: 300px;
+    thead, tbody, tr, td, th {
+        display: block;
+    }
+    table {
+        width: 100%;
+    }
+    tbody {
+        height: 300px;
+        overflow-y: auto;
+        td {
+            float: left;
+            width: 19.2%;
+        }
+    }
+    thead {
+        th {
+            height: 30px;
+            float: left;
+            width: 19.2%;
+        }
+    }
+    tr:after {
+        content: ' ';
+        display: block;
+        visibility: hidden;
+        clear: both;
+    }
+    th {
+        cursor: pointer;
+
+        span {
+            cursor: pointer;
+        }
+    }
 }

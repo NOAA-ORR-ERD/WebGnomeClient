@@ -25,7 +25,6 @@ define([
         sortAttr: 'name',
         sortDir: 1,
 
-
         bySearch: function(obj){
             this.models = this.originalModels;
             var categoryCollection = this;
@@ -43,10 +42,6 @@ define([
             this.length = this.models.length;
             this.ready = true;
             return this;
-        },
-
-        fuzzyFilter: function(){
-
         },
 
         comparator: function(a, b){
