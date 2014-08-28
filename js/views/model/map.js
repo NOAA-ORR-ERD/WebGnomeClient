@@ -507,6 +507,7 @@ define([
                 spillform.on('hidden', function(){
                     webgnome.model.trigger('sync');
                 });
+                spillform.on('hidden', spillform.close);
                 spillform.render();
             }
         },
