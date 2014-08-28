@@ -2,56 +2,33 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/default/index.html',
-    'views/wizard/new',
-    'views/form/oilQuery/oilLib'
-], function($, _, Backbone, IndexTemplate, NewWizardForm, OilLibForm){
+    'text!templates/default/index.html'
+], function($, _, Backbone, IndexTemplate){
     var indexView = Backbone.View.extend({
-        className: 'container page home',
+        className: 'page home',
 
-        initialize: function() {
+        events: {
+            'click .gnome': 'gnome',
+            'click .adios': 'adios'
+        },
+
+        initialize: function(){
             this.render();
         },
 
-        events: {
-            'click .location': 'chooseLocation',
-            'click .build': 'buildModel',
-            'click .load': 'loadModel',
-            'click .resume': 'resumeModel',
-            'click .oilLib': 'loadOilForm'
-        },
-
-        chooseLocation: function(event) {
-            event.preventDefault();
-            webgnome.router.navigate('locations', true);
-        },
-
-        buildModel: function(event) {
-            event.preventDefault();
-
-            new NewWizardForm();
-        },
-
-        loadModel: function(event) {
-            event.preventDefault();
-        },
-
-        resumeModel: function(event) {
-            event.preventDefault();
-            webgnome.router.navigate('model', true);
-        },
-
         render: function(){
-            var compiled = _.template(IndexTemplate, {
-                hasModel: webgnome.hasModel()
-            });
+            var compiled = _.template(IndexTemplate);
             $('body').append(this.$el.append(compiled));
         },
 
-        loadOilForm: function(event){
-            event.preventDefault();
-            new OilLibForm().render();
+        gnome: function(){
+            webgnome.router.navigate('gnome/', true);
+        },
+
+        adios: function(){
+            webgnome.router.navigate('adios/', true);
         }
     });
+
     return indexView;
 });

@@ -29,19 +29,48 @@ define([
         },
 
         events: {
-            'click .navbar-brand': 'home',
-            'click .new': 'newModel',
-            'click .load': 'load',
-            'click .locations': 'locations',
-            'click .save': 'save',
-            'click a.debugView': 'debugView',
+            // 'click .navbar-brand': 'home',
+            // 'click .new': 'newModel',
+            // 'click .load': 'load',
+            // 'click .locations': 'locations',
+            // 'click .save': 'save',
+            // 'click a.debugView': 'debugView',
 
-            'click .run': 'run',
-            'click .step': 'step',
-            'click .rununtil': 'rununtil',
+            // 'click .run': 'run',
+            // 'click .step': 'step',
+            // 'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial'
+            'click .tutorial': 'tutorial',
+
+            'click .gnome': 'gnome',
+            'click .adios': 'adios',
+            'click .home': 'home',
+
+            'click .app-menu-link': 'openAppMenu',
+            'click .app-menu-close': 'closeAppMenu'
+        },
+
+        openAppMenu: function(event){
+            event.preventDefault();
+            this.$('.app-menu').addClass('open');
+            this.$('.app-menu-close').addClass('open');
+            this.$('.app-menu').focus();
+        },
+
+        closeAppMenu: function(){
+            this.$('.app-menu').removeClass('open');
+            this.$('.app-menu-close').removeClass('open');
+        },
+
+        gnome: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('gnome/', true);
+        },
+
+        adios: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('adios/', true);
         },
 
         nothing: function(event){
@@ -60,22 +89,22 @@ define([
 
         load: function(event){
             event.preventDefault();
-            webgnome.router.navigate('load', true);
+            webgnome.router.navigate('gnome/load', true);
         },
 
         locations: function(event){
             event.preventDefault();
-            webgnome.router.navigate('locations', true);
+            webgnome.router.navigate('gnome/locations', true);
         },
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('save', true);
+            webgnome.router.navigate('gnome/save', true);
         },
 
         debugView: function(event){
             event.preventDefault();
-            var checkbox = this.$('input[type="checkbox"]');           
+            var checkbox = this.$('input[type="checkbox"]');
             if (checkbox.prop('checked')) {
                 checkbox.prop('checked', false);
             } else {
@@ -115,13 +144,25 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel() || !webgnome.validModel()){
+            if(window.location.href.indexOf('gnome') !== -1){
+                // setup the menu for gnome
+                if(webgnome.hasModel() && webgnome.validModel()){
+                    this.enableMenuItem('actions');
+                    this.disableMenuItem('save');
+                }
+                this.$('.navbar-brand').text('WebGNOME');
+            } else {
+                this.disableMenuItem('model');
                 this.disableMenuItem('actions');
                 this.disableMenuItem('save');
-            } else {
-                this.enableMenuItem('actions');
-                this.disableMenuItem('save');
             }
+
+            if (window.location.href.indexOf('adios') !== -1){
+                // setup the menu for adios  
+                this.$('.navbar-brand').text('WebADIOS');
+            }
+
+
         },
 
         render: function(){

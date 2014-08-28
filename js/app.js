@@ -190,14 +190,7 @@ define([
                         if(model.id){
                             window.webgnome.model = model;
                         }
-                        if(webgnome.hasModel()){
-                            Backbone.history.start();
-                            webgnome.router.navigate('model', true);
-                        } else if(window.location.href.split('#').length > 1) {
-                            window.location.href = window.location.href.split('#')[0];
-                        } else {
-                            Backbone.history.start();
-                        }
+                        Backbone.history.start();
 
                     },
                     error: function(){

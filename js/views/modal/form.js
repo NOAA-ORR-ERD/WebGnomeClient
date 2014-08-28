@@ -86,8 +86,8 @@ define([
         },
 
         wizardclose: function(){
-            if(webgnome.hasModel()){
-                webgnome.model.fetch();
+            if(this.model){
+                this.model.fetch();
             }
             this.trigger('wizardclose');
         },
@@ -95,7 +95,7 @@ define([
         finish: function(){
             this.on('hidden', function(){
                 this.trigger('finish');
-                webgnome.router.navigate('model', true);
+                webgnome.router.navigate('gnome/model', true);
             });
             this.hide();
         },
