@@ -71,17 +71,17 @@ define([
 
                 // Grabbing the minimum and maximum api values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
-                if (!min && !max){
-                    var min = Math.floor(_.min(this.oilTable.oilLib.models, 
+                if (!this.min && !this.max){
+                    this.min = Math.floor(_.min(this.oilTable.oilLib.models, 
                                 function(model){ return model.attributes.api; }).attributes.api);
-                    var max = Math.ceil(_.max(this.oilTable.oilLib.models, 
+                    this.max = Math.ceil(_.max(this.oilTable.oilLib.models, 
                                 function(model){ return model.attributes.api; }).attributes.api);
                 }
 
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
 
-                this.createSliders(min, max);
+                this.createSliders(this.min, this.max);
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -106,7 +106,7 @@ define([
                            'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider').slider('values')
             };
-            if(!search.text && search.category.child === 'All'){
+            if(!search.text && search.category.child === 'All' && search.api === [this.min, this.max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }
