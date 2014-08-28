@@ -70,7 +70,8 @@ define([
         },
 
         oilSelect: function(e){
-            
+            $(e.currentTarget).closest('table').find('tr').removeClass('bg');
+            $(e.currentTarget).find('tr').addClass('bg');
         }
 
     });

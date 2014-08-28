@@ -120,6 +120,10 @@ define([
             this.oilTable.headerClick(e);
         },
 
+        oilSelect: function(e){
+            this.oilTable.oilSelect(e);
+        },
+
         createSliders: function(minNum, maxNum){
             this.$('.slider').slider({
                         range: true, 

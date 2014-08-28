@@ -441,56 +441,12 @@ nav.navbar{
     font-weight: bold;
 }
 
-#oilTable {
-    thead, tbody, tr, td, th {
-        display: block;
+.oilTable {
+    .bg {
+        background-color: #999;
     }
-    table {
-        width: 100%;
-    }
-    tbody {
-        height: 600px;
-        overflow-y: auto;
-        td {
-            width: 19.2%;
-            float: left;
-        }
-    }
-    thead {
-        th {
-            height: 30px;
-            float: left;
-            width: 19.2%;
-        }
-    }
-    tr {
-        &:after {
-            content: ' ';
-            visibility: hidden;
-            display: block;
-            clear: both;
-        }
-    }
-    th {
+    tr:hover {
         cursor: pointer;
-
-        span {
-            cursor: pointer;
-        }
     }
 }
 
-#oilTable2 {
-    tr {
-        display: inline-table;
-    }
-    table {
-        height: 300px;
-        width: 100%;
-    }
-    tbody {
-        overflow-y: scroll;
-        height: 200px;
-        display: block;
-    }
-}
