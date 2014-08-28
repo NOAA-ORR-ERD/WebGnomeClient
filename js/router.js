@@ -46,8 +46,9 @@ define([
             if(!webgnome.hasModel()){
                 this.views.push(new MenuView());
                 this.views.push(new GnomeView());
+            } else {
+                this.navigate('gnome/model', true);
             }
-            this.navigate('gnome/model', true);
         },
 
         test: function(){
