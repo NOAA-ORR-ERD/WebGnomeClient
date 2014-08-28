@@ -71,8 +71,12 @@ define([
         },
 
         gnomeModel: function(){
-            this.views.push(new MenuView());
-            this.views.push(new ModelView());
+            if(webgnome.hasModel()){
+                this.views.push(new MenuView());
+                this.views.push(new ModelView());
+            } else {
+                this.navigate('gnome/', true);
+            }
         },
 
         adios: function(){
