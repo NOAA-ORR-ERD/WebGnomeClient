@@ -27,12 +27,7 @@ define([
             var oils = this.oilLib;
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
-            if (this.oilLib.sortDir === 1){
-                this.activeIcon = this.sortUpIcon;
-            } else {
-                this.activeIcon = this.sortDnIcon;
-            }
-            this.$('.' + this.oilLib.sortAttr + ' span').html(this.activeIcon);
+            this.appendCaret();
             this.ready = true;
             this.trigger('ready');
         },
@@ -41,7 +36,17 @@ define([
             var oils = this.oilLib;
             var compiled = _.template(OilTableTemplate, {data: oils});
             this.$el.html(compiled);
+            this.appendCaret();
             this.trigger('renderTable');
+        },
+
+        appendCaret: function(){
+             if (this.oilLib.sortDir === 1){
+                this.activeIcon = this.sortUpIcon;
+            } else {
+                this.activeIcon = this.sortDnIcon;
+            }
+            this.$('.' + this.oilLib.sortAttr + ' span').html(this.activeIcon);
         },
 
         render: function(){
