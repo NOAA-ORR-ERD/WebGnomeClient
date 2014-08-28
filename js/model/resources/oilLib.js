@@ -1,8 +1,9 @@
 define([
     'underscore',
     'jquery',
-    'backbone'
-], function(_, $, Backbone){
+    'backbone',
+    'fuse'
+], function(_, $, Backbone, Fuse){
     var oilLib = Backbone.Collection.extend({
 
         ready: false,
@@ -30,10 +31,10 @@ define([
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api);
             if (obj.text){
-                var nameCollection = this.whereCollection({'name': obj.text});
-                var fieldCollection = this.whereCollection({'field_name': obj.text});
-                var locationCollection = this.whereCollection({'location': obj.text});
-                this.models = _.union(nameCollection.models, fieldCollection.models, locationCollection.models);
+                var options = {keys: ['attributes.name', 'attributes.field_name', 'attributes.location'], threshold: 0.4};
+                var f = new Fuse(this.models, options);
+                var result = f.search(obj.text);
+                this.models = result;
             }
             if (obj.category.child !== '' && obj.category.child !== 'All'){
                 categoryCollection = this.whereCollection({'product_type': obj.category['parent']});
