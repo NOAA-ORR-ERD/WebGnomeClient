@@ -63,7 +63,7 @@ define([
                         placement: 'top',
                         html: true,
                         title: feature.get('title'),
-                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
+                        content: '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
                     });
                     
                     this.$('.popup').one('shown.bs.popover', _.bind(function(){
