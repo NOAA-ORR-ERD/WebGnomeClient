@@ -175,6 +175,7 @@ define([
                     this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
                 }
             } else {
+                this.pause();
                 this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
         },
