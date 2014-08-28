@@ -305,7 +305,9 @@ define([
             // visually disable the interface and remove listeners
             this.controls.seek.slider('option', 'disabled', true);
             this.$('.buttons a').addClass('disabled');
-            Mousetrap.unbind('space', _.bind(this.togglePlay, this));
+            Mousetrap.unbind('space');
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
         },
 
         enableUI: function(){
