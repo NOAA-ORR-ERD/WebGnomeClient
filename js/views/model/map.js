@@ -195,14 +195,18 @@ define([
         },
 
         play: function(){
-            this.state = 'play';
-            this.controls.play.addClass('pause').removeClass('play');
-            this.loop();
+            if($('.modal').length === 0){
+                this.state = 'play';
+                this.controls.play.addClass('pause').removeClass('play');
+                this.loop();
+            }
         },
 
         pause: function(){
-            this.state = 'pause';
-            this.controls.play.addClass('play').removeClass('pause');
+            if($('.modal').length === 0){
+                this.state = 'pause';
+                this.controls.play.addClass('play').removeClass('pause');
+            }
         },
 
         rewind: function(){
@@ -217,16 +221,20 @@ define([
         },
 
         prev: function(){
-            this.pause();
-            this.controls.seek.slider('value', this.frame - 1);
-            this.renderStep({step: this.frame - 1});
+            if($('.modal').length === 0){
+                this.pause();
+                this.controls.seek.slider('value', this.frame - 1);
+                this.renderStep({step: this.frame - 1});
+            }
         },
 
         next: function(){
-            this.pause();
-            if(this.SpillGroupLayers.item(this.frame + 1)){
-                this.controls.seek.slider('value', this.frame + 1);
-                this.renderStep({step: this.frame + 1});
+            if($('.modal').length === 0){
+                this.pause();
+                if(this.SpillGroupLayers.item(this.frame + 1)){
+                    this.controls.seek.slider('value', this.frame + 1);
+                    this.renderStep({step: this.frame + 1});
+                }
             }
         },
 
