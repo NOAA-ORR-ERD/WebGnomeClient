@@ -19,12 +19,14 @@ define([
         full: false,
         width: '70%',
         spillToggle: false,
+        spillCoords: [],
         state: 'pause',
         step: new GnomeStep(),
         frame: 0,
 
         events: {
-            'click .spill-button': 'toggleSpill',
+            'click .spill-button .fixed': 'toggleSpill',
+            'click .spill-button .moving': 'toggleSpill',
             'mouseout .spill-button': 'toggleSpillBlur',
             'focusout .spill-button': 'toggleSpillBlur',
             'click .play': 'play',
@@ -412,18 +414,31 @@ define([
             }
         },
 
-        toggleSpill: function(){
+        toggleSpill: function(e){
             if(this.spillToggle){
                 this.ol.map.getViewport().style.cursor = '';
                 this.spillToggle = false;
-                this.ol.map.un('click', this.addSpill, this);
+                this.spillCoods = [];
+
+                if(this.$('.on').hasClass('fixed')){
+                    this.ol.map.un('click', this.addPointSpill, this);
+                } else {
+                    this.ol.map.un('click', this.addLineSpill, this);
+                }
+
+                this.$('.on').toggleClass('on');
+
             } else {
                 this.ol.map.getViewport().style.cursor = 'crosshair';
                 this.spillToggle = true;
-                this.ol.map.on('click', this.addSpill, this);
-            }
+                this.$(e.target).toggleClass('on');
 
-            this.$('.spill-button').toggleClass('on');
+                if(this.$(e.target).hasClass('fixed')){
+                    this.ol.map.on('click', this.addPointSpill, this);
+                } else {
+                    this.ol.map.on('click', this.addLineSpill, this);
+                }
+            }
         },
 
         toggleSpillBlur: function(event){
@@ -457,7 +472,38 @@ define([
             this.renderSpills();
         },
 
-        addSpill: function(e){
+        addLineSpill: function(e){
+            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+            coord.push(0);
+            this.spillCoords.push(coord);
+            console.log(this.spillCoords);
+            if(this.spillCoords.length > 1){
+                var spill = new GnomeSpill();
+                // add the dummy z-index thing
+                spill.get('release').set('start_position', this.spillCoords[0]);
+                spill.get('release').set('end_position', this.spillCoords[1]);
+                spill.get('release').set('release_time', webgnome.model.get('start_time'));
+                spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
+
+                spill.save(null, {
+                    validate: false,
+                    success: function(){
+                        var spillform = new SpillForm(null, spill);
+                        spillform.render();
+                        spillform.on('save', function(){
+                            webgnome.model.get('spills').add(spill);
+                            webgnome.model.save();
+                        });
+                        spillform.on('hidden', spillform.close);
+                    }
+                });
+
+                this.toggleSpill();
+
+            }
+        },
+
+        addPointSpill: function(e){
             // add a spill to the model.
             var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
             var spill = new GnomeSpill();
@@ -477,6 +523,7 @@ define([
                         webgnome.model.get('spills').add(spill);
                         webgnome.model.save();
                     });
+                    spillform.on('hidden', spillform.close);
                 }
             });
 
