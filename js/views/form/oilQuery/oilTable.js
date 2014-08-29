@@ -11,7 +11,7 @@ define([
         ready: false,
         events: {
             'click th': 'headerClick',
-            'click tr': 'oilSelect'
+            'click tbody tr': 'oilSelect'
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',
@@ -76,7 +76,8 @@ define([
 
         oilSelect: function(e){
             var parent = $(e.target).parent();
-            this.$el.css('display: none;');
+            console.log(this.$el);
+            this.$el.css('display', 'none');
         }
 
     });
