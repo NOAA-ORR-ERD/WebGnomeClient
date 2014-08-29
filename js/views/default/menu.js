@@ -30,11 +30,11 @@ define([
 
         events: {
             // 'click .navbar-brand': 'home',
-            // 'click .new': 'newModel',
-            // 'click .load': 'load',
-            // 'click .locations': 'locations',
-            // 'click .save': 'save',
-            // 'click a.debugView': 'debugView',
+            'click .new': 'newModel',
+            'click .load': 'load',
+            'click .locations': 'locations',
+            'click .save': 'save',
+            'click a.debugView': 'debugView',
 
             // 'click .run': 'run',
             // 'click .step': 'step',
@@ -84,7 +84,7 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            new NewWizardForm();
+            webgnome.router.navigate('gnome/', true);
         },
 
         load: function(event){
