@@ -72,13 +72,11 @@ define([
 
             this.oilLib.sortOils(ns);
             this.trigger('sort');
-        },
-
-        oilSelect: function(e){
-            var parent = $(e.target).parent();
-            console.log(this.$el);
-            this.$el.css('display', 'none');
         }
+
+        // hide: function(e){
+        //     this.$el.hide();
+        // }
 
     });
     return oilTableView;
