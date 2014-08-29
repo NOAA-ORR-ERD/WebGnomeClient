@@ -76,8 +76,7 @@ define([
 
         oilSelect: function(e){
             var parent = $(e.target).parent();
-            parent.siblings('.bg').removeClass('bg');
-            parent.addClass('bg');
+            this.$el.css('display: none;');
         }
 
     });
