@@ -10,8 +10,8 @@ define([
 ], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     'use strict';
     var app = {
-        api: 'http://0.0.0.0:9899',
-        // api: 'http://hazweb2.orr.noaa.gov:9899',
+          api: 'http://0.0.0.0:9899',
+        //api: 'http://hazweb2.orr.noaa.gov:7450',
         //api: 'http://10.55.67.152:9899',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
@@ -28,6 +28,7 @@ define([
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.api + options.url;
                 }
+                
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
@@ -162,6 +163,33 @@ define([
                 }
 
                 return tree;
+            };
+
+            // Extension of Backbone class to add filter method that returns a Backbone collection 
+            // instead of a simple array.  Used in js/views/form/oilQuery/oilTable.js
+
+            Backbone.Collection.prototype.whereCollection = function(obj){
+                var results = this.where(obj);
+                return new Backbone.Collection(results);
+            };
+
+            Backbone.Collection.prototype.filterCollection = function(arr, options){
+                if (options.type === 'api'){
+                    var results = this.filter(function(model){
+                        if (model.attributes.api >= arr[0] && model.attributes.api <= arr[1]){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+                else if (options.type === 'categories'){
+                    var str = arr.parent + '-' + arr.child;
+                    var results = this.filter(function(model){
+                        return _.indexOf(model.attributes.categories, str) !== -1;
+                    });
+                }
+                return new Backbone.Collection(results);
             };
 
             webgnome.getForm = function(obj_type){

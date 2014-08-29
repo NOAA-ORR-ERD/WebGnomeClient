@@ -19,7 +19,10 @@ require.config({
         qunit: 'lib/qunit/qunit/qunit',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
         fancytree: 'lib/fancytree/dist/jquery.fancytree',
-        chosen: 'lib/chosen/chosen.jquery'
+        chosen: 'lib/chosen/chosen.jquery',
+        datatables: 'lib/datatables/media/js/jquery.dataTables',
+        datatables_bs3: 'lib/datatables-bootstrap3/BS3/assets/js/datatables',
+        fuse: 'lib/fuse/src/fuse'
     },
     shim: {
         jquery: {
