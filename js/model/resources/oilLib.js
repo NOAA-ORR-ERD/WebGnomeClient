@@ -28,7 +28,7 @@ define([
         bySearch: function(obj){
             this.models = this.originalModels;
             var categoryCollection = this;
-            var apiCollection = this.filterCollection(obj.api);
+            var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             if (obj.text){
                 var options = {keys: ['attributes.name', 'attributes.field_name', 'attributes.location'], threshold: 0.4};
                 var f = new Fuse(this.models, options);
@@ -36,7 +36,7 @@ define([
                 this.models = result;
             }
             if (obj.category.child !== '' && obj.category.child !== 'All'){
-                categoryCollection = this.whereCollection({'product_type': obj.category['parent']});
+                categoryCollection = this.filterCollection(obj.category, {type: 'categories'});
             }
             this.models = _.intersection(this.models, apiCollection.models, categoryCollection.models);
             this.length = this.models.length;

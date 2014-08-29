@@ -173,14 +173,22 @@ define([
                 return new Backbone.Collection(results);
             };
 
-            Backbone.Collection.prototype.filterCollection = function(arr){
-                var results = this.filter(function(model){
-                    if (model.attributes.api >= arr[0] && model.attributes.api <= arr[1]){
-                        return true;
-                    } else {
-                        return false;
-                    }
-                });
+            Backbone.Collection.prototype.filterCollection = function(arr, options){
+                if (options.type === 'api'){
+                    var results = this.filter(function(model){
+                        if (model.attributes.api >= arr[0] && model.attributes.api <= arr[1]){
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    });
+                }
+                else if (options.type === 'categories'){
+                    var str = arr.parent + '-' + arr.child;
+                    var results = this.filter(function(model){
+                        return _.indexOf(model.attributes.categories, str) !== -1;
+                    });
+                }
                 return new Backbone.Collection(results);
             };
 
