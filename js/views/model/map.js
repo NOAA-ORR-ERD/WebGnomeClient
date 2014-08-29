@@ -418,7 +418,7 @@ define([
             if(this.spillToggle){
                 this.ol.map.getViewport().style.cursor = '';
                 this.spillToggle = false;
-                this.spillCoods = [];
+                this.spillCoords = [];
 
                 if(this.$('.on').hasClass('fixed')){
                     this.ol.map.un('click', this.addPointSpill, this);
