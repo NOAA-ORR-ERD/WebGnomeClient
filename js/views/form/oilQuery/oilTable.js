@@ -11,7 +11,7 @@ define([
         ready: false,
         events: {
             'click th': 'headerClick',
-            'click tbody tr': 'oilSelect'
+            'click td': 'oilSelect'
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',
@@ -73,10 +73,6 @@ define([
             this.oilLib.sortOils(ns);
             this.trigger('sort');
         }
-
-        // hide: function(e){
-        //     this.$el.hide();
-        // }
 
     });
     return oilTableView;

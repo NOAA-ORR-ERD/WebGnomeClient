@@ -29,7 +29,7 @@ define([
             this.models = this.originalModels;
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
-            if (obj.text){
+            if (obj.text.length > 1){
                 var options = {keys: ['attributes.name', 
                                       'attributes.field_name', 
                                       'attributes.location', 

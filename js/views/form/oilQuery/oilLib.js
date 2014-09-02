@@ -121,7 +121,7 @@ define([
         },
 
         oilSelect: function(e){
-            this.oilTable.$el.empty();
+            this.$('#tableContainer').hide();
         },
 
         createSliders: function(minNum, maxNum){
