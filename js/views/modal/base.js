@@ -92,6 +92,9 @@ define([
             if (this.$('.next').length > 0){
                 this.$('.next').click();
             }
+            if (this.$('.finish').length > 0){
+                this.$('.finish').click();
+            }
         },
 
         cancelByEsc: function(e){

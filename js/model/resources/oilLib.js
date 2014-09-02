@@ -22,7 +22,7 @@ define([
             return 'http://0.0.0.0:9898/oil';
         },
 
-        sortAttr: 'name',
+        sortAttr: 'adios_oil_id',
         sortDir: 1,
 
         bySearch: function(obj){
@@ -30,7 +30,13 @@ define([
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             if (obj.text){
-                var options = {keys: ['attributes.name', 'attributes.field_name', 'attributes.location'], threshold: 0.4};
+                var options = {keys: ['attributes.name', 
+                                      'attributes.field_name', 
+                                      'attributes.location', 
+                                      'attributes.adios_oil_id'
+                                     ], 
+                               threshold: 0.1
+                               };
                 var f = new Fuse(this.models, options);
                 var result = f.search(obj.text);
                 this.models = result;
