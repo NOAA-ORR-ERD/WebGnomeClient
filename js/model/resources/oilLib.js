@@ -25,16 +25,23 @@ define([
         sortAttr: 'adios_oil_id',
         sortDir: 1,
 
+        fetchOil: function(id, cb){
+            var oil = new Backbone.Model({id: id, urlRoot: this.url});
+            oil.fetch({
+                success: cb
+            });
+        },
+
         bySearch: function(obj){
             this.models = this.originalModels;
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             if (obj.text.length > 1){
-                var options = {keys: ['attributes.name', 
-                                      'attributes.field_name', 
-                                      'attributes.location', 
+                var options = {keys: ['attributes.name',
+                                      'attributes.field_name',
+                                      'attributes.location',
                                       'attributes.adios_oil_id'
-                                     ], 
+                                     ],
                                threshold: 0.1
                                };
                 var f = new Fuse(this.models, options);

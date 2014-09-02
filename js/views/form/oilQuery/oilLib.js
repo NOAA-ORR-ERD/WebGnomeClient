@@ -121,7 +121,9 @@ define([
         },
 
         oilSelect: function(e){
-            this.$('#tableContainer').hide();
+            // this.$('.oil-form').hide();
+            // this.$('.oilTable').hide();
+            // this.oilTable.oilLib.fetchOil();
         },
 
         createSliders: function(minNum, maxNum){
