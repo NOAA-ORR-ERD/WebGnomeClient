@@ -50,6 +50,7 @@ define([
 
                 var chosen = jQuery.fn.chosen;
                 FormModal.prototype.render.call(this, options);
+                this.$('.resultsLength').text('Number of results: ' + this.oilTable.oilLib.length);
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -114,6 +115,8 @@ define([
                 this.oilTable.oilLib.bySearch(search);
             }
             this.oilTable.render();
+            this.$('.resultsLength').empty();
+            this.$('.resultsLength').text('Number of results: ' + this.oilTable.oilLib.length);
         },
 
         headerClick: function(e){

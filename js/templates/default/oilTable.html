@@ -2,7 +2,6 @@
     <table class="table table-condensed table-header" style="table-layout:fixed;">
         <thead>
             <tr>
-                <th class="adios_oil_id">Adios ID<span class="adios_oil_id"></span></th>
                 <th class="name">Name<span class="name"></span></th>
                 <th class="location">Location<span class="location"></span></th>
                 <th class="field_name">Field Name<span class="field_name"></span></th>
@@ -15,7 +14,6 @@
             <tbody>
                 {% for (var i = 0; i < data.length; i++){ %}
                 <tr>
-                    <td>{{ data.at(i).get('adios_oil_id') }}</td>
                     <td>{{ data.at(i).get('name') }}</td>
                     <td>{{ data.at(i).get('location') }}</td>
                     <td>{{ data.at(i).get('field_name') }}</td>
