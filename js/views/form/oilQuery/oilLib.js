@@ -43,14 +43,14 @@ define([
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
-                    oilTable: this.oilTable.$el.html()
+                    oilTable: this.oilTable.$el.html(),
+                    results: this.oilTable.oilLib.length
                 });
 
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
                 var chosen = jQuery.fn.chosen;
                 FormModal.prototype.render.call(this, options);
-                this.$('.resultsLength').text('Number of results: ' + this.oilTable.oilLib.length);
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
