@@ -8,8 +8,9 @@ define([
     'views/modal/form',
     'views/form/oilQuery/oilTable',
     'views/modal/loading',
+    'views/form/oilQuery/specificOil',
     'text!templates/form/oilLib.html'
-], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, OilTemplate){
+], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         name: 'oillib',
         title: 'Oil Query Form',
@@ -124,9 +125,11 @@ define([
         },
 
         oilSelect: function(e){
-            // this.$('.oil-form').hide();
-            // this.$('.oilTable').hide();
-            // this.oilTable.oilLib.fetchOil();
+            this.$('.oilContainer').hide();
+            var id = $(e.currentTarget).parent().data('id');
+            this.oilTable.oilLib.fetchOil(id, function(model){
+               var specificOil = new SpecificOil({model: model}); 
+            });
         },
 
         createSliders: function(minNum, maxNum){

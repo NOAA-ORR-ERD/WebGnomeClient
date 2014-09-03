@@ -26,7 +26,10 @@ define([
         sortDir: 1,
 
         fetchOil: function(id, cb){
-            var oil = new Backbone.Model({id: id, urlRoot: this.url});
+            var oil = Backbone.Model.extend({
+                urlRoot: this.url
+            });
+            oil = new oil({id: id});
             oil.fetch({
                 success: cb
             });
