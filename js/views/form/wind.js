@@ -85,9 +85,8 @@ define([
                 format: 'Y/n/j G:i',
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
-            this.renderTimeseries();
 
-            this.$('.slider').slider({
+            this.$('#constant .slider').slider({
                 min: 0,
                 max: 5,
                 value: 0,
@@ -98,6 +97,18 @@ define([
                     this.updateConstantSlide(ui);
                 }, this)
             });
+
+            this.$('#variable .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                slide: _.bind(function(e, ui){
+                    this.updateVariableSlide(ui);
+                }, this)
+            });
+
+            this.renderTimeseries();
+
         },
 
         rendered: function(){
@@ -178,17 +189,28 @@ define([
             }
         },
 
+        updateVariableSlide: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('#variable .slider').slider('value');
+            }
+
+            this.renderTimeseries(value);
+        },
+
         updateConstantSlide: function(ui){
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('.slider').slider('value');
+                value = this.$('#constant .slider').slider('value');
             }
             if(this.model.get('timeseries').length > 0){
                 var speed = this.model.get('timeseries')[0][1][0];
                 if(value === 0){
-                    this.$('.tooltip-inner').text(speed);
+                    this.$('#constant .tooltip-inner').text(speed);
                 } else {
                     var bottom = speed - value;
                     if (bottom < 0) {
@@ -263,13 +285,28 @@ define([
             this.renderTimeseries();
         },
 
-        renderTimeseries: function(){
+        renderTimeseries: function(uncertainty){
             this.model.sortTimeseries();
 
+            if(_.isUndefined(uncertainty)){
+                uncertainty = this.$('#variable .slider').slider('value');
+            }
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
+                var velocity = el[1][0];
+                var direction = el[1][1];
+
+                if (uncertainty > 0){
+                    var low = parseInt(velocity, 10) - parseInt(uncertainty, 10);
+                    var high = parseInt(uncertainty, 10) + parseInt(velocity, 10);
+                    if (low < 0) {
+                        low = 0;
+                    }
+                    velocity = low + ' - ' + high;
+                }
+
                 var date = moment(el[0]).format('YYYY/M/D H:mm');
-                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + el[1][0] + '</td><td>' + el[1][1] + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
             });
             this.$('table tbody').html(html);
         },
