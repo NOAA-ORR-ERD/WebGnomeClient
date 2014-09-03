@@ -185,16 +185,18 @@ define([
             } else {
                 value = this.$('.slider').slider('value');
             }
-            var speed = this.model.get('timeseries')[0][1][0];
-            if(value === 0){
-                this.$('.tooltip-inner').text(speed);
-            } else {
-                var bottom = speed - value;
-                if (bottom < 0) {
-                    bottom = 0;
+            if(this.model.get('timeseries').length > 0){
+                var speed = this.model.get('timeseries')[0][1][0];
+                if(value === 0){
+                    this.$('.tooltip-inner').text(speed);
+                } else {
+                    var bottom = speed - value;
+                    if (bottom < 0) {
+                        bottom = 0;
+                    }
+                    var top = parseInt(speed, 10) + parseInt(value, 10);
+                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
-                var top = parseInt(speed, 10) + parseInt(value, 10);
-                this.$('.tooltip-inner').text(bottom + ' - ' + top);
             }
             
         },
