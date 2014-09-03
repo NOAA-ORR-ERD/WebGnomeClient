@@ -1,39 +1,75 @@
-<h4>{{ data.name }}</h4>
+<div class="row">
+	<div class="col-md-12">
+		<h4>{{ data.name }}</h4>
+	</div>
+	<div class="col-md-6">
+		
+	</div>
+</div>
 <div>
-	<div><label>Distillation Cuts' Units:</label> {{ data.cut_units }}</div>
-	<div><label>Reference:</label> {{ data.reference }}</div>
-	<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
-	<div><label>Location:</label> {{ data.location }}</div>
-	<div><label>Field Name:</label> {{ data.field_name }}</div>
-	<div><label>Resins:</label> {{ data.resins }}</div>
-	<div><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
-	<div><label>Maximum Flash Point Indicator:</label> {{ data.flash_point_max_indicator }}</div>
-	<div><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
-	<div><label>Minimum Flash Point Indicator:</label> {{ data.flash_point_min_indicator }}</div>
-	<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
-	<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
-	<div><label>API:</label> {{ data.api }}</div>
-	<div><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
-	<div><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
-	<div><label>Benezene:</label> {{ data.benezene }}</div>
-	<div><label>Aromatics:</label> {{ data.aromatics }}</div>
-	<div><label>Dispersability Temperature:</label> {{ data.dispersability_temp }}</div>
-	<div><label>Nickel:</label> {{ data.nickel }}</div>
-	<div><label>Oil Class:</label> {{ data.oil_class }}</div>
-	<div><label>Oil to Seawater Interfacial Tension:</label> {{ data.oil_seawater_interfacial_tension }}</div>
-	<div><label>Oil to Seawater Interfacial Tension Reference Temperature:</label> {{ data.oil_seawater_interfacial_tension_ref_temp }}</div>
-	<div><label>Oil to Water Interfacial Tension:</label> {{ data.oil_water_interfacial_tension }}</div>
-	<div><label>Oil to Water Interfacial Tension Reference Temperature:</label> {{ data.oil_water_interfacial_tension_ref_temp }}</div>
-	<div><label>Paraffins:</label> {{ data.paraffins }}</div>
-	<div><label>Polars:</label> {{ data.polars }}</div>
-	<div><label>Preferred Oils:</label> {{ data.preferred_oils }}</div>
-	<div><label>Product Type:</label> {{ data.product_type }}</div>
-	<div><label>Reid Vapor Pressure:</label> {{ data.reid_vapor_pressure }}</div>
-	<div><label>Saturates:</label> {{ data.saturates }}</div>
-	<div><label>Sulphur:</label> {{ data.sulphur }}</div>
-	<div><label>Vanadium:</label> {{ data.vanadium }}</div>
-	<div><label>Viscosity Multiplier:</label> {{ data.viscosity_multiplier }}</div>
-	<div><label>Water Content Emulsion:</label> {{ data.water_content_emulsion }}</div>
-	<div><label>Wax Content:</label> {{ data.wax_content }}</div>
-	<div><label>KOY:</label> {{ data.koy }}</div>
+	<div class="row">
+		<div class="col-md-6">
+			<div><label>Distillation Cuts' Units:</label> {{ data.cut_units }}</div>
+			<div><label>Reference:</label> {{ data.reference }}</div>
+			<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
+			<div><label>Location:</label> {{ data.location }}</div>
+			<div><label>Field Name:</label> {{ data.field_name }}</div>
+			<div><label>Resins:</label> {{ data.resins }}</div>
+			<div><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
+			<div><label>Maximum Flash Point Indicator:</label> {{ data.flash_point_max_indicator }}</div>
+			<div><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
+			<div><label>Minimum Flash Point Indicator:</label> {{ data.flash_point_min_indicator }}</div>
+			<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
+			<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
+			<div><label>API:</label> {{ data.api }}</div>
+			<div><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
+			<div><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
+			<div><label>Benezene:</label> {{ data.benezene }}</div>
+			<div><label>Aromatics:</label> {{ data.aromatics }}</div>
+			<div><label>Dispersability Temperature:</label> {{ data.dispersability_temp }}</div>
+			<div><label>Nickel:</label> {{ data.nickel }}</div>
+			<div><label>Oil Class:</label> {{ data.oil_class }}</div>
+			<div><label>Oil to Seawater Interfacial Tension:</label> {{ data.oil_seawater_interfacial_tension }}</div>
+			<div><label>Oil to Seawater Interfacial Tension Reference Temperature:</label> {{ data.oil_seawater_interfacial_tension_ref_temp }}</div>
+			<div><label>Oil to Water Interfacial Tension:</label> {{ data.oil_water_interfacial_tension }}</div>
+			<div><label>Oil to Water Interfacial Tension Reference Temperature:</label> {{ data.oil_water_interfacial_tension_ref_temp }}</div>
+			<div><label>Paraffins:</label> {{ data.paraffins }}</div>
+			<div><label>Polars:</label> {{ data.polars }}</div>
+			<div><label>Preferred Oils:</label> {{ data.preferred_oils }}</div>
+			<div><label>Product Type:</label> {{ data.product_type }}</div>
+			<div><label>Reid Vapor Pressure:</label> {{ data.reid_vapor_pressure }}</div>
+			<div><label>Saturates:</label> {{ data.saturates }}</div>
+			<div><label>Sulphur:</label> {{ data.sulphur }}</div>
+			<div><label>Vanadium:</label> {{ data.vanadium }}</div>
+			<div><label>Viscosity Multiplier:</label> {{ data.viscosity_multiplier }}</div>
+			<div><label>Water Content Emulsion:</label> {{ data.water_content_emulsion }}</div>
+			<div><label>Wax Content:</label> {{ data.wax_content }}</div>
+			<div><label>KOY:</label> {{ data.koy }}</div>
+			<div><label>Conrandson Carbon Residue:</label> {{ data.conrandson_residuum }}</div>
+			<div><label>Conrandson Carbon Residue for Crude:</label> {{ data.conrandson_crude }}</div>
+		</div>
+		<div class="col-md-6">
+			<h4>Distillation Cuts</h4>
+			<div class="panel-group" id="accordion">
+				{% for (var i = 0; i < data.cuts.length; i++){ %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" data-target="#{{ i }}">
+									Cut #{{ i }}
+								</a>
+							</h4>
+						</div>
+						<div id="{{ i }}" class="panel-collapse collapse">
+							<div class="panel-body">
+								<div><label>Fraction:</label> {{ data.cuts[i].fraction }}</div>
+								<div><label>Liquid Temperature:</label> {{ data.cuts[i].liquid_temp }}</div>
+								<div><label>Vapor Temperature:</label> {{ data.cuts[i].vapor_temp }}</div>
+							</div>
+						</div>
+					</div>
+				{% } %}
+			</div>
+		</div>
+	</div>
 </div>

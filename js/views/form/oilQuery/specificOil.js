@@ -21,7 +21,16 @@ define([
 		dataParse: function(obj){
 			for (key in obj){
 				if (!obj[key]){
-					obj[key] = "N/A";				}
+					obj[key] = "N/A";				
+				} else if (_.isArray(obj[key])) {
+					for (var i = 0; i < obj[key].length; i++){
+						for (k in obj[key][i]) {
+							if (!obj[key][i][k]){
+								obj[key][i][k] = "N/A";
+							}
+						}
+					}
+				}
 			}
 			return obj;
 		}
