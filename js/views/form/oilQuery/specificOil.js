@@ -34,7 +34,8 @@ define([
 				}
 			}
 			return obj;
-		}
+		},
+
 	});
 	return specificOil;
 });

@@ -15,6 +15,9 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
+        events: {
+            'click .backOil': 'goBack'
+        },
 
         events: function(){
             return _.defaults(OilTable.prototype.events, FormModal.prototype.events);
@@ -163,6 +166,12 @@ define([
                             this.update();
                         }, this)
                     });
+        },
+
+        goBack: function(){
+            //this.specificOil.close();
+            this.$('.oilContainer').show();
+            console.log('back pressed');
         }
     });
 
