@@ -52,11 +52,12 @@
 					<div>No Distillation Cuts on Record.</div>
 				{% } %}
 				{% for (var i = 0; i < data.cuts.length; i++){ %}
+					{% var b = i + 1; %}
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
 								<a data-toggle="collapse" data-parent="#accordion" data-target="#d{{ i }}">
-									Cut #{{ i }}
+									Cut #{{ b }}
 								</a>
 							</h4>
 						</div>
@@ -78,11 +79,12 @@
 					<div>No Kinematic Viscosity points on Record.</div>
 				{% } %}
 				{% for (var i = 0; i < data.kvis.length; i++){ %}
+					{% var b = i + 1; %}
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
 								<a data-toggle="collapse" data-parent="#accordion" data-target="#k{{ i }}">
-									Kinematic Viscosity #{{ i }}
+									#{{ b }}
 								</a>
 							</h4>
 						</div>
