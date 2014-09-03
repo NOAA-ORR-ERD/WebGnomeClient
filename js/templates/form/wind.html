@@ -52,7 +52,16 @@
                     <thead>
                         <tr>
                             <th>Date &amp; Time</th>
-                            <th>Speed</th>
+                            <th>
+                                <div class="pull-left">Speed</div>
+                                <div class="col-xs-7">
+                                    <select name="units" class="form-control" id="units">
+                                        <option value="m/s">meters / sec</option>
+                                        <option value="knots">knots</option>
+                                        <option value="mph">miles / hour</option>
+                                    </select>
+                                </div>
+                            </th>
                             <th>Direction</th>
                             <th></th>
                         </th>
@@ -64,20 +73,6 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <div class="form-horizontal">
-            <div class="form-group">
-                <div class="col-sm-4">
-                    <label for="units" class="control-label pull-right">Time Series Speed Unit</label>
-                </div>
-                <div class="col-sm-3">
-                    <select name="units" class="form-control" id="units">
-                        <option value="m/s">meters / sec</option>
-                        <option value="knots">knots</option>
-                        <option value="mph">miles / hour</option>
-                    </select>
-                </div>
             </div>
         </div>
         <hr />
