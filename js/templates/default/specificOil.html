@@ -2,9 +2,6 @@
 	<div class="col-md-12">
 		<h4>{{ data.name }}</h4>
 	</div>
-	<div class="col-md-6">
-		
-	</div>
 </div>
 <div>
 	<div class="row">
@@ -51,20 +48,49 @@
 		<div class="col-md-6">
 			<h4>Distillation Cuts</h4>
 			<div class="panel-group" id="accordion">
+				{% if (data.cuts.length === 0){ %}
+					<div>No Distillation Cuts on Record.</div>
+				{% } %}
 				{% for (var i = 0; i < data.cuts.length; i++){ %}
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" data-target="#{{ i }}">
+								<a data-toggle="collapse" data-parent="#accordion" data-target="#d{{ i }}">
 									Cut #{{ i }}
 								</a>
 							</h4>
 						</div>
-						<div id="{{ i }}" class="panel-collapse collapse">
+						<div id="d{{ i }}" class="panel-collapse collapse">
 							<div class="panel-body">
 								<div><label>Fraction:</label> {{ data.cuts[i].fraction }}</div>
 								<div><label>Liquid Temperature:</label> {{ data.cuts[i].liquid_temp }}</div>
 								<div><label>Vapor Temperature:</label> {{ data.cuts[i].vapor_temp }}</div>
+							</div>
+						</div>
+					</div>
+				{% } %}
+			</div>
+		</div>
+		<div class="col-md-6">
+			<h4>Kinematic Viscosity</h4>
+			<div class="panel-group" id="accordion">
+				{% if (data.kvis.length === 0){ %}
+					<div>No Kinematic Viscosity points on Record.</div>
+				{% } %}
+				{% for (var i = 0; i < data.kvis.length; i++){ %}
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" data-target="#k{{ i }}">
+									Kinematic Viscosity #{{ i }}
+								</a>
+							</h4>
+						</div>
+						<div id="k{{ i }}" class="panel-collapse collapse">
+							<div class="panel-body">
+								<div><label>Meters squared per second:</label> {{ data.kvis[i].meters_squared_per_sec }}</div>
+								<div><label>Reference Temperature:</label> {{ data.kvis[i].ref_temp }}</div>
+								<div><label>Weathering:</label> {{ data.kvis[i].weathering }}</div>
 							</div>
 						</div>
 					</div>
