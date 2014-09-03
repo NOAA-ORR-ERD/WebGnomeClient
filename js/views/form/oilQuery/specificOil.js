@@ -16,7 +16,7 @@ define([
 			var data = this.dataParse(this.model.attributes);
 			var compiled = _.template(SpecificOilTemplate, {data: data});
 			$('.modal-body').html(compiled);
-            $('.collapse').collapse({toggle: false});
+            this.$('.collapse').collapse({toggle: false});
 		},
 
 		dataParse: function(obj){

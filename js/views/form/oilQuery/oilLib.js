@@ -15,6 +15,10 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
+
+        events: function(){
+            return _.defaults(OilTable.prototype.events, FormModal.prototype.events);
+        },
         
         initialize: function(options){
             this.oilTable = new OilTable();
@@ -26,7 +30,6 @@ define([
 
             // Passed oilTable's events hash to this view's events
             
-            this.events = _.defaults(this.oilTable.events, FormModal.prototype.events);
             this.oilTable.on('renderTable', this.renderTable, this);
 
             // Initialized oilDistinct collection so it is available for the view render
@@ -127,9 +130,15 @@ define([
         oilSelect: function(e){
             this.$('.oilContainer').hide();
             var id = $(e.currentTarget).parent().data('id');
-            this.oilTable.oilLib.fetchOil(id, function(model){
-               var specificOil = new SpecificOil({model: model}); 
-            });
+            this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
+               this.specificOil = new SpecificOil({model: model}); 
+            }, this));
+        },
+
+        close: function(){
+            this.specificOil.close();
+            this.oilTable.close();
+            FormModal.prototype.close.call(this);
         },
 
         createSliders: function(minNum, maxNum){

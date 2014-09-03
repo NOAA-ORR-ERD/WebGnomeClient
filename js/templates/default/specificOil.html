@@ -47,7 +47,7 @@
 		</div>
 		<div class="col-md-6">
 			<h4>Distillation Cuts</h4>
-			<div class="panel-group" id="accordion">
+			<div class="panel-group" id="accordionD">
 				{% if (data.cuts.length === 0){ %}
 					<div>No Distillation Cuts on Record.</div>
 				{% } %}
@@ -56,7 +56,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" data-target="#d{{ i }}">
+								<a data-toggle="collapse" data-parent="#accordionD" data-target="#d{{ i }}">
 									Cut #{{ b }}
 								</a>
 							</h4>
@@ -74,7 +74,7 @@
 		</div>
 		<div class="col-md-6">
 			<h4>Kinematic Viscosity</h4>
-			<div class="panel-group" id="accordion">
+			<div class="panel-group" id="accordionK">
 				{% if (data.kvis.length === 0){ %}
 					<div>No Kinematic Viscosity points on Record.</div>
 				{% } %}
@@ -83,7 +83,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" data-target="#k{{ i }}">
+								<a data-toggle="collapse" data-parent="#accordionK" data-target="#k{{ i }}">
 									#{{ b }}
 								</a>
 							</h4>

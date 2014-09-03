@@ -50,7 +50,9 @@ define([
 
         loadOilForm: function(event){
             event.preventDefault();
-            new OilLibForm().render();
+            var oilForm = new OilLibForm();
+            oilForm.on('hidden', oilForm.close);
+            oilForm.render();
         }
     });
     return gnomeView;
