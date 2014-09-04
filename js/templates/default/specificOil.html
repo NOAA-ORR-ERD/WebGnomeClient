@@ -1,170 +1,172 @@
-<div class="row">
-	<div class="col-md-12">
-		<button class="btn backOil btn-danger">Back</button>
-	</div>
-	<div class="col-md-12">
-		<h4>{{ data.name }}</h4>
-	</div>
-</div>
-<div>
+<div id="specificOilContainer"> 
+    <div class="row">
+    	<div class="col-md-12">
+    		<button class="btn backOil btn-danger">Back</button>
+    	</div>
+    	<div class="col-md-12">
+    		<h4>{{ data.name }}</h4>
+    	</div>
+    </div>
+    <div>
 
-	<ul class="nav nav-tabs" id="oiltabs">
-	    <li class="generalinfo active">
-	        <a href="#generalinfo" data-toggle="tab">General Info</a>
-	    </li>
-	    <li class="properties">
-	        <a href="#properties" data-toggle="tab">Properties</a>
-	    </li>
-	    <li class="distillation">
-	        <a href="#distillation" data-toggle="tab">Distillation</a>
-	    </li>
-	    <li class="moreproperties">
-	    	<a href="#moreproperties" data-toggle="tab">More Properties</a>
-	    </li>
-	</ul>
+    	<ul class="nav nav-tabs" id="oiltabs">
+    	    <li class="generalinfo active">
+    	        <a href="#generalinfo" data-toggle="tab">General Info</a>
+    	    </li>
+    	    <li class="properties">
+    	        <a href="#properties" data-toggle="tab">Properties</a>
+    	    </li>
+    	    <li class="distillation">
+    	        <a href="#distillation" data-toggle="tab">Distillation</a>
+    	    </li>
+    	    <li class="moreproperties">
+    	    	<a href="#moreproperties" data-toggle="tab">More Properties</a>
+    	    </li>
+    	</ul>
 
-	<div class="tab-content">
-		<div class="tab-pane active" id="generalinfo">
-			<div class="row">
-				<div class="col-md-12">
-					<div><label>Product Type:</label> {{ data.product_type }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Oil Class:</label> {{ data.oil_class }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Location:</label> {{ data.location }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Field Name:</label> {{ data.field_name }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Synonyms:</label> 
-						{% for (var i = 0; i < data.synonyms.length; i++){ %}
-							{{ data.synonyms[i].name }}
-						{% } %}
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Reference:</label> {{ data.reference }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Comments:</label> {{ data.comments }}</div>
-				</div>
-			</div>
-		</div>
+    	<div class="tab-content">
+    		<div class="tab-pane active" id="generalinfo">
+    			<div class="row">
+    				<div class="col-md-12">
+    					<div><label>Product Type:</label> {{ data.product_type }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Oil Class:</label> {{ data.oil_class }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Location:</label> {{ data.location }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Field Name:</label> {{ data.field_name }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Synonyms:</label> 
+    						{% for (var i = 0; i < data.synonyms.length; i++){ %}
+    							{{ data.synonyms[i].name }}
+    						{% } %}
+    					</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Reference:</label> {{ data.reference }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Comments:</label> {{ data.comments }}</div>
+    				</div>
+    			</div>
+    		</div>
 
-		<div class="tab-pane" id="properties">
-			<div class="row">
-				<div class="col-md-12">
-					<div><label>API:</label> {{ data.api }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
-				</div>
-				<div class="col-md-12">
-					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
-				</div>
-				<div class="col-md-12">
-					<h4>Kinematic Viscosity</h4>
-					{% if (!data.kvis){ %}
-						<div>No Viscosity Data on Record.</div>
-					{% } else { %}
-						<table class="table">
-							<tr>
-								<th>Centistokes (cSt)</th>
-								<th>Reference Temperature (K)</th>
-								<th>Weathering</th>
-							</tr>
-						{% for (var i = 0; i < data.kvis.length; i++){ %}
-							{% var centiStokes = (data.kvis[i].meters_squared_per_sec * 1000).toFixed(3); %}
-							<tr>
-								<td>{{ centiStokes }}</td>
-								<td>{{ data.kvis[i].ref_temp }}</td>
-								<td>{{ data.kvis[i].weathering }}</td>
-							</tr>
-						{% } %}
-						</table>
-					{% } %}
-				</div>
-			</div>
-		</div>
+    		<div class="tab-pane" id="properties">
+    			<div class="row">
+    				<div class="col-md-12">
+    					<div><label>API:</label> {{ data.api }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
+    				</div>
+    				<div class="col-md-12">
+    					<h4>Kinematic Viscosity</h4>
+    					{% if (!data.kvis){ %}
+    						<div>No Viscosity Data on Record.</div>
+    					{% } else { %}
+    						<table class="table">
+    							<tr>
+    								<th>Centistokes (cSt)</th>
+    								<th>Reference Temperature (K)</th>
+    								<th>Weathering</th>
+    							</tr>
+    						{% for (var i = 0; i < data.kvis.length; i++){ %}
+    							{% var centiStokes = (data.kvis[i].meters_squared_per_sec * 1000).toFixed(3); %}
+    							<tr>
+    								<td>{{ centiStokes }}</td>
+    								<td>{{ data.kvis[i].ref_temp }}</td>
+    								<td>{{ data.kvis[i].weathering }}</td>
+    							</tr>
+    						{% } %}
+    						</table>
+    					{% } %}
+    				</div>
+    			</div>
+    		</div>
 
-		<div class="tab-pane" id="distillation">
-			<div class="row">
-				<h4>Distillation Cuts</h4>
-				{% if (!data.cuts){ %}
-					<div>No Distillation Cuts on Record.</div>
-				{% } else { %}
-					<table class="table">
-						<tr>
-							<th>Cut #</th>
-							<th>Mass Percent (%)</th>
-							<th>Vapor Temperature (K)</th>
-							<th>Liquid Temperature (K)</th>
-						</tr>
-					{% for (var i = 0; i < data.cuts.length; i++){ %}
-						{% var count = i + 1; %}
-						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
-						<tr>
-							<td>{{ count }}</td>
-							<td>{{ percentCut }}</td>
-							<td>{{ data.cuts[i].vapor_temp }}</td>
-							<td>{{ data.cuts[i].liquid_temp }}</td>
-						</tr>
-					{% } %}
-					</table>
-				{% } %}
-			</div>
-		</div>
+    		<div class="tab-pane" id="distillation">
+    			<div class="row">
+    				<h4>Distillation Cuts</h4>
+    				{% if (!data.cuts){ %}
+    					<div>No Distillation Cuts on Record.</div>
+    				{% } else { %}
+    					<table class="table">
+    						<tr>
+    							<th>Cut #</th>
+    							<th>Mass Percent (%)</th>
+    							<th>Vapor Temperature (K)</th>
+    							<th>Liquid Temperature (K)</th>
+    						</tr>
+    					{% for (var i = 0; i < data.cuts.length; i++){ %}
+    						{% var count = i + 1; %}
+    						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
+    						<tr>
+    							<td>{{ count }}</td>
+    							<td>{{ percentCut }}</td>
+    							<td>{{ data.cuts[i].vapor_temp }}</td>
+    							<td>{{ data.cuts[i].liquid_temp }}</td>
+    						</tr>
+    					{% } %}
+    					</table>
+    				{% } %}
+    			</div>
+    		</div>
 
-		<div class="tab-pane" id="moreproperties">
-			<div class="row">
-				<div>
-					<div class="col-md-6"><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
-					<div class="col-md-6"><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
-				</div>
-				<div>
-					<div class="col-md-6"><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
-					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
-				</div>
-				<div>
-					<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
-				</div>
-				<div>
-					<div class="col-md-4"><h4>Interfacial Tension (Dynes/cm)</h4></div>
-					<div class="col-md-8"><hr></div>
-					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
-					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension }}</div>
-				</div>
-				<div>
-					<div class="col-md-2"><h4>Metals (ppm)</h4></div>
-					<div class="col-md-10"><hr></div>
-					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
-					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
-				</div>
-				<div>
-					<div class="col-md-4"><h4>Group Analysis (weight %)</h4></div>
-					<div class="col-md-8"><hr></div>
-					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
-					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
-				</div>
-				<div>
-					<div class="col-md-6"><label>Resins:</label> {{ data.resins }}</div>
-					<div class="col-md-6"><label>Benzene:</label> {{ data.benezene }}</div>
-				</div>
-				<div>
-					<div class="col-md-6"><label>Saturates:</label> {{ data.saturates }}</div>
-					<div class="col-md-6"><label>Sulphur:</label> {{ data.sulphur }}</div>
-				</div>
-				<div>
-					<div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins }}</div>
-					<div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content }}</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    		<div class="tab-pane" id="moreproperties">
+    			<div class="row">
+    				<div>
+    					<div class="col-md-6"><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
+    					<div class="col-md-6"><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-6"><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
+    					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-4"><h4>Interfacial Tension (Dynes/cm)</h4></div>
+    					<div class="col-md-8"><hr></div>
+    					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
+    					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-2"><h4>Metals (ppm)</h4></div>
+    					<div class="col-md-10"><hr></div>
+    					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
+    					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-4"><h4>Group Analysis (weight %)</h4></div>
+    					<div class="col-md-8"><hr></div>
+    					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
+    					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-6"><label>Resins:</label> {{ data.resins }}</div>
+    					<div class="col-md-6"><label>Benzene:</label> {{ data.benezene }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-6"><label>Saturates:</label> {{ data.saturates }}</div>
+    					<div class="col-md-6"><label>Sulphur:</label> {{ data.sulphur }}</div>
+    				</div>
+    				<div>
+    					<div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins }}</div>
+    					<div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content }}</div>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
 </div>

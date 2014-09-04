@@ -132,7 +132,7 @@ define([
             this.$('.oilContainer').hide();
             var id = $(e.currentTarget).parent().data('id');
             this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
-               this.specificOil = new SpecificOil({model: model}); 
+               this.specificOil = new SpecificOil({model: model});
             }, this));
         },
 
@@ -168,7 +168,7 @@ define([
 
         goBack: function(e){
             e.preventDefault();
-            this.specificOil.close();
+            this.$('#specificOilContainer').empty();
             this.$('.oilContainer').show();
             console.log('back pressed');
         }

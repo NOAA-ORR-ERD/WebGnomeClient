@@ -6,7 +6,7 @@ define([
     'text!templates/default/specificOil.html'
 ], function($, _, Backbone, OilLib, SpecificOilTemplate){
 	var specificOil = Backbone.View.extend({
-		id: 'specificOil',
+		id: 'specificOilContainer',
 
 		initialize: function(){
 			this.render();
@@ -15,16 +15,16 @@ define([
 		render: function(){
 			var data = this.dataParse(this.model.attributes);
 			var compiled = _.template(SpecificOilTemplate, {data: data});
-			$('.modal-body').html(compiled);
+			$('#specificOilContainer').html(this.$el.html(compiled));
 		},
 
 		dataParse: function(obj){
-            var groupAnalysis = ['aromatics', 
-                                 'polars', 
-                                 'resins', 
-                                 'saturates', 
-                                 'paraffins', 
-                                 'sulphur', 
+            var groupAnalysis = ['aromatics',
+                                 'polars',
+                                 'resins',
+                                 'saturates',
+                                 'paraffins',
+                                 'sulphur',
                                  'benezene', 
                                  'wax_content'
                                  ];
@@ -54,7 +54,7 @@ define([
                 }
 			}
 			return obj;
-		},
+		}
 
 	});
 	return specificOil;
