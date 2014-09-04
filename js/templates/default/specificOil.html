@@ -42,7 +42,11 @@
 					<div><label>Field Name:</label> {{ data.field_name }}</div>
 				</div>
 				<div class="col-md-12">
-					<div><label>Synonyms:</label> {{ data.synonyms }}</div>
+					<div><label>Synonyms:</label> 
+						{% for (var i = 0; i < data.synonyms.length; i++){ %}
+							{{ data.synonyms[i] }}
+						{% } %}
+					</div>
 				</div>
 				<div class="col-md-12">
 					<div><label>Reference:</label> {{ data.reference }}</div>
@@ -58,10 +62,10 @@
 				<div class="col-md-12">
 					<div><label>API:</label> {{ data.api }}</div>
 				</div>
-				<div class="col-md-6">
+				<div>
 					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
 				</div>
-				<div class="col-md-6">
+				<div>
 					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
 				</div>
 				<div class="col-md-12">
@@ -77,7 +81,6 @@
 							<th>Weathering</th>
 						</tr>
 					{% for (var i = 0; i < data.kvis.length; i++){ %}
-					{% var b = i + 1; %}
 						<tr>
 							<td>{{ data.kvis[i].meters_squared_per_sec }}</td>
 							<td>{{ data.kvis[i].ref_temp }}</td>
@@ -125,6 +128,9 @@
 					<div class="col-md-6"><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
 					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
 				</div>
+				<div>
+					<div class="col-md-6"><label>Adhesion:</label> {{ data.adhesion }}</div>
+				</div>
 				<h5>Interfacial Tension (Dynes/cm)</h5>
 				<div>
 					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
@@ -142,7 +148,7 @@
 				</div>
 				<div>
 					<div class="col-md-6"><label>Resins:</label> {{ data.resins }}</div>
-					<div class="col-md-6"><label>Benezene:</label> {{ data.benezene }}</div>
+					<div class="col-md-6"><label>Benzene:</label> {{ data.benezene }}</div>
 				</div>
 				<div>
 					<div class="col-md-6"><label>Saturates:</label> {{ data.saturates }}</div>
@@ -158,7 +164,7 @@
 	</div>
 
 
-	<div class="row">
+	<div class="row" style="display: none;">
 		<div class="col-md-6">
 			<div><label>Distillation Cuts' Units:</label> {{ data.cut_units }}</div>
 			
@@ -195,60 +201,6 @@
 			<div><label>KOY:</label> {{ data.koy }}</div>
 			<div><label>Conrandson Carbon Residue:</label> {{ data.conrandson_residuum }}</div>
 			<div><label>Conrandson Carbon Residue for Crude:</label> {{ data.conrandson_crude }}</div>
-		</div>
-		<div class="col-md-6">
-			<h4>Distillation Cuts</h4>
-			<div class="panel-group" id="accordionD">
-				{% if (data.cuts.length === 0){ %}
-					<div>No Distillation Cuts on Record.</div>
-				{% } %}
-				{% for (var i = 0; i < data.cuts.length; i++){ %}
-					{% var b = i + 1; %}
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordionD" data-target="#d{{ i }}">
-									Cut #{{ b }}
-								</a>
-							</h4>
-						</div>
-						<div id="d{{ i }}" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div><label>Fraction:</label> {{ data.cuts[i].fraction }}</div>
-								<div><label>Liquid Temperature:</label> {{ data.cuts[i].liquid_temp }}</div>
-								<div><label>Vapor Temperature:</label> {{ data.cuts[i].vapor_temp }}</div>
-							</div>
-						</div>
-					</div>
-				{% } %}
-			</div>
-		</div>
-		<div class="col-md-6">
-			<h4>Kinematic Viscosity</h4>
-			<div class="panel-group" id="accordionK">
-				{% if (data.kvis.length === 0){ %}
-					<div>No Kinematic Viscosity points on Record.</div>
-				{% } %}
-				{% for (var i = 0; i < data.kvis.length; i++){ %}
-					{% var b = i + 1; %}
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordionK" data-target="#k{{ i }}">
-									#{{ b }}
-								</a>
-							</h4>
-						</div>
-						<div id="k{{ i }}" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div><label>Meters squared per second:</label> {{ data.kvis[i].meters_squared_per_sec }}</div>
-								<div><label>Reference Temperature:</label> {{ data.kvis[i].ref_temp }}</div>
-								<div><label>Weathering:</label> {{ data.kvis[i].weathering }}</div>
-							</div>
-						</div>
-					</div>
-				{% } %}
-			</div>
 		</div>
 	</div>
 </div>
