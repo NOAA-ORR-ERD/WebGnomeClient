@@ -117,6 +117,43 @@
 
 		<div class="tab-pane" id="moreproperties">
 			<div class="row">
+				<div>
+					<div class="col-md-6"><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
+					<div class="col-md-6"><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
+				</div>
+				<div>
+					<div class="col-md-6"><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
+					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
+				</div>
+				<h5>Interfacial Tension (Dynes/cm)</h5>
+				<div>
+					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
+					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension }}</div>
+				</div>
+				<h5>Metals (ppm)</h5>
+				<div>
+					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
+					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
+				</div>
+				<h5>Group Analysis (weight %)</h5>
+				<div>
+					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
+					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
+				</div>
+				<div>
+					<div class="col-md-6"><label>Resins:</label> {{ data.resins }}</div>
+					<div class="col-md-6"><label>Benezene:</label> {{ data.benezene }}</div>
+				</div>
+				<div>
+					<div class="col-md-6"><label>Saturates:</label> {{ data.saturates }}</div>
+					<div class="col-md-6"><label>Sulphur:</label> {{ data.sulphur }}</div>
+				</div>
+				<div>
+					<div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins }}</div>
+					<div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content }}</div>
+				</div>
+			</div>
+		</div>
 
 	</div>
 
@@ -128,35 +165,33 @@
 			
 			
 			
-			<div><label>Resins:</label> {{ data.resins }}</div>
-			<div><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
-			<div><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
+			
+			
 			<div><label>Minimum Flash Point Indicator:</label> {{ data.flash_point_min_indicator }}</div>
 			
 			
 			
-			<div><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
-			<div><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
-			<div><label>Benezene:</label> {{ data.benezene }}</div>
-			<div><label>Aromatics:</label> {{ data.aromatics }}</div>
-			<div><label>Dispersability Temperature:</label> {{ data.dispersability_temp }}</div>
-			<div><label>Nickel:</label> {{ data.nickel }}</div>
 			
-			<div><label>Oil to Seawater Interfacial Tension:</label> {{ data.oil_seawater_interfacial_tension }}</div>
+			
+			
+			<div><label>Dispersability Temperature:</label> {{ data.dispersability_temp }}</div>
+			
+			
+			
 			<div><label>Oil to Seawater Interfacial Tension Reference Temperature:</label> {{ data.oil_seawater_interfacial_tension_ref_temp }}</div>
-			<div><label>Oil to Water Interfacial Tension:</label> {{ data.oil_water_interfacial_tension }}</div>
+			
 			<div><label>Oil to Water Interfacial Tension Reference Temperature:</label> {{ data.oil_water_interfacial_tension_ref_temp }}</div>
-			<div><label>Paraffins:</label> {{ data.paraffins }}</div>
-			<div><label>Polars:</label> {{ data.polars }}</div>
+			
+			
 			<div><label>Preferred Oils:</label> {{ data.preferred_oils }}</div>
 			
 			<div><label>Reid Vapor Pressure:</label> {{ data.reid_vapor_pressure }}</div>
-			<div><label>Saturates:</label> {{ data.saturates }}</div>
-			<div><label>Sulphur:</label> {{ data.sulphur }}</div>
-			<div><label>Vanadium:</label> {{ data.vanadium }}</div>
+			
+			
+			
 			<div><label>Viscosity Multiplier:</label> {{ data.viscosity_multiplier }}</div>
 			<div><label>Water Content Emulsion:</label> {{ data.water_content_emulsion }}</div>
-			<div><label>Wax Content:</label> {{ data.wax_content }}</div>
+			
 			<div><label>KOY:</label> {{ data.koy }}</div>
 			<div><label>Conrandson Carbon Residue:</label> {{ data.conrandson_residuum }}</div>
 			<div><label>Conrandson Carbon Residue for Crude:</label> {{ data.conrandson_crude }}</div>
