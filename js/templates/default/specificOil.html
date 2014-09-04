@@ -44,7 +44,7 @@
 				<div class="col-md-12">
 					<div><label>Synonyms:</label> 
 						{% for (var i = 0; i < data.synonyms.length; i++){ %}
-							{{ data.synonyms[i] }}
+							{{ data.synonyms[i].name }}
 						{% } %}
 					</div>
 				</div>
@@ -71,18 +71,19 @@
 				<div class="col-md-12">
 					<label>Viscosity:</label>
 				</div>
-				{% if (data.kvis.length === 0){ %}
-					<div>No Kinematic Viscosity points on Record.</div>
+				{% if (!data.kvis){ %}
+					<div>No Viscosity Data on Record.</div>
 				{% } else { %}
 					<table class="table">
 						<tr>
-							<th>Stokes</th>
+							<th>Centistokes (cSt)</th>
 							<th>Reference Temperature (K)</th>
 							<th>Weathering</th>
 						</tr>
 					{% for (var i = 0; i < data.kvis.length; i++){ %}
+						{% var centiStokes = data.kvis[i].meters_squared_per_sec * 1000; %}
 						<tr>
-							<td>{{ data.kvis[i].meters_squared_per_sec }}</td>
+							<td>{{ centiStokes }}</td>
 							<td>{{ data.kvis[i].ref_temp }}</td>
 							<td>{{ data.kvis[i].weathering }}</td>
 						</tr>
@@ -94,21 +95,22 @@
 
 		<div class="tab-pane" id="distillation">
 			<div class="row">
-				{% if (data.cuts.length === 0){ %}
+				{% if (!data.cuts){ %}
 					<div>No Distillation Cuts on Record.</div>
 				{% } else { %}
 					<table class="table">
 						<tr>
 							<th>Cut #</th>
-							<th>Fraction</th>
-							<th>Vapor Temperature</th>
-							<th>Liquid Temperature</th>
+							<th>Mass Percent (%)</th>
+							<th>Vapor Temperature (K)</th>
+							<th>Liquid Temperature (K)</th>
 						</tr>
 					{% for (var i = 0; i < data.cuts.length; i++){ %}
-						{% var b = i + 1; %}
+						{% var count = i + 1; %}
+						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
 						<tr>
-							<td>{{ b }}</td>
-							<td>{{ data.cuts[i].fraction }}</td>
+							<td>{{ count }}</td>
+							<td>{{ percentCut }}</td>
 							<td>{{ data.cuts[i].vapor_temp }}</td>
 							<td>{{ data.cuts[i].liquid_temp }}</td>
 						</tr>

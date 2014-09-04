@@ -20,12 +20,24 @@ define([
 		},
 
 		dataParse: function(obj){
+            var groupAnalysis = ['aromatics', 
+                                 'polars', 
+                                 'resins', 
+                                 'saturates', 
+                                 'paraffins', 
+                                 'sulphur', 
+                                 'benezene', 
+                                 'wax_content'];
 			for (key in obj){
 				if (!obj[key]){
 					obj[key] = "--";				
 				} else if (_.isArray(obj[key])) {
                     if (obj[key].length === 0){
-                        obj[key] = "--";
+                        if (key === 'cuts' || key === 'kvis'){
+                            obj[key] = false;
+                        } else {
+                            obj[key] = "--";
+                        }
                     } else {
     					for (var i = 0; i < obj[key].length; i++){
     						for (k in obj[key][i]) {
@@ -35,7 +47,9 @@ define([
     						}
     					}
                     }
-				}
+                } else if (groupAnalysis.indexOf(key) !== -1){
+                    obj[key] = (obj[key] * 100).toFixed(3);
+                }
 			}
 			return obj;
 		},
