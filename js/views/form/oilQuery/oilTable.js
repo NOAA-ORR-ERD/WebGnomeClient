@@ -11,7 +11,8 @@ define([
         ready: false,
         events: {
             'click th': 'headerClick',
-            'click td': 'oilSelect'
+            'click td': 'oilSelect',
+            'click .backOil': 'goBack'
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',

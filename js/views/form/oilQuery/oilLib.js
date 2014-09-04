@@ -15,9 +15,6 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
-        events: {
-            'click .backOil': 'goBack'
-        },
 
         events: function(){
             return _.defaults(OilTable.prototype.events, FormModal.prototype.events);
@@ -42,6 +39,7 @@ define([
         },
 
         render: function(options){
+            console.log(this.events());
             if(this.oilTable.ready){
                 // Removes loading modal just prior to render call of oilLib
 
@@ -72,7 +70,7 @@ define([
                     for (var i = 0; i < valueObj[key].length; i++){
                         this.$('#' + key).append($('<option class="subcategory"></option>')
                             .attr('value', valueObj[key][i])
-                            .text(valueObj[key][i]));
+                            .text(key + '-' + valueObj[key][i]));
                     }
                 }
                 this.$('.chosen-select').trigger('chosen:updated');
@@ -168,8 +166,9 @@ define([
                     });
         },
 
-        goBack: function(){
-            //this.specificOil.close();
+        goBack: function(e){
+            e.preventDefault();
+            this.specificOil.close();
             this.$('.oilContainer').show();
             console.log('back pressed');
         }
