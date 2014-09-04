@@ -24,13 +24,17 @@ define([
 				if (!obj[key]){
 					obj[key] = "--";				
 				} else if (_.isArray(obj[key])) {
-					for (var i = 0; i < obj[key].length; i++){
-						for (k in obj[key][i]) {
-							if (!obj[key][i][k]){
-								obj[key][i][k] = "--";
-							}
-						}
-					}
+                    if (obj[key].length === 0){
+                        obj[key] = "--";
+                    } else {
+    					for (var i = 0; i < obj[key].length; i++){
+    						for (k in obj[key][i]) {
+    							if (!obj[key][i][k]){
+    								obj[key][i][k] = "--";
+    							}
+    						}
+    					}
+                    }
 				}
 			}
 			return obj;

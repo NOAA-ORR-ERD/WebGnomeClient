@@ -64,7 +64,28 @@
 				<div class="col-md-6">
 					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
 				</div>
-
+				<div class="col-md-12">
+					<label>Viscosity:</label>
+				</div>
+				{% if (data.kvis.length === 0){ %}
+					<div>No Kinematic Viscosity points on Record.</div>
+				{% } else { %}
+					<table class="table">
+						<tr>
+							<th>Stokes</th>
+							<th>Reference Temperature (K)</th>
+							<th>Weathering</th>
+						</tr>
+					{% for (var i = 0; i < data.kvis.length; i++){ %}
+					{% var b = i + 1; %}
+						<tr>
+							<td>{{ data.kvis[i].meters_squared_per_sec }}</td>
+							<td>{{ data.kvis[i].ref_temp }}</td>
+							<td>{{ data.kvis[i].weathering }}</td>
+						</tr>
+					{% } %}
+					</table>
+				{% } %}
 			</div>
 		</div>
 
@@ -72,11 +93,30 @@
 			<div class="row">
 				{% if (data.cuts.length === 0){ %}
 					<div>No Distillation Cuts on Record.</div>
+				{% } else { %}
+					<table class="table">
+						<tr>
+							<th>Cut #</th>
+							<th>Fraction</th>
+							<th>Vapor Temperature</th>
+							<th>Liquid Temperature</th>
+						</tr>
+					{% for (var i = 0; i < data.cuts.length; i++){ %}
+						{% var b = i + 1; %}
+						<tr>
+							<td>{{ b }}</td>
+							<td>{{ data.cuts[i].fraction }}</td>
+							<td>{{ data.cuts[i].vapor_temp }}</td>
+							<td>{{ data.cuts[i].liquid_temp }}</td>
+						</tr>
+					{% } %}
+					</table>
 				{% } %}
-				{% for (var i = 0; i < data.cuts.length; i++){ %}
-					{% var b = i + 1; %}
+			</div>
+		</div>
 
-				{% } %}
+		<div class="tab-pane" id="moreproperties">
+			<div class="row">
 
 	</div>
 
