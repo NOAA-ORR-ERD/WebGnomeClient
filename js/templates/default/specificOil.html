@@ -27,13 +27,13 @@
 		<div class="tab-pane" id="generalinfo">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="col-md-4"><label>Product Type:</label> {{ data.product_type }}</div>
-					<div class="col-md-4">
-						<div><label>Oil Class:</label> {{ data.oil_class }}</div>
-					</div>
-					<div class="col-md-4">
-						<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
-					</div>
+					<div><label>Product Type:</label> {{ data.product_type }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Oil Class:</label> {{ data.oil_class }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
 				</div>
 				<div class="col-md-12">
 					<div><label>Location:</label> {{ data.location }}</div>
@@ -62,39 +62,40 @@
 				<div class="col-md-12">
 					<div><label>API:</label> {{ data.api }}</div>
 				</div>
-				<div>
+				<div class="col-md-12">
 					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
 				</div>
-				<div>
+				<div class="col-md-12">
 					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
 				</div>
 				<div class="col-md-12">
-					<h4>Viscosity</h4>
-				</div>
-				{% if (!data.kvis){ %}
-					<div>No Viscosity Data on Record.</div>
-				{% } else { %}
-					<table class="table">
-						<tr>
-							<th>Centistokes (cSt)</th>
-							<th>Reference Temperature (K)</th>
-							<th>Weathering</th>
-						</tr>
-					{% for (var i = 0; i < data.kvis.length; i++){ %}
-						{% var centiStokes = data.kvis[i].meters_squared_per_sec * 1000; %}
-						<tr>
-							<td>{{ centiStokes }}</td>
-							<td>{{ data.kvis[i].ref_temp }}</td>
-							<td>{{ data.kvis[i].weathering }}</td>
-						</tr>
+					<h4>Kinematic Viscosity</h4>
+					{% if (!data.kvis){ %}
+						<div>No Viscosity Data on Record.</div>
+					{% } else { %}
+						<table class="table">
+							<tr>
+								<th>Centistokes (cSt)</th>
+								<th>Reference Temperature (K)</th>
+								<th>Weathering</th>
+							</tr>
+						{% for (var i = 0; i < data.kvis.length; i++){ %}
+							{% var centiStokes = (data.kvis[i].meters_squared_per_sec * 1000).toFixed(3); %}
+							<tr>
+								<td>{{ centiStokes }}</td>
+								<td>{{ data.kvis[i].ref_temp }}</td>
+								<td>{{ data.kvis[i].weathering }}</td>
+							</tr>
+						{% } %}
+						</table>
 					{% } %}
-					</table>
-				{% } %}
+				</div>
 			</div>
 		</div>
 
 		<div class="tab-pane" id="distillation">
 			<div class="row">
+				<h4>Distillation Cuts</h4>
 				{% if (!data.cuts){ %}
 					<div>No Distillation Cuts on Record.</div>
 				{% } else { %}
@@ -136,24 +137,18 @@
 				<div>
 					<div class="col-md-4"><h4>Interfacial Tension (Dynes/cm)</h4></div>
 					<div class="col-md-8"><hr></div>
-				</div>
-				<div>
 					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
 					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension }}</div>
 				</div>
 				<div>
 					<div class="col-md-2"><h4>Metals (ppm)</h4></div>
 					<div class="col-md-10"><hr></div>
-				</div>
-				<div>
 					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
 					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
 				</div>
 				<div>
 					<div class="col-md-4"><h4>Group Analysis (weight %)</h4></div>
 					<div class="col-md-8"><hr></div>
-				</div>
-				<div>
 					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
 					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
 				</div>

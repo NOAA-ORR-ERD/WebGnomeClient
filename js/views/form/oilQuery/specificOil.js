@@ -49,6 +49,8 @@ define([
                     }
                 } else if (groupAnalysis.indexOf(key) !== -1){
                     obj[key] = (obj[key] * 100).toFixed(3);
+                } else if (key === 'oil_seawater_interfacial_tension' || key === 'oil_water_interfacial_tension') {
+                    obj[key] = (obj[key] * 1000).toFixed(3);
                 }
 			}
 			return obj;
