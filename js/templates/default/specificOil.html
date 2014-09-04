@@ -69,7 +69,7 @@
 					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
 				</div>
 				<div class="col-md-12">
-					<label>Viscosity:</label>
+					<h4>Viscosity</h4>
 				</div>
 				{% if (!data.kvis){ %}
 					<div>No Viscosity Data on Record.</div>
@@ -131,19 +131,28 @@
 					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
 				</div>
 				<div>
-					<div class="col-md-6"><label>Adhesion:</label> {{ data.adhesion }}</div>
+					<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
 				</div>
-				<h5>Interfacial Tension (Dynes/cm)</h5>
+				<div>
+					<div class="col-md-4"><h4>Interfacial Tension (Dynes/cm)</h4></div>
+					<div class="col-md-8"><hr></div>
+				</div>
 				<div>
 					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension }}</div>
 					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension }}</div>
 				</div>
-				<h5>Metals (ppm)</h5>
+				<div>
+					<div class="col-md-2"><h4>Metals (ppm)</h4></div>
+					<div class="col-md-10"><hr></div>
+				</div>
 				<div>
 					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
 					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
 				</div>
-				<h5>Group Analysis (weight %)</h5>
+				<div>
+					<div class="col-md-4"><h4>Group Analysis (weight %)</h4></div>
+					<div class="col-md-8"><hr></div>
+				</div>
 				<div>
 					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
 					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
