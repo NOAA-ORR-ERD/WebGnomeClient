@@ -39,7 +39,6 @@ define([
         },
 
         render: function(options){
-            console.log(this.events());
             if(this.oilTable.ready){
                 // Removes loading modal just prior to render call of oilLib
 
@@ -77,17 +76,18 @@ define([
 
                 // Grabbing the minimum and maximum api values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
-                if (!this.min && !this.max){
-                    this.min = Math.floor(_.min(this.oilTable.oilLib.models, 
+                if (!this.api_min && !this.api_max){
+                    this.api_min = Math.floor(_.min(this.oilTable.oilLib.models, 
                                 function(model){ return model.attributes.api; }).attributes.api);
-                    this.max = Math.ceil(_.max(this.oilTable.oilLib.models, 
+                    this.api_max = Math.ceil(_.max(this.oilTable.oilLib.models, 
                                 function(model){ return model.attributes.api; }).attributes.api);
                 }
 
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
 
-                this.createSliders(this.min, this.max);
+                this.createSliders(this.api_min, this.api_max, '.slider-api');
+                this.createSliders(0, 20, '.slider-viscosity');
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -142,8 +142,8 @@ define([
             FormModal.prototype.close.call(this);
         },
 
-        createSliders: function(minNum, maxNum){
-            this.$('.slider').slider({
+        createSliders: function(minNum, maxNum, selector){
+            this.$(selector).slider({
                         range: true, 
                         min: minNum, 
                         max: maxNum,

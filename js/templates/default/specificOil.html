@@ -7,27 +7,101 @@
 	</div>
 </div>
 <div>
+
+	<ul class="nav nav-tabs">
+	    <li class="generalinfo">
+	        <a href="#generalinfo" data-toggle="tab">General Info</a>
+	    </li>
+	    <li class="properties">
+	        <a href="#properties" data-toggle="tab">Properties</a>
+	    </li>
+	    <li class="distillation">
+	        <a href="#distillation" data-toggle="tab">Distillation</a>
+	    </li>
+	    <li class="moreproperties">
+	    	<a href="#moreproperties" data-toggle="tab">More Properties</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane" id="generalinfo">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="col-md-4"><label>Product Type:</label> {{ data.product_type }}</div>
+					<div class="col-md-4">
+						<div><label>Oil Class:</label> {{ data.oil_class }}</div>
+					</div>
+					<div class="col-md-4">
+						<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Location:</label> {{ data.location }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Field Name:</label> {{ data.field_name }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Synonyms:</label> {{ data.synonyms }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Reference:</label> {{ data.reference }}</div>
+				</div>
+				<div class="col-md-12">
+					<div><label>Comments:</label> {{ data.comments }}</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane" id="properties">
+			<div class="row">
+				<div class="col-md-12">
+					<div><label>API:</label> {{ data.api }}</div>
+				</div>
+				<div class="col-md-6">
+					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
+				</div>
+				<div class="col-md-6">
+					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="tab-pane" id="distillation">
+			<div class="row">
+				{% if (data.cuts.length === 0){ %}
+					<div>No Distillation Cuts on Record.</div>
+				{% } %}
+				{% for (var i = 0; i < data.cuts.length; i++){ %}
+					{% var b = i + 1; %}
+
+				{% } %}
+
+	</div>
+
+
 	<div class="row">
 		<div class="col-md-6">
 			<div><label>Distillation Cuts' Units:</label> {{ data.cut_units }}</div>
-			<div><label>Reference:</label> {{ data.reference }}</div>
-			<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
-			<div><label>Location:</label> {{ data.location }}</div>
-			<div><label>Field Name:</label> {{ data.field_name }}</div>
+			
+			
+			
+			
 			<div><label>Resins:</label> {{ data.resins }}</div>
 			<div><label>Maximum Flash Point:</label> {{ data.flash_point_max }}</div>
 			<div><label>Minimum Flash Point:</label> {{ data.flash_point_min }}</div>
 			<div><label>Minimum Flash Point Indicator:</label> {{ data.flash_point_min_indicator }}</div>
-			<div><label>Pour Point Minimum:</label> {{ data.pour_point_min }}</div>
-			<div><label>Pour Point Maximum:</label> {{ data.pour_point_max }}</div>
-			<div><label>API:</label> {{ data.api }}</div>
+			
+			
+			
 			<div><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
 			<div><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
 			<div><label>Benezene:</label> {{ data.benezene }}</div>
 			<div><label>Aromatics:</label> {{ data.aromatics }}</div>
 			<div><label>Dispersability Temperature:</label> {{ data.dispersability_temp }}</div>
 			<div><label>Nickel:</label> {{ data.nickel }}</div>
-			<div><label>Oil Class:</label> {{ data.oil_class }}</div>
+			
 			<div><label>Oil to Seawater Interfacial Tension:</label> {{ data.oil_seawater_interfacial_tension }}</div>
 			<div><label>Oil to Seawater Interfacial Tension Reference Temperature:</label> {{ data.oil_seawater_interfacial_tension_ref_temp }}</div>
 			<div><label>Oil to Water Interfacial Tension:</label> {{ data.oil_water_interfacial_tension }}</div>
@@ -35,7 +109,7 @@
 			<div><label>Paraffins:</label> {{ data.paraffins }}</div>
 			<div><label>Polars:</label> {{ data.polars }}</div>
 			<div><label>Preferred Oils:</label> {{ data.preferred_oils }}</div>
-			<div><label>Product Type:</label> {{ data.product_type }}</div>
+			
 			<div><label>Reid Vapor Pressure:</label> {{ data.reid_vapor_pressure }}</div>
 			<div><label>Saturates:</label> {{ data.saturates }}</div>
 			<div><label>Sulphur:</label> {{ data.sulphur }}</div>
