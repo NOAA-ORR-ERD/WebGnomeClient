@@ -42,8 +42,7 @@ define([
             if (obj.text.length > 1){
                 var options = {keys: ['attributes.name',
                                       'attributes.field_name',
-                                      'attributes.location',
-                                      'attributes.adios_oil_id'
+                                      'attributes.location'
                                      ],
                                threshold: 0.1
                                };
