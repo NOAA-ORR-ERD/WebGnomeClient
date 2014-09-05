@@ -33,7 +33,7 @@ define([
 					obj[key] = "--";				
 				} else if (_.isArray(obj[key])) {
                     if (obj[key].length === 0){
-                        if (key === 'cuts' || key === 'kvis'){
+                        if (key === 'cuts' || key === 'kvis' || key === 'synonyms'){
                             obj[key] = false;
                         } else {
                             obj[key] = "--";

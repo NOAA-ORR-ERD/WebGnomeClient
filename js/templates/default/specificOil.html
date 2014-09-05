@@ -43,7 +43,10 @@
     					<div><label>Field Name:</label> {{ data.field_name }}</div>
     				</div>
     				<div class="col-md-12">
-    					<div><label>Synonyms:</label> 
+    					<div><label>Synonyms:</label>
+                            {% if (!data.synonyms){ %}
+                                --
+                            {% } %} 
     						{% for (var i = 0; i < data.synonyms.length; i++){ %}
     							{{ data.synonyms[i].name }}
     						{% } %}

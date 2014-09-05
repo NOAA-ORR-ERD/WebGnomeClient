@@ -12,7 +12,8 @@ define([
         events: {
             'click th': 'headerClick',
             'click td': 'oilSelect',
-            'click .backOil': 'goBack'
+            'click .backOil': 'goBack',
+            'click .oilInfo': 'viewSpecificOil'
         },
         sortUpIcon: '&#9650;',
         sortDnIcon: '&#9660;',
