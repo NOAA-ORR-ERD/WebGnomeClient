@@ -224,7 +224,7 @@ nav.navbar{
     }
 }
 
-.page.gnome{
+.page.gnome, .page.adios{
     .main{
         .make-md-column(8);
 
@@ -246,6 +246,28 @@ nav.navbar{
     .side{
         .make-md-column(4);
         margin-top: 30px;
+    }
+}
+
+.page.setup.adios{
+    h2{
+        margin-bottom: 20px;
+    }
+    .icon{
+        height: 117px;
+        background: #e1e1e1;
+        border-radius: 3px;
+        margin: 15px 0;
+        cursor: pointer;
+        font-size: 80px;
+        color: #7a7a7a;
+        text-align: center;
+        padding-top: 10px;
+
+        &.selected{
+            color: white;
+            background: #428bca;
+        }
     }
 }
 

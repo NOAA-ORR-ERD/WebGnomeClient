@@ -7,12 +7,14 @@ define([
     'views/default/gnome',
     'views/default/notfound',
     'views/location/index',
-    'views/model/index',
+    'views/model/gnomeIndex',
+    'views/model/adiosIndex',
+    'views/model/adiosSetup',
     'views/tests/index',
     'views/default/adios'
 ], function($, _, Backbone,
     IndexView, MenuView, GnomeView, NotFoundView, LocationsView,
-    ModelView, TestView, AdiosView) {
+    GnomeModelIndexView, AdiosModelIndexView, AdiosSetupView, TestView, AdiosView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -25,6 +27,8 @@ define([
             'gnome/test': 'test',
 
             'adios/': 'adios',
+            'adios/setup': 'adiosSetup',
+            'adios/model': 'adiosModel',
 
             '*actions': 'notfound'
         },
@@ -69,7 +73,7 @@ define([
         gnomeModel: function(){
             if(webgnome.hasModel()){
                 this.views.push(new MenuView());
-                this.views.push(new ModelView());
+                this.views.push(new GnomeModelIndexView());
             } else {
                 this.navigate('gnome/', true);
             }
@@ -78,7 +82,21 @@ define([
         adios: function(){
             this.views.push(new MenuView());
             this.views.push(new AdiosView());
-        }
+        },
+
+        adiosSetup: function(){
+            this.views.push(new MenuView());
+            this.views.push(new AdiosSetupView());
+        },
+
+        adiosModel: function(){
+            if(webgnome.model.isValidAdios()){
+                this.views.push(new MenuView());
+                this.views.push(new AdiosModelIndexView());
+            } else {
+                this.navigate('adios/setup', true);
+            }
+        },
     });
 
     return Router;

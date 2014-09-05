@@ -1,0 +1,50 @@
+<div class="container">
+    <div class="col-md-12"><h2>Setup Your Model</h2></div>
+    <div class="col-md-6">
+        <div class="panel-primary panel">
+            <div class="panel-heading">General Model Info</div>
+            <div class="panel-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="name">Incident Name</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="name" name="name">                        
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="start">Start Time</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control date" id="start" name="start">                        
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="duration">Duration (Days)</label>
+                        <div class="col-sm-3">
+                            <input type="number" min="1" max="30" class="form-control" id="duration" name="duration">       
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Requested Prediction</div>
+            <div class="panel-body">
+                <div class="col-sm-6">
+                    <div class="fate icon" title="Predict only the fate and behavior of spilled oil (no map)">
+                        <span class="glyphicon glyphicon-stats"></span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="fateplus icon" title="Predict the fate and trajectory of spilled oil (map required)">
+                        <span class="glyphicon glyphicon-map-marker"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        
+    </div>
+</div>

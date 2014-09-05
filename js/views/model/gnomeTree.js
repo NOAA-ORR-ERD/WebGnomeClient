@@ -5,7 +5,7 @@ define([
     'views/modal/base',
     'fancytree'
 ], function($, _, Backbone, ModalView){
-    var treeView = Backbone.View.extend({
+    var gnomeTreeView = Backbone.View.extend({
         className: 'tree opened',
         open: true,
         width: '30%',
@@ -87,5 +87,5 @@ define([
         }
     });
 
-    return treeView;
+    return gnomeTreeView;
 });
