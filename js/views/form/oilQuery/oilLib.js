@@ -62,9 +62,8 @@ define([
                 // Grabbing the minimum and maximum api, and viscosity values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
                 
-                this.findMinMax('api');
-                this.findMinMax('viscosity');
-                
+                this.findMinMax(['api', 'viscosity']);
+
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
@@ -74,15 +73,21 @@ define([
             }
         },
 
-        findMinMax: function(quantity){
-            var min = quantity + '_min';
-            var max = quantity + '_max';
-            if (!this[min] && !this[max]){
-                this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
-                    function(model){ return model.attributes[quantity]; }).attributes[quantity]);
-                this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
-                    function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+        findMinMax: function(arr){
+            var obj = {};
+            for (var i = 0; i < arr.length; i++){
+                var quantity = arr[i];
+                var min = quantity + '_min';
+                var max = quantity + '_max';
+                if (!this[min] && !this[max]){
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                }
+                obj[quantity] = {'min': this[min], 'max': this[max]};
             }
+            return obj;
         },
 
         renderTable: function(){
@@ -141,7 +146,7 @@ define([
         },
 
         viewSpecificOil: function(){
-            var id = $('.bg').data('id');
+            var id = this.$('.bg').data('id');
             if (id) {
                 this.$('.oilContainer').hide();
                 this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
@@ -184,7 +189,6 @@ define([
             e.preventDefault();
             this.specificOil.close();
             this.$('.oilContainer').show();
-            console.log('back pressed');
         }
     });
 

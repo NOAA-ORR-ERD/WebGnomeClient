@@ -25,7 +25,7 @@ define([
                                  'saturates',
                                  'paraffins',
                                  'sulphur',
-                                 'benezene', 
+                                 'benezene',
                                  'wax_content'
                                  ];
 			for (key in obj){

@@ -84,7 +84,7 @@
     								<th>Weathering</th>
     							</tr>
     						{% for (var i = 0; i < data.kvis.length; i++){ %}
-    							{% var centiStokes = (data.kvis[i].meters_squared_per_sec * 1000).toFixed(3); %}
+    							{% var centiStokes = (data.kvis[i].meters_squared_per_sec * 1000000).toFixed(3); %}
     							<tr>
     								<td>{{ centiStokes }}</td>
     								<td>{{ data.kvis[i].ref_temp }}</td>
