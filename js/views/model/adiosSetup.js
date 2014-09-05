@@ -9,7 +9,7 @@ define([
         className: 'page adios setup',
 
         events: {
-            'click .icon': 'selectIcon'
+            'click .icon': 'selectPrediction'
         },
 
         initialize: function(){
@@ -28,13 +28,36 @@ define([
             });
         },
 
-        selectIcon: function(e){
+        selectPrediction: function(e){
+            var target;
             this.$('.icon').removeClass('selected');
             if(this.$(e.target).hasClass('icon')){
                 this.$(e.target).addClass('selected');
+                target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
                 this.$(e.target).parent().addClass('selected');
+                target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
+
+            if (target == 'fate') {
+                this.showFateObjects();
+            } else {
+                this.showFatePlusObjects();
+            }
+        },
+
+        showFateObjects: function(){
+            this.$('.wind').css('opacity', 1).css('visibility', 'visible');
+            this.$('.water').css('opacity', 1).css('visibility', 'visible');
+            this.$('.spill').css('opacity', 1).css('visibility', 'visible');
+            this.$('.map').css('opacity', 0).css('visibility', 'hidden');
+        },
+
+        showFatePlusObjects: function(){
+            this.$('.wind').css('opacity', 1).css('visibility', 'visible');
+            this.$('.water').css('opacity', 1).css('visibility', 'visible');
+            this.$('.spill').css('opacity', 1).css('visibility', 'visible');
+            this.$('.map').css('opacity', 1).css('visibility', 'visible');
         },
 
         close: function(){
