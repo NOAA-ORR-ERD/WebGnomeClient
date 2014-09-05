@@ -168,7 +168,7 @@ define([
 
         goBack: function(e){
             e.preventDefault();
-            this.$('#specificOilContainer').empty();
+            this.specificOil.close();
             this.$('.oilContainer').show();
             console.log('back pressed');
         }

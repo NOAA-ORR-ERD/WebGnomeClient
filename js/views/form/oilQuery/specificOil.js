@@ -15,7 +15,7 @@ define([
 		render: function(){
 			var data = this.dataParse(this.model.attributes);
 			var compiled = _.template(SpecificOilTemplate, {data: data});
-			$('#specificOilContainer').html(this.$el.html(compiled));
+			$('.modal-body').append(this.$el.html(compiled));
 		},
 
 		dataParse: function(obj){
