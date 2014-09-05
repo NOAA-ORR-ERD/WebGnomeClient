@@ -87,7 +87,7 @@ define([
                 // values they would want to search for
 
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
-                this.createSliders(0, 20, '.slider-viscosity');
+                //this.createSliders(0, 20, '.slider-viscosity');
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -110,7 +110,7 @@ define([
                 text: $.trim(this.$('#search').val()),
                 category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'), 
                            'child': this.$('select.chosen-select option:selected').val()},
-                api: this.$('.slider').slider('values')
+                api: this.$('.slider-api').slider('values')
             };
             if(!search.text && search.category.child === 'All' && search.api === [this.min, this.max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
@@ -129,16 +129,18 @@ define([
         },
 
         oilSelect: function(e){
-            $('tr').removeClass('bg');
-            $(e.currentTarget).parent().addClass('bg');
+            this.$('tr').removeClass('bg');
+            this.$(e.currentTarget).parent().addClass('bg');
         },
 
         viewSpecificOil: function(){
-            this.$('.oilContainer').hide();
             var id = $('.bg').data('id');
-            this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
-               this.specificOil = new SpecificOil({model: model});
-            }, this));
+            if (id) {
+                this.$('.oilContainer').hide();
+                this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
+                   this.specificOil = new SpecificOil({model: model});
+                }, this));
+            }
         },
 
         close: function(){
