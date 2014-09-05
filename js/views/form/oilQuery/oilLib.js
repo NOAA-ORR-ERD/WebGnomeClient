@@ -53,26 +53,11 @@ define([
 
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
-                var chosen = jQuery.fn.chosen;
                 FormModal.prototype.render.call(this, options);
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
-                this.$('.chosen-select').chosen({width: '265px', no_results_text: "No results match: "});
-                var valueObj = this.oilDistinct.models[2].attributes.values;
-                this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
-                for (var key in valueObj){
-                    this.$('.chosen-select')
-                        .append($('<optgroup class="category" id="' + key + '"></optgroup>')
-                            .attr('value', key)
-                            .attr('label', key));
-                    for (var i = 0; i < valueObj[key].length; i++){
-                        this.$('#' + key).append($('<option class="subcategory"></option>')
-                            .attr('value', valueObj[key][i])
-                            .text(key + '-' + valueObj[key][i]));
-                    }
-                }
-                this.$('.chosen-select').trigger('chosen:updated');
+                this.populateSelect();
 
                 // Grabbing the minimum and maximum api values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
@@ -83,9 +68,16 @@ define([
                                 function(model){ return model.attributes.api; }).attributes.api);
                 }
 
+                if (!this.vis_min && !this.vis_max){
+                    this.vis_min = Math.floor(_.min(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes.viscosity; }).attributes.viscosity);
+                    this.vis_max = Math.ceil(_.max(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes.viscosity; }).attributes.viscosity);
+                }
+                
+                console.log(this.vis_min + ' ' + this.vis_max);
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
-
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
                 //this.createSliders(0, 20, '.slider-viscosity');
             } else {
@@ -98,7 +90,22 @@ define([
         },
 
         populateSelect: function(){
-
+            var chosen = jQuery.fn.chosen;
+            this.$('.chosen-select').chosen({width: '265px', no_results_text: "No results match: "});
+            var valueObj = this.oilDistinct.models[2].attributes.values;
+            this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
+            for (var key in valueObj){
+                this.$('.chosen-select')
+                    .append($('<optgroup class="category" id="' + key + '"></optgroup>')
+                        .attr('value', key)
+                        .attr('label', key));
+                for (var i = 0; i < valueObj[key].length; i++){
+                    this.$('#' + key).append($('<option class="subcategory"></option>')
+                        .attr('value', valueObj[key][i])
+                        .text(key + '-' + valueObj[key][i]));
+                }
+            }
+            this.$('.chosen-select').trigger('chosen:updated');
         },
 
         setUpOptions: function(){
@@ -112,7 +119,7 @@ define([
                            'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider-api').slider('values')
             };
-            if(!search.text && search.category.child === 'All' && search.api === [this.min, this.max]){
+            if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }

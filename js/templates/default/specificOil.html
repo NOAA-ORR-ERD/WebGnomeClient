@@ -99,29 +99,31 @@
 
     		<div class="tab-pane" id="distillation">
     			<div class="row">
-    				<h4>Distillation Cuts</h4>
-    				{% if (!data.cuts){ %}
-    					<div>No Distillation Cuts on Record.</div>
-    				{% } else { %}
-    					<table class="table">
-    						<tr>
-    							<th>Cut #</th>
-    							<th>Mass Percent (%)</th>
-    							<th>Vapor Temperature (K)</th>
-    							<th>Liquid Temperature (K)</th>
-    						</tr>
-    					{% for (var i = 0; i < data.cuts.length; i++){ %}
-    						{% var count = i + 1; %}
-    						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
-    						<tr>
-    							<td>{{ count }}</td>
-    							<td>{{ percentCut }}</td>
-    							<td>{{ data.cuts[i].vapor_temp }}</td>
-    							<td>{{ data.cuts[i].liquid_temp }}</td>
-    						</tr>
-    					{% } %}
-    					</table>
-    				{% } %}
+                    <div class="col-md-12">
+        				<h4>Distillation Cuts</h4>
+        				{% if (!data.cuts){ %}
+        					<div>No Distillation Cuts on Record.</div>
+        				{% } else { %}
+        					<table class="table">
+        						<tr>
+        							<th>Cut #</th>
+        							<th>Mass Percent (%)</th>
+        							<th>Vapor Temperature (K)</th>
+        							<th>Liquid Temperature (K)</th>
+        						</tr>
+        					{% for (var i = 0; i < data.cuts.length; i++){ %}
+        						{% var count = i + 1; %}
+        						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
+        						<tr>
+        							<td>{{ count }}</td>
+        							<td>{{ percentCut }}</td>
+        							<td>{{ data.cuts[i].vapor_temp }}</td>
+        							<td>{{ data.cuts[i].liquid_temp }}</td>
+        						</tr>
+        					{% } %}
+        					</table>
+        				{% } %}
+                    </div>
     			</div>
     		</div>
 
