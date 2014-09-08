@@ -4,8 +4,7 @@ define([
     'backbone',
     'model/resources/oilLib',
     'text!templates/default/oilTable.html',
-    'text!templates/default/oilRow.html'
-], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate){
+], function($, _, Backbone, OilLib, OilTableTemplate){
     var oilTableView = Backbone.View.extend({
         id: 'tableContainer',
         ready: false,
@@ -19,15 +18,14 @@ define([
         sortDnIcon: '&#9660;',
         activeIcon: null,
 
-        initialize: function(obj){
+        initialize: function(){
             this.oilLib = new OilLib();
             this.oilLib.on('ready', this.setReady, this);
             this.on('sort', this.sortTable);
         },
 
         setReady: function(){
-            var oils = this.oilLib;
-            var compiled = _.template(OilTableTemplate, {data: oils});
+            var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
             this.appendCaret();
             this.ready = true;
@@ -35,8 +33,7 @@ define([
         },
 
         sortTable: function(){
-            var oils = this.oilLib;
-            var compiled = _.template(OilTableTemplate, {data: oils});
+            var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
             this.appendCaret();
             this.trigger('renderTable');
@@ -52,9 +49,8 @@ define([
         },
 
         render: function(){
-            var oils = this.oilLib;
             var compiled = _.template(OilTableTemplate, {
-                data: oils
+                data: this.oilLib
             });
             $('#tableContainer').html(this.$el.html(compiled));
             this.trigger('sort');

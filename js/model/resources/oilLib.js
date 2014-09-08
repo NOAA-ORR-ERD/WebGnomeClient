@@ -8,22 +8,21 @@ define([
 
         ready: false,
         loaded: false,
+        sortAttr: 'adios_oil_id',
+        sortDir: 1,
 
         initialize: function(){
             if(!this.loaded){
                 this.fetch({
                     success: _.bind(this.setReady, this)
                 });
-            this.loaded = true;
+                this.loaded = true;
             }
         },
 
         url: function(){
             return 'http://0.0.0.0:9898/oil';
         },
-
-        sortAttr: 'adios_oil_id',
-        sortDir: 1,
 
         fetchOil: function(id, cb){
             var oil = Backbone.Model.extend({
@@ -41,7 +40,6 @@ define([
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             var viscosityCollection = this.filterCollection(obj.viscosity, {type: 'viscosity'});
             var pour_pointCollection = this.filterCollection(obj.pour_point, {type: 'pour_point'});
-            console.log(viscosityCollection);
             if (obj.text.length > 1){
                 var options = {keys: ['attributes.name',
                                       'attributes.field_name',
@@ -58,13 +56,12 @@ define([
             }
             this.models = _.intersection(this.models, pour_pointCollection.models, apiCollection.models, viscosityCollection.models, categoryCollection.models);
             this.length = this.models.length;
-            this.ready = true;
             return this;
         },
 
         comparator: function(a, b){
-            var a = a.get(this.sortAttr),
-                b = b.get(this.sortAttr);
+            a = a.get(this.sortAttr);
+            b = b.get(this.sortAttr);
 
             if (a == b) return 0;
 
@@ -80,17 +77,6 @@ define([
             this.trigger('ready');
             this.loaded = true;
             this.originalModels = this.models;
-        },
-
-        fetch: function(options){
-        
-            if(_.isUndefined(options)){
-                options = {};
-            }
-            if(!_.has(options, 'data')){
-                options.data = {};
-            }
-            Backbone.Collection.prototype.fetch.call(this, options);
         },
 
         sortOils: function(attr){

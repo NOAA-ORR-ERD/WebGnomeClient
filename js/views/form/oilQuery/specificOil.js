@@ -8,7 +8,7 @@ define([
 	var specificOil = Backbone.View.extend({
 		id: 'specificOilContainer',
 
-		initialize: function(){
+		initialize: function(options){
 			this.render();
 		},
 
@@ -30,7 +30,7 @@ define([
                                  ];
 			for (key in obj){
 				if (!obj[key]){
-					obj[key] = "--";				
+					obj[key] = "--";
 				} else if (_.isArray(obj[key])) {
                     if (obj[key].length === 0){
                         if (key === 'cuts' || key === 'kvis' || key === 'synonyms'){

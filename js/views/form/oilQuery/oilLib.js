@@ -34,7 +34,7 @@ define([
 
             // Initialized oilDistinct collection so it is available for the view render
 
-            this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
+            this.oilDistinct = new OilDistinct();
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -67,8 +67,6 @@ define([
                 if (this.viscosity_max.toString().length > 3){
                     this.viscosity_max = this.viscosity_max.toExponential();
                 }
-
-                console.log(this.pour_point_min + " " + this.pour_point_max);
 
                 // Use the jquery-ui slider to enable sliders so the user can select the range of API,
                 // viscosity, and/or pour point values they would want to search for
@@ -108,7 +106,7 @@ define([
 
         populateSelect: function(){
             var chosen = jQuery.fn.chosen;
-            this.$('.chosen-select').chosen({width: '265px', no_results_text: "No results match: "});
+            this.$('.chosen-select').chosen({width: '265px', no_results_text: 'No results match: '});
             var valueObj = this.oilDistinct.models[2].attributes.values;
             this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
             for (var key in valueObj){
@@ -125,14 +123,10 @@ define([
             this.$('.chosen-select').trigger('chosen:updated');
         },
 
-        setUpOptions: function(){
-
-        },
-
         update: function(){
             var search = {
                 text: $.trim(this.$('#search').val()),
-                category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'), 
+                category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'),
                            'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider-api').slider('values'),
                 viscosity: this.$('.slider-viscosity').slider('values'),
@@ -177,23 +171,23 @@ define([
 
         createSliders: function(minNum, maxNum, selector){
             this.$(selector).slider({
-                        range: true, 
-                        min: minNum, 
+                        range: true,
+                        min: minNum,
                         max: maxNum,
                         values: [minNum, maxNum],
-                        create: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                        create: _.bind(function(){
+                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
                                                              minNum + '</div></div>');
-                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
                                                              maxNum + '</div></div>');
                         }, this),
                         slide: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
                                                              ui.values[0] + '</div></div>');
-                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
                                                              ui.values[1] + '</div></div>');
                         }, this),
-                        stop: _.bind(function(e, ui){
+                        stop: _.bind(function(){
                             this.update();
                         }, this)
                     });
