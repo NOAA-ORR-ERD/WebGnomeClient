@@ -14,7 +14,7 @@ define([
         className: 'page adios setup',
 
         events: {
-            'click .icon': 'selectPrediction',
+            'click .fate': 'selectPrediction',
             'click .wind': 'clickWind',
             'click .water': 'clickWater',
             'click .spill': 'clickSpill',
@@ -41,6 +41,10 @@ define([
             var compiled = _.template(AdiosSetupTemplate);
 
             $('body').append(this.$el.append(compiled));
+
+            setTimeout(_.bind(function(){
+                this.$('.fate').click();
+            }, this), 1);
 
             this.$('.date').datetimepicker({
                 format: 'Y/n/j G:i'
@@ -92,9 +96,6 @@ define([
             }
 
             var windForm = new WindForm(null, wind);
-            windForm.on('show', function(){
-                windForm.$el.find('.nav-tabs').hide();
-            });
             windForm.on('hidden', windForm.close);
             windForm.on('hidden', function(){webgnome.model.trigger('sync');});
             windForm.on('save', function(){
@@ -108,7 +109,11 @@ define([
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
                 this.$('.wind .state').addClass('complete');
-                var compiled = _.template(WindPanelTemplate, {speed: wind.get('timeseries')[0][1][0], direction: wind.get('timeseries')[0][1][1]});
+                var compiled = _.template(WindPanelTemplate, {
+                    speed: wind.get('timeseries')[0][1][0],
+                    direction: wind.get('timeseries')[0][1][1],
+                    units: wind.get('units')
+                });
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
             } else {
