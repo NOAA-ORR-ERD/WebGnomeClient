@@ -54,9 +54,13 @@ define([
     						}
     					}
                     }
-                } else if (groupAnalysis.indexOf(attr) !== -1){
+                } 
+                // Checks if oil attribute is one of the group analysis terms and if so converts to percent
+                else if (groupAnalysis.indexOf(attr) !== -1){
                     oil[attr] = (oil[attr] * 100).toFixed(3);
-                } else if (attr === 'oil_seawater_interfacial_tension' || attr === 'oil_water_interfacial_tension') {
+                } 
+                // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
+                else if (attr === 'oil_seawater_interfacial_tension' || attr === 'oil_water_interfacial_tension') {
                     oil[attr] = (oil[attr] * 1000).toFixed(3);
                 }
 			}
