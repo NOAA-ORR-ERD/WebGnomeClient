@@ -18,7 +18,7 @@ define([
         sortDnIcon: '&#9660;',
         activeIcon: null,
 
-        initialize: function(obj){
+        initialize: function(){
             this.oilLib = new OilLib();
             this.oilLib.on('ready', this.sortTable, this);
             this.oilLib.once('ready', this.setReady, this);
@@ -47,9 +47,8 @@ define([
         },
 
         render: function(){
-            var oils = this.oilLib;
             var compiled = _.template(OilTableTemplate, {
-                data: oils
+                data: this.oilLib
             });
             $('#tableContainer').html(this.$el.html(compiled));
             this.trigger('sort');

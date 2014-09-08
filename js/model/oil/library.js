@@ -16,7 +16,7 @@ define([
                 this.fetch({
                     success: _.bind(this.setReady, this)
                 });
-            this.loaded = true;
+                this.loaded = true;
             }
         },
 
@@ -82,13 +82,12 @@ define([
             }
             this.models = _.intersection(this.models, pour_pointCollection.models, apiCollection.models, viscosityCollection.models, categoryCollection.models);
             this.length = this.models.length;
-            this.ready = true;
             return this;
         },
 
         comparator: function(a, b){
-            var a = a.get(this.sortAttr),
-                b = b.get(this.sortAttr);
+            a = a.get(this.sortAttr);
+            b = b.get(this.sortAttr);
 
             if (a == b) return 0;
 
@@ -104,17 +103,6 @@ define([
             this.trigger('ready');
             this.loaded = true;
             this.originalModels = this.models;
-        },
-
-        fetch: function(options){
-        
-            if(_.isUndefined(options)){
-                options = {};
-            }
-            if(!_.has(options, 'data')){
-                options.data = {};
-            }
-            Backbone.Collection.prototype.fetch.call(this, options);
         },
 
         sortOils: function(attr){
