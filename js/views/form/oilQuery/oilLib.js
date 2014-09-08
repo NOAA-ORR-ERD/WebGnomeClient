@@ -135,7 +135,8 @@ define([
                 category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'), 
                            'child': this.$('select.chosen-select option:selected').val()},
                 api: this.$('.slider-api').slider('values'),
-                viscosity: this.$('.slider-viscosity').slider('values')
+                viscosity: this.$('.slider-viscosity').slider('values'),
+                pour_point: this.$('.slider-pourpoint').slider('values')
             };
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;

@@ -40,6 +40,7 @@ define([
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             var viscosityCollection = this.filterCollection(obj.viscosity, {type: 'viscosity'});
+            var pour_pointCollection = this.filterCollection(obj.pour_point, {type: 'pour_point'});
             console.log(viscosityCollection);
             if (obj.text.length > 1){
                 var options = {keys: ['attributes.name',
@@ -55,7 +56,7 @@ define([
             if (obj.category.child !== '' && obj.category.child !== 'All'){
                 categoryCollection = this.filterCollection(obj.category, {type: 'categories'});
             }
-            this.models = _.intersection(this.models, apiCollection.models, viscosityCollection.models, categoryCollection.models);
+            this.models = _.intersection(this.models, pour_pointCollection.models, apiCollection.models, viscosityCollection.models, categoryCollection.models);
             this.length = this.models.length;
             this.ready = true;
             return this;

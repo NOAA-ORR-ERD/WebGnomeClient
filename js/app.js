@@ -182,8 +182,15 @@ define([
                             return false;
                         }
                     });
-                }
-                else if (options.type === 'categories'){
+                } else if (options.type === 'pour_point'){
+                    var results = this.filter(function(model){
+                        if (model.attributes[options.type][0] > arr[1] || model.attributes[options.type][1] < arr[0]){
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    });
+                } else if (options.type === 'categories'){
                     var str = arr.parent + '-' + arr.child;
                     var results = this.filter(function(model){
                         return _.indexOf(model.attributes.categories, str) !== -1;
