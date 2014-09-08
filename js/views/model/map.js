@@ -476,7 +476,6 @@ define([
             var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
             coord.push(0);
             this.spillCoords.push(coord);
-            console.log(this.spillCoords);
             if(this.spillCoords.length > 1){
                 var spill = new GnomeSpill();
                 // add the dummy z-index thing

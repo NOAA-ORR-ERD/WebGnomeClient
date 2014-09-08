@@ -150,7 +150,7 @@ define([
                     this.enableMenuItem('actions');
                     this.disableMenuItem('save');
                 }
-                this.$('.navbar-brand').text('WebGNOME');
+                this.$('.navbar-brand').text('GNOME');
             } else {
                 this.disableMenuItem('model');
                 this.disableMenuItem('actions');
@@ -159,7 +159,7 @@ define([
 
             if (window.location.href.indexOf('adios') !== -1){
                 // setup the menu for adios  
-                this.$('.navbar-brand').text('WebADIOS');
+                this.$('.navbar-brand').text('ADIOS');
             }
 
 

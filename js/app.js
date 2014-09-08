@@ -10,9 +10,8 @@ define([
 ], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
     'use strict';
     var app = {
-          api: 'http://0.0.0.0:9899',
-        //api: 'http://hazweb2.orr.noaa.gov:7450',
-        //api: 'http://10.55.67.152:9899',
+        // api: 'http://0.0.0.0:9899',
+        api: 'http://hazweb2.orr.noaa.gov:7450',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.

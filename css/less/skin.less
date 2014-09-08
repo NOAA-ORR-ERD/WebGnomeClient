@@ -655,12 +655,40 @@ nav.navbar{
                     opacity: 1;
                 }
             }
+
+            th{
+                line-height: 34px;
+            }
         }
 
         .map{
             cursor: pointer;
         }
+        
+        #constant{
+            .slider{
+                margin-top: 40px;
 
+                .tooltip{
+                    &.top{
+                        margin-top: -50px;
+                        margin-left: -19px;
+                    }
+                    width: 55px;
+                }
+            }
+        }
+        .slider{
+            .ui-slider-handle{
+                &:focus{
+                    outline: none;
+                }
+            }
+        }
+        
+        .slider-label{
+            margin-top: 5px;
+        }
     }
 
 }

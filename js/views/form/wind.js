@@ -9,6 +9,7 @@ define([
     'views/default/map',
     'model/resources/nws_wind_forecast',
     'compassui',
+    'jqueryui/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
@@ -39,7 +40,7 @@ define([
                 })
             });
             this.ol = new olMapView({
-                id: "wind-form-map",
+                id: 'wind-form-map',
                 zoom: 2,
                 center: [-128.6, 42.7],
                 layers: [
@@ -72,19 +73,42 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.form.constant = [];
-            this.form.constant['speed'] = this.$('#constant-speed');
-            this.form.constant['direction'] = this.$('#constant-direction');
+            this.form.constant.speed = this.$('#constant-speed');
+            this.form.constant.direction = this.$('#constant-direction');
             this.form.variable = [];
-            this.form.variable['speed'] = this.$('#variable-speed');
-            this.form.variable['direction'] = this.$('#variable-direction');
-            this.form.variable['datetime'] = this.$('#datetime');
-            this.form.variable['increment'] = this.$('#incrementCount');
+            this.form.variable.speed = this.$('#variable-speed');
+            this.form.variable.direction = this.$('#variable-direction');
+            this.form.variable.datetime = this.$('#datetime');
+            this.form.variable.increment = this.$('#incrementCount');
 
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
+
+            this.$('#constant .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                create: _.bind(function(){
+                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('speed') + '</div></div>');
+                }, this),
+                slide: _.bind(function(e, ui){
+                    this.updateConstantSlide(ui);
+                }, this)
+            });
+
+            this.$('#variable .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                slide: _.bind(function(e, ui){
+                    this.updateVariableSlide(ui);
+                }, this)
+            });
+
             this.renderTimeseries();
+
         },
 
         rendered: function(){
@@ -102,9 +126,10 @@ define([
                         'arrow-direction': 'in',
                         'move': _.bind(this.constantCompassUpdate, this)
                     });
+
                     this.$('.constant-compass').compassRoseUI('update', {
-                        speed: this.form.constant['speed'].val(),
-                        direction: this.form.constant['direction'].val()
+                        speed: this.form.constant.speed.val(),
+                        direction: this.form.constant.direction.val()
                     });
                 }
             } else if (e.target.hash == '#variable') {
@@ -134,12 +159,13 @@ define([
                     }, this));
                 }
             }
+            this.update();
         },
 
         update: function(compass){
             var active = this.$('.nav-tabs .active a').attr('href').replace('#', '');
-            var speed = this.form[active]['speed'].val();
-            var direction = this.form[active]['direction'].val();
+            var speed = this.form[active].speed.val();
+            var direction = this.form[active].direction.val();
             if(compass && speed !== '' && direction !== ''){
                 this.$('.' + active + '-compass').compassRoseUI('update', {
                     speed: speed,
@@ -154,6 +180,8 @@ define([
 
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             
+            this.updateConstantSlide();
+
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
@@ -161,27 +189,60 @@ define([
             }
         },
 
+        updateVariableSlide: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('#variable .slider').slider('value');
+            }
+
+            this.renderTimeseries(value);
+        },
+
+        updateConstantSlide: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('#constant .slider').slider('value');
+            }
+            if(this.model.get('timeseries').length > 0){
+                var speed = this.model.get('timeseries')[0][1][0];
+                if(value === 0){
+                    this.$('#constant .tooltip-inner').text(speed);
+                } else {
+                    var bottom = speed - value;
+                    if (bottom < 0) {
+                        bottom = 0;
+                    }
+                    var top = parseInt(speed, 10) + parseInt(value, 10);
+                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                }
+            }
+            
+        },
 
         constantCompassUpdate: function(magnitude, direction){
-            this.form.constant['speed'].val(parseInt(magnitude, 10));
-            this.form.constant['direction'].val(parseInt(direction, 10));
+            this.form.constant.speed.val(parseInt(magnitude, 10));
+            this.form.constant.direction.val(parseInt(direction, 10));
             this.update(false);
         },
 
         variableCompassUpdate: function(magnitude, direction){
-            this.form.variable['speed'].val(parseInt(magnitude, 10));
-            this.form.variable['direction'].val(parseInt(direction, 10));
+            this.form.variable.speed.val(parseInt(magnitude, 10));
+            this.form.variable.direction.val(parseInt(direction, 10));
             this.update(false);
         },
 
         addTimeseriesEntry: function(e){
             e.preventDefault();
-            var dateObj = moment(this.form.variable['datetime'].val(), 'YYYY/M/D H:mm');
+            var dateObj = moment(this.form.variable.datetime.val(), 'YYYY/M/D H:mm');
             var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
-            var speed = this.form.variable['speed'].val();
-            var direction = this.form.variable['direction'].val();
+            var speed = this.form.variable.speed.val();
+            var direction = this.form.variable.direction.val();
             var entry = [date, [speed, direction]];
-            var incrementer = parseInt(this.form.variable['increment'].val(), 10);
+            var incrementer = parseInt(this.form.variable.increment.val(), 10);
 
             if(this.variableFormValidation(entry)){
                 var not_replaced = true;
@@ -196,7 +257,7 @@ define([
                     this.model.get('timeseries').push(entry);
                     // Code for time incrementer updates assuming values in form are in hours
                     dateObj.add('h', incrementer);
-                    this.form.variable['datetime'].val(dateObj.format('YYYY/M/D H:mm'));
+                    this.form.variable.datetime.val(dateObj.format('YYYY/M/D H:mm'));
                 }
                 this.renderTimeseries();
             }
@@ -207,9 +268,9 @@ define([
             e.preventDefault();
             var index = e.target.parentElement.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            this.form.variable['datetime'].val(moment(entry[0]).format('YYYY/M/D H:mm'));
-            this.form.variable['speed'].val(entry[1][0]);
-            this.form.variable['direction'].val(entry[1][1]);
+            this.form.variable.datetime.val(moment(entry[0]).format('YYYY/M/D H:mm'));
+            this.form.variable.speed.val(entry[1][0]);
+            this.form.variable.direction.val(entry[1][1]);
             this.$('.variable-compass').compassRoseUI('update', {
                 speed: entry[1][0],
                 direction: entry[1][1]
@@ -224,23 +285,38 @@ define([
             this.renderTimeseries();
         },
 
-        renderTimeseries: function(){
+        renderTimeseries: function(uncertainty){
             this.model.sortTimeseries();
 
+            if(_.isUndefined(uncertainty)){
+                uncertainty = this.$('#variable .slider').slider('value');
+            }
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
+                var velocity = el[1][0];
+                var direction = el[1][1];
+
+                if (uncertainty > 0){
+                    var low = parseInt(velocity, 10) - parseInt(uncertainty, 10);
+                    var high = parseInt(uncertainty, 10) + parseInt(velocity, 10);
+                    if (low < 0) {
+                        low = 0;
+                    }
+                    velocity = low + ' - ' + high;
+                }
+
                 var date = moment(el[0]).format('YYYY/M/D H:mm');
-                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + el[1][0] + '</td><td>' + el[1][1] + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
             });
             this.$('table tbody').html(html);
         },
 
         variableFormValidation: function(entry){
             var valid = true;
-            if(!this.form.variable['datetime'].val() || !this.form.variable['speed'].val() || !this.form.variable['direction'].val()){
+            if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable['direction'].val()){
                 valid = false;
             }
-            var incrementVal = this.form.variable['increment'].val();
+            var incrementVal = this.form.variable.increment.val();
 
             if(incrementVal != parseInt(incrementVal, 10)) {
                 valid = false;

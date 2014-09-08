@@ -48,11 +48,11 @@ define([
             var attrs = [];
 
             switch (units) {
-                case "mph":
-                    units = "miles / hour";
+                case 'mph':
+                    units = 'miles / hour';
                     break;
-                case "m/s":
-                    units = "meters / sec";
+                case 'm/s':
+                    units = 'meters / sec';
                     break;
                 default:
                     units = units;
