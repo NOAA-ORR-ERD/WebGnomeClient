@@ -64,10 +64,14 @@ define([
                 
                 this.findMinMax(['api', 'viscosity']);
 
+                if (this.viscosity_max.toString().length > 3){
+                    this.viscosity_max = this.viscosity_max.toExponential();
+                }
+
                 // Use the jquery-ui slider to enable a slider so the user can select the range of API
                 // values they would want to search for
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
-                //this.createSliders(0, 20, '.slider-viscosity');
+                this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -168,15 +172,15 @@ define([
                         max: maxNum,
                         values: [minNum, maxNum],
                         create: _.bind(function(e, ui){
-                           this.$('.ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              minNum + '</div></div>');
-                           this.$('.ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              maxNum + '</div></div>');
                         }, this),
                         slide: _.bind(function(e, ui){
-                           this.$('.ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[0] + '</div></div>');
-                           this.$('.ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
+                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + 
                                                              ui.values[1] + '</div></div>');
                         }, this),
                         stop: _.bind(function(e, ui){
