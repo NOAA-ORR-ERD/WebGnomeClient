@@ -3,25 +3,44 @@ define([
     'underscore',
     'backbone',
     'text!templates/model/adiosSetup.html',
+    'model/gnome',
+    'model/environment/wind',
+    'views/form/wind',
+    'text!templates/panel/wind.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, AdiosSetupTemplate){
+], function($, _, Backbone, AdiosSetupTemplate, GnomeModel,
+    WindModel, WindForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page adios setup',
 
         events: {
-            'click .icon': 'selectPrediction'
+            'click .icon': 'selectPrediction',
+            'click .wind': 'clickWind',
+            'click .water': 'clickWater',
+            'click .spill': 'clickSpill',
+            'click .map': 'clickMap'
         },
 
         initialize: function(){
-            this.render();
+            if(webgnome.hasModel()){
+                webgnome.model.on('sync', this.updateObjects, this);
+                this.render();
+            } else {
+                webgnome.model = new GnomeModel();
+                webgnome.model.save(null, {
+                    validate: false,
+                    success: _.bind(function(){
+                        webgnome.model.on('sync', this.updateObjects, this);
+                        this.render();
+                    }, this)
+                });
+            }
         },
 
         render: function(){
             var compiled = _.template(AdiosSetupTemplate);
 
             $('body').append(this.$el.append(compiled));
-
-            this.$('.icon').tooltip({placement: 'bottom'});
 
             this.$('.date').datetimepicker({
                 format: 'Y/n/j G:i'
@@ -47,6 +66,7 @@ define([
         },
 
         showFateObjects: function(){
+            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible');
             this.$('.wind').css('opacity', 1).css('visibility', 'visible');
             this.$('.water').css('opacity', 1).css('visibility', 'visible');
             this.$('.spill').css('opacity', 1).css('visibility', 'visible');
@@ -54,10 +74,59 @@ define([
         },
 
         showFatePlusObjects: function(){
+            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible');
             this.$('.wind').css('opacity', 1).css('visibility', 'visible');
             this.$('.water').css('opacity', 1).css('visibility', 'visible');
             this.$('.spill').css('opacity', 1).css('visibility', 'visible');
             this.$('.map').css('opacity', 1).css('visibility', 'visible');
+        },
+
+        updateObjects: function(){
+            this.updateWind();
+        },
+
+        clickWind: function(){
+            wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            if(_.isUndefined(wind) || wind.length === 0){
+                wind = new WindModel();
+            }
+
+            var windForm = new WindForm(null, wind);
+            windForm.on('show', function(){
+                windForm.$el.find('.nav-tabs').hide();
+            });
+            windForm.on('hidden', windForm.close);
+            windForm.on('hidden', function(){webgnome.model.trigger('sync');});
+            windForm.on('save', function(){
+                webgnome.model.get('environment').add(wind);
+                webgnome.model.save();
+            });
+            windForm.render();
+        },
+
+        updateWind: function(){
+            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            if(!_.isUndefined(wind)){
+                this.$('.wind .state').addClass('complete');
+                var compiled = _.template(WindPanelTemplate, {speed: wind.get('timeseries')[0][1][0], direction: wind.get('timeseries')[0][1][1]});
+                this.$('.wind .panel-body').html(compiled);
+                this.$('.wind .panel-body').show();
+            } else {
+                this.$('.wind .state').removeClass('complete');
+                this.$('.wind .panel-body').hide().html('');
+            }
+        },
+
+        clickWater: function(){
+
+        },
+
+        clickSpill: function(){
+
+        },
+
+        clickMap: function(){
+
         },
 
         close: function(){
