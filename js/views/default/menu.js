@@ -4,9 +4,8 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
-    'views/wizard/new',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, NewWizardForm) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -84,7 +83,7 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/', true);
+            webgnome.router.navigate(this.getCurrentApp() + '/', true);
         },
 
         load: function(event){
@@ -100,6 +99,14 @@ define([
         save: function(event){
             event.preventDefault();
             webgnome.router.navigate('gnome/save', true);
+        },
+
+        getCurrentApp: function(){
+            if(window.location.href.indexOf('gnome') !== -1){
+                return 'gnome';
+            } else {
+                return 'adios';
+            }
         },
 
         debugView: function(event){
@@ -144,7 +151,7 @@ define([
         },
 
         contextualize: function(){
-            if(window.location.href.indexOf('gnome') !== -1){
+            if(this.getCurrentApp() == 'gnome'){
                 // setup the menu for gnome
                 if(webgnome.hasModel() && webgnome.validModel()){
                     this.enableMenuItem('actions');
@@ -152,14 +159,15 @@ define([
                 }
                 this.$('.navbar-brand').text('GNOME');
             } else {
-                this.disableMenuItem('model');
                 this.disableMenuItem('actions');
                 this.disableMenuItem('save');
             }
 
-            if (window.location.href.indexOf('adios') !== -1){
+            if (this.getCurrentApp() == 'adios'){
                 // setup the menu for adios  
                 this.$('.navbar-brand').text('ADIOS');
+                this.disableMenuItem('locations');
+                this.disableMenuItem('debugView');
             }
 
 

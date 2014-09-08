@@ -13,7 +13,7 @@ define([
     'jqueryui/slider',
     'jqueryFileupload'
 ], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
-    var mapView = Backbone.View.extend({
+    var gnomeMapView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
@@ -583,5 +583,5 @@ define([
         }
     });
 
-    return mapView;
+    return gnomeMapView;
 });
