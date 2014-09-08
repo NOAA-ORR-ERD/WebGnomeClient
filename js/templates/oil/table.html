@@ -1,5 +1,5 @@
 <div id="tableContainer">
-    <table class="table table-condensed table-header" style="table-layout:fixed;">
+    <table class="table table-condensed table-header">
         <thead>
             <tr>
                 <th class="name">Name<span class="name"></span></th>
@@ -9,8 +9,8 @@
             </tr>
         </thead>
     </table>
-    <div id="dataTable" style="overflow-y: auto; height: 300px;">
-        <table id="tableContainer" class="table table-condensed" style="table-layout:fixed;">
+    <div id="dataTable">
+        <table id="tableContainer-inner" class="table table-condensed">
             <tbody>
                 {% for (var i = 0; i < data.length; i++){ %}
                 <tr data-id="{{ data.at(i).get('adios_oil_id') }}">

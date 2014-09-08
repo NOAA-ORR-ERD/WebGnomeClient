@@ -4,12 +4,12 @@ define([
     'backbone',
     'chosen',
     'jqueryui/core',
-    'model/resources/oilDistinct',
+    'model/oil/distinct',
     'views/modal/form',
-    'views/form/oilQuery/oilTable',
+    'views/form/oil/table',
     'views/modal/loading',
-    'views/form/oilQuery/specificOil',
-    'text!templates/form/oilLib.html'
+    'views/form/oil/specific',
+    'text!templates/form/oil.html'
 ], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         name: 'oillib',
@@ -34,7 +34,7 @@ define([
 
             // Initialized oilDistinct collection so it is available for the view render
 
-            this.oilDistinct = new OilDistinct(_.bind(this.setUpOptions, this));
+            this.oilDistinct = new OilDistinct();
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -67,8 +67,6 @@ define([
                 if (this.viscosity_max.toString().length > 3){
                     this.viscosity_max = this.viscosity_max.toExponential();
                 }
-
-                console.log(this.pour_point_min + " " + this.pour_point_max);
 
                 // Use the jquery-ui slider to enable sliders so the user can select the range of API,
                 // viscosity, and/or pour point values they would want to search for
@@ -125,10 +123,6 @@ define([
             this.$('.chosen-select').trigger('chosen:updated');
         },
 
-        setUpOptions: function(){
-
-        },
-
         update: function(){
             var search = {
                 text: $.trim(this.$('#search').val()),
@@ -143,7 +137,7 @@ define([
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
             }
             else {
-                this.oilTable.oilLib.bySearch(search);
+                this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();
             this.$('.resultsLength').empty();
@@ -155,12 +149,12 @@ define([
         },
 
         oilSelect: function(e){
-            this.$('tr').removeClass('bg');
-            this.$(e.currentTarget).parent().addClass('bg');
+            this.$('tr').removeClass('select');
+            this.$(e.currentTarget).parent().addClass('select');
         },
 
         viewSpecificOil: function(){
-            var id = this.$('.bg').data('id');
+            var id = this.$('.select').data('id');
             if (id) {
                 this.$('.oilContainer').hide();
                 this.oilTable.oilLib.fetchOil(id, _.bind(function(model){

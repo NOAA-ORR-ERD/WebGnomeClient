@@ -8,6 +8,8 @@ define([
 
         ready: false,
         loaded: false,
+        sortAttr: 'name',
+        sortDir: 1,
 
         initialize: function(){
             if(!this.loaded){
@@ -22,9 +24,6 @@ define([
             return 'http://0.0.0.0:9898/oil';
         },
 
-        sortAttr: 'adios_oil_id',
-        sortDir: 1,
-
         fetchOil: function(id, cb){
             var oil = Backbone.Model.extend({
                 urlRoot: this.url
@@ -35,13 +34,38 @@ define([
             });
         },
 
-        bySearch: function(obj){
+        filterCollection : function(arr, options){
+            if (options.type === 'api' || options.type === 'viscosity'){
+                var results = this.filter(function(model){
+                    if (model.attributes[options.type] >= arr[0] && model.attributes[options.type] <= arr[1]){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            } else if (options.type === 'pour_point'){
+                var results = this.filter(function(model){
+                    if (model.attributes[options.type][0] > arr[1] || model.attributes[options.type][1] < arr[0]){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+            } else if (options.type === 'categories'){
+                var str = arr.parent + '-' + arr.child;
+                var results = this.filter(function(model){
+                    return _.indexOf(model.attributes.categories, str) !== -1;
+                });
+            }
+            return new Backbone.Collection(results);
+        },
+
+        search: function(obj){
             this.models = this.originalModels;
             var categoryCollection = this;
             var apiCollection = this.filterCollection(obj.api, {type: 'api'});
             var viscosityCollection = this.filterCollection(obj.viscosity, {type: 'viscosity'});
             var pour_pointCollection = this.filterCollection(obj.pour_point, {type: 'pour_point'});
-            console.log(viscosityCollection);
             if (obj.text.length > 1){
                 var options = {keys: ['attributes.name',
                                       'attributes.field_name',

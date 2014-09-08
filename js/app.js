@@ -165,40 +165,6 @@ define([
                 return tree;
             };
 
-            // Extension of Backbone class to add filter method that returns a Backbone collection 
-            // instead of a simple array.  Used in js/views/form/oilQuery/oilTable.js
-
-            Backbone.Collection.prototype.whereCollection = function(obj){
-                var results = this.where(obj);
-                return new Backbone.Collection(results);
-            };
-
-            Backbone.Collection.prototype.filterCollection = function(arr, options){
-                if (options.type === 'api' || options.type === 'viscosity'){
-                    var results = this.filter(function(model){
-                        if (model.attributes[options.type] >= arr[0] && model.attributes[options.type] <= arr[1]){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    });
-                } else if (options.type === 'pour_point'){
-                    var results = this.filter(function(model){
-                        if (model.attributes[options.type][0] > arr[1] || model.attributes[options.type][1] < arr[0]){
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    });
-                } else if (options.type === 'categories'){
-                    var str = arr.parent + '-' + arr.child;
-                    var results = this.filter(function(model){
-                        return _.indexOf(model.attributes.categories, str) !== -1;
-                    });
-                }
-                return new Backbone.Collection(results);
-            };
-
             webgnome.getForm = function(obj_type){
                 var map = {
                     'gnome.model.Model': 'views/form/model',

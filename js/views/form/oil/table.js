@@ -2,10 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'model/resources/oilLib',
-    'text!templates/default/oilTable.html',
-    'text!templates/default/oilRow.html'
-], function($, _, Backbone, OilLib, OilTableTemplate, OilRowTemplate){
+    'model/oil/library',
+    'text!templates/oil/table.html'
+], function($, _, Backbone, OilLib, OilTableTemplate){
     var oilTableView = Backbone.View.extend({
         id: 'tableContainer',
         ready: false,
@@ -21,28 +20,24 @@ define([
 
         initialize: function(obj){
             this.oilLib = new OilLib();
-            this.oilLib.on('ready', this.setReady, this);
+            this.oilLib.on('ready', this.sortTable, this);
+            this.oilLib.once('ready', this.setReady, this);
             this.on('sort', this.sortTable);
         },
 
         setReady: function(){
-            var oils = this.oilLib;
-            var compiled = _.template(OilTableTemplate, {data: oils});
-            this.$el.html(compiled);
-            this.appendCaret();
             this.ready = true;
             this.trigger('ready');
         },
 
         sortTable: function(){
-            var oils = this.oilLib;
-            var compiled = _.template(OilTableTemplate, {data: oils});
+            var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
-            this.appendCaret();
+            this.updateCaret();
             this.trigger('renderTable');
         },
 
-        appendCaret: function(){
+        updateCaret: function(){
              if (this.oilLib.sortDir === 1){
                 this.activeIcon = this.sortUpIcon;
             } else {

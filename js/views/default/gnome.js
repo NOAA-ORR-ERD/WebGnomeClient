@@ -4,7 +4,7 @@ define([
     'backbone',
     'text!templates/default/gnome.html',
     'views/wizard/new',
-    'views/form/oilQuery/oilLib'
+    'views/form/oil/library'
 ], function($, _, Backbone, GnomeTemplate, NewWizardForm, OilLibForm){
     var gnomeView = Backbone.View.extend({
         className: 'container page gnome',
