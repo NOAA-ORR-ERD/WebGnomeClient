@@ -62,16 +62,19 @@ define([
                 // Grabbing the minimum and maximum api, and viscosity values from the fetched collection
                 // so the slider only covers the range of relevant values when rendered
                 
-                this.findMinMax(['api', 'viscosity']);
+                this.findMinMax(['api', 'viscosity', 'pour_point']);
 
                 if (this.viscosity_max.toString().length > 3){
                     this.viscosity_max = this.viscosity_max.toExponential();
                 }
 
-                // Use the jquery-ui slider to enable a slider so the user can select the range of API
-                // values they would want to search for
+                console.log(this.pour_point_min + " " + this.pour_point_max);
+
+                // Use the jquery-ui slider to enable sliders so the user can select the range of API,
+                // viscosity, and/or pour point values they would want to search for
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
                 this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
+                this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -83,11 +86,16 @@ define([
                 var quantity = arr[i];
                 var min = quantity + '_min';
                 var max = quantity + '_max';
-                if (!this[min] && !this[max]){
+                if (!this[min] && !this[max] && quantity !== 'pour_point'){
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
                     this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                } else {
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes[quantity][0]; }).attributes[quantity][0]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
+                        function(model){ return model.attributes[quantity][1]; }).attributes[quantity][1]);
                 }
                 obj[quantity] = {'min': this[min], 'max': this[max]};
             }
