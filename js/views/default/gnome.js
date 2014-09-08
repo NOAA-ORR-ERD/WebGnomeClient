@@ -17,8 +17,7 @@ define([
             'click .location': 'chooseLocation',
             'click .build': 'buildModel',
             'click .load': 'loadModel',
-            'click .resume': 'resumeModel',
-            'click .oilLib': 'loadOilForm'
+            'click .resume': 'resumeModel'
         },
 
         chooseLocation: function(event) {
@@ -46,13 +45,6 @@ define([
                 hasModel: webgnome.hasModel()
             });
             $('body').append(this.$el.append(compiled));
-        },
-
-        loadOilForm: function(event){
-            event.preventDefault();
-            var oilForm = new OilLibForm();
-            oilForm.on('hidden', oilForm.close);
-            oilForm.render();
         }
     });
     return gnomeView;
