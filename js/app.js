@@ -174,9 +174,9 @@ define([
             };
 
             Backbone.Collection.prototype.filterCollection = function(arr, options){
-                if (options.type === 'api'){
+                if (options.type === 'api' || options.type === 'viscosity'){
                     var results = this.filter(function(model){
-                        if (model.attributes.api >= arr[0] && model.attributes.api <= arr[1]){
+                        if (model.attributes[options.type] >= arr[0] && model.attributes[options.type] <= arr[1]){
                             return true;
                         } else {
                             return false;
