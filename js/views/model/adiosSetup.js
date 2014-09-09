@@ -123,12 +123,19 @@ define([
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
+                var compiled;
                 this.$('.wind .state').addClass('complete');
-                var compiled = _.template(WindPanelTemplate, {
-                    speed: wind.get('timeseries')[0][1][0],
-                    direction: wind.get('timeseries')[0][1][1],
-                    units: wind.get('units')
-                });
+                if(wind.get('timeseries').length == 1){
+                    compiled = _.template(WindPanelTemplate, {
+                        speed: wind.get('timeseries')[0][1][0],
+                        direction: wind.get('timeseries')[0][1][1],
+                        units: wind.get('units')
+                    });
+                    this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
+                } else {
+                    compiled = '[Timeseries Graph]';
+                    this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
+                }
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
             } else {
