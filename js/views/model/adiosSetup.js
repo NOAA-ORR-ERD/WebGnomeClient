@@ -2,13 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'text!templates/model/adiosSetup.html',
     'model/gnome',
     'model/environment/wind',
     'views/form/wind',
     'text!templates/panel/wind.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page adios setup',
@@ -18,7 +19,8 @@ define([
             'click .wind': 'clickWind',
             'click .water': 'clickWater',
             'click .spill': 'clickSpill',
-            'click .map': 'clickMap'
+            'click .map': 'clickMap',
+            'blur input': 'updateModel'
         },
 
         initialize: function(){
@@ -38,7 +40,10 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(AdiosSetupTemplate);
+            var compiled = _.template(AdiosSetupTemplate, {
+                start_time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
+                duration: webgnome.model.formatDuration().days,
+            });
 
             $('body').append(this.$el.append(compiled));
 
@@ -49,6 +54,16 @@ define([
             this.$('.date').datetimepicker({
                 format: 'Y/n/j G:i'
             });
+        },
+
+        updateModel: function(){
+            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            webgnome.model.set('start_time', start_time);
+
+            var duration = (parseInt(this.$('#duration').val(), 10) * 24) * 60 * 60;
+            webgnome.model.set('duration', duration);
+
+            webgnome.model.save();
         },
 
         selectPrediction: function(e){
