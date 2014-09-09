@@ -57,7 +57,7 @@ define([
     							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                     oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
                                     k2 = k.substring(0, k.length - 2) + '_f';
-                                    oil[attr][i][k2] = this.cToF(oil[attr][i][k]);
+                                    oil[attr][i][k2] = this.cToF(oil[attr][i][k]).toFixed(3);
                                 }
     						}
     					}
