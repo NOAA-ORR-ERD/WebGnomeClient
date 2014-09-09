@@ -17,12 +17,17 @@ define([
         size: 'lg',
 
         events: function(){
-            return _.defaults(OilTable.prototype.events, FormModal.prototype.events);
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(.chosen)'] = 'update';
+            formModalHash['keyup input:not(.chosen)'] = 'update';
+            return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
         initialize: function(options){
             this.oilTable = new OilTable();
-
+            
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
