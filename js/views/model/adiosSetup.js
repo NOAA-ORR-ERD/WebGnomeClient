@@ -51,6 +51,8 @@ define([
                 this.$('.fate').click();
             }, this), 1);
 
+            this.updateObjects();
+
             this.$('.date').datetimepicker({
                 format: 'Y/n/j G:i'
             });
