@@ -80,7 +80,7 @@
     						<table class="table">
     							<tr>
     								<th>Centistokes (cSt)</th>
-    								<th>Reference Temperature (K)</th>
+    								<th>Reference Temperature (&deg;C)</th>
     								<th>Weathering (%)</th>
     							</tr>
     						{% for (var i = 0; i < data.kvis.length; i++){ %}
@@ -107,7 +107,7 @@
                             <table class="table">
                                 <tr>
                                     <th>Density (g/cm^3)</th>
-                                    <th>Reference Temperature (K)</th>
+                                    <th>Reference Temperature (&deg;C)</th>
                                     <th>Weathering (%)</th>
                                 </tr>
                             {% for (var i = 0; i < data.densities.length; i++){ %}
@@ -140,8 +140,8 @@
         						<tr>
         							<th>Cut #</th>
         							<th>Mass Percent (%)</th>
-        							<th>Vapor Temperature (K)</th>
-        							<th>Liquid Temperature (K)</th>
+        							<th>Vapor Temperature (&deg;C)</th>
+        							<th>Liquid Temperature (&deg;C)</th>
         						</tr>
         					{% for (var i = 0; i < data.cuts.length; i++){ %}
         						{% var count = i + 1; %}

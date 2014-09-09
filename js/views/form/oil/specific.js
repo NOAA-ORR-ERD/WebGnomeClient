@@ -18,6 +18,10 @@ define([
 			$('.modal-body').append(this.$el.html(compiled));
 		},
 
+        cToF: function(c){
+            return (c * (9/5)) + 32;
+        },
+
 		dataParse: function(oil){
             var groupAnalysis = ['aromatics',
                                  'polars',
@@ -50,7 +54,9 @@ define([
     						for (k in oil[attr][i]) {
     							if (!oil[attr][i][k] && oil[attr][i] !== 'weathering'){
     								oil[attr][i][k] = "--";
-    							}
+    							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
+                                    oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
+                                }
     						}
     					}
                     }

@@ -17,6 +17,7 @@ define([
         size: 'lg',
 
         events: function(){
+            // Overwriting the update listeners so they do not fire for the chosen input box
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];

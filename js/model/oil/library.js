@@ -71,7 +71,7 @@ define([
                                       'attributes.field_name',
                                       'attributes.location'
                                      ],
-                               threshold: 0.1
+                               threshold: 0.3
                                };
                 var f = new Fuse(this.models, options);
                 var result = f.search(obj.text);
