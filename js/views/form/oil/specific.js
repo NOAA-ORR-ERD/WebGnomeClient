@@ -39,7 +39,7 @@ define([
                  else if (_.isArray(oil[attr])) {
                     // When oil attribute is an empty array
                     if (oil[attr].length === 0){
-                        if (attr === 'cuts' || attr === 'kvis' || attr === 'synonyms'){
+                        if (attr === 'cuts' || attr === 'kvis' || attr === 'synonyms' || attr === 'densities'){
                             oil[attr] = false;
                         } else {
                             oil[attr] = "--";
@@ -48,7 +48,7 @@ define([
                         // For loop that goes through array
     					for (var i = 0; i < oil[attr].length; i++){
     						for (k in oil[attr][i]) {
-    							if (!oil[attr][i][k]){
+    							if (!oil[attr][i][k] && oil[attr][i] !== 'weathering'){
     								oil[attr][i][k] = "--";
     							}
     						}
