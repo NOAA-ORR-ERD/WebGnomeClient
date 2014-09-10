@@ -16,7 +16,7 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Select</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
 
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
@@ -64,6 +64,7 @@ define([
                 FormModal.prototype.render.call(this, options);
 
                 this.$('.oilInfo').hide();
+                this.$('.backOil').hide();
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -172,6 +173,8 @@ define([
                    this.specificOil = new SpecificOil({model: model});
                 }, this));
             }
+            this.$('.backOil').show();
+            this.$('.cancel').hide();
         },
 
         close: function(){
@@ -207,6 +210,8 @@ define([
         goBack: function(e){
             e.preventDefault();
             this.specificOil.close();
+            this.$('.backOil').hide();
+            this.$('.cancel').show();
             this.$('.oilContainer').show();
         }
     });
