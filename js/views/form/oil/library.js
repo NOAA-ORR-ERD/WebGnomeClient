@@ -12,6 +12,7 @@ define([
     'text!templates/form/oil.html'
 ], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
+        className: 'modal fade form-modal oil-form',
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
