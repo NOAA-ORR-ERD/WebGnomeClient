@@ -38,7 +38,9 @@ define([
 
 				if (!oil[attr]){
 					oil[attr] = "--";				
-				}
+				} else if (attr === 'pour_point_min_k' || attr === 'pour_point_max_k' || attr === 'flash_point_max_k' || attr === 'flash_point_min_k'){
+                    oil[attr] = (oil[attr] - 273.15).toFixed(3) + ' &deg;C';
+                }
                 // When value of oil attribute is of type array
                  else if (_.isArray(oil[attr])) {
                     // When oil attribute is an empty array
@@ -46,7 +48,7 @@ define([
                         if (attr === 'cuts' || attr === 'kvis' || attr === 'synonyms' || attr === 'densities'){
                             oil[attr] = false;
                         } else {
-                            oil[attr] = "--";
+                            oil[attr] = '--';
                         }
                     } else {
                         // For loop that goes through array
@@ -57,7 +59,7 @@ define([
     							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                     oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
                                     k2 = k.substring(0, k.length - 2) + '_f';
-                                    oil[attr][i][k2] = this.cToF(oil[attr][i][k]).toFixed(3);
+                                    oil[attr][i][k2] = '(' + this.cToF(oil[attr][i][k]).toFixed(3) + ')';
                                 }
     						}
     					}
