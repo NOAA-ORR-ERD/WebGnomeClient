@@ -20,7 +20,8 @@ require.config({
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
         fancytree: 'lib/fancytree/dist/jquery.fancytree',
         chosen: 'lib/chosen/chosen.jquery',
-        fuse: 'lib/fuse/src/fuse'
+        fuse: 'lib/fuse/src/fuse',
+        chartjs: 'lib/chartjs/Chart.min'
     },
     shim: {
         jquery: {
