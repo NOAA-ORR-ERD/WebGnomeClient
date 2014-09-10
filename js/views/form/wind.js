@@ -22,8 +22,8 @@ define([
                 'click .add': 'addTimeseriesEntry',
                 'click tr': 'modifyTimeseriesEntry',
                 'click td span': 'removeTimeseriesEntry',
-                'click .variable': 'unbindMouseTrap',
-                'click .nav-tabs li:not(.variable)': 'rebindMouseTrap'
+                'click .variable': 'unbindBaseMouseTrap',
+                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap'
             }, FormModal.prototype.events);
         },
 
@@ -329,12 +329,12 @@ define([
             return valid;
         },
 
-        unbindMouseTrap: function(){
+        unbindBaseMouseTrap: function(){
             Mousetrap.unbind('enter');
             Mousetrap.bind('enter', _.bind(this.addTimeseriesEntry, this));
         },
 
-        rebindMouseTrap: function(){
+        rebindBaseMouseTrap: function(){
             Mousetrap.unbind('enter');
             Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
         },
