@@ -15,6 +15,7 @@ define([
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Select</button>',
 
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
@@ -60,6 +61,8 @@ define([
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
                 FormModal.prototype.render.call(this, options);
+
+                this.$('.oilInfo').hide();
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -157,6 +160,7 @@ define([
         oilSelect: function(e){
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
+            this.$('.oilInfo').show();
         },
 
         viewSpecificOil: function(){
