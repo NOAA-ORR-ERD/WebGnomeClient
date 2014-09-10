@@ -49,7 +49,12 @@ define([
             $('body').append(this.$el.append(compiled));
 
             setTimeout(_.bind(function(){
-                this.$('.fate').click();
+                var pred = localStorage.getItem('prediction');
+                if(pred){
+                    this.$('.' + pred).click();
+                } else {
+                    this.$('.fate').click();
+                }
             }, this), 1);
 
             this.updateObjects();
@@ -79,6 +84,8 @@ define([
                 this.$(e.target).parent().addClass('selected');
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
+
+            localStorage.setItem('prediction', target);
 
             if (target == 'fate') {
                 this.showFateObjects();
