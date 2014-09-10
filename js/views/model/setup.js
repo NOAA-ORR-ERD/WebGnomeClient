@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'text!templates/model/adiosSetup.html',
+    'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
     'views/form/wind',
@@ -15,12 +15,13 @@ define([
         className: 'page adios setup',
 
         events: {
-            'click .fate': 'selectPrediction',
+            'click .icon': 'selectPrediction',
             'click .wind': 'clickWind',
             'click .water': 'clickWater',
             'click .spill': 'clickSpill',
             'click .map': 'clickMap',
-            'blur input': 'updateModel'
+            'blur input': 'updateModel',
+            'click .location': 'loadLocation'
         },
 
         initialize: function(){
@@ -81,25 +82,28 @@ define([
 
             if (target == 'fate') {
                 this.showFateObjects();
-            } else {
-                this.showFatePlusObjects();
+            } else if (target == 'trajectory') {
+                this.showTrajectoryObjects();
+            } else{
+                this.showAllObjects();
             }
         },
 
         showFateObjects: function(){
-            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible');
+            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden');
+            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible');
             this.$('.wind').css('opacity', 1).css('visibility', 'visible');
             this.$('.water').css('opacity', 1).css('visibility', 'visible');
             this.$('.spill').css('opacity', 1).css('visibility', 'visible');
-            this.$('.map').css('opacity', 0).css('visibility', 'hidden');
         },
 
-        showFatePlusObjects: function(){
+        showAllObjects: function(){
             this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible');
-            this.$('.wind').css('opacity', 1).css('visibility', 'visible');
-            this.$('.water').css('opacity', 1).css('visibility', 'visible');
-            this.$('.spill').css('opacity', 1).css('visibility', 'visible');
-            this.$('.map').css('opacity', 1).css('visibility', 'visible');
+            this.$('.pannel').css('opacity', 1).css('visibility', 'visible');
+        },
+
+        showTrajectoryObjects: function(){
+
         },
 
         updateObjects: function(){
@@ -158,7 +162,13 @@ define([
 
         },
 
+        loadLocation: function(e){
+            e.preventDefault();
+            webgnome.router.navigate('locations', true);
+        },
+
         close: function(){
+            $('.xdsoft_datetimepicker').remove();
             Backbone.View.prototype.close.call(this);
         }
     });
