@@ -42,7 +42,8 @@ define([
             if(webgnome.hasModel()){
                 this.modelListeners();
             }
-
+            
+            webgnome.model.trigger('sync');
             this.render();
         },
 
