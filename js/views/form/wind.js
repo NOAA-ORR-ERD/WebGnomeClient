@@ -71,6 +71,7 @@ define([
             });
             
             FormModal.prototype.render.call(this, options);
+            this.trigger('show');
 
             this.form.constant = [];
             this.form.constant.speed = this.$('#constant-speed');
@@ -326,19 +327,19 @@ define([
         },
 
         next: function(){
-            $('.xdsoft_datetimepicker').remove();
+            $('.xdsoft_datetimepicker:last').remove();
             this.ol.close();
             FormModal.prototype.next.call(this);
         },
 
         back: function(){
-            $('.xdsoft_datetimepicker').remove();
+            $('.xdsoft_datetimepicker:last').remove();
             this.ol.close();
             FormModal.prototype.back.call(this);
         },
 
         close: function(){
-            $('.xdsoft_datetimepicker').remove();
+            $('.xdsoft_datetimepicker:last').remove();
             this.ol.close();
             FormModal.prototype.close.call(this);
         },

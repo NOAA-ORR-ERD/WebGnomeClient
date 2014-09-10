@@ -224,7 +224,7 @@ nav.navbar{
     }
 }
 
-.page.gnome{
+.page.gnome, .page.adios{
     .main{
         .make-md-column(8);
 
@@ -246,6 +246,94 @@ nav.navbar{
     .side{
         .make-md-column(4);
         margin-top: 30px;
+    }
+}
+
+.page.setup.adios{
+    h2{
+        margin-bottom: 20px;
+    }
+    .icon{
+        height: 116px;
+        background: #e1e1e1;
+        border-radius: 3px;
+        margin: 15px 0;
+        cursor: pointer;
+        font-size: 52px;
+        color: #7a7a7a;
+        text-align: center;
+        padding-top: 10px;
+
+        &.selected{
+            color: white;
+            background: #428bca;
+            .icon-footer{
+                background: #7a7a7a;
+            }
+        }
+
+        .icon-footer{
+            text-align:center;
+            padding: 8px 0;
+            margin-top: -1px;
+            border-radius: 0 0 3px 3px;
+            background: #efefef;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        &.both{
+            font-size: 33px;
+            padding-top: 21px;
+
+            .icon-footer{
+                margin-top: 15px;
+            }
+        }
+    }
+
+
+    .panel{
+        margin-bottom: 30px;
+    }
+
+    .model-objects, .response-objects{
+        > div {
+            opacity: 0;
+            visibility: hidden;
+            transition: .2s all;
+            
+            .panel{
+                cursor: pointer;
+            }
+
+            .object-title{
+                color: #7a7a7a;
+            }
+
+            .state{
+                height: 20px;
+                width: 20px;
+                float: right;
+                font-size: 17px;
+                .glyphicon;
+                .glyphicon-exclamation-sign;
+                color: orange;
+
+                &.complete{
+                    .glyphicon-ok-sign;
+                    color: green;
+                }
+
+                &.optional{
+                    .glyphicon-info-sign;
+                    color: #0099ff;                  
+                }
+            }
+            .panel-body{
+                display: none;
+            }
+        }
     }
 }
 
@@ -676,6 +764,11 @@ nav.navbar{
                     }
                     width: 55px;
                 }
+            }
+        }
+        #variable{
+            .slider{
+                margin-top: 5px;
             }
         }
         .slider{

@@ -4,9 +4,8 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
-    'views/wizard/new',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, NewWizardForm) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -31,6 +30,7 @@ define([
         events: {
             // 'click .navbar-brand': 'home',
             'click .new': 'newModel',
+            'click .edit': 'editModel',
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
@@ -84,22 +84,28 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/', true);
+            webgnome.model = null;
+            webgnome.router.navigate('setup', true);
+        },
+
+        editModel: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('setup', true);
         },
 
         load: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/load', true);
+            webgnome.router.navigate('load', true);
         },
 
         locations: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/locations', true);
+            webgnome.router.navigate('locations', true);
         },
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/save', true);
+            webgnome.router.navigate('save', true);
         },
 
         debugView: function(event){
@@ -112,18 +118,6 @@ define([
                 //this.trigger('debugTreeOn');
             }
             this.trigger('debugTreeToggle');
-        },
-
-        run: function(event){
-
-        },
-
-        step: function(event){
-
-        },
-
-        rununtil: function(event){
-
         },
 
         about: function(event){
@@ -144,25 +138,21 @@ define([
         },
 
         contextualize: function(){
-            if(window.location.href.indexOf('gnome') !== -1){
-                // setup the menu for gnome
-                if(webgnome.hasModel() && webgnome.validModel()){
-                    this.enableMenuItem('actions');
-                    this.disableMenuItem('save');
-                }
-                this.$('.navbar-brand').text('GNOME');
-            } else {
-                this.disableMenuItem('model');
-                this.disableMenuItem('actions');
+            if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.disableMenuItem('save');
             }
-
-            if (window.location.href.indexOf('adios') !== -1){
-                // setup the menu for adios  
-                this.$('.navbar-brand').text('ADIOS');
+            
+            if(webgnome.hasModel()){
+                this.enableMenuItem('edit');
+            } else {
+                this.disableMenuItem('edit');
             }
 
-
+            if(window.location.href.indexOf('model') != -1){
+                this.enableMenuItem('debugView');
+            } else {
+                this.disableMenuItem('debugView');
+            }
         },
 
         render: function(){

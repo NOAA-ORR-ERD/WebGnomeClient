@@ -193,6 +193,10 @@ define([
             tree = attrs.concat(tree);
 
             return tree;
+        },
+
+        isValidAdios: function(){
+            return false;
         }
     });
     

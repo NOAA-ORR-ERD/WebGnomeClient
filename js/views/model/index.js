@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'views/model/tree',
-    'views/model/map',
+    'views/model/map'
 ], function($, _, Backbone, TreeView, MapView){
     var modelView = Backbone.View.extend({
         className: 'page model',

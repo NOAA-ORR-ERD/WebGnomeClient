@@ -8,8 +8,7 @@ define([
         className: 'page home',
 
         events: {
-            'click .gnome': 'gnome',
-            'click .adios': 'adios'
+            'click .setup': 'setup'
         },
 
         initialize: function(){
@@ -21,12 +20,9 @@ define([
             $('body').append(this.$el.append(compiled));
         },
 
-        gnome: function(){
-            webgnome.router.navigate('gnome/', true);
-        },
-
-        adios: function(){
-            webgnome.router.navigate('adios/', true);
+        setup: function(e){
+            e.preventDefault();
+            webgnome.router.navigate('setup', true);
         }
     });
 
