@@ -4,31 +4,22 @@ define([
     'backbone',
     'views/default/index',
     'views/default/menu',
-    'views/default/gnome',
     'views/default/notfound',
     'views/location/index',
-    'views/model/gnomeIndex',
-    'views/model/adiosIndex',
-    'views/model/adiosSetup',
+    'views/model/setup',
+    'views/model/index',
     'views/tests/index',
     'views/default/adios'
 ], function($, _, Backbone,
-    IndexView, MenuView, GnomeView, NotFoundView, LocationsView,
-    GnomeModelIndexView, AdiosModelIndexView, AdiosSetupView, TestView, AdiosView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
         routes: {
             '': 'index',
-
-            'gnome/': 'gnome',
-            'gnome/model': 'gnomeModel',
-            'gnome/locations': 'locations',
-            'gnome/test': 'test',
-
-            'adios/': 'adios',
-            'adios/setup': 'adiosSetup',
-            'adios/model': 'adiosModel',
+            'locations': 'locations',
+            'setup': 'setup',
+            'model': 'model',
 
             '*actions': 'notfound'
         },
@@ -46,23 +37,9 @@ define([
             this.views.push(new IndexView());
         },
 
-        gnome: function(){
+        setup: function(){
             this.views.push(new MenuView());
-            this.views.push(new GnomeView());
-        },
-
-        test: function(){
-            // if this isn't the development environment ignore the test request.
-            if(window.location.href.indexOf('0.0.0.0') == -1){
-                this.navigate('', true, false);
-            }
-            this.views.push(new TestView());
-        },
-
-        notfound: function(actions){
-            this.views.push(new MenuView());
-            this.views.push(new NotFoundView());
-            console.log('Not found:', actions);
+            this.views.push(new SetupView());
         },
 
         locations: function(){
@@ -70,33 +47,20 @@ define([
             this.views.push(new LocationsView());
         },
 
-        gnomeModel: function(){
+        model: function(){
             if(webgnome.hasModel()){
                 this.views.push(new MenuView());
-                this.views.push(new GnomeModelIndexView());
+                this.views.push(new ModelView());
             } else {
-                this.navigate('gnome/', true);
+                this.navigate('setup', true);
             }
         },
 
-        adios: function(){
+        notfound: function(actions){
             this.views.push(new MenuView());
-            this.views.push(new AdiosView());
-        },
-
-        adiosSetup: function(){
-            this.views.push(new MenuView());
-            this.views.push(new AdiosSetupView());
-        },
-
-        adiosModel: function(){
-            if(webgnome.model.isValidAdios()){
-                this.views.push(new MenuView());
-                this.views.push(new AdiosModelIndexView());
-            } else {
-                this.navigate('adios/setup', true);
-            }
-        },
+            this.views.push(new NotFoundView());
+            console.log('Not found:', actions);
+        }
     });
 
     return Router;

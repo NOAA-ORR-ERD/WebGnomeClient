@@ -271,6 +271,7 @@ nav.navbar{
                 background: #7a7a7a;
             }
         }
+
         .icon-footer{
             text-align:center;
             padding: 8px 0;
@@ -280,6 +281,15 @@ nav.navbar{
             cursor: pointer;
             font-size: 12px;
         }
+
+        &.both{
+            font-size: 33px;
+            padding-top: 21px;
+
+            .icon-footer{
+                margin-top: 15px;
+            }
+        }
     }
 
 
@@ -287,7 +297,7 @@ nav.navbar{
         margin-bottom: 30px;
     }
 
-    .model-objects{
+    .model-objects, .response-objects{
         > div {
             opacity: 0;
             visibility: hidden;
