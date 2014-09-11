@@ -30,6 +30,12 @@ define([
 
     	update: function(){
 
+
+    		if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
     	},
 
     	revealManualInputs: function(e){
