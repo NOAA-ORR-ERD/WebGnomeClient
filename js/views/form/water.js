@@ -26,9 +26,6 @@ define([
 
     		FormModal.prototype.render.call(this, options);
 
-    		this.$('#sediment-entry').hide();
-    		this.$('#salinity-entry').hide();
-
     	},
 
     	update: function(){
@@ -39,9 +36,9 @@ define([
     		var value = e.currentTarget.value;
     		var id = e.currentTarget.id;
     		if (value === 'other' && id !== this.selectedId){
-    			this.$('#' + id + '-entry').show();
+    			this.$('#' + id + '-entry').removeClass('hide');
     		} else {
-    			this.$('#' + id + '-entry').hide();
+    			this.$('#' + id + '-entry').addClass('hide');
     		}
     		this.selectId = id;
     	}
