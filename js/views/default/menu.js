@@ -30,6 +30,7 @@ define([
         events: {
             // 'click .navbar-brand': 'home',
             'click .new': 'newModel',
+            'click .edit': 'editModel',
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
@@ -83,30 +84,28 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate(this.getCurrentApp() + '/', true);
+            webgnome.model = null;
+            webgnome.router.navigate('setup', true);
+        },
+
+        editModel: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('setup', true);
         },
 
         load: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/load', true);
+            webgnome.router.navigate('load', true);
         },
 
         locations: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/locations', true);
+            webgnome.router.navigate('locations', true);
         },
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('gnome/save', true);
-        },
-
-        getCurrentApp: function(){
-            if(window.location.href.indexOf('gnome') !== -1){
-                return 'gnome';
-            } else {
-                return 'adios';
-            }
+            webgnome.router.navigate('save', true);
         },
 
         debugView: function(event){
@@ -119,18 +118,6 @@ define([
                 //this.trigger('debugTreeOn');
             }
             this.trigger('debugTreeToggle');
-        },
-
-        run: function(event){
-
-        },
-
-        step: function(event){
-
-        },
-
-        rununtil: function(event){
-
         },
 
         about: function(event){
@@ -151,26 +138,21 @@ define([
         },
 
         contextualize: function(){
-            if(this.getCurrentApp() == 'gnome'){
-                // setup the menu for gnome
-                if(webgnome.hasModel() && webgnome.validModel()){
-                    this.enableMenuItem('actions');
-                    this.disableMenuItem('save');
-                }
-                this.$('.navbar-brand').text('GNOME');
-            } else {
-                this.disableMenuItem('actions');
+            if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.disableMenuItem('save');
             }
-
-            if (this.getCurrentApp() == 'adios'){
-                // setup the menu for adios  
-                this.$('.navbar-brand').text('ADIOS');
-                this.disableMenuItem('locations');
-                this.disableMenuItem('debugView');
+            
+            if(webgnome.hasModel()){
+                this.enableMenuItem('edit');
+            } else {
+                this.disableMenuItem('edit');
             }
 
-
+            if(window.location.href.indexOf('model') != -1){
+                this.enableMenuItem('debugView');
+            } else {
+                this.disableMenuItem('debugView');
+            }
         },
 
         render: function(){

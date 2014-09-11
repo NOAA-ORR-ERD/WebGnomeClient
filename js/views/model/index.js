@@ -2,10 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/model/gnomeTree',
-    'views/model/gnomeMap'
+    'views/model/tree',
+    'views/model/map'
 ], function($, _, Backbone, TreeView, MapView){
-    var gnomeModelView = Backbone.View.extend({
+    var modelView = Backbone.View.extend({
         className: 'page model',
 
         initialize: function(){
@@ -40,5 +40,5 @@ define([
         }
     });
 
-    return gnomeModelView;
+    return modelView;
 });
