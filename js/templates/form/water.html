@@ -1,65 +1,67 @@
 <form class="form-horizontal" role="form">
-	<div class="row">
-		<div class="col-md-6">
-			<div class="col-sm-12">
-				<h4>Properties (required)</h4>
-			</div>
-			<div class="col-sm-12">
-				<div class="col-sm-4"><label class="control-label" for="temp">Temperature</label></div>
-				<div class="col-sm-4"><input class="form-control" type="text" id="temp"></div>
-				<div class="col-sm-4">
-					<select class="form-control col-xs-3">
-						<option>
-							&deg;F
-						</option>
-						<option>
-							&deg;C
-						</option>
-					</select>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<h4>Properties (required)</h4>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-3"><label class="control-label" for="temp">Temperature</label></div>
+					<div class="col-sm-4"><input class="form-control" type="text" id="temp"></div>
+					<div class="col-sm-2">
+						<select class="form-control col-xs-3">
+							<option>
+								&deg;F
+							</option>
+							<option>
+								&deg;C
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-5"><label class="control-label" for="salinity">Salinity in ppt (g/Kg)</label></div>
+					<div class="col-sm-5">
+						<select class="form-control col-xs-8" id="salinity">
+							<option>
+								0 (fresh water)
+							</option>
+							<option>
+								15 (avg. estuary)
+							</option>
+							<option>
+								32 (avg. oceanic)
+							</option>
+							<option>
+								Other Value...
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-5"><label class="control-label" for="sediment">Water Sediment Load (mg/L)</label></div>
+					<div class="col-sm-5">
+						<select class="form-control col-xs-8" id="">
+							<option>
+								5 (ocean)
+							</option>
+							<option>
+								50 (avg. river/estuary)
+							</option>
+							<option>
+								500 (muddy river)
+							</option>
+							<option>
+								Other Value...
+							</option>
+						</select>
+					</div>
 				</div>
 			</div>
-			<div class="col-sm-12">
-				<div class="col-sm-5"><label class="control-label" for="salinity">Salinity in ppt (g/Kg)</label></div>
-				<div class="col-sm-5">
-					<select class="form-control col-xs-8">
-						<option>
-							0 (fresh water)
-						</option>
-						<option>
-							15 (avg. estuary)
-						</option>
-						<option>
-							32 (avg. oceanic)
-						</option>
-						<option>
-							Other Value...
-						</option>
-					</select>
+			<div class="col-md-6">
+				<div class="col-sm-12">
+					<h4>Current (optional)</h4>
 				</div>
-			</div>
-			<div class="col-sm-12">
-				<div class="col-sm-5"><label class="control-label" for="sediment">Water Sediment Load (mg/L)</label></div>
-				<div class="col-sm-5">
-					<select class="form-control col-xs-8">
-						<option>
-							5 (ocean)
-						</option>
-						<option>
-							50 (avg. river/estuary)
-						</option>
-						<option>
-							500 (muddy river)
-						</option>
-						<option>
-							Other Value...
-						</option>
-					</select>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="col-sm-12">
-				<h4>Current (optional)</h4>
 			</div>
 		</div>
 	</div>
