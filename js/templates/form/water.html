@@ -1,2 +1,51 @@
 <form class="form-horizontal" role="form">
-	
+	<div class="row">
+		<div class="col-md-6">
+			<div class="col-sm-12">
+				<h4>Properties (required)</h4>
+			</div>
+			<div class="col-sm-12">
+				<div class="col-sm-4"><label class="control-label" for="temp">Temperature</label></div>
+				<div class="col-sm-4"><input class="form-control" type="text" id="temp"></div>
+				<div class="col-sm-4">
+					<select class="form-control col-xs-3">
+						<option>
+							&deg;F
+						</option>
+						<option>
+							&deg;C
+						</option>
+						<option>
+							K
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="col-sm-5"><label class="control-label" for="salinity">Salinity in ppt (g/Kg)</label></div>
+				<div class="col-sm-5">
+					<select class="form-control col-xs-8">
+						<option>
+							32 (avg. oceanic)
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-sm-12">
+				<div class="col-sm-5"><label class="control-label" for="sediment">Water Sediment Load (mg/L)</label></div>
+				<div class="col-sm-5">
+					<select class="form-control col-xs-8">
+						<option>
+							5 (ocean)
+						</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="col-sm-12">
+				<h4>Current (optional)</h4>
+			</div>
+		</div>
+	</div>
+</form>

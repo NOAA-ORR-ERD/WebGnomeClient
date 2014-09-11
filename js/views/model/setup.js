@@ -7,10 +7,11 @@ define([
     'model/gnome',
     'model/environment/wind',
     'views/form/wind',
+    'views/form/water',
     'text!templates/panel/wind.html',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
-    WindModel, WindForm, WindPanelTemplate){
+    WindModel, WindForm, WaterForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page adios setup',
 
@@ -151,7 +152,8 @@ define([
         },
 
         clickWater: function(){
-
+            var waterForm = new WaterForm();
+            waterForm.render();
         },
 
         clickSpill: function(){
