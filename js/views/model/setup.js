@@ -3,16 +3,17 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'chartjs',
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
     'views/form/wind',
     'text!templates/panel/wind.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, Chart, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
-        className: 'page adios setup',
+        className: 'page setup',
 
         events: {
             'click .icon': 'selectPrediction',
@@ -125,7 +126,6 @@ define([
 
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
-            windForm.on('hidden', function(){webgnome.model.trigger('sync');});
             windForm.on('save', function(){
                 webgnome.model.get('environment').add(wind);
                 webgnome.model.save();
@@ -134,7 +134,9 @@ define([
         },
 
         updateWind: function(){
+            var chart_data;
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            this.$('.panel-body').html();
             if(!_.isUndefined(wind)){
                 var compiled;
                 this.$('.wind .state').addClass('complete');
@@ -146,11 +148,46 @@ define([
                     });
                     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 } else {
-                    compiled = '[Timeseries Graph]';
+                    compiled = '<div><canvas id="windChart" class="windChart"></canvas></div>';
+                    var ts = wind.get('timeseries');
+                    var labels = [];
+                    var data = [];
+
+                    for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').format('M/D H:mm');
+                        labels.push(date);
+                        data.push(ts[entry][1][0]);
+                    }
+
+                    var chart_data = {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Wind Speed',
+                                fillColor: "rgba(151,187,205,0.2)",
+                                strokeColor: "rgba(151,187,205,1)",
+                                pointColor: "rgba(151,187,205,1)",
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(151,187,205,1)",
+                                data: data
+                            }
+                        ]
+                    };
                     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
                 }
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
+
+                if(!_.isUndefined(chart_data)){
+                    // set a time out to wait for the box to finish expanding or animating before drawing
+                    setTimeout(_.bind(function(){
+                        var ctx = this.$('.windChart').get(0).getContext('2d');
+                        var windChart = new Chart(ctx).Line(chart_data, {
+                            responsive: true
+                        });
+                    }, this), 200);
+                }
             } else {
                 this.$('.wind .state').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');

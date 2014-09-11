@@ -21,7 +21,7 @@ require.config({
         fancytree: 'lib/fancytree/dist/jquery.fancytree',
         chosen: 'lib/chosen/chosen.jquery',
         fuse: 'lib/fuse/src/fuse',
-        chartjs: 'lib/chartjs/Chart.min'
+        chartjs: 'lib/chartjs/Chart'
     },
     shim: {
         jquery: {
