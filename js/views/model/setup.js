@@ -8,13 +8,17 @@ define([
     'model/environment/wind',
     'views/form/wind',
     'text!templates/panel/wind.html',
+    'model/map',
+    'views/form/map',
+    'text!templates/panel/map.html',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
     'flotresize',
     'flotdirection'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
-    WindModel, WindForm, WindPanelTemplate){
+    WindModel, WindForm, WindPanelTemplate,
+    MapModel, MapForm, MapPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -128,7 +132,7 @@ define([
         },
 
         clickWind: function(){
-            wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(_.isUndefined(wind) || wind.length === 0){
                 wind = new WindModel();
             }
@@ -216,7 +220,18 @@ define([
         },
 
         clickMap: function(){
+            var map = webgnome.model.get('map');
+            if(_.isUndefined(map)){
+                wind = new MapModal();
+            }
 
+            var mapForm = new MapForm(null, map);
+            mapForm.on('hidden', mapForm.close);
+            mapForm.on('save', function(){
+                webgnome.model.set('map', map);
+                webgnome.model.save();
+            });
+            mapForm.render();
         },
 
         loadLocation: function(e){
