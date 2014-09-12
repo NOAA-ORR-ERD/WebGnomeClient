@@ -6,12 +6,13 @@ define([
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
+    'model/environment/water',
     'views/form/wind',
     'views/form/water',
     'text!templates/panel/wind.html',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
-    WindModel, WindForm, WaterForm, WindPanelTemplate){
+    WindModel, WaterModel, WindForm, WaterForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page adios setup',
 
@@ -152,7 +153,17 @@ define([
         },
 
         clickWater: function(){
-            var waterForm = new WaterForm();
+            water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
+            if(_.isUndefined(water) || water.length === 0){
+                water = new WaterModel();
+            }
+            var waterForm = new WaterForm(null, water);
+            waterForm.on('hidden', waterForm.close);
+            waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
+            waterForm.on('save', function(){
+                webgnome.model.get('environment').add(water);
+                webgnome.model.save();
+            });
             waterForm.render();
         },
 

@@ -9,11 +9,11 @@
 					<div class="col-sm-3"><label class="control-label" for="temp">Temperature</label></div>
 					<div class="col-sm-4"><input class="form-control" type="text" id="temp"></div>
 					<div class="col-sm-2">
-						<select class="form-control col-xs-3">
-							<option>
+						<select class="form-control col-xs-3" id="tempunits">
+							<option value="F">
 								&deg;F
 							</option>
-							<option>
+							<option value="C">
 								&deg;C
 							</option>
 						</select>
@@ -77,10 +77,10 @@
 					<div class="col-sm-3"><input type="text" class="form-control" id="sea-height"></div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="height-units">
-							<option>
+							<option value="m">
 								Meters
 							</option>
-							<option>
+							<option value="ft">
 								Feet
 							</option>
 						</select>

@@ -18,7 +18,7 @@ define([
 
     	initialize: function(options, model){
     		FormModal.prototype.initialize.call(this, options);
-    		this.model = model;
+    		this.model = (model ? model : null);
     	},
 
     	render: function(options){
@@ -28,8 +28,43 @@ define([
 
     	},
 
-    	update: function(){
+        convertTemptoK: function(val, unit){
+            val = parseFloat(val, 10);
+            var temp = val;
+            if (unit === 'F'){
+                temp = (5/9) * (val - 32);
+            }
+            temp += 273.15;
 
+            return temp;
+        },
+
+        convertHeighttoKM: function(val, unit){
+            val = parseFloat(val, 10);
+            var height = val;
+            height = unit === 'm' ? height / 1000 : height / 3280.8;
+            return height;
+        },
+
+        otherValues: function(val, inputType){
+            if (val === 'other'){
+                val = this.$('#' + inputType + '-manual').val();
+            }
+            return val;
+        },
+
+    	update: function(){
+    		var waterTemp = this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val());
+            var salinity = this.otherValues(this.$('#salinity option:selected').val(), 'salinity');
+            var sedimentLoad = this.otherValues(this.$('#sediment option:selected').val(), 'sediment');
+            var sedimentMaterial = this.$('#sediment-element option:selected').val();
+            var seaHeight = this.convertHeighttoKM(this.$('#sea-height').val(), this.$('#height-units option:selected').val());
+
+            this.model.set('water_temp', waterTemp);
+            this.model.set('salinity', salinity);
+            this.model.set('sediment_load', sedimentLoad);
+            this.model.set('sediment_material', sedimentMaterial);
+            this.model.set('sea_height', seaHeight);
 
     		if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -45,6 +80,8 @@ define([
     			this.$('#' + id + '-entry').removeClass('hide');
     		} else {
     			this.$('#' + id + '-entry').addClass('hide');
+                this.update();
+                console.log("update fired");
     		}
     		this.selectId = id;
     	}
