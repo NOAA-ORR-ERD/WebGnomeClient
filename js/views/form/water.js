@@ -81,7 +81,6 @@ define([
     		} else {
     			this.$('#' + id + '-entry').addClass('hide');
                 this.update();
-                console.log("update fired");
     		}
     		this.selectId = id;
     	}
