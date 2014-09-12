@@ -121,6 +121,11 @@ define([
         },
 
         tabRendered: function(e){
+            // preserve the original timeseries if one exists longer than 1 entry
+            if(this.model.get('timeseries').length > 1){
+                this.originalTimeseries = this.model.get('timeseries');
+            }
+
             if(e.target.hash == '#constant'){
                 if(this.$('.constant-compass canvas').length === 0){
                     this.$('.constant-compass').compassRoseUI({
@@ -140,9 +145,11 @@ define([
                         'move': _.bind(this.variableCompassUpdate, this)
                     });
                 }
-                if(this.model.get('timeseries').length == 1){
-                    this.model.set('timeseries', []);
+
+                if(!_.isUndefined(this.originalTimeseries)){
+                    this.model.set('timeseries', this.originalTimeseries);
                 }
+
                 this.renderTimeseries();
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
