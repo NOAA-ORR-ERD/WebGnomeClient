@@ -577,6 +577,8 @@ define([
 
         close: function(){
             this.pause();
+            webgnome.model.off('change', this.contextualize, this);
+            webgnome.model.off('sync', this.spillListeners, this);
             this.remove();
             this.unbind();
             this.ol.close();
