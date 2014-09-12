@@ -188,18 +188,16 @@ define([
 
                 if(!_.isUndefined(dataset)){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    setTimeout(_.bind(function(){
-                        $.plot('.wind .chart', dataset, {
-                            grid: {
-                                borderWidth: 1,
-                                borderColor: '#ddd'
-                            },
-                            xaxis:{
-                                mode: 'time',
-                                timezone: 'browser',
-                            }
-                        });
-                    }, this), 200);
+                    $.plot('.wind .chart', dataset, {
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#ddd'
+                        },
+                        xaxis:{
+                            mode: 'time',
+                            timezone: 'browser',
+                        }
+                    });
                 }
             } else {
                 this.$('.wind .state').removeClass('complete');
