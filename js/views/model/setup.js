@@ -12,8 +12,7 @@ define([
     'flot',
     'flottime',
     'flotresize',
-    'flotdirection',
-    'flotspline'
+    'flotdirection'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
@@ -172,9 +171,6 @@ define([
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
-                            show: false
-                        },
-                        splines: {
                             show: true,
                             lineWidth: 2
                         },
