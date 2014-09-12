@@ -175,7 +175,7 @@ define([
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
-                            show: true,
+                            show: false,
                             lineWidth: 2
                         },
                         direction: {
