@@ -26,7 +26,8 @@ define([
             'click .spill': 'clickSpill',
             'click .map': 'clickMap',
             'blur input': 'updateModel',
-            'click .location': 'loadLocation'
+            'click .location': 'loadLocation',
+            'click .eval': 'evalModel'
         },
 
         initialize: function(){
@@ -67,6 +68,11 @@ define([
             this.$('.date').datetimepicker({
                 format: 'Y/n/j G:i'
             });
+        },
+
+        evalModel: function(e){
+            e.preventDefault();
+            webgnome.router.navigate('model', true);
         },
 
         updateModel: function(){
@@ -188,7 +194,7 @@ define([
 
                 if(!_.isUndefined(dataset)){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    $.plot('.wind .chart', dataset, {
+                    this.windPlot = $.plot('.wind .chart', dataset, {
                         grid: {
                             borderWidth: 1,
                             borderColor: '#ddd'
@@ -224,6 +230,8 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker').remove();
+            this.windPlot.shutdown();
+            webgnome.model.off('sync', this.updateObjects, this);
             Backbone.View.prototype.close.call(this);
         }
     });
