@@ -57,13 +57,11 @@ define([
     		var waterTemp = this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val());
             var salinity = this.otherValues(this.$('#salinity option:selected').val(), 'salinity');
             var sedimentLoad = this.otherValues(this.$('#sediment option:selected').val(), 'sediment');
-            var sedimentMaterial = this.$('#sediment-element option:selected').val();
             var seaHeight = this.convertHeighttoKM(this.$('#sea-height').val(), this.$('#height-units option:selected').val());
 
             this.model.set('water_temp', waterTemp);
             this.model.set('salinity', salinity);
             this.model.set('sediment_load', sedimentLoad);
-            this.model.set('sediment_material', sedimentMaterial);
             this.model.set('sea_height', seaHeight);
 
     		if(!this.model.isValid()){
