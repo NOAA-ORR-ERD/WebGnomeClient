@@ -21,7 +21,9 @@ define([
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
                 'click tr': 'modifyTimeseriesEntry',
-                'click td span': 'removeTimeseriesEntry'
+                'click td span': 'removeTimeseriesEntry',
+                'click .variable': 'unbindBaseMouseTrap',
+                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap'
             }, FormModal.prototype.events);
         },
 
@@ -263,6 +265,7 @@ define([
                 this.renderTimeseries();
             }
             this.update();
+            this.$('#variable-speed').focus();
         },
 
         modifyTimeseriesEntry: function(e){
@@ -324,6 +327,16 @@ define([
             }
 
             return valid;
+        },
+
+        unbindBaseMouseTrap: function(){
+            Mousetrap.unbind('enter');
+            Mousetrap.bind('enter', _.bind(this.addTimeseriesEntry, this));
+        },
+
+        rebindBaseMouseTrap: function(){
+            Mousetrap.unbind('enter');
+            Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
         },
 
         next: function(){

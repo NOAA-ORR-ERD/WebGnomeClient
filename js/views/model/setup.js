@@ -11,6 +11,8 @@ define([
     'model/map',
     'views/form/map',
     'text!templates/panel/map.html',
+    'model/environment/water',
+    'views/form/water',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -18,7 +20,8 @@ define([
     'flotdirection'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
-    MapModel, MapForm, MapPanelTemplate){
+    MapModel, MapForm, MapPanelTemplate,
+    WaterModel, WaterForm){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -212,7 +215,18 @@ define([
         },
 
         clickWater: function(){
-
+            water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
+            if(_.isUndefined(water) || water.length === 0){
+                water = new WaterModel();
+            }
+            var waterForm = new WaterForm(null, water);
+            waterForm.on('hidden', waterForm.close);
+            waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
+            waterForm.on('save', function(){
+                webgnome.model.get('environment').add(water);
+                webgnome.model.save();
+            });
+            waterForm.render();
         },
 
         clickSpill: function(){

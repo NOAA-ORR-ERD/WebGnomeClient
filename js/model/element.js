@@ -25,6 +25,18 @@ define([
 
         validate: function(){
             
+        },
+
+        toTree: function(){
+            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var attrs = [];
+            var name = this.get('name');
+
+            attrs.push({title: 'Name: ' + name, key: 'Name', obj_type: this.get('name'), action: 'edit', object: this});
+
+            tree = attrs.concat(tree);
+
+            return tree;
         }
     });
 

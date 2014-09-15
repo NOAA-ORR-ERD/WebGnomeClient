@@ -12,17 +12,25 @@ define([
     'text!templates/form/oil.html'
 ], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
+        className: 'modal fade form-modal oil-form',
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
 
         events: function(){
-            return _.defaults(OilTable.prototype.events, FormModal.prototype.events);
+            // Overwriting the update listeners so they do not fire for the chosen input box
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(.chosen)'] = 'update';
+            formModalHash['keyup input:not(.chosen)'] = 'update';
+            return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
         initialize: function(options){
             this.oilTable = new OilTable();
-
+            
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
@@ -54,6 +62,9 @@ define([
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
                 FormModal.prototype.render.call(this, options);
+
+                this.$('.oilInfo').hide();
+                this.$('.backOil').hide();
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -151,6 +162,7 @@ define([
         oilSelect: function(e){
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
+            this.$('.oilInfo').show();
         },
 
         viewSpecificOil: function(){
@@ -161,6 +173,8 @@ define([
                    this.specificOil = new SpecificOil({model: model});
                 }, this));
             }
+            this.$('.backOil').show();
+            this.$('.cancel').hide();
         },
 
         close: function(){
@@ -196,6 +210,8 @@ define([
         goBack: function(e){
             e.preventDefault();
             this.specificOil.close();
+            this.$('.backOil').hide();
+            this.$('.cancel').show();
             this.$('.oilContainer').show();
         }
     });
