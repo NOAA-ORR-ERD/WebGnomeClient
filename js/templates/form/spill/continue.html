@@ -1,38 +1,140 @@
 <form class="form-horizontal" role="form">
 	<div class="form-group">
-		<label class="col-sm-4 control-label" for="spillrate">Spill Rate:</label>
-		<div class="col-sm-5">
-			<input type="text" id="spillrate" class="form-control">
-		</div>
-		<div class="col-sm-3">
-			<select class="form-control">
-		    </select>
+		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+		<div class="col-sm-4">
+			<input type="text" id="datetime" class="form-control">
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-sm-4 control-label" for="totalspill">Total Spillage:</label>
-		<div class="col-sm-5">
-			<input type="text" id="totalspill" class="form-control">
+		<label class="col-sm-4 control-label" for="duration">Duration of Release:</label>
+		<div class="col-sm-4">
+			<input type="text" id="duration" class="form-control">
 		</div>
 		<div class="col-sm-3">
 			<select class="form-control">
+				<option value="hours">
+					Hours
+				</option>
+				<option value="days">
+					Days
+				</option>
 			</select>
 		</div>
 	</div>
-	<div class="form-group">
-		<label class="col-sm-4 control-label" for="duration">Spill Duration</label>
-		<div class="col-sm-8"><hr></div>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-4 control-label" for="days">Days:</label>
-		<div class="col-sm-3">
-			<input type="text" id="days" class="form-control">
+
+	<ul class="nav nav-tabs">
+	    <li class="amount active">
+	        <a href="#amount" data-toggle="tab">Amount Spilled</a>
+	    </li>
+	    <li class="constant">
+	        <a href="#constant" data-toggle="tab">Constant Spill Rate</a>
+	    </li>
+	    <li class="variable">
+	        <a href="#variable" data-toggle="tab">Changing Spill Rate</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane active" id="amount">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="amount">Amount Spilled:</label>
+					<div class="col-sm-4">
+						<input type="text" id="amount" class="form-control">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control">
+							<option value="cu_m">
+								cu m
+							</option>
+							<option value="gal">
+								gal
+							</option>
+							<option value="bbl">
+								bbl
+							</option>
+							<option value="tons">
+								tons
+							</option>
+							<option value="metric_tons">
+								metric tons
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-4 control-label" for="hours">Hours:</label>
-		<div class="col-sm-3">
-			<input type="text" id="hours" class="form-control">
+
+		<div class="tab-pane" id="constant">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="constant">Spill Rate:</label>
+					<div class="col-sm-4">
+						<input type="text" id="constant" class="form-control">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control">
+							<option value="bbl/hr">
+								bbl/hr
+							</option>
+							<option value="gal/hr">
+								gal/hr
+							</option>
+							<option value="cu_m/hr">
+								cu m/hr
+							</option>
+							<option value="tons/hr">
+								tons/hr
+							</option>
+							<option value="metric_tons/hr">
+								metric tons/hr
+							</option>
+							<option value="gal/min">
+								gal/min
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane" id="variable">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="startrate">Start Rate:</label>
+					<div class="col-sm-4">
+						<input type="text" id="startrate" class="form-control">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control">
+							<option value="bbl/hr">
+								bbl/hr
+							</option>
+							<option value="gal/hr">
+								gal/hr
+							</option>
+							<option value="cu_m/hr">
+								cu m/hr
+							</option>
+							<option value="tons/hr">
+								tons/hr
+							</option>
+							<option value="metric_tons/hr">
+								metric tons/hr
+							</option>
+							<option value="gal/min">
+								gal/min
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="finalrate">Final Rate:</label>
+					<div class="col-sm-4">
+						<input type="text" id="finalrate" class="form-control">
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </form>
