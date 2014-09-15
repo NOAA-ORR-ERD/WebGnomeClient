@@ -45,7 +45,17 @@ define([
         },
 
         continue: function(){
+            var spill = new SpillModel();
 
+            spill.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    this.close();
+                    var spillForm = new SpillContinueForm(null, spill);
+                    spillForm.render();
+                    spillForm.on('hidden', spillForm.close);
+                }, this)
+            });
         },
 
         well: function(){
