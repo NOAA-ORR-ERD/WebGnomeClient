@@ -8,7 +8,7 @@ define([
 ], function($, _, Backbone, FormModal, WaterTemplate){
     var waterForm = FormModal.extend({
     	className: 'modal fade form-modal model-form',
-    	title: 'Water',
+    	title: 'Water Properties',
 
     	events: function(){
     		return _.defaults({
