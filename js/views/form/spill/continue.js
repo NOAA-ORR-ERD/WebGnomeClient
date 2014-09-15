@@ -5,7 +5,8 @@ define([
     'views/modal/form',
     'text!templates/form/spill/continue.html',
     'model/spill',
-    'jqueryDatetimepicker'
+    'jqueryDatetimepicker',
+    'jqueryui/slider'
 ], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
     var continueSpillForm = FormModal.extend({
         title: 'Continuous Release',
@@ -21,6 +22,33 @@ define([
 
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
+            });
+
+            this.$('#amount .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                slide: _.bind(function(e, ui){
+                    this.updateVariableSlide(ui);
+                }, this)
+            });
+
+            this.$('#variable .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                slide: _.bind(function(e, ui){
+                    this.updateVariableSlide(ui);
+                }, this)
+            });
+
+            this.$('#constant .slider').slider({
+                min: 0,
+                max: 5,
+                value: 0,
+                slide: _.bind(function(e, ui){
+                    this.updateVariableSlide(ui);
+                }, this)
             });
         }
 
