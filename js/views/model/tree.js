@@ -84,6 +84,11 @@ define([
                     this.tree.reload(model_tree);
                 }
             }
+        },
+
+        close: function(){
+            webgnome.model.off('sync', this.renderModel, this);
+            Backbone.View.prototype.close.call(this);
         }
     });
 
