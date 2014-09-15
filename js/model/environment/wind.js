@@ -43,8 +43,8 @@ define([
         },
 
         toTree: function(){
-            var tree = Backbone.Model.prototype.toTree.call(this, false);
             var units = this.get('units');
+            var timeseries = this.get('timeseries');
             var attrs = [];
 
             switch (units) {
@@ -57,13 +57,17 @@ define([
                 default:
                     units = units;
             }
+            var arrayOfStrings = [];
+            for (var i = 0; i < timeseries.length; i++){
+                var arrayString = '[' + moment(timeseries[i][0]).format('lll') + ', Speed: ' + timeseries[i][1][0] + ', Direction: ' + timeseries[i][1][1] + ']';
+                arrayOfStrings.push({title: arrayString});
+            }
+            attrs.push({title: 'Timeseries: [...]', expanded: false, children: arrayOfStrings});
 
             attrs.push({title: 'Units: ' + units, key: 'Units',
                          obj_type: this.get('units'), action: 'edit', object: this});
 
-            tree = attrs.concat(tree);
-
-            return tree;
+            return attrs;
         }
     });
 

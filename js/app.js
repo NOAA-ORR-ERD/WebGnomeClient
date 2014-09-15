@@ -109,7 +109,19 @@ define([
                     } else if (_.isObject(el) && !_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
-                    } 
+                    } else if (_.isArray(el)){
+                        var arrayOfStrings = [];
+                        for (var i = 0; i < el.length; i++){
+                            var arrayString = '[' + el[i] + ']';
+                            var arrayObj = {title: arrayString};
+                            arrayOfStrings.push(arrayObj);    
+                        }
+                        if (el.length > 0){
+                            children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
+                        } else {
+                            children.push({title: key + ': []'});
+                        }
+                    }
                 }
 
                 tree = tree.concat(children);
@@ -133,7 +145,19 @@ define([
                     } else if (_.isObject(el) && !_.isArray(el)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toDebugTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
-                    } 
+                    } else if (_.isArray(el)){
+                        var arrayOfStrings = [];
+                        for (var i = 0; i < el.length; i++){
+                            var arrayString = '[' + el[i] + ']';
+                            var arrayObj = {title: arrayString};
+                            arrayOfStrings.push(arrayObj);    
+                        }
+                        if (el.length > 0){
+                            children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
+                        } else {
+                            children.push({title: key + ': []'});
+                        }
+                    }
                 }
 
                 tree = tree.concat(children);
