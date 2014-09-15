@@ -43,8 +43,6 @@ define([
                 el.close();
             });
 
-            $('.xdsoft_datetimepicker').remove();
-
             this.unbind();
             this.remove();
         }
