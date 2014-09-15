@@ -219,9 +219,9 @@ define([
         },
 
         clickSpill: function(){
-            var spillForm = new SpillTypeForm();
-            spillForm.render();
-            spillForm.on('hidden', spillForm.close);
+            var spillTypeForm = new SpillTypeForm();
+            spillTypeForm.render();
+            spillTypeForm.on('hidden', spillForm.close);
         },
 
         clickMap: function(){

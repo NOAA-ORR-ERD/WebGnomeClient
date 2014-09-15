@@ -36,9 +36,10 @@ define([
             spill.save(null, {
                 validate: false,
                 success: _.bind(function(){
+                    this.close();
                     var spillForm = new SpillInstantForm(null, spill);
                     spillForm.render();
-                    spillform.on('hidden', spillForm.close);
+                    spillForm.on('hidden', spillForm.close);
                 }, this)
             });
         },
