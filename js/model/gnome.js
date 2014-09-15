@@ -169,11 +169,16 @@ define([
         },
 
         toTree: function(){
-            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var tree = {};
             var millisecsDur = this.get('duration') * 1000;
             var millisecsTime = this.get('time_step') * 1000;
             var duration = moment.duration(millisecsDur).asHours();
             var timeStepTime = moment.duration(millisecsTime).asMinutes();
+            var map = this.get('map');
+            var movers = this.get('movers');
+            var environment = this.get('environment');
+            var weatherers = this.get('weatherers');
+            var spills = this.get('spills');
             var attrs = [];
             var startTime = moment(this.get('start_time')).format('lll');
 
@@ -190,9 +195,17 @@ define([
             attrs.push({title: 'Time Step: ' + timeStepTime, key: 'Time Step',
                          obj_type: this.get('time_step'), action: 'edit', object: this});
 
-            tree = attrs.concat(tree);
+            attrs.push({title: 'Map:', children: map.toTree(), expanded: true, obj_type: map.get('obj_type'), action: 'new'});
 
-            return tree;
+            attrs.push({title: 'Movers:', children: movers.toTree(), expanded: true, obj_type: movers.get('obj_type'), action: 'new'});
+
+            attrs.push({title: 'Environment:', children: environment.toTree(), expanded: true, obj_type: environment.get('obj_type'), action: 'new'});
+
+            attrs.push({title: 'Weatherers:', children: weatherers.toTree(), expanded: true, obj_type: weatherers.get('obj_type'), action: 'new'});
+
+            attrs.push({title: 'Spills:', children: spills.toTree(), expanded: true, obj_type: spills.get('obj_type'), action: 'new'});
+
+            return attrs;
         },
 
         isValidAdios: function(){

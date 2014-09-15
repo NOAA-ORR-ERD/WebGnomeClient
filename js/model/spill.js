@@ -29,6 +29,21 @@ define([
             if(!attrs.element_type.isValid()){
                 return attr.element_type.validationError;
             }
+        },
+
+        toTree: function(){
+            var tree = Backbone.Model.prototype.toTree.call(this, false);
+            var attrs = [];
+            var on = this.get('on');
+            var name = this.get('name');
+
+            attrs.push({title: 'Spill Name: ' + name, key: 'Spill Name',
+                         obj_type: this.get('name'), action: 'edit', object: this});
+            attrs.push({title: 'On: ' + on, key: 'On', obj_type: this.get('on'), action: 'edit', object: this});
+
+            tree = attrs.concat(tree);
+
+            return tree;           
         }
     });
 
