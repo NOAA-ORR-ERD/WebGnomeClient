@@ -53,9 +53,8 @@ define([
         update: function(){
             var amount = parseFloat(this.$('#amount-input').val());
             this.model.set('amount', amount);
-
+            this.model.save();
             this.updateConstantSlide();
-            
         },
 
         updateConstantSlide: function(ui){
@@ -65,7 +64,7 @@ define([
             } else {
                 value = this.$('#constant .slider').slider('value');
             }
-            if(this.model.get('amount').length > 0){
+            if(this.model.get('amount')){
                 var amount = this.model.get('amount');
                 if(value === 0){
                     this.$('#constant .tooltip-inner').text(amount);
