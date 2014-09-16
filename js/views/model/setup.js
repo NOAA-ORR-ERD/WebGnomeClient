@@ -220,8 +220,8 @@ define([
 
         clickSpill: function(){
             var spillTypeForm = new SpillTypeForm();
+            spillTypeForm.on('hidden', spillTypeForm.close);
             spillTypeForm.render();
-            spillTypeForm.on('hidden', spillForm.close);
         },
 
         clickMap: function(){
