@@ -41,7 +41,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                    this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateAmountSlide(ui);
@@ -53,7 +53,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
+                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateRateSlide(ui);
@@ -67,7 +67,8 @@ define([
             this.model.set('rate', rate);
             this.model.set('amount', amount);
             this.model.save();
-            this.updateConstantSlide();
+            this.updateAmountSlide();
+            this.updateRateSlide();
         },
 
         updateAmountSlide: function(ui){
