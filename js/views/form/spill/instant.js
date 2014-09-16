@@ -27,6 +27,10 @@ define([
                 format: 'Y/n/j G:i',
             });
 
+            if (!this.model.get('amount')){
+                this.model.set('amount', 0);
+            }
+
             this.$('.slider').slider({
                 min: 0,
                 max: 5,
@@ -52,6 +56,8 @@ define([
             this.model.set('units', units);
             this.model.set('amount', amount);
 
+            this.updateConstantSlide();
+
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
@@ -69,7 +75,7 @@ define([
             if(this.model.get('amount')){
                 var amount = this.model.get('amount');
                 if(value === 0){
-                    this.$('#constant .tooltip-inner').text(amount);
+                    this.$('.tooltip-inner').text(amount);
                 } else {
                     var bottom = amount - value;
                     if (bottom < 0) {
