@@ -58,12 +58,14 @@ define([
             var salinity = this.otherValues(this.$('#salinity option:selected').val(), 'salinity');
             var sedimentLoad = this.otherValues(this.$('#sediment option:selected').val(), 'sediment');
             var seaHeight = this.convertHeighttoKM(this.$('#sea-height').val(), this.$('#height-units option:selected').val());
+            var dataSource = this.$('#data-source').val();
 
             this.model.set('water_temp', waterTemp);
             this.model.set('salinity', salinity);
             this.model.set('sediment_load', sedimentLoad);
             this.model.set('sea_height', seaHeight);
-
+            this.model.set('data_source', dataSource);
+            console.log(this.model);
     		if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {

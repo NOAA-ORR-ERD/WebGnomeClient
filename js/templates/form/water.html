@@ -63,7 +63,7 @@
 					<div class="col-sm-5"><input type="text" class="form-control" id="sediment-manual"></div>
 				</div>
 				<div class="form-group" id="sea-state">
-					<div class="col-sm-5"><label class="control-label" for="sea-height">Sea State (Wave Height)</label></div>
+					<div class="col-sm-3"><label class="control-label" for="sea-height">Sea State (Wave Height)</label></div>
 					<div class="col-sm-2"><input type="text" class="form-control" id="sea-height"></div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="height-units">
@@ -72,6 +72,19 @@
 							</option>
 							<option value="ft">
 								Feet
+							</option>
+						</select>
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control col-xs-8" id="data-source">
+							<option value="windcalc">
+								Based on Wind
+							</option>
+							<option value="specified">
+								Specified
+							</option>
+							<option value="fetch">
+								Fetch
 							</option>
 						</select>
 					</div>
