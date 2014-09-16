@@ -16,6 +16,10 @@ define([
             return _.defaults({}, FormModal.prototype.events);
         },
 
+        initialize: function(options, spillModel){
+            this.model = spillModel;
+        },
+
         render: function(options){
             this.body = _.template(FormTemplate);
             FormModal.prototype.render.call(this, options);
@@ -28,17 +32,11 @@ define([
                 min: 0,
                 max: 5,
                 value: 0,
+                create: _.bind(function(){
+                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                }, this),
                 slide: _.bind(function(e, ui){
-                    this.updateVariableSlide(ui);
-                }, this)
-            });
-
-            this.$('#variable .slider').slider({
-                min: 0,
-                max: 5,
-                value: 0,
-                slide: _.bind(function(e, ui){
-                    this.updateVariableSlide(ui);
+                    this.updateConstantSlide(ui);
                 }, this)
             });
 
@@ -47,9 +45,40 @@ define([
                 max: 5,
                 value: 0,
                 slide: _.bind(function(e, ui){
-                    this.updateVariableSlide(ui);
+                    this.updateConstantSlide(ui);
                 }, this)
             });
+        },
+
+        update: function(){
+            var amount = parseFloat(this.$('#amount-input').val());
+            this.model.set('amount', amount);
+
+            this.updateConstantSlide();
+            
+        },
+
+        updateConstantSlide: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('#constant .slider').slider('value');
+            }
+            if(this.model.get('amount').length > 0){
+                var amount = this.model.get('amount');
+                if(value === 0){
+                    this.$('#constant .tooltip-inner').text(amount);
+                } else {
+                    var bottom = amount - value;
+                    if (bottom < 0) {
+                        bottom = 0;
+                    }
+                    var top = parseInt(amount, 10) + parseInt(value, 10);
+                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                }
+            }
+            
         }
 
     });

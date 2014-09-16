@@ -51,10 +51,11 @@ define([
             spill.save(null, {
                 validate: false,
                 success: _.bind(function(){
-                    this.close();
-                    var spillForm = new SpillContinueForm(null, spill);
-                    spillForm.render();
-                    spillForm.on('hidden', spillForm.close);
+                    this.on('hidden', _.bind(function(){
+                        var spillForm = new SpillContinueForm(null, spill);
+                        spillForm.render();
+                        spillForm.on('hidden', spillForm.close);
+                    }, this));
                 }, this)
             });
         },

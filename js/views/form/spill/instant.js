@@ -11,6 +11,10 @@ define([
         title: 'Instantaneous Release',
         className: 'modal fade form-modal spilltype-form',
 
+        initialize: function(options, spillModel){
+            this.model = spillModel;
+        },
+
         events: function(){
             return _.defaults({}, FormModal.prototype.events);
         },
