@@ -65,7 +65,6 @@ define([
             this.model.set('sediment_load', sedimentLoad);
             this.model.set('sea_height', seaHeight);
             this.model.set('data_source', dataSource);
-            console.log(this.model);
     		if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
