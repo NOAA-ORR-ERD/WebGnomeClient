@@ -36,7 +36,7 @@ define([
                     this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
-                    this.updateConstantSlide(ui);
+                    this.updateAmountSlide(ui);
                 }, this)
             });
 
@@ -44,30 +44,33 @@ define([
                 min: 0,
                 max: 5,
                 value: 0,
+                create: _.bind(function(){
+                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                }, this),
                 slide: _.bind(function(e, ui){
-                    this.updateConstantSlide(ui);
+                    this.updateRateSlide(ui);
                 }, this)
             });
         },
 
         update: function(){
-            var amount = parseFloat(this.$('#amount-input').val());
+            var amount = parseFloat(this.$('#spill-amount').val());
             this.model.set('amount', amount);
             this.model.save();
             this.updateConstantSlide();
         },
 
-        updateConstantSlide: function(ui){
+        updateAmountSlide: function(ui){
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#constant .slider').slider('value');
+                value = this.$('#spill-amount .slider').slider('value');
             }
             if(this.model.get('amount')){
                 var amount = this.model.get('amount');
                 if(value === 0){
-                    this.$('#constant .tooltip-inner').text(amount);
+                    this.$('.active .tooltip-inner').text(amount);
                 } else {
                     var bottom = amount - value;
                     if (bottom < 0) {
@@ -78,6 +81,28 @@ define([
                 }
             }
             
+        },
+
+        updateRateSlide: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('#spill-amount .slider').slider('value');
+            }
+            if(this.model.get('amount')){
+                var amount = this.model.get('amount');
+                if(value === 0){
+                    this.$('.active .tooltip-inner').text(amount);
+                } else {
+                    var bottom = amount - value;
+                    if (bottom < 0) {
+                        bottom = 0;
+                    }
+                    var top = parseInt(amount, 10) + parseInt(value, 10);
+                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                }
+            }
         }
 
     });
