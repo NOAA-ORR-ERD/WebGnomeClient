@@ -28,6 +28,14 @@ define([
                 format: 'Y/n/j G:i',
             });
 
+            if (!this.model.get('amount')){
+                this.model.set('amount', 0);
+            }
+
+            if (!this.model.get('rate')){
+                this.model.set('rate', 0);
+            }
+
             this.$('#amount .slider').slider({
                 min: 0,
                 max: 5,
@@ -45,7 +53,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateRateSlide(ui);
@@ -55,6 +63,8 @@ define([
 
         update: function(){
             var amount = parseFloat(this.$('#spill-amount').val());
+            var rate = parseFloat(this.$('#spill-rate').val());
+            this.model.set('rate', rate);
             this.model.set('amount', amount);
             this.model.save();
             this.updateConstantSlide();
@@ -65,7 +75,7 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#spill-amount .slider').slider('value');
+                value = this.$('#amount .slider').slider('value');
             }
             if(this.model.get('amount')){
                 var amount = this.model.get('amount');
@@ -88,10 +98,10 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#spill-amount .slider').slider('value');
+                value = this.$('#constant .slider').slider('value');
             }
-            if(this.model.get('amount')){
-                var amount = this.model.get('amount');
+            if(this.model.get('rate')){
+                var amount = this.model.get('rate');
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {
