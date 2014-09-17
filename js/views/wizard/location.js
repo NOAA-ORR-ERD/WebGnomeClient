@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/wizard/default',
+    'views/wizard/base',
     'model/gnome',
     'model/location',
     'model/environment/wind',
@@ -12,11 +12,11 @@ define([
     'views/form/model',
     'views/form/wind',
     'views/modal/loading'
-], function($, _, Backbone, DefaultWizard, GnomeModel,
+], function($, _, Backbone, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
     GeojsonOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
-    var locationWizardView = DefaultWizard.extend({
+    var locationWizardView = BaseWizard.extend({
         steps: [],
         initialize: function(opts){
             this.loadingGif = new LoadingModal();

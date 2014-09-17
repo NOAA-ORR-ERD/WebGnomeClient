@@ -13,6 +13,8 @@ define([
     'text!templates/panel/map.html',
     'model/environment/water',
     'views/form/water',
+    'model/spill',
+    'views/form/spill/type',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -21,7 +23,8 @@ define([
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
-    WaterModel, WaterForm){
+    WaterModel, WaterForm,
+    SpillModel, SpillTypeForm){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -232,7 +235,9 @@ define([
         },
 
         clickSpill: function(){
-
+            var spillTypeForm = new SpillTypeForm();
+            spillTypeForm.on('hidden', spillTypeForm.close);
+            spillTypeForm.render();
         },
 
         clickMap: function(){
@@ -257,7 +262,9 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker').remove();
-            this.windPlot.shutdown();
+            if(!_.isUndefined(this.windPlot)){
+                this.windPlot.shutdown();
+            }
             webgnome.model.off('sync', this.updateObjects, this);
             Backbone.View.prototype.close.call(this);
         }

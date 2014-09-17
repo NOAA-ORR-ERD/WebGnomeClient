@@ -820,6 +820,64 @@ nav.navbar{
         }
     }
 
+    &.spilltype-form{
+        .option{
+            background: #efefef;
+            height: 90px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+
+            &:last-of-type{
+                margin-bottom: 0;
+            }
+
+            .icon{
+                width: 90px;
+                height: 90px;
+                background: #428bca;
+                float: left;
+            }
+            .title{
+                font-size: 15px;
+                padding: 15px 15px 10px 105px;
+            }
+            p{
+                padding-left: 105px;
+                font-size: 11px;
+            }
+        }
+        .slider{
+            margin-top: 40px;
+
+            .tooltip{
+                opacity: 1;
+                &.top{
+                    margin-top: -33px;
+                    margin-left: -19px;
+                }
+                width: 55px;
+            }
+        }
+        .modal-footer{
+            display: none;
+        }
+    }
+    &.continuespill-form, &.instantspill-form {
+        .slider{
+            margin-top: 40px;
+            .tooltip{
+                opacity: 1;
+                &.top{
+                    margin-top: -33px;
+                    margin-left: -19px;
+                }
+                width: 55px;
+            }
+        }
+    }
+
 }
 
 .oilContainer {
@@ -894,5 +952,7 @@ nav.navbar{
         }
     }
 }
+
+
 
 
