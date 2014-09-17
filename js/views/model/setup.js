@@ -55,7 +55,7 @@ define([
         render: function(){
             var compiled = _.template(AdiosSetupTemplate, {
                 start_time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: webgnome.model.formatDuration().days,
+                duration: webgnome.model.formatDuration(),
             });
 
             $('body').append(this.$el.append(compiled));
@@ -85,7 +85,9 @@ define([
             var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
-            var duration = (parseInt(this.$('#duration').val(), 10) * 24) * 60 * 60;
+            var days = this.$('#days').val();
+            var hours = this.$('#hours').val();
+            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             webgnome.model.set('duration', duration);
 
             webgnome.model.save();
