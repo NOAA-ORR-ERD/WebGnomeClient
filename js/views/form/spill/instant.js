@@ -45,7 +45,7 @@ define([
         },
 
         update: function(){
-            var amount = parseFloat(this.$('#amountreleased').val());
+            var amount = this.$('#amountreleased').val();
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = this.$('#datetime').val();

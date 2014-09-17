@@ -69,6 +69,12 @@ define([
             this.model.set('amount', amount);
             this.updateAmountSlide();
             this.updateRateSlide();
+
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
         },
 
         updateAmountSlide: function(ui){
