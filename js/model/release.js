@@ -2,6 +2,7 @@ define([
     'underscore',
     'backbone',
     'model/base',
+    'moment'
 ], function(_, Backbone, BaseModel){
     var gnomeRelease = BaseModel.extend({
         url: '/release',
@@ -30,6 +31,11 @@ define([
             if(isNaN(attrs.num_elements)){
                 return 'Release amount must be a number.';
             }
+
+            if (moment(attrs.start_time).isAfter(attrs.end_release_time)){
+                return 'Duration must be a positive value';
+            }
+
         }
 
     });
