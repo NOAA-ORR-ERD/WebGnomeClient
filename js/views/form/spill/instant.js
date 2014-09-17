@@ -64,7 +64,6 @@ define([
             } else {
                 this.clearError();
             }
-            console.log(this.model);
         },
 
         updateConstantSlide: function(ui){
