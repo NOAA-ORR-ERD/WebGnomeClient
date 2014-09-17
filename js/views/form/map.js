@@ -65,7 +65,7 @@ define([
             this.$('input[value="' + this.model.get('filename') + '"]').parents('.panel').find('.collapse').addClass('in');
 
             this.$('.file').fileupload({
-                url: webgnome.api + '/upload',
+                url: webgnome.config.api + '/upload',
                 dropZone: this.$('.file'),
                 add: null,
             });

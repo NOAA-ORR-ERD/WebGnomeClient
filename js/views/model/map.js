@@ -216,7 +216,7 @@ define([
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.frame = 0;
-            $.get(webgnome.api + '/rewind');
+            $.get(webgnome.config.api + '/rewind');
 
             // clean up the spill ... ha
             this.SpillGroupLayers.clear();

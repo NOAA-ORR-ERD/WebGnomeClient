@@ -18,7 +18,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                start_time: moment(this.model.get('start_time')).format('YYYY/M/D H:mm'),
+                start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
@@ -27,12 +27,12 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({
-                format: 'Y/n/j G:i'
+                format: webgnome.config.date_format.datetimepicker
             });
         },
 
         update: function() {
-            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 
             var days = this.$('#days').val();

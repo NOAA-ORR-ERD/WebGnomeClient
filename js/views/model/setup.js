@@ -42,7 +42,7 @@ define([
 
         render: function(){
             var compiled = _.template(AdiosSetupTemplate, {
-                start_time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
+                start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: webgnome.model.formatDuration().days,
             });
 
@@ -55,12 +55,12 @@ define([
             this.updateObjects();
 
             this.$('.date').datetimepicker({
-                format: 'Y/n/j G:i'
+                format: webgnome.config.date_format.datetimepicker
             });
         },
 
         updateModel: function(){
-            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
             var duration = (parseInt(this.$('#duration').val(), 10) * 24) * 60 * 60;

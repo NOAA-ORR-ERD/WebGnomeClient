@@ -5,13 +5,12 @@ define([
     'backbone',
     'router',
     'moment',
+    'text!/config.json',
     'model/session',
     'model/gnome'
-], function($, _, Backbone, Router, moment, SessionModel, GnomeModel) {
+], function($, _, Backbone, Router, moment, Config, SessionModel, GnomeModel) {
     'use strict';
     var app = {
-        api: 'http://0.0.0.0:9899',
-        //api: 'http://hazweb2.orr.noaa.gov:7450',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
@@ -21,11 +20,13 @@ define([
                 }
             });
 
+            this.config = JSON.parse(Config);
+
 
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
                 if(options.url.indexOf('http://') === -1){
-                    options.url = webgnome.api + options.url;
+                    options.url = webgnome.config.api + options.url;
                 }
                 
             });

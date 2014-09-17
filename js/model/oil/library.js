@@ -21,7 +21,7 @@ define([
         },
 
         url: function(){
-            return 'http://0.0.0.0:9898/oil';
+            return webgnome.config.oil_api + '/oil';
         },
 
         fetchOil: function(id, cb){

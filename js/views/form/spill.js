@@ -33,17 +33,17 @@ define([
                 end_lng: spill.get('release').get('end_position')[0],
                 name: spill.get('name'),
                 release_amount: spill.get('release').get('num_elements'),
-                release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format('YYYY/M/D H:mm') : moment(spill.get('release').get('end_release_time')).format('YYYY/M/D H:mm')
+                release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format(webgnome.config.date_format.moment) : moment(spill.get('release').get('release_time')).format(webgnome.config.date_format.moment),
+                release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format(webgnome.config.date_format.moment) : moment(spill.get('release').get('end_release_time')).format(webgnome.config.date_format.moment)
             });
 
             FormModal.prototype.render.call(this, options);
 
             this.$('#release-start').datetimepicker({
-                format: 'Y/n/j G:i',
+                format: webgnome.config.date_format.datetimepicker
             });
             this.$('#release-end').datetimepicker({
-                format: 'Y/n/j G:i',
+                format: webgnome.config.date_format.datetimepicker
             });
 
             // set the correct select input on the forms
@@ -66,8 +66,8 @@ define([
             
             var release_start = $('#release-start').val();
             var release_end = $('#release-end').val();
-            release.set('release_time', moment(release_start, 'YYYY/M/D H:mm').format());
-            release.set('end_release_time', moment(release_end, 'YYYY/M/D H:mm').format());
+            release.set('release_time', moment(release_start, webgnome.config.date_format.moment).format());
+            release.set('end_release_time', moment(release_end, webgnome.config.date_format.moment).format());
             release.set('num_elements',this.$('#release-amount').val());
 
             spill.set('pollutant', this.$('#pollutant').val());

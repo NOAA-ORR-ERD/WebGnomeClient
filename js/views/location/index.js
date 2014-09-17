@@ -25,7 +25,7 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            url: webgnome.api + '/location',
+                            url: webgnome.config.api + '/location',
                         }),
                         style: new ol.style.Style({
                             image: new ol.style.Icon({

@@ -11,7 +11,7 @@ define([
         },
         
         url: function(){
-            return 'http://0.0.0.0:9898/distinct';
+            return webgnome.config.oil_api + '/distinct';
         }
     });
 

@@ -85,7 +85,7 @@ define([
             this.form.variable.increment = this.$('#incrementCount');
 
             this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
+                format: webgnome.config.date_format.datetimepicker
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
 
@@ -247,7 +247,7 @@ define([
 
         addTimeseriesEntry: function(e){
             e.preventDefault();
-            var dateObj = moment(this.form.variable.datetime.val(), 'YYYY/M/D H:mm');
+            var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
             var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
             var speed = this.form.variable.speed.val();
             var direction = this.form.variable.direction.val();
@@ -267,7 +267,7 @@ define([
                     this.model.get('timeseries').push(entry);
                     // Code for time incrementer updates assuming values in form are in hours
                     dateObj.add('h', incrementer);
-                    this.form.variable.datetime.val(dateObj.format('YYYY/M/D H:mm'));
+                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
                 }
                 this.renderTimeseries();
             }
@@ -279,7 +279,7 @@ define([
             e.preventDefault();
             var index = e.target.parentElement.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            this.form.variable.datetime.val(moment(entry[0]).format('YYYY/M/D H:mm'));
+            this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
             this.form.variable.speed.val(entry[1][0]);
             this.form.variable.direction.val(entry[1][1]);
             this.$('.variable-compass').compassRoseUI('update', {
@@ -316,7 +316,7 @@ define([
                     velocity = low + ' - ' + high;
                 }
 
-                var date = moment(el[0]).format('YYYY/M/D H:mm');
+                var date = moment(el[0]).format(webgnome.config.date_format.moment);
                 html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
             });
             this.$('table tbody').html(html);
