@@ -62,11 +62,11 @@ define([
         },
 
         update: function(){
-            var amount = parseFloat(this.$('#spill-amount').val());
-            var rate = parseFloat(this.$('#spill-rate').val());
+            var amount = this.$('#spill-amount').val();
+            var rate = this.$('#spill-rate').val();
+
             this.model.set('rate', rate);
             this.model.set('amount', amount);
-            this.model.save();
             this.updateAmountSlide();
             this.updateRateSlide();
         },
@@ -78,7 +78,7 @@ define([
             } else {
                 value = this.$('#amount .slider').slider('value');
             }
-            if(this.model.get('amount')){
+            if(this.model.get('amount') !== 0){
                 var amount = this.model.get('amount');
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
