@@ -9,7 +9,7 @@ define([
 ], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
     var instantSpillForm = FormModal.extend({
         title: 'Instantaneous Release',
-        className: 'modal fade form-modal spilltype-form',
+        className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
             this.model = spillModel;

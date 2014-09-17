@@ -10,7 +10,7 @@ define([
 ], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
     var continueSpillForm = FormModal.extend({
         title: 'Continuous Release',
-        className: 'modal fade form-modal spilltype-form',
+        className: 'modal fade form-modal continuespill-form',
 
         events: function(){
             return _.defaults({}, FormModal.prototype.events);
