@@ -29,6 +29,12 @@ define([
             if(!attrs.element_type.isValid()){
                 return attr.element_type.validationError;
             }
+
+            if(isNaN(attrs.amount)){
+                return 'Amount must be a number';
+            } else if (attrs.amount < 0) {
+                return 'Amount must be a positive number';
+            }
         }
     });
 
