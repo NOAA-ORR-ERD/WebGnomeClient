@@ -6,7 +6,8 @@ define([
     'text!templates/form/spill/continue.html',
     'model/spill',
     'jqueryDatetimepicker',
-    'jqueryui/slider'
+    'jqueryui/slider',
+    'moment'
 ], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
     var continueSpillForm = FormModal.extend({
         title: 'Continuous Release',
@@ -64,12 +65,23 @@ define([
         update: function(){
             var amount = this.$('#spill-amount').val();
             var rate = this.$('#spill-rate').val();
+            var release = this.model.get('release');
+            var units = this.$('#units').val();
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var days = this.$('#days').val();
+            var hours = this.$('#hours').val();
+            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
+            var endTime = releaseTime.add(duration, 's');
 
+            release.set('release_time', releaseTime.format());
+            release.set('end_release_time', endTime.format()); 
             this.model.set('rate', rate);
             this.model.set('amount', amount);
+            this.model.set('release', release);
+            this.model.set('units', units);
             this.updateAmountSlide();
             this.updateRateSlide();
-
+            console.log(this.model.toJSON());
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {

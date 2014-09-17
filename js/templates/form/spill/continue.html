@@ -6,20 +6,17 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-sm-4 control-label" for="duration">Duration of Release:</label>
-		<div class="col-sm-4">
-			<input type="text" id="duration" class="form-control">
-		</div>
-		<div class="col-sm-3">
-			<select class="form-control">
-				<option value="hours">
-					Hours
-				</option>
-				<option value="days">
-					Days
-				</option>
-			</select>
-		</div>
+		<label class="col-sm-4 control-label">Duration:</label>
+        <div class="col-sm-8">
+            <label class="col-sm-2 control-label" for="days">Day(s)</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" id="days" min="0" value="{{ duration.days }}">
+            </div>
+            <label class="col-sm-2 control-label" for="hours">Hour(s)</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
+            </div>
+        </div>
 	</div>
 
 	<ul class="nav nav-tabs">
@@ -40,8 +37,8 @@
 						<input type="text" id="spill-amount" class="form-control">
 					</div>
 					<div class="col-sm-3">
-						<select class="form-control">
-							<option value="cu_m">
+						<select class="form-control" id="units">
+							<option value="cubic meters">
 								cu m
 							</option>
 							<option value="gal">
@@ -50,10 +47,10 @@
 							<option value="bbl">
 								bbl
 							</option>
-							<option value="tons">
+							<option value="ton">
 								tons
 							</option>
-							<option value="metric_tons">
+							<option value="metric ton">
 								metric tons
 							</option>
 						</select>
@@ -85,6 +82,9 @@
 							<option value="gal/hr">
 								gal/hr
 							</option>
+							<option value="gal/min">
+								gal/min
+							</option>
 							<option value="cu_m/hr">
 								cu m/hr
 							</option>
@@ -93,9 +93,6 @@
 							</option>
 							<option value="metric_tons/hr">
 								metric tons/hr
-							</option>
-							<option value="gal/min">
-								gal/min
 							</option>
 						</select>
 					</div>

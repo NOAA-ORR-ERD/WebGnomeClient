@@ -5,7 +5,8 @@ define([
     'views/modal/form',
     'text!templates/form/spill/instant.html',
     'model/spill',
-    'jqueryDatetimepicker'
+    'jqueryDatetimepicker',
+    'moment'
 ], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
     var instantSpillForm = FormModal.extend({
         title: 'Instantaneous Release',
@@ -48,9 +49,9 @@ define([
             var amount = this.$('#amountreleased').val();
             var units = this.$('#units').val();
             var release = this.model.get('release');
-            var releaseTime = this.$('#datetime').val();
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format();
 
-            release.attributes.release_time = releaseTime;
+            release.set('release_time', releaseTime);
 
             this.model.set('release', release);
             this.model.set('units', units);
