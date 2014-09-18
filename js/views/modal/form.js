@@ -95,6 +95,7 @@ define([
         finish: function(){
             this.on('hidden', function(){
                 this.trigger('finish');
+                webgnome.model.fetch();
                 webgnome.router.navigate('model', true);
             });
             this.hide();
