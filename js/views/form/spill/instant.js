@@ -13,6 +13,7 @@ define([
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
+            FormModal.prototype.initialize.call(this, options);
             this.model = spillModel;
         },
 
@@ -65,7 +66,6 @@ define([
             } else {
                 this.clearError();
             }
-            console.log(this.model.toJSON());
         },
 
         updateConstantSlide: function(ui){

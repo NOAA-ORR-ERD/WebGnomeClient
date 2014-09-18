@@ -132,6 +132,7 @@ define([
 
         updateObjects: function(){
             this.updateWind();
+            this.updateSpill();
         },
 
         clickWind: function(){
@@ -219,9 +220,22 @@ define([
         },
 
         clickSpill: function(){
-            var spillTypeForm = new SpillTypeForm();
+            var spill = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
+            if(_.isUndefined(spill) || spill.length === 0){
+                spill = new SpillModel();
+            }
+            var spillTypeForm = new SpillTypeForm(null, spill);
             spillTypeForm.on('hidden', spillTypeForm.close);
+            spillTypeForm.on('save', function(){
+                webgnome.model.get('spills').add(spill);
+                webgnome.model.save();
+            });
             spillTypeForm.render();
+        },
+
+        updateSpill: function(){
+            var spill = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
+            console.log(spill);
         },
 
         clickMap: function(){

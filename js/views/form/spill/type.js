@@ -40,6 +40,10 @@ define([
                         var spillForm = new SpillInstantForm(null, spill);
                         spillForm.render();
                         spillForm.on('hidden', spillForm.close);
+                        spillForm.on('save', function(){
+                            webgnome.model.get('spills').add(spill);
+                            webgnome.model.save();
+                        });
                     }, this));
                 }, this)
             });
@@ -55,6 +59,10 @@ define([
                         var spillForm = new SpillContinueForm(null, spill);
                         spillForm.render();
                         spillForm.on('hidden', spillForm.close);
+                        spillForm.on('save', function(){
+                            webgnome.model.get('spills').add(spill);
+                            webgnome.model.save();
+                        });
                     }, this));
                 }, this)
             });

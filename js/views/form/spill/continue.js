@@ -18,6 +18,7 @@ define([
         },
 
         initialize: function(options, spillModel){
+            FormModal.prototype.initialize.call(this, options);
             this.model = spillModel;
         },
 
@@ -93,7 +94,6 @@ define([
             } else {
                 this.clearError();
             }
-            console.log(this.model.toJSON());
         },
 
         updateAmountSlide: function(ui){
