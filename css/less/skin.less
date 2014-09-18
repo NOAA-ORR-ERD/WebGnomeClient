@@ -392,7 +392,6 @@ nav.navbar{
 
         &.top{
             margin-top: -32px;
-            margin-left: -2px;
         }
     }
     .row{
@@ -405,10 +404,6 @@ nav.navbar{
         .make-md-column(12);
         overflow: hidden;
         height: 700px;
-        .ol-viewport{
-            border: 1px solid #EDEDED;
-
-        }
     }
 }
 
@@ -864,6 +859,7 @@ nav.navbar{
             display: none;
         }
     }
+
     &.continuespill-form, &.instantspill-form {
         .slider{
             margin-top: 40px;
@@ -875,6 +871,20 @@ nav.navbar{
                 }
                 width: 55px;
             }
+        }
+    }
+
+    &.location-form{
+        .map{
+            height: 600px;
+        }
+        .modal-body{
+            h1{
+                display: none
+            }
+        }
+        .modal-footer{
+            display: none;
         }
     }
 

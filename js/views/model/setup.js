@@ -15,6 +15,7 @@ define([
     'views/form/water',
     'model/spill',
     'views/form/spill/type',
+    'views/form/location',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -24,7 +25,8 @@ define([
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm,
-    SpillModel, SpillTypeForm){
+    SpillModel, SpillTypeForm,
+    LocationForm){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -34,8 +36,8 @@ define([
             'click .water': 'clickWater',
             'click .spill': 'clickSpill',
             'click .map': 'clickMap',
+            'click .location': 'clickLocation',
             'blur input': 'updateModel',
-            'click .location': 'loadLocation',
             'click .eval': 'evalModel'
         },
 
@@ -240,24 +242,10 @@ define([
             spillTypeForm.render();
         },
 
-        clickMap: function(){
-            var map = webgnome.model.get('map');
-            if(_.isUndefined(map)){
-                wind = new MapModal();
-            }
-
-            var mapForm = new MapForm(null, map);
-            mapForm.on('hidden', mapForm.close);
-            mapForm.on('save', function(){
-                webgnome.model.set('map', map);
-                webgnome.model.save();
-            });
-            mapForm.render();
-        },
-
-        loadLocation: function(e){
-            e.preventDefault();
-            webgnome.router.navigate('locations', true);
+        clickLocation: function(){
+            var locationForm = new LocationForm();
+            locationForm.on('hidden', locationForm.close);
+            locationForm.render();
         },
 
         close: function(){

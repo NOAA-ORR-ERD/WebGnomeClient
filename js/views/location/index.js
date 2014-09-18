@@ -15,7 +15,13 @@ define([
         /**
          * @todo decomp the popover into a new view? How else to get load click event?
          */
-        initialize: function(){
+        initialize: function(options){
+            if (!_.isUndefined(options) && _.has(options, 'dom_target')) {
+                this.dom_target = options.dom_target;
+            } else {
+                this.dom_target = 'body';
+            }
+
             this.mapView = new olMapView({
                 controls: [],
                 layers: [
@@ -87,12 +93,13 @@ define([
         },
 
         load: function(options){
+            this.trigger('load');
             this.wizard = new LocationWizard(options);
         },
 
         render: function(){
             compiled = _.template(LocationsTemplate);
-            $('body').append(this.$el.html(compiled));
+            $(this.dom_target).append(this.$el.html(compiled));
 
             this.popup = new ol.Overlay({
                 position: 'bottom-center',
