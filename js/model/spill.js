@@ -35,7 +35,6 @@ define([
             } else if (attrs.amount < 0) {
                 return 'Amount must be a positive number';
             }
-
         }
     });
 

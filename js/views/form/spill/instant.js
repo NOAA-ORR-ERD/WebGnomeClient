@@ -29,10 +29,6 @@ define([
                 format: 'Y/n/j G:i',
             });
 
-            if (!this.model.get('amount')){
-                this.model.set('amount', 0);
-            }
-
             this.$('.slider').slider({
                 min: 0,
                 max: 5,
@@ -47,18 +43,16 @@ define([
         },
 
         update: function(){
-            var amount = this.$('#amountreleased').val();
+            var amount = parseInt(this.$('#amountreleased').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format();
 
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
-
             this.model.set('release', release);
             this.model.set('units', units);
             this.model.set('amount', amount);
-
             this.updateConstantSlide();
 
             if(!this.model.isValid()){

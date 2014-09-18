@@ -64,7 +64,7 @@ define([
         },
 
         update: function(){
-            var amount = this.$('#spill-amount').val();
+            var amount = parseInt(this.$('#spill-amount').val(), 10);
             var rate = this.$('#spill-rate').val();
             var release = this.model.get('release');
             var units = this.$('#units').val();
