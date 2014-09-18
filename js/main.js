@@ -26,7 +26,8 @@ require.config({
         flottime: 'lib/flot/jquery.flot.time',
         flotresize: 'lib/flot/jquery.flot.resize',
         flotdirection: 'lib/flotdirection/index',
-        flotspline: 'lib/flotspline/jquery.flot.spline'
+        flotspline: 'lib/flotspline/jquery.flot.spline',
+        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip'
     },
     shim: {
         jquery: {
@@ -40,6 +41,7 @@ require.config({
         flotresize: ['flot'],
         flotdirection: ['flot'],
         flotspline: ['flot'],
+        flottooltip: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'

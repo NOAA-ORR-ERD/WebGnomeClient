@@ -17,7 +17,8 @@ define([
     'flot',
     'flottime',
     'flotresize',
-    'flotdirection'
+    'flotdirection',
+    'flottooltip'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -261,6 +262,7 @@ define([
                 });
 
                 var dataset = [{
+                    label: 'Spills',
                     data: data,
                     color: 'rgba(151,187,205,1)',
                     hoverable: true,
@@ -268,6 +270,9 @@ define([
                     lines: {
                         show: true,
                         lineWidth: 2
+                    },
+                    points: {
+                        show: true
                     }
                 }];
 
@@ -279,15 +284,23 @@ define([
                     this.spillPlot = $.plot('.spill .chart', dataset, {
                         grid: {
                             borderWidth: 1,
-                            borderColor: '#ddd'
+                            borderColor: '#ddd',
+                            hoverable: true
                         },
                         xaxis: {
                             mode: 'time',
                             timezone: 'browser'
-                        }
+                        },
+                        tooltip: true,
+                            tooltipOpts: {
+                                content: function(label, x, y, flotItem){ return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
+                            },
+                            shifts: {
+                                x: -30,
+                                y: -50
+                            }
                     });
                 }
-
                 
             } else {
                 this.$('.spill .state').removeClass('complete');
