@@ -234,8 +234,56 @@ define([
         },
 
         updateSpill: function(){
-            var spill = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
-            console.log(spill);
+            var spill = webgnome.model.get('spills');
+            var units = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
+            this.$('.panel-body').html();
+            if(!_.isUndefined(spill)){
+                var compiled;
+                this.$('.spill .state').addClass('complete');
+                compiled = '<div class="axisLabel yaxisLabel">' + units.get('units') + '</div><div class="chart"></div>';
+                var spilldata = spill.models;
+                var data = [];
+
+                for (var i = 0; i < spilldata.length; i++){
+                    var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                    console.log(spilldata[i]);
+                    var amount = spilldata[i].attributes.amount;
+                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
+                }
+
+                var dataset = [{
+                    data: data,
+                    color: 'rgba(151,187,205,1)',
+                    hoverable: true,
+                    shadowSize: 0,
+                    lines: {
+                        show: true,
+                        lineWidth: 2
+                    }
+                }];
+
+                this.$('.spill .panel-body').html(compiled);
+                this.$('.spill .panel-body').show();
+
+                if(!_.isUndefined(dataset)){
+                    this.spillPlot = $.plot('.spill .chart', dataset, {
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#ddd'
+                        },
+                        xaxis: {
+                            mode: 'time',
+                            timezone: 'browser'
+                        }
+                    });
+                }
+
+                
+            } else {
+                this.$('.spill .state').removeClass('complete');
+                this.$('.spill .panel-body').hide().html('');
+            }
+            
         },
 
         clickMap: function(){
