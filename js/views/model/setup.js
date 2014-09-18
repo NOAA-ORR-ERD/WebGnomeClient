@@ -246,10 +246,19 @@ define([
 
                 for (var i = 0; i < spilldata.length; i++){
                     var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                    console.log(spilldata[i]);
                     var amount = spilldata[i].attributes.amount;
                     data.push([parseInt(date, 10), parseInt(amount, 10)]);
                 }
+
+                data.sort(function(a,b){
+                    if (a[0] > b[0]){
+                        return 1;
+                    }
+                    if (a[0] < b[0]){
+                        return -1;
+                    }
+                    return 0;
+                });
 
                 var dataset = [{
                     data: data,
@@ -262,6 +271,7 @@ define([
                     }
                 }];
 
+                this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
                 this.$('.spill .panel-body').show();
 
