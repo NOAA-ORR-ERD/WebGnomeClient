@@ -52,6 +52,7 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format();
 
             release.set('release_time', releaseTime);
+            release.set('end_release_time', releaseTime);
 
             this.model.set('release', release);
             this.model.set('units', units);
@@ -64,6 +65,7 @@ define([
             } else {
                 this.clearError();
             }
+            console.log(this.model.toJSON());
         },
 
         updateConstantSlide: function(ui){

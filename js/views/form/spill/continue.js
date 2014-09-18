@@ -93,6 +93,7 @@ define([
             } else {
                 this.clearError();
             }
+            console.log(this.model.toJSON());
         },
 
         updateAmountSlide: function(ui){

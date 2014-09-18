@@ -32,7 +32,7 @@ define([
                 return 'Release amount must be a number.';
             }
 
-            if (moment(attrs.start_time).isAfter(attrs.end_release_time)){
+            if (moment(attrs.release_time).isAfter(attrs.end_release_time)){
                 return 'Duration must be a positive value';
             }
 
