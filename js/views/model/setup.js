@@ -246,7 +246,6 @@ define([
 
         constructModelTimeSeries: function(){
             var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            console.log(start_time);
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
             var timeSeries = [];
@@ -262,26 +261,48 @@ define([
             return timeSeries;
         },
 
+        calculateSpillAmount: function(timeseries){
+            var spills = webgnome.model.get('spills');
+            var amountArray = [];
+            var amount = 0;
+            for (var i = 0; i < timeseries.length; i++){
+                if (i === 0){
+                    var lowerBound = moment(webgnome.model.get('start_time')).unix();
+                }
+                var validAnswer = moment(timeseries[i]).unix();
+                var upperBound = validAnswer;
+                for (var j = 0; j < spills.models.length; j++){
+                    var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                    var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                    if (releaseTime === endReleaseTime && releaseTime >= lowerBound && releaseTime <= upperBound){
+                        amount += spills.models[j].get('amount');
+                    }
+                }
+                lowerBound = upperBound;
+                amountArray.push(amount);
+            }
+            return amountArray;
+
+        },
+
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
-            var units = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
+            var units = spill.findWhere({obj_type: 'gnome.spill.spill.Spill'});
             this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
+            var spillArray = this.calculateSpillAmount(timeSeries);
             if(spill.models.length !== 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
                 compiled = '<div class="axisLabel yaxisLabel">' + units.get('units') + '</div><div class="chart"></div>';
-                var spilldata = spill.models;
                 var data = [];
 
                 for (var i = 0; i < timeSeries.length; i++){
                     var date = timeSeries[i];
-                    //var amount = spilldata[i].attributes.amount;
-                    data.push([parseInt(date, 10), 4]);
+                    var amount = spillArray[i];
+                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
                 }
-
-                //data.sort(_.bind(this.sortArray, this));
-
+                
                 var dataset = [
                     {
                         data: data,
