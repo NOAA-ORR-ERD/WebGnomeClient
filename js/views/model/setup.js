@@ -244,10 +244,29 @@ define([
             return 0;
         },
 
+        constructModelTimeSeries: function(){
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            console.log(start_time);
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var timeStep = webgnome.model.get('time_step');
+            var timeSeries = [];
+
+            for (var i = 0; i < numOfTimeSteps; i++){
+                if (i === 0){
+                    timeSeries.push(start_time * 1000);
+                } else {
+                    var answer = moment(timeSeries[i - 1]).add(timeStep, 's').unix() * 1000;
+                    timeSeries.push(answer);
+                }
+            }
+            return timeSeries;
+        },
+
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
             var units = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
             this.$('.panel-body').html();
+            var timeSeries = this.constructModelTimeSeries();
             if(spill.models.length !== 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
@@ -255,13 +274,13 @@ define([
                 var spilldata = spill.models;
                 var data = [];
 
-                for (var i = 0; i < spilldata.length; i++){
-                    var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                    var amount = spilldata[i].attributes.amount;
-                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
+                for (var i = 0; i < timeSeries.length; i++){
+                    var date = timeSeries[i];
+                    //var amount = spilldata[i].attributes.amount;
+                    data.push([parseInt(date, 10), 4]);
                 }
 
-                data.sort(_.bind(this.sortArray, this));
+                //data.sort(_.bind(this.sortArray, this));
 
                 var dataset = [
                     {
