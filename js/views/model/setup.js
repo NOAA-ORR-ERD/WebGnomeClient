@@ -18,8 +18,7 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'flottooltip',
-    'flotstack'
+    'flottooltip'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -254,47 +253,27 @@ define([
                 this.$('.spill .state').addClass('complete');
                 compiled = '<div class="axisLabel yaxisLabel">' + units.get('units') + '</div><div class="chart"></div>';
                 var spilldata = spill.models;
-                var instant = [];
-                var continuous = [];
+                var data = [];
 
                 for (var i = 0; i < spilldata.length; i++){
                     var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var endTime = moment(spilldata[i].attributes.release.attributes.end_release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var amount = spilldata[i].attributes.amount;
-                    if (date === endTime){
-                        instant.push([parseInt(date, 10), parseInt(amount, 10)]);
-                    } else {
-                        continuous.push([parseInt(date, 10), parseInt(amount, 10)]);
-                    }
+                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
                 }
 
-                instant.sort(_.bind(this.sortArray, this));
-                continuous.sort(_.bind(this.sortArray, this));
+                data.sort(_.bind(this.sortArray, this));
 
                 var dataset = [
                     {
-                        label: 'Instant',
-                        data: instant,
-                        color: 'rgba(151,187,205,1)',
-                        hoverable: true,
-                        shadowSize: 0,
-                        lines: {
-                            show: true,
-                            lineWidth: 2
-                        },
-                        points: {
-                            show: true
-                        }
-                    },
-                    {
-                        label: 'Continuous',
-                        data: continuous,
+                        data: data,
                         color: 'rgba(120,200,0,1)',
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
                             show: true,
-                            lineWidth: 2
+                            lineWidth: 2,
+                            fill: true
                         },
                         points: {
                             show: true
@@ -324,17 +303,7 @@ define([
                             shifts: {
                                 x: -30,
                                 y: -50
-                            },
-                        series: {
-                            stack: true,
-                            group: true,
-                            lines: {
-                                show: true,
-                                fill: true,
-                                lineWidth: 1
-                            },
-                            shadowSize: 0
-                        }
+                            }
                     });
                 }
                 
