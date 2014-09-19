@@ -234,47 +234,72 @@ define([
             spillTypeForm.render();
         },
 
+        sortArray: function(a, b){
+            if (a[0] > b[0]){
+                return 1;
+            }
+            if (a[0] < b[0]){
+                return -1;
+            }
+            return 0;
+        },
+
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
             var units = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
             this.$('.panel-body').html();
-            if(!_.isUndefined(spill)){
+            if(spill.models.length !== 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
                 compiled = '<div class="axisLabel yaxisLabel">' + units.get('units') + '</div><div class="chart"></div>';
                 var spilldata = spill.models;
-                var data = [];
+                var instant = [];
+                var continuous = [];
 
                 for (var i = 0; i < spilldata.length; i++){
                     var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                    var endTime = moment(spilldata[i].attributes.release.attributes.end_release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var amount = spilldata[i].attributes.amount;
-                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
+                    if (date === endTime){
+                        instant.push([parseInt(date, 10), parseInt(amount, 10)]);
+                    } else {
+                        continuous.push([parseInt(date, 10), parseInt(amount, 10)]);
+                    }
                 }
 
-                data.sort(function(a,b){
-                    if (a[0] > b[0]){
-                        return 1;
-                    }
-                    if (a[0] < b[0]){
-                        return -1;
-                    }
-                    return 0;
-                });
+                instant.sort(_.bind(this.sortArray, this));
+                continuous.sort(_.bind(this.sortArray, this));
 
-                var dataset = [{
-                    label: 'Spills',
-                    data: data,
-                    color: 'rgba(151,187,205,1)',
-                    hoverable: true,
-                    shadowSize: 0,
-                    lines: {
-                        show: true,
-                        lineWidth: 2
+                var dataset = [
+                    {
+                        label: 'Instant',
+                        data: instant,
+                        color: 'rgba(151,187,205,1)',
+                        hoverable: true,
+                        shadowSize: 0,
+                        lines: {
+                            show: true,
+                            lineWidth: 2
+                        },
+                        points: {
+                            show: true
+                        }
                     },
-                    points: {
-                        show: true
+                    {
+                        label: 'Continuous',
+                        data: continuous,
+                        color: 'rgba(120,200,0,1)',
+                        hoverable: true,
+                        shadowSize: 0,
+                        lines: {
+                            show: true,
+                            lineWidth: 2
+                        },
+                        points: {
+                            show: true
+                        }
                     }
-                }];
+                ];
 
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
