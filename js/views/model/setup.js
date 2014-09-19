@@ -18,7 +18,8 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'flottooltip'
+    'flottooltip',
+    'flotstack'
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -323,7 +324,17 @@ define([
                             shifts: {
                                 x: -30,
                                 y: -50
-                            }
+                            },
+                        series: {
+                            stack: true,
+                            group: true,
+                            lines: {
+                                show: true,
+                                fill: true,
+                                lineWidth: 1
+                            },
+                            shadowSize: 0
+                        }
                     });
                 }
                 
