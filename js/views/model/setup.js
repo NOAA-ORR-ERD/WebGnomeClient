@@ -257,7 +257,6 @@ define([
 
                 for (var i = 0; i < spilldata.length; i++){
                     var date = moment(spilldata[i].attributes.release.attributes.release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                    var endTime = moment(spilldata[i].attributes.release.attributes.end_release_time, 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var amount = spilldata[i].attributes.amount;
                     data.push([parseInt(date, 10), parseInt(amount, 10)]);
                 }
@@ -267,7 +266,7 @@ define([
                 var dataset = [
                     {
                         data: data,
-                        color: 'rgba(120,200,0,1)',
+                        color: 'rgba(100,149,237,1)',
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
