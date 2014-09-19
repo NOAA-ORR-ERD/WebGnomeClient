@@ -24,6 +24,7 @@ define([
 
             this.mapView = new olMapView({
                 controls: [],
+                id: 'locations-map',
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})

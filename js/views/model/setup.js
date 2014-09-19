@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'ol',
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
@@ -16,17 +17,18 @@ define([
     'model/spill',
     'views/form/spill/type',
     'views/form/location',
+    'views/default/map',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
     'flotresize',
     'flotdirection'
-], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm,
     SpillModel, SpillTypeForm,
-    LocationForm){
+    LocationForm, olMapView){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -139,6 +141,7 @@ define([
 
         updateObjects: function(){
             this.updateWind();
+            this.updateLocation();
         },
 
         clickWind: function(){
@@ -158,7 +161,6 @@ define([
 
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            this.$('.panel-body').html();
             if(!_.isUndefined(wind)){
                 var compiled;
                 this.$('.wind .state').addClass('complete');
@@ -246,6 +248,53 @@ define([
             var locationForm = new LocationForm();
             locationForm.on('hidden', locationForm.close);
             locationForm.render();
+        },
+
+        updateLocation: function(){
+            var map = webgnome.model.get('map');
+            if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
+                this.$('.location .state').addClass('complete');
+                map.getGeoJSON(_.bind(function(geojson){
+                    this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
+
+                    var shorelineSource = new ol.source.GeoJSON({
+                        projection: 'EPSG:3857',
+                        object: geojson
+                    });
+
+                    var shorelineLayer = new ol.layer.Vector({
+                        name: 'modelmap',
+                        source: shorelineSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
+                            })
+                        })
+                    });
+                    var locationMap = new olMapView({
+                        id: 'mini-locmap',
+                        controls: [],
+                        layers: [
+                            new ol.layer.Tile({
+                                source: new ol.source.MapQuest({layer: 'osm'})
+                            }),
+                            shorelineLayer
+                        ]
+                    });
+                    
+                    locationMap.render();
+                    var extent = shorelineSource.getExtent();
+                    locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
+
+                }, this));
+            } else {
+                this.$('.location .state').removeClass('complete');
+                this.$('.location .panel-body').hide().html('');
+            }
         },
 
         close: function(){
