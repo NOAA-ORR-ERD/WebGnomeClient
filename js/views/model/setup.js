@@ -284,7 +284,7 @@ define([
                             amount += rateOfRelease * head;
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
-                        } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound){
+                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound){
                             var tail = (lowerBound - endReleaseTime) / 1000;
                             amount += rateOfRelease * tail;
                         }
@@ -299,14 +299,15 @@ define([
 
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
-            var units = spill.findWhere({obj_type: 'gnome.spill.spill.Spill'});
+            var spillLength = spill.models.length;
+            var units = spill.models[spillLength - 1].get('units');
             this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spill.models.length !== 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
-                compiled = '<div class="axisLabel yaxisLabel">' + units.get('units') + '</div><div class="chart"></div>';
+                compiled = '<div class="axisLabel yaxisLabel">' + units + '</div><div class="chart"></div>';
                 var data = [];
 
                 for (var i = 0; i < timeSeries.length; i++){
