@@ -277,14 +277,14 @@ define([
                     var timeDiff = endReleaseTime - releaseTime;
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound){
                         amount += spills.models[j].get('amount');
-                    } else if (timeDiff > 0) {
+                    } else if (timeDiff > 0 && releaseTime >= moment(timeseries[1]).unix() && endReleaseTime <= moment(timeseries[timeseries.length - 1]).unix()) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
-                        if (releaseTime >= lowerBound && endReleaseTime > upperBound){
+                        if (releaseTime >= lowerBound && endReleaseTime >= upperBound){
                             var head = (releaseTime - upperBound) / 1000;
                             amount += rateOfRelease * head;
-                        } else if (releaseTime <= lowerBound && endReleaseTime > upperBound){
+                        } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
-                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound){
+                        } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound){
                             var tail = (lowerBound - endReleaseTime) / 1000;
                             amount += rateOfRelease * tail;
                         }
