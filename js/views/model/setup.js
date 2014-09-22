@@ -269,12 +269,11 @@ define([
                 if (i === 0){
                     var lowerBound = moment(webgnome.model.get('start_time')).unix();
                 }
-                var validAnswer = moment(timeseries[i]).unix();
-                var upperBound = validAnswer;
+                var upperBound = moment(timeseries[i]).unix();
                 for (var j = 0; j < spills.models.length; j++){
                     var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-                    if (releaseTime === endReleaseTime && releaseTime >= lowerBound && releaseTime <= upperBound){
+                    if (releaseTime === endReleaseTime && releaseTime >= lowerBound && releaseTime < upperBound){
                         amount += spills.models[j].get('amount');
                     }
                 }
