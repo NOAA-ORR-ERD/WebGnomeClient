@@ -21,6 +21,8 @@ define([
             'setup': 'setup',
             'model': 'model',
 
+            'test': 'test',
+
             '*actions': 'notfound'
         },
 
@@ -45,6 +47,15 @@ define([
         locations: function(){
             this.views.push(new MenuView());
             this.views.push(new LocationsView());
+        },
+
+        test: function(){
+            // if this isn't the development environment ignore the test request.
+            if(window.location.href.indexOf('0.0.0.0') == -1){
+                this.navigate('', true, false);
+            }
+            this.views.push(new TestView());
+
         },
 
         model: function(){
