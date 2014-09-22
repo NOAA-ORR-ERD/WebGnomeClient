@@ -263,7 +263,7 @@ define([
 
         calculateSpillAmount: function(timeseries){
             var spills = webgnome.model.get('spills');
-            var timeStep = webgnome.model.time_step;
+            var timeStep = webgnome.model.get('time_step');
             var amountArray = [];
             var amount = 0;
             for (var i = 0; i < timeseries.length; i++){
@@ -275,11 +275,19 @@ define([
                     var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var timeDiff = endReleaseTime - releaseTime;
-                    if (releaseTime > lowerBound && endReleaseTime <= upperBound){
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > 0) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
-                        
+                        if (releaseTime >= lowerBound && endReleaseTime > upperBound){
+                            var head = (releaseTime - upperBound) / 1000;
+                            amount += rateOfRelease * head;
+                        } else if (releaseTime <= lowerBound && endReleaseTime > upperBound){
+                            amount += rateOfRelease * timeStep;
+                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound){
+                            var tail = (lowerBound - endReleaseTime) / 1000;
+                            amount += rateOfRelease * tail;
+                        }
                     }
                 }
                 lowerBound = upperBound;
