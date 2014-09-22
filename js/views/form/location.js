@@ -13,6 +13,36 @@ define([
         size: 'lg',
         title: 'Select a Location',
 
+        initialize: function(options){
+            FormModal.prototype.initialize.call(this, options);
+
+            this.LocationView = LocationView.extend({
+                load: function(options){
+                    this.trigger('load');
+                    webgnome.model.resetLocation();
+                    var locationModel = new GnomeLocation({id: options.slug});
+                    locationModel.fetch({
+                        success: _.bind(function(){
+                            var newModel = new GnomeModel();
+                            newModel.fetch({
+                                success: _.bind(function(){
+                                    webgnome.model.mergeModel(newModel);
+                                    webgnome.model.set('id', newModel.get('id'));
+                                    webgnome.model.save(null, {
+                                        success: _.bind(function(){
+                                            console.log(this);
+                                            this.trigger('loaded');
+                                        }, this)
+                                    });
+                                }, this)
+                            });
+                        }, this)
+                    });
+                }
+            });
+
+        },
+
         events: function(){
             return _.defaults({
                 'show.bs.modal': 'renderSubview',
@@ -26,39 +56,23 @@ define([
         },
 
         renderSubview: function(){
-            this.locationView = new LocationView({
+            this.locationView = new this.LocationView({
                 dom_target: '.location-form .modal-body',
                 className: 'page locations'
             });
-            this.locationView.load = function(options){
-                this.trigger('load');
-                webgnome.model.resetLocation();
-                var locationModel = new GnomeLocation({id: options.slug});
-                locationModel.fetch({
-                    success: _.bind(function(){
-                        var newModel = new GnomeModel();
-                        newModel.fetch({
-                            success: _.bind(function(){
-                                webgnome.model.mergeModel(newModel);
-                                webgnome.model.set('id', newModel.get('id'));
-                                webgnome.model.save(null, {
-                                    success: _.bind(function(){
-                                        this.trigger('done');
-                                    }, this)
-                                });
-                            }, this)
-                        });
-                    }, this)
-                });
-            };
             this.locationView.on('load', this.handoff, this);
+            this.locationView.on('loaded', function(){
+                console.log('sajksldf');
+            });
         },
 
         handoff: function(){
             this.hide();
             this.loadingModal = new LoadingModal();
+            this.locationView.on('loaded', function(){
+                console.log('ajsdkflasd');
+            });
             this.loadingModal.render();
-            this.locationView.on('done', this.hide, this.loadingModal);
         },
 
         updateMapSize: function(){
