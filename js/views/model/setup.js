@@ -301,7 +301,7 @@ define([
             this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);
-            if(spill.models.length !== 0){
+            if(spill.models.length > 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
                 compiled = _.template(SpillPanelTemplate, {spills: spill.models});
@@ -368,6 +368,7 @@ define([
             e.stopPropagation();
             var id = e.target.parentNode.dataset.id;
             webgnome.model.get('spills').remove(id);
+            webgnome.model.save();
             this.updateSpill();
         },
 
