@@ -13,6 +13,7 @@ define([
     'text!templates/panel/map.html',
     'model/spill',
     'views/form/spill/type',
+    'text!templates/panel/spills.html',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -22,7 +23,7 @@ define([
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
-    SpillModel, SpillTypeForm){
+    SpillModel, SpillTypeForm, SpillPanelTemplate){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -307,7 +308,7 @@ define([
             if(spill.models.length !== 0){
                 var compiled;
                 this.$('.spill .state').addClass('complete');
-                compiled = '<div class="axisLabel yaxisLabel">' + units + '</div><div class="chart"></div>';
+                compiled = _.template(SpillPanelTemplate, {spills: spill.models});
                 var data = [];
 
                 for (var i = 0; i < timeSeries.length; i++){
