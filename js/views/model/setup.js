@@ -33,6 +33,7 @@ define([
             'click .water': 'clickWater',
             'click .plus-sign': 'clickSpill',
             'click .spill-single': 'loadSpill',
+            'click .trash': 'deleteSpill',
             'click .map': 'clickMap',
             'blur input': 'updateModel',
             'click .location': 'loadLocation',
@@ -360,6 +361,14 @@ define([
                 this.$('.spill .panel-body').hide().html('');
             }
             
+        },
+
+        deleteSpill: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var id = e.target.parentNode.dataset.id;
+            webgnome.model.get('spills').remove(id);
+            this.updateSpill();
         },
 
         clickMap: function(){
