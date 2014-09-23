@@ -31,7 +31,8 @@ define([
             'click .icon': 'selectPrediction',
             'click .wind': 'clickWind',
             'click .water': 'clickWater',
-            'click .spill': 'clickSpill',
+            'click .plus-sign': 'clickSpill',
+            'click .spill-single': 'loadSpill',
             'click .map': 'clickMap',
             'blur input': 'updateModel',
             'click .location': 'loadLocation',
@@ -235,14 +236,10 @@ define([
             spillTypeForm.render();
         },
 
-        sortArray: function(a, b){
-            if (a[0] > b[0]){
-                return 1;
-            }
-            if (a[0] < b[0]){
-                return -1;
-            }
-            return 0;
+
+        loadSpill: function(e){
+            var spillId = e.currentTarget.attributes[1].value;
+            
         },
 
         constructModelTimeSeries: function(){
