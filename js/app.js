@@ -5,10 +5,10 @@ define([
     'backbone',
     'router',
     'moment',
-    'text!/config.json',
+    'text!/package.json',
     'model/session',
     'model/gnome'
-], function($, _, Backbone, Router, moment, Config, SessionModel, GnomeModel) {
+], function($, _, Backbone, Router, moment, Package, SessionModel, GnomeModel) {
     'use strict';
     var app = {
         initialize: function(){
@@ -20,7 +20,7 @@ define([
                 }
             });
 
-            this.config = JSON.parse(Config);
+            this.config = JSON.parse(Package).config;
 
 
             // Filter json requestions to redirect them to the api server
@@ -216,7 +216,6 @@ define([
                             window.webgnome.model = model;
                         }
                         Backbone.history.start();
-
                     },
                     error: function(){
                         Backbone.history.start();
