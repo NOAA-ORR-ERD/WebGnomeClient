@@ -284,7 +284,7 @@ define([
                             amount += rateOfRelease * head;
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
-                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound){
+                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound && endReleaseTime > lowerBound){
                             var tail = (lowerBound - endReleaseTime) / 1000;
                             amount += rateOfRelease * tail;
                         }
@@ -328,7 +328,7 @@ define([
                             fill: true
                         },
                         points: {
-                            show: true
+                            show: false
                         }
                     }
                 ];
