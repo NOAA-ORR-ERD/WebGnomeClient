@@ -297,8 +297,6 @@ define([
 
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
-            var spillLength = spill.models.length;
-            var units = spill.models[spillLength - 1].get('units');
             this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);
