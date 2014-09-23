@@ -1,20 +1,25 @@
 {
-  "name": "WebGnomeClient",
-  "main": "index.html",
-  "scripts": {
-    "start": "http-server",
-    "postinstall": "bower install",
-    "postupdate": "bower update"
-  },
-  "dependencies": {
-    "bower": "*",
-    "http-server": "*",
-    "requirejs": "*"
-  },
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-watch": "^0.6.1"
-  }
+    "name": "WebGnomeClient",
+    "main": "index.html",
+    "scripts": {
+        "start": "node ./scripts/start.js",
+        "postinstall": "bower install",
+        "postupdate": "bower update",
+        "test": "phantomjs ./node_modules/node-qunit-phantomjs/lib/runner-list.js http://0.0.0.0:8080/test.html"
+    },
+    "config": {
+        "port": "8080",
+        "api": "http://0.0.0.0:9899",
+        "oil_api": "http://0.0.0.0:9898",
+        "date_format": {
+            "moment": "YYYY/M/D H:mm",
+            "datetimepicker": "Y/n/j G:i"
+        }
+    },
+    "dependencies": {
+        "bower": "*",
+        "http-server": "*",
+        "requirejs": "*",
+        "node-qunit-phantomjs": "0.2.2"
+    }
 }
