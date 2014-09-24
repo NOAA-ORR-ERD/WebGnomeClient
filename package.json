@@ -5,7 +5,7 @@
         "start": "node ./scripts/start.js",
         "postinstall": "bower install",
         "postupdate": "bower update",
-        "test": "phantomjs ./node_modules/node-qunit-phantomjs/lib/runner-list.js http://0.0.0.0:8080/test.html"
+        "test": "node ./scripts/test.js"
     },
     "config": {
         "port": "8080",
