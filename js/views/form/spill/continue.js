@@ -23,7 +23,10 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate, {
+                amount: this.model.get('amount'),
+                time: moment(this.model.get('release').get('release_time')).format('lll')
+            });
             FormModal.prototype.render.call(this, options);
 
             this.$('#datetime').datetimepicker({

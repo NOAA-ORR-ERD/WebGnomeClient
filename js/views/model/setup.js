@@ -14,6 +14,8 @@ define([
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spills.html',
+    'views/form/spill/continue',
+    'views/form/spill/instant',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -23,7 +25,7 @@ define([
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
-    SpillModel, SpillTypeForm, SpillPanelTemplate){
+    SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -240,7 +242,13 @@ define([
 
         loadSpill: function(e){
             var spillId = e.currentTarget.attributes[1].value;
-            
+            var spill = webgnome.model.get('spills').get(spillId);
+            if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
+                var spillView = new SpillContinueView(null, spill);
+            } else {
+                var spillView = new SpillInstantView(null, spill);
+            }
+            spillView.render();
         },
 
         constructModelTimeSeries: function(){
