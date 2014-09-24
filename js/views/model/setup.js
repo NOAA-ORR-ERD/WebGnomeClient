@@ -283,7 +283,7 @@ define([
                             amount += rateOfRelease * head;
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
-                        } else if (releaseTime <= lowerBound && endReleaseTime < upperBound && endReleaseTime > lowerBound){
+                        } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
                             var tail = (lowerBound - endReleaseTime) / 1000;
                             amount += rateOfRelease * tail;
                         }
@@ -359,6 +359,7 @@ define([
             } else {
                 this.$('.spill .state').removeClass('complete');
                 this.$('.spill .panel-body').hide().html('');
+                this.$('.spill').removeClass('col-md-6').addClass('col-md-6');
             }
             
         },
@@ -368,8 +369,12 @@ define([
             e.stopPropagation();
             var id = e.target.parentNode.dataset.id;
             webgnome.model.get('spills').remove(id);
-            webgnome.model.save();
-            this.updateSpill();
+            webgnome.model.save({
+                success: _.bind(function(){
+                    this.updateSpill();
+                }, this)
+            });
+            
         },
 
         clickMap: function(){
