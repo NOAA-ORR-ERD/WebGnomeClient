@@ -4,6 +4,7 @@ define([
 ], function(_, GnomeSpill, SessionModel){
     var spillTest = {
         run: function() {
+            QUnit.module('Spill');
             this.test();
         },
         test: function() {

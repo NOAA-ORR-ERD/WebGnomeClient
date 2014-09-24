@@ -7,6 +7,7 @@ define([
 ], function(_, GnomeModel, GnomeSpill, GnomeWind, GnomeWindMover){
     var modelTests = {
         run: function(){
+            QUnit.module('Model');
             this.test();
         },
 

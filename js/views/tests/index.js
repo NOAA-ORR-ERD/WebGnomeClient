@@ -10,9 +10,7 @@ define([
         className: 'container page',
         initialize: function(){
             this.render();
-            QUnit.module('Model');
             ModelTests.run();
-            QUnit.module('Spill');
             SpillTests.run();
             
             QUnit.load();
