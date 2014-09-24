@@ -5,10 +5,13 @@ var phantomjs = require('phantomjs');
 var port = require('../package').config.port;
 
 var server = exec('http-server -p ' + port);
-var test = exec('phantomjs ./node_modules/node-qunit-phantomjs/lib/runner.js http://0.0.0.0:' + port + '/test.html', function(err, stdout){
-    console.log(stdout);
+var test = spawn('phantomjs', ['./node_modules/node-qunit-phantomjs/lib/runner-list.js', 'http://0.0.0.0:' + port + '/test.html']);
+test.stdout.on('data', function(chunk){
+    console.log(chunk.toString());
+});
 
-    if(server){
+test.on('close', function(){
+    if (server) {
         server.kill();
     }
 });
