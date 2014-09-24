@@ -37,6 +37,7 @@ define([
             'click .spill-single': 'loadSpill',
             'click .trash': 'deleteSpill',
             'click .map': 'clickMap',
+            'click .response': 'clickResponse',
             'blur input': 'updateModel',
             'click .location': 'loadLocation',
             'click .eval': 'evalModel'
@@ -395,6 +396,10 @@ define([
                 webgnome.model.save();
             });
             mapForm.render();
+        },
+
+        clickResponse: function(){
+            
         },
 
         loadLocation: function(e){
