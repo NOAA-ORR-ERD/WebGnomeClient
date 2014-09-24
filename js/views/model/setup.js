@@ -280,7 +280,7 @@ define([
                     var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var timeDiff = endReleaseTime - releaseTime;
-                    if (releaseTime >= lowerBound && endReleaseTime <= upperBound && timeDiff < timeStep){
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep && releaseTime >= moment(timeseries[0]).unix() && endReleaseTime <= moment(timeseries[timeseries.length - 1]).unix()) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
