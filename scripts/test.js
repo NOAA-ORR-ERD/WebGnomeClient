@@ -1,4 +1,3 @@
-var portscanner = require('portscanner');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var phantomjs = require('phantomjs');
