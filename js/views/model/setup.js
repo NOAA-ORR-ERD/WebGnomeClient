@@ -266,30 +266,27 @@ define([
             var amountArray = [];
             var amount = 0;
             for (var i = 0; i < timeseries.length; i++){
-                if (i === 0){
-                    var lowerBound = moment(webgnome.model.get('start_time')).unix();
-                }
                 var upperBound = moment(timeseries[i]).unix();
+                var lowerBound = upperBound - timeStep;
                 for (var j = 0; j < spills.models.length; j++){
                     var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var timeDiff = endReleaseTime - releaseTime;
-                    if (releaseTime >= lowerBound && endReleaseTime < upperBound){
+                    if (releaseTime >= lowerBound && endReleaseTime <= upperBound && timeDiff < timeStep){
                         amount += spills.models[j].get('amount');
-                    } else if (timeDiff > 0 && releaseTime >= moment(timeseries[1]).unix() && endReleaseTime <= moment(timeseries[timeseries.length - 1]).unix()) {
+                    } else if (timeDiff > timeStep && releaseTime >= moment(timeseries[0]).unix() && endReleaseTime <= moment(timeseries[timeseries.length - 1]).unix()) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
-                        if (releaseTime >= lowerBound && endReleaseTime >= upperBound){
-                            var head = (releaseTime - upperBound) / 1000;
+                        if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime < upperBound){
+                            var head = (upperBound - releaseTime);
                             amount += rateOfRelease * head;
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
                         } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
-                            var tail = (lowerBound - endReleaseTime) / 1000;
+                            var tail = lowerBound - endReleaseTime;
                             amount += rateOfRelease * tail;
                         }
                     }
                 }
-                lowerBound = upperBound;
                 amountArray.push(amount);
             }
             return amountArray;
