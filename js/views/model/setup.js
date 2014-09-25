@@ -249,6 +249,9 @@ define([
             } else {
                 var spillView = new SpillInstantView(null, spill);
             }
+            spillView.on('save', function(){
+                webgnome.model.trigger('sync');
+            });
             spillView.render();
         },
 
@@ -304,6 +307,7 @@ define([
 
         updateSpill: function(){
             var spill = webgnome.model.get('spills');
+
             this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);

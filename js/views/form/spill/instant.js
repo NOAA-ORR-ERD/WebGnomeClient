@@ -36,7 +36,7 @@ define([
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
-                time: moment(this.model.get('release').get('release_time')).format('lll')
+                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
             });
             FormModal.prototype.render.call(this, options);
 
@@ -60,16 +60,16 @@ define([
         update: function(){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            if (name === 'Spill'){
-                var spillsArray = webgnome.model.get('spills').models;
-                for (var i = 0; i < spillsArray.length; i++){
-                    if (spillsArray[i].get('id') === this.model.get('id')){
-                        var nameStr = 'Spill #' + (i + 1);
-                        this.model.set('name', nameStr);
-                        break;
-                    }
-                }
-            }
+            // if (name === 'Spill'){
+            //     var spillsArray = webgnome.model.get('spills').models;
+            //     for (var i = 0; i < spillsArray.length; i++){
+            //         if (spillsArray[i].get('id') === this.model.get('id')){
+            //             var nameStr = 'Spill #' + (i + 1);
+            //             this.model.set('name', nameStr);
+            //             break;
+            //         }
+            //     }
+            // }
             var amount = parseInt(this.$('#amountreleased').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
