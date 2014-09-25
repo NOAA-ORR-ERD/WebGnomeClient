@@ -5,9 +5,10 @@ define([
     'views/modal/form',
     'text!templates/form/spill/instant.html',
     'model/spill',
+    'views/form/oil/library',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView){
     var instantSpillForm = FormModal.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
@@ -18,7 +19,9 @@ define([
         },
 
         events: function(){
-            return _.defaults({}, FormModal.prototype.events);
+            return _.defaults({
+                'click .oilSelect': 'elementSelect'
+            }, FormModal.prototype.events);
         },
 
         render: function(options){
@@ -111,6 +114,11 @@ define([
                 }
             }
             
+        },
+
+        elementSelect: function(){
+            var oilLibraryView = new OilLibraryView();
+            oilLibraryView.render();
         }
 
     });

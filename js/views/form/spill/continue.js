@@ -5,16 +5,19 @@ define([
     'views/modal/form',
     'text!templates/form/spill/continue.html',
     'model/spill',
+    'views/form/oil/library',
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView){
     var continueSpillForm = FormModal.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
         events: function(){
-            return _.defaults({}, FormModal.prototype.events);
+            return _.defaults({
+                'click .oilSelect': 'elementSelect'
+            }, FormModal.prototype.events);
         },
 
         initialize: function(options, spillModel){
@@ -36,7 +39,8 @@ define([
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
-                time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
+                time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                duration: {hours: 0, days: 0}
             });
             FormModal.prototype.render.call(this, options);
 
@@ -165,6 +169,11 @@ define([
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
+        },
+
+        elementSelect: function(){
+            var oilLibraryView = new OilLibraryView();
+            oilLibraryView.render();
         }
 
     });
