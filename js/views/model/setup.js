@@ -227,16 +227,7 @@ define([
         },
 
         clickSpill: function(){
-            var spill = webgnome.model.get('spills').findWhere({obj_type: 'gnome.spill.spill.Spill'});
-            if(_.isUndefined(spill) || spill.length === 0){
-                spill = new SpillModel();
-            }
-            var spillTypeForm = new SpillTypeForm(null, spill);
-            spillTypeForm.on('hidden', spillTypeForm.close);
-            spillTypeForm.on('save', function(){
-                webgnome.model.get('spills').add(spill);
-                webgnome.model.save();
-            });
+            var spillTypeForm = new SpillTypeForm();
             spillTypeForm.render();
         },
 
