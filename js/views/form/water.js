@@ -1,0 +1,99 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'views/modal/form',
+    'text!templates/form/water.html',
+    'jqueryDatetimepicker'
+], function($, _, Backbone, FormModal, WaterTemplate){
+    var waterForm = FormModal.extend({
+        className: 'modal fade form-modal model-form',
+        title: 'Water Properties',
+
+        events: function(){
+            return _.defaults({
+                'change select': 'revealManualInputs'
+            }, FormModal.prototype.events);
+        },
+
+        initialize: function(options, model){
+            FormModal.prototype.initialize.call(this, options);
+            this.model = (model ? model : null);
+        },
+
+        render: function(options){
+            this.body = _.template(WaterTemplate, {
+                water_temp: this.model.get('water_temp')
+            });
+
+            FormModal.prototype.render.call(this, options);
+
+            this.$('#tempunits option[value="' + this.model.get('water_unit') + '"]').attr('selected', 'selected');
+            
+            if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
+                // one of the drop down options was not selected.
+                this.$('.salinity-select').hide();
+                this.$('.salinity-input').removeClass('hide');
+                this.$('.salinity-input input').val(this.model.get('salinity'));
+            } else {
+                this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').attr('selected', 'selected');
+            }
+
+            if ([5, 50, 500].indexOf(this.model.get('sediment_load')) == -1){
+                this.$('.sediment-select').hide();
+                this.$('.sediment-input').removeClass('hide');
+                this.$('.sediment-input input').val(this.model.get('sediment_load'));
+            } else {
+                this.$('.sediment-select option[value="' + this.model.get('sediment_load') + '"]').attr('selected', 'selected');
+            }
+        },
+
+        convertTemptoK: function(val, unit){
+            val = parseFloat(val, 10);
+            var temp = val;
+            if (unit === 'F'){
+                temp = (5/9) * (val - 32);
+            }
+            temp += 273.15;
+
+            return temp;
+        },
+
+        convertHeighttoKM: function(val, unit){
+            val = parseFloat(val, 10);
+            var height = val;
+            height = unit === 'm' ? height / 1000 : height / 3280.8;
+            return height;
+        },
+
+        update: function(){
+            this.model.set('water_temp', this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val()));
+            this.model.set('salinity', this.$('.salinity:visible').val());
+            this.model.set('sediment_load', this.$('.sediment:visible').val());
+
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
+        },
+
+        revealManualInputs: function(e){
+            var value = e.currentTarget.value;
+            if (value === 'other'){
+                this.$(e.currentTarget).parent().addClass('hide');
+                this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
+            }
+            if (['fetch', 'specified'].indexOf(value) !== -1) {
+                this.$('.fetch, .specified').addClass('hide');
+                this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
+            } else if (value === 'windcalc') {
+                this.$('.fetch, .specified').addClass('hide');
+            }
+            this.update();
+        }
+
+    });
+
+    return waterForm;
+});

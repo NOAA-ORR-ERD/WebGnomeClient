@@ -13,6 +13,10 @@ define([
             'output_last_step': 'true',
             'output_dir': './models/images',
             'output_zero_step': 'true',
+        },
+
+        toTree: function(){
+            return '';
         }
     });
 

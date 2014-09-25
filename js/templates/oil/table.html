@@ -12,13 +12,16 @@
     <div id="dataTable">
         <table id="tableContainer-inner" class="table table-condensed">
             <tbody>
+                {% if (data.length === 0){ %}
+                    <h3 class="text-center">No Results Found.</h3>
+                {% } %}
                 {% for (var i = 0; i < data.length; i++){ %}
-                <tr data-id="{{ data.at(i).get('adios_oil_id') }}">
-                    <td>{{ data.at(i).get('name') }}</td>
-                    <td>{{ data.at(i).get('location') }}</td>
-                    <td>{{ data.at(i).get('field_name') }}</td>
-                    <td>{{ data.at(i).get('api') }}</td>
-                </tr>
+                    <tr data-id="{{ data.at(i).get('adios_oil_id') }}">
+                        <td>{{ data.at(i).get('name') }}</td>
+                        <td>{{ data.at(i).get('location') }}</td>
+                        <td>{{ data.at(i).get('field_name') }}</td>
+                        <td>{{ data.at(i).get('api') }}</td>
+                    </tr>
                 {% } %}
             </tbody>
         </table>

@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="col-md-12"><h2>Setup Your Model <a href="#" class="btn btn-info location pull-right">Load a Location <span class="glyphicon glyphicon-map-marker"></span></a></h2></div>
+    <div class="col-md-12"><h2>Setup Your Model</h2></div>
     <div class="col-md-6">
         <div class="panel-primary panel">
             <div class="panel-heading">General Model Info</div>
@@ -18,9 +18,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" for="duration">Duration (Days)</label>
+                        <label class="col-sm-4 control-label">Duration</label>
                         <div class="col-sm-3">
-                            <input type="number" min="1" max="30" class="form-control" id="duration" name="duration" value="{{ duration }}">       
+                            <label class="control-label" for="days">Day(s)</label>
+                            <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="control-label" for="hours">Hour(s)</label>
+                            <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
                         </div>
                     </div>
                 </form>
@@ -76,9 +81,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 map">
+        <div class="col-md-3 location">
             <div class="panel panel-default">
-                <div class="panel-heading"><div class="state"></div>Map</div>
+                <div class="panel-heading"><div class="state"></div>Location</div>
                 <div class="panel-body">
                 </div>
             </div>

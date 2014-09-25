@@ -11,6 +11,8 @@ define([
     'model/map',
     'views/form/map',
     'text!templates/panel/map.html',
+    'model/environment/water',
+    'views/form/water',
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spills.html',
@@ -25,7 +27,9 @@ define([
 ], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
+    WaterModel, WaterForm,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView){
+
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -62,7 +66,7 @@ define([
         render: function(){
             var compiled = _.template(AdiosSetupTemplate, {
                 start_time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: webgnome.model.formatDuration().days,
+                duration: webgnome.model.formatDuration(),
             });
 
             $('body').append(this.$el.append(compiled));
@@ -92,7 +96,9 @@ define([
             var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
-            var duration = (parseInt(this.$('#duration').val(), 10) * 24) * 60 * 60;
+            var days = this.$('#days').val();
+            var hours = this.$('#hours').val();
+            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             webgnome.model.set('duration', duration);
 
             webgnome.model.save();
@@ -100,13 +106,23 @@ define([
 
         selectPrediction: function(e){
             var target;
-            this.$('.icon').removeClass('selected');
             if(this.$(e.target).hasClass('icon')){
-                this.$(e.target).addClass('selected');
                 target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
-                this.$(e.target).parent().addClass('selected');
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
+            }
+
+            if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
+                if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
+                    return;
+                }
+            }
+            this.$('.icon').removeClass('selected');
+
+            if(this.$(e.target).hasClass('icon')){
+                this.$(e.target).addClass('selected');
+            } else {
+                this.$(e.target).parent().addClass('selected');
             }
 
             localStorage.setItem('prediction', target);
@@ -223,7 +239,18 @@ define([
         },
 
         clickWater: function(){
-
+            water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
+            if(_.isUndefined(water) || water.length === 0){
+                water = new WaterModel();
+            }
+            var waterForm = new WaterForm(null, water);
+            waterForm.on('hidden', waterForm.close);
+            waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
+            waterForm.on('save', function(){
+                webgnome.model.get('environment').add(water);
+                webgnome.model.save();
+            });
+            waterForm.render();
         },
 
         clickSpill: function(){
