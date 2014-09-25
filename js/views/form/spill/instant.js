@@ -28,7 +28,6 @@ define([
             if (this.model.get('name') === 'Spill'){
                 var spillsArray = webgnome.model.get('spills').models;
                 for (var i = 0; i < spillsArray.length; i++){
-                    console.log('loop run');
                     if (spillsArray[i].get('id') === this.model.get('id')){
                         var nameStr = 'Spill #' + (i + 1);
                         this.model.set('name', nameStr);
