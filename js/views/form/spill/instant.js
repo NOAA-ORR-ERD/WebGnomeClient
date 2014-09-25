@@ -118,6 +118,21 @@ define([
         elementSelect: function(){
             var oilLibraryView = new OilLibraryView();
             oilLibraryView.render();
+        },
+
+        next: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.next.call(this);
+        },
+
+        back: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.back.call(this);
+        },
+
+        close: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.close.call(this);
         }
 
     });
