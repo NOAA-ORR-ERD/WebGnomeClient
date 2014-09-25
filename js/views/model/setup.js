@@ -112,7 +112,10 @@ define([
                 if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
                     return;
                 }
+                webgnome.model.resetLocation();
+                webgnome.model.save();
             }
+
             this.$('.icon').removeClass('selected');
 
             if(this.$(e.target).hasClass('icon')){

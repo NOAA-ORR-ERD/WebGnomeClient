@@ -208,7 +208,9 @@ define([
             movers.reset(windMovers);
 
             // remove the map
-            this.set('map', null);
+            var map = new MapModel();
+            map.save();
+            this.set('map', map);
 
             // remove any environment other than wind
             var environment = this.get('environment');
