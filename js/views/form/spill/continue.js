@@ -40,7 +40,7 @@ define([
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: {hours: 0, days: 0}
+                duration: {days: 0, hours: 0}
             });
             FormModal.prototype.render.call(this, options);
 
@@ -171,7 +171,12 @@ define([
             }
         },
 
+        // parseDuration: function(seconds){
+        //     if (!_.isUndefined(this.model.get('release')))
+        // },
+
         elementSelect: function(){
+            this.close();
             var oilLibraryView = new OilLibraryView();
             oilLibraryView.render();
         },
