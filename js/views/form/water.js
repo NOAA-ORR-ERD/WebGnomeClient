@@ -7,26 +7,46 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, FormModal, WaterTemplate){
     var waterForm = FormModal.extend({
-    	className: 'modal fade form-modal model-form',
-    	title: 'Water Properties',
+        className: 'modal fade form-modal model-form',
+        title: 'Water Properties',
 
-    	events: function(){
-    		return _.defaults({
-    			'change select': 'revealManualInputs'
-    		}, FormModal.prototype.events);
-    	},
+        events: function(){
+            return _.defaults({
+                'change select': 'revealManualInputs'
+            }, FormModal.prototype.events);
+        },
 
-    	initialize: function(options, model){
-    		FormModal.prototype.initialize.call(this, options);
-    		this.model = (model ? model : null);
-    	},
+        initialize: function(options, model){
+            FormModal.prototype.initialize.call(this, options);
+            this.model = (model ? model : null);
+        },
 
-    	render: function(options){
-    		this.body = _.template(WaterTemplate, {});
+        render: function(options){
+            this.body = _.template(WaterTemplate, {
+                water_temp: this.model.get('water_temp')
+            });
 
-    		FormModal.prototype.render.call(this, options);
+            FormModal.prototype.render.call(this, options);
 
-    	},
+            this.$('#tempunits option[value="' + this.model.get('water_unit') + '"]').attr('selected', 'selected');
+            
+            if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
+                // one of the drop down options was not selected.
+                this.$('.salinity-select').hide();
+                this.$('.salinity-input').removeClass('hide');
+                this.$('.salinity-input input').val(this.model.get('salinity'));
+            } else {
+                this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').attr('selected', 'selected');
+            }
+
+            if ([5, 50, 500].indexOf(this.model.get('sediment_load')) == -1){
+                this.$('.sediment-select').hide();
+                this.$('.sediment-input').removeClass('hide');
+                this.$('.sediment-input input').val(this.model.get('sediment_load'));
+            } else {
+                this.$('.sediment-select option[value="' + this.model.get('sediment_load') + '"]').attr('selected', 'selected');
+            }
+        },
 
         convertTemptoK: function(val, unit){
             val = parseFloat(val, 10);
@@ -46,43 +66,32 @@ define([
             return height;
         },
 
-        otherValues: function(val, inputType){
-            if (val === 'other'){
-                val = this.$('#' + inputType + '-manual').val();
-            }
-            return val;
-        },
+        update: function(){
+            this.model.set('water_temp', this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val()));
+            this.model.set('salinity', this.$('.salinity:visible').val());
+            this.model.set('sediment_load', this.$('.sediment:visible').val());
 
-    	update: function(){
-    		var waterTemp = this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val());
-            var salinity = this.otherValues(this.$('#salinity option:selected').val(), 'salinity');
-            var sedimentLoad = this.otherValues(this.$('#sediment option:selected').val(), 'sediment');
-            var seaHeight = this.convertHeighttoKM(this.$('#sea-height').val(), this.$('#height-units option:selected').val());
-            var dataSource = this.$('#data-source').val();
-
-            this.model.set('water_temp', waterTemp);
-            this.model.set('salinity', salinity);
-            this.model.set('sediment_load', sedimentLoad);
-            this.model.set('sea_height', seaHeight);
-            this.model.set('data_source', dataSource);
-    		if(!this.model.isValid()){
+            if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
                 this.clearError();
             }
-    	},
+        },
 
-    	revealManualInputs: function(e){
-    		var value = e.currentTarget.value;
-    		var id = e.currentTarget.id;
-    		if (value === 'other' && id !== this.selectedId){
-    			this.$('#' + id + '-entry').removeClass('hide');
-    		} else {
-    			this.$('#' + id + '-entry').addClass('hide');
-                this.update();
-    		}
-    		this.selectId = id;
-    	}
+        revealManualInputs: function(e){
+            var value = e.currentTarget.value;
+            if (value === 'other'){
+                this.$(e.currentTarget).parent().addClass('hide');
+                this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
+            }
+            if (['fetch', 'specified'].indexOf(value) !== -1) {
+                this.$('.fetch, .specified').addClass('hide');
+                this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
+            } else if (value === 'windcalc') {
+                this.$('.fetch, .specified').addClass('hide');
+            }
+            this.update();
+        }
 
     });
 
