@@ -98,13 +98,23 @@ define([
 
         selectPrediction: function(e){
             var target;
-            this.$('.icon').removeClass('selected');
             if(this.$(e.target).hasClass('icon')){
-                this.$(e.target).addClass('selected');
                 target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
-                this.$(e.target).parent().addClass('selected');
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
+            }
+
+            if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
+                if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
+                    return;
+                }
+            }
+            this.$('.icon').removeClass('selected');
+
+            if(this.$(e.target).hasClass('icon')){
+                this.$(e.target).addClass('selected');
+            } else {
+                this.$(e.target).parent().addClass('selected');
             }
 
             localStorage.setItem('prediction', target);
