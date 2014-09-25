@@ -23,9 +23,21 @@ define([
         },
 
         render: function(options){
+            if (this.model.get('name') === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    console.log('loop run');
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
+            }
             this.body = _.template(FormTemplate, {
+                name: this.model.get('name'),
                 amount: this.model.get('amount'),
-                time: moment(this.model.get('release').get('release_time')).format('lll')
+                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
             });
             FormModal.prototype.render.call(this, options);
 
@@ -67,6 +79,18 @@ define([
         },
 
         update: function(){
+            var name = this.$('#name').val();
+            this.model.set('name', name);
+            if (name === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
+            }
             var amount = parseInt(this.$('#spill-amount').val(), 10);
             var rate = this.$('#spill-rate').val();
             var release = this.model.get('release');
@@ -84,8 +108,8 @@ define([
             }
 
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
-            release.set('release_time', releaseTime.format());
-            release.set('end_release_time', releaseTime.add(duration, 's').format());
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('amount', amount);
             this.model.set('release', release);
             this.model.set('units', units);

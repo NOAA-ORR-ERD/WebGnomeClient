@@ -22,7 +22,19 @@ define([
         },
 
         render: function(options){
+            if (this.model.get('name') === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    console.log('loop run');
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
+            }
             this.body = _.template(FormTemplate, {
+                name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: moment(this.model.get('release').get('release_time')).format('lll')
             });
@@ -46,13 +58,26 @@ define([
         },
 
         update: function(){
+            var name = this.$('#name').val();
+            this.model.set('name', name);
+            if (name === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
+            }
             var amount = parseInt(this.$('#amountreleased').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
-            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format();
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
 
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
+            this.model.set('name', name);
             this.model.set('release', release);
             this.model.set('units', units);
             this.model.set('amount', amount);
