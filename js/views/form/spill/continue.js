@@ -176,7 +176,7 @@ define([
         // },
 
         elementSelect: function(){
-            this.close();
+            FormModal.prototype.hide.call(this);
             var oilLibraryView = new OilLibraryView();
             oilLibraryView.render();
         },
