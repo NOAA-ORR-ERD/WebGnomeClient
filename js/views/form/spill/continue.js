@@ -184,7 +184,12 @@ define([
         },
 
         locationSelect: function(){
-
+            if (this.spillMapView){
+                this.spillMapView.hide();
+            } else {
+                this.spillMapView = new SpillMapView();
+                this.spillMapView.render();
+            }
         },
 
         next: function(){
