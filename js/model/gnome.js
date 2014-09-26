@@ -90,7 +90,12 @@ define([
                             // by looking at it's obj_type and cast it appropriatly.
 
                             for(var obj in embeddedData){
-                                response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
+                                // console.log(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
+                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
+                                    response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
+                                } else {
+                                    response[key].add(new Backbone.Model(embeddedData[obj], {parse: true, silent: true}));
+                                }
                             }
                         }
                     } else {
