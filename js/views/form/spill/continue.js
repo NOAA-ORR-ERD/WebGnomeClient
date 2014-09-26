@@ -46,6 +46,8 @@ define([
             });
             FormModal.prototype.render.call(this, options);
 
+            this.$('#map').hide();
+
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
             });
@@ -184,9 +186,8 @@ define([
         },
 
         locationSelect: function(){
-            if (this.spillMapView){
-                this.spillMapView.hide();
-            } else {
+            if (!this.$('#map').is(':visible')){
+                this.$('#map').show();
                 this.spillMapView = new SpillMapView();
                 this.spillMapView.render();
             }
