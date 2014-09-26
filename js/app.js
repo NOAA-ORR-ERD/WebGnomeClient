@@ -209,21 +209,24 @@ define([
             new SessionModel(function(){
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
-                var gnomeModel = new GnomeModel();
-                gnomeModel.fetch({
-                    success: function(model){
-                        if(model.id){
-                            window.webgnome.model = model;
+                
+                if(window.location.href.indexOf('test.html') == -1){
+                    var gnomeModel = new GnomeModel();
+                    gnomeModel.fetch({
+                        success: function(model){
+                            if(model.id){
+                                window.webgnome.model = model;
+                            }
+                            Backbone.history.start();
+                        },
+                        error: function(){
+                            Backbone.history.start();
+                            webgnome.router.navigate('', true);
                         }
-                        Backbone.history.start();
-                    },
-                    error: function(){
-                        Backbone.history.start();
-                        webgnome.router.navigate('', true);
-                    }
-                });
-
-
+                    });
+                } else {
+                    Backbone.history.start();
+                }
             });
         },
         hasModel: function(){
