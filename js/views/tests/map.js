@@ -12,8 +12,8 @@ define([
 
         test: function(){
 
-            asyncTest('Create a new map', function(){
-                map = new GnomeMap();
+            asyncTest('Create a new Gnome Map', function(){
+                map = new GnomeMap({obj_type: 'gnome.map.GnomeMap'});
                 map.save(null, {
                     validate: false,
                     success: function(){
