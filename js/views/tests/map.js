@@ -18,10 +18,12 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(map.get('id')), 'map was created');
+                        ok(map.toTree().length > 0, 'map toTree works');
                         start();
                     },
                     error: function(){
                         ok(!_.isUndefined(map.get('id')), 'map was created');
+                        ok(map.toTree().length > 0, 'map toTree works');
                         start();
                     }
                 });

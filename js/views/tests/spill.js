@@ -13,6 +13,7 @@ define([
                 ok(spill.cid, 'Spill has a client id.');
                 ok(spill.get('release'), 'Spill has a release object.');
                 ok(spill.get('element_type'), 'Spill has an element_type');
+                ok(spill.toTree().length > 0, 'spill to tree works');
                 start();
             });
 
@@ -22,6 +23,7 @@ define([
                     ok(response.id, "Spill has py_gnome given id.");
                     ok(response.release.id, "Spill's release object has a py_gnome given id.");
                     ok(response.release.id, "Spill's element_type object has a py_gnome given id.");
+                    ok(model.toTree().length > 0, 'spill to tree works');
                     start();
                 };
                 persist_spill.save(null, {
@@ -33,6 +35,8 @@ define([
             asyncTest('Get spill from server', function(){
                 var get_test = function(model, response, options){
                     ok(response.id, "Spill has py_gnome given id.");
+                    ok(model.toTree().length > 0, 'spill to tree works');
+
                     start();
                 };
                 var start_get = function(model, response, options) {
@@ -57,6 +61,7 @@ define([
                     equal(response.release.id, release_id, "The same release was updated.");
                     equal(response.on, false, "Spill was turned off successfully");
                     deepEqual(model.get('release').get('start_position'), [1,1,0], "The release start position was updated");
+                    ok(model.toTree().length > 0, 'spill to tree works');
                     start();
                 };
                 var update_start = function(model, response, options){
