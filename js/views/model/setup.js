@@ -113,7 +113,7 @@ define([
                     return;
                 }
                 webgnome.model.resetLocation();
-                webgnome.model.save();
+                webgnome.model.on('reset:location', webgnome.model.save);
             }
 
             this.$('.icon').removeClass('selected');

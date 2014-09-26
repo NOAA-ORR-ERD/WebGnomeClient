@@ -208,14 +208,19 @@ define([
             movers.reset(windMovers);
 
             // remove the map
-            var map = new MapModel();
-            map.save();
-            this.set('map', map);
+            var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
+            map.save(null, {
+                success: _.bind(function(){
+                    this.set('map', map);
+                    // remove any environment other than wind
+                    var environment = this.get('environment');
+                    var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+                    environment.reset(winds);
+                    this.trigger('reset:location');
+                }, this)
+            });
 
-            // remove any environment other than wind
-            var environment = this.get('environment');
-            var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
-            environment.reset(winds);
+
         },
 
         mergeModel: function(model){
