@@ -7,9 +7,10 @@ define([
     'model/spill',
     'views/form/oil/library',
     'views/default/map',
+    'geolib',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
     var instantSpillForm = FormModal.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
@@ -83,9 +84,22 @@ define([
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var latitude = this.$('#latitude').val();
+            var longitude = this.$('#longitude').val();
+
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
+
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
+
+            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
 
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
+            release.set('start_position', start_position);
             this.model.set('name', name);
             this.model.set('release', release);
             this.model.set('units', units);

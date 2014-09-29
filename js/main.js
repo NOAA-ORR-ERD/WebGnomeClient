@@ -27,7 +27,8 @@ require.config({
         flotresize: 'lib/flot/jquery.flot.resize',
         flotdirection: 'lib/flotdirection/index',
         flotspline: 'lib/flotspline/jquery.flot.spline',
-        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip'
+        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
+        geolib: 'lib/geolib/dist/geolib.min'
     },
     shim: {
         jquery: {
@@ -63,6 +64,9 @@ require.config({
         chosen: {
             deps: ['jquery'],
             exports: 'jQuery.fn.chosen'
+        },
+        geolib: {
+            exports: 'geolib'
         }
     },
 });

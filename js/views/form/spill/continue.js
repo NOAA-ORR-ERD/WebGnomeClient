@@ -7,10 +7,11 @@ define([
     'model/spill',
     'views/form/oil/library',
     'views/default/map',
+    'geolib',
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
     var continueSpillForm = FormModal.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
@@ -107,6 +108,8 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
+            var latitude = this.$('#latitude').val();
+            var longitude = this.$('#longitude').val();
 
             if (days === '') {
                 days = 0;
@@ -116,9 +119,20 @@ define([
                 hours = 0;
             }
 
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
+
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
+
+            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
+            release.set('start_position', start_position);
             this.model.set('amount', amount);
             this.model.set('release', release);
             this.model.set('units', units);
