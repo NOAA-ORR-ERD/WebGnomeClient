@@ -40,12 +40,8 @@ define([
                     }
                 }
             }
-            this.body = _.template(FormTemplate, {
-                name: this.model.get('name'),
-                amount: this.model.get('amount'),
-                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
-            });
             FormModal.prototype.render.call(this, options);
+            
             this.$('#map').hide();
 
             this.$('#datetime').datetimepicker({

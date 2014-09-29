@@ -16,10 +16,6 @@ define([
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
-        events: function(){
-            return _.defaults(BaseSpillForm.prototype.events());
-        },
-
         initialize: function(options, spillModel){
             BaseSpillForm.prototype.initialize.call(this, options);
             this.model = spillModel;
@@ -60,26 +56,26 @@ define([
         },
 
         update: function(){
-            // var name = this.$('#name').val();
-            // this.model.set('name', name);
-            // if (name === 'Spill'){
-            //     var spillsArray = webgnome.model.get('spills').models;
-            //     for (var i = 0; i < spillsArray.length; i++){
-            //         if (spillsArray[i].get('id') === this.model.get('id')){
-            //             var nameStr = 'Spill #' + (i + 1);
-            //             this.model.set('name', nameStr);
-            //             break;
-            //         }
-            //     }
-            // }
-            // var amount = parseInt(this.$('#spill-amount').val(), 10);
-            // var release = this.model.get('release');
-            // var units = this.$('#units').val();
-            // var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var name = this.$('#name').val();
+            this.model.set('name', name);
+            if (name === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
+            }
+            var amount = parseInt(this.$('#spill-amount').val(), 10);
+            var release = this.model.get('release');
+            var units = this.$('#units').val();
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
-            // var latitude = this.$('#latitude').val();
-            // var longitude = this.$('#longitude').val();
+            var latitude = this.$('#latitude').val();
+            var longitude = this.$('#longitude').val();
 
             if (days === '') {
                 days = 0;
@@ -89,10 +85,24 @@ define([
                 hours = 0;
             }
 
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
+
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
+
+            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
+
+            release.set('start_position', start_position);
+            this.model.set('name', name);
+            this.model.set('release', release);
+            this.model.set('units', units);
+            this.model.set('amount', amount);
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
-            BaseSpillForm.prototype.update.call(this, options);
             this.updateAmountSlide();
             this.updateRateSlide();
         },

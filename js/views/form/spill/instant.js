@@ -24,10 +24,6 @@ define([
             }
         },
 
-        events: function(){
-            return _.defaults(BaseSpillForm.prototype.events());
-        },
-
         render: function(options){
             if (this.model.get('name') === 'Spill'){
                 var spillsArray = webgnome.model.get('spills').models;
@@ -79,8 +75,21 @@ define([
             var latitude = this.$('#latitude').val();
             var longitude = this.$('#longitude').val();
 
-            BaseSpillForm.prototype.update.call(this);
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
 
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
+
+            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+
+            release.set('start_position', start_position);
+            this.model.set('name', name);
+            this.model.set('release', release);
+            this.model.set('units', units);
+            this.model.set('amount', amount);
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
             this.updateConstantSlide();
