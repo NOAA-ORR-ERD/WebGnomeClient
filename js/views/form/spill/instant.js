@@ -72,8 +72,8 @@ define([
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
-            var latitude = this.$('#latitude').val();
-            var longitude = this.$('#longitude').val();
+            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '0';
+            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '0';
 
             if (latitude.indexOf('°') !== -1){
                 latitude = geolib.sexagesimal2decimal(latitude);
