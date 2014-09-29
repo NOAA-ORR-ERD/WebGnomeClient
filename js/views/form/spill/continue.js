@@ -15,6 +15,8 @@ define([
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
+        locationSelected: false,
+
         events: function(){
             return _.defaults({
                 'click .oilSelect': 'elementSelect',
@@ -186,11 +188,9 @@ define([
         },
 
         locationSelect: function(){
-            if (!this.$('#map').is(':visible')){
-                this.$('#map').show();
-                this.spillMapView = new SpillMapView();
-                this.spillMapView.render();
-            }
+            this.$('#map').show();
+            this.spillMapView = new SpillMapView();
+            this.spillMapView.render();
         },
 
         next: function(){
