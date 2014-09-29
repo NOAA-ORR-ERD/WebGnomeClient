@@ -309,13 +309,11 @@ define([
                         if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
                             var head = (upperBound - releaseTime);
                             amount += rateOfRelease * head;
-                            console.log(head);
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
                             amount += rateOfRelease * timeStep;
                         } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
                             var tail = endReleaseTime - lowerBound;
                             amount += rateOfRelease * tail;
-                            console.log(tail);
                         }
                     }
                 }
