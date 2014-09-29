@@ -387,7 +387,7 @@ define([
             } else {
                 this.$('.spill .state').removeClass('complete');
                 this.$('.spill .panel-body').hide().html('');
-                this.$('.spill').removeClass('col-md-6').addClass('col-md-6');
+                this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
             
         },

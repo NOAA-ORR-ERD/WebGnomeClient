@@ -62,10 +62,6 @@ define([
                 this.model.set('amount', 0);
             }
 
-            if (!this.model.get('rate')){
-                this.model.set('rate', 0);
-            }
-
             this.$('#amount .slider').slider({
                 min: 0,
                 max: 5,
