@@ -129,6 +129,10 @@ define([
             oilLibraryView.on('save', _.bind(function(){
                 this.render();
                 this.delegateEvents();
+                this.on('save', _.bind(function(){
+                    webgnome.model.get('spills').add(this.model);
+                    webgnome.model.save(); 
+                }, this));   
             }, this));
         },
 
