@@ -16,7 +16,11 @@ define([
 
         initialize: function(options, spillModel){
             FormModal.prototype.initialize.call(this, options);
-            this.model = spillModel;
+            if (!_.isUndefined(options.model)){
+                this.model = options.model;
+            } else {
+                this.model = spillModel;
+            }
         },
 
         events: function(){
@@ -120,8 +124,12 @@ define([
 
         elementSelect: function(){
             FormModal.prototype.hide.call(this);
-            var oilLibraryView = new OilLibraryView();
+            var oilLibraryView = new OilLibraryView({}, this.model);
             oilLibraryView.render();
+            oilLibraryView.on('save', _.bind(function(){
+                this.render();
+                this.delegateEvents();
+            }, this));
         },
 
         locationSelect: function(){
