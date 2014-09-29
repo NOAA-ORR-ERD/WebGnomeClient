@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill',
     'views/form/oil/library',
@@ -11,57 +11,28 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
-    var continueSpillForm = FormModal.extend({
+], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+    var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
-        locationSelected: false,
-
         events: function(){
-            return _.defaults({
-                'click .oilSelect': 'elementSelect',
-                'click .locationSelect': 'locationSelect'
-            }, FormModal.prototype.events);
+            return _.defaults(BaseSpillForm.prototype.events());
         },
 
         initialize: function(options, spillModel){
-            FormModal.prototype.initialize.call(this, options);
-            if (!_.isUndefined(options.model)){
-                this.model = options.model;
-            } else {
-                this.model = spillModel;
-            }
+            BaseSpillForm.prototype.initialize.call(this, options);
+            this.model = spillModel;
         },
 
         render: function(options){
-            if (this.model.get('name') === 'Spill'){
-                var spillsArray = webgnome.model.get('spills').models;
-                for (var i = 0; i < spillsArray.length; i++){
-                    if (spillsArray[i].get('id') === this.model.get('id')){
-                        var nameStr = 'Spill #' + (i + 1);
-                        this.model.set('name', nameStr);
-                        break;
-                    }
-                }
-            }
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 duration: {days: 0, hours: 0}
             });
-            FormModal.prototype.render.call(this, options);
-
-            this.$('#map').hide();
-
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
-
-            if (!this.model.get('amount')){
-                this.model.set('amount', 0);
-            }
+            BaseSpillForm.prototype.render.call(this, options);
 
             this.$('#amount .slider').slider({
                 min: 0,
@@ -89,27 +60,26 @@ define([
         },
 
         update: function(){
-            var name = this.$('#name').val();
-            this.model.set('name', name);
-            if (name === 'Spill'){
-                var spillsArray = webgnome.model.get('spills').models;
-                for (var i = 0; i < spillsArray.length; i++){
-                    if (spillsArray[i].get('id') === this.model.get('id')){
-                        var nameStr = 'Spill #' + (i + 1);
-                        this.model.set('name', nameStr);
-                        break;
-                    }
-                }
-            }
-            var amount = parseInt(this.$('#spill-amount').val(), 10);
-            var rate = this.$('#spill-rate').val();
-            var release = this.model.get('release');
-            var units = this.$('#units').val();
-            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            // var name = this.$('#name').val();
+            // this.model.set('name', name);
+            // if (name === 'Spill'){
+            //     var spillsArray = webgnome.model.get('spills').models;
+            //     for (var i = 0; i < spillsArray.length; i++){
+            //         if (spillsArray[i].get('id') === this.model.get('id')){
+            //             var nameStr = 'Spill #' + (i + 1);
+            //             this.model.set('name', nameStr);
+            //             break;
+            //         }
+            //     }
+            // }
+            // var amount = parseInt(this.$('#spill-amount').val(), 10);
+            // var release = this.model.get('release');
+            // var units = this.$('#units').val();
+            // var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
-            var latitude = this.$('#latitude').val();
-            var longitude = this.$('#longitude').val();
+            // var latitude = this.$('#latitude').val();
+            // var longitude = this.$('#longitude').val();
 
             if (days === '') {
                 days = 0;
@@ -119,31 +89,12 @@ define([
                 hours = 0;
             }
 
-            if (latitude.indexOf('°') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
-            }
-
-            if (longitude.indexOf('°') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
-            }
-
-            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
-
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
-            release.set('start_position', start_position);
-            this.model.set('amount', amount);
-            this.model.set('release', release);
-            this.model.set('units', units);
+            BaseSpillForm.prototype.update.call(this, options);
             this.updateAmountSlide();
             this.updateRateSlide();
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         updateAmountSlide: function(ui){
@@ -189,46 +140,8 @@ define([
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
-        },
-
-        // parseDuration: function(seconds){
-        //     if (!_.isUndefined(this.model.get('release')))
-        // },
-
-        elementSelect: function(){
-            FormModal.prototype.hide.call(this);
-            var oilLibraryView = new OilLibraryView();
-            oilLibraryView.render();
-            oilLibraryView.on('save', _.bind(function(){
-                this.render();
-                this.delegateEvents();
-                this.on('save', _.bind(function(){
-                    webgnome.model.get('spills').add(this.model);
-                    webgnome.model.save(); 
-                }, this));   
-            }, this));
-        },
-
-        locationSelect: function(){
-            this.$('#map').show();
-            this.spillMapView = new SpillMapView();
-            this.spillMapView.render();
-        },
-
-        next: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.next.call(this);
-        },
-
-        back: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.back.call(this);
-        },
-
-        close: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.close.call(this);
         }
+
     });
 
     return continueSpillForm;

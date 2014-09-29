@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill',
     'views/form/oil/library',
@@ -10,13 +10,13 @@ define([
     'geolib',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
-    var instantSpillForm = FormModal.extend({
+], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+    var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
-            FormModal.prototype.initialize.call(this, options);
+            BaseSpillForm.prototype.initialize.call(this, options);
             if (!_.isUndefined(options.model)){
                 this.model = options.model;
             } else {
@@ -25,10 +25,7 @@ define([
         },
 
         events: function(){
-            return _.defaults({
-                'click .oilSelect': 'elementSelect',
-                'click .locationSelect': 'locationSelect'
-            }, FormModal.prototype.events);
+            return _.defaults(BaseSpillForm.prototype.events());
         },
 
         render: function(options){
@@ -47,12 +44,7 @@ define([
                 amount: this.model.get('amount'),
                 time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
             });
-            FormModal.prototype.render.call(this, options);
-            this.$('#map').hide();
-
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
+            BaseSpillForm.prototype.render.call(this, options);
 
             this.$('.slider').slider({
                 min: 0,
@@ -87,30 +79,11 @@ define([
             var latitude = this.$('#latitude').val();
             var longitude = this.$('#longitude').val();
 
-            if (latitude.indexOf('°') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
-            }
-
-            if (longitude.indexOf('°') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
-            }
-
-            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+            BaseSpillForm.prototype.update.call(this);
 
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
-            release.set('start_position', start_position);
-            this.model.set('name', name);
-            this.model.set('release', release);
-            this.model.set('units', units);
-            this.model.set('amount', amount);
             this.updateConstantSlide();
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         updateConstantSlide: function(ui){
@@ -134,43 +107,6 @@ define([
                 }
             }
             
-        },
-
-        elementSelect: function(){
-            FormModal.prototype.hide.call(this);
-            var oilLibraryView = new OilLibraryView({}, this.model);
-            oilLibraryView.render();
-            oilLibraryView.on('save', _.bind(function(){
-                this.render();
-                this.delegateEvents();
-                this.on('save', _.bind(function(){
-                    webgnome.model.get('spills').add(this.model);
-                    webgnome.model.save(); 
-                }, this));   
-            }, this));
-        },
-
-        locationSelect: function(){
-            if (!this.$('#map').is(':visible')){
-                this.$('#map').show();
-                this.spillMapView = new SpillMapView();
-                this.spillMapView.render();
-            }
-        },
-
-        next: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.next.call(this);
-        },
-
-        back: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.back.call(this);
-        },
-
-        close: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            FormModal.prototype.close.call(this);
         }
 
     });
