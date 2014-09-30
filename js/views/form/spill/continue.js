@@ -104,6 +104,7 @@ define([
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('release', release);
+            BaseSpillForm.prototype.update.call(this);
             this.updateAmountSlide();
             this.updateRateSlide();
         },

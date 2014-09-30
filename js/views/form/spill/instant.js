@@ -58,16 +58,6 @@ define([
         update: function(){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            // if (name === 'Spill'){
-            //     var spillsArray = webgnome.model.get('spills').models;
-            //     for (var i = 0; i < spillsArray.length; i++){
-            //         if (spillsArray[i].get('id') === this.model.get('id')){
-            //             var nameStr = 'Spill #' + (i + 1);
-            //             this.model.set('name', nameStr);
-            //             break;
-            //         }
-            //     }
-            // }
             var amount = parseInt(this.$('#amountreleased').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
@@ -92,6 +82,7 @@ define([
             this.model.set('amount', amount);
             release.set('release_time', releaseTime);
             release.set('end_release_time', releaseTime);
+            BaseSpillForm.prototype.update.call(this);
             this.updateConstantSlide();
         },
 

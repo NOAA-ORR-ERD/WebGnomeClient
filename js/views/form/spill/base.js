@@ -8,9 +8,10 @@ define([
     'views/form/oil/library',
     'views/default/map',
     'geolib',
-    'jqueryDatetimepicker',
-    'moment'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+    'ol',
+    'moment',
+    'jqueryDatetimepicker'
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib, ol, moment){
     var baseSpillForm = FormModal.extend({
 
         events: function(){
@@ -51,31 +52,6 @@ define([
         },
 
         update: function(){
-            var name = this.$('#name').val();
-            this.model.set('name', name);
-            // if (name === 'Spill'){
-            //     var spillsArray = webgnome.model.get('spills').models;
-            //     for (var i = 0; i < spillsArray.length; i++){
-            //         if (spillsArray[i].get('id') === this.model.get('id')){
-            //             var nameStr = 'Spill #' + (i + 1);
-            //             this.model.set('name', nameStr);
-            //             break;
-            //         }
-            //     }
-            // }
-            var amount = parseInt(this.$('#amountreleased').val(), 10);
-            var units = this.$('#units').val();
-            var release = this.model.get('release');
-            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
-            var latitude = this.$('#latitude').val();
-            var longitude = this.$('#longitude').val();
-            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
-
-            release.set('start_position', start_position);
-            this.model.set('name', name);
-            this.model.set('release', release);
-            this.model.set('units', units);
-            this.model.set('amount', amount);
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -102,8 +78,20 @@ define([
             this.$('#map').show();
             setTimeout(function(){
                 this.spillMapView = new SpillMapView();
+                this.source = new ol.source.Vector();
                 this.spillMapView.render();
+                this.spillMapView.on('click', _.bind(function(e){
+                    this.source.forEachFeature(function(feature){
+                        this.source.removeFeature(feature);
+                    }, this);
+
+                    var feature = new this.spillMapView.Feature(new ol.geom.Point(e.coordinate));
+                    console.log(e.coordinate);
+                    var coords = new this.spillMapView.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                    this.source.addFeature(feature);
+                }, this));
             }, 1);
+
         },
 
         next: function(){
