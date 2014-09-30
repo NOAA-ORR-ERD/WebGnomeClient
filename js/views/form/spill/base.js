@@ -43,7 +43,9 @@ define([
             }
             FormModal.prototype.render.call(this, options);
 
-            this.$('#map').hide();
+            if (this.model.get('release').get('start_position')[0] === 0 && this.model.get('release').get('start_position')[1] === 0) {
+                this.$('#map').hide();
+            }
 
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
@@ -60,18 +62,21 @@ define([
             }
         },
 
+        rerenderForm: function(){
+            this.render();
+            this.delegateEvents();
+            this.on('save', _.bind(function(){
+                webgnome.model.get('spills').add(this.model);
+                webgnome.model.save();
+            }, this));
+        },
+
         elementSelect: function(){
             FormModal.prototype.hide.call(this);
             var oilLibraryView = new OilLibraryView();
             oilLibraryView.render();
-            oilLibraryView.on('save', _.bind(function(){
-                this.render();
-                this.delegateEvents();
-                this.on('save', _.bind(function(){
-                    webgnome.model.get('spills').add(this.model);
-                    webgnome.model.save();
-                }, this));
-            }, this));
+            oilLibraryView.on('save', _.bind(this.rerenderForm, this));
+            oilLibraryView.on('hidden', _.bind(this.rerenderForm, this));
         },
 
         locationSelect: function(){
