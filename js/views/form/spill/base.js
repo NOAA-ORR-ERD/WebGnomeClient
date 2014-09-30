@@ -112,6 +112,7 @@ define([
                 var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                 var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                 this.source.addFeature(feature);
+                this.spillCoords = {lat: coords[1], lon: coords[0]};
             }, this));
         },
 

@@ -73,6 +73,11 @@ define([
                 longitude = geolib.sexagesimal2decimal(longitude);
             }
 
+            if (!_.isUndefined(this.spillCoords)){
+                latitude = this.spillCoords.lat;
+                longitude = this.spillCoords.lon;
+            }
+
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
 
             release.set('start_position', start_position);

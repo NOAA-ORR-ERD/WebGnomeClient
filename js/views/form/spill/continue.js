@@ -93,10 +93,14 @@ define([
             if (longitude.indexOf('°') !== -1){
                 longitude = geolib.sexagesimal2decimal(longitude);
             }
+            
+            if (!_.isUndefined(this.spillCoords)){
+                latitude = this.spillCoords.lat;
+                longitude = this.spillCoords.lon;
+            }
 
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
-
             release.set('start_position', start_position);
             this.model.set('name', name);
             this.model.set('units', units);
