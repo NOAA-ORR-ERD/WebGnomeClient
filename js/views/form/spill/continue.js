@@ -69,6 +69,7 @@ define([
                 }
             }
             var amount = parseInt(this.$('#spill-amount').val(), 10);
+            this.rate = this.$('#spill-rate').val();
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
@@ -85,13 +86,13 @@ define([
                 hours = 0;
             }
 
-            if (latitude.indexOf('°') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
-            }
+            // if (latitude.indexOf('°') !== -1){
+            latitude = geolib.sexagesimal2decimal(latitude);
+            // }
 
-            if (longitude.indexOf('°') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
-            }
+            // if (longitude.indexOf('°') !== -1){
+            longitude = geolib.sexagesimal2decimal(longitude);
+            // }
 
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
@@ -137,8 +138,8 @@ define([
             } else {
                 value = this.$('#constant .slider').slider('value');
             }
-            if(this.model.get('rate')){
-                var amount = this.model.get('rate');
+            if(this.rate){
+                var amount = this.rate;
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {

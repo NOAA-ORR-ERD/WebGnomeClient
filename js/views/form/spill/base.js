@@ -41,7 +41,7 @@ define([
                 }
             }
             FormModal.prototype.render.call(this, options);
-            
+
             this.$('#map').hide();
 
             this.$('#datetime').datetimepicker({
@@ -69,15 +69,6 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             var latitude = this.$('#latitude').val();
             var longitude = this.$('#longitude').val();
-
-            if (latitude.indexOf('°') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
-            }
-
-            if (longitude.indexOf('°') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
-            }
-
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
 
             release.set('start_position', start_position);
@@ -102,8 +93,8 @@ define([
                 this.delegateEvents();
                 this.on('save', _.bind(function(){
                     webgnome.model.get('spills').add(this.model);
-                    webgnome.model.save(); 
-                }, this));   
+                    webgnome.model.save();
+                }, this));
             }, this));
         },
 
