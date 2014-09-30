@@ -100,8 +100,10 @@ define([
 
         locationSelect: function(){
             this.$('#map').show();
-            this.spillMapView = new SpillMapView();
-            this.spillMapView.render();
+            setTimeout(function(){
+                this.spillMapView = new SpillMapView();
+                this.spillMapView.render();
+            }, 1);
         },
 
         next: function(){

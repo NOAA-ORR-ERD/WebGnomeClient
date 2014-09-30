@@ -26,7 +26,7 @@ define([
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: {days: 0, hours: 0}
+                duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'))
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -86,26 +86,40 @@ define([
                 hours = 0;
             }
 
-            // if (latitude.indexOf('°') !== -1){
-            latitude = geolib.sexagesimal2decimal(latitude);
-            // }
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
 
-            // if (longitude.indexOf('°') !== -1){
-            longitude = geolib.sexagesimal2decimal(longitude);
-            // }
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
 
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
 
             release.set('start_position', start_position);
             this.model.set('name', name);
-            this.model.set('release', release);
             this.model.set('units', units);
             this.model.set('amount', amount);
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('release', release);
             this.updateAmountSlide();
             this.updateRateSlide();
+        },
+
+        parseDuration: function(start, end){
+            var duration = (moment(end).unix() - moment(start).unix()) * 1000;
+            var days = 0;
+            var hours = 0;
+            if (!_.isUndefined(duration)){
+                hours = moment.duration(duration).asHours();
+                if (hours >= 24){
+                    days = parseInt(moment.duration(duration).asDays(), 10);
+                }
+                hours = hours - (days * 24);
+            }
+            return {'days': days, 'hours': hours};
         },
 
         updateAmountSlide: function(ui){
