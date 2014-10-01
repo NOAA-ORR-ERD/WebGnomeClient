@@ -6,8 +6,9 @@ define([
     'views/location/index',
     'views/modal/loading',
     'model/location',
-    'model/gnome'
-], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
+    'model/gnome',
+    'model/outputters/geojson'
+], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel, GeojsonOutputter){
     var locationModal = FormModal.extend({
         className: 'modal fade form-modal location-form',
         size: 'lg',
@@ -60,10 +61,23 @@ define([
                 className: 'page locations'
             });
             this.locationView.on('load', this.handoff, this);
+            this.locationView.on('loaded', this.loaded, this);
         },
 
         handoff: function(){
             this.hide();
+        },
+
+        loaded: function(){
+            if(_.isUndefined(webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.GeoJson'}))){
+                outputter = new GeojsonOutputter();
+                outputter.save(null, {
+                    success: _.bind(function(outputter){
+                        webgnome.model.get('outputters').add(outputter);
+                        webgnome.model.save();
+                    }, this)
+                });
+            }
         },
 
         updateMapSize: function(){
