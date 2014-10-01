@@ -30,7 +30,6 @@ define([
                                     webgnome.model.set('id', newModel.get('id'));
                                     webgnome.model.save(null, {
                                         success: _.bind(function(){
-                                            console.log(this);
                                             this.trigger('loaded');
                                         }, this)
                                     });
@@ -61,18 +60,10 @@ define([
                 className: 'page locations'
             });
             this.locationView.on('load', this.handoff, this);
-            this.locationView.on('loaded', function(){
-                console.log('sajksldf');
-            });
         },
 
         handoff: function(){
             this.hide();
-            this.loadingModal = new LoadingModal();
-            this.locationView.on('loaded', function(){
-                console.log('ajsdkflasd');
-            });
-            this.loadingModal.render();
         },
 
         updateMapSize: function(){
