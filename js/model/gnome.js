@@ -197,6 +197,45 @@ define([
 
         isValidAdios: function(){
             return false;
+        },
+
+        resetLocation: function(){
+            // clear any location relevant objects from the model.
+
+            // reset movers only preserving the wind at the moment.
+            var movers = this.get('movers');
+            var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            movers.reset(windMovers);
+
+            // remove the map
+            var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
+            map.save(null, {
+                success: _.bind(function(){
+                    this.set('map', map);
+                    // remove any environment other than wind
+                    var environment = this.get('environment');
+                    var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+                    environment.reset(winds);
+                    this.trigger('reset:location');
+                }, this)
+            });
+
+
+        },
+
+        mergeModel: function(model){
+            // merge a given model with this model.
+            // merge collections
+            // set map from given model only if this model doesn't have one.
+
+            if (this.get('map')) {
+                this.set('map', model.get('map'));
+            }
+
+            this.get('spills').add(model.get('spills').models);
+            this.get('environment').add(model.get('environment').models);
+            this.get('movers').add(model.get('movers').models);
+            this.get('weatherers').add(model.get('weatherers').models);
         }
     });
     
