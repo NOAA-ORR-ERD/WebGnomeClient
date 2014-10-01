@@ -85,6 +85,7 @@ define([
         newModel: function(event){
             event.preventDefault();
             webgnome.model = null;
+            webgnome.router.navigate('', true);
             webgnome.router.navigate('setup', true);
         },
 

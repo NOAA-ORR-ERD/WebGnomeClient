@@ -87,7 +87,9 @@ define([
         },
 
         close: function(){
-            webgnome.model.off('sync', this.renderModel, this);
+            if(webgnome.model){
+                webgnome.model.off('sync', this.renderModel, this);
+            }
             Backbone.View.prototype.close.call(this);
         }
     });

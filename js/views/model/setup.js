@@ -315,7 +315,9 @@ define([
             if(!_.isUndefined(this.windPlot)){
                 this.windPlot.shutdown();
             }
-            webgnome.model.off('sync', this.updateObjects, this);
+            if(webgnome.model){
+                webgnome.model.off('sync', this.updateObjects, this);
+            }
             Backbone.View.prototype.close.call(this);
         }
     });
