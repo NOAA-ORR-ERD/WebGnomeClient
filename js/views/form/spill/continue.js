@@ -26,7 +26,8 @@ define([
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'))
+                duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
+                coords: {'lat': 0, 'lon': 0}
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -53,6 +54,10 @@ define([
                     this.updateRateSlide(ui);
                 }, this)
             });
+        },
+
+        parseLocation: function(){
+
         },
 
         update: function(){

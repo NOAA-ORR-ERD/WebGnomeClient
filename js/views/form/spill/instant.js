@@ -38,7 +38,8 @@ define([
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
-                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm')
+                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                coords: {'lat': 0, 'lon': 0}
             });
             BaseSpillForm.prototype.render.call(this, options);
 
