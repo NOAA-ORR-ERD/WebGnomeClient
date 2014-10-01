@@ -16,7 +16,7 @@ define([
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
-            BaseSpillForm.prototype.initialize.call(this, options);
+            BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             if (!_.isUndefined(options.model)){
                 this.model = options.model;
             } else {

@@ -17,17 +17,19 @@ define([
         className: 'modal fade form-modal continuespill-form',
 
         initialize: function(options, spillModel){
-            BaseSpillForm.prototype.initialize.call(this, options);
+            BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
         },
 
         render: function(options){
+            var startPosition = this.model.get('release').get('start_position');
+
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment().format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
-                coords: {'lat': 0, 'lon': 0}
+                coords: {'lat': startPosition[1], 'lon': startPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -76,8 +78,8 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
-            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '0';
-            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '0';
+            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '';
+            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '';
 
             if (days === '') {
                 days = 0;
@@ -87,11 +89,11 @@ define([
                 hours = 0;
             }
 
-            if (latitude.indexOf('°') !== -1){
+            if (latitude.indexOf('°') !== -1 || $.trim(latitude).indexOf(' ') !== -1){
                 latitude = geolib.sexagesimal2decimal(latitude);
             }
 
-            if (longitude.indexOf('°') !== -1){
+            if (longitude.indexOf('°') !== -1 || $.trim(longitude).indexOf(' ') !== -1){
                 longitude = geolib.sexagesimal2decimal(longitude);
             }
             
