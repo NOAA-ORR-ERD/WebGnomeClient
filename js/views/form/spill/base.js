@@ -18,7 +18,8 @@ define([
 			return _.defaults({
 				'click .oilSelect': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
-				'click #spill-form-map': 'update'
+				'click #spill-form-map': 'update',
+				'blur .geo-info': 'locationSelect'
 			}, FormModal.prototype.events);
 		},
 
@@ -44,10 +45,12 @@ define([
 			}
 			FormModal.prototype.render.call(this, options);
 
+			var geoCoords = this.model.get('release').get('start_position');
+
 			if (this.model.get('release').get('start_position')[0] === 0 && this.model.get('release').get('start_position')[1] === 0) {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect([this.model.get('release').get('start_position')[0], this.model.get('release').get('start_position')[1]]);
+				this.locationSelect(null, [geoCoords[0], geoCoords[1]]);
 			}
 
 			this.$('#datetime').datetimepicker({
@@ -82,7 +85,7 @@ define([
 			oilLibraryView.on('hidden', _.bind(this.rerenderForm, this));
 		},
 
-		locationSelect: function(pastCoords){
+		locationSelect: function(e, pastCoords){
 			this.$('.map').show();
 			this.source = new ol.source.Vector();
 			this.layer = new ol.layer.Vector({
@@ -106,16 +109,19 @@ define([
 					this.layer
 				]
 			});
+			if (_.isArray(pastCoords)){
+				console.log(pastCoords);
+				var feature = new ol.Feature(new ol.geom.Point(pastCoords));
+				var coords = new ol.proj.transform(pastCoords, 'EPSG:4326', 'EPSG:3857');
+				this.source.addFeature(feature);
+			}
 			this.spillMapView.render();
-			// if (!_.isUndefined(pastCoords)){
-			// 	var feature = new ol.Feature(new ol.geom.Point(pastCoords));
-			// 	this.source.addFeature(feature);
-			// }
 			this.spillMapView.map.on('click', _.bind(function(e){
 				this.source.forEachFeature(function(feature){
 					this.source.removeFeature(feature);
 				}, this);
 				var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+				console.log(e.coordinate);
 				var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
 				this.source.addFeature(feature);
 				this.spillCoords = {lat: coords[1], lon: coords[0]};

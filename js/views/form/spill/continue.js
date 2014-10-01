@@ -56,10 +56,6 @@ define([
             });
         },
 
-        parseLocation: function(){
-
-        },
-
         update: function(){
             var name = this.$('#name').val();
             this.model.set('name', name);
@@ -100,6 +96,8 @@ define([
             }
             
             if (!_.isUndefined(this.spillCoords)){
+                this.$('#latitude').val(this.spillCoords.lat);
+                this.$('#longitude').val(this.spillCoords.lon);
                 latitude = this.spillCoords.lat;
                 longitude = this.spillCoords.lon;
             }

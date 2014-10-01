@@ -35,11 +35,14 @@ define([
                     }
                 }
             }
+
+            var startPosition = this.model.get('release').get('start_position');
+
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                coords: {'lat': 0, 'lon': 0}
+                coords: {'lat': startPosition[1], 'lon': startPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -75,6 +78,8 @@ define([
             }
 
             if (!_.isUndefined(this.spillCoords)){
+                this.$('#latitude').val(this.spillCoords.lat);
+                this.$('#longitude').val(this.spillCoords.lon);
                 latitude = this.spillCoords.lat;
                 longitude = this.spillCoords.lon;
             }
