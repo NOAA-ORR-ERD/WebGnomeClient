@@ -7,11 +7,18 @@ define([
         urlRoot: '/environment/',
         defaults: {
             obj_type: 'gnome.environment.water.Water',
-            water_temp: 46,
-            water_unit: 'F',
+            temperature: 46,
             salinity: 32,
-            sediment_load: 5,
-            sea_height: 'compute'
+            sediment: 5,
+            wave_height: 0,
+            fetch: 0,
+            units: {
+                'temperature': 'F',
+                'salinity': 'psu',
+                'sediment': 'mg/l',
+                'wave_height': 'm',
+                'fetch': 'm'
+            }
         },
 
         validate: function(attrs, options){

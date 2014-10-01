@@ -23,12 +23,12 @@ define([
 
         render: function(options){
             this.body = _.template(WaterTemplate, {
-                water_temp: this.model.get('water_temp')
+                water_temp: this.model.get('temperature')
             });
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#tempunits option[value="' + this.model.get('water_unit') + '"]').attr('selected', 'selected');
+            this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
             
             if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
                 // one of the drop down options was not selected.
@@ -39,12 +39,12 @@ define([
                 this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').attr('selected', 'selected');
             }
 
-            if ([5, 50, 500].indexOf(this.model.get('sediment_load')) == -1){
+            if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1){
                 this.$('.sediment-select').hide();
                 this.$('.sediment-input').removeClass('hide');
-                this.$('.sediment-input input').val(this.model.get('sediment_load'));
+                this.$('.sediment-input input').val(this.model.get('sediment'));
             } else {
-                this.$('.sediment-select option[value="' + this.model.get('sediment_load') + '"]').attr('selected', 'selected');
+                this.$('.sediment-select option[value="' + this.model.get('sediment') + '"]').attr('selected', 'selected');
             }
         },
 
@@ -67,9 +67,12 @@ define([
         },
 
         update: function(){
-            this.model.set('water_temp', this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits option:selected').val()));
+            var units = this.model.get('units');
+            units.temperature = this.$('#tempunits').val();
+            this.model.set('units', units);
+            this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
-            this.model.set('sediment_load', this.$('.sediment:visible').val());
+            this.model.set('sediment', this.$('.sediment:visible').val());
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
