@@ -133,23 +133,32 @@ define([
             } else{
                 this.showAllObjects();
             }
+            this.shuffleObjects();
         },
 
         showFateObjects: function(){
-            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden');
-            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible');
-            this.$('.wind').css('opacity', 1).css('visibility', 'visible');
-            this.$('.water').css('opacity', 1).css('visibility', 'visible');
-            this.$('.spill').css('opacity', 1).css('visibility', 'visible');
+            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden').addClass('disabled');
+            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.wind').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.water').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.spill').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
         },
 
         showAllObjects: function(){
-            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible');
-            this.$('.pannel').css('opacity', 1).css('visibility', 'visible');
+            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible').addClass('disabled');
+            this.$('.pannel').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
         },
 
         showTrajectoryObjects: function(){
+            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden').addClass('disabled');
+            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.wind').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.spill').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.location').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+        },
 
+        shuffleObjects: function(){
+            this.$('.model-objects .object.disabled').remove().appendTo(this.$('.model-objects'));
         },
 
         updateObjects: function(){
