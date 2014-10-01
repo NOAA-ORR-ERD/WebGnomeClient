@@ -20,7 +20,10 @@
         "compass-rose-ui": "1.0.*",
         "fancytree": "2.2.0",
         "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip",
-        "fuse": "~1.1.7"
+        "fuse": "~1.1.7",
+        "flot": "0.8.3",
+        "flotdirection": "https://jquery-flot-direction.googlecode.com/files/jquery.flot.direction.js",
+        "flotspline": "git://github.com/alexbardas/flot.git"
     },
     "devDependencies": {
        "qunit": "1.14.0"

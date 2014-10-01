@@ -19,7 +19,13 @@ require.config({
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
         fancytree: 'lib/fancytree/dist/jquery.fancytree',
         chosen: 'lib/chosen/chosen.jquery',
-        fuse: 'lib/fuse/src/fuse'
+        fuse: 'lib/fuse/src/fuse',
+        flot: 'lib/flot/jquery.flot',
+        flotsymbol: 'lib/flot/jquery.flot.symbol',
+        flottime: 'lib/flot/jquery.flot.time',
+        flotresize: 'lib/flot/jquery.flot.resize',
+        flotdirection: 'lib/flotdirection/index',
+        flotspline: 'lib/flotspline/jquery.flot.spline'
     },
     shim: {
         jquery: {
@@ -27,6 +33,12 @@ require.config({
         },
         bootstrap: ['jquery'],
         jqueryui: ['jquery'],
+        flot: ['jquery'],
+        flotsymbol: ['flot'],
+        flottime: ['flot'],
+        flotresize: ['flot'],
+        flotdirection: ['flot'],
+        flotspline: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'

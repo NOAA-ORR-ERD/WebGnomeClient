@@ -1,0 +1,41 @@
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+		<div class="col-sm-5">
+            <input type="text" id="datetime" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+    	<label class="col-sm-4 control-label" for="amountreleased">Amount Released:</label>
+    	<div class="col-sm-2">
+    		<input type="text" id="amountreleased" class="form-control">
+    	</div>
+    	<div class="col-sm-3">
+    		<select class="form-control" id="units">
+    			<option value="cu_m">
+    				cu m
+    			</option>
+    			<option value="gal">
+    				gal
+    			</option>
+    			<option value="bbl">
+    				bbl
+    			</option>
+    			<option value="tons">
+    				tons
+    			</option>
+    			<option value="metric_tons">
+    				metric tons
+    			</option>
+    		</select>
+    	</div>
+        <div class="form-group">
+            <label class="control-label col-sm-4">Confidence in Data:</label>
+            <div class="col-sm-8 col-sm-offset-1">
+                <div class="slider"></div>
+            </div>
+            <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
+            <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
+        </div>
+   	</div>
+</form>

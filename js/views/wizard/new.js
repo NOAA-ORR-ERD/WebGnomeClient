@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/wizard/default',
+    'views/wizard/base',
     'views/form/model',
     'views/form/map',
     'views/form/spill',
@@ -11,8 +11,8 @@ define([
     'model/gnome',
     'model/map',
     'collection/spills',
-], function($, _, Backbone, DefaultWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, RandomForm, GnomeModel, GnomeMap, GnomeSpills){
-    var newWizardView = DefaultWizard.extend({
+], function($, _, Backbone, BaseWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, RandomForm, GnomeModel, GnomeMap, GnomeSpills){
+    var newWizardView = BaseWizard.extend({
         initialize: function(){
             webgnome.model = new GnomeModel();
             webgnome.model.save(null, {
