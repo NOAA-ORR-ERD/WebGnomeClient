@@ -39,6 +39,9 @@ define([
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
                     webgnome.model.save();
+                    spillForm.on('hidden', function(){
+                        spillForm.trigger('wizardclose');
+                    });
                 });
             }, this));
         },
@@ -52,6 +55,9 @@ define([
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
                     webgnome.model.save();
+                    spillForm.on('hidden', function(){
+                        spillForm.trigger('wizardclose');
+                    });
                 });
             }, this));
         },
