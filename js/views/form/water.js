@@ -69,6 +69,12 @@ define([
         update: function(){
             var units = this.model.get('units');
             units.temperature = this.$('#tempunits').val();
+            if (this.$('#fetch').val()){
+                this.model.set('fetch', this.$('#fetch').val());
+            }
+            if (this.$('#height').val()){
+                this.model.set('height', this.$('#height').val());
+            }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
