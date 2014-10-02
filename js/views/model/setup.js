@@ -14,6 +14,7 @@ define([
     'text!templates/panel/map.html',
     'model/environment/water',
     'views/form/water',
+    'text!templates/panel/water.html',
     'model/spill',
     'views/form/spill/type',
     'views/form/location',
@@ -26,7 +27,7 @@ define([
 ], function($, _, Backbone, moment, ol, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
-    WaterModel, WaterForm,
+    WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm,
     LocationForm, olMapView){
     var adiosSetupView = Backbone.View.extend({
@@ -164,6 +165,7 @@ define([
         updateObjects: function(){
             this.updateWind();
             this.updateLocation();
+            this.updateWater();
         },
 
         clickWind: function(){
@@ -246,7 +248,7 @@ define([
         },
 
         clickWater: function(){
-            water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
             if(_.isUndefined(water) || water.length === 0){
                 water = new WaterModel();
             }
@@ -262,6 +264,24 @@ define([
 
         updateWater: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            console.log(water);
+            if (!_.isUndefined(water)){
+                var compiled;
+                this.$('.water .state').addClass('complete');
+                compiled = _.template(WaterPanelTemplate, {
+                    temperature: water.get('temperature'),
+                    salinity: water.get('salinity'),
+                    sediment: water.get('sediment'),
+                    wave_height: water.get('wave_height'),
+                    fetch: water.get('fetch'),
+                    units: water.get('units')
+                });
+                this.$('.water .panel-body').html(compiled);
+                this.$('.water .panel-body').show();
+            } else {
+                this.$('.water .state').removeClass('complete');
+                this.$('.water .panel-body').hide().html('');
+            }
         },
 
         clickSpill: function(){
