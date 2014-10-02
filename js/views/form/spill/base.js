@@ -135,7 +135,7 @@ define([
                     this.source.addFeature(feature);
                     
                     this.spillMapView.map.getView().setCenter(startPosition);
-                    this.spillMapView.map.getView().setZoom(13);
+                    this.spillMapView.map.getView().setZoom(30);
                 }
 				this.spillMapView.map.on('click', _.bind(function(e){
 					this.source.forEachFeature(function(feature){
