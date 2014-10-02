@@ -122,6 +122,7 @@ define([
                     ]
                 });
 				this.spillMapView.render();
+                window.map = this.spillMapView.map;
 				this.spillMapView.map.on('click', _.bind(function(e){
 					this.source.forEachFeature(function(feature){
 						this.source.removeFeature(feature);
@@ -146,7 +147,9 @@ define([
 
 		close: function(){
 			$('.xdsoft_datetimepicker:last').remove();
-            this.spillMapView.close();
+            if (!_.isUndefined(this.spillMapView)){
+                this.spillMapView.close();
+            }
 			FormModal.prototype.close.call(this);
 		}
 

@@ -256,6 +256,7 @@ define([
         clickSpill: function(){
             var spillTypeForm = new SpillTypeForm();
             spillTypeForm.render();
+            spillTypeForm.on('hidden', spillTypeForm.close);
         },
 
 
@@ -267,6 +268,7 @@ define([
             } else {
                 var spillView = new SpillInstantView(null, spill);
             }
+            spillView.on('hidden', spillView.close);
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
             });
