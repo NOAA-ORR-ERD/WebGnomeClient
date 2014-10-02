@@ -97,12 +97,6 @@ define([
                 });
 
                 var startPosition = _.initial(this.model.get('release').get('start_position'));
-
-                if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
-                    var coords = new ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
-                    this.source.addFeature(feature);
-                }
                 this.spillMapView = new SpillMapView({
                     id: 'spill-form-map',
                     zoom: 2,
@@ -115,7 +109,34 @@ define([
                     ]
                 });
 				this.spillMapView.render();
-                window.map = this.spillMapView.map;
+                var map = webgnome.model.get('map');
+                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                    map.getGeoJSON(_.bind(function(data){
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: data,
+                            projection: 'EPSG:3857'
+                        });
+                        var extent = this.shorelineSource.getExtent();
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource
+                        });
+                        if(this.spillMapView.map){
+                            this.spillMapView.map.addLayer(this.shorelineLayer);
+                            if (startPosition[0] === 0 && startPosition[1] === 0){
+                                this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
+                            }
+                        }
+                    }, this));
+                }
+
+                if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                    startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
+                    this.source.addFeature(feature);
+                    
+                    this.spillMapView.map.getView().setCenter(startPosition);
+                    this.spillMapView.map.getView().setZoom(13);
+                }
 				this.spillMapView.map.on('click', _.bind(function(e){
 					this.source.forEachFeature(function(feature){
 						this.source.removeFeature(feature);

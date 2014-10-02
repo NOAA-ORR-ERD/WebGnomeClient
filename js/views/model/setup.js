@@ -272,9 +272,9 @@ define([
             });
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
-                spillView.on('hidden', function(){
-                    spillView.trigger('wizardclose');
-                });
+                setTimeout(_.bind(function(){
+                    spillView.close();}, 
+                this), 750);
             });
             spillView.render();
         },
