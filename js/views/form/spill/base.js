@@ -21,7 +21,8 @@ define([
 				'click .oilSelect': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
-				'blur .geo-info': 'locationSelect'
+				'blur .geo-info': 'locationSelect',
+                'focus .geo-info': 'releaseLocation'
 			}, FormModal.prototype.events);
 		},
 
@@ -135,6 +136,10 @@ define([
 			}
 			this.mapShown = true;
 		},
+
+        releaseLocation: function(){
+            this.spillCoords = undefined;
+        },
 
 		next: function(){
 			$('.xdsoft_datetimepicker:last').remove();
