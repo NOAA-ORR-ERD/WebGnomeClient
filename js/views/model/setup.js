@@ -259,7 +259,6 @@ define([
             spillTypeForm.on('hidden', spillTypeForm.close);
         },
 
-
         loadSpill: function(e){
             var spillId = e.currentTarget.attributes[1].value;
             var spill = webgnome.model.get('spills').get(spillId);
@@ -268,7 +267,7 @@ define([
             } else {
                 var spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('hidden', spillView.close);
+            spillView.on('wizardclose', spillView.close);
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
             });
@@ -398,13 +397,14 @@ define([
             e.preventDefault();
             e.stopPropagation();
             var id = e.target.parentNode.dataset.id;
-            console.log(webgnome.model.get('spills').remove(id));
+            console.log(id);
+            webgnome.model.get('spills').remove(id);
+            console.log(webgnome.model.get('spills'));
             webgnome.model.save({
                 success: _.bind(function(){
                     this.updateSpill();
                 }, this)
             });
-            
         },
 
         clickMap: function(){

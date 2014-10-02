@@ -81,11 +81,12 @@ define([
 		},
 
 		elementSelect: function(){
-			FormModal.prototype.hide.call(this);
+			//FormModal.prototype.hide.call(this);
+            this.hide();
 			var oilLibraryView = new OilLibraryView();
 			oilLibraryView.render();
-			oilLibraryView.on('save', _.bind(this.rerenderForm, this));
-			oilLibraryView.on('hidden', _.bind(this.rerenderForm, this));
+			oilLibraryView.on('save', _.bind(this.show, this));
+			oilLibraryView.on('hidden', _.bind(this.show, this));
 		},
 
 		locationSelect: function(e, pastCoords){

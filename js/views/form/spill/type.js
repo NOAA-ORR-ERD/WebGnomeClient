@@ -35,7 +35,7 @@ define([
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillInstantForm(null, spill);
                 spillForm.render();
-                spillForm.on('hidden', spillForm.close);
+                spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
                     webgnome.model.save();
@@ -48,7 +48,7 @@ define([
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillContinueForm(null, spill);
                 spillForm.render();
-                spillForm.on('hidden', spillForm.close);
+                spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
                     webgnome.model.save();
