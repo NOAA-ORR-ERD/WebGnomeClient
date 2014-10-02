@@ -146,6 +146,7 @@ define([
 
 		close: function(){
 			$('.xdsoft_datetimepicker:last').remove();
+            this.spillMapView.close();
 			FormModal.prototype.close.call(this);
 		}
 
