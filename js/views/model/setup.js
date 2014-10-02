@@ -400,9 +400,7 @@ define([
             e.preventDefault();
             e.stopPropagation();
             var id = e.target.parentNode.dataset.id;
-            console.log(id);
             webgnome.model.get('spills').remove(id);
-            console.log(webgnome.model.get('spills'));
             webgnome.model.save({
                 success: _.bind(function(){
                     this.updateSpill();
