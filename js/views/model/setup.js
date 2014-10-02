@@ -267,7 +267,9 @@ define([
             } else {
                 var spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('wizardclose', spillView.close);
+            spillView.on('wizardclose', function(){
+                spillView.on('hidden', spillView.close);
+            });
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
                 spillView.on('hidden', function(){

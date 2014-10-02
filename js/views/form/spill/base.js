@@ -72,15 +72,6 @@ define([
 			}
 		},
 
-		rerenderForm: function(){
-			this.render();
-			this.delegateEvents();
-			this.on('save', _.bind(function(){
-				webgnome.model.get('spills').add(this.model);
-				webgnome.model.save();
-			}, this));
-		},
-
 		elementSelect: function(){
 			//FormModal.prototype.hide.call(this);
             this.hide();
@@ -105,10 +96,10 @@ define([
                     })
                 });
 
-                var startPosition = this.model.get('release').get('start_position');
+                var startPosition = _.initial(this.model.get('release').get('start_position'));
 
-                if (_.isArray(startPosition)){
-                    var feature = new ol.Feature(new ol.geom.Point(_.initial(startPosition)));
+                if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
                     var coords = new ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
                     this.source.addFeature(feature);
                 }
@@ -132,6 +123,7 @@ define([
 					var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
 					var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
 					this.spillCoords = {lat: coords[1], lon: coords[0]};
+                    this.source.addFeature(feature);
 				}, this));
 			}
 			this.mapShown = true;
