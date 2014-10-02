@@ -16,8 +16,8 @@ define([
             ModelTests.run();
             SpillTests.run();
             MapTests.run();
-            LocationTests.run();
             EnvironmentTests.run();
+            LocationTests.run();
             
             QUnit.load();
             QUnit.start();
