@@ -8,12 +8,13 @@ define([
     'model/spill',
     'model/environment/tide',
     'model/environment/wind',
+    'model/environment/water',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
     'model/outputters/geojson'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter){
     var gnomeModel = BaseModel.extend({
@@ -26,7 +27,8 @@ define([
             map: MapModel,
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
-                'gnome.environment.tide.Tide': TideModel
+                'gnome.environment.tide.Tide': TideModel,
+                'gnome.environment.environment.Water': WaterModel
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,

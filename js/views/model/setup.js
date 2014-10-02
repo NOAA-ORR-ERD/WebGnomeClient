@@ -260,6 +260,10 @@ define([
             waterForm.render();
         },
 
+        updateWater: function(){
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+        },
+
         clickSpill: function(){
             var spillTypeForm = new SpillTypeForm();
             spillTypeForm.on('hidden', spillTypeForm.close);
