@@ -26,16 +26,18 @@ define([
                         success: _.bind(function(){
                             webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    // webgnome.model.mergeModel(newModel);
-                                    // webgnome.model.set('id', newModel.get('id'));
-                                    // webgnome.model.save(null, {
-                                        // success: _.bind(function(){
-                                            this.trigger('loaded');
-                                        // }, this)
-                                    // });
-                                }, this)
-                            });
-                        }, this)
+                                    if(_.isUndefined(webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.GeoJson'}))){
+                                        outputter = new GeojsonOutputter();
+                                        outputter.save(null, {
+                                            success: _.bind(function(outputter){
+                                                webgnome.model.get('outputters').add(outputter);
+                                                webgnome.model.save();
+                                            }, this)
+                                        });
+                                    }
+                                })
+                            }, this);
+                        })
                     });
                 }
             });
@@ -68,15 +70,7 @@ define([
         },
 
         loaded: function(){
-            if(_.isUndefined(webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.GeoJson'}))){
-                outputter = new GeojsonOutputter();
-                outputter.save(null, {
-                    success: _.bind(function(outputter){
-                        webgnome.model.get('outputters').add(outputter);
-                        webgnome.model.save();
-                    }, this)
-                });
-            }
+            
         },
 
         updateMapSize: function(){
