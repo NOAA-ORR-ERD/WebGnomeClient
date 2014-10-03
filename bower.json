@@ -23,7 +23,8 @@
         "fuse": "~1.1.7",
         "flot": "0.8.3",
         "flotdirection": "https://jquery-flot-direction.googlecode.com/files/jquery.flot.direction.js",
-        "flotspline": "git://github.com/alexbardas/flot.git"
+        "flotspline": "git://github.com/alexbardas/flot.git",
+        "flot.tooltip": "~0.8.4"
     },
     "devDependencies": {
        "qunit": "1.14.0"

@@ -32,32 +32,34 @@ define([
 
         instant: function(){
             var spill = new SpillModel();
-
-            spill.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    this.on('hidden', _.bind(function(){
-                        var spillForm = new SpillInstantForm(null, spill);
-                        spillForm.render();
-                        spillForm.on('hidden', spillForm.close);
-                    }, this));
-                }, this)
-            });
+            this.on('hidden', _.bind(function(){
+                var spillForm = new SpillInstantForm(null, spill);
+                spillForm.render();
+                spillForm.on('wizardclose', spillForm.close);
+                spillForm.on('save', function(){
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.save();
+                    spillForm.on('hidden', function(){
+                        spillForm.trigger('wizardclose');
+                    });
+                });
+            }, this));
         },
 
         continue: function(){
             var spill = new SpillModel();
-
-            spill.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    this.on('hidden', _.bind(function(){
-                        var spillForm = new SpillContinueForm(null, spill);
-                        spillForm.render();
-                        spillForm.on('hidden', spillForm.close);
-                    }, this));
-                }, this)
-            });
+            this.on('hidden', _.bind(function(){
+                var spillForm = new SpillContinueForm(null, spill);
+                spillForm.render();
+                spillForm.on('wizardclose', spillForm.close);
+                spillForm.on('save', function(){
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.save();
+                    spillForm.on('hidden', function(){
+                        spillForm.trigger('wizardclose');
+                    });
+                });
+            }, this));
         },
 
         well: function(){

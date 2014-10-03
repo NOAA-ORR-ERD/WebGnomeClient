@@ -14,9 +14,7 @@ define([
             'start_position': [0, 0, 0],
             'num_elements': 500,
             'num_released': 0,
-            'start_time_invalid': true,
-            'release_time': '2013-02-13T15:00:00',
-            'end_release_time': '2013-02-13T15:00:00'
+            'start_time_invalid': true
         },
 
         validate: function(attrs, options){
@@ -30,6 +28,10 @@ define([
 
             if(isNaN(attrs.num_elements)){
                 return 'Release amount must be a number.';
+            }
+            
+            if (moment(attrs.release_time).isAfter(attrs.end_release_time)){
+                return 'Duration must be a positive value';
             }
         },
 

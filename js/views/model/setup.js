@@ -17,18 +17,22 @@ define([
     'text!templates/panel/water.html',
     'model/spill',
     'views/form/spill/type',
+    'text!templates/panel/spills.html',
+    'views/form/spill/continue',
+    'views/form/spill/instant',
     'views/form/location',
     'views/default/map',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
     'flotresize',
-    'flotdirection'
-], function($, _, Backbone, moment, ol, AdiosSetupTemplate, GnomeModel,
+    'flotdirection',
+    'flottooltip'
+], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
-    SpillModel, SpillTypeForm,
+    SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
@@ -37,9 +41,12 @@ define([
             'click .icon': 'selectPrediction',
             'click .wind': 'clickWind',
             'click .water': 'clickWater',
-            'click .spill': 'clickSpill',
+            'click .plus-sign': 'clickSpill',
+            'click .spill-single': 'loadSpill',
+            'click .trash': 'deleteSpill',
             'click .map': 'clickMap',
             'click .location': 'clickLocation',
+            'click .response': 'clickResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
         },
@@ -166,6 +173,7 @@ define([
             this.updateWind();
             this.updateLocation();
             this.updateWater();
+            this.updateSpill();
         },
 
         clickWind: function(){
@@ -286,8 +294,159 @@ define([
 
         clickSpill: function(){
             var spillTypeForm = new SpillTypeForm();
-            spillTypeForm.on('hidden', spillTypeForm.close);
             spillTypeForm.render();
+            spillTypeForm.on('hidden', spillTypeForm.close);
+        },
+
+        loadSpill: function(e){
+            var spillId = e.currentTarget.attributes[1].value;
+            var spill = webgnome.model.get('spills').get(spillId);
+            if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
+                var spillView = new SpillContinueView(null, spill);
+            } else {
+                var spillView = new SpillInstantView(null, spill);
+            }
+            spillView.on('wizardclose', function(){
+                spillView.on('hidden', spillView.close);
+            });
+            spillView.on('save', function(){
+                webgnome.model.trigger('sync');
+                setTimeout(_.bind(function(){
+                    spillView.close();}, 
+                this), 750);
+            });
+            spillView.render();
+        },
+
+        constructModelTimeSeries: function(){
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var timeStep = webgnome.model.get('time_step');
+            var timeSeries = [];
+
+            for (var i = 0; i < numOfTimeSteps; i++){
+                if (i === 0){
+                    timeSeries.push(start_time * 1000);
+                } else {
+                    var answer = moment(timeSeries[i - 1]).add(timeStep, 's').unix() * 1000;
+                    timeSeries.push(answer);
+                }
+            }
+            return timeSeries;
+        },
+
+        calculateSpillAmount: function(timeseries){
+            var spills = webgnome.model.get('spills');
+            var timeStep = webgnome.model.get('time_step');
+            var amountArray = [];
+            var amount = 0;
+            for (var i = 0; i < timeseries.length; i++){
+                var upperBound = moment(timeseries[i]).unix();
+                var lowerBound = upperBound - timeStep;
+                for (var j = 0; j < spills.models.length; j++){
+                    var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                    var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                    var timeDiff = endReleaseTime - releaseTime;
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
+                        amount += spills.models[j].get('amount');
+                    } else if (timeDiff > timeStep) {
+                        var rateOfRelease = spills.models[j].get('amount') / timeDiff;
+                        if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
+                            var head = (upperBound - releaseTime);
+                            amount += rateOfRelease * head;
+                        } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
+                            amount += rateOfRelease * timeStep;
+                        } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
+                            var tail = endReleaseTime - lowerBound;
+                            amount += rateOfRelease * tail;
+                        }
+                    }
+                }
+                amountArray.push(amount);
+            }
+            return amountArray;
+
+        },
+
+        updateSpill: function(){
+            var spill = webgnome.model.get('spills');
+
+            this.$('.panel-body').html();
+            var timeSeries = this.constructModelTimeSeries();
+            var spillArray = this.calculateSpillAmount(timeSeries);
+            if(spill.models.length > 0){
+                var compiled;
+                this.$('.spill .state').addClass('complete');
+                compiled = _.template(SpillPanelTemplate, {spills: spill.models});
+                var data = [];
+
+                for (var i = 0; i < timeSeries.length; i++){
+                    var date = timeSeries[i];
+                    var amount = spillArray[i];
+                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
+                }
+                
+                var dataset = [
+                    {
+                        data: data,
+                        color: 'rgba(100,149,237,1)',
+                        hoverable: true,
+                        shadowSize: 0,
+                        lines: {
+                            show: true,
+                            lineWidth: 2,
+                            fill: true
+                        },
+                        points: {
+                            show: false
+                        }
+                    }
+                ];
+
+                this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
+                this.$('.spill .panel-body').html(compiled);
+                this.$('.spill .panel-body').show();
+
+                if(!_.isUndefined(dataset)){
+                    this.spillPlot = $.plot('.spill .chart', dataset, {
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#ddd',
+                            hoverable: true
+                        },
+                        xaxis: {
+                            mode: 'time',
+                            timezone: 'browser'
+                        },
+                        tooltip: true,
+                            tooltipOpts: {
+                                content: function(label, x, y, flotItem){ return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
+                            },
+                            shifts: {
+                                x: -30,
+                                y: -50
+                            }
+                    });
+                }
+                
+            } else {
+                this.$('.spill .state').removeClass('complete');
+                this.$('.spill .panel-body').hide().html('');
+                this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
+            }
+            
+        },
+
+        deleteSpill: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var id = e.target.parentNode.dataset.id;
+            webgnome.model.get('spills').remove(id);
+            webgnome.model.save({
+                success: _.bind(function(){
+                    this.updateSpill();
+                }, this)
+            });
         },
 
         clickLocation: function(){
@@ -335,12 +494,16 @@ define([
                     locationMap.render();
                     var extent = shorelineSource.getExtent();
                     locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
-
                 }, this));
             } else {
                 this.$('.location .state').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
             }
+        },
+        
+        loadLocation: function(e){
+            e.preventDefault();
+            webgnome.router.navigate('locations', true);
         },
 
         close: function(){

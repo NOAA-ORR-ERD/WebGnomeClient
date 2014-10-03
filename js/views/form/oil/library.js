@@ -25,6 +25,7 @@ define([
             delete formModalHash['keyup input'];
             formModalHash['change input:not(.chosen)'] = 'update';
             formModalHash['keyup input:not(.chosen)'] = 'update';
+            formModalHash['click .nav-tabs a'] = 'rendered';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
@@ -87,6 +88,11 @@ define([
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
+        },
+
+        rendered: function(e){
+            this.$('.tab-pane').removeClass('active');
+            this.$(e.target.hash).addClass('active');
         },
 
         findMinMax: function(arr){
@@ -180,6 +186,7 @@ define([
         close: function(){
             this.specificOil.close();
             this.oilTable.close();
+            this.trigger('close');
             FormModal.prototype.close.call(this);
         },
 

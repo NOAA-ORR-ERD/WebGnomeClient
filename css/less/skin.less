@@ -335,7 +335,7 @@ nav.navbar{
             }
         }
 
-        .wind{
+        .wind, .spill{
             position: relative;
 
             .chart{
@@ -361,6 +361,35 @@ nav.navbar{
                 position: absolute;
                 text-align: center;
                 font-size: 12px;
+            }
+            .spill-single {
+                border-top: 1px solid #ddd;
+                margin: 0 -15px;
+                padding: 15px;
+                &:last-of-type {
+                    padding-bottom: 0;
+                }
+                .trash {
+                    float: right;
+                    opacity: 0;
+                }
+                &:hover {
+                    .trash {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+        .spill {
+            .yaxisLabel {
+                top: 150px;
+            }
+            .plus-sign{
+                .pull-right;
+                margin-right: 10px;
+                margin-top: -2px;
+                color: #47a447;
+                font-size: 20px;
             }
         }
     }
@@ -842,6 +871,8 @@ nav.navbar{
                 height: 90px;
                 background: #428bca;
                 float: left;
+                background-position: center center;
+                background-repeat: no-repeat;
             }
             .title{
                 font-size: 15px;
@@ -850,6 +881,19 @@ nav.navbar{
             p{
                 padding-left: 105px;
                 font-size: 11px;
+            }
+
+            &.instant .icon{
+                background-image: url(/img/spill-instantaneous.png);
+            }
+            &.continue .icon{
+                background-image: url(/img/spill-continuous.png);
+            }
+            &.pipeline .icon{
+                background-image: url(/img/spill-pipeline.png);
+            }
+            &.well-blowout .icon{
+                background-image: url(/img/spill-well.png);
             }
         }
         .slider{
@@ -870,6 +914,9 @@ nav.navbar{
     }
 
     &.continuespill-form, &.instantspill-form {
+        .btn-default{
+            margin-top: 10px;
+        }
         .slider{
             margin-top: 40px;
             .tooltip{

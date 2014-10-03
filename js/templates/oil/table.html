@@ -2,10 +2,10 @@
     <table class="table table-condensed table-header">
         <thead>
             <tr>
-                <th class="name">Name<span class="name"></span></th>
-                <th class="location">Location<span class="location"></span></th>
-                <th class="field_name">Field Name<span class="field_name"></span></th>
-                <th class="api">API<span class="api"></span></th>
+                <th class="name" style="width: 38%">Name<span class="name"></span></th>
+                <th class="location" style="width: 32%">Location<span class="location"></span></th>
+                <th class="field_name" style="width: 20%">Field Name<span class="field_name"></span></th>
+                <th class="api" style="width: 10%">API<span class="api"></span></th>
             </tr>
         </thead>
     </table>
@@ -17,10 +17,10 @@
                 {% } %}
                 {% for (var i = 0; i < data.length; i++){ %}
                     <tr data-id="{{ data.at(i).get('adios_oil_id') }}">
-                        <td>{{ data.at(i).get('name') }}</td>
-                        <td>{{ data.at(i).get('location') }}</td>
-                        <td>{{ data.at(i).get('field_name') }}</td>
-                        <td>{{ data.at(i).get('api') }}</td>
+                        <td style="width: 40%">{{ data.at(i).get('name') }}</td>
+                        <td style="width: 30%">{{ data.at(i).get('location') }}</td>
+                        <td style="width: 20%">{{ data.at(i).get('field_name') }}</td>
+                        <td style="width: 10%">{{ data.at(i).get('api') }}</td>
                     </tr>
                 {% } %}
             </tbody>

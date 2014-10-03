@@ -64,10 +64,7 @@
     					<div><label>API:</label> {{ data.api }}</div>
     				</div>
     				<div class="col-md-12">
-    					<div><label>Pour Point Minimum:</label> {{ data.pour_point_min_k }}</div>
-    				</div>
-    				<div class="col-md-12">
-    					<div><label>Pour Point Maximum:</label> {{ data.pour_point_max_k }}</div>
+    					<div><label>Pour Point (Minimum - Maximum):</label> {{ data.pour_point_min_k }} - {{ data.pour_point_max_k }} </div>
     				</div>
     				<div class="col-md-6">
                         <div class="panel panel-default">
@@ -170,17 +167,9 @@
 
     		<div class="tab-pane" id="moreproperties">
     			<div class="row">
-    				<div>
-    					<div class="col-md-6"><label>Maximum Flash Point:</label> {{ data.flash_point_max_k }}</div>
-    					<div class="col-md-6"><label>Minimum Flash Point:</label> {{ data.flash_point_min_k }}</div>
-    				</div>
-    				<div>
-    					<div class="col-md-6"><label>Maximum Emulsification Constant:</label> {{ data.emuls_constant_max }}</div>
-    					<div class="col-md-6"><label>Minimum Emulsification Constant:</label> {{ data.emuls_constant_min }}</div>
-    				</div>
-    				<div>
-    					<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
-    				</div>
+					<div class="col-md-6"><label>Flash Point (Minimum - Maximum):</label> {{ data.flash_point_min_k }} - {{data.flash_point_max_k }} </div>
+					<div class="col-md-6"><label>Emulsification Constant (Minimum - Maximum):</label> {{ data.emuls_constant_min }} - {{ data.emuls_constant_max }}</div>
+    				<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
                 </div>
                 <div class="row">
                     <div class="panel panel-default">

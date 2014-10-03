@@ -2,34 +2,49 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill',
-    'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel){
-    var instantSpillForm = FormModal.extend({
+    'views/form/oil/library',
+    'views/default/map',
+    'geolib',
+    'jqueryDatetimepicker',
+    'moment'
+], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+    var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
-            this.model = spillModel;
-        },
-
-        events: function(){
-            return _.defaults({}, FormModal.prototype.events);
+            BaseSpillForm.prototype.initialize.call(this, options, spillModel);
+            if (!_.isUndefined(options.model)){
+                this.model = options.model;
+            } else {
+                this.model = spillModel;
+            }
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
-            FormModal.prototype.render.call(this, options);
-
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
-
-            if (!this.model.get('amount')){
-                this.model.set('amount', 0);
+            if (this.model.get('name') === 'Spill'){
+                var spillsArray = webgnome.model.get('spills').models;
+                for (var i = 0; i < spillsArray.length; i++){
+                    if (spillsArray[i].get('id') === this.model.get('id')){
+                        var nameStr = 'Spill #' + (i + 1);
+                        this.model.set('name', nameStr);
+                        break;
+                    }
+                }
             }
+
+            var startPosition = this.model.get('release').get('start_position');
+
+            this.body = _.template(FormTemplate, {
+                name: this.model.get('name'),
+                amount: this.model.get('amount'),
+                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                coords: {'lat': startPosition[1], 'lon': startPosition[0]}
+            });
+            BaseSpillForm.prototype.render.call(this, options);
 
             this.$('.slider').slider({
                 min: 0,
@@ -45,24 +60,41 @@ define([
         },
 
         update: function(){
-            var amount = this.$('#amountreleased').val();
+            var name = this.$('#name').val();
+            this.model.set('name', name);
+            var amount = parseInt(this.$('#amountreleased').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
-            var releaseTime = this.$('#datetime').val();
+            var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '0';
+            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '0';
 
-            release.attributes.release_time = releaseTime;
+            if (latitude.indexOf('°') !== -1){
+                latitude = geolib.sexagesimal2decimal(latitude);
+            }
 
+            if (longitude.indexOf('°') !== -1){
+                longitude = geolib.sexagesimal2decimal(longitude);
+            }
+
+            if (!_.isUndefined(this.spillCoords)){
+                this.$('#latitude').val(this.spillCoords.lat);
+                this.$('#longitude').val(this.spillCoords.lon);
+                latitude = this.spillCoords.lat;
+                longitude = this.spillCoords.lon;
+            }
+
+            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+
+            release.set('start_position', start_position);
+            this.model.set('name', name);
             this.model.set('release', release);
             this.model.set('units', units);
             this.model.set('amount', amount);
-
+            release.set('release_time', releaseTime);
+            release.set('end_release_time', releaseTime);
+            BaseSpillForm.prototype.update.call(this);
             this.updateConstantSlide();
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         updateConstantSlide: function(ui){
