@@ -24,16 +24,15 @@ define([
                     var locationModel = new GnomeLocation({id: options.slug});
                     locationModel.fetch({
                         success: _.bind(function(){
-                            var newModel = new GnomeModel();
-                            newModel.fetch({
+                            webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    webgnome.model.mergeModel(newModel);
-                                    webgnome.model.set('id', newModel.get('id'));
-                                    webgnome.model.save(null, {
-                                        success: _.bind(function(){
+                                    // webgnome.model.mergeModel(newModel);
+                                    // webgnome.model.set('id', newModel.get('id'));
+                                    // webgnome.model.save(null, {
+                                        // success: _.bind(function(){
                                             this.trigger('loaded');
-                                        }, this)
-                                    });
+                                        // }, this)
+                                    // });
                                 }, this)
                             });
                         }, this)
