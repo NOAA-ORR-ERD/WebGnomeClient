@@ -147,7 +147,7 @@ define([
             } else{
                 this.showAllObjects();
             }
-            this.shuffleObjects();
+            this.mason.layout();
         },
 
         showFateObjects: function(){
