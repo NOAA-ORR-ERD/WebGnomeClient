@@ -154,7 +154,7 @@ define([
 
         showAllObjects: function(){
             this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible').addClass('disabled');
-            this.$('.pannel').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.object').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
         },
 
         showTrajectoryObjects: function(){
