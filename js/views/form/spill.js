@@ -32,7 +32,7 @@ define([
                 end_lat: spill.get('release').get('end_position')[1],
                 end_lng: spill.get('release').get('end_position')[0],
                 name: spill.get('name'),
-                release_amount: spill.get('release').get('num_elements'),
+                release_amount: spill.get('amount'),
                 release_start: _.isNull(spill.get('release').get('release_time')) ? moment().format(webgnome.config.date_format.moment) : moment(spill.get('release').get('release_time')).format(webgnome.config.date_format.moment),
                 release_end: _.isNull(spill.get('release').get('end_release_time')) ? moment().format(webgnome.config.date_format.moment) : moment(spill.get('release').get('end_release_time')).format(webgnome.config.date_format.moment)
             });
@@ -60,7 +60,8 @@ define([
             var release = spill.get('release');
 
             spill.set('name', this.$('#name').val());
-
+            spill.set('amount',this.$('#release-amount').val());
+            spill.set('units', this.$('#release-unit').val());
             release.set('start_position', [parseFloat(this.$('#start-lng').val()), parseFloat(this.$('#start-lat').val()), 0]);
             release.set('end_position', [parseFloat(this.$('#end-lng').val()), parseFloat(this.$('#end-lat').val()), 0]);
             
@@ -68,7 +69,7 @@ define([
             var release_end = $('#release-end').val();
             release.set('release_time', moment(release_start, webgnome.config.date_format.moment).format());
             release.set('end_release_time', moment(release_end, webgnome.config.date_format.moment).format());
-            release.set('num_elements',this.$('#release-amount').val());
+            
 
             spill.set('pollutant', this.$('#pollutant').val());
             //spill.set('release-unit', this.$('#release-unit').val());
