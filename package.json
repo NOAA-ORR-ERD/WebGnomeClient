@@ -2,7 +2,7 @@
     "name": "WebGnomeClient",
     "main": "index.html",
     "scripts": {
-        "start": "node ./scripts/start.js",
+        "start": "http-server",
         "postinstall": "bower install",
         "postupdate": "bower update",
         "test": "node ./scripts/test.js"
