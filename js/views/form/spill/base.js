@@ -90,7 +90,7 @@ define([
                     style: new ol.style.Style({
                         image: new ol.style.Icon({
                             anchor: [0.5, 1.0],
-                            src: '/img/map-pin.png',
+                            src: '/img/spill-pin.png',
                             size: [32, 40]
                         })
                     })
@@ -118,14 +118,24 @@ define([
                         });
                         var extent = this.shorelineSource.getExtent();
                         this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource
+                            source: this.shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
+                            })
                         });
                         if(this.spillMapView.map){
-                            this.spillMapView.map.addLayer(this.shorelineLayer);
+                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
                             if (startPosition[0] === 0 && startPosition[1] === 0){
                                 this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
                             }
                         }
+
                     }, this));
                 }
 
@@ -146,6 +156,9 @@ define([
 					this.spillCoords = {lat: coords[1], lon: coords[0]};
                     this.source.addFeature(feature);
 				}, this));
+                setTimeout(_.bind(function(){
+                    this.spillMapView.map.updateSize();
+                }, this), 250);
 			}
 			this.mapShown = true;
 		},
