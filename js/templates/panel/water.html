@@ -6,7 +6,8 @@
 	{% if (units.temperature !== 'K'){ %}
 		&deg;
 	{% } %}
-	{{ units.temperature }}</div>
+	{{ units.temperature }}
+</div>
 <div><label>Salinity: </label> {{ salinity }} {{ units.salinity }}</div>
 <div><label>Sediment Load: </label> {{ sediment }} {{ units.sediment }}</div>
 {% if (wave_height){  %}
