@@ -28,7 +28,7 @@ define([
     'flotresize',
     'flotdirection',
     'flottooltip'
-], function($, _, Backbone, moment, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
@@ -500,7 +500,7 @@ define([
                 this.$('.location .panel-body').hide().html('');
             }
         },
-        
+
         loadLocation: function(e){
             e.preventDefault();
             webgnome.router.navigate('locations', true);
