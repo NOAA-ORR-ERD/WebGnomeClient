@@ -42,7 +42,7 @@ define([
             
             if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
                 // one of the drop down options was not selected.
-                this.$('.salinity-select').hide();
+                this.$('.salinity-select').parent().hide();
                 this.$('.salinity-input').removeClass('hide');
                 this.$('.salinity-input input').val(this.model.get('salinity'));
             } else {
@@ -50,7 +50,7 @@ define([
             }
 
             if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1){
-                this.$('.sediment-select').hide();
+                this.$('.sediment-select').parent().hide();
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));
             } else {
