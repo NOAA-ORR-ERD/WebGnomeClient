@@ -34,14 +34,15 @@ define([
             if (this.model.get('fetch')){
                 this.$('#data-source').val('fetch');
                 this.$('#fetch').val(this.model.get('fetch'));
-            } else if (this.model.get('wave_height')){
+            }
+            if (this.model.get('wave_height')){
                 this.$('#data-source').val('specified');
                 this.$('#height').val(this.model.get('wave_height'));
             }
             
             if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
                 // one of the drop down options was not selected.
-                this.$('.salinity-select').hide();
+                this.$('.salinity-select').parent().hide();
                 this.$('.salinity-input').removeClass('hide');
                 this.$('.salinity-input input').val(this.model.get('salinity'));
             } else {
@@ -49,7 +50,7 @@ define([
             }
 
             if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1){
-                this.$('.sediment-select').hide();
+                this.$('.sediment-select').parent().hide();
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));
             } else {
@@ -70,7 +71,6 @@ define([
 
         triggerInputs: function(){
             this.$('#data-source').trigger('change');
-            console.log('trigger ran');
         },
 
         convertHeighttoKM: function(val, unit){
@@ -87,14 +87,14 @@ define([
             this.model.set('wave_height', 0);
             if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
-            } else if (this.$('#data-source').val() === 'specified'){
-                this.model.set('wave_height', this.$('height').val());
+            }
+            if (this.$('#data-source').val() === 'specified'){
+                this.model.set('wave_height', this.$('#height').val());
             }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
             this.model.set('sediment', this.$('.sediment:visible').val());
-            console.log(this.model);
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {

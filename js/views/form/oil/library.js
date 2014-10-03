@@ -26,6 +26,7 @@ define([
             formModalHash['change input:not(.chosen)'] = 'update';
             formModalHash['keyup input:not(.chosen)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
+            formModalHash['shown.bs.modal'] = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
@@ -93,6 +94,11 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
+        },
+
+        triggerTableResize: function(){
+            var width = this.$('#tableContainer-inner').css('width');
+            this.$('.table-header').css('width', width);
         },
 
         findMinMax: function(arr){
@@ -163,6 +169,7 @@ define([
 
         headerClick: function(e){
             this.oilTable.headerClick(e);
+            this.triggerTableResize();
         },
 
         oilSelect: function(e){
