@@ -272,7 +272,6 @@ define([
 
         updateWater: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-            console.log(water);
             if (!_.isUndefined(water)){
                 var compiled;
                 this.$('.water .state').addClass('complete');
