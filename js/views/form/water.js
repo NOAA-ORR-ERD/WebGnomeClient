@@ -12,7 +12,8 @@ define([
 
         events: function(){
             return _.defaults({
-                'change select': 'revealManualInputs'
+                'change select': 'revealManualInputs',
+                'shown.bs.modal': 'triggerInputs'
             }, FormModal.prototype.events);
         },
 
@@ -29,6 +30,14 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
+
+            if (this.model.get('fetch')){
+                this.$('#data-source').val('fetch');
+                this.$('#fetch').val(this.model.get('fetch'));
+            } else if (this.model.get('wave_height')){
+                this.$('#data-source').val('specified');
+                this.$('#height').val(this.model.get('wave_height'));
+            }
             
             if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
                 // one of the drop down options was not selected.
@@ -59,6 +68,11 @@ define([
             return temp;
         },
 
+        triggerInputs: function(){
+            this.$('#data-source').trigger('change');
+            console.log('trigger ran');
+        },
+
         convertHeighttoKM: function(val, unit){
             val = parseFloat(val, 10);
             var height = val;
@@ -69,17 +83,18 @@ define([
         update: function(){
             var units = this.model.get('units');
             units.temperature = this.$('#tempunits').val();
-            if (this.$('#fetch').val()){
+            this.model.set('fetch', 0);
+            this.model.set('wave_height', 0);
+            if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
-            }
-            if (this.$('#height').val()){
-                this.model.set('height', this.$('#height').val());
+            } else if (this.$('#data-source').val() === 'specified'){
+                this.model.set('wave_height', this.$('height').val());
             }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
             this.model.set('sediment', this.$('.sediment:visible').val());
-
+            console.log(this.model);
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
