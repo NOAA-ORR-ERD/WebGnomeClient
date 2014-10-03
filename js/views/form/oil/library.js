@@ -163,6 +163,7 @@ define([
                 this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();
+            this.triggerTableResize();
             this.$('.resultsLength').empty();
             this.$('.resultsLength').text('Number of results: ' + this.oilTable.oilLib.length);
         },
