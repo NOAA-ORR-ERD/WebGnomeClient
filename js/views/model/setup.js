@@ -4,6 +4,7 @@ define([
     'backbone',
     'moment',
     'ol',
+    'masonry',
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
@@ -28,7 +29,7 @@ define([
     'flotresize',
     'flotdirection',
     'flottooltip'
-], function($, _, Backbone, moment, ol, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, Masonry, AdiosSetupTemplate, GnomeModel,
     WindModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
@@ -74,6 +75,11 @@ define([
             });
 
             $('body').append(this.$el.append(compiled));
+
+            var container = this.$('.model-objects').get(0);
+            this.mason = new Masonry(container, {
+                item: '.object',
+            });
 
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
@@ -141,32 +147,25 @@ define([
             } else{
                 this.showAllObjects();
             }
-            this.shuffleObjects();
+            this.mason.layout();
         },
 
         showFateObjects: function(){
-            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden').addClass('disabled');
-            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.wind').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.water').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.spill').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.model-objects > div').hide().addClass('disabled');
+            this.$('.wind').show().removeClass('disabled');
+            this.$('.water').show().removeClass('disabled');
+            this.$('.spill').show().removeClass('disabled');
         },
 
         showAllObjects: function(){
-            this.$('.model-objects > div').css('opacity', 1).css('visibility', 'visible').addClass('disabled');
-            this.$('.object').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
+            this.$('.object').show().removeClass('disabled');
         },
 
         showTrajectoryObjects: function(){
-            this.$('.model-objects > div').css('opacity', 0).css('visibility', 'hidden').addClass('disabled');
-            this.$('.model-objects > div:first').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.wind').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.spill').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-            this.$('.location').css('opacity', 1).css('visibility', 'visible').removeClass('disabled');
-        },
-
-        shuffleObjects: function(){
-            this.$('.model-objects .object.disabled').remove().appendTo(this.$('.model-objects'));
+            this.$('.model-objects > div').hide().addClass('disabled');
+            this.$('.wind').show().removeClass('disabled');
+            this.$('.spill').show().removeClass('disabled');
+            this.$('.location').show().removeClass('disabled');
         },
 
         updateObjects: function(){
@@ -174,6 +173,8 @@ define([
             this.updateLocation();
             this.updateWater();
             this.updateSpill();
+
+            this.mason.layout();
         },
 
         clickWind: function(){
