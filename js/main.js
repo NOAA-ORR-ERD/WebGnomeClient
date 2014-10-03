@@ -26,7 +26,15 @@ require.config({
         flotresize: 'lib/flot/jquery.flot.resize',
         flotdirection: 'lib/flotdirection/index',
         flotspline: 'lib/flotspline/jquery.flot.spline',
-        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip'
+        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
+        masonry: 'lib/masonry/masonry',
+        eventie: 'lib/eventie/',
+        'doc-ready': 'lib/doc-ready/',
+        eventEmitter: 'lib/eventEmitter/',
+        'get-style-property': 'lib/get-style-property/',
+        'get-size': 'lib/get-size/',
+        'matches-selector': 'lib/matches-selector/',
+        outlayer: 'lib/outlayer/',
     },
     shim: {
         jquery: {
