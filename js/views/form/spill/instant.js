@@ -62,7 +62,7 @@ define([
         update: function(){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            var amount = parseInt(this.$('#amountreleased').val(), 10);
+            var amount = parseInt(this.$('#spill-amount').val(), 10);
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');

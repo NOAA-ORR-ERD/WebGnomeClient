@@ -57,6 +57,11 @@ define([
 				this.locationSelect(null, [geoCoords[0], geoCoords[1]]);
 			}
 
+            if (_.isUndefined(this.model.get('amount'))){
+                this.$('#spill-amount').val(0);
+                this.model.set('amount', 0);
+            }
+
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
