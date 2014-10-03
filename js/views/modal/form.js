@@ -39,8 +39,14 @@ define([
                         this.hide();
                         this.trigger('save');
                         if(_.isFunction(callback)) callback();
+                    }, this),
+                    error: _.bind(function(model, response){
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
                     }, this)
                 });
+                if (this.model.validationError){
+                    this.error('Error', this.model.validationError);
+                }
             } else {
                 this.hide();
                 this.trigger('save');
