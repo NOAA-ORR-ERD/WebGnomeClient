@@ -17,10 +17,12 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(water.get('id')), 'water has an id');
+                        ok(!_.isUndefined(water.toTree()), 'water too tree works!');
                         start();
                     },
                     error: function(){
                         ok(!_.isUndefined(water.get('id')), 'water has an id');
+                        ok(!_.isUndefined(water.toTree()), 'water too tree works!');
                         start();
                     }
 

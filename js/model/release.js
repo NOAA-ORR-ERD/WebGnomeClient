@@ -17,6 +17,16 @@ define([
             'start_time_invalid': true
         },
 
+        initialize: function(options){
+            if(_.isUndefined(this.get('release_time'))){
+                this.set('release_time', moment().format('YYYY-MM-DDTHH:mm:ss'));
+            }
+            if(_.isUndefined(this.get('end_release_time'))){
+                this.set('end_release_time', moment().format('YYYY-MM-DDTHH:mm:ss'));
+            }
+            BaseModel.prototype.initialize.call(this, options);
+        },
+
         validate: function(attrs, options){
             if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';

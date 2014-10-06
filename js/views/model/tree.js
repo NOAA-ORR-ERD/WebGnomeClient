@@ -6,18 +6,25 @@ define([
     'fancytree'
 ], function($, _, Backbone, ModalView){
     var gnomeTreeView = Backbone.View.extend({
-        className: 'tree opened',
-        open: true,
-        width: '30%',
+        className: 'tree closed',
+        open: false,
         debugOn: false,
+
+        events: {
+            'click .toggle': 'toggle'
+        },
 
         initialize: function(){
             webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel({attrs: true});}, this), this);
             this.render();
+
+            if (localStorage.getItem('advanced') == 'true'){
+                this.toggle();
+            }
         },
 
         render: function(){
-            this.$el.html('<div class="model-tree"><div class="resize"></div></div>');
+            this.$el.html('<div class="toggle">Show Advanced</div><div class="model-tree"><div class="resize"></div></div>');
             this.renderModel();
             webgnome.model.on('sync', this.renderModel, this);
         },
@@ -25,14 +32,16 @@ define([
         toggle: function(){
             if(this.open){
                 this.open = false;
-                this.offset = this.$('.resize').innerWidth();
-                this.$el.css({width: 0, paddingRight: this.offset}).removeClass('opened').addClass('closed');
+                this.$el.removeClass('opened').addClass('closed');
+                this.$('.toggle').text('Show Advanced');
             } else {
                 this.open = true;
-                this.$el.css({width: this.width, paddingRight: 0}).addClass('opened').removeClass('closed');
+                this.$el.addClass('opened').removeClass('closed');
+                this.$('.toggle').text('Hide Advanced');
             }
 
-            return this.offset;
+            localStorage.setItem('advanced', this.open);
+            this.trigger('toggle');
         },
 
         renderModel: function(opts){

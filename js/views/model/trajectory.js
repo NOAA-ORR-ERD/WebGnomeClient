@@ -13,16 +13,16 @@ define([
     'jqueryui/slider',
     'jqueryFileupload'
 ], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
-    var gnomeMapView = Backbone.View.extend({
+    var trajectoryView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
-        width: '70%',
         spillToggle: false,
         spillCoords: [],
         state: 'pause',
         step: new GnomeStep(),
         frame: 0,
+        contracted: false,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -141,11 +141,29 @@ define([
             setTimeout(_.bind(this.renderMap, this), 250);
         },
 
+        contract: function(){
+            if(this.contracted === true){
+                this.$el.removeClass('contracted');
+                this.contracted = false;
+            } else {
+                this.$el.addClass('contracted');
+                this.contracted = true;
+            }
+            
+            if(this.ol.map){
+                this.ol.map.updateSize();
+            }
+        },
+
         contextualize: function(){
             if(!webgnome.hasModel() || !webgnome.validModel()){
                 this.disableUI();
             } else {
                 this.enableUI();
+            }
+
+            if (localStorage.getItem('advanced') == 'true'){
+                this.contract();
             }
 
             // set the slider to the correct number of steps
@@ -580,7 +598,7 @@ define([
             this.pause();
             if(webgnome.model){
                 webgnome.model.off('change', this.contextualize, this);
-                webgnome.model.off('sync', this.spillListeners, this);    
+                webgnome.model.off('sync', this.spillListeners, this);
             }
             this.remove();
             this.unbind();
@@ -588,5 +606,5 @@ define([
         }
     });
 
-    return gnomeMapView;
+    return trajectoryView;
 });

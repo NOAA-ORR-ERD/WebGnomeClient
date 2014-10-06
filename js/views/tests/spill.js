@@ -27,6 +27,7 @@ define([
                     start();
                 };
                 persist_spill.save(null, {
+                    validate: false,
                     error: persist_test,
                     success: persist_test
                 });
@@ -47,6 +48,7 @@ define([
                 };
                 var get_spill = new GnomeSpill();
                 get_spill.save(null, {
+                    validate: false,
                     error: start_get,
                     success: start_get
                 });
@@ -69,6 +71,7 @@ define([
                     release_id = model.get('release').id;
                     model.once('change', _.bind(function(){
                         this.save(null, {
+                            validate: false,
                             error: update_test,
                             success: update_test
                         });
@@ -78,6 +81,7 @@ define([
 
                 };
                 update_spill.save(null, {
+                    validate: false,
                     error: update_start,
                     success: update_start
                 });
