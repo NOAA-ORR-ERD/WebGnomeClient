@@ -107,7 +107,7 @@ define([
                         tree.push({title: key + ': ' + el, key: el,
                                    obj_type: attrs.obj_type, action: 'edit', object: this});
                         
-                    } else if (_.isObject(el) && !_.isArray(el)) {
+                    } else if (_.isObject(el) && !_.isArray(el) && !_.isUndefined(el.obj_type)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
                     } else if (_.isArray(el)){
@@ -115,7 +115,7 @@ define([
                         for (var i = 0; i < el.length; i++){
                             var arrayString = '[' + el[i] + ']';
                             var arrayObj = {title: arrayString};
-                            arrayOfStrings.push(arrayObj);    
+                            arrayOfStrings.push(arrayObj);
                         }
                         if (el.length > 0){
                             children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
