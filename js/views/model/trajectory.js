@@ -13,7 +13,7 @@ define([
     'jqueryui/slider',
     'jqueryFileupload'
 ], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
-    var gnomeMapView = Backbone.View.extend({
+    var trajectoryView = Backbone.View.extend({
         className: 'map',
         id: 'map',
         full: false,
@@ -580,7 +580,7 @@ define([
             this.pause();
             if(webgnome.model){
                 webgnome.model.off('change', this.contextualize, this);
-                webgnome.model.off('sync', this.spillListeners, this);    
+                webgnome.model.off('sync', this.spillListeners, this);
             }
             this.remove();
             this.unbind();
@@ -588,5 +588,5 @@ define([
         }
     });
 
-    return gnomeMapView;
+    return trajectoryView;
 });
