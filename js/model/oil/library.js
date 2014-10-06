@@ -121,7 +121,7 @@ define([
                     var data = oilCache['oils'];
                     setTimeout(function(){
                         options.success(data, 'success', null);
-                    }, 0);
+                    }, 500);
                 } else {
                     var success = options.success;
                     options.success = function(resp, status, xhr){

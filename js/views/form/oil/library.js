@@ -130,7 +130,7 @@ define([
         populateSelect: function(){
             var chosen = jQuery.fn.chosen;
             this.$('.chosen-select').chosen({width: '265px', no_results_text: 'No results match: '});
-            var valueObj = this.oilDistinct[2];
+            var valueObj = this.oilDistinct.at(2).get('values');
             this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
             for (var key in valueObj){
                 this.$('.chosen-select')

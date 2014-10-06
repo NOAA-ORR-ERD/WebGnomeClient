@@ -22,9 +22,7 @@ define([
                 var now = moment().unix();
                 if (now - ts < 86400){
                     var data = oilDistinct['distinct'];
-                    setTimeout(function(){
-                        options.success(data, 'success', null);
-                    }, 0);
+                    options.success(data, 'success', null);
                 } else {
                     var success = options.success;
                     options.success = function(resp, status, xhr){
