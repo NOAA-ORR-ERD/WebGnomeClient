@@ -21,7 +21,7 @@ define([
 				'click .oilSelect': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
-				'blur .geo-info': 'locationSelect',
+				'blur .geo-info': 'manualMapInput',
                 'focus .geo-info': 'releaseLocation'
 			}, FormModal.prototype.events);
 		},
@@ -164,9 +164,23 @@ define([
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
-			}
-			this.mapShown = true;
+                this.mapShown = true;
+			} 
 		},
+
+        manualMapInput: function(){
+            if (this.mapShown){
+                this.source.forEachFeature(function(feature){
+                        this.source.removeFeature(feature);
+                    }, this);
+                var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
+                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                var feature = new ol.Feature(new ol.geom.Point(coords));
+                this.source.addFeature(feature);
+                this.spillMapView.map.getView().setCenter(coords);
+                this.spillMapView.map.getView().setZoom(15);
+            }
+        },
 
         releaseLocation: function(){
             this.spillCoords = undefined;
