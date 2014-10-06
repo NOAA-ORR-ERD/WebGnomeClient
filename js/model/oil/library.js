@@ -2,8 +2,9 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'fuse'
-], function(_, $, Backbone, Fuse){
+    'fuse',
+    'moment'
+], function(_, $, Backbone, Fuse, moment){
     var oilLib = Backbone.Collection.extend({
 
         ready: false,
@@ -108,6 +109,45 @@ define([
         sortOils: function(attr){
             this.sortAttr = attr;
             this.sort();
+        },
+
+        sync: function(method, model, options){
+            var oilCache = localStorage.getItem('oil_cache');
+            if (!_.isNull(oilCache)){
+                oilCache = JSON.parse(oilCache);
+                var ts = oilCache['ts'];
+                var now = moment().unix();
+                if (now - ts < 86400){
+                    var data = oilCache['oils'];
+                    setTimeout(function(){
+                        options.success(data, 'success', null);
+                    }, 0);
+                } else {
+                    var success = options.success;
+                    options.success = function(resp, status, xhr){
+                        var oilCache = {};
+                        oilCache['oils'] = resp;
+                        oilCache['ts'] = now;
+                        localStorage.setItem('oil_cache', JSON.stringify(oilCache));
+                        success(resp, status, xhr);
+                    }
+                    Backbone.sync(method, model, options);
+                }
+            } else {
+                var success = options.success;
+                options.success = function(resp, status, xhr){
+                    var now = moment().unix();
+                    var oilCache = {};
+                    oilCache['oils'] = resp;
+                    oilCache['ts'] = now;
+                    localStorage.setItem('oil_cache', JSON.stringify(oilCache));
+                    console.log(JSON.stringify(oilCache));
+                    console.log(oilCache);
+                    success(resp, status, xhr);
+                }
+                Backbone.sync(method, model, options);
+            }
+
         }
 
     });
