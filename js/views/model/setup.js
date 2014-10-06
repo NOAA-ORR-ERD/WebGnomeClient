@@ -78,6 +78,7 @@ define([
 
             var container = this.$('.model-objects').get(0);
             this.mason = new Masonry(container, {
+                columnWidth: '.col-md-3',
                 item: '.object',
             });
 
