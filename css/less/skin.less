@@ -460,9 +460,9 @@ nav.navbar{
     }
     .view-toggle{
         position: absolute;
-        right: -40px;
+        right: 0px;
         top: -38px;
-        width: 230px;
+        width: 180px;
 
         label{
             float:left;
@@ -502,15 +502,37 @@ nav.navbar{
         }
     }
     .tree{
-        width: 30%;
+        width: 0;
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
-        overflow: hidden;
         z-index: 1;
         background: white;
-        overflow-y: scroll;
+
+        &.opened{
+            width: 30%;
+        }
+
+        .toggle{
+            background: rgba(255,255,255,0.75);
+            -webkit-transform: rotate(90deg);
+            -ms-transform: rotate(90deg);
+            transform: rotate(90deg);
+            position: absolute;
+            right: -70px;
+            top: 50%;
+            margin-top: -58.5px;
+            padding: 3px 10px;
+            color: #1a1a1a;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            width: 117px;
+            font-size: 12px;
+            text-align: center;
+
+        }
+
         .resize{
             background-color: white;
             background-image: url('/img/grippy-show.png');
@@ -530,15 +552,26 @@ nav.navbar{
                 background-color: #f8f8f8;
             }
         }
-        &.opened .resize{
+        &.opened  .resize{
             background-image: url('/img/grippy-hide.png');
         }
-        &.closed .resize{
-            left: 0 !important;
+        &.closed{
+            .resize{
+                left: 0 !important;
+            }
 
+            .fancytree-container{
+                display: none;
+            }
         }
 
         .model-tree{
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: scroll;
             .ui-fancytree{
                 overflow: hidden;
                 border: 0;
@@ -561,7 +594,11 @@ nav.navbar{
         right: 0;
         bottom: 0;
         top: 0;
-        width: 70%;
+        width: 100%;
+
+        &.contracted{
+            width: 70%;
+        }
 
         .spill-button{
             left: .5em;

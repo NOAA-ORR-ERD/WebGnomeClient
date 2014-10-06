@@ -52,6 +52,7 @@ define([
         renderTrajectory: function(){
             this.TreeView = new TreeView();
             this.TrajectoryView = new TrajectoryView();
+            this.TreeView.on('toggle', this.TrajectoryView.contract, this.TrajectoryView);
             this.$el.append(this.TreeView.$el).append(this.TrajectoryView.$el);
         },
 
