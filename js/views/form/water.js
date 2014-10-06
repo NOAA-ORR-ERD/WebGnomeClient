@@ -87,9 +87,11 @@ define([
             this.model.set('wave_height', 0);
             if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
+                units.fetch = this.$('#fetch-units').val();
             }
             if (this.$('#data-source').val() === 'specified'){
                 this.model.set('wave_height', this.$('#height').val());
+                units.wave_height = this.$('#wave_height-units').val();
             }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
