@@ -176,11 +176,17 @@ define([
             if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
                     // the step already exists in the index, make it visible.
-                    this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
+                    if(this.SpillGroupLayers.item(this.controls.seek.slider('value')).getSource().getFeatures()[0].getGeometry().getPoints().length > 0){
+                        this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
+                            setTimeout(_.bind(function(){
+                                this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
+                            }, this), 60);
+                        }, this));
+                    } else {
                         setTimeout(_.bind(function(){
                             this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
                         }, this), 60);
-                    }, this));
+                    }
                     this.renderStep({step: this.controls.seek.slider('value')});
 
                 } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
@@ -312,22 +318,30 @@ define([
                     object: this.step.get('GeoJson').feature_collection
                 })
             });
-        
-            layer.once('render', _.bind(function(){
-                if(this.step.get('GeoJson').step_num > 0){
-                    this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
-                    this.frame = this.step.get('GeoJson').step_num;
-                    this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-                }
-                if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
-                    this.controls.seek.slider('value', this.frame + 1);
-                } else {
-                    this.pause();
-                    this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
-                }
-            }, this));
             
             this.SpillGroupLayers.push(layer);
+
+            if(this.step.get('GeoJson').feature_collection.features[0].geometry.coordinates.length > 0){
+                layer.once('render', _.bind(function(){
+                    this.getStepLayerRendered();
+                }, this));
+            } else {
+                this.getStepLayerRendered();
+            }
+        },
+
+        getStepLayerRendered: function(){
+            if(this.step.get('GeoJson').step_num > 0){
+                this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
+                this.frame = this.step.get('GeoJson').step_num;
+                this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
+            }
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+                this.controls.seek.slider('value', this.frame + 1);
+            } else {
+                this.pause();
+                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
+            }
         },
 
         disableUI: function(){
