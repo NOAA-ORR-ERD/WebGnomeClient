@@ -51,10 +51,10 @@ define([
 
 			var geoCoords = this.model.get('release').get('start_position');
 
-			if (this.model.get('release').get('start_position')[0] === 0 && this.model.get('release').get('start_position')[1] === 0) {
+			if (geoCoords[0] === 0 && geoCoords[1] === 0) {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect(null, [geoCoords[0], geoCoords[1]]);
+				this.locationSelect(null, geoCoords);
 			}
 
             if (_.isUndefined(this.model.get('amount'))){
@@ -78,7 +78,6 @@ define([
 		},
 
 		elementSelect: function(){
-			//FormModal.prototype.hide.call(this);
             this.hide();
 			var oilLibraryView = new OilLibraryView();
 			oilLibraryView.render();
@@ -86,8 +85,8 @@ define([
 			oilLibraryView.on('hidden', _.bind(this.show, this));
 		},
 
-		locationSelect: function(e, pastCoords){
-			if (!this.mapShown){
+        mapRender: function(){
+            if (!this.mapShown){
                 this.$('.map').show();
                 this.source = new ol.source.Vector();
                 this.layer = new ol.layer.Vector({
@@ -100,8 +99,6 @@ define([
                         })
                     })
                 });
-
-                var startPosition = _.initial(this.model.get('release').get('start_position'));
                 this.spillMapView = new SpillMapView({
                     id: 'spill-form-map',
                     zoom: 2,
@@ -113,73 +110,88 @@ define([
                         this.layer
                     ]
                 });
-				this.spillMapView.render();
-                var map = webgnome.model.get('map');
-                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                    map.getGeoJSON(_.bind(function(data){
-                        this.shorelineSource = new ol.source.GeoJSON({
-                            object: data,
-                            projection: 'EPSG:3857'
-                        });
-                        var extent = this.shorelineSource.getExtent();
-                        this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
-                        });
-                        if(this.spillMapView.map){
-                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            if (startPosition[0] === 0 && startPosition[1] === 0){
-                                this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                            }
-                        }
-
-                    }, this));
-                }
-
-                if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                    startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
-                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
+                this.spillMapView.render();
+                this.mapShown = true;
+                this.spillMapView.map.on('click', _.bind(function(e){
+                    this.source.forEachFeature(function(feature){
+                        this.source.removeFeature(feature);
+                    }, this);
+                    var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                    var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                    this.spillCoords = {lat: coords[1], lon: coords[0]};
                     this.source.addFeature(feature);
-                    
-                    this.spillMapView.map.getView().setCenter(startPosition);
-                    this.spillMapView.map.getView().setZoom(15);
-                }
-				this.spillMapView.map.on('click', _.bind(function(e){
-					this.source.forEachFeature(function(feature){
-						this.source.removeFeature(feature);
-					}, this);
-					var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-					var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-					this.spillCoords = {lat: coords[1], lon: coords[0]};
-                    this.source.addFeature(feature);
-				}, this));
+                }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
-                this.mapShown = true;
-			} 
+            }
+        },
+
+		locationSelect: function(e, pastCoords){
+            this.mapRender();
+            var map = webgnome.model.get('map');
+            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                map.getGeoJSON(_.bind(function(data){
+                    this.shorelineSource = new ol.source.GeoJSON({
+                        object: data,
+                        projection: 'EPSG:3857'
+                    });
+                    var extent = this.shorelineSource.getExtent();
+                    this.shorelineLayer = new ol.layer.Vector({
+                        source: this.shorelineSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
+                            })
+                        })
+                    });
+                    if(this.spillMapView.map){
+                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
+                        if (startPosition[0] === 0 && startPosition[1] === 0){
+                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
+                        }
+                    }
+
+                }, this));
+            }
+            var startPosition = _.initial(this.model.get('release').get('start_position'));
+            if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
+                var feature = new ol.Feature(new ol.geom.Point(startPosition));
+                this.source.addFeature(feature);
+                
+                this.spillMapView.map.getView().setCenter(startPosition);
+                this.spillMapView.map.getView().setZoom(15);
+            }
+			this.spillMapView.map.on('click', _.bind(function(e){
+				this.source.forEachFeature(function(feature){
+					this.source.removeFeature(feature);
+				}, this);
+				var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+				var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+				this.spillCoords = {lat: coords[1], lon: coords[0]};
+                this.source.addFeature(feature);
+			}, this));
+            setTimeout(_.bind(function(){
+                this.spillMapView.map.updateSize();
+            }, this), 250);
 		},
 
         manualMapInput: function(){
-            if (this.mapShown){
-                this.source.forEachFeature(function(feature){
+            this.mapRender();
+            this.source.forEachFeature(function(feature){
                         this.source.removeFeature(feature);
                     }, this);
-                var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
-                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-                var feature = new ol.Feature(new ol.geom.Point(coords));
-                this.source.addFeature(feature);
-                this.spillMapView.map.getView().setCenter(coords);
-                this.spillMapView.map.getView().setZoom(15);
-            }
+            var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
+            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+            var feature = new ol.Feature(new ol.geom.Point(coords));
+            this.source.addFeature(feature);
+            this.spillMapView.map.getView().setCenter(coords);
+            this.spillMapView.map.getView().setZoom(15);
         },
 
         releaseLocation: function(){
