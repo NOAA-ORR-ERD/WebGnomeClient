@@ -16,7 +16,7 @@ define([
 
         events: {
             'click .resize': 'toggle',
-            'click .switch': 'switchView',
+            'click .view-toggle .toggle': 'switchView',
             'click .view-toggle label': 'switchView'
         },
 
