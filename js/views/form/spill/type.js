@@ -32,6 +32,7 @@ define([
 
         instant: function(){
             var spill = new SpillModel();
+            console.log(spill);
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillInstantForm(null, spill);
                 spillForm.render();

@@ -41,7 +41,7 @@ define([
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
-                time: moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 coords: {'lat': startPosition[1], 'lon': startPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
