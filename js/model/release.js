@@ -18,11 +18,13 @@ define([
         },
 
         initialize: function(options){
+            var start_time = moment(webgnome.model.get('start_time'));
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', moment().format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
+            var end_time = start_time.add(webgnome.model.get('duration'), 's');
             if(_.isUndefined(this.get('end_release_time'))){
-                this.set('end_release_time', moment().format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
             BaseModel.prototype.initialize.call(this, options);
         },
