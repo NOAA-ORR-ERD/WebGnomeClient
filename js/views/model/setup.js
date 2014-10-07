@@ -8,6 +8,7 @@ define([
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
+    'model/movers/wind',
     'views/form/wind',
     'text!templates/panel/wind.html',
     'model/map',
@@ -30,7 +31,7 @@ define([
     'flotdirection',
     'flottooltip'
 ], function($, _, Backbone, moment, ol, Masonry, AdiosSetupTemplate, GnomeModel,
-    WindModel, WindForm, WindPanelTemplate,
+    WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
@@ -188,7 +189,19 @@ define([
             windForm.on('hidden', windForm.close);
             windForm.on('save', function(){
                 webgnome.model.get('environment').add(wind);
-                webgnome.model.save();
+                var mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
+                if(_.isUndefined(mover) || mover.get('wind').get('id') != wind.get('id')){
+                    var windMover = new WindMoverModel({wind: wind});
+                    windMover.save(null, {
+                        validate: false,
+                        success: function(){
+                            webgnome.model.get('movers').add(windMover);
+                            webgnome.model.save();
+                        }
+                    });
+                } else {
+                    webgnome.model.save();
+                }
             });
             windForm.render();
         },
