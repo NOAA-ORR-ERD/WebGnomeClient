@@ -32,14 +32,50 @@ define([
                                  'benezene',
                                  'wax_content'
                                  ];
+            var tempAttrs = ['pour_point_min_k',
+                             'pour_point_max_k',
+                             'flash_point_max_k',
+                             'flash_point_min_k'
+                             ];
+
 			for (attr in oil){
 
                 // When value of oil attribute is null
 
-				if (!oil[attr]){
+				if (!oil[attr] && tempAttrs.indexOf(attr) === -1){
 					oil[attr] = "--";				
-				} else if (attr === 'pour_point_min_k' || attr === 'pour_point_max_k' || attr === 'flash_point_max_k' || attr === 'flash_point_min_k'){
-                    oil[attr] = (oil[attr] - 273.15).toFixed(3) + ' &deg;C';
+				} else if (tempAttrs.indexOf(attr) !== -1){
+                    if (oil[attr]){
+                        if (attr.indexOf('max') > -1){
+                            var str = attr.substring(0, attr.length - 6) + '_min_k';
+                            if (oil[str] === oil[attr]){
+                                oil[str] = '';
+                            }
+                        } else {
+                            var str = attr.substring(0, attr.length - 6) + '_max_k';
+                            if (oil[str] === oil[attr]){
+                                oil[str] = '';
+                            }
+                        }
+                        oil[attr] = (oil[attr] - 273.15).toFixed(3) + ' &deg;C';
+                    } else {
+                        for (var i = 0; i < tempAttrs.length; i++){
+                            if (attr === tempAttrs[i]){
+                                if (attr.indexOf('max') > -1){
+                                    var str = attr.substring(0, attr.length - 6) + '_min_k';
+                                    if (oil[str] === oil[attr]){
+                                        oil[str] = '';
+                                    }
+                                } else {
+                                    var str = attr.substring(0, attr.length - 6) + '_max_k';
+                                    if (oil[str] === oil[attr]){
+                                        oil[str] = '';
+                                    }
+                                }
+                            }
+                        }
+                        oil[attr] = null;
+                    }
                 }
                 // When value of oil attribute is of type array
                  else if (_.isArray(oil[attr])) {
