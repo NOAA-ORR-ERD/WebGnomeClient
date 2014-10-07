@@ -51,10 +51,10 @@ define([
 
 			var geoCoords = this.model.get('release').get('start_position');
 
-			if (this.model.get('release').get('start_position')[0] === 0 && this.model.get('release').get('start_position')[1] === 0) {
+			if (geoCoords[0] === 0 && geoCoords[1] === 0) {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect(null, [geoCoords[0], geoCoords[1]]);
+				this.locationSelect(null, geoCoords);
 			}
 
             if (_.isUndefined(this.model.get('amount'))){
@@ -78,7 +78,6 @@ define([
 		},
 
 		elementSelect: function(){
-			//FormModal.prototype.hide.call(this);
             this.hide();
 			var oilLibraryView = new OilLibraryView();
 			oilLibraryView.render();
@@ -143,7 +142,6 @@ define([
 
                     }, this));
                 }
-
                 if (startPosition[0] !== 0 && startPosition[1] !== 0){
                     startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
                     var feature = new ol.Feature(new ol.geom.Point(startPosition));
@@ -164,22 +162,49 @@ define([
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
-                this.mapShown = true;
-			} 
+			} else {
+                 
+            }
+            this.mapShown = true;
 		},
 
         manualMapInput: function(){
-            if (this.mapShown){
-                this.source.forEachFeature(function(feature){
+            if (!this.mapShown){
+                this.$('.map').show();
+                this.source = new ol.source.Vector();
+                this.layer = new ol.layer.Vector({
+                    source: this.source,
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        })
+                    })
+                });
+                this.spillMapView = new SpillMapView({
+                    id: 'spill-form-map',
+                    zoom: 2,
+                    center: [-128.6, 42.7],
+                    layers: [
+                        new ol.layer.Tile({
+                            source: new ol.source.MapQuest({layer: 'osm'})
+                        }),
+                        this.layer
+                    ]
+                });
+                this.spillMapView.render();
+                this.mapShown = true;
+            }
+            this.source.forEachFeature(function(feature){
                         this.source.removeFeature(feature);
                     }, this);
-                var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
-                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-                var feature = new ol.Feature(new ol.geom.Point(coords));
-                this.source.addFeature(feature);
-                this.spillMapView.map.getView().setCenter(coords);
-                this.spillMapView.map.getView().setZoom(15);
-            }
+            var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
+            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+            var feature = new ol.Feature(new ol.geom.Point(coords));
+            this.source.addFeature(feature);
+            this.spillMapView.map.getView().setCenter(coords);
+            this.spillMapView.map.getView().setZoom(15);
         },
 
         releaseLocation: function(){
