@@ -117,6 +117,13 @@ define([
                     ]
                 });
                 this.spillMapView.render();
+                this.$el.on('contextmenu click', function(e){
+                    e.preventDefault();
+                    if (e.which === 3){
+                        console.log('right clicked');
+                    }
+                    return false;
+                });
                 this.mapShown = true;
                 this.spillMapView.map.on('click', _.bind(function(e){
                     this.source.forEachFeature(function(feature){
@@ -173,13 +180,18 @@ define([
                 this.spillMapView.map.getView().setCenter(startPosition);
                 this.spillMapView.map.getView().setZoom(15);
             }
-			this.spillMapView.map.on('click', _.bind(function(e){
+			this.spillMapView.map.on('mousedown', _.bind(function(e){
 				this.source.forEachFeature(function(feature){
 					this.source.removeFeature(feature);
 				}, this);
 				var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
 				var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-				this.spillCoords = {lat: coords[1], lon: coords[0]};
+                console.log(e.which);
+                if (e.which === 1){
+				    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
+                } else if (e.which === 3) {
+                    console.log('right used');
+                }
                 this.source.addFeature(feature);
 			}, this));
             setTimeout(_.bind(function(){
