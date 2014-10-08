@@ -49,12 +49,16 @@ define([
 
 			FormModal.prototype.render.call(this, options);
 
-			var geoCoords = this.model.get('release').get('start_position');
+			var geoCoords_start = this.model.get('release').get('start_position');
+            var geoCoords_end = this.model.get('release').get('end_position');
+            var units = this.model.get('units');
 
-			if (geoCoords[0] === 0 && geoCoords[1] === 0) {
+            this.$('#units').val(units);
+
+			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect(null, geoCoords);
+				this.locationSelect(null, geoCoords_start);
 			}
 
             if (_.isUndefined(this.model.get('amount'))){
@@ -186,9 +190,10 @@ define([
             this.source.forEachFeature(function(feature){
                         this.source.removeFeature(feature);
                     }, this);
-            var coords = [parseFloat(this.$('#longitude').val()), parseFloat(this.$('#latitude').val())];
+            var coords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             var feature = new ol.Feature(new ol.geom.Point(coords));
+            this.spillCoords = {lat: coords[1], lon: coords[0]};
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);

@@ -37,12 +37,14 @@ define([
             }
 
             var startPosition = this.model.get('release').get('start_position');
+            var endPosition = this.model.get('release').get('end_position');
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                coords: {'lat': startPosition[1], 'lon': startPosition[0]}
+                start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
+                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -66,27 +68,33 @@ define([
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
-            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '0';
-            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '0';
+            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
+            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
+            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
+            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
 
-            if (latitude.indexOf('°') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
+            if (startLat.indexOf('°') !== -1){
+                startLat = geolib.sexagesimal2decimal(startLat);
             }
 
-            if (longitude.indexOf('°') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
+            if (startLon.indexOf('°') !== -1){
+                startLon = geolib.sexagesimal2decimal(startLon);
             }
 
             if (!_.isUndefined(this.spillCoords)){
-                this.$('#latitude').val(this.spillCoords.lat);
-                this.$('#longitude').val(this.spillCoords.lon);
-                latitude = this.spillCoords.lat;
-                longitude = this.spillCoords.lon;
+                this.$('#start-lat').val(this.spillCoords.lat);
+                this.$('#start-lon').val(this.spillCoords.lon);
+                this.$('#end-lat').val(this.spillCoords.lat);
+                this.$('#end-lon').val(this.spillCoords.lon);
+                startLat = this.spillCoords.lat;
+                startLon = this.spillCoords.lon;
             }
 
-            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
+            var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
 
             release.set('start_position', start_position);
+            release.set('end_position', end_position);
             this.model.set('name', name);
             this.model.set('release', release);
             this.model.set('units', units);

@@ -26,13 +26,22 @@
 	</div>
 
 	<div class="form-group">
-        <label class="control-label col-sm-3" for="latitude">Latitude:</label>
-        <div class="col-sm-3">
-            <input type="text" id="latitude" class="form-control geo-info" value="{{ coords.lat }}">
+        <label class="col-sm-3 control-label">Start Position</label>
+        <div class="col-sm-9">
+            <label for="start-lat" class="col-sm-1 control-label">Lat.</label>
+            <div class="col-sm-4"><input type="text" class="form-control geo-info" name="lat" id="start-lat" value="{{ start_coords.lat }}"></div>
+            <label for="start-lng" class="col-sm-1 control-label">Lng.</label>
+            <div class="col-sm-4"><input type="text" class="form-control geo-info" name="lng" id="start-lon" value="{{ start_coords.lon }}"></div>
         </div>
-        <label class="control-label col-sm-2" for="longitude">Longitude:</label>
-        <div class="col-sm-3">
-            <input type="text" id="longitude" class="form-control geo-info" value="{{ coords.lon }}">
+    </div>
+
+    <div class="form-group end-position">
+        <label class="col-sm-3 control-label">End Position</label>
+        <div class="col-sm-9">
+            <label for="end-lat" class="col-sm-1 control-label">Lat.</label>
+            <div class="col-sm-4"><input type="text" class="form-control geo-info" name="lat" id="end-lat" value="{{ end_coords.lat }}"></div>
+            <label for="end-lng" class="col-sm-1 control-label">Lng.</label>
+            <div class="col-sm-4"><input type="text" class="form-control geo-info" name="lng" id="end-lon" value="{{ end_coords.lon }}"></div>
         </div>
     </div>
 

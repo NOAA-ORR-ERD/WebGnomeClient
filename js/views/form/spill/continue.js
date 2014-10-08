@@ -29,9 +29,16 @@ define([
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
-                coords: {'lat': startPosition[1], 'lon': startPosition[0]}
+                start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
+                end_coords: {'lat': 0, 'lon': 0}
             });
             BaseSpillForm.prototype.render.call(this, options);
+
+            var units = this.model.get('units');
+            if (_.isUndefined(units)){
+                units = 'cubic meters';
+            }
+            this.$('#units').val(units);
 
             this.$('#amount .slider').slider({
                 min: 0,
@@ -72,14 +79,13 @@ define([
                 }
             }
             var amount = parseInt(this.$('#spill-amount').val(), 10);
-            this.rate = this.$('#spill-rate').val();
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
-            var latitude = this.$('#latitude').val() ? this.$('#latitude').val() : '';
-            var longitude = this.$('#longitude').val() ? this.$('#longitude').val() : '';
+            var latitude = this.$('#start-lat').val() ? this.$('#start-lat').val() : '';
+            var longitude = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
 
             if (days === '') {
                 days = 0;
@@ -98,8 +104,10 @@ define([
             }
             
             if (!_.isUndefined(this.spillCoords)){
-                this.$('#latitude').val(this.spillCoords.lat);
-                this.$('#longitude').val(this.spillCoords.lon);
+                this.$('#start-lat').val(this.spillCoords.lat);
+                this.$('#start-lon').val(this.spillCoords.lon);
+                this.$('#end-lat').val(this.spillCoords.lat);
+                this.$('#end-lon').val(this.spillCoords.lon);
                 latitude = this.spillCoords.lat;
                 longitude = this.spillCoords.lon;
             }
@@ -107,11 +115,11 @@ define([
             var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('start_position', start_position);
+            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
+            release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('name', name);
             this.model.set('units', units);
             this.model.set('amount', amount);
-            release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
-            release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('release', release);
             BaseSpillForm.prototype.update.call(this);
             this.updateAmountSlide();

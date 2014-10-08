@@ -18,11 +18,17 @@ define([
         },
 
         initialize: function(options){
-            var start_time = moment(webgnome.model.get('start_time'));
+            var start_time = '';
+            if (!_.isUndefined(webgnome.model)){
+                start_time = moment(webgnome.model.get('start_time'));
+            }
             if(_.isUndefined(this.get('release_time'))){
                 this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
-            var end_time = start_time.add(webgnome.model.get('duration'), 's');
+            var end_time = '';
+            if (!_.isUndefined(webgnome.model)){
+                end_time = start_time.add(webgnome.model.get('duration'), 's');
+            }
             if(_.isUndefined(this.get('end_release_time'))){
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
