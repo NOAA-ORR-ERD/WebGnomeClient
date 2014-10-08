@@ -12,11 +12,12 @@ define([
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
-    'model/outputters/geojson'
+    'model/outputters/geojson',
+    'model/outputters/weathering'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
     WindMover, RandomMover, CatsMover,
-    GeojsonOutputter){
+    GeojsonOutputter, WeatheringOutputter){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -36,7 +37,8 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
             outputters: {
-                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter
+                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter,
+                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
             },
             weatherers: Backbone.Collection
         },

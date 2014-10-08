@@ -24,6 +24,8 @@ define([
     'views/form/spill/instant',
     'views/form/location',
     'views/default/map',
+    'model/outputters/geojson',
+    'model/outputters/weathering',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -35,7 +37,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -62,8 +64,27 @@ define([
                 webgnome.model.save(null, {
                     validate: false,
                     success: _.bind(function(){
-                        webgnome.model.on('sync', this.updateObjects, this);
-                        this.render();
+                        var gout = new GeojsonOutputter();
+                        gout.save(null, {
+                            validate: false,
+                            success: _.bind(function(){
+                                webgnome.model.get('outputters').add(gout);
+                                var wout = new WeatheringOutputter();
+                                wout.save(null, {
+                                    validate: false,
+                                    success: _.bind(function(){
+                                        webgnome.model.get('outputters').add(wout);
+                                        webgnome.model.save(null, {
+                                            validate: false,
+                                            success: _.bind(function(model, response, options){
+                                                webgnome.model.on('sync', this.updateObjects, this);
+                                                this.render();
+                                            }, this)
+                                        });
+                                    }, this)
+                                });
+                            }, this)
+                        });
                     }, this)
                 });
             }
