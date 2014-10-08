@@ -52,7 +52,9 @@ define([
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
-
+            if (_.isUndefined(units)){
+                units = 'cubic meters';
+            }
             this.$('#units').val(units);
 
 			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {

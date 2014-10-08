@@ -23,6 +23,7 @@ define([
 
         render: function(options){
             var startPosition = this.model.get('release').get('start_position');
+            var endPosition = this.model.get('release').get('end_position');
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
@@ -30,15 +31,9 @@ define([
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                end_coords: {'lat': 0, 'lon': 0}
+                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
-
-            var units = this.model.get('units');
-            if (_.isUndefined(units)){
-                units = 'cubic meters';
-            }
-            this.$('#units').val(units);
 
             this.$('#amount .slider').slider({
                 min: 0,
@@ -84,8 +79,10 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim();
             var hours = this.$('#hours').val().trim();
-            var latitude = this.$('#start-lat').val() ? this.$('#start-lat').val() : '';
-            var longitude = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
+            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '';
+            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
+            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '';
+            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '';
 
             if (days === '') {
                 days = 0;
@@ -95,12 +92,12 @@ define([
                 hours = 0;
             }
 
-            if (latitude.indexOf('°') !== -1 || $.trim(latitude).indexOf(' ') !== -1){
-                latitude = geolib.sexagesimal2decimal(latitude);
+            if (startLat.indexOf('°') !== -1 || $.trim(startLat).indexOf(' ') !== -1){
+                startLat = geolib.sexagesimal2decimal(startLat);
             }
 
-            if (longitude.indexOf('°') !== -1 || $.trim(longitude).indexOf(' ') !== -1){
-                longitude = geolib.sexagesimal2decimal(longitude);
+            if (startLon.indexOf('°') !== -1 || $.trim(startLon).indexOf(' ') !== -1){
+                startLon = geolib.sexagesimal2decimal(startLon);
             }
             
             if (!_.isUndefined(this.spillCoords)){
@@ -108,11 +105,11 @@ define([
                 this.$('#start-lon').val(this.spillCoords.lon);
                 this.$('#end-lat').val(this.spillCoords.lat);
                 this.$('#end-lon').val(this.spillCoords.lon);
-                latitude = this.spillCoords.lat;
-                longitude = this.spillCoords.lon;
+                startLat = this.spillCoords.lat;
+                startLon = this.spillCoords.lon;
             }
 
-            var start_position = [parseFloat(longitude), parseFloat(latitude), 0];
+            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('start_position', start_position);
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
