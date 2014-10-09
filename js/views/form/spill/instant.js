@@ -81,15 +81,6 @@ define([
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
 
-            // if (!_.isUndefined(this.spillCoords)){
-            //     this.$('#start-lat').val(this.spillCoords.lat);
-            //     this.$('#start-lon').val(this.spillCoords.lon);
-            //     this.$('#end-lat').val(this.spillCoords.lat);
-            //     this.$('#end-lon').val(this.spillCoords.lon);
-            //     startLat = this.spillCoords.lat;
-            //     startLon = this.spillCoords.lon;
-            // }
-
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
 
