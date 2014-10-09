@@ -22,7 +22,8 @@ define([
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput',
+				'blur .start': 'manualMapInput_start',
+                'blur .end': 'manualMapInput_end',
                 'focus .geo-info': 'releaseLocation'
 			}, FormModal.prototype.events);
 		},
@@ -82,19 +83,19 @@ define([
                 this.$('#start-lon').val(this.spillCoords_start.lon);
                 this.$('#end-lat').val(this.spillCoords_start.lat);
                 this.$('#end-lon').val(this.spillCoords_start.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_start.lat;
-                endLon = this.spillCoords_start.lon;
+                this.startLat = this.spillCoords_start.lat;
+                this.startLon = this.spillCoords_start.lon;
+                this.endLat = this.spillCoords_start.lat;
+                this.endLon = this.spillCoords_start.lon;
             } else if (!_.isUndefined(this.spillCoords_end)){
                 this.$('#start-lat').val(this.spillCoords_start.lat);
                 this.$('#start-lon').val(this.spillCoords_start.lon);
                 this.$('#end-lat').val(this.spillCoords_end.lat);
                 this.$('#end-lon').val(this.spillCoords_end.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_end.lat;
-                endLon = this.spillCoords_end.lon;
+                this.startLat = this.spillCoords_start.lat;
+                this.startLon = this.spillCoords_start.lon;
+                this.endLat = this.spillCoords_end.lat;
+                this.endLon = this.spillCoords_end.lon;
             }
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
@@ -223,14 +224,48 @@ define([
             }
 		},
 
-        manualMapInput: function(){
+        manualMapInput_start: function(){
             this.mapRender();
             this.source.forEachFeature(function(feature){
-                        this.source.removeFeature(feature);
-                    }, this);
+                if (feature.get('name') === 'start'){
+                    this.source.removeFeature(feature);
+                }
+            }, this);
             var coords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             var feature = new ol.Feature(new ol.geom.Point(coords));
+            feature.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                })
+            }));
+            feature.set('name', 'start');
+            this.spillCoords = {lat: coords[1], lon: coords[0]};
+            this.source.addFeature(feature);
+            this.spillMapView.map.getView().setCenter(coords);
+            this.spillMapView.map.getView().setZoom(15);
+        },
+
+        manualMapInput_end: function(){
+            this.mapRender();
+            this.source.forEachFeature(function(feature){
+                if (feature.get('name') === 'end'){
+                    this.source.removeFeature(feature);
+                }
+            }, this);
+            var coords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
+            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+            var feature = new ol.Feature(new ol.geom.Point(coords));
+            feature.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                })
+            }));
+            feature.set('name', 'end');
             this.spillCoords = {lat: coords[1], lon: coords[0]};
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
