@@ -92,6 +92,26 @@ define([
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
             
+            if (!_.isUndefined(this.spillCoords_start) && _.isUndefined(this.spillCoords_end)){
+                this.$('#start-lat').val(this.spillCoords_start.lat);
+                this.$('#start-lon').val(this.spillCoords_start.lon);
+                this.$('#end-lat').val(this.spillCoords_start.lat);
+                this.$('#end-lon').val(this.spillCoords_start.lon);
+                startLat = this.spillCoords_start.lat;
+                startLon = this.spillCoords_start.lon;
+                endLat = this.spillCoords_start.lat;
+                endLon = this.spillCoords_start.lon;
+            } else if (!_.isUndefined(this.spillCoords_end)){
+                this.$('#start-lat').val(this.spillCoords_start.lat);
+                this.$('#start-lon').val(this.spillCoords_start.lon);
+                this.$('#end-lat').val(this.spillCoords_end.lat);
+                this.$('#end-lon').val(this.spillCoords_end.lon);
+                startLat = this.spillCoords_start.lat;
+                startLon = this.spillCoords_start.lon;
+                endLat = this.spillCoords_end.lat;
+                endLon = this.spillCoords_end.lon;
+            }
+
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;

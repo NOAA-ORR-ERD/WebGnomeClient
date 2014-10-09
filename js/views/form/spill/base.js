@@ -78,25 +78,6 @@ define([
 
 		update: function(){
 
-            if (!_.isUndefined(this.spillCoords_start) && _.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_start.lat);
-                this.$('#end-lon').val(this.spillCoords_start.lon);
-                this.startLat = this.spillCoords_start.lat;
-                this.startLon = this.spillCoords_start.lon;
-                this.endLat = this.spillCoords_start.lat;
-                this.endLon = this.spillCoords_start.lon;
-            } else if (!_.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_end.lat);
-                this.$('#end-lon').val(this.spillCoords_end.lon);
-                this.startLat = this.spillCoords_start.lat;
-                this.startLon = this.spillCoords_start.lon;
-                this.endLat = this.spillCoords_end.lat;
-                this.endLon = this.spillCoords_end.lon;
-            }
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
 			} else {
@@ -179,6 +160,21 @@ define([
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
+                var startPosition = _.initial(this.model.get('release').get('start_position'));
+                if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                    startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
+                    this.source.addFeature(feature);
+                    
+                    this.spillMapView.map.getView().setCenter(startPosition);
+                    this.spillMapView.map.getView().setZoom(15);
+                }
+                var endPosition = _.initial(this.model.get('release').get('end_position'));
+                if (endPosition[0] !== 0 && endPosition[1] !== 0){
+                    endPosition = ol.proj.transform(endPosition, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(endPosition));
+                    this.source.addFeature(feature);
+                }
             }
         },
 
@@ -213,15 +209,6 @@ define([
 
                 }, this));
             }
-            var startPosition = _.initial(this.model.get('release').get('start_position'));
-            if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
-                var feature = new ol.Feature(new ol.geom.Point(startPosition));
-                this.source.addFeature(feature);
-                
-                this.spillMapView.map.getView().setCenter(startPosition);
-                this.spillMapView.map.getView().setZoom(15);
-            }
 		},
 
         manualMapInput_start: function(){
@@ -242,7 +229,7 @@ define([
                 })
             }));
             feature.set('name', 'start');
-            this.spillCoords = {lat: coords[1], lon: coords[0]};
+            this.spillCoords_start = {lat: coords[1], lon: coords[0]};
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
@@ -266,7 +253,7 @@ define([
                 })
             }));
             feature.set('name', 'end');
-            this.spillCoords = {lat: coords[1], lon: coords[0]};
+            this.spillCoords_end = {lat: coords[1], lon: coords[0]};
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
