@@ -92,15 +92,24 @@ define([
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
             
-            if (!_.isUndefined(this.spillCoords)){
-                this.$('#start-lat').val(this.spillCoords.lat);
-                this.$('#start-lon').val(this.spillCoords.lon);
-                this.$('#end-lat').val(this.spillCoords.lat);
-                this.$('#end-lon').val(this.spillCoords.lon);
-                startLat = this.spillCoords.lat;
-                startLon = this.spillCoords.lon;
-                endLat = this.spillCoords.lat;
-                endLon = this.spillCoords.lon;
+            if (!_.isUndefined(this.spillCoords_start) && _.isUndefined(this.spillCoords_end)){
+                this.$('#start-lat').val(this.spillCoords_start.lat);
+                this.$('#start-lon').val(this.spillCoords_start.lon);
+                this.$('#end-lat').val(this.spillCoords_start.lat);
+                this.$('#end-lon').val(this.spillCoords_start.lon);
+                startLat = this.spillCoords_start.lat;
+                startLon = this.spillCoords_start.lon;
+                endLat = this.spillCoords_start.lat;
+                endLon = this.spillCoords_start.lon;
+            } else if (!_.isUndefined(this.spillCoords_end)){
+                this.$('#start-lat').val(this.spillCoords_start.lat);
+                this.$('#start-lon').val(this.spillCoords_start.lon);
+                this.$('#end-lat').val(this.spillCoords_end.lat);
+                this.$('#end-lon').val(this.spillCoords_end.lon);
+                startLat = this.spillCoords_start.lat;
+                startLon = this.spillCoords_start.lon;
+                endLat = this.spillCoords_end.lat;
+                endLon = this.spillCoords_end.lon;
             }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];

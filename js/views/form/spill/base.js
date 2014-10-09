@@ -21,6 +21,7 @@ define([
 				'click .oilSelect': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
+                'contextmenu #spill-form-map': 'update',
 				'blur .geo-info': 'manualMapInput',
                 'focus .geo-info': 'releaseLocation'
 			}, FormModal.prototype.events);
@@ -75,7 +76,6 @@ define([
 		},
 
 		update: function(){
-
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
 			} else {
@@ -117,21 +117,29 @@ define([
                     ]
                 });
                 this.spillMapView.render();
-                this.$el.on('contextmenu click', function(e){
-                    e.preventDefault();
-                    if (e.which === 3){
-                        console.log('right clicked');
-                    }
-                    return false;
-                });
                 this.mapShown = true;
+                this.$('canvas').on('contextmenu', _.bind(function(){
+                    this.update();
+                    return false;
+                }, this));
+                this.spillMapView.map.on('pointerdown', _.bind(function(e){
+                    if (e.originalEvent.which === 3){
+                        this.source.forEachFeature(function(feature){
+                            this.source.removeFeature(feature);
+                        }, this);
+                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                        var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                        this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+                        this.source.addFeature(feature);
+                    }
+                }, this));
                 this.spillMapView.map.on('click', _.bind(function(e){
                     this.source.forEachFeature(function(feature){
                         this.source.removeFeature(feature);
                     }, this);
                     var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                    this.spillCoords = {lat: coords[1], lon: coords[0]};
+                    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -180,23 +188,6 @@ define([
                 this.spillMapView.map.getView().setCenter(startPosition);
                 this.spillMapView.map.getView().setZoom(15);
             }
-			this.spillMapView.map.on('mousedown', _.bind(function(e){
-				this.source.forEachFeature(function(feature){
-					this.source.removeFeature(feature);
-				}, this);
-				var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-				var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                console.log(e.which);
-                if (e.which === 1){
-				    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
-                } else if (e.which === 3) {
-                    console.log('right used');
-                }
-                this.source.addFeature(feature);
-			}, this));
-            setTimeout(_.bind(function(){
-                this.spillMapView.map.updateSize();
-            }, this), 250);
 		},
 
         manualMapInput: function(){
