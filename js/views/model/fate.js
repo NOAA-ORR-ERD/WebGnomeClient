@@ -65,10 +65,12 @@ define([
             if(this.frame < webgnome.model.get('num_time_steps')){
                 this.step.fetch({
                     success: _.bind(function(){
-                        this.frame++;
-                        this.buildDataset(cb);
-                        this.formatDataset(this.step);
-                        cb(this.dataset);
+                        if(this.step){
+                            this.frame++;
+                            this.buildDataset(cb);
+                            this.formatDataset(this.step);
+                            cb(this.dataset);
+                        }
                     }, this)
                 });
             }
@@ -162,6 +164,11 @@ define([
 
         formatLabel: function(label){
             return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
+        },
+
+        close: function(){
+            this.step = null;
+            Backbone.View.prototype.close.call(this);
         }
     });
 
