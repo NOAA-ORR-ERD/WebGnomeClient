@@ -134,7 +134,8 @@ define([
                         }));
                         feature.set('name', 'end');
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                        this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+                        var position = [coords[0], coords[1], 0];
+                        this.model.get('release').set('end_position', position);
                         this.source.addFeature(feature);
                     }
                 }, this));
@@ -154,7 +155,8 @@ define([
                     }));
                     feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
+                    var position = [coords[0], coords[1], 0];
+                    this.model.get('release').set('start_positon', position);
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -245,7 +247,8 @@ define([
                 })
             }));
             feature.set('name', 'start');
-            this.spillCoords_start = {lat: coords[1], lon: coords[0]};
+            var position = [coords[0], coords[1], 0];
+            this.model.get('release').set('start_position', position);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
@@ -269,7 +272,8 @@ define([
                 })
             }));
             feature.set('name', 'end');
-            this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+            var position = [coords[0], coords[1], 0];
+            this.model.get('release').set('end_position', position);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
