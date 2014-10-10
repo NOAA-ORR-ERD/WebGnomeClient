@@ -16,6 +16,15 @@ define([
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
+        events: function(){
+            return _.defaults({
+                'blur #spill-amount': 'updateRate',
+                'blur #spill-rate': 'updateAmount',
+                'blur #rate-units': 'updateAmount',
+                'blur #units': 'updateRate'
+            }, BaseSpillForm.prototype.events);
+        },
+
         initialize: function(options, spillModel){
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
@@ -82,7 +91,7 @@ define([
                     }
                 }
             }
-            var amount = parseInt(this.$('#spill-amount').val(), 10);
+            var amount = parseFloat(this.$('#spill-amount').val());
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
@@ -92,6 +101,8 @@ define([
             var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
             var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '';
             var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '';
+
+            this.$('#spill-amount').val(amount);
 
             if (startLat.indexOf('°') !== -1 || $.trim(startLat).indexOf(' ') !== -1){
                 startLat = geolib.sexagesimal2decimal(startLat);
@@ -135,6 +146,28 @@ define([
             BaseSpillForm.prototype.update.call(this);
             this.updateAmountSlide();
             this.updateRateSlide();
+        },
+
+        updateRate: function(){
+            var amount = parseFloat(this.$('#spill-amount').val());
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var rate = amount / duration;
+            var units = this.$('#units').val();
+            this.$('#spill-rate').val(rate);
+            this.$('#rate-units').val(units + '/hr');
+        },
+
+        updateAmount: function(){
+            var rate = parseFloat(this.$('#spill-rate').val());
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var amount = rate * duration;
+            this.$('#spill-amount').val(amount);
+            var units = this.$('#rate-units').val().split('/')[0];
+            this.$('#units').val(units);
         },
 
         parseDuration: function(start, end){
