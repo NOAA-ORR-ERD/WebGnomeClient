@@ -42,7 +42,7 @@ define([
 
                 // When value of oil attribute is null
 
-				if (!oil[attr] && tempAttrs.indexOf(attr) === -1){
+				if (!oil[attr] && tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
 					oil[attr] = "--";				
 				} else if (tempAttrs.indexOf(attr) !== -1){
                     if (oil[attr]){
@@ -75,6 +75,12 @@ define([
                             }
                         }
                         oil[attr] = null;
+                    }
+                } else if (attr === 'emuls_constant_max' || attr === 'emuls_constant_min'){
+                    if (attr === 'emuls_constant_max'){
+                        if (oil[attr] && oil[attr] === oil['emuls_constant_min']){
+                            oil['emuls_constant_min'] = '';
+                        }
                     }
                 }
                 // When value of oil attribute is of type array
