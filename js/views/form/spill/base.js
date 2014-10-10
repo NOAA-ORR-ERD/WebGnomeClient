@@ -21,7 +21,9 @@ define([
 				'click .oilSelect': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput',
+                'contextmenu #spill-form-map': 'update',
+				'blur .start': 'manualMapInput_start',
+                'blur .end': 'manualMapInput_end',
                 'focus .geo-info': 'releaseLocation'
 			}, FormModal.prototype.events);
 		},
@@ -52,7 +54,9 @@ define([
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
-
+            if (_.isUndefined(units)){
+                units = 'cubic meters';
+            }
             this.$('#units').val(units);
 
 			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {
@@ -94,14 +98,7 @@ define([
                 this.$('.map').show();
                 this.source = new ol.source.Vector();
                 this.layer = new ol.layer.Vector({
-                    source: this.source,
-                    style: new ol.style.Style({
-                        image: new ol.style.Icon({
-                            anchor: [0.5, 1.0],
-                            src: '/img/spill-pin.png',
-                            size: [32, 40]
-                        })
-                    })
+                    source: this.source
                 });
                 this.spillMapView = new SpillMapView({
                     id: 'spill-form-map',
@@ -116,18 +113,84 @@ define([
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
+                this.$('canvas').on('contextmenu', _.bind(function(){
+                    this.update();
+                    return false;
+                }, this));
+                this.spillMapView.map.on('pointerdown', _.bind(function(e){
+                    if (e.originalEvent.which === 3){
+                        this.source.forEachFeature(function(feature){
+                            if (feature.get('name') === 'end'){
+                                this.source.removeFeature(feature);
+                            }
+                        }, this);
+                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                        feature.setStyle(new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/spill-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
+                        feature.set('name', 'end');
+                        var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                        this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+                        this.source.addFeature(feature);
+                    }
+                }, this));
                 this.spillMapView.map.on('click', _.bind(function(e){
                     this.source.forEachFeature(function(feature){
-                        this.source.removeFeature(feature);
+                        if (feature.get('name') === 'start'){
+                            this.source.removeFeature(feature);
+                        }
                     }, this);
                     var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                    feature.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        })
+                    }));
+                    feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                    this.spillCoords = {lat: coords[1], lon: coords[0]};
+                    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
+                var startPosition = _.initial(this.model.get('release').get('start_position'));
+                if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                    startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
+                    feature.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        })
+                    }));
+                    feature.set('name', 'start');
+                    this.source.addFeature(feature);
+                    
+                    this.spillMapView.map.getView().setCenter(startPosition);
+                    this.spillMapView.map.getView().setZoom(15);
+                }
+                var endPosition = _.initial(this.model.get('release').get('end_position'));
+                if (endPosition[0] !== 0 && endPosition[1] !== 0){
+                    endPosition = ol.proj.transform(endPosition, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(endPosition));
+                    feature.setStyle(new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        })
+                    }));
+                    feature.set('name', 'end');
+                    this.source.addFeature(feature);
+                }
             }
         },
 
@@ -162,45 +225,62 @@ define([
 
                 }, this));
             }
-            var startPosition = _.initial(this.model.get('release').get('start_position'));
-            if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
-                var feature = new ol.Feature(new ol.geom.Point(startPosition));
-                this.source.addFeature(feature);
-                
-                this.spillMapView.map.getView().setCenter(startPosition);
-                this.spillMapView.map.getView().setZoom(15);
-            }
-			this.spillMapView.map.on('click', _.bind(function(e){
-				this.source.forEachFeature(function(feature){
-					this.source.removeFeature(feature);
-				}, this);
-				var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-				var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-				this.spillCoords = {lat: coords[1], lon: coords[0]};
-                this.source.addFeature(feature);
-			}, this));
-            setTimeout(_.bind(function(){
-                this.spillMapView.map.updateSize();
-            }, this), 250);
 		},
 
-        manualMapInput: function(){
+        manualMapInput_start: function(){
             this.mapRender();
             this.source.forEachFeature(function(feature){
-                        this.source.removeFeature(feature);
-                    }, this);
+                if (feature.get('name') === 'start'){
+                    this.source.removeFeature(feature);
+                }
+            }, this);
             var coords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             var feature = new ol.Feature(new ol.geom.Point(coords));
-            this.spillCoords = {lat: coords[1], lon: coords[0]};
+            feature.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                })
+            }));
+            feature.set('name', 'start');
+            this.spillCoords_start = {lat: coords[1], lon: coords[0]};
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
         },
 
-        releaseLocation: function(){
-            this.spillCoords = undefined;
+        manualMapInput_end: function(){
+            this.mapRender();
+            this.source.forEachFeature(function(feature){
+                if (feature.get('name') === 'end'){
+                    this.source.removeFeature(feature);
+                }
+            }, this);
+            var coords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
+            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+            var feature = new ol.Feature(new ol.geom.Point(coords));
+            feature.setStyle(new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                })
+            }));
+            feature.set('name', 'end');
+            this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+            this.source.addFeature(feature);
+            this.spillMapView.map.getView().setCenter(coords);
+            this.spillMapView.map.getView().setZoom(15);
+        },
+
+        releaseLocation: function(e){
+            if (e.currentTarget.id.indexOf('start') > -1){
+                this.spillCoords_start = undefined;
+            } else {
+                this.spillCoords_end = undefined;
+            }
         },
 
 		next: function(){
