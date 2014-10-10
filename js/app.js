@@ -143,7 +143,7 @@ define([
                         tree.push({title: key + ': ' + el, key: el,
                                    obj_type: attrs.obj_type, action: 'edit', object: this});
                         
-                    } else if (_.isObject(el) && !_.isArray(el)) {
+                    } else if (_.isObject(el) && !_.isArray(el) && el.toDebugTree) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toDebugTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
                     } else if (_.isArray(el)){

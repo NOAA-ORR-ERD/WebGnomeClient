@@ -10,15 +10,18 @@ define([
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
+            'substance': 'ALAMO',
             'initializers': [
                 {
-                    'json_': 'save',
                     'windage_range': [
                          0.01,
                          0.04
                     ],
                     'obj_type': 'gnome.spill.elements.InitWindages',
                     'windage_persist': 900
+                },
+                {
+                    'obj_type': 'gnome.spill.elements.InitArraysFromOilProps'
                 }
             ]
         },

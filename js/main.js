@@ -27,6 +27,9 @@ require.config({
         flotdirection: 'lib/flotdirection/index',
         flotspline: 'lib/flotspline/jquery.flot.spline',
         flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
+        flotcrosshair: 'lib/flot/jquery.flot.crosshair',
+        flotstack: 'lib/flot/jquery.flot.stack',
+        flotpie: 'lib/flot/jquery.flot.pie',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
         'doc-ready': 'lib/doc-ready/',
@@ -49,6 +52,9 @@ require.config({
         flotdirection: ['flot'],
         flotspline: ['flot'],
         flottooltip: ['flot'],
+        flotcrosshair: ['flot'],
+        flotstack: ['flot'],
+        flotpie: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'

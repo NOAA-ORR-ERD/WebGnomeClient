@@ -21,7 +21,7 @@ define([
         },
 
         toggle: function(){
-            var offset = this.TreeView.toggle();
+            this.TreeView.toggle();
             this.TrajectoryView.toggle(offset);
         },
 
@@ -30,16 +30,15 @@ define([
             $('body').append(this.$el);
             var view = localStorage.getItem('view');
             var prediction = localStorage.getItem('prediction');
-            if(!_.isNull(view)){
-                this.$('.switch').addClass(view);
+            
+            if(!_.isNull(prediction) && prediction == 'both'){
+                this.$('.switch').addClass('trajectory');
+                localStorage.setItem('view', 'trajectory');
+                view = 'trajectory';
             } else {
-                if(!_.isNull(prediction) && prediction == 'both'){
-                    this.$('.switch').addClass('trajectory');
-                    localStorage.setItem('view', 'trajectory');
-                } else {
-                    this.$('.switch').addClass(prediction);
-                    localStorage.setItem('view', prediction);
-                }
+                this.$('.switch').addClass(prediction);
+                localStorage.setItem('view', prediction);
+                view = prediction;
             }
 
             if (view == 'fate') {

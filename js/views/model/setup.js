@@ -26,6 +26,7 @@ define([
     'views/default/map',
     'model/outputters/geojson',
     'model/outputters/weathering',
+    'model/weatherers/evaporation',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -37,7 +38,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -74,11 +75,17 @@ define([
                                     validate: false,
                                     success: _.bind(function(){
                                         webgnome.model.get('outputters').add(wout);
-                                        webgnome.model.save(null, {
-                                            validate: false,
+                                        var evaporation = new EvaporationModel();
+                                        evaporation.save(null, {
                                             success: _.bind(function(model, response, options){
-                                                webgnome.model.on('sync', this.updateObjects, this);
-                                                this.render();
+                                                webgnome.model.get('weatherers').add(evaporation);
+                                                webgnome.model.save(null, {
+                                                    validate: false,
+                                                    success: _.bind(function(model, response, options){
+                                                        webgnome.model.on('sync', this.updateObjects, this);
+                                                        this.render();
+                                                    }, this)
+                                                });
                                             }, this)
                                         });
                                     }, this)
@@ -210,6 +217,9 @@ define([
             windForm.on('hidden', windForm.close);
             windForm.on('save', function(){
                 webgnome.model.get('environment').add(wind);
+                var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
+                evaporation.set('wind', wind);
+                evaporation.save();
                 var mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
                 if(_.isUndefined(mover) || mover.get('wind').get('id') != wind.get('id')){
                     var windMover = new WindMoverModel({wind: wind});
@@ -301,6 +311,9 @@ define([
             waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
             waterForm.on('save', function(){
                 webgnome.model.get('environment').add(water);
+                var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
+                evaporation.set('water', water);
+                evaporation.save();
                 webgnome.model.save();
             });
             waterForm.render();
