@@ -23,8 +23,7 @@ define([
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
 				'blur .start': 'manualMapInput_start',
-                'blur .end': 'manualMapInput_end',
-                'focus .geo-info': 'releaseLocation'
+                'blur .end': 'manualMapInput_end'
 			}, FormModal.prototype.events);
 		},
 
@@ -156,7 +155,7 @@ define([
                     feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                     var position = [coords[0], coords[1], 0];
-                    this.model.get('release').set('start_positon', position);
+                    this.model.get('release').set('start_position', position);
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -277,14 +276,6 @@ define([
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
-        },
-
-        releaseLocation: function(e){
-            if (e.currentTarget.id.indexOf('start') > -1){
-                this.spillCoords_start = undefined;
-            } else {
-                this.spillCoords_end = undefined;
-            }
         },
 
 		next: function(){
