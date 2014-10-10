@@ -24,16 +24,25 @@ define([
         render: function(options){
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
+            var amount = this.model.get('amount');
+            var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
+            var units = this.model.get('units');
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
-                amount: this.model.get('amount'),
+                amount: amount,
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
+                duration: duration,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
+
+            var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
+            var rate = parseFloat(amount) / durationInMins;
+
+            this.$('#spill-rate').val(rate);
+            this.$('#rate-units').val(units + '/hr');
 
             this.$('#amount .slider').slider({
                 min: 0,
