@@ -22,12 +22,13 @@ define([
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
                 'blur #units': 'updateRate'
-            }, BaseSpillForm.prototype.events);
+            }, BaseSpillForm.prototype.events());
         },
 
         initialize: function(options, spillModel){
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
+            console.log(this.events());
         },
 
         render: function(options){
