@@ -118,13 +118,13 @@ define([
                 }, this));
                 this.spillMapView.map.on('pointerdown', _.bind(function(e){
                     if (e.originalEvent.which === 3){
-                        this.source.forEachFeature(function(feature){
+                        var feature = this.source.forEachFeature(_.bind(function(feature){
                             if (feature.get('name') === 'end'){
-                                console.log(feature);
-                                this.source.removeFeature(feature);
+                                return feature;
                             }
-                        }, this);
-                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                        }, this));
+                        this.source.removeFeature(feature);
+                        feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         feature.setStyle(new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
@@ -140,13 +140,13 @@ define([
                     }
                 }, this));
                 this.spillMapView.map.on('click', _.bind(function(e){
-                    this.source.forEachFeature(function(feature){
+                    var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (feature.get('name') === 'start'){
-                            console.log(feature);
-                            this.source.removeFeature(feature);
+                            return feature;
                         }
-                    }, this);
-                    var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                    }, this));
+                    this.source.removeFeature(feature);
+                    feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                     feature.setStyle(new ol.style.Style({
                         image: new ol.style.Icon({
                             anchor: [0.5, 1.0],
