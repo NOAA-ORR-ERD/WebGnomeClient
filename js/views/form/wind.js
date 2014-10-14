@@ -129,28 +129,34 @@ define([
             }
 
             if(e.target.hash == '#constant'){
-                if(this.$('.constant-compass canvas').length === 0){
-                    this.$('.constant-compass').compassRoseUI({
-                        'arrow-direction': 'in',
-                        'move': _.bind(this.constantCompassUpdate, this)
-                    });
+                setTimeout(_.bind(function(){
+                    if(this.$('.constant-compass canvas').length === 0){
+                        this.$('.constant-compass').compassRoseUI({
+                            'arrow-direction': 'in',
+                            'move': _.bind(this.constantCompassUpdate, this)
+                        });
 
-                    this.$('.constant-compass').compassRoseUI('update', {
-                        speed: this.form.constant.speed.val(),
-                        direction: this.form.constant.direction.val()
-                    });
-                }
+                        this.$('.constant-compass').compassRoseUI('update', {
+                            speed: this.form.constant.speed.val(),
+                            direction: this.form.constant.direction.val()
+                        });
+                    }
+                }, this), 1);
+                
             } else if (e.target.hash == '#variable') {
-                if(this.$('.variable-compass canvas').length === 0){
-                    this.$('.variable-compass').compassRoseUI({
-                        'arrow-direction': 'in',
-                        'move': _.bind(this.variableCompassUpdate, this)
-                    });
-                }
+                setTimeout(_.bind(function(){
+                    if(this.$('.variable-compass canvas').length === 0){
+                        this.$('.variable-compass').compassRoseUI({
+                            'arrow-direction': 'in',
+                            'move': _.bind(this.variableCompassUpdate, this)
+                        });
+                    }
 
-                if(!_.isUndefined(this.originalTimeseries)){
-                    this.model.set('timeseries', this.originalTimeseries);
-                }
+                    if(!_.isUndefined(this.originalTimeseries)){
+                        this.model.set('timeseries', this.originalTimeseries);
+                    }
+                }, this), 1);
+                
 
                 this.renderTimeseries();
             } else if (e.target.hash == '#nws'){
