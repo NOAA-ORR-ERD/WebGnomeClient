@@ -44,15 +44,7 @@ define([
         },
 
         loaded: function(){
-            outputter = new GeojsonOutputter();
-            outputter.save(null, {
-                success: _.bind(function(outputter){
-                    webgnome.model.get('outputters').add(outputter);
-                    webgnome.model.save(null, {
-                        success: _.bind(this.load_location, this)
-                    });
-                }, this)
-            });
+            webgnome.model.setup(_.bind(this.load_location, this));
         },
 
         load_location: function(){

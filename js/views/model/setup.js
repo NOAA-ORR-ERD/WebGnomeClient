@@ -62,38 +62,10 @@ define([
                 this.render();
             } else {
                 webgnome.model = new GnomeModel();
-                webgnome.model.save(null, {
-                    validate: false,
-                    success: _.bind(function(){
-                        var gout = new GeojsonOutputter();
-                        gout.save(null, {
-                            validate: false,
-                            success: _.bind(function(){
-                                webgnome.model.get('outputters').add(gout);
-                                var wout = new WeatheringOutputter();
-                                wout.save(null, {
-                                    validate: false,
-                                    success: _.bind(function(){
-                                        webgnome.model.get('outputters').add(wout);
-                                        var evaporation = new EvaporationModel();
-                                        evaporation.save(null, {
-                                            success: _.bind(function(model, response, options){
-                                                webgnome.model.get('weatherers').add(evaporation);
-                                                webgnome.model.save(null, {
-                                                    validate: false,
-                                                    success: _.bind(function(model, response, options){
-                                                        webgnome.model.on('sync', this.updateObjects, this);
-                                                        this.render();
-                                                    }, this)
-                                                });
-                                            }, this)
-                                        });
-                                    }, this)
-                                });
-                            }, this)
-                        });
-                    }, this)
-                });
+                webgnome.model.setup(_.bind(function(){
+                    webgnome.model.on('sync', this.updateObjects, this);
+                    this.render();
+                }, this));
             }
         },
 
@@ -499,8 +471,14 @@ define([
 
         clickLocation: function(){
             var locationForm = new LocationForm();
-            locationForm.on('hidden', locationForm.close);
+            locationForm.on('loaded', _.bind(function(){
+                locationForm.close();
+                this.updateObjects();
+                webgnome.model.on('sync', this.updateObjects, this);
+            }, this));
             locationForm.render();
+            webgnome.model.off('sync', this.updateObjects, this);
+
         },
 
         updateLocation: function(){

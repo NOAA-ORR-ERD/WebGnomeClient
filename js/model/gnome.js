@@ -255,8 +255,42 @@ define([
                     this.trigger('reset:location');
                 }, this)
             });
+        },
 
-
+        setup: function(cb){
+            this.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    var gout = new GeojsonOutputter();
+                    gout.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.get('outputters').add(gout);
+                            var wout = new WeatheringOutputter();
+                            wout.save(null, {
+                                validate: false,
+                                success: _.bind(function(){
+                                    this.get('outputters').add(wout);
+                                    var evaporation = new EvaporationWeatherer();
+                                    evaporation.save(null, {
+                                        success: _.bind(function(model, response, options){
+                                            this.get('weatherers').add(evaporation);
+                                            this.save(null, {
+                                                validate: false,
+                                                success: _.bind(function(model, response, options){
+                                                    if(_.isFunction(cb)){
+                                                        cb();
+                                                    }
+                                                }, this)
+                                            });
+                                        }, this)
+                                    });
+                                }, this)
+                            });
+                        }, this)
+                    });
+                }, this)
+            });
         },
 
         mergeModel: function(model){
