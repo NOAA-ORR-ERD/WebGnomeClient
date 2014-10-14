@@ -121,6 +121,7 @@ define([
                     if (e.originalEvent.which === 3){
                         this.source.forEachFeature(function(feature){
                             if (feature.get('name') === 'end'){
+                                console.log(feature);
                                 this.source.removeFeature(feature);
                             }
                         }, this);
@@ -141,6 +142,7 @@ define([
                 this.spillMapView.map.on('click', _.bind(function(e){
                     this.source.forEachFeature(function(feature){
                         if (feature.get('name') === 'start'){
+                            console.log(feature);
                             this.source.removeFeature(feature);
                         }
                     }, this);
