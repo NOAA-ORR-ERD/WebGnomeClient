@@ -26,18 +26,12 @@ define([
                         success: _.bind(function(){
                             webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    if(_.isUndefined(webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.GeoJson'}))){
-                                        outputter = new GeojsonOutputter();
-                                        outputter.save(null, {
-                                            success: _.bind(function(outputter){
-                                                webgnome.model.get('outputters').add(outputter);
-                                                webgnome.model.save();
-                                            }, this)
-                                        });
-                                    }
-                                })
-                            }, this);
-                        })
+                                    webgnome.model.setup(_.bind(function(){
+                                        this.trigger('loaded');
+                                    }, this));
+                                }, this)
+                            });
+                        }, this)
                     });
                 }
             });
@@ -70,7 +64,7 @@ define([
         },
 
         loaded: function(){
-            
+            this.trigger('loaded');
         },
 
         updateMapSize: function(){

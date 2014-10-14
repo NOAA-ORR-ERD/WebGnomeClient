@@ -53,6 +53,7 @@ define([
                     },
                     crosshair: {
                         mode: 'x',
+                        color: '#999'
                     }
                 });
     
@@ -65,10 +66,12 @@ define([
             if(this.frame < webgnome.model.get('num_time_steps')){
                 this.step.fetch({
                     success: _.bind(function(){
-                        this.frame++;
-                        this.buildDataset(cb);
-                        this.formatDataset(this.step);
-                        cb(this.dataset);
+                        if(this.step){
+                            this.frame++;
+                            this.buildDataset(cb);
+                            this.formatDataset(this.step);
+                            cb(this.dataset);
+                        }
                     }, this)
                 });
             }
@@ -149,6 +152,13 @@ define([
                         show: true,
                         stroke: {
                             width: 0
+                        },
+                        label: {
+                            formatter: _.bind(function(label, series){
+                                var units = webgnome.model.get('spills').at(0).get('units');
+                                return '<div><span style="background:' + series.color + ';"></span>' + label + '<br>' + this.formatNumber(Math.round(series.data[0][1])) + ' ' + units + ' (' + Math.round(series.percent) + '%)</div>';
+                            }, this),
+                            radius: 3/4
                         }
                     }
                 },
@@ -157,11 +167,26 @@ define([
                 }
             };
 
+
+            // possibly rewrite this part to update the data set and redraw the chart
+            // might be more effecient than completely reinitalizing
+            this.meanPlot = $.plot('.fate .minimum', meanData, chartOptions);
             this.meanPlot = $.plot('.fate .mean', meanData, chartOptions);
+            this.meanPlot = $.plot('.fate .maximum', meanData, chartOptions);
+
         },
 
         formatLabel: function(label){
             return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
+        },
+
+        formatNumber: function(number){
+            return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').split('.')[0];
+        },
+
+        close: function(){
+            this.step = null;
+            Backbone.View.prototype.close.call(this);
         }
     });
 
