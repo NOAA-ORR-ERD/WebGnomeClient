@@ -123,7 +123,9 @@ define([
                                 return feature;
                             }
                         }, this));
-                        this.source.removeFeature(feature);
+                        if (feature){
+                            this.source.removeFeature(feature);
+                        }
                         feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         feature.setStyle(new ol.style.Style({
                             image: new ol.style.Icon({
@@ -145,7 +147,9 @@ define([
                             return feature;
                         }
                     }, this));
-                    this.source.removeFeature(feature);
+                    if (feature){
+                        this.source.removeFeature(feature);
+                    }
                     feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                     feature.setStyle(new ol.style.Style({
                         image: new ol.style.Icon({
