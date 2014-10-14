@@ -94,6 +94,8 @@ define([
             var amount = parseFloat(this.$('#spill-amount').val());
             var release = this.model.get('release');
             var units = this.$('#units').val();
+            var startPosition = release.get('start_position');
+            var endPosition = release.get('end_position');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
@@ -112,24 +114,22 @@ define([
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
             
-            if (!_.isUndefined(this.spillCoords_start) && _.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_start.lat);
-                this.$('#end-lon').val(this.spillCoords_start.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_start.lat;
-                endLon = this.spillCoords_start.lon;
-            } else if (!_.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_end.lat);
-                this.$('#end-lon').val(this.spillCoords_end.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_end.lat;
-                endLon = this.spillCoords_end.lon;
+            if ((startPosition.join('') !== '000') && (startPosition.join('') === endPosition.join(''))){
+                this.$('#start-lat').val(startPosition[1]);
+                this.$('#start-lon').val(startPosition[0]);
+                this.$('#end-lat').val(startPosition[1]);
+                this.$('#end-lon').val(startPosition[0]);
+                startLat = endLat = startPosition[1];
+                startLon = endLon = startPosition[0];
+            } else if (startPosition.join('') !== endPosition.join('')){
+                this.$('#start-lat').val(startPosition[1]);
+                this.$('#start-lon').val(startPosition[0]);
+                this.$('#end-lat').val(endPosition[1]);
+                this.$('#end-lon').val(endPosition[0]);
+                startLat = startPosition[1];
+                startLon = startPosition[0];
+                endLat = endPosition[1];
+                endLon = endPosition[0];
             }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
