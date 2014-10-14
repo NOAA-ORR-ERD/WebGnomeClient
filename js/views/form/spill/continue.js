@@ -28,7 +28,6 @@ define([
         initialize: function(options, spillModel){
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
-            console.log(this.events());
         },
 
         render: function(options){
