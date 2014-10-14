@@ -92,6 +92,11 @@ define([
                 }
             }
             var amount = parseFloat(this.$('#spill-amount').val());
+            if (isNaN(amount)){
+                amount = 0;
+            } else {
+                this.$('#spill-amount').val(amount);
+            }
             var release = this.model.get('release');
             var units = this.$('#units').val();
             var startPosition = release.get('start_position');
@@ -103,8 +108,6 @@ define([
             var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
             var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '';
             var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '';
-
-            this.$('#spill-amount').val(amount);
 
             if (startLat.indexOf('°') !== -1 || $.trim(startLat).indexOf(' ') !== -1){
                 startLat = geolib.sexagesimal2decimal(startLat);
