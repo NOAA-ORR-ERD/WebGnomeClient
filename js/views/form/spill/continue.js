@@ -16,6 +16,15 @@ define([
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
 
+        events: function(){
+            return _.defaults({
+                'blur #spill-amount': 'updateRate',
+                'blur #spill-rate': 'updateAmount',
+                'blur #rate-units': 'updateAmount',
+                'blur #units': 'updateRate'
+            }, BaseSpillForm.prototype.events);
+        },
+
         initialize: function(options, spillModel){
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
@@ -24,16 +33,25 @@ define([
         render: function(options){
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
+            var amount = this.model.get('amount');
+            var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
+            var units = this.model.get('units');
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
-                amount: this.model.get('amount'),
+                amount: amount,
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time')),
+                duration: duration,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
             });
             BaseSpillForm.prototype.render.call(this, options);
+
+            var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
+            var rate = parseFloat(amount) / durationInMins;
+
+            this.$('#spill-rate').val(rate);
+            this.$('#rate-units').val(units + '/hr');
 
             this.$('#amount .slider').slider({
                 min: 0,
@@ -73,9 +91,11 @@ define([
                     }
                 }
             }
-            var amount = parseInt(this.$('#spill-amount').val(), 10);
+            var amount = parseFloat(this.$('#spill-amount').val());
             var release = this.model.get('release');
             var units = this.$('#units').val();
+            var startPosition = release.get('start_position');
+            var endPosition = release.get('end_position');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
@@ -83,6 +103,8 @@ define([
             var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
             var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '';
             var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '';
+
+            this.$('#spill-amount').val(amount);
 
             if (startLat.indexOf('°') !== -1 || $.trim(startLat).indexOf(' ') !== -1){
                 startLat = geolib.sexagesimal2decimal(startLat);
@@ -92,24 +114,22 @@ define([
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
             
-            if (!_.isUndefined(this.spillCoords_start) && _.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_start.lat);
-                this.$('#end-lon').val(this.spillCoords_start.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_start.lat;
-                endLon = this.spillCoords_start.lon;
-            } else if (!_.isUndefined(this.spillCoords_end)){
-                this.$('#start-lat').val(this.spillCoords_start.lat);
-                this.$('#start-lon').val(this.spillCoords_start.lon);
-                this.$('#end-lat').val(this.spillCoords_end.lat);
-                this.$('#end-lon').val(this.spillCoords_end.lon);
-                startLat = this.spillCoords_start.lat;
-                startLon = this.spillCoords_start.lon;
-                endLat = this.spillCoords_end.lat;
-                endLon = this.spillCoords_end.lon;
+            if ((startPosition.join('') !== '000') && (startPosition.join('') === endPosition.join(''))){
+                this.$('#start-lat').val(startPosition[1]);
+                this.$('#start-lon').val(startPosition[0]);
+                this.$('#end-lat').val(startPosition[1]);
+                this.$('#end-lon').val(startPosition[0]);
+                startLat = endLat = startPosition[1];
+                startLon = endLon = startPosition[0];
+            } else if (startPosition.join('') !== endPosition.join('')){
+                this.$('#start-lat').val(startPosition[1]);
+                this.$('#start-lon').val(startPosition[0]);
+                this.$('#end-lat').val(endPosition[1]);
+                this.$('#end-lon').val(endPosition[0]);
+                startLat = startPosition[1];
+                startLon = startPosition[0];
+                endLat = endPosition[1];
+                endLon = endPosition[0];
             }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
@@ -126,6 +146,28 @@ define([
             BaseSpillForm.prototype.update.call(this);
             this.updateAmountSlide();
             this.updateRateSlide();
+        },
+
+        updateRate: function(){
+            var amount = parseFloat(this.$('#spill-amount').val());
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var rate = amount / duration;
+            var units = this.$('#units').val();
+            this.$('#spill-rate').val(rate);
+            this.$('#rate-units').val(units + '/hr');
+        },
+
+        updateAmount: function(){
+            var rate = parseFloat(this.$('#spill-rate').val());
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var amount = rate * duration;
+            this.$('#spill-amount').val(amount);
+            var units = this.$('#rate-units').val().split('/')[0];
+            this.$('#units').val(units);
         },
 
         parseDuration: function(start, end){

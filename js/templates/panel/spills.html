@@ -5,7 +5,8 @@
 			<span class="glyphicon glyphicon-trash trash"></span>
 			<div><label for="name">Spill Name: </label> {{ spills[i].get('name') }}</div>
 			<div><label for="amount"> Amount: </label> {{ spills[i].get('amount') }} {{ spills[i].get('units') }}</div>
-			<div><label for="start_time"> Start Time: </label> {{ moment(spills[i].get('release').get('release_time')).format('lll') }} <label for="end_time">End Time: </label> {{ moment(spills[i].get('release').get('end_release_time')).format('lll') }}</div>
+			<div><label for="start_time"> Start Time: </label> {{ moment(spills[i].get('release').get('release_time')).format('lll') }}</div> 
+			<div><label for="end_time">End Time: </label> {{ moment(spills[i].get('release').get('end_release_time')).format('lll') }}</div>
 		</div>
 	{% } %}
 </form>

@@ -23,8 +23,7 @@ define([
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
 				'blur .start': 'manualMapInput_start',
-                'blur .end': 'manualMapInput_end',
-                'focus .geo-info': 'releaseLocation'
+                'blur .end': 'manualMapInput_end'
 			}, FormModal.prototype.events);
 		},
 
@@ -119,12 +118,13 @@ define([
                 }, this));
                 this.spillMapView.map.on('pointerdown', _.bind(function(e){
                     if (e.originalEvent.which === 3){
-                        this.source.forEachFeature(function(feature){
+                        var feature = this.source.forEachFeature(_.bind(function(feature){
                             if (feature.get('name') === 'end'){
-                                this.source.removeFeature(feature);
+                                return feature;
                             }
-                        }, this);
-                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                        }, this));
+                        this.source.removeFeature(feature);
+                        feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         feature.setStyle(new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
@@ -134,17 +134,19 @@ define([
                         }));
                         feature.set('name', 'end');
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                        this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+                        var position = [coords[0], coords[1], 0];
+                        this.model.get('release').set('end_position', position);
                         this.source.addFeature(feature);
                     }
                 }, this));
                 this.spillMapView.map.on('click', _.bind(function(e){
-                    this.source.forEachFeature(function(feature){
+                    var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (feature.get('name') === 'start'){
-                            this.source.removeFeature(feature);
+                            return feature;
                         }
-                    }, this);
-                    var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
+                    }, this));
+                    this.source.removeFeature(feature);
+                    feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                     feature.setStyle(new ol.style.Style({
                         image: new ol.style.Icon({
                             anchor: [0.5, 1.0],
@@ -154,7 +156,8 @@ define([
                     }));
                     feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                    this.spillCoords_start = {lat: coords[1], lon: coords[0]};
+                    var position = [coords[0], coords[1], 0];
+                    this.model.get('release').set('start_position', position);
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -245,7 +248,8 @@ define([
                 })
             }));
             feature.set('name', 'start');
-            this.spillCoords_start = {lat: coords[1], lon: coords[0]};
+            var position = [coords[0], coords[1], 0];
+            this.model.get('release').set('start_position', position);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
@@ -269,18 +273,11 @@ define([
                 })
             }));
             feature.set('name', 'end');
-            this.spillCoords_end = {lat: coords[1], lon: coords[0]};
+            var position = [coords[0], coords[1], 0];
+            this.model.get('release').set('end_position', position);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(coords);
             this.spillMapView.map.getView().setZoom(15);
-        },
-
-        releaseLocation: function(e){
-            if (e.currentTarget.id.indexOf('start') > -1){
-                this.spillCoords_start = undefined;
-            } else {
-                this.spillCoords_end = undefined;
-            }
         },
 
 		next: function(){
