@@ -15,7 +15,15 @@ define([
 	var baseSpillForm = FormModal.extend({
 
 		mapShown: false,
-        spillEndSet: false,
+        
+        spillEndSet: function(){
+            var startPosition = this.model.get('release').get('start_position');
+            var endPosition = this.model.get('release').get('end_position');
+            if ((startPosition[0] !== endPosition[0] && startPosition[1] !== endPosition[1])){
+                return false;
+            }
+            return true;
+        },
 
 		events: function(){
 			return _.defaults({
@@ -35,6 +43,7 @@ define([
 			} else {
 				this.model = spillModel;
 			}
+            window.geolib = geolib;
 		},
 
 		render: function(options){
@@ -141,7 +150,6 @@ define([
                         this.model.get('release').set('end_position', position);
                         this.$('#end-lat').val(coords[1]);
                         this.$('#end-lon').val(coords[0]);
-                        this.spillEndSet = true;
                         this.source.addFeature(feature);
                     }
                 }, this));
@@ -168,10 +176,6 @@ define([
                     this.model.get('release').set('start_position', position);
                     this.$('#start-lat').val(coords[1]);
                     this.$('#start-lon').val(coords[0]);
-                    if (!this.spillEndSet){
-                        this.$('#end-lat').val(coords[1]);
-                        this.$('#end-lon').val(coords[0]);
-                    }
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -255,7 +259,9 @@ define([
                 this.source.removeFeature(feature);
             }
             var coords = [this.$('#start-lon').val(), this.$('#start-lat').val()];
+            console.log(coords);
             coords = this.coordsParse(coords);
+            console.log(coords);
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
@@ -283,7 +289,8 @@ define([
             if (feature){
                 this.source.removeFeature(feature);
             }
-            var coords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
+            var coords = [this.$('#end-lon').val(), this.$('#end-lat').val()];
+            coords = this.coordsParse(coords);
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
@@ -304,6 +311,7 @@ define([
                 if (coordsArray[i].indexOf('°') !== -1){
                     coordsArray[i] = geolib.sexagesimal2decimal(coordsArray[i]);
                 }
+                coordsArray[i] = parseFloat(coordsArray[i]);
             }
             return coordsArray;
         },
