@@ -269,7 +269,7 @@ define([
         manualMapInput_end: function(){
             this.mapRender();
             var feature = this.source.forEachFeature(_.bind(function(feature){
-                        if (feature.get('name') === 'start'){
+                        if (feature.get('name') === 'end'){
                             return feature;
                         }
                     }, this));
@@ -290,8 +290,6 @@ define([
             var position = [coords[0], coords[1], 0];
             this.model.get('release').set('end_position', position);
             this.source.addFeature(feature);
-            this.spillMapView.map.getView().setCenter(coords);
-            this.spillMapView.map.getView().setZoom(15);
         },
 
 		next: function(){
