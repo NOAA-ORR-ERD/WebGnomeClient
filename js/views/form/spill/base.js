@@ -15,6 +15,7 @@ define([
 	var baseSpillForm = FormModal.extend({
 
 		mapShown: false,
+        spillEndSet: false,
 
 		events: function(){
 			return _.defaults({
@@ -140,6 +141,7 @@ define([
                         this.model.get('release').set('end_position', position);
                         this.$('#end-lat').val(coords[1]);
                         this.$('#end-lon').val(coords[0]);
+                        this.spillEndSet = true;
                         this.source.addFeature(feature);
                     }
                 }, this));
@@ -166,6 +168,10 @@ define([
                     this.model.get('release').set('start_position', position);
                     this.$('#start-lat').val(coords[1]);
                     this.$('#start-lon').val(coords[0]);
+                    if (!this.spillEndSet){
+                        this.$('#end-lat').val(coords[1]);
+                        this.$('#end-lon').val(coords[0]);
+                    }
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -248,7 +254,8 @@ define([
             if (feature){
                 this.source.removeFeature(feature);
             }
-            var coords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
+            var coords = [this.$('#start-lon').val(), this.$('#start-lat').val()];
+            coords = this.coordsParse(coords);
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
@@ -290,6 +297,15 @@ define([
             var position = [coords[0], coords[1], 0];
             this.model.get('release').set('end_position', position);
             this.source.addFeature(feature);
+        },
+
+        coordsParse: function(coordsArray){
+            for (var i = 0; i < coordsArray.length; i++){
+                if (coordsArray[i].indexOf('°') !== -1){
+                    coordsArray[i] = geolib.sexagesimal2decimal(coordsArray[i]);
+                }
+            }
+            return coordsArray;
         },
 
 		next: function(){
