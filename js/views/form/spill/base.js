@@ -259,9 +259,7 @@ define([
                 this.source.removeFeature(feature);
             }
             var coords = [this.$('#start-lon').val(), this.$('#start-lat').val()];
-            console.log(coords);
             coords = this.coordsParse(coords);
-            console.log(coords);
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
             feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
