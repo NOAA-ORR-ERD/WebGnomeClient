@@ -138,6 +138,8 @@ define([
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         var position = [coords[0], coords[1], 0];
                         this.model.get('release').set('end_position', position);
+                        this.$('#end-lat').val(coords[1]);
+                        this.$('#end-lon').val(coords[0]);
                         this.source.addFeature(feature);
                     }
                 }, this));
@@ -162,6 +164,8 @@ define([
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                     var position = [coords[0], coords[1], 0];
                     this.model.get('release').set('start_position', position);
+                    this.$('#start-lat').val(coords[1]);
+                    this.$('#start-lon').val(coords[0]);
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -236,14 +240,17 @@ define([
 
         manualMapInput_start: function(){
             this.mapRender();
-            this.source.forEachFeature(function(feature){
-                if (feature.get('name') === 'start'){
-                    this.source.removeFeature(feature);
-                }
-            }, this);
+            var feature = this.source.forEachFeature(_.bind(function(feature){
+                        if (feature.get('name') === 'start'){
+                            return feature;
+                        }
+                    }, this));
+            if (feature){
+                this.source.removeFeature(feature);
+            }
             var coords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-            var feature = new ol.Feature(new ol.geom.Point(coords));
+            feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
                 image: new ol.style.Icon({
                     anchor: [0.5, 1.0],
@@ -261,14 +268,17 @@ define([
 
         manualMapInput_end: function(){
             this.mapRender();
-            this.source.forEachFeature(function(feature){
-                if (feature.get('name') === 'end'){
-                    this.source.removeFeature(feature);
-                }
-            }, this);
+            var feature = this.source.forEachFeature(_.bind(function(feature){
+                        if (feature.get('name') === 'start'){
+                            return feature;
+                        }
+                    }, this));
+            if (feature){
+                this.source.removeFeature(feature);
+            }
             var coords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
             coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-            var feature = new ol.Feature(new ol.geom.Point(coords));
+            feature = new ol.Feature(new ol.geom.Point(coords));
             feature.setStyle(new ol.style.Style({
                 image: new ol.style.Icon({
                     anchor: [0.5, 1.0],

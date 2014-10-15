@@ -116,24 +116,6 @@ define([
             if (startLon.indexOf('°') !== -1 || $.trim(startLon).indexOf(' ') !== -1){
                 startLon = geolib.sexagesimal2decimal(startLon);
             }
-            
-            if ((startPosition.join('') !== '000') && (startPosition.join('') === endPosition.join(''))){
-                this.$('#start-lat').val(startPosition[1]);
-                this.$('#start-lon').val(startPosition[0]);
-                this.$('#end-lat').val(startPosition[1]);
-                this.$('#end-lon').val(startPosition[0]);
-                startLat = endLat = startPosition[1];
-                startLon = endLon = startPosition[0];
-            } else if (startPosition.join('') !== endPosition.join('')){
-                this.$('#start-lat').val(startPosition[1]);
-                this.$('#start-lon').val(startPosition[0]);
-                this.$('#end-lat').val(endPosition[1]);
-                this.$('#end-lon').val(endPosition[0]);
-                startLat = startPosition[1];
-                startLon = startPosition[0];
-                endLat = endPosition[1];
-                endLon = endPosition[0];
-            }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
