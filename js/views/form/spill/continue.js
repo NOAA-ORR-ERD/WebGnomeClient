@@ -105,10 +105,10 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '';
-            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '';
-            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '';
-            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '';
+            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
+            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
+            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
+            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
 
             if (startLat.indexOf('°') !== -1 || $.trim(startLat).indexOf(' ') !== -1){
                 startLat = geolib.sexagesimal2decimal(startLat);

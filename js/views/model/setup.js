@@ -27,6 +27,7 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
+    'nucos',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -38,7 +39,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel, nucos){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -67,6 +68,7 @@ define([
                     this.render();
                 }, this));
             }
+            window.nucos = nucos;
         },
 
         render: function(){
