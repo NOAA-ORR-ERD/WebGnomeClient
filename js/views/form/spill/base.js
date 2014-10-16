@@ -43,7 +43,7 @@ define([
 			} else {
 				this.model = spillModel;
 			}
-            window.geolib = geolib;
+            this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
 		},
 
 		render: function(options){
@@ -57,32 +57,22 @@ define([
 					}
 				}
 			}
-
-			FormModal.prototype.render.call(this, options);
-
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
-            if (_.isUndefined(units)){
-                units = 'cubic meters';
-            }
-            this.$('#units').val(units);
 
-			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {
+            FormModal.prototype.render.call(this, options);
+
+            this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
+            var map = webgnome.model.get('map').get('obj_type');
+			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect(null, geoCoords_start);
+				this.locationSelect();
 			}
-
-            if (_.isUndefined(this.model.get('amount'))){
-                this.$('#spill-amount').val(0);
-                this.model.set('amount', 0);
-            }
-
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
-
 		},
 
 		update: function(){
@@ -215,7 +205,7 @@ define([
             }
         },
 
-		locationSelect: function(e, pastCoords){
+		locationSelect: function(){
             this.mapRender();
             var map = webgnome.model.get('map');
             if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
@@ -238,10 +228,9 @@ define([
                         })
                     });
                     if(this.spillMapView.map){
+                        var startPosition = _.initial(this.model.get('release').get('start_position'));
                         this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        if (startPosition[0] === 0 && startPosition[1] === 0){
-                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                        }
+                        this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
                     }
 
                 }, this));

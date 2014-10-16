@@ -13,7 +13,9 @@ define([
             'obj_type': 'gnome.spill.spill.Spill',
             'release': null,
             'element_type': null,
-            'name': 'Spill'
+            'name': 'Spill',
+            'amount': 0,
+            'units': 'cubic meters'
         },
 
         model: {
