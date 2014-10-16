@@ -43,7 +43,7 @@ define([
 			} else {
 				this.model = spillModel;
 			}
-            window.geolib = geolib;
+            this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
 		},
 
 		render: function(options){
@@ -57,7 +57,6 @@ define([
 					}
 				}
 			}
-
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
@@ -66,7 +65,6 @@ define([
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
-            console.log(map);
 			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
 				this.$('.map').hide();
 			} else {
