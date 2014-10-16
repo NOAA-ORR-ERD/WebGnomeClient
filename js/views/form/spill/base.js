@@ -65,10 +65,12 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
-			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {
+            var map = webgnome.model.get('map').get('obj_type');
+            console.log(map);
+			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
 				this.$('.map').hide();
 			} else {
-				this.locationSelect(null, geoCoords_start);
+				this.locationSelect();
 			}
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
@@ -205,7 +207,7 @@ define([
             }
         },
 
-		locationSelect: function(e, pastCoords){
+		locationSelect: function(){
             this.mapRender();
             var map = webgnome.model.get('map');
             if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
@@ -228,10 +230,9 @@ define([
                         })
                     });
                     if(this.spillMapView.map){
+                        var startPosition = _.initial(this.model.get('release').get('start_position'));
                         this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        if (startPosition[0] === 0 && startPosition[1] === 0){
-                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                        }
+                        this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
                     }
 
                 }, this));
