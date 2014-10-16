@@ -124,6 +124,20 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
+            if (target == 'fate' && target == 'both'){
+                // turn on weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', true);
+                    weatherer.save();
+                });
+            } else if (target == 'trajectory') {
+                // turn off weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', false);
+                    weatherer.save();
+                });
+            }
+
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
                     return;

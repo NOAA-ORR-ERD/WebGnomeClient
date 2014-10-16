@@ -78,12 +78,14 @@ define([
         },
 
         formatDataset: function(step){
-            var mass = step.get('WeatheringOutput').mass_balance;
+            var mass = step.get('WeatheringOutput').weathering_data;
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
                 var titles = _.clone(mass);
                 delete titles.step_num;
                 delete titles.time;
+                delete titles.avg_density;
+                delete titles.amount_released;
                 var keys = Object.keys(titles);
                 for(var type in keys){
                     this.dataset.push({
