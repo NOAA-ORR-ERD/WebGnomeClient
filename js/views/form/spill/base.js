@@ -58,31 +58,21 @@ define([
 				}
 			}
 
-			FormModal.prototype.render.call(this, options);
-
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
-            if (_.isUndefined(units)){
-                units = 'cubic meters';
-            }
-            this.$('#units').val(units);
 
+            FormModal.prototype.render.call(this, options);
+
+            this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
 			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0) {
 				this.$('.map').hide();
 			} else {
 				this.locationSelect(null, geoCoords_start);
 			}
-
-            if (_.isUndefined(this.model.get('amount'))){
-                this.$('#spill-amount').val(0);
-                this.model.set('amount', 0);
-            }
-
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
-
 		},
 
 		update: function(){
