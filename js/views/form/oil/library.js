@@ -30,9 +30,9 @@ define([
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
-        initialize: function(options){
+        initialize: function(spillModel, options){
             this.oilTable = new OilTable();
-            
+            this.spillModel = spillModel;
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
@@ -180,10 +180,10 @@ define([
         },
 
         viewSpecificOil: function(){
-            var id = this.$('.select').data('id');
-            if (id) {
+            this.oilName = this.$('.select').data('id');
+            if (this.oilName) {
                 this.$('.oilContainer').hide();
-                this.oilTable.oilLib.fetchOil(id, _.bind(function(model){
+                this.oilTable.oilLib.fetchOil(this.oilName, _.bind(function(model){
                    this.specificOil = new SpecificOil({model: model});
                 }, this));
             }
@@ -196,6 +196,12 @@ define([
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
+        },
+
+        save: function(){
+            this.spillModel.get('element_type').set('substance', this.oilName);
+            this.spillModel.save();
+            FormModal.prototype.save.call(this);
         },
 
         createSliders: function(minNum, maxNum, selector){

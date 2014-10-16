@@ -96,7 +96,7 @@ define([
 
 		elementSelect: function(){
             this.hide();
-			var oilLibraryView = new OilLibraryView();
+			var oilLibraryView = new OilLibraryView(this.model);
 			oilLibraryView.render();
 			oilLibraryView.on('save', _.bind(this.show, this));
 			oilLibraryView.on('hidden', _.bind(this.show, this));
