@@ -373,7 +373,7 @@ define([
 
         calculateSpillAmount: function(timeseries){
             var spills = webgnome.model.get('spills');
-            var units = spills.at(0).get('units');
+            var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
             var amountArray = [];
             var amount = 0;
