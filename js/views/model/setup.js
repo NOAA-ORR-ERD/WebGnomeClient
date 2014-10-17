@@ -124,19 +124,7 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
-            if (target == 'fate' && target == 'both'){
-                // turn on weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', true);
-                    weatherer.save();
-                });
-            } else if (target == 'trajectory') {
-                // turn off weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', false);
-                    weatherer.save();
-                });
-            }
+            this.configureWeatherers(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
@@ -488,6 +476,7 @@ define([
             locationForm.on('loaded', _.bind(function(){
                 locationForm.close();
                 this.updateObjects();
+                this.configureWeatherers(this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim());
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this));
             locationForm.render();
@@ -541,9 +530,20 @@ define([
             }
         },
 
-        loadLocation: function(e){
-            e.preventDefault();
-            webgnome.router.navigate('locations', true);
+        configureWeatherers: function(prediction){
+            if (prediction == 'fate' || prediction == 'both'){
+                // turn on weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', true);
+                    weatherer.save();
+                });
+            } else if (prediction == 'trajectory') {
+                // turn off weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', false);
+                    weatherer.save();
+                });
+            }
         },
 
         close: function(){
