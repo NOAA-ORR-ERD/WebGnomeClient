@@ -27,6 +27,7 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
+    'nucos',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -38,7 +39,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel, nucos){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -67,6 +68,7 @@ define([
                     this.render();
                 }, this));
             }
+            window.nucos = nucos;
         },
 
         render: function(){
@@ -359,6 +361,7 @@ define([
 
         calculateSpillAmount: function(timeseries){
             var spills = webgnome.model.get('spills');
+            var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
             var amountArray = [];
             var amount = 0;
@@ -369,18 +372,19 @@ define([
                     var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var timeDiff = endReleaseTime - releaseTime;
+                    var spillUnits = spills.models[j].get('units');
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
-                        amount += spills.models[j].get('amount');
+                        amount += this.convertOilAmounts('volume', spillUnits, units, spills.models[j].get('amount'));
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
                         if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
                             var head = (upperBound - releaseTime);
-                            amount += rateOfRelease * head;
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * head);
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
-                            amount += rateOfRelease * timeStep;
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * timeStep);
                         } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
                             var tail = endReleaseTime - lowerBound;
-                            amount += rateOfRelease * tail;
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * tail);
                         }
                     }
                 }
@@ -388,6 +392,10 @@ define([
             }
             return amountArray;
 
+        },
+
+        convertOilAmounts: function(unitType, from, to, amount){
+            return nucos.convert(unitType, from, to, amount);
         },
 
         updateSpill: function(){
@@ -405,7 +413,7 @@ define([
                 for (var i = 0; i < timeSeries.length; i++){
                     var date = timeSeries[i];
                     var amount = spillArray[i];
-                    data.push([parseInt(date, 10), parseInt(amount, 10)]);
+                    data.push([parseInt(date, 10), parseFloat(amount)]);
                 }
                 
                 var dataset = [

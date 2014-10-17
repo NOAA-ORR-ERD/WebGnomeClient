@@ -65,7 +65,9 @@
             </div>
         {% } %}
    	</div>
-    <div id="spill-form-map" class="map"></div>
+    {% if (showGeo){ %}
+        <div id="spill-form-map" class="map"></div>
+    {% } %}
     <div class="form-group">
         <div class="col-sm-6">
             <a class="btn btn-default oilSelect">
