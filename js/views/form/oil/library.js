@@ -181,6 +181,7 @@ define([
 
         viewSpecificOil: function(){
             this.oilName = this.$('.select').data('id');
+            console.log(this.oilName);
             if (this.oilName) {
                 this.$('.oilContainer').hide();
                 this.oilTable.oilLib.fetchOil(this.oilName, _.bind(function(model){
