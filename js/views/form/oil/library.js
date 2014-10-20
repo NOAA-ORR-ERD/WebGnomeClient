@@ -180,10 +180,10 @@ define([
         },
 
         viewSpecificOil: function(){
-            this.oilName = this.$('.select').data('id');
-            if (this.oilName) {
+            this.oilId = this.$('.select').data('id');
+            if (this.oilId) {
                 this.$('.oilContainer').hide();
-                this.oilTable.oilLib.fetchOil(this.oilName, _.bind(function(model){
+                this.oilTable.oilLib.fetchOil(this.oilId, _.bind(function(model){
                    this.specificOil = new SpecificOil({model: model});
                 }, this));
             }
@@ -199,7 +199,8 @@ define([
         },
 
         save: function(){
-            this.elementModel.set('substance', 'ABOOZAR');
+            this.oilName = this.$('.select').data('name');
+            this.elementModel.set('substance', this.oilName);
             this.elementModel.save();
             console.log(this.elementModel);
             FormModal.prototype.save.call(this);
