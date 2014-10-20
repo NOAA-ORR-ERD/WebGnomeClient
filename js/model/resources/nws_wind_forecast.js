@@ -5,7 +5,8 @@ define([
 ], function(_, $, Backbone){
     var nwsWind = Backbone.Model.extend({
         url: function(){
-            return 'http://forecast.weather.gov/MapClick.php';
+            // return 'http://forecast.weather.gov/MapClick.php';
+            return 'http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?'
         },
 
         validate: function(attrs, options){
@@ -23,9 +24,12 @@ define([
                     options.data = {};
                 }
                 _.extend(options.data, {
-                    'FcstType': 'digitalDWML',
-                    'w3': 'sfcwind',
-                    'w3u': '0', 
+                    // 'FcstType': 'digitalDWML',
+                    // 'w3': 'sfcwind',
+                    // 'w3u': '0',
+                    'product': 'time-series',
+                    'wspd': 'wspd',
+                    'wdir': 'wdir',
                     'lat': this.get('lat'),
                     'lon': this.get('lon')
                 });
