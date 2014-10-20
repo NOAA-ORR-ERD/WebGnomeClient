@@ -30,9 +30,9 @@ define([
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
-        initialize: function(spillModel, options){
+        initialize: function(elementModel, options){
             this.oilTable = new OilTable();
-            this.spillModel = spillModel;
+            this.elementModel = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
@@ -180,11 +180,10 @@ define([
         },
 
         viewSpecificOil: function(){
-            this.oilName = this.$('.select').data('id');
-            console.log(this.oilName);
-            if (this.oilName) {
+            this.oilId = this.$('.select').data('id');
+            if (this.oilId) {
                 this.$('.oilContainer').hide();
-                this.oilTable.oilLib.fetchOil(this.oilName, _.bind(function(model){
+                this.oilTable.oilLib.fetchOil(this.oilId, _.bind(function(model){
                    this.specificOil = new SpecificOil({model: model});
                 }, this));
             }
@@ -200,8 +199,10 @@ define([
         },
 
         save: function(){
-            this.spillModel.get('element_type').set('substance', this.oilName);
-            this.spillModel.save();
+            this.oilName = this.$('.select').data('name');
+            this.elementModel.set('substance', this.oilName);
+            this.elementModel.save();
+            console.log(this.elementModel);
             FormModal.prototype.save.call(this);
         },
 

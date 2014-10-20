@@ -38,7 +38,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel, nucos){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -446,8 +446,8 @@ define([
 
         },
 
-        convertOilAmounts: function(unitType, from, to, amount){
-            return nucos.convert(unitType, from, to, amount);
+        convertOilAmounts: function(){
+
         },
 
         updateSpill: function(){
