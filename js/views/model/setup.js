@@ -27,7 +27,6 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
-    'nucos',
     'jqueryDatetimepicker',
     'flot',
     'flottime',

@@ -39,7 +39,7 @@ require.config({
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
-        nucos: 'lib/nucos/nucos'
+        // nucos: 'lib/nucos/nucos'
     },
     shim: {
         jquery: {
