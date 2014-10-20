@@ -299,36 +299,94 @@ nav.navbar{
 
     .model-objects, .response-objects{
         > div {
-            
             .panel{
-                cursor: pointer;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                background: #f5f5f5;
+
+                &.complete{
+                    .panel-heading{
+                        .add{
+                            .glyphicon-pencil;
+
+                        }
+
+                        .state{
+                            .glyphicon-ok;
+                        }
+                    }
+
+                    &:hover{
+                        .panel-heading{
+                            .state{
+                                color: rgba(18, 129, 0, 0.57);
+                            }
+                        }
+                    }
+                }
+
+                &:hover{
+                    .panel-heading{
+                        > div{
+                            color: #a1a1a1;
+                        }
+    
+                        .add:hover{
+                            color: #666;
+                        }
+                        
+                        .state{
+                            color: rgba(176, 13, 0, 0.57)
+                        }
+                    }
+                }
+
+                .panel-heading{
+                    border: 0;
+                    border-radius: 0;
+                    padding-right: 10px;
+                    
+                    > div{
+                        .glyphicon;
+                        top: 0;
+                        font-size: 17px;
+                        height: 20px;
+                        width: 20px;
+                        color: #BEBEBE;
+                        float: right;
+                        .transition(all .2s);
+                        text-align: center;
+                    }
+
+                    .add{
+                        .glyphicon-plus;
+                        cursor: pointer;
+                    }
+
+                    .state{
+                        .glyphicon-warning-sign;
+                        margin-right: 10px;
+
+                        &.complete{
+                            .glyphicon-ok-sign;
+                            color: green;
+                        }
+
+                        &.optional{
+                            .glyphicon-info-sign;
+                            color: #0099ff;                  
+                        }
+                    }
+                }
+                .panel-body{
+                    display: none;
+                    border: 1px solid #f5f5f5;
+                }
             }
 
             .object-title{
                 color: #7a7a7a;
-            }
-
-            .state{
-                height: 20px;
-                width: 20px;
-                float: right;
-                font-size: 17px;
-                .glyphicon;
-                .glyphicon-warning-sign;
-                color: orange;
-
-                &.complete{
-                    .glyphicon-ok-sign;
-                    color: green;
-                }
-
-                &.optional{
-                    .glyphicon-info-sign;
-                    color: #0099ff;                  
-                }
-            }
-            .panel-body{
-                display: none;
             }
         }
 

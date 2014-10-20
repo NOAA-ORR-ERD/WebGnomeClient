@@ -44,14 +44,13 @@ define([
 
         events: {
             'click .icon': 'selectPrediction',
-            'click .wind': 'clickWind',
-            'click .water': 'clickWater',
-            'click .plus-sign': 'clickSpill',
-            'click .spill-single': 'loadSpill',
-            'click .trash': 'deleteSpill',
-            'click .map': 'clickMap',
-            'click .location': 'clickLocation',
-            'click .response': 'clickResponse',
+            'click .wind .add': 'clickWind',
+            'click .water .add': 'clickWater',
+            'click .spill .add': 'clickSpill',
+            'click .spill .single': 'loadSpill',
+            'click .spill .trash': 'deleteSpill',
+            'click .location .add': 'clickLocation',
+            'click .response .add': 'clickResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
         },
@@ -124,19 +123,7 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
-            if (target == 'fate' && target == 'both'){
-                // turn on weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', true);
-                    weatherer.save();
-                });
-            } else if (target == 'trajectory') {
-                // turn off weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', false);
-                    weatherer.save();
-                });
-            }
+            this.configureWeatherers(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
@@ -190,6 +177,41 @@ define([
             this.updateWater();
             this.updateSpill();
 
+            $('.panel-heading .add').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
+
+                    if($(this).parents('.panel').hasClass('complete')){
+                        return 'Edit ' + object;
+                    } else {
+                        return 'Create ' + object;
+                    }
+                },
+                delay: {
+                    show: 500,
+                    hide: 100
+                },
+                container: 'body'
+            });
+
+            $('.panel-heading .state').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
+
+                    if($(this).parents('.panel').hasClass('complete')){
+                        return object + ' requirement met';
+                    } else {
+                        return object + ' required';
+                    }
+                },
+                container: 'body',
+                delay: {
+                    show: 500,
+                    hide: 100
+                }
+            });
+            
+
             this.mason.layout();
         },
 
@@ -227,7 +249,7 @@ define([
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
                 var compiled;
-                this.$('.wind .state').addClass('complete');
+                this.$('.wind .panel').addClass('complete');
                 if(wind.get('timeseries').length == 1){
                     compiled = _.template(WindPanelTemplate, {
                         speed: wind.get('timeseries')[0][1][0],
@@ -282,7 +304,7 @@ define([
                     });
                 }
             } else {
-                this.$('.wind .state').removeClass('complete');
+                this.$('.wind .panel').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');
             }
         },
@@ -309,7 +331,7 @@ define([
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
             if (!_.isUndefined(water)){
                 var compiled;
-                this.$('.water .state').addClass('complete');
+                this.$('.water .panel').addClass('complete');
                 compiled = _.template(WaterPanelTemplate, {
                     temperature: water.get('temperature'),
                     salinity: water.get('salinity'),
@@ -321,7 +343,7 @@ define([
                 this.$('.water .panel-body').html(compiled);
                 this.$('.water .panel-body').show();
             } else {
-                this.$('.water .state').removeClass('complete');
+                this.$('.water .panel').removeClass('complete');
                 this.$('.water .panel-body').hide().html('');
             }
         },
@@ -426,7 +448,7 @@ define([
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spill.models.length > 0){
                 var compiled;
-                this.$('.spill .state').addClass('complete');
+                this.$('.spill .panel').addClass('complete');
                 compiled = _.template(SpillPanelTemplate, {spills: spill.models});
                 var data = [];
 
@@ -480,7 +502,7 @@ define([
                 }
                 
             } else {
-                this.$('.spill .state').removeClass('complete');
+                this.$('.spill .panel').removeClass('complete');
                 this.$('.spill .panel-body').hide().html('');
                 this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
@@ -504,6 +526,7 @@ define([
             locationForm.on('loaded', _.bind(function(){
                 locationForm.close();
                 this.updateObjects();
+                this.configureWeatherers(this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim());
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this));
             locationForm.render();
@@ -514,7 +537,7 @@ define([
         updateLocation: function(){
             var map = webgnome.model.get('map');
             if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
-                this.$('.location .state').addClass('complete');
+                this.$('.location .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
                     this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
 
@@ -552,14 +575,25 @@ define([
                     locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
                 }, this));
             } else {
-                this.$('.location .state').removeClass('complete');
+                this.$('.location .panel').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
             }
         },
 
-        loadLocation: function(e){
-            e.preventDefault();
-            webgnome.router.navigate('locations', true);
+        configureWeatherers: function(prediction){
+            if (prediction == 'fate' || prediction == 'both'){
+                // turn on weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', true);
+                    weatherer.save();
+                });
+            } else if (prediction == 'trajectory') {
+                // turn off weatherers
+                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
+                    weatherer.set('on', false);
+                    weatherer.save();
+                });
+            }
         },
 
         close: function(){

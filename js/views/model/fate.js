@@ -78,12 +78,10 @@ define([
         },
 
         formatDataset: function(step){
-            var mass = step.get('WeatheringOutput').weathering_data;
+            var nominal = step.get('WeatheringOutput').nominal;
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
-                var titles = _.clone(mass);
-                delete titles.step_num;
-                delete titles.time;
+                var titles = _.clone(nominal);
                 delete titles.avg_density;
                 delete titles.amount_released;
                 var keys = Object.keys(titles);
@@ -101,9 +99,18 @@ define([
                 // });
             }
 
-            var date = moment(mass.time);
+            var date = moment(step.get('WeatheringOutput').time_stamp);
+            var units = webgnome.model.get('spills').at(0).get('units');
+
             for(var set in this.dataset){
-                this.dataset[set].data.push([date.unix() * 1000, mass[this.dataset[set].name]]);
+                var value;
+                if(['cubic meters', 'gal', 'bbl'].indexOf(units) !== -1){
+                    // value = nucos.convert('Volume', 'kg', units, nominal[this.dataset[set].name]);
+                } else {
+                    // value = nucos.OilQuantityConvert().toVolume('');
+                }
+                console.log(value);
+                this.dataset[set].data.push([date.unix() * 1000, value]);
             }
             // this.dataset[1].data[this.dataset[1].data.length - 1][1] = Math.random() * 2000;
         },
