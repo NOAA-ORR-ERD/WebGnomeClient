@@ -38,13 +38,15 @@ define([
 
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
+            var oilName = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : '';
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 showGeo: this.showGeo,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
+                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
+                oilName: oilName
             });
             BaseSpillForm.prototype.render.call(this, options);
 
