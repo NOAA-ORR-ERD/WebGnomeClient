@@ -38,8 +38,7 @@ require.config({
         'get-style-property': 'lib/get-style-property/',
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
-        outlayer: 'lib/outlayer/',
-        nucos: 'lib/nucos/nucos'
+        outlayer: 'lib/outlayer/'
     },
     shim: {
         jquery: {

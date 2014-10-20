@@ -27,7 +27,6 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
-    'nucos',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -39,7 +38,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel, nucos){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -68,7 +67,6 @@ define([
                     this.render();
                 }, this));
             }
-            window.nucos = nucos;
         },
 
         render: function(){
@@ -415,16 +413,9 @@ define([
 
         },
 
-        convertOilAmounts: function(needDensity, unitType, from, to, amount){
-            if (false){
-                if (unitType === 'volume'){
-                    return nucos.OilQuantityConverter.ToVolume(amount, from, '10', 'API degree', to);
-                } else {
-                    return nucos.OilQuantityConverter.ToMass(amount, from, 10.0, 'API degree', to);
-                }
-            } else {
-                return nucos.convert(unitType, from, to, amount);
-            }    
+        convertOilAmounts: function(){
+
+
         },
 
         updateSpill: function(){
