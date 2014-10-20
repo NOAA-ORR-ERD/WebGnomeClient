@@ -41,10 +41,10 @@
     				</div>
     				<div class="col-md-12">
     					<div><label>Synonyms:</label>
-                            {% if (!data.synonyms){ %}
+                            {% if (!data.imported.synonyms){ %}
                                 --
                             {% } %} 
-    						{% for (var i = 0; i < data.synonyms.length; i++){ %}
+    						{% for (var i = 0; i < data.imported.synonyms.length; i++){ %}
     							{{ data.imported.synonyms[i].name }}
     						{% } %}
     					</div>
@@ -149,7 +149,7 @@
         							<th>Vapor Temperature &deg;C (&deg;F)</th>
         							<th>Liquid Temperature &deg;C (&deg;F)</th>
         						</tr>
-        					{% for (var i = 0; i < data.cuts.length; i++){ %}
+        					{% for (var i = 0; i < data.imported.cuts.length; i++){ %}
         						{% var count = i + 1; %}
         						{% var percentCut = (data.imported.cuts[i].fraction * 100).toFixed(3); %}
         						<tr>
