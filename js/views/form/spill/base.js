@@ -28,6 +28,7 @@ define([
 		events: function(){
 			return _.defaults({
 				'click .oilSelect': 'elementSelect',
+                'click .oilName': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
