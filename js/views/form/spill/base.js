@@ -47,16 +47,6 @@ define([
 		},
 
 		render: function(options){
-			if (this.model.get('name') === 'Spill'){
-				var spillsArray = webgnome.model.get('spills').models;
-				for (var i = 0; i < spillsArray.length; i++){
-					if (spillsArray[i].get('id') === this.model.get('id')){
-						var nameStr = 'Spill #' + (i + 1);
-						this.model.set('name', nameStr);
-						break;
-					}
-				}
-			}
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
