@@ -19,7 +19,7 @@ define([
     'text!templates/panel/water.html',
     'model/spill',
     'views/form/spill/type',
-    'text!templates/panel/spills.html',
+    'text!templates/panel/spill.html',
     'views/form/spill/continue',
     'views/form/spill/instant',
     'views/form/location',
@@ -66,7 +66,6 @@ define([
                     this.render();
                 }, this));
             }
-            window.nucos = nucos;
         },
 
         render: function(){
@@ -77,11 +76,8 @@ define([
 
             $('body').append(this.$el.append(compiled));
 
-            var container = this.$('.model-objects').get(0);
-            this.mason = new Masonry(container, {
-                columnWidth: '.col-md-3',
-                item: '.object',
-            });
+            
+            this.initMason();
 
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
@@ -96,6 +92,22 @@ define([
 
             this.$('.date').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
+            });
+        },
+
+        initMason: function(){
+            if(this.mason){
+                this.mason.destroy();
+            } else {
+                $(window).on('resize', _.bind(this.initMason, this));
+            }
+
+            var container = this.$('.model-objects').get(0);
+            this.mason = new Masonry(container, {
+                columnWidth: function(colwidth){
+                    return $('.model-objects .col-md-3:visible').outerWidth();
+                }(),
+                item: '.object',
             });
         },
 
@@ -151,7 +163,9 @@ define([
             } else{
                 this.showAllObjects();
             }
-            this.mason.layout();
+            setTimeout(_.bind(function(){
+                this.mason.layout();
+            }, this), 100);
         },
 
         showFateObjects: function(){
@@ -298,13 +312,18 @@ define([
                             borderWidth: 1,
                             borderColor: '#ddd'
                         },
-                        xaxis:{
+                        xaxis: {
                             mode: 'time',
                             timezone: 'browser',
+                            tickColor: '#ddd'
+                        },
+                        yaxis: {
+                            tickColor: '#ddd'
                         }
                     });
                 }
             } else {
+                this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.wind .panel').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');
             }
@@ -369,7 +388,7 @@ define([
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
                 setTimeout(_.bind(function(){
-                    spillView.close();},
+                    spillView.close();}, 
                 this), 750);
             });
             spillView.render();
@@ -392,17 +411,9 @@ define([
             return timeSeries;
         },
 
-        determineUnitType: function(units){
-            var volumeUnits = ['cubic meters', 'gal', 'bbl'];
-            var unitType = volumeUnits.indexOf(units) > -1 ? 'volume' : 'mass';
-            return unitType;
-        },
-
         calculateSpillAmount: function(timeseries){
             var spills = webgnome.model.get('spills');
-            var volumeUnits = ['cubic meters', 'gal', 'bbl'];
             var units = spills.models.length ? spills.at(0).get('units') : '';
-            var typeOfUnit = this.determineUnitType(units);
             var timeStep = webgnome.model.get('time_step');
             var amountArray = [];
             var amount = 0;
@@ -414,19 +425,18 @@ define([
                     var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
                     var timeDiff = endReleaseTime - releaseTime;
                     var spillUnits = spills.models[j].get('units');
-                    var densityNeeded = this.determineUnitType(spillUnits) !== typeOfUnit;
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
-                        amount += this.convertOilAmounts(densityNeeded, typeOfUnit, spillUnits, units, spills.models[j].get('amount'));
+                        amount += this.convertOilAmounts('volume', spillUnits, units, spills.models[j].get('amount'));
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
                         if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
                             var head = (upperBound - releaseTime);
-                            amount += this.convertOilAmounts(densityNeeded, typeOfUnit, spillUnits, units, rateOfRelease * head);
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * head);
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
-                            amount += this.convertOilAmounts(densityNeeded, typeOfUnit, spillUnits, units, rateOfRelease * timeStep);
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * timeStep);
                         } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
                             var tail = endReleaseTime - lowerBound;
-                            amount += this.convertOilAmounts(densityNeeded, typeOfUnit, spillUnits, units, rateOfRelease * tail);
+                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * tail);
                         }
                     }
                 }
@@ -436,16 +446,8 @@ define([
 
         },
 
-        convertOilAmounts: function(needDensity, unitType, from, to, amount){
-            if (false){
-                if (unitType === 'volume'){
-                    return nucos.OilQuantityConverter.ToVolume(amount, from, '10', 'API degree', to);
-                } else {
-                    return nucos.OilQuantityConverter.ToMass(amount, from, 10.0, 'API degree', to);
-                }
-            } else {
-                return nucos.convert(unitType, from, to, amount);
-            }    
+        convertOilAmounts: function(unitType, from, to, amount){
+            return nucos.convert(unitType, from, to, amount);
         },
 
         updateSpill: function(){
