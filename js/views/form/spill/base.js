@@ -28,6 +28,7 @@ define([
 		events: function(){
 			return _.defaults({
 				'click .oilSelect': 'elementSelect',
+                'click .oilName': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
@@ -66,6 +67,8 @@ define([
 		},
 
 		update: function(){
+            var oilName = this.model.get('element_type').get('substance');
+            this.$('.oilName').val(oilName);
 
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
@@ -81,6 +84,11 @@ define([
 			oilLibraryView.on('save', _.bind(this.show, this));
 			oilLibraryView.on('hidden', _.bind(this.show, this));
 		},
+
+        show: function(){
+            this.update();
+            FormModal.prototype.show.call(this);
+        },
 
         mapRender: function(){
             if (!this.mapShown){

@@ -36,6 +36,7 @@ define([
             var amount = this.model.get('amount');
             var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
             var units = this.model.get('units');
+            var oilName = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : '';
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
@@ -44,7 +45,8 @@ define([
                 duration: duration,
                 showGeo: this.showGeo,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
+                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
+                oilName: oilName
             });
             BaseSpillForm.prototype.render.call(this, options);
 
@@ -182,11 +184,11 @@ define([
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {
-                    var bottom = amount - value;
+                    var bottom = (amount * (1 - ((value / 100.0) * 5))).toFixed(1);
                     if (bottom < 0) {
                         bottom = 0;
                     }
-                    var top = parseInt(amount, 10) + parseInt(value, 10);
+                    var top = (amount * (1 + ((value / 100.0) * 5))).toFixed(1);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
@@ -205,11 +207,11 @@ define([
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {
-                    var bottom = amount - value;
+                    var bottom = (amount * (1 - ((value / 100.0) * 5))).toFixed(1);
                     if (bottom < 0) {
                         bottom = 0;
                     }
-                    var top = parseInt(amount, 10) + parseInt(value, 10);
+                    var top = (amount * (1 + ((value / 100.0) * 5))).toFixed(1);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
