@@ -5,6 +5,7 @@ define([
     'moment',
     'ol',
     'masonry',
+    'sweetalert',
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
@@ -33,7 +34,7 @@ define([
     'flotresize',
     'flotdirection',
     'flottooltip'
-], function($, _, Backbone, moment, ol, Masonry, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, Masonry, swal, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
@@ -48,7 +49,7 @@ define([
             'click .water .add': 'clickWater',
             'click .spill .add': 'clickSpill',
             'click .spill .single': 'loadSpill',
-            'click .spill .trash': 'deleteSpill',
+            'click .spill .single .trash': 'deleteSpill',
             'click .location .add': 'clickLocation',
             'click .response .add': 'clickResponse',
             'blur input': 'updateModel',
@@ -139,13 +140,25 @@ define([
             this.configureWeatherers(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
-                if(!confirm('Switching to a Fate only model will remove any geospacial objects (map, currents, etc...).')){
-                    return;
-                }
-                webgnome.model.resetLocation();
-                webgnome.model.on('reset:location', webgnome.model.save);
+                swal({
+                    title: 'Warning!',
+                    type: 'warning',
+                    text: 'Switching to a fate only model will remove any geospacial objects (map, currents, etc...).',
+                    showCancelButton: true,
+                    confirmButtonText: 'Switch to fate only modeling'
+                }, _.bind(function(isConfirmed){
+                    if(isConfirmed){
+                        webgnome.model.resetLocation();
+                        webgnome.model.on('reset:location', webgnome.model.save);
+                        this.togglePrediction(e, target);
+                    }
+                }, this));
+            } else {
+                this.togglePrediction(e, target);
             }
+        },
 
+        togglePrediction: function(e, target){
             this.$('.icon').removeClass('selected');
 
             if(this.$(e.target).hasClass('icon')){
@@ -526,13 +539,26 @@ define([
         deleteSpill: function(e){
             e.preventDefault();
             e.stopPropagation();
-            var id = e.target.parentNode.dataset.id;
-            webgnome.model.get('spills').remove(id);
-            webgnome.model.save({
-                success: _.bind(function(){
-                    this.updateSpill();
-                }, this)
-            });
+            var id = $(e.target).parents('.single').data('id');
+            var spill = webgnome.model.get('spills').get(id);
+            swal({
+                title: 'Delete "' + spill.get('name') + '"',
+                text: 'Are you sure you want to delete this spill?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('spills').remove(id);
+                    webgnome.model.save({
+                        success: _.bind(function(){
+                            this.updateSpill();
+                        }, this)
+                    });
+                }
+            }, this));
+            
         },
 
         clickLocation: function(){
