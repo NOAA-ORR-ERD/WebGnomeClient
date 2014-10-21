@@ -122,6 +122,10 @@ define([
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
+            if (end_position[0] === 0 && end_position[1] === 0){
+                this.$('#end-lat').val(startLat);
+                this.$('#end-lon').val(startLon);
+            }
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('start_position', start_position);
             release.set('end_position', end_position);

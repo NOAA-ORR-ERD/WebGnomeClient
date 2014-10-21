@@ -158,12 +158,20 @@ define([
                             size: [32, 40]
                         })
                     }));
+                    var start = this.model.get('release').get('start_position');
+                    var end = this.model.get('release').get('end_position');
+                    var endPointUnset = (start[1] === end[1] && start[0] === end[0])
                     feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                     var position = [coords[0], coords[1], 0];
                     this.model.get('release').set('start_position', position);
                     this.$('#start-lat').val(coords[1]);
                     this.$('#start-lon').val(coords[0]);
+                    if (endPointUnset){
+                        this.$('#end-lat').val(coords[1]);
+                        this.$('#end-lon').val(coords[0]);
+                        this.model.get('release').set('end_position', position);
+                    }
                     this.source.addFeature(feature);
                 }, this));
                 setTimeout(_.bind(function(){
@@ -199,10 +207,7 @@ define([
                     }));
                     feature.set('name', 'end');
                     this.source.addFeature(feature);
-                } else {
-                    this.$('#end-lat').val(startPosition[1]);
-                    this.$('#end-lon').val(startPosition[0]);
-                }
+                } 
             }
         },
 
