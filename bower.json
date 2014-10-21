@@ -26,7 +26,8 @@
         "flotspline": "git://github.com/alexbardas/flot.git",
         "flot.tooltip": "~0.8.4",
         "masonry": "*",
-        "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.1"
+        "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.1",
+        "sweetalert": "0.2.1"
     },
     "devDependencies": {
        "qunit": "1.14.0"

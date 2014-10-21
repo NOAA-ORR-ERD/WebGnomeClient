@@ -38,7 +38,8 @@ require.config({
         'get-style-property': 'lib/get-style-property/',
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
-        outlayer: 'lib/outlayer/'
+        outlayer: 'lib/outlayer/',
+        sweetalert: 'lib/sweetalert/lib/sweet-alert'
         // nucos: 'lib/nucos/nucos'
     },
     shim: {
@@ -74,6 +75,9 @@ require.config({
         },
         geolib: {
             exports: 'geolib'
+        },
+        sweetalert: {
+            exports: 'swal'
         }
     },
 });
