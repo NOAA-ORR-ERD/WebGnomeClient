@@ -426,27 +426,23 @@ define([
                     var timeDiff = endReleaseTime - releaseTime;
                     var spillUnits = spills.models[j].get('units');
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
-                        amount += this.convertOilAmounts('volume', spillUnits, units, spills.models[j].get('amount'));
+                        amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
                         if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
                             var head = (upperBound - releaseTime);
-                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * head);
+                            amount += rateOfRelease * head;
                         } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
-                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * timeStep);
+                            amount += rateOfRelease * timeStep;
                         } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
                             var tail = endReleaseTime - lowerBound;
-                            amount += this.convertOilAmounts('volume', spillUnits, units, rateOfRelease * tail);
+                            amount += rateOfRelease * tail;
                         }
                     }
                 }
                 amountArray.push(amount);
             }
             return amountArray;
-
-        },
-
-        convertOilAmounts: function(){
 
         },
 
