@@ -199,6 +199,9 @@ define([
                     }));
                     feature.set('name', 'end');
                     this.source.addFeature(feature);
+                } else {
+                    this.$('#end-lat').val(startPosition[1]);
+                    this.$('#end-lon').val(startPosition[0]);
                 }
             }
         },
