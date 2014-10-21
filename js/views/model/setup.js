@@ -498,7 +498,11 @@ define([
                         },
                         xaxis: {
                             mode: 'time',
-                            timezone: 'browser'
+                            timezone: 'browser',
+                            tickColor: '#ddd'
+                        },
+                        yaxis: {
+                            tickColor: '#ddd'
                         },
                         tooltip: true,
                             tooltipOpts: {
