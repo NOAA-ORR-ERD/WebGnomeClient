@@ -609,6 +609,7 @@ define([
                     locationMap.render();
                     var extent = shorelineSource.getExtent();
                     locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
+                    this.mason.layout();
                 }, this));
             } else {
                 this.$('.location .panel').removeClass('complete');
