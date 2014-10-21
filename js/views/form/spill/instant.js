@@ -112,11 +112,11 @@ define([
                 if(value === 0){
                     this.$('.tooltip-inner').text(amount);
                 } else {
-                    var bottom = (amount * (1 - ((value / 100.0) * 5))).toFixed(1);
+                    var bottom = parseInt(Math.round((amount * (1 - ((value / 100.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
-                    var top = (amount * (1 + ((value / 100.0) * 5))).toFixed(1);
+                    var top = parseInt(Math.round((amount * (1 + ((value / 100.0) * 5)))), 10);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
