@@ -122,6 +122,10 @@ define([
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
+            if (end_position[0] === 0 && end_position[1] === 0){
+                this.$('#end-lat').val(startLat);
+                this.$('#end-lon').val(startLon);
+            }
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             release.set('start_position', start_position);
             release.set('end_position', end_position);
@@ -184,11 +188,11 @@ define([
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {
-                    var bottom = (amount * (1 - ((value / 100.0) * 5))).toFixed(1);
+                    var bottom = parseInt(Math.round((amount * (1 - ((value / 100.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
-                    var top = (amount * (1 + ((value / 100.0) * 5))).toFixed(1);
+                    var top = parseInt(Math.round((amount * (1 + ((value / 100.0) * 5)))), 10);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
@@ -207,11 +211,11 @@ define([
                 if(value === 0){
                     this.$('.active .tooltip-inner').text(amount);
                 } else {
-                    var bottom = (amount * (1 - ((value / 100.0) * 5))).toFixed(1);
+                    var bottom = parseInt(Math.round((amount * (1 - ((value / 100.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
-                    var top = (amount * (1 + ((value / 100.0) * 5))).toFixed(1);
+                    var top = parseInt(Math.round((amount * (1 + ((value / 100.0) * 5)))), 10);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
