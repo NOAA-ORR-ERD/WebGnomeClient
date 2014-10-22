@@ -427,21 +427,47 @@ nav.navbar{
             .panel{
                 cursor: default;
 
+                &.complete{
+                    .panel-heading{
+                        .add{
+                            .glyphicon-plus;
+                        }
+                    }
+                }
+
                 .spill-list{
                     margin-top: 20px;
                 }
 
                 .single {
                     padding: 8px 0;
+                    border: 1px solid #f7f7f7;
+                        
                     &:hover {
-                        cursor: pointer;
                         background: #428bca;
                         color: white;
+                        .edit, .trash{
+                            display: block;
+                        }
+                    }
+                    
+                    .edit{
+                        .glyphicon;
+                        .glyphicon-pencil;
+                        padding: 2px;
+                        float: right;
+                        cursor: pointer;
+                        margin-right: 10px;
+                        display: none;
                     }
 
                     .trash{
+                        .glyphicon;
+                        .glyphicon-trash;
                         padding: 2px;
                         float:right;
+                        cursor: pointer;
+                        display: none;
                     }
                 }
 

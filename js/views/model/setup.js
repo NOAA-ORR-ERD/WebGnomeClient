@@ -48,7 +48,7 @@ define([
             'click .wind .add': 'clickWind',
             'click .water .add': 'clickWater',
             'click .spill .add': 'clickSpill',
-            'click .spill .single': 'loadSpill',
+            'click .spill .single .edit': 'loadSpill',
             'click .spill .single .trash': 'deleteSpill',
             'click .location .add': 'clickLocation',
             'click .response .add': 'clickResponse',
@@ -205,20 +205,22 @@ define([
             this.updateWater();
             this.updateSpill();
 
+            var delay = {
+                show: 500,
+                hide: 100
+            };
+
             $('.panel-heading .add').tooltip({
                 title: function(){
                     var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete')){
+                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
                         return 'Edit ' + object;
                     } else {
                         return 'Create ' + object;
                     }
                 },
-                delay: {
-                    show: 500,
-                    hide: 100
-                },
+                delay: delay,
                 container: 'body'
             });
 
@@ -233,13 +235,14 @@ define([
                     }
                 },
                 container: 'body',
-                delay: {
-                    show: 500,
-                    hide: 100
-                }
+                delay: delay
+            });
+
+            $('.spill .trash, .spill .edit').tooltip({
+                container: 'body',
+                delay: delay
             });
             
-
             this.mason.layout();
         },
 
@@ -388,7 +391,7 @@ define([
         },
 
         loadSpill: function(e){
-            var spillId = e.currentTarget.attributes[1].value;
+            var spillId = $(e.target).parents('.single').data('id');
             var spill = webgnome.model.get('spills').get(spillId);
             if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
                 var spillView = new SpillContinueView(null, spill);
@@ -616,7 +619,7 @@ define([
                 this.$('.location .panel-body').hide().html('');
             }
         },
-
+        
         configureWeatherers: function(prediction){
             if (prediction == 'fate' || prediction == 'both'){
                 // turn on weatherers
