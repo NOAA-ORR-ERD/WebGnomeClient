@@ -109,7 +109,7 @@ define([
                 } else {
                     // value = nucos.OilQuantityConvert().toVolume('');
                 }
-                console.log(value);
+                value = nominal[this.dataset[set].name];
                 this.dataset[set].data.push([date.unix() * 1000, value]);
             }
             // this.dataset[1].data[this.dataset[1].data.length - 1][1] = Math.random() * 2000;
@@ -144,15 +144,17 @@ define([
                     p1 = series.data[j - 1],
                     p2 = series.data[j];
 
-                if (p1 === null) {
-                    y = p2[1];
-                } else if (p2 === null) {
-                    y = p1[1];
-                } else {
-                    y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+                if(!_.isUndefined(p1) && !_.isUndefined(p2)){
+                    if (p1 === null) {
+                        y = p2[1];
+                    } else if (p2 === null) {
+                        y = p1[1];
+                    } else {
+                        y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+                    }
+                    
+                    meanData.push({label: this.formatLabel(series.name), data: y});
                 }
-
-                meanData.push({label: this.formatLabel(series.name), data: y});
             }
 
             var chartOptions = {
@@ -179,9 +181,11 @@ define([
 
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
-            this.meanPlot = $.plot('.fate .minimum', meanData, chartOptions);
-            this.meanPlot = $.plot('.fate .mean', meanData, chartOptions);
-            this.meanPlot = $.plot('.fate .maximum', meanData, chartOptions);
+            if(meanData.length > 0){
+                this.meanPlot = $.plot('.fate .minimum', meanData, chartOptions);
+                this.meanPlot = $.plot('.fate .mean', meanData, chartOptions);
+                this.meanPlot = $.plot('.fate .maximum', meanData, chartOptions);
+            }
 
         },
 

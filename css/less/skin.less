@@ -8,6 +8,10 @@ img{
     max-width: 100%;
 }
 
+.sweet-alert{
+    border-radius: 0;
+}
+
 .modal-dialog{
     .modal-content{
         .box-shadow(0 0 0 0);
@@ -417,28 +421,61 @@ nav.navbar{
                 text-align: center;
                 font-size: 12px;
             }
-            .spill-single {
-                border-top: 1px solid #ddd;
-                margin: 0 -15px;
-                padding: 15px;
-                &:last-of-type {
-                    padding-bottom: 0;
-                }
-                .trash {
-                    float: right;
-                    opacity: 0;
-                }
-                &:hover {
-                    .trash {
-                        opacity: 1;
-                    }
-                }
-            }
         }
+
         .spill {
             .panel{
                 cursor: default;
+
+                &.complete{
+                    .panel-heading{
+                        .add{
+                            .glyphicon-plus;
+                        }
+                    }
+                }
+
+                .spill-list{
+                    margin-top: 20px;
+                }
+
+                .single {
+                    padding: 8px 0;
+                    border: 1px solid #f7f7f7;
+                        
+                    &:hover {
+                        background: #428bca;
+                        color: white;
+                        .edit, .trash{
+                            display: block;
+                        }
+                    }
+                    
+                    .edit{
+                        .glyphicon;
+                        .glyphicon-pencil;
+                        padding: 2px;
+                        float: right;
+                        cursor: pointer;
+                        margin-right: 10px;
+                        display: none;
+                    }
+
+                    .trash{
+                        .glyphicon;
+                        .glyphicon-trash;
+                        padding: 2px;
+                        float:right;
+                        cursor: pointer;
+                        display: none;
+                    }
+                }
+
+                .panel-body{
+                    padding-bottom: 0;
+                }
             }
+
             .yaxisLabel {
                 top: 150px;
                 left: 25px;
