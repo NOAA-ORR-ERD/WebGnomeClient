@@ -35,7 +35,7 @@ define([
     'flotdirection',
     'flottooltip',
     'flotstack'
-], function($, _, Backbone, moment, ol, Masonry, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, Masonry, swal, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
