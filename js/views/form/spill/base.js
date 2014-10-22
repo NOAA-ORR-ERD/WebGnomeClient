@@ -160,7 +160,7 @@ define([
                     }));
                     var start = this.model.get('release').get('start_position');
                     var end = this.model.get('release').get('end_position');
-                    var endPointUnset = (start[1] === end[1] && start[0] === end[0])
+                    var endPointUnset = (start[1] === end[1] && start[0] === end[0]);
                     feature.set('name', 'start');
                     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                     var position = [coords[0], coords[1], 0];

@@ -32,7 +32,8 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'flottooltip'
+    'flottooltip',
+    'flotstack'
 ], function($, _, Backbone, moment, ol, Masonry, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -388,7 +389,7 @@ define([
             spillView.on('save', function(){
                 webgnome.model.trigger('sync');
                 setTimeout(_.bind(function(){
-                    spillView.close();}, 
+                    spillView.close();},
                 this), 750);
             });
             spillView.render();
@@ -415,16 +416,17 @@ define([
             var spills = webgnome.model.get('spills');
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
-            var amountArray = [];
-            var amount = 0;
-            for (var i = 0; i < timeseries.length; i++){
-                var upperBound = moment(timeseries[i]).unix();
-                var lowerBound = upperBound - timeStep;
-                for (var j = 0; j < spills.models.length; j++){
-                    var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-                    var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-                    var timeDiff = endReleaseTime - releaseTime;
-                    var spillUnits = spills.models[j].get('units');
+            var data = {};
+            for (var j = 0; j < spills.models.length; j++){
+                var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+                var timeDiff = endReleaseTime - releaseTime;
+                var spillUnits = spills.models[j].get('units');
+                var amount = 0;
+                var amountArray = [];
+                for (var i = 0; i < timeseries.length; i++){
+                    var upperBound = moment(timeseries[i]).unix();
+                    var lowerBound = upperBound - timeStep;
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep) {
@@ -439,11 +441,11 @@ define([
                             amount += rateOfRelease * tail;
                         }
                     }
+                    amountArray.push(amount);
                 }
-                amountArray.push(amount);
+                data[j] = amountArray;
             }
-            return amountArray;
-
+            return data;
         },
 
         updateSpill: function(){
@@ -458,16 +460,25 @@ define([
                 compiled = _.template(SpillPanelTemplate, {spills: spill.models});
                 var data = [];
 
-                for (var i = 0; i < timeSeries.length; i++){
-                    var date = timeSeries[i];
-                    var amount = spillArray[i];
-                    data.push([parseInt(date, 10), parseFloat(amount)]);
+                for (key in spillArray){
+                    data.push({
+                        data: []
+                    });
+                }
+
+                for (var set in data){
+                    for (var i = 0; i < timeSeries.length; i++){
+                        var date = timeSeries[i];
+                        var amount = spillArray[set][i];
+                        data[set].data.push([parseInt(date, 10), parseFloat(amount)]);
+                    }
                 }
                 
-                var dataset = [
-                    {
-                        data: data,
-                        color: 'rgba(100,149,237,1)',
+                var dataset = [];
+
+                for (var set in data){
+                    dataset.push({
+                        data: data[set].data,
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
@@ -478,9 +489,9 @@ define([
                         points: {
                             show: false
                         }
-                    }
-                ];
-
+                    });
+                }
+                console.log(dataset);
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
                 this.$('.spill .panel-body').show();
@@ -507,7 +518,22 @@ define([
                             shifts: {
                                 x: -30,
                                 y: -50
-                            }
+                            },
+                        series: {
+                            stack: true,
+                            group: true,
+                            groupInterval: 1,
+                            lines: {
+                                show: true,
+                                fill: true,
+                                lineWidth: 1
+                            },
+                            shadowSize: 0
+                        },
+                        crosshair: {
+                            mode: 'x',
+                            color: '#999'
+                        }
                     });
                 }
                 
