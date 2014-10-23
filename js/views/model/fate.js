@@ -81,14 +81,15 @@ define([
                         color: '#999'
                     }
                 });
+                this.renderPiesTimeout = null;
+                this.$('#budget-graph .timeline .chart').on('plothover', _.bind(this.timelineHover, this));
+
             } else {
                 this.timelinePlot.setData(dataset);
                 this.timelinePlot.setupGrid();
                 this.timelinePlot.draw();
             }
 
-            this.renderPiesTimeout = null;
-            this.$('#budget-graph .timeline .chart').on('plothover', _.bind(this.timelineHover, this));
         },
 
         renderTableOilBudget: function(dataset){
