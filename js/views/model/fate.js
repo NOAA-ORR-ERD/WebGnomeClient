@@ -46,42 +46,59 @@ define([
             var active = this.$('.active a').attr('href');
             if(active == '#budget-graph'){
                 this.renderGraphOilBudget(this.dataset);
-            } else if(active == '#budget-chart') {
-                
+            } else if(active == '#budget-table') {
+                this.renderTableOilBudget(this.dataset);
             }
         },
 
         renderGraphOilBudget: function(dataset){
-            this.timelinePlot = $.plot('#budget-graph .timeline .chart', dataset, {
-                grid: {
-                    borderWidth: 1,
-                    borderColor: '#ddd',
-                    hoverable: true,
-                    autoHighlight: false
-                },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser'
-                },
-                series: {
-                    stack: true,
-                    group: true,
-                    groupInterval: 1,
-                    lines: {
-                        show: true,
-                        fill: true,
-                        lineWidth: 1
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
+            if(_.isUndefined(this.timelinePlot)){
+                this.timelinePlot = $.plot('#budget-graph .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                        hoverable: true,
+                        autoHighlight: false
                     },
-                    shadowSize: 0
-                },
-                crosshair: {
-                    mode: 'x',
-                    color: '#999'
-                }
-            });
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        stack: true,
+                        group: true,
+                        groupInterval: 1,
+                        lines: {
+                            show: true,
+                            fill: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    },
+                    crosshair: {
+                        mode: 'x',
+                        color: '#999'
+                    }
+                });
+            } else {
+                this.timelinePlot.setData(dataset);
+                this.timelinePlot.setupGrid();
+                this.timelinePlot.draw();
+            }
 
             this.renderPiesTimeout = null;
             this.$('#budget-graph .timeline .chart').on('plothover', _.bind(this.timelineHover, this));
+        },
+
+        renderTableOilBudget: function(dataset){
+            for (var row = 0; row < dataset[0].length; row++){
+                for (var set in dataset){
+                    if (row === 0) {
+
+                    }
+                }
+            }
         },
 
         buildDataset: function(cb){
@@ -107,8 +124,6 @@ define([
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
                 var titles = _.clone(nominal);
-                delete titles.avg_density;
-                delete titles.amount_released;
                 var keys = Object.keys(titles);
                 for(var type in keys){
                     this.dataset.push({
@@ -155,7 +170,7 @@ define([
         renderPies: function(){
             this.renderPiesTimeout = null;
             var i, j;
-            var dataset = this.dataset;
+            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
             var pos = this.pos;
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
@@ -220,6 +235,13 @@ define([
                 }
             }
             return d;
+        },
+
+        pruneDataset: function(dataset, leaves){
+            dataset = _.filter(dataset, function(set){
+                return leaves.indexOf(set.name) === -1;
+            });
+            return dataset;
         },
 
         formatLabel: function(label){
