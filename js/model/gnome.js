@@ -14,12 +14,13 @@ define([
     'model/movers/cats',
     'model/outputters/geojson',
     'model/outputters/weathering',
-    'model/weatherers/evaporation'
+    'model/weatherers/evaporation',
+    'model/weatherers/dispersion'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer){
+    EvaporationWeatherer, DispersionWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -43,7 +44,8 @@ define([
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
             },
             weatherers: {
-                'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer
+                'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
+                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer
             }
         },
 
@@ -275,12 +277,18 @@ define([
                                     evaporation.save(null, {
                                         success: _.bind(function(model, response, options){
                                             this.get('weatherers').add(evaporation);
-                                            this.save(null, {
-                                                validate: false,
-                                                success: _.bind(function(model, response, options){
-                                                    if(_.isFunction(cb)){
-                                                        cb();
-                                                    }
+                                            var dispersion = new DispersionWeatherer();
+                                            dispersion.save(null, {
+                                                success: _.bind(function(model, repsonse, options){
+                                                    this.get('weatherers').add(dispersion);
+                                                    this.save(null, {
+                                                        validate: false,
+                                                        success: _.bind(function(model, response, options){
+                                                            if(_.isFunction(cb)){
+                                                                cb();
+                                                            }
+                                                        }, this)
+                                                    });
                                                 }, this)
                                             });
                                         }, this)
