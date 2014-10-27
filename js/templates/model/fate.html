@@ -27,9 +27,19 @@
         </div>
     </div>
     <div class="tab-pane" id="budget-table">
-        <table>
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+
+        <div class="info">
+            <div class="col-md-6">
+                <div><label>Oil Name:</label> {{ name }}</div>
+                <div><label>API:</label> {{ api }}</div>
+                <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                <div><label>Pour Point:</label> {{ pour_point }}</div>
+                <div><label>Wave Height:</label> {{ wave_height }}</div>
+                <div><label>Water Temp:</label> {{ water_temp }}</div>
+                <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                <div><label>Total Amount of Oil Released:</label> {{ total_released }}</div>
+            </div>
+        </div>
+        <table class="table"></table>
     </div>
 </div>

@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'model/step',
     'text!templates/model/fate.html',
     'flot',
@@ -10,7 +11,7 @@ define([
     'flotstack',
     'flotcrosshair',
     'flotpie'
-], function($, _, Backbone, StepModel, FateTemplate){
+], function($, _, Backbone, moment, StepModel, FateTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
@@ -25,7 +26,57 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(FateTemplate);
+            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
+            if(!_.isUndefined(wind)){
+                wind_speed = '';
+            } else if (wind.get('timeseries').length > 1) {
+                wind_speed = 'Constant ' + wind.get('timeseries')[0][1] + ' ' + wind.get('units');
+            } else {
+                wind_speed = 'Variable Speed';
+            }
+
+            var point_point;
+            if(substance.pour_point_min_k === substance.pour_point_max_k){
+                pour_point = substance.pour_point_min_k;
+            } else if (substance.pour_point_min_k && substance.pour_point_max_k) {
+                pour_point = substance.pour_point_min_k + ' - ' + substance.pour_point_max_k;
+            } else {
+                pour_point = substance.pour_point_min_k + substance.pour_point_max_k;
+            }
+
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+
+            var wave_height = 'Computed from wind';
+            if(water.get('wave_height')){
+                wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
+            } else if (water.get('fetch')) {
+                wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
+            }
+
+            var spills = webgnome.model.get('spills');
+            var total_released = 0;
+            var init_release = moment(spills.at(0).get('release').get('release_time')).unix();
+            spills.forEach(function(spill){
+                var release_time = moment(spill.get('release').get('release_time')).unix();
+                if(init_release > release_time){
+                    init_release = release_time;
+                }
+
+                total_released += spill.get('amount');
+            });
+            total_released += ' ' + spills.at(0).get('units');
+
+            var compiled = _.template(FateTemplate, {
+                name: substance.name,
+                api: substance.api,
+                wind_speed: wind_speed,
+                pour_point: pour_point,
+                wave_height: wave_height,
+                water_temp: water.get('tempurature') + ' ' + water.get('units').tempurature,
+                release_time: moment(init_release).format(webgnome.config.date_format.moment),
+                total_released: total_released
+            });
             this.$el.html(compiled);
             $.get(webgnome.config.api + '/rewind');
             this.renderLoop();
@@ -93,12 +144,25 @@ define([
         },
 
         renderTableOilBudget: function(dataset){
-            for (var row = 0; row < dataset[0].length; row++){
+            dataset = this.pruneDataset(dataset, ['avg_density']);
+            var table = this.$('#budget-table table');
+            table.html('');
+            for (var row = 0; row < dataset[0].data.length; row++){
+                var row_html = $('<tr></tr>');
+                if(row === 0){
+                    row_html.append('<th>Date - Time</th>');
+                } else {
+                    row_html.append('<td>' + moment(dataset[0].data[row][0]).format(webgnome.config.date_format.moment) + '</td>');
+                }
+
                 for (var set in dataset){
                     if (row === 0) {
-
+                        row_html.append('<th>' + dataset[set].label + '</th>');
+                    } else {
+                        row_html.append('<td>' + Math.round(dataset[set].data[row][1]) + '</td>');
                     }
                 }
+                table.append(row_html);
             }
         },
 
