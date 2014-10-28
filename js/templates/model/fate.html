@@ -1,16 +1,44 @@
-<div class="chart-holder">
-    <h5>Least Remaining</h5>
-    <div class="chart minimum"></div>
-</div>
-<div class="chart-holder">
-    <h5>Expected Remaining</h5>
-    <div class="chart mean"></div>
-</div>
-<div class="chart-holder">
-    <h5>Most Remaining</h5>
-    <div class="chart maximum"></div>
-</div>
-<div class="timeline">
-    <h5>Timeline</h5>
-    <div class="chart"></div>
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active"><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
+    <li><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
+    <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
+    <li><a href="#water" role="tab" data-toggle="tab">Water</a></li>
+    <li><a href="#viscosity" role="tab" data-toggle="tab">Viscosity</a></li>
+    <li><a href="#ics209" role="tab" data-toggle="tab">ICS209</a></li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane active" id="budget-graph">
+        <div class="chart-holder">
+            <h5>Least Remaining</h5>
+            <div class="chart minimum"></div>
+        </div>
+        <div class="chart-holder">
+            <h5>Expected Remaining</h5>
+            <div class="chart mean"></div>
+        </div>
+        <div class="chart-holder">
+            <h5>Most Remaining</h5>
+            <div class="chart maximum"></div>
+        </div>
+        <div class="timeline">
+            <h5>Timeline</h5>
+            <div class="chart"></div>
+        </div>
+    </div>
+    <div class="tab-pane" id="budget-table">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="info">
+                <div><label>Oil Name:</label> {{ name }}</div>
+                <div><label>API:</label> {{ api }}</div>
+                <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                <div><label>Pour Point:</label> {{ pour_point }}</div>
+                <div><label>Wave Height:</label> {{ wave_height }}</div>
+                <div><label>Water Temp:</label> {{ water_temp }}</div>
+                <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                <div><label>Total Amount of Oil Released:</label> {{ total_released }}</div>
+            </div>
+            <table class="table"></table>
+        </div>
+    </div>
 </div>

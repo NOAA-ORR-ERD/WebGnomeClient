@@ -10,7 +10,9 @@ define([
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
-            'substance': 'ALAMO',
+            'substance': {
+                'name': 'ALAMO'
+            },
             'initializers': [
                 {
                     'windage_range': [

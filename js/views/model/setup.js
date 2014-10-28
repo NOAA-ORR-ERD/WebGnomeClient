@@ -52,6 +52,8 @@ define([
             'click .spill .add': 'clickSpill',
             'click .spill .single .edit': 'loadSpill',
             'click .spill .single .trash': 'deleteSpill',
+            'mouseover .spill .single': 'hoverSpill',
+            'mouseout .spill .spill-list': 'unhoverSpill',
             'click .location .add': 'clickLocation',
             'click .response .add': 'clickResponse',
             'blur input': 'updateModel',
@@ -470,46 +472,35 @@ define([
         },
 
         updateSpill: function(){
-            var spill = webgnome.model.get('spills');
+            var spills = webgnome.model.get('spills');
 
-            this.$('.panel-body').html();
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);
-            if(spill.models.length > 0){
-                var compiled;
+            if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
-                compiled = _.template(SpillPanelTemplate, {spills: spill.models});
-                var data = [];
+                var compiled = _.template(SpillPanelTemplate, {spills: spills.models});
 
-                for (key in spillArray){
-                    data.push({
-                        data: []
-                    });
-                }
-
-                for (var set in data){
+                var dataset = [];
+                for (var spill in spills.models){
+                    var data = [];
                     for (var i = 0; i < timeSeries.length; i++){
                         var date = timeSeries[i];
-                        var amount = spillArray[set][i];
-                        data[set].data.push([parseInt(date, 10), parseFloat(amount)]);
+                        var amount = spillArray[spill][i];
+                        data.push([parseInt(date, 10), parseInt(amount, 10)]);
                     }
-                }
-                
-                var dataset = [];
 
-                for (var set in data){
                     dataset.push({
-                        data: data[set].data,
+                        data: data,
+                        color: '#9CD1FF',
                         hoverable: true,
-                        shadowSize: 0,
                         lines: {
                             show: true,
-                            lineWidth: 2,
                             fill: true
                         },
                         points: {
                             show: false
-                        }
+                        },
+                        id: spills.models[spill].get('id')
                     });
                 }
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
@@ -517,44 +508,8 @@ define([
                 this.$('.spill .panel-body').show();
 
                 if(!_.isUndefined(dataset)){
-                    this.spillPlot = $.plot('.spill .chart', dataset, {
-                        grid: {
-                            borderWidth: 1,
-                            borderColor: '#ddd',
-                            hoverable: true
-                        },
-                        xaxis: {
-                            mode: 'time',
-                            timezone: 'browser',
-                            tickColor: '#ddd'
-                        },
-                        yaxis: {
-                            tickColor: '#ddd'
-                        },
-                        tooltip: true,
-                            tooltipOpts: {
-                                content: function(label, x, y, flotItem){ return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
-                            },
-                            shifts: {
-                                x: -30,
-                                y: -50
-                            },
-                        series: {
-                            stack: true,
-                            group: true,
-                            groupInterval: 1,
-                            lines: {
-                                show: true,
-                                fill: true,
-                                lineWidth: 1
-                            },
-                            shadowSize: 0
-                        },
-                        crosshair: {
-                            mode: 'x',
-                            color: '#999'
-                        }
-                    });
+                    this.spillDataset = dataset;
+                    this.renderSpillRelease(dataset);
                 }
                 
             } else {
@@ -565,9 +520,66 @@ define([
             
         },
 
+        renderSpillRelease: function(dataset){
+            this.spillPlot = $.plot('.spill .chart', dataset, {
+                grid: {
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    hoverable: true
+                },
+                xaxis: {
+                    mode: 'time',
+                    timezone: 'browser',
+                    tickColor: '#ddd'
+                },
+                yaxis: {
+                    tickColor: '#ddd'
+                },
+                tooltip: false,
+                tooltipOpts: {
+                    content: function(label, x, y, flotItem){ return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
+                },
+                shifts: {
+                    x: -30,
+                    y: -50
+                },
+                series: {
+                    stack: true,
+                    group: true,
+                    groupInterval: 1,
+                    lines: {
+                        show: true,
+                        fill: true,
+                        lineWidth: 2
+                    },
+                    shadowSize: 0
+                }
+            });
+        },
+
+        hoverSpill: function(e){
+            var id = $(e.target).data('id');
+            if (_.isUndefined(id)){
+                id = $(e.target).parents('.single').data('id');
+            }
+            var coloredSet = [];
+            for(var dataset in this.spillDataset){
+                var ds = _.clone(this.spillDataset[dataset]);
+                if (this.spillDataset[dataset].id != id){
+                    ds.color = '#ddd';
+                }
+
+                coloredSet.push(ds);
+            }
+
+            this.renderSpillRelease(coloredSet);
+        },
+
+        unhoverSpill: function(){
+            this.renderSpillRelease(this.spillDataset);
+        },
+
         deleteSpill: function(e){
-            e.preventDefault();
-            e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
             var spill = webgnome.model.get('spills').get(id);
             swal({
