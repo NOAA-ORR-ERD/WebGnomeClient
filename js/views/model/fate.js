@@ -27,11 +27,11 @@ define([
 
         render: function(){
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
-            if(!_.isUndefined(wind)){
+            var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
+            if(_.isUndefined(wind)){
                 wind_speed = '';
-            } else if (wind.get('timeseries').length > 1) {
-                wind_speed = 'Constant ' + wind.get('timeseries')[0][1] + ' ' + wind.get('units');
+            } else if (wind.get('timeseries').length === 1) {
+                wind_speed = 'Constant ' + wind.get('timeseries')[0][1][0] + ' ' + wind.get('units');
             } else {
                 wind_speed = 'Variable Speed';
             }
@@ -45,8 +45,7 @@ define([
                 pour_point = substance.pour_point_min_k + substance.pour_point_max_k;
             }
 
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-
+            var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
             var wave_height = 'Computed from wind';
             if(water.get('wave_height')){
                 wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
@@ -57,14 +56,14 @@ define([
             var spills = webgnome.model.get('spills');
             var total_released = 0;
             var init_release = moment(spills.at(0).get('release').get('release_time')).unix();
-            spills.forEach(function(spill){
+            spills.forEach(_.bind(function(spill){
                 var release_time = moment(spill.get('release').get('release_time')).unix();
                 if(init_release > release_time){
                     init_release = release_time;
                 }
 
-                total_released += spill.get('amount');
-            });
+                total_released += this.calcAmountReleased(spill, webgnome.model);
+            }, this));
             total_released += ' ' + spills.at(0).get('units');
 
             var compiled = _.template(FateTemplate, {
@@ -73,8 +72,8 @@ define([
                 wind_speed: wind_speed,
                 pour_point: pour_point,
                 wave_height: wave_height,
-                water_temp: water.get('tempurature') + ' ' + water.get('units').tempurature,
-                release_time: moment(init_release).format(webgnome.config.date_format.moment),
+                water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                 total_released: total_released
             });
             this.$el.html(compiled);
@@ -140,7 +139,6 @@ define([
                 this.timelinePlot.setupGrid();
                 this.timelinePlot.draw();
             }
-
         },
 
         renderTableOilBudget: function(dataset){
@@ -315,6 +313,37 @@ define([
 
         formatNumber: function(number){
             return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').split('.')[0];
+        },
+
+        /**
+         * Calculate the amount of oil released given the release start and end time in relation to the models end time.
+         * @param  {Object} spill      Spill object
+         * @param  {Object} model      gnome model object
+         * @return {Integer}           Amount of oil released in the models time period, same unit as spill.
+         */
+        calcAmountReleased: function(spill, model){
+            var amount = spill.get('amount');
+            var release_start = moment(spill.get('release').get('release_time')).unix();
+            var release_end = moment(spill.get('release').get('end_release_time')).unix();
+            if(release_start === release_end){
+                release_end += 2;
+            }
+            var model_end = moment(model.get('start_time')).add(model.get('duration'), 's').unix();
+
+            // find the rate of the release per second.
+            var release_duration = release_end - release_start;
+            var release_per_second = amount / release_duration;
+
+            // find the percentage of the release time that fits in the model 
+            var release_run_time;
+            if (model_end > release_end){
+                release_run_time = release_duration;
+            } else {
+                var overlap = release_end - model_end;
+                release_run_time = release_duration - overlap;
+            }
+
+            return release_run_time * release_per_second;
         },
 
         close: function(){
