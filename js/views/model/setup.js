@@ -6,6 +6,7 @@ define([
     'ol',
     'masonry',
     'sweetalert',
+    'nucos',
     'text!templates/model/setup.html',
     'model/gnome',
     'model/environment/wind',
@@ -35,7 +36,7 @@ define([
     'flotdirection',
     'flottooltip',
     'flotstack'
-], function($, _, Backbone, moment, ol, Masonry, swal, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
@@ -459,6 +460,10 @@ define([
                     }
                     amountArray.push(amount);
                 }
+                var oilconvert = new nucos.OilQuantityConverter();
+                for (var i = 0; i < amountArray.length; i++){
+                    amountArray[i] = oilconvert.toConvert(amountArray[i], spillUnits, 10, "API degree", units);
+                }
                 data[j] = amountArray;
             }
             return data;
@@ -507,7 +512,6 @@ define([
                         }
                     });
                 }
-                console.log(dataset);
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
                 this.$('.spill .panel-body').show();
