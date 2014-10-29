@@ -36,7 +36,7 @@ define([
             var amount = this.model.get('amount');
             var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
             var units = this.model.get('units');
-            var oilName = this.model.get('element_type').get('substance').name ? this.model.get('element_type').get('substance').name : '';
+            var oilName = this.model.get('element_type').get('substance').get('name') ? this.model.get('element_type').get('substance').get('name') : '';
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),

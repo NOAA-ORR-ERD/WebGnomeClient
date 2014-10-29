@@ -434,7 +434,10 @@ define([
         calculateSpillAmount: function(timeseries){
             var oilconvert = new nucos.OilQuantityConverter();
             var spills = webgnome.model.get('spills');
-            var oilAPI = spills.at(0).get('element_type').get('substance').api;
+            if (spills.length > 0){
+                var oilAPI = spills.at(0).get('element_type').get('substance').api;
+                oilAPI = oilAPI ? oilAPI : 10;
+            }
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
             var data = {};

@@ -2,17 +2,20 @@ define([
     'underscore',
     'backbone',
     'model/base',
-    'model/initializers/windages'
-], function(_, Backbone, BaseModel, GnomeWindages){
+    'model/initializers/windages',
+    'model/substance'
+], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
+
+        model: {
+            substance: GnomeSubstance
+        },
 
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
-            'substance': {
-                'name': 'ALAMO'
-            },
+            'substance': null,
             'initializers': [
                 {
                     'windage_range': [

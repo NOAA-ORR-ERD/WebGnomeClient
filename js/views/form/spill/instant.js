@@ -38,7 +38,8 @@ define([
 
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
-            var oilName = this.model.get('element_type').get('substance').name ? this.model.get('element_type').get('substance').name : '';
+            console.log(this.model);
+            var oilName = this.model.get('element_type').get('substance').get('name') ? this.model.get('element_type').get('substance').get('name') : '';
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),

@@ -98,6 +98,10 @@ define([
         mapRender: function(){
             if (!this.mapShown){
                 this.$('.map').show();
+                var draw = new ol.interaction.Draw({
+                    source: this.source,
+                    type: 'Pointline'
+                });
                 this.source = new ol.source.Vector();
                 this.layer = new ol.layer.Vector({
                     source: this.source
@@ -111,7 +115,8 @@ define([
                             source: new ol.source.MapQuest({layer: 'osm'})
                         }),
                         this.layer
-                    ]
+                    ],
+                    interactions: ol.interaction.defaults().extend([draw])
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
