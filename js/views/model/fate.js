@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'nucos',
     'model/step',
     'text!templates/model/fate.html',
     'flot',
@@ -11,14 +12,15 @@ define([
     'flotstack',
     'flotcrosshair',
     'flotpie'
-], function($, _, Backbone, moment, StepModel, FateTemplate){
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
         frame: 0,
 
         events: {
-            'shown.bs.tab': 'renderGraphs'
+            'shown.bs.tab': 'renderGraphs',
+            'change #budget-table select': 'renderTableOilBudget'
         },
 
         initialize: function(){
@@ -142,25 +144,52 @@ define([
         },
 
         renderTableOilBudget: function(dataset){
+            if(!_.isArray(dataset)){
+                dataset = _.clone(this.dataset);
+            }
             dataset = this.pruneDataset(dataset, ['avg_density']);
             var table = this.$('#budget-table table');
-            table.html('');
-            for (var row = 0; row < dataset[0].data.length; row++){
-                var row_html = $('<tr></tr>');
-                if(row === 0){
-                    row_html.append('<th>Date - Time</th>');
-                } else {
-                    row_html.append('<td>' + moment(dataset[0].data[row][0]).format(webgnome.config.date_format.moment) + '</td>');
-                }
+            var display = {
+                time: this.$('#budget-table .time').val(),
+                released: this.$('#budget-table .released').val(),
+                other: this.$('#budget-table .other').val()
+            };
 
-                for (var set in dataset){
-                    if (row === 0) {
-                        row_html.append('<th>' + dataset[set].label + '</th>');
+            table.html('');
+            m_date = moment(webgnome.model.get('start_time'));
+            for (var row = 0; row < dataset[0].data.length; row++){
+
+                var ts_date = moment(dataset[0].data[row][0]);
+                var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
+                if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
+                    duration.asHours() <= 24 && ts_date.hours() % 3 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() > 24 && ts_date.hours() % 6 === 0 && ts_date.minutes() === 0){
+                    var row_html = $('<tr></tr>');
+
+                    if(display.time === 'date'){
+                        if(row === 0){
+                            row_html.append('<th>Date - Time</th>');
+                        } else {
+                            row_html.append('<td>' + ts_date.format(webgnome.config.date_format.moment) + '</td>');
+                        }
                     } else {
-                        row_html.append('<td>' + Math.round(dataset[set].data[row][1]) + '</td>');
+                        if(row === 0){
+                            row_html.append('<th>Hours into Spill</th>');
+                        } else {
+                            row_html.append('<td>' + duration.asHours() + '</td>');
+                        }
                     }
+                     
+
+                    for (var set in dataset){
+                        if (row === 0) {
+                            row_html.append('<th>' + dataset[set].label + '</th>');
+                        } else {
+                            row_html.append('<td>' + Math.round(dataset[set].data[row][1]) + '</td>');
+                        }
+                    }
+                    table.append(row_html);
                 }
-                table.append(row_html);
             }
         },
 
@@ -301,10 +330,9 @@ define([
         },
 
         pruneDataset: function(dataset, leaves){
-            dataset = _.filter(dataset, function(set){
+            return _.filter(dataset, function(set){
                 return leaves.indexOf(set.name) === -1;
             });
-            return dataset;
         },
 
         formatLabel: function(label){

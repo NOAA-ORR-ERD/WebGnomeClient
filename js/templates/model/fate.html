@@ -1,44 +1,92 @@
-<ul class="nav nav-tabs" role="tablist">
-    <li class="active"><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
-    <li><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
-    <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
-    <li><a href="#water" role="tab" data-toggle="tab">Water</a></li>
-    <li><a href="#viscosity" role="tab" data-toggle="tab">Viscosity</a></li>
-    <li><a href="#ics209" role="tab" data-toggle="tab">ICS209</a></li>
-</ul>
+<div class="container">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
+        <li><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
+        <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
+        <li><a href="#water" role="tab" data-toggle="tab">Water</a></li>
+        <li><a href="#viscosity" role="tab" data-toggle="tab">Viscosity</a></li>
+        <li><a href="#ics209" role="tab" data-toggle="tab">ICS209</a></li>
+    </ul>
 
-<div class="tab-content">
-    <div class="tab-pane active" id="budget-graph">
-        <div class="chart-holder">
-            <h5>Least Remaining</h5>
-            <div class="chart minimum"></div>
-        </div>
-        <div class="chart-holder">
-            <h5>Expected Remaining</h5>
-            <div class="chart mean"></div>
-        </div>
-        <div class="chart-holder">
-            <h5>Most Remaining</h5>
-            <div class="chart maximum"></div>
-        </div>
-        <div class="timeline">
-            <h5>Timeline</h5>
-            <div class="chart"></div>
-        </div>
-    </div>
-    <div class="tab-pane" id="budget-table">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="info">
-                <div><label>Oil Name:</label> {{ name }}</div>
-                <div><label>API:</label> {{ api }}</div>
-                <div><label>Wind Speed:</label> {{ wind_speed }}</div>
-                <div><label>Pour Point:</label> {{ pour_point }}</div>
-                <div><label>Wave Height:</label> {{ wave_height }}</div>
-                <div><label>Water Temp:</label> {{ water_temp }}</div>
-                <div><label>Time of Initial Release:</label> {{ release_time }}</div>
-                <div><label>Total Amount of Oil Released:</label> {{ total_released }}</div>
+    <div class="tab-content">
+        <div class="tab-pane active" id="budget-graph">
+            <div class="chart-holder">
+                <h5>Least Remaining</h5>
+                <div class="chart minimum"></div>
             </div>
-            <table class="table"></table>
+            <div class="chart-holder">
+                <h5>Expected Remaining</h5>
+                <div class="chart mean"></div>
+            </div>
+            <div class="chart-holder">
+                <h5>Most Remaining</h5>
+                <div class="chart maximum"></div>
+            </div>
+            <div class="timeline">
+                <h5>Timeline</h5>
+                <div class="chart"></div>
+            </div>
+        </div>
+        <div class="tab-pane" id="budget-table">
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Table Column Display</div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="" class="control-label col-md-1">Time</label>
+                                <div class="col-md-2">
+                                    <select class="form-control time">
+                                        <option value="date">Date</option>
+                                        <option value="hour">Hour</option>
+                                    </select>
+                                </div>
+                                <label for="" class="control-label col-md-2">Released</label>
+                                <div class="col-md-2">
+                                    <select name="" id="" class="form-control released">
+                                        <option value="bbl">bbl</option>
+                                        <option value="gal">gal</option>
+                                        <option value="m^3">m^3</option>
+                                        <option value="ton">ton</option>
+                                        <option value="mt">mt</option>
+                                    </select>
+                                </div>
+                                <label for="" class="control-label col-md-2">Other</label>
+                                <div class="col-md-3">
+                                    <select name="" id="" class="form-control other">
+                                        <option value="same">Same as Released</option>
+                                        <option value="percent">Percent</option>
+                                        <option value="fraction">Fraction</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Export</div>
+                    <div class="panel-body">
+                        <a href="" class="btn btn-default">CSV</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info">
+                    <div><label>Oil Name:</label> {{ name }}</div>
+                    <div><label>API:</label> {{ api }}</div>
+                    <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                    <div><label>Pour Point:</label> {{ pour_point }}</div>
+                    <div><label>Wave Height:</label> {{ wave_height }}</div>
+                    <div><label>Water Temp:</label> {{ water_temp }}</div>
+                    <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                    <div><label>Total Amount of Oil Released:</label> {{ total_released }}</div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <table class="table"></table>
+            </div>
         </div>
     </div>
 </div>
