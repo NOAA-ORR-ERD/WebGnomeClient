@@ -28,6 +28,7 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
+    'views/wizard/risk',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -40,7 +41,8 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel,
+    RiskWizardForm){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -54,6 +56,7 @@ define([
             'mouseover .spill .single': 'hoverSpill',
             'mouseout .spill .spill-list': 'unhoverSpill',
             'click .location .add': 'clickLocation',
+            'click .risk .run': 'clickRisk',
             'click .response .add': 'clickResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
@@ -658,6 +661,10 @@ define([
             }
         },
         
+        clickRisk: function(){
+            new RiskWizardForm();
+        },
+
         configureWeatherers: function(prediction){
             if (prediction == 'fate' || prediction == 'both'){
                 // turn on weatherers

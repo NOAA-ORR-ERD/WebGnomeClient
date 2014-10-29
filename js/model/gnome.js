@@ -9,6 +9,7 @@ define([
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
+    'model/environment/risk',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
@@ -17,7 +18,7 @@ define([
     'model/weatherers/evaporation',
     'model/weatherers/dispersion'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, RiskModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
     EvaporationWeatherer, DispersionWeatherer){
@@ -32,7 +33,8 @@ define([
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
-                'gnome.environment.environment.Water': WaterModel
+                'gnome.environment.environment.Water': WaterModel,
+                'gnome.environment.resources.Risk': RiskModel
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
