@@ -432,7 +432,9 @@ define([
         },
 
         calculateSpillAmount: function(timeseries){
+            var oilconvert = new nucos.OilQuantityConverter();
             var spills = webgnome.model.get('spills');
+            var oilAPI = spills.at(0).get('element_type').get('substance').api;
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
             var data = {};
@@ -462,9 +464,8 @@ define([
                     }
                     amountArray.push(amount);
                 }
-                var oilconvert = new nucos.OilQuantityConverter();
                 for (var i = 0; i < amountArray.length; i++){
-                    amountArray[i] = oilconvert.toConvert(amountArray[i], spillUnits, 10, "API degree", units);
+                    amountArray[i] = oilconvert.Convert(amountArray[i], spillUnits, oilAPI, "API degree", units);
                 }
                 data[j] = amountArray;
             }
@@ -473,7 +474,6 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
-
             var timeSeries = this.constructModelTimeSeries();
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spills.models.length > 0){
