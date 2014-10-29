@@ -71,7 +71,8 @@ define([
 		},
 
 		update: function(){
-            var oilName = this.model.get('element_type').get('substance');
+            var oilName = this.model.get('element_type').get('substance').get('name');
+            console.log(oilName);
             this.$('.oilName').val(oilName);
 
 			if(!this.model.isValid()){
