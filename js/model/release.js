@@ -21,14 +21,20 @@ define([
             var start_time = '';
             if (!_.isUndefined(webgnome.model)){
                 start_time = moment(webgnome.model.get('start_time'));
+            } else {
+                start_time = moment();
             }
+
             if(_.isUndefined(this.get('release_time'))){
                 this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
             var end_time = '';
             if (!_.isUndefined(webgnome.model)){
                 end_time = start_time.add(webgnome.model.get('duration'), 's');
+            } else {
+                end_time = moment();
             }
+            
             if(_.isUndefined(this.get('end_release_time'))){
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
