@@ -72,7 +72,6 @@ define([
 
 		update: function(){
             var oilName = this.model.get('element_type').get('substance').get('name');
-            console.log(oilName);
             this.$('.oilName').val(oilName);
 
 			if(!this.model.isValid()){
@@ -99,12 +98,10 @@ define([
             if (!this.mapShown){
                 this.$('.map').show();
                 this.source = new ol.source.Vector();
-                if (draw === null) {
-                    var draw = new ol.interaction.Draw({
-                        source: this.source,
-                        type: 'LineString'
-                    });
-                }
+                var draw = new ol.interaction.Draw({
+                    source: this.source,
+                    type: 'LineString'
+                });
                 this.layer = new ol.layer.Vector({
                     source: this.source
                 });
@@ -122,6 +119,17 @@ define([
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
+
+                draw.on('drawend', _.bind(function(){
+                    var feature = this.source.forEachFeature(_.bind(function(feature){
+                        if (this.source.getFeatures().length > 1){
+                            return feature;
+                        }
+                    }, this));
+                    if (feature){
+                        this.source.removeFeature(feature);
+                    }
+                }, this));
                 // this.$('canvas').on('contextmenu', _.bind(function(){
                 //     this.update();
                 //     return false;
