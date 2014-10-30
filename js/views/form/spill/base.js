@@ -120,7 +120,7 @@ define([
                 this.spillMapView.render();
                 this.mapShown = true;
 
-                draw.on('drawend', _.bind(function(){
+                draw.on('drawend', _.bind(function(e){
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (this.source.getFeatures().length > 1){
                             return feature;
@@ -129,71 +129,20 @@ define([
                     if (feature){
                         this.source.removeFeature(feature);
                     }
+                    var coordsArray = e.feature.getGeometry().getCoordinates();
+                    for (var i = 0; i < coordsArray.length; i++){
+                        coordsArray[i] = new ol.proj.transform(coordsArray[i], 'EPSG:3857', 'EPSG:4326');
+                        coordsArray[i].push(0);
+                    }
+                    var startPoint = coordsArray[0];
+                    var endPoint = coordsArray[coordsArray.length - 1];
+                    this.model.get('release').set('start_position', startPoint);
+                    this.model.get('release').set('end_position', endPoint);
+                    this.$('#start-lat').val(startPoint[1]);
+                    this.$('#start-lon').val(startPoint[0]);
+                    this.$('#end-lat').val(endPoint[1]);
+                    this.$('#end-lon').val(endPoint[0]);
                 }, this));
-                // this.$('canvas').on('contextmenu', _.bind(function(){
-                //     this.update();
-                //     return false;
-                // }, this));
-                // this.spillMapView.map.on('pointerdown', _.bind(function(e){
-                //     if (e.originalEvent.which === 3){
-                //         var feature = this.source.forEachFeature(_.bind(function(feature){
-                //             if (feature.get('name') === 'end'){
-                //                 return feature;
-                //             }
-                //         }, this));
-                //         if (feature){
-                //             this.source.removeFeature(feature);
-                //         }
-                //         feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-                //         feature.setStyle(new ol.style.Style({
-                //             image: new ol.style.Icon({
-                //                 anchor: [0.5, 1.0],
-                //                 src: '/img/spill-pin.png',
-                //                 size: [32, 40]
-                //             })
-                //         }));
-                //         feature.set('name', 'end');
-                //         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                //         var position = [coords[0], coords[1], 0];
-                //         this.model.get('release').set('end_position', position);
-                //         this.$('#end-lat').val(coords[1]);
-                //         this.$('#end-lon').val(coords[0]);
-                //         this.source.addFeature(feature);
-                //     }
-                // }, this));
-                // this.spillMapView.map.on('click', _.bind(function(e){
-                //     var feature = this.source.forEachFeature(_.bind(function(feature){
-                //         if (feature.get('name') === 'start'){
-                //             return feature;
-                //         }
-                //     }, this));
-                //     if (feature){
-                //         this.source.removeFeature(feature);
-                //     }
-                //     feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-                //     feature.setStyle(new ol.style.Style({
-                //         image: new ol.style.Icon({
-                //             anchor: [0.5, 1.0],
-                //             src: '/img/spill-pin.png',
-                //             size: [32, 40]
-                //         })
-                //     }));
-                //     var start = this.model.get('release').get('start_position');
-                //     var end = this.model.get('release').get('end_position');
-                //     var endPointUnset = (start[1] === end[1] && start[0] === end[0]);
-                //     feature.set('name', 'start');
-                //     var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                //     var position = [coords[0], coords[1], 0];
-                //     this.model.get('release').set('start_position', position);
-                //     this.$('#start-lat').val(coords[1]);
-                //     this.$('#start-lon').val(coords[0]);
-                //     if (endPointUnset){
-                //         this.$('#end-lat').val(coords[1]);
-                //         this.$('#end-lon').val(coords[0]);
-                //         this.model.get('release').set('end_position', position);
-                //     }
-                //     this.source.addFeature(feature);
-                // }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
