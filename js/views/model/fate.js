@@ -251,22 +251,20 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
+            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                var value;
-                if(['cubic meters', 'gal', 'bbl'].indexOf(units) !== -1){
-                    // value = nucos.convert('Volume', 'kg', units, nominal[this.dataset[set].name]);
-                } else {
-                    // value = nucos.OilQuantityConvert().toVolume('');
-                }
-
                 low_value = low[this.dataset[set].name];
+                low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
 
                 nominal_value = nominal[this.dataset[set].name];
+                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value]);
 
                 high_value = high[this.dataset[set].name];
+                high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
             }
         },
