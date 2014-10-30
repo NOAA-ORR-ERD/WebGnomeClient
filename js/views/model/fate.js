@@ -39,12 +39,12 @@ define([
             }
 
             var point_point;
-            if(substance.pour_point_min_k === substance.pour_point_max_k){
-                pour_point = substance.pour_point_min_k;
-            } else if (substance.pour_point_min_k && substance.pour_point_max_k) {
-                pour_point = substance.pour_point_min_k + ' - ' + substance.pour_point_max_k;
+            if(substance.get('pour_point_min_k') === substance.get('pour_point_max_k')){
+                pour_point = substance.get('pour_point_min_k');
+            } else if (substance.get('pour_point_min_k') && substance.get('pour_point_max_k')) {
+                pour_point = substance.get('pour_point_min_k') + ' - ' + substance.get('pour_point_max_k');
             } else {
-                pour_point = substance.pour_point_min_k + substance.pour_point_max_k;
+                pour_point = substance.get('pour_point_min_k') + substance.get('pour_point_max_k');
             }
 
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
@@ -69,8 +69,8 @@ define([
             total_released += ' ' + spills.at(0).get('units');
 
             var compiled = _.template(FateTemplate, {
-                name: substance.name,
-                api: substance.api,
+                name: substance.get('name'),
+                api: substance.get('api'),
                 wind_speed: wind_speed,
                 pour_point: pour_point,
                 wave_height: wave_height,
@@ -79,6 +79,8 @@ define([
                 total_released: total_released
             });
             this.$el.html(compiled);
+            var units = spills.at(0).get('units');
+            this.$('#budget-table .released').val(units);
             $.get(webgnome.config.api + '/rewind');
             this.renderLoop();
         },
@@ -154,6 +156,8 @@ define([
                 released: this.$('#budget-table .released').val(),
                 other: this.$('#budget-table .other').val()
             };
+            var converter = new nucos.OilQuantityConverter();
+            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
 
             table.html('');
             m_date = moment(webgnome.model.get('start_time'));
@@ -180,12 +184,29 @@ define([
                         }
                     }
                      
-
                     for (var set in dataset){
                         if (row === 0) {
                             row_html.append('<th>' + dataset[set].label + '</th>');
                         } else {
-                            row_html.append('<td>' + Math.round(dataset[set].data[row][1]) + '</td>');
+                            var value = dataset[set].data[row][1];
+                            var unit = display.released;
+                            var api = substance.get('api');
+                            if(dataset[set].label === 'Amount released'){
+                                 value = Math.round(converter.Convert(value, 'kg', api, 'API degree', unit));
+                                 unit = ' ' + unit;
+                            } else {
+                                if(display.other === 'same'){
+                                    value = Math.round(converter.Convert(value, 'kg', api, 'API degree', unit));
+                                    unit = ' ' + unit;
+                                } else if (display.other === 'percent'){
+                                    unit = '%';
+                                    value = Math.round(value / dataset[0].data[row][1] * 100);
+                                } else {
+                                    unit = '';
+                                    value = value / dataset[0].data[row][1];
+                                }
+                            }
+                            row_html.append('<td>' + value + unit + '</td>');
                         }
                     }
                     table.append(row_html);
@@ -230,22 +251,20 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
+            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                var value;
-                if(['cubic meters', 'gal', 'bbl'].indexOf(units) !== -1){
-                    // value = nucos.convert('Volume', 'kg', units, nominal[this.dataset[set].name]);
-                } else {
-                    // value = nucos.OilQuantityConvert().toVolume('');
-                }
-
                 low_value = low[this.dataset[set].name];
+                low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
 
                 nominal_value = nominal[this.dataset[set].name];
+                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value]);
 
                 high_value = high[this.dataset[set].name];
+                high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
             }
         },
