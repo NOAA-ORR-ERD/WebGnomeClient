@@ -361,8 +361,11 @@ define([
                 webgnome.model.get('environment').add(water);
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
-                evaporation.save();
-                webgnome.model.save();
+                evaporation.save(null, {
+                    success: function(){
+                        webgnome.model.save();
+                    }
+                });
             });
             waterForm.render();
         },
