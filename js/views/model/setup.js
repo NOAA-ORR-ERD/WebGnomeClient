@@ -244,6 +244,16 @@ define([
                 delay: delay
             });
 
+            $('.panel-heading .run').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
+
+                    return object + ' assessment';
+                },
+                container: 'body',
+                delay: delay
+            });
+
             $('.spill .trash, .spill .edit').tooltip({
                 container: 'body',
                 delay: delay
