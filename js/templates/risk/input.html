@@ -7,7 +7,7 @@
 					<div class="col-sm-2">
 						<input type="text" id="water-area" class="form-control" value="{{ area }}">
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-3">
 						<select class="form-control col-sm-3" id="area-units">
 							<option value="k">sq. km</option>
 							<option value="m">sq. miles</option>
@@ -23,7 +23,7 @@
 					<div class="col-sm-2">
 						<input type="text" id="water-diameter" class="form-control" value="{{ diameter }}">
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-3">
 						<select class="form-control col-sm-3" id="diameter-units">
 							<option value="k">km</option>
 							<option value="m">miles</option>
@@ -37,7 +37,7 @@
 					<div class="col-sm-2">
 						<input type="text" id="distance-from-shore" class="form-control" value="{{ distance }}">
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-3">
 						<select class="form-control col-sm-3" id="distance-units">
 							<option value="k">km</option>
 							<option value="m">miles</option>
@@ -51,7 +51,7 @@
 					<div class="col-sm-2">
 						<input type="text" id="average-water-depth" class="form-control" value="{{ depth }}">
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-3">
 						<select class="form-control col-sm-3" id="depth-units">
 							<option value="m">m</option>
 							<option value="f">ft</option>
@@ -61,25 +61,17 @@
 				</div>
 			</div>
 			<div class="row" style="margin-bottom: 15px;">
-				<label class="control-label col-sm-5" for="time-hours">Duration:</label>
+				<label class="control-label col-sm-5" for="duration-hours">Duration:</label>
 				<div class="col-sm-3">
 					<div class="input-group">
-						<input type="text" id="time-hours" class="form-control" value="{{ hours }}">
+						<input type="text" id="duration-hours" class="form-control" value="{{ hours }}">
 						<span class="input-group-addon">hours</span>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group">
-						<input type="text" id="time-days" class="form-control" value="{{ days }}">
+						<input type="text" id="duration-days" class="form-control" value="{{ days }}">
 						<span class="input-group-addon">days</span>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group">
-					<label class="col-sm-5 control-label">Resources:</label>
-					<div class="col-sm-6">
-						<canvas id="resources" class="form-control" height="500" width="500">
 					</div>
 				</div>
 			</div>

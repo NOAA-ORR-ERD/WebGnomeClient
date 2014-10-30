@@ -12,9 +12,14 @@ define([
             'diameter': 0,
             'distance': 0,
             'depth': 0,
-            time: {
+            duration: {
                 'hours': 0,
                 'days': 0
+            },
+            efficiency: {
+                'skimming': 50,
+                'dispersant': 50,
+                'insitu_burn': 50
             },
             'surface': .33,
             'column': .33,
@@ -28,29 +33,20 @@ define([
         },
 
         validate: function(attrs, options){
-            if (attrs.area < 0 || attrs.area === ''){
+            if (attrs.area < 1 || attrs.area === ''){
                 return 'Water area must be greater than or equal to zero!';
             }
-            if (attrs.diameter < 0 || attrs.diameter === ''){
+            if (attrs.diameter < 1 || attrs.diameter === ''){
                 return 'Water diameter must be greater than or equal to zero!';
             }
-            if (attrs.distance < 0 || attrs.distance === ''){
+            if (attrs.distance < 1 || attrs.distance === ''){
                 return 'Distance from shore must be greater than or equal to zero!';
             }
-            if (attrs.depth < 0 || attrs.depth === ''){
+            if (attrs.depth < 1 || attrs.depth === ''){
                 return 'Average water depth must be greater than or equal to zero!';
             }
-            if ((attrs.time.days*24 + attrs.time.hours) <= 0){
-                return 'Risk assessment time must be greater than zero!';
-            }
-            if (attrs.surface < 0 || attrs.surface > 1){
-                return 'Water surface valuation must be a percentage!';
-            }
-            if (attrs.column < 0 || attrs.column > 1){
-                return 'Water column valuation must be a percentage!';
-            }
-            if (attrs.shoreline < 0 || attrs.shoreline > 1){
-                return 'Shoreline valuation must be a percentage!';
+            if ((attrs.duration.days*24 + attrs.duration.hours) <= 0){
+                return 'Duration time must be greater than zero!';
             }
         }
 
