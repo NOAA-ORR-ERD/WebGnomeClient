@@ -113,6 +113,8 @@ define([
                 this.renderGraphDensity(this.dataset);
             } else if(active == '#emulsification') {
                 this.renderGraphEmulsification(this.dataset);
+            } else if(active == '#viscosity') {
+                this.renderGraphViscosity(this.dataset);
             }
         },
 
@@ -312,11 +314,11 @@ define([
             dataset[0].fillArea = null;
         },
 
-        renderEmulsification: function(dataset){
+        renderGraphEmulsification: function(dataset){
             dataset = this.pluckDataset(dataset, ['water']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsificaiton)){
-                this.graphEmulsificaiton = $.plot('#density .timeline .chart', dataset, {
+                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -344,8 +346,9 @@ define([
         renderGraphViscosity: function(dataset){
             dataset = this.pluckDataset(dataset, ['viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            console.log(dataset);
             if(_.isUndefined(this.graphViscosity)){
-                this.graphViscosity = $.plot('#density .timeline .chart', dataset, {
+                this.graphViscosity = $.plot('#viscosity .timeline .chart', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
