@@ -107,6 +107,10 @@ define([
                 this.renderTableOilBudget(this.dataset);
             } else if(active == '#evaporation') {
                 this.renderGraphEvaporation(this.dataset);
+            } else if(active == '#dispersion') {
+                this.renderGraphDispersion(this.dataset);
+            } else if(active == '#density') {
+                this.renderGraphDensity(this.dataset);
             }
         },
 
@@ -237,12 +241,128 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    },
+                    }
                 });
             } else {
                 this.graphEvaporation.setData(dataset);
                 this.graphEvaporation.setupGrid();
                 this.graphEvaporation.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphDispersion: function(dataset){
+            dataset = this.pluckDataset(dataset, ['dispersed']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphDispersion)){
+                this.graphDispersion = $.plot('#dispersion .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    }
+                });
+            } else {
+                this.graphDispersion.setData(dataset);
+                this.graphDispersion.setupGrid();
+                this.graphDispersion.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphDensity: function(dataset){
+            dataset = this.pluckDataset(dataset, ['avg_density']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphDensity)){
+                this.graphDensity = $.plot('#density .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    }
+                });
+            } else {
+                this.graphDensity.setData(dataset);
+                this.graphDensity.setupGrid();
+                this.graphDensity.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderEmulsification: function(dataset){
+            dataset = this.pluckDataset(dataset, ['water']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphEmulsificaiton)){
+                this.graphEmulsificaiton = $.plot('#density .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    }
+                });
+            } else {
+                this.graphEmulsificaiton.setData(dataset);
+                this.graphEmulsificaiton.setupGrid();
+                this.graphEmulsificaiton.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphViscosity: function(dataset){
+            dataset = this.pluckDataset(dataset, ['viscosity']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphViscosity)){
+                this.graphViscosity = $.plot('#density .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    }
+                });
+            } else {
+                this.graphViscosity.setData(dataset);
+                this.graphViscosity.setupGrid();
+                this.graphViscosity.draw();
             }
             dataset[0].fillArea = null;
         },
