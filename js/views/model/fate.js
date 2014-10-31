@@ -162,7 +162,9 @@ define([
             if(!this.renderPiesTimeout){
                 this.pos = pos;
                 this.renderPiesTimeout =  setTimeout(_.bind(function(){
-                    this.renderPies();
+                    if(this.$('#budget-graph:visible .timeline .chart').length == 1){
+                        this.renderPies();
+                    }
                 }, this), 50);
             }
         },
