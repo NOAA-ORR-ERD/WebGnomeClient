@@ -199,24 +199,25 @@ define([
                             row_html.append('<th>' + dataset[set].label + '</th>');
                         } else {
                             var value = dataset[set].data[row][1];
-                            var unit = display.released;
+                            var to_unit = display.released;
+                            var from_unit = webgnome.model.get('spills').at(0).get('units');
                             var api = substance.get('api');
                             if(dataset[set].label === 'Amount released'){
-                                value = Math.round(value);
-                                unit = ' ' + unit;
+                                 value = Math.round(converter.Convert(value, from_unit, api, 'API degree', to_unit));
+                                 to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    unit = ' ' + unit;
-                                    value = Math.round(value);
+                                    value = Math.round(converter.Convert(value, from_unit, api, 'API degree', to_unit));
+                                    to_unit = ' ' + to_unit;
                                 } else if (display.other === 'percent'){
-                                    unit = '%';
+                                    to_unit = '%';
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
                                 } else {
-                                    unit = '';
+                                    to_unit = '';
                                     value = value / dataset[0].data[row][1];
                                 }
                             }
-                            row_html.append('<td>' + value + unit + '</td>');
+                            row_html.append('<td>' + value + to_unit + '</td>');
                         }
                     }
                     table.append(row_html);
