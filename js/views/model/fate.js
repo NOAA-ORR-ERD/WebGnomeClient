@@ -11,7 +11,8 @@ define([
     'flotresize',
     'flotstack',
     'flotcrosshair',
-    'flotpie'
+    'flotpie',
+    'flotfillarea'
 ], function($, _, Backbone, moment, nucos, StepModel, FateTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
@@ -38,13 +39,15 @@ define([
                 wind_speed = 'Variable Speed';
             }
 
-            var point_point;
-            if(substance.get('pour_point_min_k') === substance.get('pour_point_max_k')){
-                pour_point = substance.get('pour_point_min_k');
-            } else if (substance.get('pour_point_min_k') && substance.get('pour_point_max_k')) {
-                pour_point = substance.get('pour_point_min_k') + ' - ' + substance.get('pour_point_max_k');
+            var pour_point;
+            var pp_min = substance.get('pour_point_min_k');
+            var pp_max = substance.get('pour_point_max_k');
+            if(pp_min === pp_max){
+                pour_point = pp_min;
+            } else if (pp_min && pp_max) {
+                pour_point = pp_min + ' - ' + pp_max;
             } else {
-                pour_point = substance.get('pour_point_min_k') + substance.get('pour_point_max_k');
+                pour_point = pp_min + pp_max;
             }
 
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
@@ -98,17 +101,19 @@ define([
         renderGraphs: function(){
             // find active tab and render it's graph.
             var active = this.$('.active a').attr('href');
-            if(active == '#budget-graph'){
+            if(active == '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
             } else if(active == '#budget-table') {
                 this.renderTableOilBudget(this.dataset);
+            } else if(active == '#evaporation') {
+                this.renderGraphEvaporation(this.dataset);
             }
         },
 
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
-            if(_.isUndefined(this.timelinePlot)){
-                this.timelinePlot = $.plot('#budget-graph .timeline .chart', dataset, {
+            if(_.isUndefined(this.graphOilBudget)){
+                this.graphOilBudget = $.plot('#budget-graph .timeline .chart', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -137,11 +142,10 @@ define([
                 });
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart').on('plothover', _.bind(this.timelineHover, this));
-
             } else {
-                this.timelinePlot.setData(dataset);
-                this.timelinePlot.setupGrid();
-                this.timelinePlot.draw();
+                this.graphOilBudget.setData(dataset);
+                this.graphOilBudget.setupGrid();
+                this.graphOilBudget.draw();
             }
         },
 
@@ -192,12 +196,12 @@ define([
                             var unit = display.released;
                             var api = substance.get('api');
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, 'kg', api, 'API degree', unit));
-                                 unit = ' ' + unit;
+                                value = Math.round(value);
+                                unit = ' ' + unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, 'kg', api, 'API degree', unit));
                                     unit = ' ' + unit;
+                                    value = Math.round(value);
                                 } else if (display.other === 'percent'){
                                     unit = '%';
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
@@ -212,6 +216,35 @@ define([
                     table.append(row_html);
                 }
             }
+        },
+
+        renderGraphEvaporation: function(dataset){
+            dataset = this.pluckDataset(dataset, ['evaporated']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphEvaporation)){
+                this.graphEvaporation = $.plot('#evaporation .timeline .chart', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        lines: {
+                            show: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    },
+                });
+            } else {
+                this.graphEvaporation.setData(dataset);
+                this.graphEvaporation.setupGrid();
+                this.graphEvaporation.draw();
+            }
+            dataset[0].fillArea = null;
         },
 
         buildDataset: function(cb){
@@ -244,7 +277,10 @@ define([
                         high: [],
                         low: [],
                         label: this.formatLabel(keys[type]),
-                        name: keys[type]
+                        name: keys[type],
+                        direction: {
+                            show: false
+                        },
                     });
                 }
             }
@@ -259,13 +295,13 @@ define([
                 low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
 
-                nominal_value = nominal[this.dataset[set].name];
-                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
-                this.dataset[set].data.push([date.unix() * 1000, nominal_value]);
-
                 high_value = high[this.dataset[set].name];
                 high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
+
+                nominal_value = nominal[this.dataset[set].name];
+                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+                this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
             }
         },
 
@@ -351,6 +387,12 @@ define([
         pruneDataset: function(dataset, leaves){
             return _.filter(dataset, function(set){
                 return leaves.indexOf(set.name) === -1;
+            });
+        },
+
+        pluckDataset: function(dataset, leaves){
+            return _.filter(dataset, function(set){
+                return leaves.indexOf(set.name) !== -1;
             });
         },
 
