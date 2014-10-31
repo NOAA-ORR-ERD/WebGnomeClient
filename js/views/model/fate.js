@@ -155,6 +155,86 @@ define([
                 this.graphOilBudget.setupGrid();
                 this.graphOilBudget.draw();
             }
+            this.timelineHover(null, {x: dataset[0].data[dataset[0].data.length - 1][0]}, null);
+        },
+
+        timelineHover: function(e, pos, item){
+            if(!this.renderPiesTimeout){
+                this.pos = pos;
+                this.renderPiesTimeout =  setTimeout(_.bind(function(){
+                    this.renderPies();
+                }, this), 50);
+            }
+        },
+
+        renderPies: function(){
+            this.renderPiesTimeout = null;
+            var i, j;
+            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
+            var pos = this.pos;
+            var lowData = this.getPieData(pos, dataset, 'low');
+            var nominalData = this.getPieData(pos, dataset, 'data');
+            var highData = this.getPieData(pos, dataset, 'high');
+
+            var chartOptions = {
+                series: {
+                    pie: {
+                        show: true,
+                        stroke: {
+                            width: 0
+                        },
+                        label: {
+                            formatter: _.bind(function(label, series){
+                                var units = webgnome.model.get('spills').at(0).get('units');
+                                return '<div><span style="background:' + series.color + ';"></span>' + label + '<br>' + this.formatNumber(Math.round(series.data[0][1])) + ' ' + units + ' (' + Math.round(series.percent) + '%)</div>';
+                            }, this),
+                            radius: 3/4
+                        }
+                    }
+                },
+                legend: {
+                    show: false
+                }
+            };
+
+            // possibly rewrite this part to update the data set and redraw the chart
+            // might be more effecient than completely reinitalizing
+            if(nominalData.length > 0){
+                this.lowPlot = $.plot('.fate .minimum', lowData, chartOptions);
+                this.nominalPlot = $.plot('.fate .mean', nominalData, chartOptions);
+                this.highPlot = $.plot('.fate .maximum', highData, chartOptions);
+            }
+        },
+
+        getPieData: function(pos, dataset, key){
+            d = [];
+            for (i = 0; i < dataset.length; ++i) {
+
+                var series = dataset[i];
+
+                for (j = 0; j < series[key].length; ++j) {
+                    if (series[key][j][0] > pos.x) {
+                        break;
+                    }
+                }
+
+                var y,
+                    p1 = series[key][j - 1],
+                    p2 = series[key][j];
+
+                if(!_.isUndefined(p1) && !_.isUndefined(p2)){
+                    if (p1 === null) {
+                        y = p2[1];
+                    } else if (p2 === null) {
+                        y = p1[1];
+                    } else {
+                        y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
+                    }
+                    
+                    d.push({label: this.formatLabel(series.name), data: y});
+                }
+            }
+            return d;
         },
 
         renderTableOilBudget: function(dataset){
@@ -429,85 +509,6 @@ define([
                 nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
             }
-        },
-
-        timelineHover: function(e, pos, item){
-            if(!this.renderPiesTimeout){
-                this.pos = pos;
-                this.renderPiesTimeout =  setTimeout(_.bind(function(){
-                    this.renderPies();
-                }, this), 50);
-            }
-        },
-
-        renderPies: function(){
-            this.renderPiesTimeout = null;
-            var i, j;
-            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
-            var pos = this.pos;
-            var lowData = this.getPieData(pos, dataset, 'low');
-            var nominalData = this.getPieData(pos, dataset, 'data');
-            var highData = this.getPieData(pos, dataset, 'high');
-
-            var chartOptions = {
-                series: {
-                    pie: {
-                        show: true,
-                        stroke: {
-                            width: 0
-                        },
-                        label: {
-                            formatter: _.bind(function(label, series){
-                                var units = webgnome.model.get('spills').at(0).get('units');
-                                return '<div><span style="background:' + series.color + ';"></span>' + label + '<br>' + this.formatNumber(Math.round(series.data[0][1])) + ' ' + units + ' (' + Math.round(series.percent) + '%)</div>';
-                            }, this),
-                            radius: 3/4
-                        }
-                    }
-                },
-                legend: {
-                    show: false
-                }
-            };
-
-            // possibly rewrite this part to update the data set and redraw the chart
-            // might be more effecient than completely reinitalizing
-            if(nominalData.length > 0){
-                this.lowPlot = $.plot('.fate .minimum', lowData, chartOptions);
-                this.nominalPlot = $.plot('.fate .mean', nominalData, chartOptions);
-                this.highPlot = $.plot('.fate .maximum', highData, chartOptions);
-            }
-        },
-
-        getPieData: function(pos, dataset, key){
-            d = [];
-            for (i = 0; i < dataset.length; ++i) {
-
-                var series = dataset[i];
-
-                for (j = 0; j < series[key].length; ++j) {
-                    if (series[key][j][0] > pos.x) {
-                        break;
-                    }
-                }
-
-                var y,
-                    p1 = series[key][j - 1],
-                    p2 = series[key][j];
-
-                if(!_.isUndefined(p1) && !_.isUndefined(p2)){
-                    if (p1 === null) {
-                        y = p2[1];
-                    } else if (p2 === null) {
-                        y = p1[1];
-                    } else {
-                        y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
-                    }
-                    
-                    d.push({label: this.formatLabel(series.name), data: y});
-                }
-            }
-            return d;
         },
 
         pruneDataset: function(dataset, leaves){
