@@ -111,6 +111,8 @@ define([
                 this.renderGraphDispersion(this.dataset);
             } else if(active == '#density') {
                 this.renderGraphDensity(this.dataset);
+            } else if(active == '#emulsification') {
+                this.renderGraphEmulsification(this.dataset);
             }
         },
 
