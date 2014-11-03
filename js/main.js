@@ -31,6 +31,7 @@ require.config({
         flotcrosshair: 'lib/flot/jquery.flot.crosshair',
         flotstack: 'lib/flot/jquery.flot.stack',
         flotpie: 'lib/flot/jquery.flot.pie',
+        flotfillarea: 'lib/flotfillarea/jquery.flot.fillarea',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
         'doc-ready': 'lib/doc-ready/',
@@ -58,6 +59,7 @@ require.config({
         flotcrosshair: ['flot'],
         flotstack: ['flot'],
         flotpie: ['flot'],
+        flotfillarea: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'

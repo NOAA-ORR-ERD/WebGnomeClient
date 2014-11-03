@@ -62,12 +62,10 @@ define([
 
         initialize: function(){
             if(webgnome.hasModel()){
-                webgnome.model.on('sync', this.updateObjects, this);
                 this.render();
             } else {
                 webgnome.model = new GnomeModel();
                 webgnome.model.setup(_.bind(function(){
-                    webgnome.model.on('sync', this.updateObjects, this);
                     this.render();
                 }, this));
             }
@@ -80,7 +78,6 @@ define([
             });
 
             $('body').append(this.$el.append(compiled));
-
             
             this.initMason();
 
@@ -92,8 +89,6 @@ define([
                     this.$('.fate').click();
                 }
             }, this), 1);
-
-            this.updateObjects();
 
             this.$('.date').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
@@ -160,6 +155,7 @@ define([
             } else {
                 this.togglePrediction(e, target);
             }
+            this.$('.stage-2').show();
         },
 
         togglePrediction: function(e, target){
@@ -181,7 +177,9 @@ define([
                 this.showAllObjects();
             }
             setTimeout(_.bind(function(){
-                this.mason.layout();
+                webgnome.model.on('sync', this.updateObjects, this);
+                this.initMason();
+                this.updateObjects();
             }, this), 100);
         },
 
@@ -246,7 +244,11 @@ define([
                 container: 'body',
                 delay: delay
             });
-            
+            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
+                this.$('.stage-3').show();
+            } else {
+                this.$('.stage-3').hide();
+            }
             this.mason.layout();
         },
 

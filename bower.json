@@ -25,6 +25,7 @@
         "flotdirection": "https://jquery-flot-direction.googlecode.com/files/jquery.flot.direction.js",
         "flotspline": "git://github.com/alexbardas/flot.git",
         "flot.tooltip": "~0.8.4",
+        "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
         "masonry": "*",
         "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.5",
         "sweetalert": "0.2.1"
