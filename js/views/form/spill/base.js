@@ -32,8 +32,7 @@ define([
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
-				'blur .start': 'manualMapInput_start',
-                'blur .end': 'manualMapInput_end'
+				'blur .geo-info': 'manualMapInput'
 			}, FormModal.prototype.events);
 		},
 
@@ -119,7 +118,6 @@ define([
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
-
                 draw.on('drawend', _.bind(function(e){
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (this.source.getFeatures().length > 1){
@@ -132,7 +130,6 @@ define([
                     var coordsArray = e.feature.getGeometry().getCoordinates();
                     for (var i = 0; i < coordsArray.length; i++){
                         coordsArray[i] = new ol.proj.transform(coordsArray[i], 'EPSG:3857', 'EPSG:4326');
-                        coordsArray[i].push(0);
                     }
                     var startPoint = coordsArray[0];
                     var endPoint = coordsArray[coordsArray.length - 1];
@@ -148,35 +145,18 @@ define([
                 }, this), 250);
                 var startPosition = _.initial(this.model.get('release').get('start_position'));
                 if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                    startPosition = ol.proj.transform(startPosition, 'EPSG:4326', 'EPSG:3857');
-                    var feature = new ol.Feature(new ol.geom.Point(startPosition));
-                    feature.setStyle(new ol.style.Style({
-                        image: new ol.style.Icon({
-                            anchor: [0.5, 1.0],
-                            src: '/img/spill-pin.png',
-                            size: [32, 40]
-                        })
-                    }));
+                    var startPoint = this.convertCoords(this.model.get('release').get('start_position'));
+                    var endPoint = this.convertCoords(this.model.get('release').get('end_position'));
+                    startPoint = ol.proj.transform(startPoint, 'EPSG:4326', 'EPSG:3857');
+                    endPoint = ol.proj.transform(endPoint, 'EPSG:4326', 'EPSG:3857');
+                    var pointsArray = [startPoint, endPoint];
+                    var feature = new ol.Feature(new ol.geom.LineString(pointsArray));
                     feature.set('name', 'start');
                     this.source.addFeature(feature);
                     
-                    this.spillMapView.map.getView().setCenter(startPosition);
+                    this.spillMapView.map.getView().setCenter(startPoint);
                     this.spillMapView.map.getView().setZoom(15);
                 }
-                var endPosition = _.initial(this.model.get('release').get('end_position'));
-                if (endPosition[0] !== 0 && endPosition[1] !== 0){
-                    endPosition = ol.proj.transform(endPosition, 'EPSG:4326', 'EPSG:3857');
-                    var feature = new ol.Feature(new ol.geom.Point(endPosition));
-                    feature.setStyle(new ol.style.Style({
-                        image: new ol.style.Icon({
-                            anchor: [0.5, 1.0],
-                            src: '/img/spill-pin.png',
-                            size: [32, 40]
-                        })
-                    }));
-                    feature.set('name', 'end');
-                    this.source.addFeature(feature);
-                } 
             }
         },
 
@@ -212,60 +192,32 @@ define([
             }
 		},
 
-        manualMapInput_start: function(){
-            this.mapRender();
-            var feature = this.source.forEachFeature(_.bind(function(feature){
-                        if (feature.get('name') === 'start'){
-                            return feature;
-                        }
-                    }, this));
-            if (feature){
-                this.source.removeFeature(feature);
-            }
-            var coords = [this.$('#start-lon').val(), this.$('#start-lat').val()];
-            coords = this.coordsParse(coords);
-            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-            feature = new ol.Feature(new ol.geom.Point(coords));
-            feature.setStyle(new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 1.0],
-                    src: '/img/spill-pin.png',
-                    size: [32, 40]
-                })
-            }));
-            feature.set('name', 'start');
-            var position = [coords[0], coords[1], 0];
-            this.model.get('release').set('start_position', position);
-            this.source.addFeature(feature);
-            this.spillMapView.map.getView().setCenter(coords);
-            this.spillMapView.map.getView().setZoom(15);
+        convertCoords: function(coordsArray){
+            coordsArray.pop();
+            return coordsArray;
         },
 
-        manualMapInput_end: function(){
+        manualMapInput: function(){
             this.mapRender();
             var feature = this.source.forEachFeature(_.bind(function(feature){
-                        if (feature.get('name') === 'end'){
-                            return feature;
-                        }
+                        return feature;
                     }, this));
             if (feature){
                 this.source.removeFeature(feature);
             }
-            var coords = [this.$('#end-lon').val(), this.$('#end-lat').val()];
-            coords = this.coordsParse(coords);
-            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-            feature = new ol.Feature(new ol.geom.Point(coords));
-            feature.setStyle(new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 1.0],
-                    src: '/img/spill-pin.png',
-                    size: [32, 40]
-                })
-            }));
-            feature.set('name', 'end');
-            var position = [coords[0], coords[1], 0];
-            this.model.get('release').set('end_position', position);
+            var startCoords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
+            var endCoords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
+            startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
+            endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
+            var coordsArray = [startCoords, endCoords];
+            feature = new ol.Feature(new ol.geom.LineString(coordsArray));
+            var startPosition = [startCoords[0], startCoords[1], 0];
+            var endPosition = [endCoords[0], endCoords[1], 0];
+            this.model.get('release').set('start_position', startPosition);
+            this.model.get('release').set('end_position', endPosition);
             this.source.addFeature(feature);
+            this.spillMapView.map.getView().setCenter(startCoords);
+            this.spillMapView.map.getView().setZoom(15);
         },
 
         coordsParse: function(coordsArray){
