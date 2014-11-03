@@ -88,6 +88,7 @@ define([
                 } else {
                     this.$('.fate').click();
                 }
+                webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
             this.$('.date').datetimepicker({
@@ -176,11 +177,10 @@ define([
             } else{
                 this.showAllObjects();
             }
+
             setTimeout(_.bind(function(){
-                webgnome.model.on('sync', this.updateObjects, this);
-                this.initMason();
                 this.updateObjects();
-            }, this), 100);
+            }, this), 1);
         },
 
         showFateObjects: function(){
