@@ -88,6 +88,7 @@ define([
                 } else {
                     this.$('.fate').click();
                 }
+                webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
             this.$('.date').datetimepicker({
@@ -105,7 +106,7 @@ define([
             var container = this.$('.model-objects').get(0);
             this.mason = new Masonry(container, {
                 columnWidth: function(colwidth){
-                    return $('.model-objects .col-md-3:visible').outerWidth();
+                    return $('.setup .col-md-6').outerWidth() / 2;
                 }(),
                 item: '.object',
             });
@@ -176,11 +177,10 @@ define([
             } else{
                 this.showAllObjects();
             }
+
             setTimeout(_.bind(function(){
-                webgnome.model.on('sync', this.updateObjects, this);
-                this.initMason();
                 this.updateObjects();
-            }, this), 100);
+            }, this), 1);
         },
 
         showFateObjects: function(){
