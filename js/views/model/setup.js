@@ -105,7 +105,7 @@ define([
             var container = this.$('.model-objects').get(0);
             this.mason = new Masonry(container, {
                 columnWidth: function(colwidth){
-                    return $('.model-objects .col-md-3:visible').outerWidth();
+                    return $('.setup .col-md-6').outerWidth() / 2;
                 }(),
                 item: '.object',
             });
