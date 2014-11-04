@@ -33,6 +33,65 @@ define([
             }
         },
 
+        convertAreaToSquareMeters: function(){
+            var a = this.get('area');
+            var u = this.get('units').area;
+
+            if (u === 'sq. km') {
+                a = a * 1000 * 1000;
+            } else if (u === 'sq. miles') {
+                a = a * 2.59 * 1000 * 1000;
+            } else if (u === 'hectares') {
+                a = a * 10000;
+            } else if (u === 'acres') {
+                a = a * 4046.86;
+            }
+            return a;
+        },
+
+        convertDiameterToMeters: function(){
+            var a = this.get('diameter');
+            var u = this.get('units').diameter;
+
+            if (u === 'km') {
+                a = a * 1000;
+            } else if (u === 'miles') {
+                a = a * 2.59 * 1000;
+            }
+            return a;
+        },
+
+        convertDistanceToMeters: function(){
+            var a = this.get('distance');
+            var u = this.get('units').distance;
+
+            if (u === 'km') {
+                a = a * 1000;
+            } else if (u === 'miles') {
+                a = a * 2.59 * 1000;
+            }
+            return a;
+        },
+
+        convertDepthToMeters: function(){
+            var a = this.get('depth');
+            var u = this.get('units').depth;
+
+            if (u === 'ft') {
+                a = a * 0.3048;
+            } else if (u === 'yards') {
+                a = a * 0.9144;
+            }
+            return a;
+        },
+
+        convertDurationToSeconds: function(){
+            var h = this.get('duration').hours;
+            var d = this.get('duration').days;
+
+            return (h * 3600) + (d * 3600 * 24);
+        },
+
         validate: function(attrs, options){
             if (attrs.area < 1 || attrs.area === ''){
                 return 'Water area must be greater than zero!';

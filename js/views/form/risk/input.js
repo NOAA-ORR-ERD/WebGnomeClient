@@ -81,6 +81,12 @@ define([
         risk_assessment: function(){
             console.log('assessing risk!!!!!!!');
             var spills = webgnome.model.get('spills');
+            var area = this.model.convertAreaToSquareMeters();
+            var diameter = this.model.convertDiameterToMeters();
+            var distance = this.model.convertDistanceToMeters();
+            var depth = this.model.convertDepthToMeters();
+            var duration = this.model.convertDurationToSeconds();
+            console.log('values are ', area, diameter, distance, depth, duration);
         }
     });
 
