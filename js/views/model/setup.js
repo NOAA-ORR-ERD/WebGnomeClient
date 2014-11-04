@@ -295,7 +295,7 @@ define([
                     });
                     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 } else {
-                    compiled = '<div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="chart"></div>';
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Timeline (24 hrs)</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
 
@@ -329,7 +329,7 @@ define([
 
                 if(!_.isUndefined(dataset)){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.windPlot = $.plot('.wind .chart', dataset, {
+                    this.windPlot = $.plot('.wind .chart .canvas', dataset, {
                         grid: {
                             borderWidth: 1,
                             borderColor: '#ddd'
@@ -529,7 +529,7 @@ define([
         },
 
         renderSpillRelease: function(dataset){
-            this.spillPlot = $.plot('.spill .chart', dataset, {
+            this.spillPlot = $.plot('.spill .chart .canvas', dataset, {
                 grid: {
                     borderWidth: 1,
                     borderColor: '#ddd',

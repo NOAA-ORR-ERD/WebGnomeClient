@@ -79,7 +79,8 @@ define([
                 wave_height: wave_height,
                 water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                 release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
-                total_released: total_released
+                total_released: total_released,
+                units: spills.at(0).get('units')
             });
             this.$el.html(compiled);
             var units = spills.at(0).get('units');
@@ -121,7 +122,7 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
             if(_.isUndefined(this.graphOilBudget)){
-                this.graphOilBudget = $.plot('#budget-graph .timeline .chart', dataset, {
+                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -149,7 +150,7 @@ define([
                     }
                 });
                 this.renderPiesTimeout = null;
-                this.$('#budget-graph .timeline .chart').on('plothover', _.bind(this.timelineHover, this));
+                this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
                 this.graphOilBudget.setData(dataset);
                 this.graphOilBudget.setupGrid();
@@ -202,9 +203,9 @@ define([
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
-                this.lowPlot = $.plot('.fate .minimum', lowData, chartOptions);
-                this.nominalPlot = $.plot('.fate .mean', nominalData, chartOptions);
-                this.highPlot = $.plot('.fate .maximum', highData, chartOptions);
+                this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
+                this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
             }
         },
 
@@ -313,7 +314,7 @@ define([
             dataset = this.pluckDataset(dataset, ['evaporated']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
-                this.graphEvaporation = $.plot('#evaporation .timeline .chart', dataset, {
+                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -342,7 +343,7 @@ define([
             dataset = this.pluckDataset(dataset, ['dispersed']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
-                this.graphDispersion = $.plot('#dispersion .timeline .chart', dataset, {
+                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -371,7 +372,7 @@ define([
             dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
-                this.graphDensity = $.plot('#density .timeline .chart', dataset, {
+                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -400,7 +401,7 @@ define([
             dataset = this.pluckDataset(dataset, ['water']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsificaiton)){
-                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart', dataset, {
+                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
@@ -430,7 +431,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             console.log(dataset);
             if(_.isUndefined(this.graphViscosity)){
-                this.graphViscosity = $.plot('#viscosity .timeline .chart', dataset, {
+                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
