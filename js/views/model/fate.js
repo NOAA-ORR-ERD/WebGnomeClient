@@ -163,16 +163,18 @@ define([
         timelineHover: function(e, pos, item){
             if(!this.renderPiesTimeout){
                 this.pos = pos;
-                this.renderPiesTimeout =  setTimeout(_.bind(function(){
-                    if(this.$('#budget-graph:visible .timeline .chart').length == 1){
-                        this.renderPies();
-                    }
+                this.renderPiesTimeout = setTimeout(_.bind(function(){
+                    this.renderPies();
                 }, this), 50);
             }
         },
 
         renderPies: function(){
             this.renderPiesTimeout = null;
+            if(this.$('#budget-graph:visible .timeline .chart').length != 1){
+                return;
+            }
+            
             var i, j;
             var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
             var pos = this.pos;
