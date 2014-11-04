@@ -7,7 +7,7 @@ define([
     'views/default/map',
     'ol',
     'model/spill',
-    'views/form/spill',
+    'views/form/spill/continue',
     'model/step',
     'mousetrap',
     'jqueryui/slider',
