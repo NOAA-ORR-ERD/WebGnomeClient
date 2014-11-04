@@ -75,7 +75,7 @@ define([
                 name: substance.get('name'),
                 api: substance.get('api'),
                 wind_speed: wind_speed,
-                pour_point: pour_point,
+                pour_point: pour_point + ' &deg;C',
                 wave_height: wave_height,
                 water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                 release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
