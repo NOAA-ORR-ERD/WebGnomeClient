@@ -402,10 +402,11 @@ define([
         loadSpill: function(e){
             var spillId = $(e.target).parents('.single').data('id');
             var spill = webgnome.model.get('spills').get(spillId);
+            var spillView;
             if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
-                var spillView = new SpillContinueView(null, spill);
+                spillView = new SpillContinueView(null, spill);
             } else {
-                var spillView = new SpillInstantView(null, spill);
+                spillView = new SpillInstantView(null, spill);
             }
             spillView.on('wizardclose', function(){
                 spillView.on('hidden', spillView.close);

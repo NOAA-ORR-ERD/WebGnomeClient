@@ -21,7 +21,8 @@ define([
 
         events: {
             'shown.bs.tab': 'renderGraphs',
-            'change #budget-table select': 'renderTableOilBudget'
+            'change #budget-table select': 'renderTableOilBudget',
+            'click #budget-table .export a': 'downloadTableOilBudget'
         },
 
         initialize: function(){
@@ -75,7 +76,7 @@ define([
                 name: substance.get('name'),
                 api: substance.get('api'),
                 wind_speed: wind_speed,
-                pour_point: pour_point,
+                pour_point: pour_point + ' &deg;C',
                 wave_height: wave_height,
                 water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                 release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
@@ -162,16 +163,18 @@ define([
         timelineHover: function(e, pos, item){
             if(!this.renderPiesTimeout){
                 this.pos = pos;
-                this.renderPiesTimeout =  setTimeout(_.bind(function(){
-                    if(this.$('#budget-graph:visible .timeline .chart').length == 1){
-                        this.renderPies();
-                    }
+                this.renderPiesTimeout = setTimeout(_.bind(function(){
+                    this.renderPies();
                 }, this), 50);
             }
         },
 
         renderPies: function(){
             this.renderPiesTimeout = null;
+            if(this.$('#budget-graph:visible .timeline .chart').length != 1){
+                return;
+            }
+            
             var i, j;
             var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
             var pos = this.pos;
@@ -261,8 +264,10 @@ define([
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
-                    duration.asHours() <= 24 && ts_date.hours() % 3 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() > 24 && ts_date.hours() % 6 === 0 && ts_date.minutes() === 0){
+                    duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
                     var row_html = $('<tr></tr>');
 
                     if(display.time === 'date'){
@@ -308,6 +313,46 @@ define([
                     table.append(row_html);
                 }
             }
+        },
+
+        downloadTableOilBudget: function(e){
+            var table = this.$('#budget-table table');
+            var type = $(e.target).data('type');
+            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' Oil Budget Table Export' : 'Oil Budget Table Export';
+            var filename = name + '.' + type;
+            var content = '';
+
+            switch(type){
+                case 'csv':
+                    content = this.tableToCSV(table);
+                    break;
+                case 'html':
+                    content = this.tableToHTML(table);
+                    break;
+            }
+
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            pom.setAttribute('download', filename);
+            pom.click();
+        },
+
+        tableToCSV: function(table){
+            var csv = [];
+            var rows = table.find('tr');
+            rows.each(function(row){
+                var csv_row = '';
+                var cells = $(rows[row]).find('th, td');
+                cells.each(function(cell){
+                    csv_row += $(cells[cell]).text() + ',';
+                });
+                csv.push(csv_row);
+            });
+            return csv.join('\r\n');
+        },
+
+        tableToHTML: function(table){
+            return '<table>' + table.html() + '</table>';
         },
 
         renderGraphEvaporation: function(dataset){
