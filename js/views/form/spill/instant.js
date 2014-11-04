@@ -7,10 +7,9 @@ define([
     'model/spill',
     'views/form/oil/library',
     'views/default/map',
-    'geolib',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
@@ -76,14 +75,6 @@ define([
             var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
             var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
             var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
-
-            if (startLat.indexOf('°') !== -1){
-                startLat = geolib.sexagesimal2decimal(startLat);
-            }
-
-            if (startLon.indexOf('°') !== -1){
-                startLon = geolib.sexagesimal2decimal(startLon);
-            }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];

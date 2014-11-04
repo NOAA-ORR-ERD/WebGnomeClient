@@ -11,7 +11,6 @@ require.config({
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
-        geolib: 'lib/geolib/dist/geolib',
         text: 'lib/requirejs-text/text',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
@@ -74,9 +73,6 @@ require.config({
         chosen: {
             deps: ['jquery'],
             exports: 'jQuery.fn.chosen'
-        },
-        geolib: {
-            exports: 'geolib'
         },
         sweetalert: {
             exports: 'swal'
