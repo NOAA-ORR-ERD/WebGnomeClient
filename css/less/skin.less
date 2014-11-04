@@ -19,6 +19,46 @@ img{
     }
 }
 
+
+.chart{
+    position: relative;
+    width: 100%;
+
+    .xaxisLabel{
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+    }
+    .yaxisLabel {
+        top: 50%;
+        left: 0;
+        margin-top: -1%;
+        transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -webkit-transform: rotate(-90deg);
+        transform-origin: 0 0;
+        -o-transform-origin: 0 0;
+        -ms-transform-origin: 0 0;
+        -moz-transform-origin: 0 0;
+        -webkit-transform-origin: 0 0;
+    }
+    .axisLabel {
+        position: absolute;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .canvas{
+        position: absolute;
+        left: 20px;
+        right: 0;
+        top: 0;
+        bottom: 20px;
+    }
+}
+
 nav.navbar{
     border-radius: 0;
     margin-bottom: 0;
@@ -402,28 +442,7 @@ nav.navbar{
             position: relative;
 
             .chart{
-                height: 200px;
-                margin-left: 15px;
-            }
-
-            .yaxisLabel {
-                top: 50%;
-                left: 25px;
-                transform: rotate(-90deg);
-                -o-transform: rotate(-90deg);
-                -ms-transform: rotate(-90deg);
-                -moz-transform: rotate(-90deg);
-                -webkit-transform: rotate(-90deg);
-                transform-origin: 0 0;
-                -o-transform-origin: 0 0;
-                -ms-transform-origin: 0 0;
-                -moz-transform-origin: 0 0;
-                -webkit-transform-origin: 0 0;
-            }
-            .axisLabel {
-                position: absolute;
-                text-align: center;
-                font-size: 12px;
+                height: 215px;
             }
         }
 
@@ -480,10 +499,6 @@ nav.navbar{
                 }
             }
 
-            .yaxisLabel {
-                top: 150px;
-                left: 25px;
-            }
             .plus-sign{
                 .pull-right;
                 cursor: pointer;
@@ -946,7 +961,7 @@ nav.navbar{
                 bottom: 0;
                 left: 0;
                 right: 0;
-                top: 30px;
+                top: 0;
             }
         }
 
