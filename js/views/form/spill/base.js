@@ -7,11 +7,11 @@ define([
 	'model/spill',
 	'views/form/oil/library',
 	'views/default/map',
-	'geolib',
+	'nucos',
 	'ol',
 	'moment',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib, ol, moment){
+], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, nucos, ol, moment){
 	var baseSpillForm = FormModal.extend({
 
 		mapShown: false,
@@ -205,8 +205,8 @@ define([
             if (feature){
                 this.source.removeFeature(feature);
             }
-            var startCoords = [parseFloat(this.$('#start-lon').val()), parseFloat(this.$('#start-lat').val())];
-            var endCoords = [parseFloat(this.$('#end-lon').val()), parseFloat(this.$('#end-lat').val())];
+            var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
+            var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
             startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
             endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
             var coordsArray = [startCoords, endCoords];
@@ -223,7 +223,7 @@ define([
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
                 if (coordsArray[i].indexOf('°') !== -1){
-                    coordsArray[i] = geolib.sexagesimal2decimal(coordsArray[i]);
+                    coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
                 }
                 coordsArray[i] = parseFloat(coordsArray[i]);
             }
