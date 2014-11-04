@@ -2,12 +2,17 @@
 	<div class="container">
 		<div class="col-md-6">
 			<div class="row">
+
+					<label class="control-label" for="benefit">Benefit:</label>
+				<div class="col-sm-12">
+					<canvas id="benefit">
+				</div>
+			</div>
+			<div class="row">
 				<div class="form-group">
-                        		<div class="col-sm-12">
-                            			<label class="control-label">Skimming recovery efficiency:</label>
-                        		</div>
-                        		<div class="col-sm-10 col-sm-offset-1">
-                            			<div class="slider-skimming"></div>
+                        		<div class="col-sm-10">
+                            			<label class="control-label" for="slider-skimming">Skimming recovery efficiency:</label>
+                            			<div id="slider-skimming" class="slider-skimming"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
@@ -15,11 +20,9 @@
 			</div>
 			<div class="row">
 				<div class="form-group">
-                        		<div class="col-sm-12">
-                            			<label class="control-label">Dispersant effectiveness:</label>
-                        		</div>
-                        		<div class="col-sm-10 col-sm-offset-1">
-                            			<div class="slider-dispersant"></div>
+                        		<div class="col-sm-10">
+                            			<label class="control-label" for="slider-dispersant">Dispersant effectiveness:</label>
+                            			<div id="slider-dispersant" class="slider-dispersant"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
@@ -27,22 +30,18 @@
 			</div>
 			<div class="row">
 				<div class="form-group">
-                        		<div class="col-sm-12">
-                            			<label class="control-label">In-situ burn efficiency:</label>
-                        		</div>
-                        		<div class="col-sm-10 col-sm-offset-1">
-                            			<div class="slider-in-situ-burn"></div>
+                        		<div class="col-sm-10">
+                            			<label class="control-label" for="slider-in-situ-burn">In-situ burn efficiency:</label>
+                            			<div id="slider-in-situ-burn" class="slider-in-situ-burn"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="form-group">
-					<label class="col-sm-5 control-label">Resources:</label>
-					<div class="col-sm-6">
-						<canvas id="resources" class="form-control" height="500" width="500">
-					</div>
+				<div class="col-sm-12">
+					<label class="control-label" for="importance">Relative Importance:</label>
+					<canvas id="importance" height="300" width="300">
 				</div>
 			</div>
 		</div>

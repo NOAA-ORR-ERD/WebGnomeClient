@@ -9,14 +9,6 @@ define([
         className: 'modal fade form-modal risk-form',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="btn btn-info run">Run</button>',
-
-        events: function() {
-            return _.defaults({
-                'shown.bs.modal': 'triggerInputs',
-		'click .run': 'run'
-            }, FormModal.prototype.events);
-        },
 
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
@@ -42,12 +34,25 @@ define([
             this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
+
+            if (!webgnome.validModel()) {
+                this.$('.next').addClass('disabled');
+            }
         },
 
+        // overide the 'Next' button event method
         save: function(callback){
-            this.hide();
-            this.trigger('save');
-            if(_.isFunction(callback)) callback();
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+
+                this.risk_assessment();
+
+                this.hide();
+                this.trigger('save');
+                if(_.isFunction(callback)) callback();
+            }
         },
 
         update: function(){
@@ -73,16 +78,10 @@ define([
             }
         },
 
-        run: function(){
-console.log('continuing on to running assessment');
-            FormModal.prototype.close.call(this);
-            this.trigger('wizardclose');
-        },
-
-        triggerInputs: function(){
-            this.$('#data-source').trigger('change');
+        risk_assessment: function(){
+            console.log('assessing risk!!!!!!!');
+            var spills = webgnome.model.get('spills');
         }
-
     });
 
     return riskForm;

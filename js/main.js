@@ -39,7 +39,9 @@ require.config({
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
-        sweetalert: 'lib/sweetalert/lib/sweet-alert'
+        sweetalert: 'lib/sweetalert/lib/sweet-alert',
+        fabric: 'lib/fabric/dist/fabric',
+        gauge: 'lib/gauge/index'
         // nucos: 'lib/nucos/nucos'
     },
     shim: {
@@ -78,6 +80,12 @@ require.config({
         },
         sweetalert: {
             exports: 'swal'
+        },
+        fabric: {
+            exports: 'fabric'
+        },
+        gauge: {
+            exports: 'Gauge'
         }
     },
 });
