@@ -261,8 +261,10 @@ define([
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
-                    duration.asHours() <= 24 && ts_date.hours() % 3 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() > 24 && ts_date.hours() % 6 === 0 && ts_date.minutes() === 0){
+                    duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
+                    duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
                     var row_html = $('<tr></tr>');
 
                     if(display.time === 'date'){
