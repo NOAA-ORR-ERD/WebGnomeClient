@@ -21,7 +21,8 @@ define([
 
         events: {
             'shown.bs.tab': 'renderGraphs',
-            'change #budget-table select': 'renderTableOilBudget'
+            'change #budget-table select': 'renderTableOilBudget',
+            'click #budget-table .export a': 'downloadTableOilBudget'
         },
 
         initialize: function(){
@@ -310,6 +311,46 @@ define([
                     table.append(row_html);
                 }
             }
+        },
+
+        downloadTableOilBudget: function(e){
+            var table = this.$('#budget-table table');
+            var type = $(e.target).data('type');
+            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' Oil Budget Table Export' : 'Oil Budget Table Export';
+            var filename = name + '.' + type;
+            var content = '';
+
+            switch(type){
+                case 'csv':
+                    content = this.tableToCSV(table);
+                    break;
+                case 'html':
+                    content = this.tableToHTML(table);
+                    break;
+            }
+
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            pom.setAttribute('download', filename);
+            pom.click();
+        },
+
+        tableToCSV: function(table){
+            var csv = [];
+            var rows = table.find('tr');
+            rows.each(function(row){
+                var csv_row = '';
+                var cells = $(rows[row]).find('th, td');
+                cells.each(function(cell){
+                    csv_row += $(cells[cell]).text() + ',';
+                });
+                csv.push(csv_row);
+            });
+            return csv.join('\r\n');
+        },
+
+        tableToHTML: function(table){
+            return '<table>' + table.html() + '</table>';
         },
 
         renderGraphEvaporation: function(dataset){
