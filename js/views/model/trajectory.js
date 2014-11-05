@@ -456,7 +456,7 @@ define([
                 if(this.$('.on').hasClass('fixed')){
                     this.ol.map.un('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.un('click', this.addLineSpill, this);
+                    this.removeLineSpill();
                 }
 
                 this.$('.on').toggleClass('on');
@@ -469,7 +469,7 @@ define([
                 if(this.$(e.target).hasClass('fixed')){
                     this.ol.map.on('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.on('click', this.addLineSpill, this);
+                    this.addLineSpill();
                 }
             }
         },
@@ -506,33 +506,53 @@ define([
         },
 
         addLineSpill: function(e){
-            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-            coord.push(0);
-            this.spillCoords.push(coord);
-            if(this.spillCoords.length > 1){
+            var draw = new ol.interaction.Draw({
+                source: this.SpillIndexSource,
+                type: 'LineString'
+            });
+            this.ol.map.addInteraction(draw);
+            draw.on('drawend', _.bind(function(e){
+                var feature = this.SpillIndexSource.forEachFeature(_.bind(function(feature){
+                    if (this.SpillIndexSource.getFeatures().length > 1){
+                        return feature;
+                    }
+                }, this));
+                if (feature){
+                    this.SpillIndexSource.removeFeature(feature);
+                }
+                this.spillCoords = e.feature.getGeometry().getCoordinates();
+                var feature = new ol.Feature(new ol.geom.LineString(this.spillCoords));
+                this.SpillIndexSource.addFeature(feature);
+                for (var i = 0; i < this.spillCoords.length; i++){
+                    this.spillCoords[i] = new ol.proj.transform(this.spillCoords[i], 'EPSG:3857', 'EPSG:4326');
+                    this.spillCoords[i].push(0);
+                }
                 var spill = new GnomeSpill();
-                // add the dummy z-index thing
+
                 spill.get('release').set('start_position', this.spillCoords[0]);
                 spill.get('release').set('end_position', this.spillCoords[1]);
                 spill.get('release').set('release_time', webgnome.model.get('start_time'));
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-
-                spill.save(null, {
-                    validate: false,
-                    success: function(){
-                        var spillform = new SpillForm(null, spill);
-                        spillform.render();
-                        spillform.on('save', function(){
-                            webgnome.model.get('spills').add(spill);
-                            webgnome.model.save();
-                        });
-                        spillform.on('hidden', spillform.close);
-                    }
+                var spillform = new SpillForm(null, spill);
+                spillform.render();
+                spillform.on('save', function(){
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.save();
                 });
-
+                spillform.on('hidden', spillform.close);
                 this.toggleSpill();
+                this.ol.map.removeInteraction(draw);
 
-            }
+            }, this));
+        },
+
+        removeLineSpill: function(e){
+            var feature = this.SpillIndexSource.forEachFeature(_.bind(function(feature){
+                    if (this.SpillIndexSource.getFeatures().length > 1){
+                        return feature;
+                    }
+                }, this));
+            this.SpillIndexSource.removeFeature(feature);
         },
 
         addPointSpill: function(e){
