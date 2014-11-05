@@ -60,17 +60,8 @@ define([
             }
 
             var spills = webgnome.model.get('spills');
-            var total_released = 0;
-            var init_release = moment(spills.at(0).get('release').get('release_time')).unix();
-            spills.forEach(_.bind(function(spill){
-                var release_time = moment(spill.get('release').get('release_time')).unix();
-                if(init_release > release_time){
-                    init_release = release_time;
-                }
-
-                total_released += this.calcAmountReleased(spill, webgnome.model);
-            }, this));
-            total_released += ' ' + spills.at(0).get('units');
+            var init_release = this.findInitialRelease(spills);
+            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
 
             var compiled = _.template(FateTemplate, {
                 name: substance.get('name'),
@@ -250,12 +241,17 @@ define([
             dataset = this.pruneDataset(dataset, ['avg_density']);
             var table = this.$('#budget-table table');
             var display = {
-                time: this.$('#budget-table .time').val(),
-                released: this.$('#budget-table .released').val(),
-                other: this.$('#budget-table .other').val()
+                time: this.$('#budget-table .time').val().trim(),
+                released: this.$('#budget-table .released').val().trim(),
+                other: this.$('#budget-table .other').val().trim()
             };
             var converter = new nucos.OilQuantityConverter();
-            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var spill = webgnome.model.get('spills').at(0);
+            var substance = spill.get('element_type').get('substance');
+            var from_unit = spill.get('units');
+            var to_unit = display.released;
+            var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
+            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substance.get('api'), 'API degree', to_unit)) + ' ' + to_unit);
 
             table.html('');
             m_date = moment(webgnome.model.get('start_time'));
@@ -285,19 +281,17 @@ define([
                     }
                      
                     for (var set in dataset){
+                        to_unit = display.released;
                         if (row === 0) {
                             row_html.append('<th>' + dataset[set].label + '</th>');
                         } else {
                             var value = dataset[set].data[row][1];
-                            var to_unit = display.released;
-                            var from_unit = webgnome.model.get('spills').at(0).get('units');
-                            var api = substance.get('api');
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, from_unit, api, 'API degree', to_unit));
+                                 value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
                                  to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, from_unit, api, 'API degree', to_unit));
+                                    value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
                                     to_unit = ' ' + to_unit;
                                 } else if (display.other === 'percent'){
                                     to_unit = '%';
@@ -581,33 +575,55 @@ define([
 
         /**
          * Calculate the amount of oil released given the release start and end time in relation to the models end time.
-         * @param  {Object} spill      Spill object
-         * @param  {Object} model      gnome model object
-         * @return {Integer}           Amount of oil released in the models time period, same unit as spill.
+         * @param  {Collection} spills  Collection of spill objects
+         * @param  {Object} model       gnome model object
+         * @return {Integer}            Amount of oil released in the models time period, same unit as spill.
          */
-        calcAmountReleased: function(spill, model){
-            var amount = spill.get('amount');
-            var release_start = moment(spill.get('release').get('release_time')).unix();
-            var release_end = moment(spill.get('release').get('end_release_time')).unix();
-            if(release_start === release_end){
-                release_end += 2;
-            }
-            var model_end = moment(model.get('start_time')).add(model.get('duration'), 's').unix();
+        calcAmountReleased: function(spills, model){
+            var init_release = this.findInitialRelease(spills);
+            var total_amount = 0;
+            spills.forEach(_.bind(function(spill){
+                var release_time = moment(spill.get('release').get('release_time')).unix();
+                if(init_release > release_time){
+                    init_release = release_time;
+                }
 
-            // find the rate of the release per second.
-            var release_duration = release_end - release_start;
-            var release_per_second = amount / release_duration;
+                var amount = spill.get('amount');
+                var release_start = moment(spill.get('release').get('release_time')).unix();
+                var release_end = moment(spill.get('release').get('end_release_time')).unix();
+                if(release_start === release_end){
+                    release_end += 2;
+                }
+                var model_end = moment(model.get('start_time')).add(model.get('duration'), 's').unix();
 
-            // find the percentage of the release time that fits in the model 
-            var release_run_time;
-            if (model_end > release_end){
-                release_run_time = release_duration;
-            } else {
-                var overlap = release_end - model_end;
-                release_run_time = release_duration - overlap;
-            }
+                // find the rate of the release per second.
+                var release_duration = release_end - release_start;
+                var release_per_second = amount / release_duration;
 
-            return release_run_time * release_per_second;
+                // find the percentage of the release time that fits in the model 
+                var release_run_time;
+                if (model_end > release_end){
+                    release_run_time = release_duration;
+                } else {
+                    var overlap = release_end - model_end;
+                    release_run_time = release_duration - overlap;
+                }
+
+                total_amount += release_run_time * release_per_second;
+            }, this));
+            return total_amount;
+        },
+
+        findInitialRelease: function(spills){
+            var release_init = moment(spills.at(0).get('release').get('release_time')).unix();
+            spills.forEach(function(spill){
+                release_start = moment(spill.get('release').get('release_time')).unix();
+                if(release_start < release_init){
+                    release_init = release_start;
+                }
+            });
+
+            return release_init;
         },
 
         close: function(){
