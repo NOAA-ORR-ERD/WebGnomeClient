@@ -48,7 +48,6 @@ define([
                 oilName: oilName
             });
             BaseSpillForm.prototype.render.call(this, options);
-
             var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
             var rate = parseFloat(amount) / durationInMins;
 

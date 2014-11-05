@@ -44,7 +44,6 @@ define([
 				this.model = spillModel;
 			}
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
-
             if(this.model.get('name') == 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
@@ -54,7 +53,6 @@ define([
 			var geoCoords_start = this.model.get('release').get('start_position');
             var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
-
             FormModal.prototype.render.call(this, options);
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
@@ -193,6 +191,7 @@ define([
 		},
 
         convertCoords: function(coordsArray){
+            coordsArray = _.clone(coordsArray);
             coordsArray.pop();
             return coordsArray;
         },

@@ -456,7 +456,7 @@ define([
                 if(this.$('.on').hasClass('fixed')){
                     this.ol.map.un('click', this.addPointSpill, this);
                 } else {
-                    this.removeLineSpill();
+                    this.ol.map.removeInteraction(this.draw);
                 }
 
                 this.$('.on').toggleClass('on');
@@ -506,31 +506,20 @@ define([
         },
 
         addLineSpill: function(e){
-            var draw = new ol.interaction.Draw({
+            this.draw = new ol.interaction.Draw({
                 source: this.SpillIndexSource,
                 type: 'LineString'
             });
-            this.ol.map.addInteraction(draw);
-            draw.on('drawend', _.bind(function(e){
-                var feature = this.SpillIndexSource.forEachFeature(_.bind(function(feature){
-                    if (this.SpillIndexSource.getFeatures().length > 1){
-                        return feature;
-                    }
-                }, this));
-                if (feature){
-                    this.SpillIndexSource.removeFeature(feature);
-                }
-                this.spillCoords = e.feature.getGeometry().getCoordinates();
-                var feature = new ol.Feature(new ol.geom.LineString(this.spillCoords));
-                this.SpillIndexSource.addFeature(feature);
-                for (var i = 0; i < this.spillCoords.length; i++){
-                    this.spillCoords[i] = new ol.proj.transform(this.spillCoords[i], 'EPSG:3857', 'EPSG:4326');
-                    this.spillCoords[i].push(0);
+            this.ol.map.addInteraction(this.draw);
+            this.draw.on('drawend', _.bind(function(e){
+                var spillCoords = e.feature.getGeometry().getCoordinates();
+                for (var i = 0; i < spillCoords.length; i++){
+                    spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
+                    spillCoords[i].push('0');
                 }
                 var spill = new GnomeSpill();
-
-                spill.get('release').set('start_position', this.spillCoords[0]);
-                spill.get('release').set('end_position', this.spillCoords[1]);
+                spill.get('release').set('start_position', spillCoords[0]);
+                spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
                 spill.get('release').set('release_time', webgnome.model.get('start_time'));
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
                 var spillform = new SpillForm(null, spill);
@@ -541,18 +530,9 @@ define([
                 });
                 spillform.on('hidden', spillform.close);
                 this.toggleSpill();
-                this.ol.map.removeInteraction(draw);
+                console.log(spill);
 
             }, this));
-        },
-
-        removeLineSpill: function(e){
-            var feature = this.SpillIndexSource.forEachFeature(_.bind(function(feature){
-                    if (this.SpillIndexSource.getFeatures().length > 1){
-                        return feature;
-                    }
-                }, this));
-            this.SpillIndexSource.removeFeature(feature);
         },
 
         addPointSpill: function(e){
