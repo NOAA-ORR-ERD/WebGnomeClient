@@ -298,7 +298,7 @@ define([
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
                                 } else {
                                     to_unit = '';
-                                    value = value / dataset[0].data[row][1];
+                                    value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
                             row_html.append('<td>' + value + to_unit + '</td>');
