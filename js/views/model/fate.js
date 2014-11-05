@@ -335,18 +335,30 @@ define([
             var csv = [];
             var rows = table.find('tr');
             rows.each(function(row){
-                var csv_row = '';
+                var csv_row = [];
                 var cells = $(rows[row]).find('th, td');
                 cells.each(function(cell){
-                    csv_row += $(cells[cell]).text() + ',';
+                    csv_row.push($(cells[cell]).text());
                 });
-                csv.push(csv_row);
+                csv.push(csv_row.join(','));
+            });
+
+            var info = this.$('#budget-table .info div');
+            var cols = csv[0].split(',').length;
+            info.each(function(row){
+                cells = $(info[row]).text().split(':');
+                csv_row = [cells[0] + ':', cells[1]];
+
+                for(i = 0; i < cols.length - cells.length; i++){
+                    csv_row.push(' ');
+                }
+                csv.unshift(csv_row.join(','));
             });
             return csv.join('\r\n');
         },
 
         tableToHTML: function(table){
-            return '<table>' + table.html() + '</table>';
+            return this.$('#budget-table .info').html() + '<table>' + table.html() + '</table>';
         },
 
         renderGraphEvaporation: function(dataset){
