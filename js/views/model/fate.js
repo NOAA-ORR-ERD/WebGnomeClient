@@ -539,16 +539,31 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                low_value = low[this.dataset[set].name];
-                low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
-                this.dataset[set].low.push([date.unix() * 1000, low_value]);
+                if(['avg_density', 'dispersed', 'evaporated', 'emulsified', 'avg_viscosity'].indexOf(this.dataset[set].name) !== -1){
+                    min = _.min(step.get('WeatheringOutput'), function(run){
+                        return run[this.dataset[set].name];
+                    }, this);
+                    low_value = min[this.dataset[set].name];
+                    low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
-                high_value = high[this.dataset[set].name];
-                high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
-                this.dataset[set].high.push([date.unix() * 1000, high_value]);
+                    max = _.max(step.get('WeatheringOutput'), function(run){
+                        return run[this.dataset[set].name];
+                    }, this);
+                    high_value = max[this.dataset[set].name];
+                    high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
+                } else {
+                    low_value = low[this.dataset[set].name];
+                    low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
+
+                    high_value = high[this.dataset[set].name];
+                    high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
+                }
 
                 nominal_value = nominal[this.dataset[set].name];
                 nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+
+                this.dataset[set].high.push([date.unix() * 1000, high_value]);
+                this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
             }
         },
