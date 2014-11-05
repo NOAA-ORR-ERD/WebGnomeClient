@@ -41,8 +41,8 @@ define([
             }
 
             var pour_point;
-            var pp_min = substance.get('pour_point_min_k');
-            var pp_max = substance.get('pour_point_max_k');
+            var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+            var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
             if(pp_min === pp_max){
                 pour_point = pp_min;
             } else if (pp_min && pp_max) {
