@@ -274,7 +274,7 @@ define([
                         }
                     } else {
                         if(row === 0){
-                            row_html.append('<th>Hours into Spill</th>');
+                            row_html.append('<th>Time (hours)</th>');
                         } else {
                             row_html.append('<td>' + duration.asHours() + '</td>');
                         }
