@@ -113,6 +113,9 @@ define([
                 }, this)
             });
 
+            var variableSliderMax = this.$('#variable .slider').slider("option", "max");
+            this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * variableSliderMax);
+
             this.renderTimeseries();
 
         },
@@ -215,7 +218,8 @@ define([
             } else {
                 value = this.$('#variable .slider').slider('value');
             }
-
+            var variableSliderMax = this.$('#variable .slider').slider("option", "max");
+            this.model.set('speed_uncertainty_scale', value / parseFloat(variableSliderMax));
             this.renderTimeseries(value);
         },
 
