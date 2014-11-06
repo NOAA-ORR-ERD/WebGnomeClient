@@ -522,7 +522,7 @@ define([
                 spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
                 spill.get('release').set('release_time', webgnome.model.get('start_time'));
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-                var spillform = new SpillForm(null, spill);
+                var spillform = new SpillForm({showMap: true}, spill);
                 spillform.render();
                 spillform.on('save', function(){
                     webgnome.model.get('spills').add(spill);
@@ -549,7 +549,7 @@ define([
             spill.save(null, {
                 validate: false,
                 success: function(){
-                    var spillform = new SpillForm(null, spill);
+                    var spillform = new SpillForm({showMap: true}, spill);
                     spillform.render();
                     spillform.on('save', function(){
                         webgnome.model.get('spills').add(spill);

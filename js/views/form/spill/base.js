@@ -44,6 +44,7 @@ define([
 				this.model = spillModel;
 			}
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
+            this.showGeo = options.showMap;
             if(this.model.get('name') == 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
