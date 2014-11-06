@@ -2,9 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'views/modal/form',
+    'model/step',
     'text!templates/risk/input.html',
-], function($, _, Backbone, FormModal, RiskTemplate) {
+], function($, _, Backbone, moment, FormModal, StepModel, RiskTemplate) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -21,8 +23,7 @@ define([
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                hours: this.model.get('duration').hours,
-                days: this.model.get('duration').days,
+                assessment_time: this.model.get('assessment_time'),
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
                 shoreline: this.model.get('shoreline')
@@ -34,6 +35,10 @@ define([
             this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
+
+            this.$('.date').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker
+            });
 
             if (!webgnome.validModel()) {
                 this.$('.next').addClass('disabled');
@@ -60,10 +65,7 @@ define([
             this.model.set('diameter', this.$('#water-diameter').val());
             this.model.set('distance', this.$('#distance-from-shore').val());
             this.model.set('depth', this.$('#average-water-depth').val());
-            
-            var duration = this.model.get('duration');
-            duration.hours = this.$('#duration-hours').val();
-            duration.days = this.$('#duration-days').val();
+            this.model.set('assessment_time', moment(this.$('#assessment_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
             
             var units = this.model.get('units');
             units.area = this.$('#area-units').val();
@@ -71,23 +73,13 @@ define([
             units.distance = this.$('#distance-units').val();
             units.depth = this.$('#depth-units').val();
 
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
+//            if(!this.model.isValid()){
+//                this.error('Error!', this.model.validationError);
+//            } else {
+//                this.clearError();
+//            }
         },
 
-        risk_assessment: function(){
-            console.log('assessing risk!!!!!!!');
-            var spills = webgnome.model.get('spills');
-            var area = this.model.convertAreaToSquareMeters();
-            var diameter = this.model.convertDiameterToMeters();
-            var distance = this.model.convertDistanceToMeters();
-            var depth = this.model.convertDepthToMeters();
-            var duration = this.model.convertDurationToSeconds();
-            console.log('values are ', area, diameter, distance, depth, duration);
-        }
     });
 
     return riskForm;

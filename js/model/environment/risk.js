@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
+    'moment',
     'model/base',
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, moment, BaseModel){
     var risk = BaseModel.extend({
         urlRoot: '/environment/',
 
@@ -12,24 +13,31 @@ define([
             'diameter': 0,
             'distance': 0,
             'depth': 0,
-            duration: {
-                'hours': 0,
-                'days': 0
-            },
+            'assessment_time': 0,
 
             efficiency: {
-                'skimming': 50,
-                'dispersant': 50,
-                'insitu_burn': 50
+                'skimming': 100,
+                'dispersant': 100,
+                'insitu_burn': 100
             },
-            'surface': .33,
-            'column': .33,
-            'shoreline': .34,
+
+            'surface': 1/3,
+            'column': 1/3,
+            'shoreline': 1/3,
+
             units: {
                 'area': 'sq. km',
                 'diameter': 'km',
                 'distance': 'km',
                 'depth': 'm'
+            }
+        },
+
+        initialize: function(options){
+            if (!_.isUndefined(webgnome.model)){
+                this.assessment_time = moment(webgnome.model.get('start_time'));
+            } else {
+                this.assessment_time = moment();
             }
         },
 
@@ -85,13 +93,6 @@ define([
             return a;
         },
 
-        convertDurationToSeconds: function(){
-            var h = this.get('duration').hours;
-            var d = this.get('duration').days;
-
-            return (h * 3600) + (d * 3600 * 24);
-        },
-
         validate: function(attrs, options){
             if (attrs.area < 1 || attrs.area === ''){
                 return 'Water area must be greater than zero!';
@@ -105,8 +106,11 @@ define([
             if (attrs.depth < 1 || attrs.depth === ''){
                 return 'Average water depth must be greater than zero!';
             }
-            if ((attrs.duration.days*24 + attrs.duration.hours) <= 0){
-                return 'Duration time must be greater than zero!';
+            var st = moment(webgnome.model.get('start_time'));
+            var et = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
+            var at = moment(attrs.assessment_time);
+            if (at < st || at > et) {
+                return 'Assessment time must be occur during the model time range!';
             }
         }
 

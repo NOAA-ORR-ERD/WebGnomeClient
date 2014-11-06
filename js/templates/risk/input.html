@@ -61,18 +61,9 @@
 				</div>
 			</div>
 			<div class="row" style="margin-bottom: 15px;">
-				<label class="control-label col-sm-5" for="duration-hours">Duration:</label>
-				<div class="col-sm-3">
-					<div class="input-group">
-						<input type="text" id="duration-hours" class="form-control" value="{{ hours }}">
-						<span class="input-group-addon">hours</span>
-					</div>
-				</div>
-				<div class="col-sm-3">
-					<div class="input-group">
-						<input type="text" id="duration-days" class="form-control" value="{{ days }}">
-						<span class="input-group-addon">days</span>
-					</div>
+				<label class="control-label col-sm-5" for="duration-hours">Time:</label>
+				<div class="col-sm-6">
+					<input type="text" class="form-control date" id="assessment_time" value="{{ assessment_time }}" name="assessment_time">
 				</div>
 			</div>
 		</div>
