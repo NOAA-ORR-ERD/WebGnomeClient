@@ -26,7 +26,7 @@
     "flot.tooltip": "~0.8.4",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "masonry": "*",
-    "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.7",
+    "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.8",
     "sweetalert": "0.2.1"
   },
   "devDependencies": {
