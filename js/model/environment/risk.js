@@ -35,9 +35,9 @@ define([
 
         initialize: function(options){
             if (!_.isUndefined(webgnome.model)){
-                this.assessment_time = moment(webgnome.model.get('start_time'));
+                this.attributes.assessment_time = webgnome.model.get('start_time');
             } else {
-                this.assessment_time = moment();
+                this.attributes.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
             }
         },
 
