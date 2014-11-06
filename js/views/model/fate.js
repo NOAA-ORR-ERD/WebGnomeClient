@@ -27,7 +27,6 @@ define([
 
         initialize: function(){
             this.render();
-
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
         },
 
@@ -76,9 +75,15 @@ define([
                 total_released: total_released,
                 units: spills.at(0).get('units')
             });
+            
             this.$el.html(compiled);
             var units = spills.at(0).get('units');
             this.$('#budget-table .released').val(units);
+            this.$('#budget-table .export a').tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+
             $.get(webgnome.config.api + '/rewind');
             this.renderLoop();
         },
