@@ -274,7 +274,7 @@ define([
                         }
                     } else {
                         if(row === 0){
-                            row_html.append('<th>Hours into Spill</th>');
+                            row_html.append('<th>Time (hours)</th>');
                         } else {
                             row_html.append('<td>' + duration.asHours() + '</td>');
                         }
@@ -283,7 +283,12 @@ define([
                     for (var set in dataset){
                         to_unit = display.released;
                         if (row === 0) {
-                            row_html.append('<th>' + dataset[set].label + '</th>');
+                            if (dataset[set].name === 'amount_released' || display.other === 'same') {
+                                row_html.append('<th>' + dataset[set].label + ' (' + to_unit + ')</th>');
+                            } else {
+                                row_html.append('<th>' + dataset[set].label + ' (' + display.other + ')</th>');
+                            }
+
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
@@ -292,16 +297,13 @@ define([
                             } else {
                                 if(display.other === 'same'){
                                     value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
-                                    to_unit = ' ' + to_unit;
                                 } else if (display.other === 'percent'){
-                                    to_unit = '%';
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
                                 } else {
-                                    to_unit = '';
                                     value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
-                            row_html.append('<td>' + value + to_unit + '</td>');
+                            row_html.append('<td>' + value + '</td>');
                         }
                     }
                     table.append(row_html);
@@ -335,18 +337,30 @@ define([
             var csv = [];
             var rows = table.find('tr');
             rows.each(function(row){
-                var csv_row = '';
+                var csv_row = [];
                 var cells = $(rows[row]).find('th, td');
                 cells.each(function(cell){
-                    csv_row += $(cells[cell]).text() + ',';
+                    csv_row.push($(cells[cell]).text());
                 });
-                csv.push(csv_row);
+                csv.push(csv_row.join(','));
+            });
+
+            var info = this.$('#budget-table .info div');
+            var cols = csv[0].split(',').length;
+            info.each(function(row){
+                cells = $(info[row]).text().split(':');
+                csv_row = [cells[0] + ':', cells[1]];
+
+                for(i = 0; i < cols.length - cells.length; i++){
+                    csv_row.push(' ');
+                }
+                csv.unshift(csv_row.join(','));
             });
             return csv.join('\r\n');
         },
 
         tableToHTML: function(table){
-            return '<table>' + table.html() + '</table>';
+            return this.$('#budget-table .info').html() + '<table>' + table.html() + '</table>';
         },
 
         renderGraphEvaporation: function(dataset){
