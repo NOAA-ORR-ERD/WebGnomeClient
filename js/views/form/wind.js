@@ -101,6 +101,9 @@ define([
                 }, this)
             });
 
+            var constantSliderMax = this.$('#constant .slider').slider("option", "max");
+            this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * constantSliderMax);
+
             this.$('#variable .slider').slider({
                 min: 0,
                 max: 5,
@@ -235,6 +238,8 @@ define([
                     var top = parseInt(speed, 10) + parseInt(value, 10);
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
+                var constantSliderMax = this.$('#constant .slider').slider("option", "max");
+                this.model.set('speed_uncertainty_scale', value / parseFloat(constantSliderMax));
             }
             
         },
