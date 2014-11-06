@@ -644,7 +644,7 @@ nav.navbar{
             }
         }
     }
-    .tree{
+    > .tree{
         width: 0;
         position: absolute;
         left: 0;
@@ -730,7 +730,7 @@ nav.navbar{
             }
         }
     }
-    .map{
+    > .map{
         background-image: url('images/mapbg.png');
         overflow: hidden;
         position: absolute;
@@ -966,6 +966,19 @@ nav.navbar{
         }
 
         #budget-table{
+            .sticky{
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+
+                th{
+                    background: white;
+                }
+                td{
+                    visibility: hidden;
+                }
+            }
             .form-group{
                 margin-bottom: 0;
             }
