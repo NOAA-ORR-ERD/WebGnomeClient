@@ -283,7 +283,12 @@ define([
                     for (var set in dataset){
                         to_unit = display.released;
                         if (row === 0) {
-                            row_html.append('<th>' + dataset[set].label + '</th>');
+                            if (dataset[set].name === 'amount_released' || display.other === 'same') {
+                                row_html.append('<th>' + dataset[set].label + ' (' + to_unit + ')</th>');
+                            } else {
+                                row_html.append('<th>' + dataset[set].label + ' (' + display.other + ')</th>');
+                            }
+
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
@@ -292,16 +297,13 @@ define([
                             } else {
                                 if(display.other === 'same'){
                                     value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
-                                    to_unit = ' ' + to_unit;
                                 } else if (display.other === 'percent'){
-                                    to_unit = '%';
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
                                 } else {
-                                    to_unit = '';
                                     value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
-                            row_html.append('<td>' + value + to_unit + '</td>');
+                            row_html.append('<td>' + value + '</td>');
                         }
                     }
                     table.append(row_html);
