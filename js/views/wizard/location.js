@@ -2,43 +2,61 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/wizard/default',
+    'views/wizard/base',
     'model/gnome',
     'model/location',
     'model/environment/wind',
     'model/movers/wind',
+    'model/outputters/geojson',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
-], function($, _, Backbone, DefaultWizard, GnomeModel,
+    'views/modal/loading'
+], function($, _, Backbone, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    TextForm, ModelForm, WindForm){
-    var locationWizardView = DefaultWizard.extend({
+    GeojsonOutputter,
+    TextForm, ModelForm, WindForm, LoadingModal){
+    var locationWizardView = BaseWizard.extend({
         steps: [],
-
         initialize: function(opts){
-            webgnome.model = new GnomeModel();
-            webgnome.model.save(null, {validate: false});
-            webgnome.model.once('ready', _.bind(function(){
-                this.location = new GnomeLocation({id: opts.slug});
-                this.name = opts.name;
-                this.location.fetch({
-                    success: _.bind(this.found, this),
-                    error: this.notfound
-                });
-            }, this));
-            
+            this.loadingGif = new LoadingModal();
+            this.loadingGif.render();
+            this.location = new GnomeLocation({id: opts.slug});
+            this.name = opts.name;
+            this.location.fetch({
+                success: _.bind(this.found, this),
+                error: _.bind(this.notfound, this)
+            });
         },
 
         found: function(){
+            webgnome.model = new GnomeModel();
+            webgnome.model.fetch({
+                success: _.bind(this.loaded, this),
+                error: _.bind(this.failed_load, this)
+            });
+        },
+
+        failed_load: function(){
+            console.log('Location model failed to load');
+            alert('Location model failed to load.');
+            this.loadingGif.hide();
+        },
+
+        loaded: function(){
+            webgnome.model.setup(_.bind(this.load_location, this));
+        },
+
+        load_location: function(){
             // clear any previously loaded steps
-            _.each(this.steps, function(el, ind, ar){
+            _.each(this.steps, function(el){
                 el.close();
             });
             this.steps = [];
+            this.loadingGif.hide();
 
             // set up each step described in the location file.
-            _.each(this.location.get('steps'), _.bind(function(el, ind, ar){
+            _.each(this.location.get('steps'), _.bind(function(el){
                 var title = [];
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
@@ -70,6 +88,7 @@ define([
                             webgnome.model.get('environment').add(wind);
                             var windMover = new GnomeWindMover({wind: wind});
                             windMover.save(null, {
+                                validate: false,
                                 success: function(){
                                     webgnome.model.get('movers').add(windMover);
                                     webgnome.model.save();
@@ -94,6 +113,7 @@ define([
         notfound: function(){
             console.log('location was not found');
             alert('There was not a location found with that id.');
+            this.loadingGif.hide();
         }
     });
 

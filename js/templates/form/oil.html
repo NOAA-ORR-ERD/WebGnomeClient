@@ -1,0 +1,35 @@
+<div class="oilContainer">
+	<form class="form-horizontal oil-form" role="form">
+		<div class="form-group">
+			<label for="search" class="col-sm-2 control-label">Search:</label>
+			<div class="col-sm-4">
+				<input type="text" class="form-control" id="search" value="">
+			</div>
+			<label for="category" class="col-sm-2 control-label">Category:</label>
+			<div class="col-sm-4">
+				<select id="category" class="chosen-select">
+					<option class="category" value="" disabled selected>Category</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group" id="api">
+			<label for="api" class="col-sm-2 control-label">API (38 &deg;C):</label>
+			<div class="col-sm-3"><div class="sliders slider-all slider-api"></div></div>
+			<label for="viscosity" class="col-sm-3 control-label">Viscosity (15 &deg;C):<br><span>(cSt)</span></label>
+			<div class="col-sm-3"><div class="sliders slider-all slider-viscosity"></div></div>
+		</div>
+
+		<div class="form-group" id="pourpoint">
+			<label for="pourpoint" class="col-sm-2 control-label">Pour Point:<br><span>(K)</span></label>
+			<div class="col-xs-3"><div class="sliders slider-all slider-pourpoint"></div></div>
+		</div>
+
+	</form>
+	<div class="panel panel-default oilTable">
+		{{ oilTable }}
+	</div>
+	<sup class="resultsLength">Number of results: {{ results }}</sup>
+	<button class="btn btn-primary oilInfo">Oil Info...</button>
+</div>
+<div id="specificOilContainer"></div>

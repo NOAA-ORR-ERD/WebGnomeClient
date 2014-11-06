@@ -15,9 +15,16 @@ define([
         /**
          * @todo decomp the popover into a new view? How else to get load click event?
          */
-        initialize: function(){
+        initialize: function(options){
+            if (!_.isUndefined(options) && _.has(options, 'dom_target')) {
+                this.dom_target = options.dom_target;
+            } else {
+                this.dom_target = 'body';
+            }
+
             this.mapView = new olMapView({
                 controls: [],
+                id: 'locations-map',
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
@@ -25,7 +32,7 @@ define([
                     new ol.layer.Vector({
                         source: new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
-                            url: webgnome.api + '/location',
+                            url: webgnome.config.api + '/location',
                         }),
                         style: new ol.style.Style({
                             image: new ol.style.Icon({
@@ -41,7 +48,7 @@ define([
 
             // change mouse to pointer when hovering over a feature.
             this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature, layer){
+                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
                     return true;
                 });
                 if(pointer){
@@ -53,7 +60,7 @@ define([
 
             // clicking a location creates a popover with it's related information displayed
             this.mapView.map.on('click', function(e){
-                var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature, layer){
+                var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                     return feature;
                 });
                 if(feature){
@@ -63,7 +70,7 @@ define([
                         placement: 'top',
                         html: true,
                         title: feature.get('title'),
-                        content: feature.get('content') + '<br /><br /><button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
+                        content: '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
                     });
                     
                     this.$('.popup').one('shown.bs.popover', _.bind(function(){
@@ -87,12 +94,13 @@ define([
         },
 
         load: function(options){
+            this.trigger('load');
             this.wizard = new LocationWizard(options);
         },
 
         render: function(){
             compiled = _.template(LocationsTemplate);
-            $('body').append(this.$el.html(compiled));
+            $(this.dom_target).append(this.$el.html(compiled));
 
             this.popup = new ol.Overlay({
                 position: 'bottom-center',

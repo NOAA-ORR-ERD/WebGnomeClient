@@ -1,7 +1,8 @@
 define([
     'underscore',
-    'backbone'
-], function(_, Backbone){
+    'backbone',
+    'sweetalert'
+], function(_, Backbone, swal){
     var sessionModel = Backbone.Model.extend({
         url: '/session',
         defaults: {
@@ -16,9 +17,11 @@ define([
         },
 
         error: function(){
-            var msg = 'Error establishing a session with the API Server';
-            console.log(msg);
-            alert(msg);
+            swal({
+                title: 'Connection Error',
+                text: 'Error establishing a session with the API server.',
+                type: 'error',
+            });
         }
     });
 

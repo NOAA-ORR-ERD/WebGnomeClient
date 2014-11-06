@@ -2,14 +2,26 @@
     "name": "WebGnomeClient",
     "main": "index.html",
     "scripts": {
-        "prestart": "./node_modules/requirejs/bin/r.js -o mainConfigFile=js/main.js baseUrl=js name=main out=js/build.js",
         "start": "http-server",
         "postinstall": "bower install",
-        "postupdate": "bower update"
+        "postupdate": "bower update",
+        "test": "node ./scripts/test.js"
+    },
+    "config": {
+        "port": "8080",
+        "api": "http://0.0.0.0:9899",
+        "oil_api": "http://hazweb2.orr.noaa.gov:7449",
+        "date_format": {
+            "moment": "YYYY/M/D H:mm",
+            "datetimepicker": "Y/n/j G:i"
+        }
     },
     "dependencies": {
         "bower": "*",
         "http-server": "*",
-        "requirejs": "*"
+        "requirejs": "*",
+        "phantomjs": "1.9.9",
+        "node-qunit-phantomjs": "0.2.2",
+        "colors": "0.6.2"
     }
 }

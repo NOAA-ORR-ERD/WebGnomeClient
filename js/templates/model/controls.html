@@ -1,9 +1,33 @@
 <div class="controls">
     <div class="buttons">
-        <a class="rewind"><span class="glyphicon glyphicon-fast-backward"></span></a>
-        <a class="play"><span class="glyphicon glyphicon-play"></span></a>
-        <a class="fastforward"><span class="glyphicon glyphicon-fast-forward"></span></a>
+        <a class="rewind"><span></span></a>
+        <a class="play"><span></span></a>
+        <a class="next"><span></span></a>
     </div>
-    <div class="seek"><div></div></div>
+    <div class="seek"><div></div><div class="progress"><div class="progress-bar progress-bar-info" role="progressbar"></div></div></div>
     <div class="position">{{ date }}</div>
+</div>
+
+<div class="layers">
+    <div class="title">Layers</div>
+    <form role="form" class="form-horizontal">
+        <div class="checkbox">
+            <label for="basemap"><input type="checkbox" checked="checked" id="basemap"> Base Map</label>
+        </div>
+        <div class="checkbox">
+            <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap"> Model Map</label>
+        </div>
+        <div class="checkbox">
+            <label for="spills"><input type="checkbox" checked="checked" id="spills"> Spills</label>
+        </div>
+    </form>
+</div>
+
+<div class="spill-button ol-control">
+    <button class="ol-has-tooltip fixed">
+        <span role="tooltip">Create a Fixed Spill</span>
+    </button>
+    <button class="ol-has-tooltip moving">
+        <span role="tooltip">Create a Moving Spill</span>
+    </button>
 </div>

@@ -4,9 +4,8 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
-    'views/wizard/new',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, NewWizardForm) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -23,22 +22,55 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
+            if(webgnome.hasModel()){
+                webgnome.model.on('sync', this.contextualize, this);
+            }
         },
 
         events: {
-            'click .navbar-brand': 'home',
+            // 'click .navbar-brand': 'home',
             'click .new': 'newModel',
+            'click .edit': 'editModel',
             'click .load': 'load',
             'click .locations': 'locations',
             'click .save': 'save',
-            'click .preferences': 'preferences',
+            'click a.debugView': 'debugView',
 
-            'click .run': 'run',
-            'click .step': 'step',
-            'click .rununtil': 'rununtil',
+            // 'click .run': 'run',
+            // 'click .step': 'step',
+            // 'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial'
+            'click .tutorial': 'tutorial',
+
+            'click .gnome': 'gnome',
+            'click .adios': 'adios',
+            'click .home': 'home',
+
+            'click .app-menu-link': 'openAppMenu',
+            'click .app-menu-close': 'closeAppMenu'
+        },
+
+        openAppMenu: function(event){
+            event.preventDefault();
+            this.$('.app-menu').addClass('open');
+            this.$('.app-menu-close').addClass('open');
+            this.$('.app-menu').focus();
+        },
+
+        closeAppMenu: function(){
+            this.$('.app-menu').removeClass('open');
+            this.$('.app-menu-close').removeClass('open');
+        },
+
+        gnome: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('gnome/', true);
+        },
+
+        adios: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('adios/', true);
         },
 
         nothing: function(event){
@@ -52,7 +84,14 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            new NewWizardForm();
+            webgnome.model = null;
+            webgnome.router.navigate('', true);
+            webgnome.router.navigate('setup', true);
+        },
+
+        editModel: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('setup', true);
         },
 
         load: function(event){
@@ -70,26 +109,21 @@ define([
             webgnome.router.navigate('save', true);
         },
 
-        preferences: function(event){
+        debugView: function(event){
             event.preventDefault();
-            webgnome.router.navigate('preferences', true);
-        },
-
-        run: function(event){
-
-        },
-
-        step: function(event){
-
-        },
-
-        rununtil: function(event){
-
+            var checkbox = this.$('input[type="checkbox"]');
+            if (checkbox.prop('checked')) {
+                checkbox.prop('checked', false);
+            } else {
+                checkbox.prop('checked', true);
+                //this.trigger('debugTreeOn');
+            }
+            this.trigger('debugTreeToggle');
         },
 
         about: function(event){
             event.preventDefault();
-            new AboutModal();
+            new AboutModal().render();
         },
 
         tutorial: function(event){
@@ -106,8 +140,19 @@ define([
 
         contextualize: function(){
             if(!webgnome.hasModel() || !webgnome.validModel()){
-                this.disableMenuItem('actions');
                 this.disableMenuItem('save');
+            }
+            
+            if(webgnome.hasModel()){
+                this.enableMenuItem('edit');
+            } else {
+                this.disableMenuItem('edit');
+            }
+
+            if(window.location.href.indexOf('model') != -1){
+                this.enableMenuItem('debugView');
+            } else {
+                this.disableMenuItem('debugView');
             }
         },
 

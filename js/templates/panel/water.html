@@ -1,0 +1,18 @@
+<div>
+	<label>
+		Temperature: 
+	</label> 
+	{{ temperature }} 
+	{% if (units.temperature !== 'K'){ %}
+		&deg;
+	{% } %}
+	{{ units.temperature }}
+</div>
+<div><label>Salinity: </label> {{ salinity }} {{ units.salinity }}</div>
+<div><label>Sediment Load: </label> {{ sediment }} {{ units.sediment }}</div>
+{% if (wave_height){  %}
+	<div><label>Wave Height: </label> {{ wave_height }} {{ units.wave_height }}</div>
+{% } %}
+{% if (fetch){ %}
+	<div><label>Fetch: </label> {{ fetch }} {{ units.fetch }}</div>
+{% } %}

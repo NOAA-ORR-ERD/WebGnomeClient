@@ -4,13 +4,13 @@ define([
     'underscore',
     'backbone',
     'router',
+    'moment',
+    'text!/package.json',
     'model/session',
     'model/gnome'
-], function($, _, Backbone, Router, SessionModel, GnomeModel) {
-    "use strict";
+], function($, _, Backbone, Router, moment, Package, SessionModel, GnomeModel) {
+    'use strict';
     var app = {
-        api: 'http://0.0.0.0:9899',
-        // api: 'http://hazweb2.orr.noaa.gov:7450',
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
@@ -20,11 +20,15 @@ define([
                 }
             });
 
+            this.config = JSON.parse(Package).config;
+
+
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
                 if(options.url.indexOf('http://') === -1){
-                    options.url = webgnome.api + options.url;
+                    options.url = webgnome.config.api + options.url;
                 }
+                
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
@@ -80,33 +84,108 @@ define([
                 }
                 return response;
             };
-
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
              * @return {Object} formated json object for fancy tree
              */
-            Backbone.Collection.prototype.toTree = Backbone.Model.prototype.toTree = function(name){
+            Backbone.Model.prototype.toTree = function(use_attrs){
                 var attrs = _.clone(this.attributes);
                 var tree = [];
                 var children = [];
 
-                if(_.isUndefined(name)){
-                    name = 'Model';
+                if(_.isUndefined(use_attrs)){
+                    use_attrs = true;
                 }
 
                 for(var key in attrs){
                     var el = attrs[key];
-                    if(!_.isObject(el)){
-                        // flat attribute just set the index and value
-                        // on the tree. Should map to the objects edit form.
-                        tree.push({title:key + ': ' + el, key: el, obj_type: attrs.obj_type, action: 'edit', object: this});
-                    } else if(!_.isArray(el)) {
+                    // flat attribute just set the index and value
+                    // on the tree. Should map to the objects edit form.
+                    if(!_.isObject(el) && use_attrs === true){
+
+                        tree.push({title: key + ': ' + el, key: el,
+                                   obj_type: attrs.obj_type, action: 'edit', object: this});
+                        
+                    } else if (_.isObject(el) && !_.isArray(el) && !_.isUndefined(el.obj_type)) {
                         // child collection/array of children or single child object
                         children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                    } else if (_.isArray(el)){
+                        var arrayOfStrings = [];
+                        for (var i = 0; i < el.length; i++){
+                            var arrayString = '[' + el[i] + ']';
+                            var arrayObj = {title: arrayString};
+                            arrayOfStrings.push(arrayObj);
+                        }
+                        if (el.length > 0){
+                            children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
+                        } else {
+                            children.push({title: key + ': []'});
+                        }
                     }
                 }
+
                 tree = tree.concat(children);
+                return tree;
+            };
+
+            Backbone.Model.prototype.toDebugTree = function(){
+                var attrs = _.clone(this.attributes);
+                var tree = [];
+                var children = [];
+
+                for(var key in attrs){
+                    var el = attrs[key];
+                    // flat attribute just set the index and value
+                    // on the tree. Should map to the objects edit form.
+                    if(!_.isObject(el)){
+
+                        tree.push({title: key + ': ' + el, key: el,
+                                   obj_type: attrs.obj_type, action: 'edit', object: this});
+                        
+                    } else if (_.isObject(el) && !_.isArray(el) && el.toDebugTree) {
+                        // child collection/array of children or single child object
+                        children.push({title: key + ':', children: el.toDebugTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                    } else if (_.isArray(el)){
+                        var arrayOfStrings = [];
+                        for (var i = 0; i < el.length; i++){
+                            var arrayString = '[' + el[i] + ']';
+                            var arrayObj = {title: arrayString};
+                            arrayOfStrings.push(arrayObj);    
+                        }
+                        if (el.length > 0){
+                            children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
+                        } else {
+                            children.push({title: key + ': []'});
+                        }
+                    }
+                }
+
+                tree = tree.concat(children);
+                return tree;
+            };
+
+            Backbone.Collection.prototype.toTree = function(name){
+                var models = _.clone(this.models);
+                var tree = [];
+
+                for(var model in models){
+                    var el = models[model];
+                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toTree(), action: 'edit', object: el, expanded: true});
+                }
+
+                return tree;
+            };
+
+            Backbone.Collection.prototype.toDebugTree = function(){
+                var models = _.clone(this.models);
+                var tree = [];
+
+                for(var model in models){
+                    var el = models[model];
+                    tree.push({title: el.get('obj_type').split('.').pop(), children: el.toDebugTree(), action: 'edit', object: el, expanded: true});
+                }
+
                 return tree;
             };
 
@@ -114,7 +193,12 @@ define([
                 var map = {
                     'gnome.model.Model': 'views/form/model',
                     'gnome.map.GnomeMap': 'views/form/map',
-                    'gnome.spill.Spill': 'views/form/spill',
+                    'gnome.spill.spill.Spill': 'views/form/spill',
+                    'gnome.spill.release.PointLineRelease': 'views/form/spill',
+                    'gnome.environment.wind.Wind': 'views/form/wind',
+                    'gnome.movers.random_movers.RandomMover': 'views/form/random',
+                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                    'gnome.movers.current_movers.CatsMover': 'views/form/cats'
                 };
 
                 return map[obj_type];
@@ -125,26 +209,24 @@ define([
             new SessionModel(function(){
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
-                var gnomeModel = new GnomeModel();
-                gnomeModel.fetch({
-                    success: function(model){
-                        if(model.id){
-                            window.webgnome.model = model;
-                        }
-                        Backbone.history.start();
-                        if(webgnome.hasModel()){
-                            webgnome.router.navigate('model', true);
-                        } else {
+                
+                if(window.location.href.indexOf('test.html') == -1){
+                    var gnomeModel = new GnomeModel();
+                    gnomeModel.fetch({
+                        success: function(model){
+                            if(model.id){
+                                window.webgnome.model = model;
+                            }
+                            Backbone.history.start();
+                        },
+                        error: function(){
+                            Backbone.history.start();
                             webgnome.router.navigate('', true);
                         }
-                    },
-                    error: function(){
-                        Backbone.history.start();
-                        webgnome.router.navigate('', true);
-                    }
-                });
-
-
+                    });
+                } else {
+                    Backbone.history.start();
+                }
             });
         },
         hasModel: function(){
@@ -155,6 +237,11 @@ define([
         },
         
         validModel: function(){
+            if(webgnome.hasModel()){
+                if(webgnome.model.isValid() && webgnome.model.get('outputters').length > 0 && webgnome.model.get('spills').length > 0){
+                    return true;
+                }
+            }
             return false;
         }
     };

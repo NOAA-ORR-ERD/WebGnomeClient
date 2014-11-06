@@ -1,10 +1,9 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'model/gnome'
-], function($, _, Backbone, GnomeModel){
-    var defaultWizard = Backbone.View.extend({
+    'backbone'
+], function($, _, Backbone){
+    var baseWizard = Backbone.View.extend({
         steps: [],
         step: 0,
 
@@ -14,6 +13,7 @@ define([
                 el.on('save', this.next, this);
                 el.on('back', this.prev, this);
                 el.on('wizardclose', this.close, this);
+                el.on('finish', this.close, this);
             }, this);
         },
 
@@ -43,12 +43,10 @@ define([
                 el.close();
             });
 
-            $('.xdsoft_datetimepicker').remove();
-
             this.unbind();
             this.remove();
         }
     });
 
-    return defaultWizard;
+    return baseWizard;
 });

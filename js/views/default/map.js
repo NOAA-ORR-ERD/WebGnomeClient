@@ -7,6 +7,7 @@ define([
     var olMapView = Backbone.View.extend({
         className: 'map',
         id:'map',
+        redraw: false,
         interactions: ol.interaction.defaults(),
         controls: ol.control.defaults().extend([
             new ol.control.MousePosition({
@@ -21,12 +22,14 @@ define([
         ]),
         layers: [
             new ol.layer.Tile({
-                source: new ol.source.MapQuest({layer: 'osm'})
+                source: new ol.source.MapQuest({layer: 'osm'}),
+                name: 'basemap'
             })
         ],
-        center: [-99.6, 40.6],
+        center: ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857'),
         overlays: [],
-        zoom: 3.5,
+        extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
+        zoom: 10,
 
 
         initialize: function(options){
@@ -37,9 +40,9 @@ define([
 
                 if(!_.isUndefined(options.controls)){
                     if(options.controls === 'full'){
-                        ol.control.defaults().extend([
+                        this.controls = ol.control.defaults().extend([
                             new ol.control.MeasureRuler(),
-                            //new ol.control.MeasureArea(),
+                            new ol.control.MeasureArea(),
                             new ol.control.MousePosition({
                                 coordinateFormat: function(coordinates){
                                     if(coordinates){
@@ -74,6 +77,10 @@ define([
                 if(!_.isUndefined(options.zoom)){
                     this.zoom = options.zoom;
                 }
+
+                if(!_.isUndefined(options.extent)){
+                    this.extent = options.extent;
+                }
             }
         },
 
@@ -83,12 +90,14 @@ define([
                 controls: this.controls,
                 target: this.id,
                 layers: this.layers,
-                view: new ol.View2D({
-                    center: ol.proj.transform(this.center, 'EPSG:4326', 'EPSG:3857'),
+                view: new ol.View({
+                    center: this.center,
                     zoom: this.zoom,
-                    extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34]
+                    zoomFactor: 1.25,
+                    extent: this.extent
                 })
             });
+            this.redraw = false;
         }
     });
 

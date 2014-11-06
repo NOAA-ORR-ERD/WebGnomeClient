@@ -2,23 +2,24 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/wizard/default',
+    'views/wizard/base',
     'views/form/model',
     'views/form/map',
     'views/form/spill',
     'views/form/environment',
+    'views/form/random',
     'model/gnome',
     'model/map',
     'collection/spills',
-], function($, _, Backbone, DefaultWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, GnomeModel, GnomeMap, GnomeSpills){
-    var newWizardView = DefaultWizard.extend({
+], function($, _, Backbone, BaseWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, RandomForm, GnomeModel, GnomeMap, GnomeSpills){
+    var newWizardView = BaseWizard.extend({
         initialize: function(){
             webgnome.model = new GnomeModel();
             webgnome.model.save(null, {
                 validate: false,
-                error: this.fail
+                error: this.fail,
+                success: _.bind(this.setup, this)
             });
-            webgnome.model.once('ready', _.bind(this.setup, this));
         },
 
         setup: function(){

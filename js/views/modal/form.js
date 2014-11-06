@@ -10,24 +10,6 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],
 
-        initialize: function(options){
-            if(options.body) {
-                this.body = options.body;
-            }
-
-            if(options.name) {
-                this.name = options.name;
-            }
-
-            if(options.title) {
-                this.title = options.title;
-            }
-
-            if(options.buttons) {
-                this.buttons = options.buttons;
-            }
-        },
-
         events: {
             'click .next': 'save',
             'click .back': 'back',
@@ -38,7 +20,8 @@ define([
             'click .cancel': 'wizardclose',
             'change input': 'update',
             'keyup input': 'update',
-            'change select': 'update'
+            'change select': 'update',
+            'click .finish': 'finish'
         },
 
         ready: function() {
@@ -56,8 +39,14 @@ define([
                         this.hide();
                         this.trigger('save');
                         if(_.isFunction(callback)) callback();
+                    }, this),
+                    error: _.bind(function(model, response){
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
                     }, this)
                 });
+                if (this.model.validationError){
+                    this.error('Error', this.model.validationError);
+                }
             } else {
                 this.hide();
                 this.trigger('save');
@@ -103,10 +92,19 @@ define([
         },
 
         wizardclose: function(){
-            if(webgnome.hasModel()){
-                webgnome.model.fetch();
+            if(this.model){
+                this.model.fetch();
             }
             this.trigger('wizardclose');
+        },
+
+        finish: function(){
+            this.on('hidden', function(){
+                this.trigger('finish');
+                webgnome.model.fetch();
+                webgnome.router.navigate('model', true);
+            });
+            this.hide();
         },
 
         close: function(){

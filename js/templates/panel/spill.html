@@ -1,0 +1,15 @@
+<div class="axisLabel yaxisLabel">{{ spills[0].get('units') }}</div><div class="chart"></div>
+{% if (spills.length > 0) { %}
+	<div class="spill-list">
+	{% for (var i = 0; i < spills.length; i++){ %}
+		<div class="single row" data-id="{{ spills[i].get('id') }}">
+			<div class="col-sm-5">{{ spills[i].get('name') }}</div>
+			<div class="col-sm-4">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</div>
+			<div class="col-sm-3">
+                <span class="trash" title="Remove {{ spills[i].get('name') }}"></span>
+                <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
+            </div>
+		</div>
+	{% } %}
+	</div>
+{% } %}

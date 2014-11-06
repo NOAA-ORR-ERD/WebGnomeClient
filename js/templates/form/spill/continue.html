@@ -1,0 +1,161 @@
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="name">Name:</label>
+		<div class="col-sm-4">
+			<input type="text" id="name" class="form-control" value="{{ name }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+		<div class="col-sm-4">
+			<input type="text" id="datetime" class="form-control" value="{{ time }}">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label">Duration:</label>
+        <div class="col-sm-8">
+            <label class="col-sm-2 control-label" for="days">Day(s)</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" id="days" min="0" value="{{ duration.days }}">
+            </div>
+            <label class="col-sm-2 control-label" for="hours">Hour(s)</label>
+            <div class="col-sm-4">
+                <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
+            </div>
+        </div>
+	</div>
+
+	{% if (showGeo){ %}
+		<div class="form-group">
+	        <label class="col-sm-3 control-label">Start Position</label>
+	        <div class="col-sm-9">
+	            <label for="start-lat" class="col-sm-1 control-label">Lat.</label>
+	            <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}"></div>
+	            <label for="start-lng" class="col-sm-1 control-label">Lng.</label>
+	            <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}"></div>
+	        </div>
+	    </div>
+
+	    <div class="form-group end-position">
+	        <label class="col-sm-3 control-label">End Position</label>
+	        <div class="col-sm-9">
+	            <label for="end-lat" class="col-sm-1 control-label">Lat.</label>
+	            <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}"></div>
+	            <label for="end-lng" class="col-sm-1 control-label">Lng.</label>
+	            <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}"></div>
+	        </div>
+	    </div>
+	{% } %}
+	<ul class="nav nav-tabs">
+	    <li class="amount active">
+	        <a href="#amount" data-toggle="tab">Amount Spilled</a>
+	    </li>
+	    <li class="constant">
+	        <a href="#constant" data-toggle="tab">Constant Spill Rate</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane active" id="amount">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="amount">Amount Spilled:</label>
+					<div class="col-sm-4">
+						<input type="text" id="spill-amount" class="form-control" value="{{ amount }}">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control" id="units">
+							<option value="cubic meters">
+								cu m
+							</option>
+							<option value="gal">
+								gal
+							</option>
+							<option value="bbl">
+								bbl
+							</option>
+							<option value="ton">
+								tons
+							</option>
+							<option value="metric ton">
+								metric tons
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+	                    <label class="control-label col-sm-4">Confidence in Data:</label>
+	                    <div class="col-sm-8 col-sm-offset-1">
+	                        <div class="slider"></div>
+	                    </div>
+	                    <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
+	                    <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
+               		</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane" id="constant">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="constant">Spill Rate:</label>
+					<div class="col-sm-4">
+						<input type="text" id="spill-rate" class="form-control">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control" id="rate-units">
+							<option value="bbl/hr">
+								bbl/hr
+							</option>
+							<option value="gal/hr">
+								gal/hr
+							</option>
+							<option value="gal/min">
+								gal/min
+							</option>
+							<option value="cubic meters/hr">
+								cu m/hr
+							</option>
+							<option value="ton/hr">
+								tons/hr
+							</option>
+							<option value="metric ton/hr">
+								metric tons/hr
+							</option>
+						</select>
+					</div>
+					<div class="form-group">
+	                    <label class="control-label col-sm-4">Confidence in Data:</label>
+	                    <div class="col-sm-8 col-sm-offset-1">
+	                        <div class="slider"></div>
+	                    </div>
+	                    <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
+	                    <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
+                	</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{% if (showGeo){ %}
+		<div id="spill-form-map" class="map"></div>
+	{% } %}
+    <div class="form-group">
+    	<label class="control-label col-sm-4">Oil Selected:</label>
+    	<div class="col-sm-3">
+    		<input class="col-sm-4 form-control oilName" value="{{ oilName }}"></input>
+    	</div>
+    </div>
+	<div class="form-group">
+        <div class="col-sm-6">
+            <a class="btn btn-default oilSelect">
+                Select Oil
+            </a>
+        </div>
+        {% if (showGeo){ %}
+	        <div class="col-sm-6">
+	            <a class="pull-right btn btn-default locationSelect">
+	                Plot Location on Map
+	            </a>
+	        </div>
+	    {% } %}
+    </div>
+</form>

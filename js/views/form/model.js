@@ -18,7 +18,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                start_time: moment(this.model.get('start_time')).format('YYYY/M/D H:mm'),
+                start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60
@@ -27,24 +27,25 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({
-                format: 'Y/n/j G:i'
+                format: webgnome.config.date_format.datetimepicker
             });
         },
 
         update: function() {
-            var start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
+            var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
             var hours = this.$('#hours').val();
-            var duration = (((days * 24) + parseInt(hours, 10)) * 60) * 60;
+            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             this.model.set('duration', duration);
 
             var uncertainty = this.$('#uncertainty:checked').val();
             this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
 
-            var time_steps = this.$('#time_steps').val() * 60;
-            this.model.set('time_step', time_steps);
+            var time_steps = this.$('#time_steps').val();
+            var time_steps_mins = parseFloat(time_steps, 10) * 60;
+            this.model.set('time_step', time_steps_mins);
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);

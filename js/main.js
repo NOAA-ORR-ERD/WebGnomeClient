@@ -1,3 +1,4 @@
+
 // Configure RequireJS
 require.config({
     baseUrl: 'js',
@@ -12,13 +13,34 @@ require.config({
         mousetrap: 'lib/mousetrap/mousetrap',
         geolib: 'lib/geolib/dist/geolib',
         text: 'lib/requirejs-text/text',
-        ol: 'lib/openlayers/build/ol-simple',
+        ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
-        qunit: 'lib/qunit/qunit/qunit',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
-        fancytree: 'lib/fancytree/dist/jquery.fancytree'
+        fancytree: 'lib/fancytree/dist/jquery.fancytree',
+        chosen: 'lib/chosen/chosen.jquery',
+        fuse: 'lib/fuse/src/fuse',
+        flot: 'lib/flot/jquery.flot',
+        flotsymbol: 'lib/flot/jquery.flot.symbol',
+        flottime: 'lib/flot/jquery.flot.time',
+        flotresize: 'lib/flot/jquery.flot.resize',
+        flotdirection: 'lib/flotdirection/index',
+        flotspline: 'lib/flotspline/jquery.flot.spline',
+        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
+        flotcrosshair: 'lib/flot/jquery.flot.crosshair',
+        flotstack: 'lib/flot/jquery.flot.stack',
+        flotpie: 'lib/flot/jquery.flot.pie',
+        masonry: 'lib/masonry/masonry',
+        eventie: 'lib/eventie/',
+        'doc-ready': 'lib/doc-ready/',
+        eventEmitter: 'lib/eventEmitter/',
+        'get-style-property': 'lib/get-style-property/',
+        'get-size': 'lib/get-size/',
+        'matches-selector': 'lib/matches-selector/',
+        outlayer: 'lib/outlayer/',
+        sweetalert: 'lib/sweetalert/lib/sweet-alert'
+        // nucos: 'lib/nucos/nucos'
     },
     shim: {
         jquery: {
@@ -26,16 +48,19 @@ require.config({
         },
         bootstrap: ['jquery'],
         jqueryui: ['jquery'],
+        flot: ['jquery'],
+        flotsymbol: ['flot'],
+        flottime: ['flot'],
+        flotresize: ['flot'],
+        flotdirection: ['flot'],
+        flotspline: ['flot'],
+        flottooltip: ['flot'],
+        flotcrosshair: ['flot'],
+        flotstack: ['flot'],
+        flotpie: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'
-        },
-        qunit: {
-            exports: 'QUnit',
-            init: function() {
-                QUnit.config.autoload = false;
-                QUnit.config.autostart = false;
-            }
         },
         compassui: {
             exports: '$',
@@ -43,6 +68,16 @@ require.config({
         },
         fancytree: {
             deps: ['jquery', 'jqueryui/core', 'jqueryui/widget']
+        },
+        chosen: {
+            deps: ['jquery'],
+            exports: 'jQuery.fn.chosen'
+        },
+        geolib: {
+            exports: 'geolib'
+        },
+        sweetalert: {
+            exports: 'swal'
         }
     },
 });

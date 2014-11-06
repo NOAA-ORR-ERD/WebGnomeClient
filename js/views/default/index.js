@@ -2,49 +2,29 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/default/index.html',
-    'views/wizard/new'
-], function($, _, Backbone, IndexTemplate, NewWizardForm){
+    'text!templates/default/index.html'
+], function($, _, Backbone, IndexTemplate){
     var indexView = Backbone.View.extend({
-        className: 'container page home',
+        className: 'page home',
 
-        initialize: function() {
+        events: {
+            'click .setup': 'setup'
+        },
+
+        initialize: function(){
             this.render();
         },
 
-        events: {
-            'click .location': 'chooseLocation',
-            'click .build': 'buildModel',
-            'click .load': 'loadModel',
-            'click .resume': 'resumeModel'
-        },
-
-        chooseLocation: function(event) {
-            event.preventDefault();
-            webgnome.router.navigate('locations', true);
-        },
-
-        buildModel: function(event) {
-            event.preventDefault();
-
-            new NewWizardForm();
-        },
-
-        loadModel: function(event) {
-            event.preventDefault();
-        },
-
-        resumeModel: function(event) {
-            event.preventDefault();
-            webgnome.router.navigate('model', true);
-        },
-
         render: function(){
-            var compiled = _.template(IndexTemplate, {
-                hasModel: webgnome.hasModel()
-            });
+            var compiled = _.template(IndexTemplate);
             $('body').append(this.$el.append(compiled));
+        },
+
+        setup: function(e){
+            e.preventDefault();
+            webgnome.router.navigate('setup', true);
         }
     });
+
     return indexView;
 });

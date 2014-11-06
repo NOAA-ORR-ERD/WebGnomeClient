@@ -1,0 +1,79 @@
+<form class="form-horizontal" role="form">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-sm-5" for="temp">Temperature:</label>
+					<div class="col-sm-2">
+						<input class="form-control" type="number" id="temp" value="{{ water_temp }}">
+					</div>
+					<div class="col-sm-2">
+						<select class="form-control col-sm-3" id="tempunits">
+							<option value="F">&deg;F</option>
+							<option value="C">&deg;C</option>
+							<option value="K">K</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-5" for="salinity">Salinity (psu):</label>
+					<div class="col-sm-4">
+						<select class="form-control salinity-select salinity">
+							<option value="0">0 (fresh water)</option>
+							<option value="15">15 (avg. estuary)</option>
+							<option value="32">32 (avg. oceanic)</option>
+							<option value="other">Other Value...</option>
+						</select>
+					</div>
+					<div class="col-sm-3 salinity-input hide"><input type="number" class="form-control salinity"></div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-5" for="sediment">Water Sediment Load (mg/L):</label>
+					<div class="col-sm-4">
+						<select class="form-control sediment-select sediment">
+							<option value="5">5 (ocean)</option>
+							<option value="50">50 (avg. river/estuary)</option>
+							<option value="500">500 (muddy river)</option>
+							<option value="other">Other Value...</option>
+						</select>
+					</div>
+					<div class="col-sm-3 sediment-input hide"><input type="number" class="form-control sediment"></div>
+				</div>
+				<div class="form-group" id="sea-state">
+					<label class="control-label col-sm-5" for="sea-height">Wave Height:</label>
+					<div class="col-sm-6">
+						<select class="form-control" id="data-source">
+							<option value="windcalc">Compute from wind</option>
+							<option value="fetch">Compute from wind and fetch</option>
+							<option value="specified">Known wave height</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group fetch hide">
+					<label class="control-label col-sm-5" for="#fetch">Fetch</label>
+					<div class="col-sm-2">
+						<input type="number" class="form-control" id="fetch">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control col-xs-8" id="fetch-units">
+							<option value="mi">Miles</option>
+							<option value="km">Km</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group specified hide">
+					<label class="control-label col-sm-5" for="height">Height</label>
+					<div class="col-sm-2">
+						<input type="number" id="height" class="form-control">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control col-xs-8" id="wave_height-units">
+							<option value="m">Meters</option>
+							<option value="ft">Feet</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

@@ -1,6 +1,13 @@
 <form class="form-horizontal spill-form" role="form">
 
     <div class="form-group">
+        <label for="active" class="col-sm-3 control-label">Active</label>
+        <div class="col-sm-8">
+            <input type="checkbox" name="active" value="on" id="active" class="col-xs-1">
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="name" class="col-sm-3 control-label">Spill Name</label>
         <div class="col-sm-8">
             <input type="text" class="form-control" id="name" placeholder="" value="{{ name }}">
@@ -33,7 +40,7 @@
             <select id="pollutant" name="pollutant" class="form-control">
                 <option value="non-weathering">non-weathering</option>
                 <option value="fuel-oil-6">fuel oil #6</option>
-                <option value="medium-cruid">Medium Crude</option>
+                <option value="medium-crude">Medium Crude</option>
                 <option value="fuel-oil-4">fuel oil #4</option>
                 <option value="diesel">Diesel</option>
                 <option value="kerosene-jet-fuels">Kerosene/Jet Fuels</option>
