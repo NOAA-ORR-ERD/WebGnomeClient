@@ -27,6 +27,8 @@ define([
 
         initialize: function(){
             this.render();
+
+            $(window).on('scroll', this.tableOilBudgetStickyHeader);
         },
 
         render: function(){
@@ -239,7 +241,7 @@ define([
                 dataset = _.clone(this.dataset);
             }
             dataset = this.pruneDataset(dataset, ['avg_density']);
-            var table = this.$('#budget-table table');
+            var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
                 released: this.$('#budget-table .released').val().trim(),
@@ -254,6 +256,7 @@ define([
             this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substance.get('api'), 'API degree', to_unit)) + ' ' + to_unit);
 
             table.html('');
+            table = '';
             m_date = moment(webgnome.model.get('start_time'));
             for (var row = 0; row < dataset[0].data.length; row++){
 
@@ -264,19 +267,19 @@ define([
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
-                    var row_html = $('<tr></tr>');
-
+                    
+                    var row_html = '<tr>';
                     if(display.time === 'date'){
                         if(row === 0){
-                            row_html.append('<th>Date - Time</th>');
+                            row_html += '<th>Date - Time</th>';
                         } else {
-                            row_html.append('<td>' + ts_date.format(webgnome.config.date_format.moment) + '</td>');
+                            row_html += '<td>' + ts_date.format(webgnome.config.date_format.moment) + '</td>';
                         }
                     } else {
                         if(row === 0){
-                            row_html.append('<th>Time (hours)</th>');
+                            row_html += '<th>Time (hours)</th>';
                         } else {
-                            row_html.append('<td>' + duration.asHours() + '</td>');
+                            row_html += '<td>' + duration.asHours() + '</td>';
                         }
                     }
                      
@@ -284,9 +287,9 @@ define([
                         to_unit = display.released;
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
-                                row_html.append('<th>' + dataset[set].label + ' (' + to_unit + ')</th>');
+                                row_html +='<th>' + dataset[set].label + ' (' + to_unit + ')</th>';
                             } else {
-                                row_html.append('<th>' + dataset[set].label + ' (' + display.other + ')</th>');
+                                row_html += '<th>' + dataset[set].label + ' (' + display.other + ')</th>';
                             }
 
                         } else {
@@ -303,10 +306,27 @@ define([
                                     value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
-                            row_html.append('<td>' + value + '</td>');
+                            row_html += '<td>' + value + '</td>';
                         }
                     }
-                    table.append(row_html);
+                    row_html += '</tr>';
+                    table += row_html;
+                }
+            }
+            this.$('#budget-table table:first').html(table);
+        },
+
+        tableOilBudgetStickyHeader: function(e){
+            if(this.$('#budget-table').length > 0){
+                var top = $(window).scrollTop();
+                var offset = this.$('#budget-table table:first').offset();
+
+                if(top > offset.top && this.$('#budget-table .sticky').length === 0){
+                    // a sticky header to the table.
+                    $('<div class="container sticky"><div class="col-md-12"><table class="table">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
+                } else if(top <= offset.top && this.$('#budget-table .sticky').length > 0) {
+                    // remove the sticky header from the table.
+                    this.$('.sticky').remove();
                 }
             }
         },
@@ -657,6 +677,7 @@ define([
 
         close: function(){
             this.step = null;
+            $(window).off('scroll', this.tableOilBudgetStickyHeader);
             Backbone.View.prototype.close.call(this);
         }
     });
