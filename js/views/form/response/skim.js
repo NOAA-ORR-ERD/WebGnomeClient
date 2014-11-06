@@ -7,7 +7,7 @@ define([
     'model/weatherers/skim'
 ], function($, _, Backbone, FormModal, FormTemplate, SkimModel){
     var skimForm = FormModal.extend({
-        title: 'Disperse Response',
+        title: 'Skim Response',
         className: 'modal fade form-modal skim-form',
 
         initialize: function(options, skimModel){
