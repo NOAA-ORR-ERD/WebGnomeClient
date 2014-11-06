@@ -5,7 +5,7 @@ define([
     'views/modal/form',
     'text!templates/form/response/type.html',
     'model/weatherers/burn',
-    'model/weatherers/disperse',
+    'model/weatherers/dispersion',
     'model/weatherers/skim',
     'views/form/response/insituBurn',
     'views/form/response/disperse',
@@ -33,7 +33,7 @@ define([
         burn: function(){
             var insituBurn = new InSituBurnModel();
             this.on('hidden', _.bind(function(){
-                var insituBurnForm = new InSituBurnForm(null, insituBurn);
+                var inSituBurnForm = new InSituBurnForm(null, insituBurn);
                 inSituBurnForm.render();
                 inSituBurnForm.on('wizardclose', insituBurnForm.close);
                 inSituBurnForm.on('save', function(){

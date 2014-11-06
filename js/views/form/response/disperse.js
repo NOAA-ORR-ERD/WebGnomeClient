@@ -4,7 +4,7 @@ define([
     'backbone',
     'views/modal/form',
     'text!templates/form/response/disperse.html',
-    'model/weatherers/disperse'
+    'model/weatherers/dispersion'
 ], function($, _, Backbone, FormModal, FormTemplate, DisperseModel){
     var disperseForm = FormModal.extend({
         title: 'Disperse Response',
