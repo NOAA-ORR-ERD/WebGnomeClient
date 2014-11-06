@@ -580,12 +580,13 @@ define([
 
                 coloredSet.push(ds);
             }
-
-            this.renderSpillRelease(coloredSet);
+            this.spillPlot.setData(coloredSet);
+            this.spillPlot.draw();
         },
 
         unhoverSpill: function(){
-            this.renderSpillRelease(this.spillDataset);
+            this.spillPlot.setData(this.spillDataset);
+            this.spillPlot.draw();
         },
 
         deleteSpill: function(e){
