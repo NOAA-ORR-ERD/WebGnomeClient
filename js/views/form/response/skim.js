@@ -5,8 +5,9 @@ define([
     'views/modal/form',
     'text!templates/form/response/skim.html',
     'model/weatherers/skim',
+    'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SkimModel){
+], function($, _, Backbone, FormModal, FormTemplate, SkimModel, moment){
     var skimForm = FormModal.extend({
         title: 'Skim Response',
         className: 'modal fade form-modal skim-form',
@@ -18,7 +19,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                time: 5,
+                time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: 4
             });
             FormModal.prototype.render.call(this, options);

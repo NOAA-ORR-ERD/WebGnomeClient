@@ -5,8 +5,9 @@ define([
     'views/modal/form',
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
+    'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, DisperseModel){
+], function($, _, Backbone, FormModal, FormTemplate, DisperseModel, moment){
     var disperseForm = FormModal.extend({
         title: 'Disperse Response',
         className: 'modal fade form-modal disperse-form',
@@ -18,7 +19,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate,{
-                time: 5,
+                time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: 4
             });
             FormModal.prototype.render.call(this, options);
