@@ -527,7 +527,6 @@ define([
                 this.$('.spill .panel-body').hide().html('');
                 this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
-            
         },
 
         renderSpillRelease: function(dataset){
@@ -610,7 +609,6 @@ define([
                     });
                 }
             }, this));
-            
         },
 
         clickLocation: function(){
@@ -623,7 +621,6 @@ define([
             }, this));
             locationForm.render();
             webgnome.model.off('sync', this.updateObjects, this);
-
         },
 
         clickResponse: function(){

@@ -7,8 +7,24 @@
 	<div class="spill-list">
 	{% for (var i = 0; i < spills.length; i++){ %}
 		<div class="single row" data-id="{{ spills[i].get('id') }}">
-			<div class="col-sm-5">{{ spills[i].get('name') }}</div>
-			<div class="col-sm-4">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</div>
+			<div class="col-sm-9">
+                <h5>{{ spills[i].get('name') }}</h5>
+                <span class="label label-default">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</span>
+                {% if (spills[i].get('release').get('start_position')){ %}
+                    {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
+                    {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
+                    {% var start = lat + ', ' + lon %}
+                    {% lon = Math.round(spills[i].get('release').get('end_position')[0] * 100) / 100 %}
+                    {% lat = Math.round(spills[i].get('release').get('end_position')[1] * 100) / 100 %}
+                    {% var end = lat + ', ' + lon %}
+                    {% if (start === end ){ %}
+                        {% pos = start %}
+                    {% } else{ %}
+                        {% pos = start + ' - ' + end %}
+                    {% } %}
+                    <span class="label label-info"><span class="glyphicon glyphicon-map-marker"></span> {{ pos }}</span>
+                {% } %}
+            </div>
 			<div class="col-sm-3">
                 <span class="trash" title="Remove {{ spills[i].get('name') }}"></span>
                 <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
