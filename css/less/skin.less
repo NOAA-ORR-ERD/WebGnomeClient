@@ -8,6 +8,14 @@ img{
     max-width: 100%;
 }
 
+.nav-tabs{
+    li{
+        a{
+            border-radius: 0;
+        }
+    }
+}
+
 .sweet-alert{
     border-radius: 0;
 }
@@ -16,9 +24,19 @@ img{
     .modal-content{
         .box-shadow(0 0 0 0);
         border: none;
+        border-radius: 0
     }
 }
 
+.panel{
+    border-radius: 0;
+    border: 0;
+    background: #efefef;
+
+    .panel-heading{
+        border-radius: 0;
+    }
+}
 
 .chart{
     position: relative;
@@ -318,10 +336,11 @@ nav.navbar{
 
         .icon-footer{
             text-align:center;
-            padding: 8px 0;
+            padding: 8px 1px;
             margin-top: -1px;
+            color: white;
             border-radius: 0 0 3px 3px;
-            background: #efefef;
+            background: #428bca;
             cursor: pointer;
             font-size: 13px;
         }
@@ -460,6 +479,12 @@ nav.navbar{
 
                 .spill-list{
                     margin-top: 20px;
+                    h5{
+                        font-weight: bold;
+                        float: left;
+                        margin: 0 15px 0 0;
+                        line-height: 25px;
+                    }
                 }
 
                 .single {
@@ -471,6 +496,8 @@ nav.navbar{
                         color: white;
                         .edit, .trash{
                             display: block;
+                            top: 2px;
+                            line-height: auto;
                         }
                     }
                     
