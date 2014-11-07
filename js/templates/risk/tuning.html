@@ -2,46 +2,56 @@
 	<div class="container">
 		<div class="col-md-6">
 			<div class="row">
-
+				<div class="col-md-3">
 					<label class="control-label" for="benefit">Benefit:</label>
-				<div class="col-sm-12">
-					<canvas id="benefit">
+                                        <div class="small col-md-offset-1">
+						<span>this is some text to explain the benefit calculation.</span>
+						<div>Column: <span id="column"></span></div>
+						<div>Surface: <span id="surface"></span></div>
+						<div>Shoreline: <span id="shoreline"></span></div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div>
+						<canvas id="benefit">
+					</div>
 				</div>
 			</div>
 			<div class="row">
+				<div class="col-sm-4">
+					<label class="control-label" for="importance">Relative Importance:</label>
+					<div class="small col-md-offset-1">
+						<span>Indicate the relative importance of the resources at risk during the spill.</span>
+						<div>Column: <span id="columnRV"></span>%</div>
+						<div>Surface: <span id="surfaceRV"></span>%</div>
+						<div>Shoreline: <span id="shorelineRV"></span>%</div>
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<canvas id="importance" height="300" width="300">
+				</div>
+			</div>
+			<div class="row">
+				<label class="control-label">Efficiencies</label>
 				<div class="form-group">
-                        		<div class="col-sm-10">
-                            			<label class="control-label" for="slider-skimming">Skimming recovery efficiency:</label>
+                        		<div class="col-sm-3 col-md-offset-1">
+                            			<label class="control-label" for="slider-skimming">Skimming:</label>
                             			<div id="slider-skimming" class="slider-skimming"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group">
-                        		<div class="col-sm-10">
-                            			<label class="control-label" for="slider-dispersant">Dispersant effectiveness:</label>
+                        		<div class="col-sm-3">
+                            			<label class="control-label" for="slider-dispersant">Dispersant:</label>
                             			<div id="slider-dispersant" class="slider-dispersant"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="form-group">
-                        		<div class="col-sm-10">
-                            			<label class="control-label" for="slider-in-situ-burn">In-situ burn efficiency:</label>
+                        		<div class="col-sm-3">
+                            			<label class="control-label" for="slider-in-situ-burn">In-situ Burn:</label>
                             			<div id="slider-in-situ-burn" class="slider-in-situ-burn"></div>
                         			<div class="pull-left"><sup>0%</sup></div>
                         			<div class="pull-right"><sup>100%</sup></div>
                         		</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<label class="control-label" for="importance">Relative Importance:</label>
-					<canvas id="importance" height="300" width="300">
 				</div>
 			</div>
 		</div>

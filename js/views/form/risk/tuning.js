@@ -71,7 +71,7 @@ define([
                               left: left,
                               top: top,
                               strokeWidth: 5,
-                              radius: 12,
+                              radius: 5,
                               fill: '#fff',
                               stroke: '#666',
                               selectable: s
@@ -136,9 +136,6 @@ define([
                 p.l1 && p.l1.set({ 'x2': p.left, 'y2': p.top });
                 p.l2 && p.l2.set({ 'x1': p.left, 'y1': p.top });
                 p.l3 && p.l3.set({ 'x1': p.left, 'y1': p.top });
-//console.log('line1 is ', line1.x1, line1.y1, line1.x2, line1.y2);
-//console.log('line2 is ', line2.x1, line2.y1, line2.x2, line2.y2);
-//console.log('line3 is ', line3.x1, line3.y1, line3.x2, line3.y2);
                 canvas.renderAll();
                 this.update();
             }, this));
@@ -150,6 +147,7 @@ define([
             this.$(selector).slider({
                     max: 100,
                     min: 0,
+//orientation: 'vertical',
                     value: value,
                     create: _.bind(function(e, ui){
                            this.$(selector+' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
@@ -168,21 +166,35 @@ define([
             efficiency.skimming = this.$('.slider-skimming').slider('value');
             efficiency.dispersant = this.$('.slider-dispersant').slider('value');
             efficiency.insitu_burn = this.$('.slider-in-situ-burn').slider('value');
-            var benefit = efficiency.skimming / 3 + efficiency.dispersant / 3 + efficiency.insitu_burn / 3;
-//console.log('sliding!!!!!', efficiency.skimming, efficiency.dispersant, efficiency.insitu_burn, benefit);
-            this.gauge.set(benefit);
+
+            this.$('#surface').html((efficiency.skimming/100).toFixed(3));
+            this.$('#column').html((efficiency.dispersant/100).toFixed(3));
+            this.$('#shoreline').html((efficiency.insitu_burn/100).toFixed(3));
 
             var canvas = this.__canvas;
-            var surface = canvas._objects[0];
-//console.log('surface', surface.x1, surface.y1, surface.x2, surface.y2);
-            var column = canvas._objects[1];
-//console.log('column', column.x1, column.y1, column.x2, column.y2);
-            var shoreline = canvas._objects[2];
-//console.log('shoreline', shoreline.x1, shoreline.y1, shoreline.x2, shoreline.y2);
+            var s = canvas._objects[0];
+            var surfaceRV = Math.sqrt(((s.x1-s.x2)*(s.x1-s.x2)) + ((s.y1-s.y2)*(s.y1-s.y2)))
+            var c = canvas._objects[1];
+            var columnRV = Math.sqrt(((c.x1-c.x2)*(c.x1-c.x2)) + ((c.y1-c.y2)*(c.y1-c.y2)))
+            var l = canvas._objects[2];
+            var shorelineRV = Math.sqrt(((l.x1-l.x2)*(l.x1-l.x2)) + ((l.y1-l.y2)*(l.y1-l.y2)))
+            var t = surfaceRV+columnRV+shorelineRV;
+            surfaceRV = surfaceRV / t;
+            columnRV = columnRV / t;
+            shorelineRV = shorelineRV / t;
+//console.log('lengths ', surfaceRV, columnRV, shorelineRV, (surfaceRV+columnRV+shorelineRV));
 
-            this.model.set('surface', parseFloat(this.$('#surface').val()));
-            this.model.set('column', parseFloat(this.$('#column').val()));
-            this.model.set('shoreline', parseFloat(this.$('#shoreline').val()));
+//            this.model.set('surface', surface);
+//            this.model.set('column', column);
+//            this.model.set('shoreline', shoreline);
+
+            this.$('#surfaceRV').html((surfaceRV*100).toFixed(3));
+            this.$('#columnRV').html((columnRV*100).toFixed(3));
+            this.$('#shorelineRV').html((shorelineRV*100).toFixed(3));
+
+            var benefit = (1 - (surfaceRV * this.model.get('surface') + columnRV * this.model.get('column') + shorelineRV * this.model.get('shoreline'))) * this.gauge.maxValue;
+console.log('benefit is ', benefit);
+            this.gauge.set(benefit);
         }
     });
 

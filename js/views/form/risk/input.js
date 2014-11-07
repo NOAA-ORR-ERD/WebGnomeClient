@@ -4,9 +4,8 @@ define([
     'backbone',
     'moment',
     'views/modal/form',
-    'model/step',
     'text!templates/risk/input.html',
-], function($, _, Backbone, moment, FormModal, StepModel, RiskTemplate) {
+], function($, _, Backbone, moment, FormModal, RiskTemplate) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -78,6 +77,57 @@ define([
 //            } else {
 //                this.clearError();
 //            }
+        },
+
+        risk_assessment: function(){
+console.log('assessing risk!!!!!!!');
+            var area = this.model.convertAreaToSquareMeters();
+            var diameter = this.model.convertDiameterToMeters();
+            var distance = this.model.convertDistanceToMeters();
+            var depth = this.model.convertDepthToMeters();
+console.log('values are ', area, diameter, distance, depth);
+            var spills = webgnome.model.get('spills');
+            var volumeTotal = 0;
+            $.each(spills.models, function(idx, model) {
+                var a = model.get('amount');
+                switch (model.get('units')) {
+                    case 'bbl':
+                        a = a * 158.987;
+                        break;
+                    case 'cubic meters':
+                        a = a * 1000;
+                        break;
+                    case 'gal':
+                        a = a * 3.78541;
+                        break;
+                    case 'ton':
+                        a = a * 1018.32416;
+                        break;
+                    case 'metric ton':
+                        a = a * 1165.34;
+                        break;
+                    default:
+                }
+                volumeTotal += a;
+            });
+console.log('volume total is ', volumeTotal);
+
+            // calculate what time step this is
+            var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var timeStep = webgnome.model.get('time_step');
+            var assessmentTime = moment(this.model.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var frame = (assessmentTime - startTime) / timeStep;
+console.log('model step info need is ', frame);
+
+// TEMP for testing
+            var surface = 0.5,
+                column = 0.6,
+                shoreline = 0.2;
+// TEMP for testing
+
+            this.model.set('surface', surface);
+            this.model.set('column', column);
+            this.model.set('shoreline', shoreline);
         },
 
     });
