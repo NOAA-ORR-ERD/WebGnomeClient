@@ -1,3 +1,37 @@
-<h3>
-	Hello world!
-</h3>
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="datetime">Time of In-Situ Burn:</label>
+		<div class="col-sm-4">
+			<input type="text" id="datetime" class="form-control" value="{{ time }}">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="oilarea">Area of fire-boomed oil:</label>
+		<div class="col-sm-4">
+			<input type="number" id="oilarea" class="form-control" value="">
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control" id="areaunits">
+				<option value="ft^2">
+					sq. feet
+				</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="oilthickness">Boomed oil thickness:</label>
+		<div class="col-sm-4">
+			<input type="number" id="oilthickness" class="form-control" value="">
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control" id="thicknessunits">
+				<option value="mm">
+					mm
+				</option>
+			</select>
+		</div>
+	</div>
+
+</form>
