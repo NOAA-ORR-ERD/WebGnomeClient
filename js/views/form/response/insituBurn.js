@@ -26,6 +26,20 @@ define([
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
             });
+        },
+
+        update: function(){
+            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var boomedOilArea = this.$('#oilarea').val();
+            var boomedAreaUnits = this.$('#areaunits').val();
+            var boomedOilThickness = this.$('#oilthickness').val();
+            var boomedThicknessUnits = this.$('#thicknessunits').val();
+
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
         }
     });
 
