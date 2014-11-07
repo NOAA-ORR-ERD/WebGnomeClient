@@ -156,6 +156,18 @@ define([
                     this.spillMapView.map.getView().setCenter(startPoint);
                     this.spillMapView.map.getView().setZoom(15);
                 }
+                var start = this.model.get('release').get('start_position');
+                var end = this.model.get('release').get('end_position');
+                if ((start[0] === end[0]) && (start[1] === end[1])){
+                    var feature = this.source.forEachFeature(_.bind(function(feature){
+                            return feature;
+                    }, this));
+                    this.source.removeFeature(feature);
+                    var point = _.initial(start);
+                    point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(point));
+                    this.source.addFeature(feature);
+                }
             }
         },
 
