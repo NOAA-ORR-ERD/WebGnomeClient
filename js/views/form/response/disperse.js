@@ -4,7 +4,8 @@ define([
     'backbone',
     'views/modal/form',
     'text!templates/form/response/disperse.html',
-    'model/weatherers/dispersion'
+    'model/weatherers/dispersion',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, FormModal, FormTemplate, DisperseModel){
     var disperseForm = FormModal.extend({
         title: 'Disperse Response',
@@ -16,7 +17,10 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate,{
+                time: 5,
+                duration: 4
+            });
             FormModal.prototype.render.call(this, options);
         }
     });

@@ -35,7 +35,7 @@ define([
             this.on('hidden', _.bind(function(){
                 var inSituBurnForm = new InSituBurnForm(null, insituBurn);
                 inSituBurnForm.render();
-                inSituBurnForm.on('wizardclose', insituBurnForm.close);
+                inSituBurnForm.on('wizardclose', inSituBurnForm.close);
                 inSituBurnForm.on('save', function(){
                     webgnome.model.get('weatherers').add(insituBurn);
                     webgnome.model.save();

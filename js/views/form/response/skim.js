@@ -4,7 +4,8 @@ define([
     'backbone',
     'views/modal/form',
     'text!templates/form/response/skim.html',
-    'model/weatherers/skim'
+    'model/weatherers/skim',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, FormModal, FormTemplate, SkimModel){
     var skimForm = FormModal.extend({
         title: 'Skim Response',
