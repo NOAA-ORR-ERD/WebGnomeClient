@@ -17,8 +17,14 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate);
+            this.body = _.template(FormTemplate, {
+                time: 5,
+                duration: 4
+            });
             FormModal.prototype.render.call(this, options);
+            this.$('#datetime').datetimepicker({
+                format: 'Y/n/j G:i',
+            });
         }
     });
 

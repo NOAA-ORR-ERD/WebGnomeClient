@@ -22,6 +22,9 @@ define([
                 duration: 4
             });
             FormModal.prototype.render.call(this, options);
+            this.$('#datetime').datetimepicker({
+                format: 'Y/n/j G:i',
+            });
         }
     });
 
