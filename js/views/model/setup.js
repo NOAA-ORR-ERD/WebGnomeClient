@@ -26,6 +26,7 @@ define([
     'views/form/spill/instant',
     'views/form/location',
     'views/default/map',
+    'views/form/response/type',
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
@@ -41,7 +42,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, ResponseTypeForm, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -623,6 +624,11 @@ define([
             locationForm.render();
             webgnome.model.off('sync', this.updateObjects, this);
 
+        },
+
+        clickResponse: function(){
+            var typeForm = new ResponseTypeForm();
+            typeForm.render();
         },
 
         updateLocation: function(){
