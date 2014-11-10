@@ -35,6 +35,8 @@ define([
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
 
+            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
+
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
