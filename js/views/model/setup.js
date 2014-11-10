@@ -709,10 +709,13 @@ define([
             switch (response.get('name').split(" ")[0]){
                 case "Dispersion":
                     responseView = new ResponseDisperseView(null, response);
+                    break;
                 case "Burn":
                     responseView = new ResponseBurnView(null, response);
+                    break;
                 case "Skimmer":
                     responseView = new ResponseSkimView(null, response);
+                    break;
             }
             responseView.on('wizardclose', function(){
                 responseView.on('hidden', responseView.close);
