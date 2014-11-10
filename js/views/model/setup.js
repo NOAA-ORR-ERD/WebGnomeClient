@@ -27,6 +27,10 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'text!templates/panel/response.html',
+    'views/form/response/disperse',
+    'views/form/response/insituBurn',
+    'views/form/response/skim',
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
@@ -42,7 +46,8 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -57,6 +62,8 @@ define([
             'mouseout .spill .spill-list': 'unhoverSpill',
             'click .location .add': 'clickLocation',
             'click .response .add': 'clickResponse',
+            'click .response .single .edit': 'loadResponse',
+            'click .response .single .trash': 'deleteResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
         },
@@ -207,6 +214,7 @@ define([
             this.updateLocation();
             this.updateWater();
             this.updateSpill();
+            this.updateResponse();
 
             var delay = {
                 show: 500,
@@ -623,11 +631,6 @@ define([
             webgnome.model.off('sync', this.updateObjects, this);
         },
 
-        clickResponse: function(){
-            var typeForm = new ResponseTypeForm();
-            typeForm.render();
-        },
-
         updateLocation: function(){
             var map = webgnome.model.get('map');
             if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
@@ -673,6 +676,76 @@ define([
                 this.$('.location .panel').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
             }
+        },
+
+        clickResponse: function(){
+            var typeForm = new ResponseTypeForm();
+            typeForm.render();
+        },
+
+        updateResponse: function(){
+            var weatherers = webgnome.model.get('weatherers').models;
+            var responses = [];
+            for (var i = 0; i < weatherers.length; i++){
+                if (weatherers[i].attributes.name !== "Evaporation" && weatherers[i].attributes.name !== "Weatherer"){
+                    responses.push(weatherers[i]);
+                }
+            }
+            if (responses.length > 0){
+                this.$('.response .panel').addClass('complete');
+                var compiled = _.template(ResponsePanelTemplate, {responses: responses});
+                this.$('.response .panel-body').html(compiled);
+                this.$('.response .panel-body').show();
+            } else {
+                this.$('.response .panel').removeClass('complete');
+                this.$('.response .panel-body').hide().html('');
+            }
+        },
+
+        loadResponse: function(e){
+            var responseId = $(e.target).parents('.single').data('id');
+            var response = webgnome.model.get('weatherers').get(responseId);
+            var responseView;
+            switch (response.get('name').split(" ")[0]){
+                case "Dispersion":
+                    responseView = new ResponseDisperseView(null, response);
+                case "Burn":
+                    responseView = new ResponseBurnView(null, response);
+                case "Skimmer":
+                    responseView = new ResponseSkimView(null, response);
+            }
+            responseView.on('wizardclose', function(){
+                responseView.on('hidden', responseView.close);
+            });
+            responseView.on('save', function(){
+                webgnome.model.trigger('sync');
+                setTimeout(_.bind(function(){
+                    responseView.close();},
+                this), 750);
+            });
+            responseView.render();
+        },
+
+        deleteResponse: function(e){
+            var id = $(e.target).parents('.single').data('id');
+            var response = webgnome.model.get('weatherers').get(id);
+            swal({
+                title: 'Delete "' + response.get('name') + '"',
+                text: 'Are you sure you want to delete this response?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('weatherers').remove(id);
+                    webgnome.model.save({
+                        success: _.bind(function(){
+                            this.updateResponse();
+                        }, this)
+                    });
+                }
+            }, this));
         },
         
         configureWeatherers: function(prediction){

@@ -49,7 +49,7 @@ define([
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
                 'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
                 'gnome.weatherers.Burn': BurnWeatherer,
-                'gnome.weatherers.Skimmer': SkimWeatherer
+                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
         },
 

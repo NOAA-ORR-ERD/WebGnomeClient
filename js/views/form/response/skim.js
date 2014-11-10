@@ -20,7 +20,7 @@ define([
         render: function(options){
             this.body = _.template(FormTemplate, {
                 time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'));
+                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
             FormModal.prototype.render.call(this, options);
             this.$('#datetime').datetimepicker({
