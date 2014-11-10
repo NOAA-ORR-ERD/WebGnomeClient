@@ -20,7 +20,7 @@ define([
         render: function(options){
             this.body = _.template(FormTemplate, {
                 time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: 4
+                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'));
             });
             FormModal.prototype.render.call(this, options);
             this.$('#datetime').datetimepicker({
@@ -32,7 +32,7 @@ define([
             var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
 
             this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
-            
+
             var duration = parseFloat(this.$('#duration').val());
             var endTime = startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var recoveryRate = this.$('#recovery-rate').val();
