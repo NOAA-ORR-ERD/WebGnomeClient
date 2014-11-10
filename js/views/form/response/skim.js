@@ -13,7 +13,7 @@ define([
         className: 'modal fade form-modal skim-form',
 
         initialize: function(options, skimModel){
-            FormModal.prototype.initialize.call(this, options, skimModel);
+            ResponseFormModal.prototype.initialize.call(this, options, skimModel);
             this.model = skimModel;
         },
 
@@ -23,7 +23,7 @@ define([
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
-            FormModal.prototype.render.call(this, options);
+            ResponseFormModal.prototype.render.call(this, options);
         },
 
         update: function(){
