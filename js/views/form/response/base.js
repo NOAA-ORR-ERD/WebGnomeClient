@@ -51,7 +51,8 @@ define([
             var responses = webgnome.model.get('weatherers').models;
             var responseName = responseModel.get('name');
             var nameCount = 1;
-            if (responseName.split(" ").length === 1){
+            var responseNameArray = ["Burn", "Skimmer", "Dispersion"];
+            if (responseNameArray.indexOf(responseName) > -1){
                 for (var i = 0; i < responses.length; i++){
                     if (responses[i].get('name').split(" ")[0] === responseName){
                         nameCount++;
