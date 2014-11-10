@@ -1,0 +1,66 @@
+define([
+	'jquery',
+	'underscore',
+	'backbone',
+	'views/modal/form',
+	'moment',
+	'jqueryDatetimepicker'
+], function($, _, Backbone, FormModal, moment){
+	var baseResponseForm = FormModal.extend({
+
+        events: function(){
+            return _.defaults({
+
+            }, FormModal.prototype.events);
+        },
+
+        initialize: function(options, responseModel){
+            FormModal.prototype.initialize.call(this, options);
+            if (!_.isUndefined(options.model)){
+                this.model = options.model;
+            } else {
+                this.model = responseModel;
+            }
+        },
+
+        render: function(options){
+            FormModal.prototype.render.call(this, options);
+            this.$('#datetime').datetimepicker({
+                format: 'Y/n/j G:i',
+            });
+        },
+
+        update: function(){
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
+        },
+
+        parseDuration: function(start, end){
+            var duration = (moment(end).unix() - moment(start).unix()) * 1000;
+            var hours = 0;
+            if (!_.isUndefined(duration)){
+                hours = moment.duration(duration).asHours();
+            }
+            return hours;
+        },
+
+        nameCounter: function(responseModel){
+            var responses = webgnome.model.get('weatherers').models;
+            var responseName = responseModel.get('name');
+            var nameCount = 1;
+            if (responseName.split(" ").length === 1){
+                for (var i = 0; i < responses.length; i++){
+                    if (responses[i].get('name').split(" ")[0] === responseName){
+                        nameCount++;
+                    }
+                }
+                this.model.set('name', responseName + " #" + nameCount);
+            }
+        }
+	});
+
+	return baseResponseForm;
+});

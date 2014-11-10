@@ -2,13 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/response/base',
     'text!templates/form/response/skim.html',
     'model/weatherers/skim',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SkimModel, moment){
-    var skimForm = FormModal.extend({
+], function($, _, Backbone, ResponseFormModal, FormTemplate, SkimModel, moment){
+    var skimForm = ResponseFormModal.extend({
         title: 'Skim Response',
         className: 'modal fade form-modal skim-form',
 
@@ -23,9 +23,6 @@ define([
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
             FormModal.prototype.render.call(this, options);
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
         },
 
         update: function(){
@@ -42,11 +39,7 @@ define([
 
             this.model.set('active_stop', endTime);
 
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
+            ResponseFormModal.prototype.update.call(this);
         }
     });
 

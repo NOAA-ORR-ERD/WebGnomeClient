@@ -3,15 +3,13 @@ define([
 	'underscore',
 	'backbone',
 	'views/modal/form',
-	'text!templates/form/spill/instant.html',
-	'model/spill',
 	'views/form/oil/library',
 	'views/default/map',
 	'nucos',
 	'ol',
 	'moment',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, nucos, ol, moment){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, nucos, ol, moment){
 	var baseSpillForm = FormModal.extend({
 
 		mapShown: false,

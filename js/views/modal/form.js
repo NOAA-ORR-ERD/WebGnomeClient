@@ -110,15 +110,6 @@ define([
         close: function(){
             this.remove();
             this.unbind();
-        },
-
-        parseDuration: function(start, end){
-            var duration = (moment(end).unix() - moment(start).unix()) * 1000;
-            var hours = 0;
-            if (!_.isUndefined(duration)){
-                hours = moment.duration(duration).asHours();
-            }
-            return hours;
         }
     });
 

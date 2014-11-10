@@ -2,30 +2,28 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/response/base',
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, DisperseModel, moment){
-    var disperseForm = FormModal.extend({
+], function($, _, Backbone, ResponseFormModal, FormTemplate, DisperseModel, moment){
+    var disperseForm = ResponseFormModal.extend({
         title: 'Disperse Response',
         className: 'modal fade form-modal disperse-form',
 
         initialize: function(options, disperseModel){
-            FormModal.prototype.initialize.call(this, options, disperseModel);
+            ResponseFormModal.prototype.initialize.call(this, options, disperseModel);
             this.model = disperseModel;
         },
 
         render: function(options){
+            this.nameCounter(this.model);
             this.body = _.template(FormTemplate,{
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
-            FormModal.prototype.render.call(this, options);
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
+            ResponseFormModal.prototype.render.call(this, options);
         },
 
         update: function(){
@@ -40,11 +38,7 @@ define([
 
             this.model.set('active_stop', endTime);
 
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
+            ResponseFormModal.prototype.update.call(this);
         }
     });
 
