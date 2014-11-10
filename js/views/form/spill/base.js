@@ -147,7 +147,11 @@ define([
                         point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
                         var feature = new ol.Feature(new ol.geom.Point(point));
                         feature.setStyle( new ol.style.Style({
-                            
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
                         }));
                         this.source.addFeature(feature);
                     }
@@ -179,6 +183,13 @@ define([
                     var point = _.initial(start);
                     point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
                     var feature = new ol.Feature(new ol.geom.Point(point));
+                    feature.setStyle( new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
                     this.source.addFeature(feature);
                 }
             }
