@@ -48,7 +48,7 @@ define([
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
                 'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
-                'gnome.weatherers.Burn': BurnWeatherer,
+                'gnome.weatherers.cleanup.Burn': BurnWeatherer,
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
         },
