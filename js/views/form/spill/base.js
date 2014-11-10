@@ -146,6 +146,9 @@ define([
                         var point = startPoint;
                         point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
                         var feature = new ol.Feature(new ol.geom.Point(point));
+                        feature.setStyle( new ol.style.Style({
+                            
+                        }));
                         this.source.addFeature(feature);
                     }
                 }, this));
