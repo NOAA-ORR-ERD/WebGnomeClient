@@ -7,7 +7,8 @@ define([
         urlRoot: '/weatherer/',
 
         defaults: {
-            'obj_type': 'gnome.weatherers.Skimmer'
+            'obj_type': 'gnome.weatherers.Skimmer',
+            'name': 'Skimmer'
         },
 
         toTree: function(){

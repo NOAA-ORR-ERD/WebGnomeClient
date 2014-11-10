@@ -7,7 +7,8 @@ define([
         urlRoot: '/weatherer/',
 
         defaults: {
-            'obj_type': 'gnome.weatherers.Dispersion'
+            'obj_type': 'gnome.weatherers.Dispersion',
+            'name': 'Dispersion'
         },
 
         toTree: function(){

@@ -7,7 +7,8 @@ define([
         urlRoot: '/weatherer/',
 
         defaults: {
-            'obj_type': 'gnome.weatherers.Burn'
+            'obj_type': 'gnome.weatherers.Burn',
+            'name': 'Burn'
         },
 
         toTree: function(){
