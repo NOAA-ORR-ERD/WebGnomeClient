@@ -20,6 +20,7 @@ define([
         render: function(options){
             this.nameCounter(this.model);
             this.body = _.template(FormTemplate, {
+                name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
@@ -27,9 +28,8 @@ define([
         },
 
         update: function(){
-            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
 
-            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
+            ResponseFormModal.prototype.update.call(this);
 
             var duration = parseFloat(this.$('#duration').val());
             var endTime = startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
@@ -39,8 +39,6 @@ define([
             var amountUnits = this.$('#amount-units').val();
 
             this.model.set('active_stop', endTime);
-
-            ResponseFormModal.prototype.update.call(this);
         }
     });
 

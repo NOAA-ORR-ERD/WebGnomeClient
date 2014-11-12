@@ -706,7 +706,8 @@ define([
             var responseId = $(e.target).parents('.single').data('id');
             var response = webgnome.model.get('weatherers').get(responseId);
             var responseView;
-            switch (response.get('name').split(" ")[0]){
+            var nameArray = response.get('obj_type').split('.');
+            switch (nameArray[nameArray.length - 1]){
                 case "Dispersion":
                     responseView = new ResponseDisperseView(null, response);
                     break;

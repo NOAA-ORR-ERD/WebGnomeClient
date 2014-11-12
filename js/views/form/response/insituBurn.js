@@ -20,6 +20,7 @@ define([
         render: function(options){
             this.nameCounter(this.model);
             this.body = _.template(FormTemplate, {
+                name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm')
             });
             ResponseFormModal.prototype.render.call(this, options);

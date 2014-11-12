@@ -31,6 +31,11 @@ define([
         },
 
         update: function(){
+            var name = this.$('#name').val();
+            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+
+            this.model.set('name', name);
+            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
