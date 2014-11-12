@@ -25,6 +25,7 @@
     "flotspline": "git://github.com/alexbardas/flot.git",
     "flot.tooltip": "~0.8.4",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
+    "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.9",
     "sweetalert": "0.2.1"

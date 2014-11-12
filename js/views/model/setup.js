@@ -40,7 +40,8 @@ define([
     'flotresize',
     'flotdirection',
     'flottooltip',
-    'flotstack'
+    'flotstack',
+    'flotgantt'
 ], function($, _, Backbone, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -210,55 +211,58 @@ define([
         },
 
         updateObjects: function(){
-            this.updateWind();
-            this.updateLocation();
-            this.updateWater();
-            this.updateSpill();
-            this.updateResponse();
+            this.constructModelTimeSeries(_.bind(function(){
+                this.updateWind();
+                this.updateLocation();
+                this.updateWater();
+                this.updateSpill();
+                
 
-            var delay = {
-                show: 500,
-                hide: 100
-            };
+                var delay = {
+                    show: 500,
+                    hide: 100
+                };
 
-            $('.panel-heading .add').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
+                $('.panel-heading .add').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
-                        return 'Edit ' + object;
-                    } else {
-                        return 'Create ' + object;
-                    }
-                },
-                delay: delay,
-                container: 'body'
-            });
+                        if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                            return 'Edit ' + object;
+                        } else {
+                            return 'Create ' + object;
+                        }
+                    },
+                    delay: delay,
+                    container: 'body'
+                });
 
-            $('.panel-heading .state').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
+                $('.panel-heading .state').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete')){
-                        return object + ' requirement met';
-                    } else {
-                        return object + ' required';
-                    }
-                },
-                container: 'body',
-                delay: delay
-            });
+                        if($(this).parents('.panel').hasClass('complete')){
+                            return object + ' requirement met';
+                        } else {
+                            return object + ' required';
+                        }
+                    },
+                    container: 'body',
+                    delay: delay
+                });
 
-            $('.spill .trash, .spill .edit').tooltip({
-                container: 'body',
-                delay: delay
-            });
-            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
-                this.$('.stage-3').show();
-            } else {
-                this.$('.stage-3').hide();
-            }
-            this.mason.layout();
+                $('.spill .trash, .spill .edit').tooltip({
+                    container: 'body',
+                    delay: delay
+                });
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
+                    this.$('.stage-3').show();
+                    this.updateResponse();
+                } else {
+                    this.$('.stage-3').hide();
+                }
+                this.mason.layout();
+            }, this));
         },
 
         clickWind: function(){
@@ -429,7 +433,7 @@ define([
             spillView.render();
         },
 
-        constructModelTimeSeries: function(){
+        constructModelTimeSeries: function(cb){
             var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
@@ -443,7 +447,12 @@ define([
                     timeSeries.push(answer);
                 }
             }
-            return timeSeries;
+
+            this.timeSeries = timeSeries;
+            
+            if (cb){
+                cb();
+            }
         },
 
         calculateSpillAmount: function(timeseries){
@@ -492,7 +501,7 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
-            var timeSeries = this.constructModelTimeSeries();
+            var timeSeries = this.timeSeries;
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
@@ -685,6 +694,7 @@ define([
 
         updateResponse: function(){
             var weatherers = webgnome.model.get('weatherers').models;
+            var timeSeries = this.timeSeries;
             var filteredNames = ["_natural", "Evaporation", "Weatherer"];
             var responses = [];
             for (var i = 0; i < weatherers.length; i++){
@@ -695,12 +705,66 @@ define([
             if (responses.length > 0){
                 this.$('.response .panel').addClass('complete');
                 var compiled = _.template(ResponsePanelTemplate, {responses: responses});
+                var data = [];
+                var yticks = [];
+                for (i in responses){
+                    var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
+                    var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
+                    var responseIndex = parseInt(i, 10) + 1;
+                    data.push([startTime, responseIndex, endTime, "moo"]);
+                    yticks.push([responseIndex, responses[i].get('name')]);
+                }
+
+                var dataset = [{
+                    label: "Responses",
+                    data: data,
+                    direction: {
+                        show: false
+                    }
+                }];
+
                 this.$('.response .panel-body').html(compiled);
                 this.$('.response .panel-body').show();
+
+                if(!_.isUndefined(dataset)){
+                    this.responseDataset = dataset;
+                    this.renderResponseGraph(dataset, yticks);
+                }
+
             } else {
                 this.$('.response .panel').removeClass('complete');
                 this.$('.response .panel-body').hide().html('');
             }
+        },
+
+        renderResponseGraph: function(dataset, yticks){
+            this.responsePlot = $.plot('.response .chart .canvas', dataset, {
+                series: {
+                    editMode: 'v',
+                    editable: true,
+                    gantt: {
+                        active: true,
+                        show: true,
+                        barHeight: 0.5
+                    }
+                },
+                grid: {
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    hoverable: true
+                },
+                xaxis: {
+                    mode: 'time',
+                    min: moment(webgnome.model.get('start_time')).unix() * 1000,
+                    max: moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000
+                },
+                yaxis: {
+                    min: 0.5,
+                    max: yticks.length + 0.5,
+                    ticks: yticks
+                }
+
+            });
         },
 
         loadResponse: function(e){
