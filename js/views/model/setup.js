@@ -687,7 +687,7 @@ define([
             var weatherers = webgnome.model.get('weatherers').models;
             var responses = [];
             for (var i = 0; i < weatherers.length; i++){
-                if (weatherers[i].attributes.name !== "Evaporation" && weatherers[i].attributes.name !== "Weatherer"){
+                if (weatherers[i].attributes.name !== "_natural" && weatherers[i].attributes.name !== "Evaporation" && weatherers[i].attributes.name !== "Weatherer"){
                     responses.push(weatherers[i]);
                 }
             }

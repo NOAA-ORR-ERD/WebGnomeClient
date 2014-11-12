@@ -282,6 +282,7 @@ define([
                                         success: _.bind(function(model, response, options){
                                             this.get('weatherers').add(evaporation);
                                             var dispersion = new DispersionWeatherer();
+                                            dispersion.set('name', '_natural');
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);
