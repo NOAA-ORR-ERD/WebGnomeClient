@@ -711,7 +711,7 @@ define([
                     var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                     var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
                     var responseIndex = parseInt(i, 10) + 1;
-                    data.push([startTime, responseIndex, endTime, "moo"]);
+                    data.push([startTime, responseIndex, endTime]);
                     yticks.push([responseIndex, responses[i].get('name')]);
                 }
 
