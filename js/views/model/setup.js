@@ -723,6 +723,7 @@ define([
                     }
                 }];
 
+                this.$('.response').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.response .panel-body').html(compiled);
                 this.$('.response .panel-body').show();
 
@@ -734,6 +735,7 @@ define([
             } else {
                 this.$('.response .panel').removeClass('complete');
                 this.$('.response .panel-body').hide().html('');
+                this.$('.response').removeClass('col-md-6').addClass('col-md-3');
             }
         },
 
@@ -745,7 +747,7 @@ define([
                     gantt: {
                         active: true,
                         show: true,
-                        barHeight: 0.5
+                        barHeight: 0.2
                     }
                 },
                 grid: {
@@ -755,8 +757,9 @@ define([
                 },
                 xaxis: {
                     mode: 'time',
-                    min: moment(webgnome.model.get('start_time')).unix() * 1000,
-                    max: moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000
+                    timezone: 'browser',
+                    min: this.timeSeries[0],
+                    max: this.timeSeries[this.timeSeries.length - 1]
                 },
                 yaxis: {
                     min: 0.5,

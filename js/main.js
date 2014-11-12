@@ -61,7 +61,7 @@ require.config({
         flotstack: ['flot'],
         flotpie: ['flot'],
         flotfillarea: ['flot'],
-        flotgantt: ['JUMFlotLib', 'flot'],
+        flotgantt: ['flot', 'JUMFlotLib'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'
