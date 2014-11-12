@@ -685,9 +685,10 @@ define([
 
         updateResponse: function(){
             var weatherers = webgnome.model.get('weatherers').models;
+            var filteredNames = ["_natural", "Evaporation", "Weatherer"];
             var responses = [];
             for (var i = 0; i < weatherers.length; i++){
-                if (weatherers[i].attributes.name !== "_natural" && weatherers[i].attributes.name !== "Evaporation" && weatherers[i].attributes.name !== "Weatherer"){
+                if (filteredNames.indexOf(weatherers[i].attributes.name) === -1){
                     responses.push(weatherers[i]);
                 }
             }
