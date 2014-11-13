@@ -706,22 +706,51 @@ define([
                 this.$('.response .panel').addClass('complete');
                 var compiled = _.template(ResponsePanelTemplate, {responses: responses});
                 var data = [];
+                var burnData = [];
+                var skimData = [];
+                var disperseData = [];
                 var yticks = [];
                 for (i in responses){
+                    var responseObjType = responses[i].get('obj_type').split(".");
                     var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                     var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
                     var responseIndex = responses.length - parseInt(i, 10);
-                    data.push([startTime, responseIndex, endTime]);
+                    switch (responseObjType[responseObjType.length - 1]){
+                        case "Skimmer":
+                            skimData.push([startTime, responseIndex, endTime]);
+                            break;
+                        case "Dispersion":
+                            disperseData.push([startTime, responseIndex, endTime]);
+                            break;
+                        case "Burn":
+                            burnData.push([startTime, responseIndex, endTime]);
+                    }
                     yticks.push([responseIndex, responses[i].get('name')]);
                 }
 
-                var dataset = [{
-                    label: "Responses",
-                    data: data,
-                    direction: {
-                        show: false
+                var dataset = [
+                    {
+                        label: "Burns",
+                        data: burnData,
+                        direction: {
+                            show: false
+                        }
+                    },
+                    {
+                        label: "Skim",
+                        data: skimData,
+                        direction: {
+                            show: false
+                        }
+                    },
+                    {
+                        label: "Dispersion",
+                        data: disperseData,
+                        direction: {
+                            show: false
+                        }
                     }
-                }];
+                ];
 
                 this.$('.response').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.response .panel-body').html(compiled);
@@ -747,7 +776,7 @@ define([
                     gantt: {
                         active: true,
                         show: true,
-                        barHeight: 0.2
+                        barHeight: 0.5
                     }
                 },
                 grid: {
