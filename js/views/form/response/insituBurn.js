@@ -26,14 +26,13 @@ define([
         },
 
         update: function(){
+            ResponseFormModal.prototype.update.call(this);
             var boomedOilArea = this.$('#oilarea').val();
             var boomedAreaUnits = this.$('#areaunits').val();
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
 
             this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
-
-            ResponseFormModal.prototype.update.call(this);
         }
     });
 

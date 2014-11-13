@@ -710,9 +710,9 @@ define([
                 for (i in responses){
                     var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                     var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
-                    var responseIndex = parseInt(i, 10) + 1;
+                    var responseIndex = responses.length - parseInt(i, 10);
                     data.push([startTime, responseIndex, endTime]);
-                    yticks.push([responses.length - responseIndex + 1, responses[i].get('name')]);
+                    yticks.push([responseIndex, responses[i].get('name')]);
                 }
 
                 var dataset = [{
