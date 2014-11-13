@@ -99,6 +99,53 @@ define([
             return a;
         },
 
+        assessment: function(){
+            var area = this.convertAreaToSquareMeters();
+            var diameter = this.convertDiameterToMeters();
+            var distance = this.convertDistanceToMeters();
+            var depth = this.convertDepthToMeters();
+            var spills = webgnome.model.get('spills');
+            var volumeTotal = 0;
+            $.each(spills.models, function(idx, model) {
+                var a = model.get('amount');
+                switch (model.get('units')) {
+                    case 'bbl':
+                        a = a * 158.987;
+                        break;
+                    case 'cubic meters':
+                        a = a * 1000;
+                        break;
+                    case 'gal':
+                        a = a * 3.78541;
+                        break;
+                    case 'ton':
+                        a = a * 1018.32416;
+                        break;
+                    case 'metric ton':
+                        a = a * 1165.34;
+                        break;
+                    default:
+                }
+                volumeTotal += a;
+            });
+
+            // calculate what time step this is
+            var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var timeStep = webgnome.model.get('time_step');
+            var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var frame = (assessmentTime - startTime) / timeStep;
+
+// TEMP for testing
+            var surface = this.get('efficiency').skimming / 100;
+            var column = this.get('efficiency').dispersant / 100;
+            var shoreline = this.get('efficiency').insitu_burn / 100;
+// TEMP for testing
+
+            this.set('surface', surface);
+            this.set('column', column);
+            this.set('shoreline', shoreline);
+        },
+
         validate: function(attrs, options){
             if (attrs.area < 1 || attrs.area === ''){
                 return 'Water area must be greater than zero!';

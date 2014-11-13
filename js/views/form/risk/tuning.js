@@ -12,7 +12,7 @@ define([
         className: 'modal fade form-modal risk-form',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
-        gauge: null,
+        benefitGauge: null,
 
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
@@ -39,13 +39,12 @@ define([
 
             this.createRelativeImportanceInput('importance', 1);
 
-//            this.update();
+            this.updateBenefit();
         },
 
         createBenefitGauge: function(selector, value){
             var opts = {
                 angle: 0, // The length of each line
-//                lineWidth: 0.2, // The line thickness
                 pointer: {
                     length: 0.5, // The radius of the inner circle
                     strokeWidth: 0.035, // The rotation offset
@@ -56,13 +55,12 @@ define([
                 colorStop: '#00ff00',    // just experiment with them
                 strokeColor: '#E0E0E0',   // to see which ones work best for you
                 generateGradient: true,
-                percentColors: [[0.0, "#ff0000"],[0.50, "#ffff00"],[1.0, "#00ff00"]]
+                percentColors: [[0.0, "#ff0000"],[0.50, "#ffff00"],[1.0, "#00ff00"]],
+                maxValue: 100,
+                animationSpeed: 20
             };
             var target = document.getElementById('benefit'); // your canvas element
-            this.gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-            this.gauge.maxValue = 100; // set max gauge value
-            this.gauge.animationSpeed = 90; // set animation speed (32 is default value)
-            this.gauge.set(value); // set actual value
+            this.benefitGauge = new Gauge(target).setOptions(opts);
         },
 
         createRelativeImportanceInput: function(selector, value){
@@ -140,7 +138,7 @@ define([
                 p.l2 && p.l2.set({ 'x1': p.left, 'y1': p.top });
                 p.l3 && p.l3.set({ 'x1': p.left, 'y1': p.top });
                 canvas.renderAll();
-                this.update();
+                this.calculateRI();
             }, this));
 
             canvas.renderAll();
@@ -150,7 +148,6 @@ define([
             this.$(selector).slider({
                     max: 100,
                     min: 0,
-//orientation: 'vertical',
                     value: value,
                     create: _.bind(function(e, ui){
                            this.$(selector+' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
@@ -159,22 +156,29 @@ define([
                            this.$(selector+' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
                         }, this),
                     stop: _.bind(function(e, ui){
-                            this.update();
+                            this.reassessRisk();
                         }, this)
             });
         },
 
-        update: function(){
-            var efficiency = this.model.get('efficiency');
-            efficiency.skimming = this.$('.slider-skimming').slider('value');
-            efficiency.dispersant = this.$('.slider-dispersant').slider('value');
-            efficiency.insitu_burn = this.$('.slider-in-situ-burn').slider('value');
-console.log('efficiencies ' , efficiency.skimming, efficiency.dispersant, efficiency.insitu_burn);
+        reassessRisk: function(){
+            var skimming = this.$('.slider-skimming').slider('value');
+            var dispersant = this.$('.slider-dispersant').slider('value');
+            var insitu_burn = this.$('.slider-in-situ-burn').slider('value');
 
-            this.$('#surface').html((efficiency.skimming/100).toFixed(3));
-            this.$('#column').html((efficiency.dispersant/100).toFixed(3));
-            this.$('#shoreline').html((efficiency.insitu_burn/100).toFixed(3));
+            // set model
+            var e = this.model.get('efficiency');
+            e.skimming = skimming;
+            e.dispersant = dispersant;
+            e.insitu_burn = insitu_burn;
 
+            // assess model
+            this.model.assessment();
+
+            this.updateBenefit();
+        },
+
+        calculateRI: function(){
             var canvas = this.__canvas;
             var s = canvas._objects[0];
             var surfaceRI = Math.sqrt(((s.x1-s.x2)*(s.x1-s.x2)) + ((s.y1-s.y2)*(s.y1-s.y2)))
@@ -183,22 +187,34 @@ console.log('efficiencies ' , efficiency.skimming, efficiency.dispersant, effici
             var l = canvas._objects[2];
             var shorelineRI = Math.sqrt(((l.x1-l.x2)*(l.x1-l.x2)) + ((l.y1-l.y2)*(l.y1-l.y2)))
             var t = surfaceRI+columnRI+shorelineRI;
-            surfaceRI = surfaceRI / t;
-            columnRI = columnRI / t;
-            shorelineRI = shorelineRI / t;
-console.log('lengths ', surfaceRI, columnRI, shorelineRI, (surfaceRI+columnRI+shorelineRI));
 
-//            this.model.set('surface', surface);
-//            this.model.set('column', column);
-//            this.model.set('shoreline', shoreline);
+            // set model
+            var ri = this.model.get('relativeImportance');
+            ri.surface = surfaceRI / t;
+            ri.column = columnRI / t;
+            ri.shoreline = shorelineRI / t;
 
-            this.$('#surfaceRI').html((surfaceRI*100).toFixed(3));
-            this.$('#columnRI').html((columnRI*100).toFixed(3));
-            this.$('#shorelineRI').html((shorelineRI*100).toFixed(3));
+            // update ui
+            this.$('#surfaceRI').html((ri.surface*100).toFixed(3));
+            this.$('#columnRI').html((ri.column*100).toFixed(3));
+            this.$('#shorelineRI').html((ri.shoreline*100).toFixed(3));
 
-            var benefit = (1 - (surfaceRI * this.model.get('surface') + columnRI * this.model.get('column') + shorelineRI * this.model.get('shoreline'))) * this.gauge.maxValue;
-console.log('benefit is ', benefit);
-            this.gauge.set(benefit);
+            this.updateBenefit();
+        },
+
+        updateBenefit: function(){
+            var ri = this.model.get('relativeImportance');
+            var surface = this.model.get('surface');
+            var column = this.model.get('column');
+            var shoreline = this.model.get('shoreline');
+            var benefit = (ri.surface * surface + ri.column * column + ri.shoreline * shoreline) * this.benefitGauge.maxValue;
+
+            // update ui
+            this.$('#surface').html((surface).toFixed(3));
+            this.$('#column').html((column).toFixed(3));
+            this.$('#shoreline').html((shoreline).toFixed(3));
+
+            this.benefitGauge.set(benefit);
         }
 
     });

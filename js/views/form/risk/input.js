@@ -51,7 +51,7 @@ define([
             } else {
                 this.clearError();
 
-                this.risk_assessment();
+                this.model.assessment();
 
                 this.hide();
                 this.trigger('save');
@@ -75,54 +75,7 @@ define([
             if(this.model.isValid()){
                 this.$('.next').removeClass('disabled');
             }
-        },
-
-        risk_assessment: function(){
-            var area = this.model.convertAreaToSquareMeters();
-            var diameter = this.model.convertDiameterToMeters();
-            var distance = this.model.convertDistanceToMeters();
-            var depth = this.model.convertDepthToMeters();
-            var spills = webgnome.model.get('spills');
-            var volumeTotal = 0;
-            $.each(spills.models, function(idx, model) {
-                var a = model.get('amount');
-                switch (model.get('units')) {
-                    case 'bbl':
-                        a = a * 158.987;
-                        break;
-                    case 'cubic meters':
-                        a = a * 1000;
-                        break;
-                    case 'gal':
-                        a = a * 3.78541;
-                        break;
-                    case 'ton':
-                        a = a * 1018.32416;
-                        break;
-                    case 'metric ton':
-                        a = a * 1165.34;
-                        break;
-                    default:
-                }
-                volumeTotal += a;
-            });
-
-            // calculate what time step this is
-            var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var timeStep = webgnome.model.get('time_step');
-            var assessmentTime = moment(this.model.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var frame = (assessmentTime - startTime) / timeStep;
-
-// TEMP for testing
-            var surface = 0.5,
-                column = 0.6,
-                shoreline = 0.2;
-// TEMP for testing
-
-            this.model.set('surface', surface);
-            this.model.set('column', column);
-            this.model.set('shoreline', shoreline);
-        },
+        }
 
     });
 
