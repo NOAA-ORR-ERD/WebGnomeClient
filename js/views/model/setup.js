@@ -65,6 +65,8 @@ define([
             'click .response .add': 'clickResponse',
             'click .response .single .edit': 'loadResponse',
             'click .response .single .trash': 'deleteResponse',
+            'mouseover .response .single': 'hoverResponse',
+            'mouseout .response .response-list': 'unhoverResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
         },
@@ -705,11 +707,10 @@ define([
             if (responses.length > 0){
                 this.$('.response .panel').addClass('complete');
                 var compiled = _.template(ResponsePanelTemplate, {responses: responses});
-                var data = [];
                 var burnData = [];
                 var skimData = [];
                 var disperseData = [];
-                var yticks = [];
+                var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
                 for (i in responses){
                     var responseObjType = responses[i].get('obj_type').split(".");
                     var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
@@ -717,15 +718,14 @@ define([
                     var responseIndex = responses.length - parseInt(i, 10);
                     switch (responseObjType[responseObjType.length - 1]){
                         case "Skimmer":
-                            skimData.push([startTime, responseIndex, endTime]);
+                            skimData.push([startTime, 1, endTime, responses[i].get('id')]);
                             break;
                         case "Dispersion":
-                            disperseData.push([startTime, responseIndex, endTime]);
+                            disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
                             break;
                         case "Burn":
-                            burnData.push([startTime, responseIndex, endTime]);
+                            burnData.push([startTime, 3, endTime, responses[i].get('id')]);
                     }
-                    yticks.push([responseIndex, responses[i].get('name')]);
                 }
 
                 var dataset = [
@@ -797,6 +797,33 @@ define([
                 }
 
             });
+        },
+
+        hoverResponse: function(e){
+            var id = $(e.target).data('id');
+            if (_.isUndefined(id)){
+                id = $(e.target).parents('.single').data('id');
+            }
+            var coloredSet = [];
+            for (var dataset in this.responseDataset){
+                var ds = _.clone(this.responseDataset[dataset]);
+                for (var i in ds.data){
+                    if (ds.data[i][3] != id){
+                        ds.color = '#ddd';
+                    } else {
+                        ds.color = '#000'
+                    }
+                }
+
+                coloredSet.push(ds);
+            }
+            this.responsePlot.setData(coloredSet);
+            this.responsePlot.draw();
+        },
+
+        unhoverResponse: function(){
+            this.responsePlot.setData(this.responseDataset);
+            this.responsePlot.draw();
         },
 
         loadResponse: function(e){
