@@ -18,7 +18,6 @@ define([
         },
 
         render: function(options){
-            this.nameCounter(this.model);
             this.body = _.template(FormTemplate,{
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
@@ -28,18 +27,16 @@ define([
         },
 
         update: function(){
-            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            ResponseFormModal.prototype.update.call(this);
 
-            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
 
             var duration = parseFloat(this.$('#duration').val());
-            var endTime = startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
+            var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var sprayedOilPercent = this.$('#oilsprayed').val();
             var dispersedOilPercent = this.$('#oildispersed').val();
 
             this.model.set('active_stop', endTime);
-
-            ResponseFormModal.prototype.update.call(this);
         }
     });
 

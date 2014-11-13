@@ -21,6 +21,7 @@ define([
             } else {
                 this.model = responseModel;
             }
+            this.nameCounter(this.model);
         },
 
         render: function(options){
@@ -32,10 +33,11 @@ define([
 
         update: function(){
             var name = this.$('#name').val();
-            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            this.startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            var start_time = this.startTime;
 
             this.model.set('name', name);
-            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('active_start', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {

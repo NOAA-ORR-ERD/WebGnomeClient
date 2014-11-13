@@ -18,7 +18,6 @@ define([
         },
 
         render: function(options){
-            this.nameCounter(this.model);
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
@@ -32,7 +31,7 @@ define([
             ResponseFormModal.prototype.update.call(this);
 
             var duration = parseFloat(this.$('#duration').val());
-            var endTime = startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
+            var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var recoveryRate = this.$('#recovery-rate').val();
             var rateUnits = this.$('#rate-units').val();
             var recoveryAmount = this.$('#recovery-amount').val();
