@@ -24,9 +24,12 @@ define([
         events: {
             'shown.bs.tab': 'renderGraphs',
             'change #budget-table select': 'renderTableOilBudget',
-            'click #budget-table .export a': 'downloadTableOilBudget',
+            'click #budget-table .export a.download': 'downloadTableOilBudget',
+            'click #budget-table .export a.print': 'printTableOilBudget',
             'change #ics209 input': 'ICSInputSelect',
-            'change #ics209 select': 'renderTableICS'
+            'change #ics209 select': 'renderTableICS',
+            'click #ics209 .export a.download': 'downloadTableICS',
+            'click #ics209 .export a.print': 'printTableICS'
         },
 
         initialize: function(){
@@ -358,10 +361,10 @@ define([
 
             switch(type){
                 case 'csv':
-                    content = this.tableToCSV(table);
+                    content = this.tableToCSV(table, this.$('#budget-table .info div'));
                     break;
                 case 'html':
-                    content = this.tableToHTML(table);
+                    content = this.tableToHTML(table, this.$('#budget-table .info').html());
                     break;
             }
 
@@ -371,34 +374,8 @@ define([
             pom.click();
         },
 
-        tableToCSV: function(table){
-            var csv = [];
-            var rows = table.find('tr');
-            rows.each(function(row){
-                var csv_row = [];
-                var cells = $(rows[row]).find('th, td');
-                cells.each(function(cell){
-                    csv_row.push($(cells[cell]).text());
-                });
-                csv.push(csv_row.join(','));
-            });
-
-            var info = this.$('#budget-table .info div');
-            var cols = csv[0].split(',').length;
-            info.each(function(row){
-                cells = $(info[row]).text().split(':');
-                csv_row = [cells[0] + ':', cells[1]];
-
-                for(i = 0; i < cols.length - cells.length; i++){
-                    csv_row.push(' ');
-                }
-                csv.unshift(csv_row.join(','));
-            });
-            return csv.join('\r\n');
-        },
-
-        tableToHTML: function(table){
-            return this.$('#budget-table .info').html() + '<table>' + table.html() + '</table>';
+        printTableOilBudget: function(e){
+            window.print();
         },
 
         renderGraphEvaporation: function(dataset){
@@ -722,6 +699,66 @@ define([
             });
 
             this.$('#ics209 .ics-table').html(compiled);
+        },
+
+        downloadTableICS: function(e){
+            var table = this.$('#ics209 table:last');
+            var type = $(e.target).data('type');
+            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
+            var filename = name + '.' + type;
+            var content = '';
+
+            switch(type){
+                case 'csv':
+                    content = this.tableToCSV(table);
+                    break;
+                case 'html':
+                    content = this.tableToHTML(table);
+                    break;
+            }
+
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            pom.setAttribute('download', filename);
+            pom.click();
+        },
+
+        printTableICS: function(){
+            window.print();
+        },
+
+        tableToCSV: function(table, header){
+            var csv = [];
+            var rows = table.find('tr');
+            rows.each(function(row){
+                var csv_row = [];
+                var cells = $(rows[row]).find('th, td');
+                cells.each(function(cell){
+                    csv_row.push($(cells[cell]).text());
+                });
+                csv.push(csv_row.join(','));
+            });
+
+            if(!_.isUndefined(header)){
+                var cols = csv[0].split(',').length;
+                header.each(function(row){
+                    cells = $(header[row]).text().split(':');
+                    csv_row = [cells[0] + ':', cells[1]];
+
+                    for(i = 0; i < cols.length - cells.length; i++){
+                        csv_row.push(' ');
+                    }
+                    csv.unshift(csv_row.join(','));
+                });
+            }
+            return csv.join('\r\n');
+        },
+
+        tableToHTML: function(table, header){
+            if(_.isUndefined(header)){
+                header = '';
+            }
+            return header + '<table>' + table.html() + '</table>';
         },
 
         buildDataset: function(cb){
