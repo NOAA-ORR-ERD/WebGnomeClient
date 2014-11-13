@@ -21,9 +21,12 @@ define([
 
         render: function(options){
             this.body = _.template(RiskTemplate, {
-                surface: this.model.get('surface'),
-                column: this.model.get('column'),
-                shoreline: this.model.get('shoreline'),
+                surface: this.model.get('surface').toFixed(3),
+                column: this.model.get('column').toFixed(3),
+                shoreline: this.model.get('shoreline').toFixed(3),
+                surfaceRI: (this.model.get('relativeImportance').surface * 100).toFixed(3),
+                columnRI: (this.model.get('relativeImportance').column * 100).toFixed(3),
+                shorelineRI: (this.model.get('relativeImportance').shoreline * 100).toFixed(3),
             });
 
             FormModal.prototype.render.call(this, options);
@@ -36,7 +39,7 @@ define([
 
             this.createRelativeImportanceInput('importance', 1);
 
-            this.update();
+//            this.update();
         },
 
         createBenefitGauge: function(selector, value){
@@ -166,6 +169,7 @@ define([
             efficiency.skimming = this.$('.slider-skimming').slider('value');
             efficiency.dispersant = this.$('.slider-dispersant').slider('value');
             efficiency.insitu_burn = this.$('.slider-in-situ-burn').slider('value');
+console.log('efficiencies ' , efficiency.skimming, efficiency.dispersant, efficiency.insitu_burn);
 
             this.$('#surface').html((efficiency.skimming/100).toFixed(3));
             this.$('#column').html((efficiency.dispersant/100).toFixed(3));
@@ -173,29 +177,30 @@ define([
 
             var canvas = this.__canvas;
             var s = canvas._objects[0];
-            var surfaceRV = Math.sqrt(((s.x1-s.x2)*(s.x1-s.x2)) + ((s.y1-s.y2)*(s.y1-s.y2)))
+            var surfaceRI = Math.sqrt(((s.x1-s.x2)*(s.x1-s.x2)) + ((s.y1-s.y2)*(s.y1-s.y2)))
             var c = canvas._objects[1];
-            var columnRV = Math.sqrt(((c.x1-c.x2)*(c.x1-c.x2)) + ((c.y1-c.y2)*(c.y1-c.y2)))
+            var columnRI = Math.sqrt(((c.x1-c.x2)*(c.x1-c.x2)) + ((c.y1-c.y2)*(c.y1-c.y2)))
             var l = canvas._objects[2];
-            var shorelineRV = Math.sqrt(((l.x1-l.x2)*(l.x1-l.x2)) + ((l.y1-l.y2)*(l.y1-l.y2)))
-            var t = surfaceRV+columnRV+shorelineRV;
-            surfaceRV = surfaceRV / t;
-            columnRV = columnRV / t;
-            shorelineRV = shorelineRV / t;
-//console.log('lengths ', surfaceRV, columnRV, shorelineRV, (surfaceRV+columnRV+shorelineRV));
+            var shorelineRI = Math.sqrt(((l.x1-l.x2)*(l.x1-l.x2)) + ((l.y1-l.y2)*(l.y1-l.y2)))
+            var t = surfaceRI+columnRI+shorelineRI;
+            surfaceRI = surfaceRI / t;
+            columnRI = columnRI / t;
+            shorelineRI = shorelineRI / t;
+console.log('lengths ', surfaceRI, columnRI, shorelineRI, (surfaceRI+columnRI+shorelineRI));
 
 //            this.model.set('surface', surface);
 //            this.model.set('column', column);
 //            this.model.set('shoreline', shoreline);
 
-            this.$('#surfaceRV').html((surfaceRV*100).toFixed(3));
-            this.$('#columnRV').html((columnRV*100).toFixed(3));
-            this.$('#shorelineRV').html((shorelineRV*100).toFixed(3));
+            this.$('#surfaceRI').html((surfaceRI*100).toFixed(3));
+            this.$('#columnRI').html((columnRI*100).toFixed(3));
+            this.$('#shorelineRI').html((shorelineRI*100).toFixed(3));
 
-            var benefit = (1 - (surfaceRV * this.model.get('surface') + columnRV * this.model.get('column') + shorelineRV * this.model.get('shoreline'))) * this.gauge.maxValue;
+            var benefit = (1 - (surfaceRI * this.model.get('surface') + columnRI * this.model.get('column') + shorelineRI * this.model.get('shoreline'))) * this.gauge.maxValue;
 console.log('benefit is ', benefit);
             this.gauge.set(benefit);
         }
+
     });
 
     return riskForm;

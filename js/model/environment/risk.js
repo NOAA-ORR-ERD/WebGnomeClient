@@ -25,6 +25,12 @@ define([
             'column': 1/3,
             'shoreline': 1/3,
 
+            relativeImportance: {
+                'surface': 1/3,
+                'column': 1/3,
+                'shoreline': 1/3
+            },
+
             units: {
                 'area': 'sq. km',
                 'diameter': 'km',

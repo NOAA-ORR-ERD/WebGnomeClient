@@ -6,9 +6,9 @@
 					<label class="control-label" for="benefit">Benefit:</label>
                                         <div class="small col-md-offset-1">
 						<span>this is some text to explain the benefit calculation.</span>
-						<div>Column: <span id="column"></span></div>
-						<div>Surface: <span id="surface"></span></div>
-						<div>Shoreline: <span id="shoreline"></span></div>
+						<div>Column: <span id="column">{{ column }}</span></div>
+						<div>Surface: <span id="surface">{{ surface }}</span></div>
+						<div>Shoreline: <span id="shoreline">{{ shoreline }}</span></div>
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -22,9 +22,9 @@
 					<label class="control-label" for="importance">Relative Importance:</label>
 					<div class="small col-md-offset-1">
 						<span>Indicate the relative importance of the resources at risk during the spill.</span>
-						<div>Column: <span id="columnRV"></span>%</div>
-						<div>Surface: <span id="surfaceRV"></span>%</div>
-						<div>Shoreline: <span id="shorelineRV"></span>%</div>
+						<div>Column: <span id="columnRI">{{ columnRI }}</span>%</div>
+						<div>Surface: <span id="surfaceRI">{{ surfaceRI }}</span>%</div>
+						<div>Shoreline: <span id="shorelineRI">{{ shorelineRI }}</span>%</div>
 					</div>
 				</div>
 				<div class="col-sm-8">
