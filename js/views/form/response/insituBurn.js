@@ -2,44 +2,37 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/response/base',
     'text!templates/form/response/burn.html',
     'model/weatherers/burn',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, BurnModel, moment){
-    var inSituBurnForm = FormModal.extend({
+], function($, _, Backbone, ResponseFormModal, FormTemplate, BurnModel, moment){
+    var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
         className: 'modal fade form-modal insituburn-form',
 
         initialize: function(options, burnModel){
-            FormModal.prototype.initialize.call(this, options, burnModel);
+            ResponseFormModal.prototype.initialize.call(this, options, burnModel);
             this.model = burnModel;
         },
 
         render: function(options){
             this.body = _.template(FormTemplate, {
-                time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm')
+                name: this.model.get('name'),
+                time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm')
             });
-            FormModal.prototype.render.call(this, options);
-
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
+            ResponseFormModal.prototype.render.call(this, options);
         },
 
         update: function(){
-            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            ResponseFormModal.prototype.update.call(this);
             var boomedOilArea = this.$('#oilarea').val();
             var boomedAreaUnits = this.$('#areaunits').val();
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
 
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
+            this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
         }
     });
 

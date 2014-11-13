@@ -1,13 +1,12 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
+    'model/weatherers/base'
 ], function(_, Backbone, BaseModel){
     skimWeatherer = BaseModel.extend({
-        urlRoot: '/weatherer/',
-
         defaults: {
-            'obj_type': 'gnome.weatherers.Skimmer'
+            'obj_type': 'gnome.weatherers.Skimmer',
+            'name': 'Skimmer'
         },
 
         toTree: function(){

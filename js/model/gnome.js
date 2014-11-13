@@ -15,12 +15,14 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
-    'model/weatherers/dispersion'
+    'model/weatherers/dispersion',
+    'model/weatherers/burn',
+    'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, BurnWeatherer, SkimWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -45,7 +47,9 @@ define([
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
-                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer
+                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
+                'gnome.weatherers.cleanup.Burn': BurnWeatherer,
+                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
         },
 
@@ -278,6 +282,7 @@ define([
                                         success: _.bind(function(model, response, options){
                                             this.get('weatherers').add(evaporation);
                                             var dispersion = new DispersionWeatherer();
+                                            dispersion.set('name', '_natural');
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);

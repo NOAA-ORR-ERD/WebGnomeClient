@@ -3,15 +3,13 @@ define([
 	'underscore',
 	'backbone',
 	'views/modal/form',
-	'text!templates/form/spill/instant.html',
-	'model/spill',
 	'views/form/oil/library',
 	'views/default/map',
 	'nucos',
 	'ol',
 	'moment',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel, OilLibraryView, SpillMapView, nucos, ol, moment){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, nucos, ol, moment){
 	var baseSpillForm = FormModal.extend({
 
 		mapShown: false,
@@ -138,6 +136,23 @@ define([
                     this.$('#start-lon').val(startPoint[0]);
                     this.$('#end-lat').val(endPoint[1]);
                     this.$('#end-lon').val(endPoint[0]);
+                    if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
+                        var feature = this.source.forEachFeature(_.bind(function(feature){
+                                return feature;
+                        }, this));
+                        this.source.removeFeature(feature);
+                        var point = startPoint;
+                        point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
+                        var feature = new ol.Feature(new ol.geom.Point(point));
+                        feature.setStyle( new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
+                        this.source.addFeature(feature);
+                    }
                 }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
@@ -155,6 +170,25 @@ define([
                     
                     this.spillMapView.map.getView().setCenter(startPoint);
                     this.spillMapView.map.getView().setZoom(15);
+                }
+                var start = this.model.get('release').get('start_position');
+                var end = this.model.get('release').get('end_position');
+                if ((start[0] === end[0]) && (start[1] === end[1])){
+                    var feature = this.source.forEachFeature(_.bind(function(feature){
+                            return feature;
+                    }, this));
+                    this.source.removeFeature(feature);
+                    var point = _.initial(start);
+                    point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
+                    var feature = new ol.Feature(new ol.geom.Point(point));
+                    feature.setStyle( new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
+                    this.source.addFeature(feature);
                 }
             }
         },

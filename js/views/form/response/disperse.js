@@ -2,47 +2,41 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/modal/form',
+    'views/form/response/base',
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, FormTemplate, DisperseModel, moment){
-    var disperseForm = FormModal.extend({
+], function($, _, Backbone, ResponseFormModal, FormTemplate, DisperseModel, moment){
+    var disperseForm = ResponseFormModal.extend({
         title: 'Disperse Response',
         className: 'modal fade form-modal disperse-form',
 
         initialize: function(options, disperseModel){
-            FormModal.prototype.initialize.call(this, options, disperseModel);
+            ResponseFormModal.prototype.initialize.call(this, options, disperseModel);
             this.model = disperseModel;
         },
 
         render: function(options){
             this.body = _.template(FormTemplate,{
-                time: moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: 4
+                name: this.model.get('name'),
+                time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
+                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
-            FormModal.prototype.render.call(this, options);
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
+            ResponseFormModal.prototype.render.call(this, options);
         },
 
         update: function(){
-            var startTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
+            ResponseFormModal.prototype.update.call(this);
+
+            this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
+
             var duration = parseFloat(this.$('#duration').val());
-            var endTime = startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
+            var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var sprayedOilPercent = this.$('#oilsprayed').val();
             var dispersedOilPercent = this.$('#oildispersed').val();
 
-            this.model.set('active_start', startTime.format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('active_stop', endTime);
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         }
     });
 

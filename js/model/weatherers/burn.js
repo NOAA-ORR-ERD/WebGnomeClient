@@ -1,13 +1,12 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
+    'model/weatherers/base'
 ], function(_, Backbone, BaseModel){
     burnWeatherer = BaseModel.extend({
-        urlRoot: '/weatherer/',
-
         defaults: {
-            'obj_type': 'gnome.weatherers.Burn'
+            'obj_type': 'gnome.weatherers.Burn',
+            'name': 'Burn'
         },
 
         toTree: function(){

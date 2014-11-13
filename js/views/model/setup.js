@@ -27,6 +27,10 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'text!templates/panel/response.html',
+    'views/form/response/disperse',
+    'views/form/response/insituBurn',
+    'views/form/response/skim',
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
@@ -36,13 +40,15 @@ define([
     'flotresize',
     'flotdirection',
     'flottooltip',
-    'flotstack'
+    'flotstack',
+    'flotgantt'
 ], function($, _, Backbone, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = Backbone.View.extend({
         className: 'page setup',
 
@@ -57,6 +63,10 @@ define([
             'mouseout .spill .spill-list': 'unhoverSpill',
             'click .location .add': 'clickLocation',
             'click .response .add': 'clickResponse',
+            'click .response .single .edit': 'loadResponse',
+            'click .response .single .trash': 'deleteResponse',
+            'mouseover .response .single': 'hoverResponse',
+            'mouseout .response .response-list': 'unhoverResponse',
             'blur input': 'updateModel',
             'click .eval': 'evalModel'
         },
@@ -203,54 +213,58 @@ define([
         },
 
         updateObjects: function(){
-            this.updateWind();
-            this.updateLocation();
-            this.updateWater();
-            this.updateSpill();
+            this.constructModelTimeSeries(_.bind(function(){
+                this.updateWind();
+                this.updateLocation();
+                this.updateWater();
+                this.updateSpill();
+                
 
-            var delay = {
-                show: 500,
-                hide: 100
-            };
+                var delay = {
+                    show: 500,
+                    hide: 100
+                };
 
-            $('.panel-heading .add').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
+                $('.panel-heading .add').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
-                        return 'Edit ' + object;
-                    } else {
-                        return 'Create ' + object;
-                    }
-                },
-                delay: delay,
-                container: 'body'
-            });
+                        if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                            return 'Edit ' + object;
+                        } else {
+                            return 'Create ' + object;
+                        }
+                    },
+                    delay: delay,
+                    container: 'body'
+                });
 
-            $('.panel-heading .state').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
+                $('.panel-heading .state').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete')){
-                        return object + ' requirement met';
-                    } else {
-                        return object + ' required';
-                    }
-                },
-                container: 'body',
-                delay: delay
-            });
+                        if($(this).parents('.panel').hasClass('complete')){
+                            return object + ' requirement met';
+                        } else {
+                            return object + ' required';
+                        }
+                    },
+                    container: 'body',
+                    delay: delay
+                });
 
-            $('.spill .trash, .spill .edit').tooltip({
-                container: 'body',
-                delay: delay
-            });
-            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
-                this.$('.stage-3').show();
-            } else {
-                this.$('.stage-3').hide();
-            }
-            this.mason.layout();
+                $('.spill .trash, .spill .edit').tooltip({
+                    container: 'body',
+                    delay: delay
+                });
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
+                    this.$('.stage-3').show();
+                    this.updateResponse();
+                } else {
+                    this.$('.stage-3').hide();
+                }
+                this.mason.layout();
+            }, this));
         },
 
         clickWind: function(){
@@ -421,7 +435,7 @@ define([
             spillView.render();
         },
 
-        constructModelTimeSeries: function(){
+        constructModelTimeSeries: function(cb){
             var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
@@ -435,7 +449,12 @@ define([
                     timeSeries.push(answer);
                 }
             }
-            return timeSeries;
+
+            this.timeSeries = timeSeries;
+            
+            if (cb){
+                cb();
+            }
         },
 
         calculateSpillAmount: function(timeseries){
@@ -484,7 +503,7 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
-            var timeSeries = this.constructModelTimeSeries();
+            var timeSeries = this.timeSeries;
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
@@ -623,11 +642,6 @@ define([
             webgnome.model.off('sync', this.updateObjects, this);
         },
 
-        clickResponse: function(){
-            var typeForm = new ResponseTypeForm();
-            typeForm.render();
-        },
-
         updateLocation: function(){
             var map = webgnome.model.get('map');
             if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
@@ -673,6 +687,193 @@ define([
                 this.$('.location .panel').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
             }
+        },
+
+        clickResponse: function(){
+            var typeForm = new ResponseTypeForm();
+            typeForm.render();
+        },
+
+        updateResponse: function(){
+            var weatherers = webgnome.model.get('weatherers').models;
+            var timeSeries = this.timeSeries;
+            var filteredNames = ["_natural", "Evaporation", "Weatherer"];
+            var responses = [];
+            for (var i = 0; i < weatherers.length; i++){
+                if (filteredNames.indexOf(weatherers[i].attributes.name) === -1){
+                    responses.push(weatherers[i]);
+                }
+            }
+            if (responses.length > 0){
+                this.$('.response .panel').addClass('complete');
+                var compiled = _.template(ResponsePanelTemplate, {responses: responses});
+                var burnData = [];
+                var skimData = [];
+                var disperseData = [];
+                var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
+                for (i in responses){
+                    var responseObjType = responses[i].get('obj_type').split(".");
+                    var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
+                    var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
+                    var responseIndex = responses.length - parseInt(i, 10);
+                    switch (responseObjType[responseObjType.length - 1]){
+                        case "Skimmer":
+                            skimData.push([startTime, 1, endTime, responses[i].get('id')]);
+                            break;
+                        case "Dispersion":
+                            disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
+                            break;
+                        case "Burn":
+                            burnData.push([startTime, 3, endTime, responses[i].get('id')]);
+                    }
+                }
+
+                var dataset = [
+                    {
+                        label: "Burns",
+                        data: burnData,
+                        direction: {
+                            show: false
+                        }
+                    },
+                    {
+                        label: "Skim",
+                        data: skimData,
+                        direction: {
+                            show: false
+                        }
+                    },
+                    {
+                        label: "Dispersion",
+                        data: disperseData,
+                        direction: {
+                            show: false
+                        }
+                    }
+                ];
+
+                this.$('.response').removeClass('col-md-3').addClass('col-md-6');
+                this.$('.response .panel-body').html(compiled);
+                this.$('.response .panel-body').show();
+
+                if(!_.isUndefined(dataset)){
+                    this.responseDataset = dataset;
+                    this.renderResponseGraph(dataset, yticks);
+                }
+
+            } else {
+                this.$('.response .panel').removeClass('complete');
+                this.$('.response .panel-body').hide().html('');
+                this.$('.response').removeClass('col-md-6').addClass('col-md-3');
+            }
+        },
+
+        renderResponseGraph: function(dataset, yticks){
+            this.responsePlot = $.plot('.response .chart .canvas', dataset, {
+                series: {
+                    editMode: 'v',
+                    editable: true,
+                    gantt: {
+                        active: true,
+                        show: true,
+                        barHeight: 0.5
+                    }
+                },
+                grid: {
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    hoverable: true
+                },
+                xaxis: {
+                    mode: 'time',
+                    timezone: 'browser',
+                    min: this.timeSeries[0],
+                    max: this.timeSeries[this.timeSeries.length - 1]
+                },
+                yaxis: {
+                    min: 0.5,
+                    max: yticks.length + 0.5,
+                    ticks: yticks
+                }
+
+            });
+        },
+
+        hoverResponse: function(e){
+            var id = $(e.target).data('id');
+            if (_.isUndefined(id)){
+                id = $(e.target).parents('.single').data('id');
+            }
+            var coloredSet = [];
+            for (var dataset in this.responseDataset){
+                var ds = _.clone(this.responseDataset[dataset]);
+                for (var i in ds.data){
+                    if (ds.data[i][3] != id){
+                        ds.color = '#ddd';
+                    } else {
+                        ds.color = '#000'
+                    }
+                }
+
+                coloredSet.push(ds);
+            }
+            this.responsePlot.setData(coloredSet);
+            this.responsePlot.draw();
+        },
+
+        unhoverResponse: function(){
+            this.responsePlot.setData(this.responseDataset);
+            this.responsePlot.draw();
+        },
+
+        loadResponse: function(e){
+            var responseId = $(e.target).parents('.single').data('id');
+            var response = webgnome.model.get('weatherers').get(responseId);
+            var responseView;
+            var nameArray = response.get('obj_type').split('.');
+            switch (nameArray[nameArray.length - 1]){
+                case "Dispersion":
+                    responseView = new ResponseDisperseView(null, response);
+                    break;
+                case "Burn":
+                    responseView = new ResponseBurnView(null, response);
+                    break;
+                case "Skimmer":
+                    responseView = new ResponseSkimView(null, response);
+                    break;
+            }
+            responseView.on('wizardclose', function(){
+                responseView.on('hidden', responseView.close);
+            });
+            responseView.on('save', function(){
+                webgnome.model.trigger('sync');
+                setTimeout(_.bind(function(){
+                    responseView.close();},
+                this), 750);
+            });
+            responseView.render();
+        },
+
+        deleteResponse: function(e){
+            var id = $(e.target).parents('.single').data('id');
+            var response = webgnome.model.get('weatherers').get(id);
+            swal({
+                title: 'Delete "' + response.get('name') + '"',
+                text: 'Are you sure you want to delete this response?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('weatherers').remove(id);
+                    webgnome.model.save({
+                        success: _.bind(function(){
+                            this.updateResponse();
+                        }, this)
+                    });
+                }
+            }, this));
         },
         
         configureWeatherers: function(prediction){
