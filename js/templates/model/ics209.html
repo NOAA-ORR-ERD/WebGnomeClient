@@ -1,0 +1,66 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Process</th>
+            <th>Selected Period ({{ units }})</th>
+            <th>Cumulative ({{ units }})</th>
+            <th>Cumulative Uncertainty ({{ units }})</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Volumed Spilled</td>
+            <td>{{ report.amount_released }}</td>
+            <td>{{ cumulative.amount_released }}</td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Evaporated</td>
+            <td>{{ report.evaporated }}</td>
+            <td>{{ cumulative.evaporated }}</td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Dispersed (natural)</td>
+            <td>{{ report.dispersed }}</td>
+            <td>{{ cumulative.dispersed }}</td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Dispersed (chemical)</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Burned</td>
+            <td>{{ report.burned }}</td>
+            <td>{{ cumulative.burned }}</td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Mechanical Recovery</td>
+            <td>{{ report.skimed }}</td>
+            <td>{{ cumulative.skimed }}</td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Other Natural Removal</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Beached/Contained</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+        </tr>
+        <tr>
+            <td>Remaining</td>
+            <td>{{ report.floating }}</td>
+            <td>{{ cumulative.floating }}</td>
+            <td> </td>
+        </tr>
+    </tbody>
+</table>
