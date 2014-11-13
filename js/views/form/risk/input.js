@@ -72,20 +72,16 @@ define([
             units.distance = this.$('#distance-units').val();
             units.depth = this.$('#depth-units').val();
 
-//            if(!this.model.isValid()){
-//                this.error('Error!', this.model.validationError);
-//            } else {
-//                this.clearError();
-//            }
+            if(this.model.isValid()){
+                this.$('.next').removeClass('disabled');
+            }
         },
 
         risk_assessment: function(){
-console.log('assessing risk!!!!!!!');
             var area = this.model.convertAreaToSquareMeters();
             var diameter = this.model.convertDiameterToMeters();
             var distance = this.model.convertDistanceToMeters();
             var depth = this.model.convertDepthToMeters();
-console.log('values are ', area, diameter, distance, depth);
             var spills = webgnome.model.get('spills');
             var volumeTotal = 0;
             $.each(spills.models, function(idx, model) {
@@ -110,14 +106,12 @@ console.log('values are ', area, diameter, distance, depth);
                 }
                 volumeTotal += a;
             });
-console.log('volume total is ', volumeTotal);
 
             // calculate what time step this is
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var timeStep = webgnome.model.get('time_step');
             var assessmentTime = moment(this.model.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var frame = (assessmentTime - startTime) / timeStep;
-console.log('model step info need is ', frame);
 
 // TEMP for testing
             var surface = 0.5,
