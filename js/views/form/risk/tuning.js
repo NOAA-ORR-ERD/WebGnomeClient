@@ -55,7 +55,7 @@ define([
                 colorStop: '#00ff00',    // just experiment with them
                 strokeColor: '#E0E0E0',   // to see which ones work best for you
                 generateGradient: true,
-                percentColors: [[0.0, "#ff0000"],[0.50, "#ffff00"],[1.0, "#00ff00"]],
+                gradientType: 1,
                 maxValue: 100,
                 animationSpeed: 20
             };
@@ -67,33 +67,44 @@ define([
             var canvas = this.__canvas = new fabric.Canvas(selector, { selection: false });
             fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
-            function makeCircle(left, top, s, l1, l2, l3, t) {
+            function makeCircle(left, top, s, l1, l2, l3, l) {
+                var radius = 1;
+                if (l === null) radius = 5;
                 var c = new fabric.Circle({
-                              left: left,
-                              top: top,
                               strokeWidth: 5,
-                              radius: 5,
+                              radius: radius,
                               fill: '#fff',
                               stroke: '#666',
-                              selectable: s
+                              selectable: false
                 });
                 c.hasControls = c.hasBorders = false;
 
-                c.l1 = l1;
-                c.l2 = l2;
-                c.l3 = l3;
+                var g = null;
 
-                if (t !== null) {
-                    c.t = new fabric.Text(t, {
-                                left: left+35,
-                                top: top,
-                                fontSize: 10,
-                                evented: false
+                if (l !== null) {
+                    var t = new fabric.Text(l, {
+                                  fontSize: 14,
+                                  evented: false
                     });
-                    canvas.add(c.t);
+                    g = new fabric.Group([c,t], {
+                              left: left,
+                              top: top,
+                              selectable: s
+                    });
+                } else {
+                    g = new fabric.Group([c], {
+                              left: left,
+                              top: top,
+                              selectable: s
+                    });
                 }
 
-                return c;
+                g.hasControls = c.hasBorders = false;
+                g.l1 = l1;
+                g.l2 = l2;
+                g.l3 = l3;
+
+                return g;
             }
 
             function makeLine(coords, n) {
@@ -126,10 +137,10 @@ define([
             canvas.add(line1, line2, line3);
 
             canvas.add(
-                makeCircle(line1.get('x1'), line1.get('y1'), false, null,  line1, null,  'surface'),
-                makeCircle(line1.get('x2'), line1.get('y2'), true,  line1, line2, line3, null),
-                makeCircle(line2.get('x2'), line2.get('y2'), false, line2, null,  null,  'column'),
-                makeCircle(line3.get('x2'), line3.get('y2'), false, line3, null,  null,  'shoreline')
+                makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
+                makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
+                makeCircle(line2.get('x2'), line2.get('y2'), true, line2, null,  null, 'column'),
+                makeCircle(line3.get('x2'), line3.get('y2'), true, line3, null,  null, 'shoreline')
             );
 
             canvas.on('object:moving', _.bind(function(e) {
