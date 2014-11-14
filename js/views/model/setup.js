@@ -700,67 +700,21 @@ define([
             }
             var timeSeries = this.timeSeries;
             var filteredNames = ["_natural", "Evaporation", "Weatherer"];
-            var responses = [];
+            this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].attributes.name) === -1){
-                    responses.push(weatherers[i]);
+                    this.responses.push(weatherers[i]);
                 }
             }
-            if (responses.length > 0){
+            if (this.responses.length > 0){
                 this.$('.response .panel').addClass('complete');
-                var compiled = _.template(ResponsePanelTemplate, {responses: responses});
-                var burnData = [];
-                var skimData = [];
-                var disperseData = [];
-                var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
-                for (i in responses){
-                    var responseObjType = responses[i].get('obj_type').split(".");
-                    var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
-                    var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
-                    switch (responseObjType[responseObjType.length - 1]){
-                        case "Skimmer":
-                            skimData.push([startTime, 1, endTime, responses[i].get('id')]);
-                            break;
-                        case "Dispersion":
-                            disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
-                            break;
-                        case "Burn":
-                            burnData.push([startTime, 3, endTime, responses[i].get('id')]);
-                    }
-                }
-
-                var dataset = [
-                    {
-                        //label: "Burns",
-                        data: burnData,
-                        direction: {
-                            show: false
-                        }
-                    },
-                    {
-                        //label: "Skim",
-                        data: skimData,
-                        direction: {
-                            show: false
-                        }
-                    },
-                    {
-                        //label: "Dispersion",
-                        data: disperseData,
-                        direction: {
-                            show: false
-                        }
-                    }
-                ];
+                var compiled = _.template(ResponsePanelTemplate, {responses: this.responses});
 
                 this.$('.response').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.response .panel-body').html(compiled);
                 this.$('.response .panel-body').show();
 
-                if(!_.isUndefined(dataset)){
-                    this.responseDataset = dataset;
-                    this.renderResponseGraph(dataset, yticks);
-                }
+                this.graphDraw(this.responses);
 
             } else {
                 this.$('.response .panel').removeClass('complete');
@@ -792,21 +746,21 @@ define([
 
             var dataset = [
                 {
-                    label: "Burns",
+                    //label: "Burns",
                     data: burnData,
                     direction: {
                         show: false
                     }
                 },
                 {
-                    label: "Skim",
+                    //label: "Skim",
                     data: skimData,
                     direction: {
                         show: false
                     }
                 },
                 {
-                    label: "Dispersion",
+                    //label: "Dispersion",
                     data: disperseData,
                     direction: {
                         show: false
@@ -857,21 +811,11 @@ define([
             if (_.isUndefined(id)){
                 id = $(e.target).parents('.single').data('id');
             }
-            var selectedSet = [];
-            for (var dataset in this.responseDataset){
-                var ds = _.clone(this.responseDataset[dataset]);
-                for (var i in ds.data){
-
-                }
-
-                selectedSet.push(ds);
-            }
-            //this.updateResponse([webgnome.model.get('weatherers').get(id)]);
-            //this.responsePlot.draw();
+            this.graphDraw([webgnome.model.get('weatherers').get(id)]);
         },
 
         unhoverResponse: function(){
-            //this.updateResponse();
+            this.graphDraw(this.responses);
         },
 
         loadResponse: function(e){
