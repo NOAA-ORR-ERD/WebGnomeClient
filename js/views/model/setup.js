@@ -129,7 +129,7 @@ define([
         },
 
         updateModel: function(){
-            var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+            var start_time = moment(this.$('.date').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
