@@ -104,30 +104,6 @@ define([
             var diameter = this.convertDiameterToMeters();
             var distance = this.convertDistanceToMeters();
             var depth = this.convertDepthToMeters();
-            var spills = webgnome.model.get('spills');
-            var volumeTotal = 0;
-            $.each(spills.models, function(idx, model) {
-                var a = model.get('amount');
-                switch (model.get('units')) {
-                    case 'bbl':
-                        a = a * 158.987;
-                        break;
-                    case 'cubic meters':
-                        a = a * 1000;
-                        break;
-                    case 'gal':
-                        a = a * 3.78541;
-                        break;
-                    case 'ton':
-                        a = a * 1018.32416;
-                        break;
-                    case 'metric ton':
-                        a = a * 1165.34;
-                        break;
-                    default:
-                }
-                volumeTotal += a;
-            });
 
             // calculate what time step this is
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
@@ -135,15 +111,56 @@ define([
             var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var frame = (assessmentTime - startTime) / timeStep;
 
-// TEMP for testing
-            var surface = this.get('efficiency').skimming / 100;
-            var column = this.get('efficiency').dispersant / 100;
-            var shoreline = this.get('efficiency').insitu_burn / 100;
-// TEMP for testing
+            var spills = webgnome.model.get('spills');
+            var volumeTotal = 0;
+            var massTotal = 0;
+            // TODO: figure out volumes at time step, not total
+            $.each(spills.models, function(idx, model) {
+                var a = model.get('amount');
+                // convert to cubic meters
+                switch (model.get('units')) {
+                    case 'bbl':
+                        a = a * 0.119240471
+                        break;
+                    case 'cubic meters':
+                        break;
+                    case 'gal':
+                        a = a * 0.00378541;
+                        break;
+                    case 'ton':
+                        a = a * 1.018324160;
+                        break;
+                    case 'metric ton':
+                        break;
+                    default:
+                }
+                volumeTotal += a;
+                var et = model.get('element_type');
+                var s = et.get('substance');
+                // TODO: figure out how multiple densities may correspond to one spill volume.
+                var rho = s.densities[0].kg_m_3;
+                massTotal += (a*rho);
+            });
 
-            this.set('surface', surface);
-            this.set('column', column);
-            this.set('shoreline', shoreline);
+            var MASSwc = massTotal;
+            var LOCwc = 0.001;
+            var VOLCwc = MASSwc / LOCwc;
+            var FCwc = VOLCwc / (area * depth);
+
+            var MASSsw = massTotal;
+            var LOCsw = 0.01;
+            var AREACsw = MASSsw / LOCsw;
+            var FCsw = AREACsw / area;
+
+            var MASSsh = massTotal;
+            var LOCsh = 0.5
+            var LCsh = MASSsh / LOCsh;
+            var Lsh = Math.PI * diameter;
+            var FCsh = LCsh / Lsh;
+
+            this.set('column', FCwc);
+            this.set('surface', FCsw);
+            this.set('shoreline', FCsh);
         },
 
         validate: function(attrs, options){

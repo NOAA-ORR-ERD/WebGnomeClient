@@ -218,7 +218,7 @@ define([
             var surface = this.model.get('surface');
             var column = this.model.get('column');
             var shoreline = this.model.get('shoreline');
-            var benefit = (ri.surface * surface + ri.column * column + ri.shoreline * shoreline) * this.benefitGauge.maxValue;
+            var benefit = (1 - (ri.surface * surface + ri.column * column + ri.shoreline * shoreline)) * this.benefitGauge.maxValue;
 
             // update ui
             this.$('#surface').html((surface).toFixed(3));
