@@ -135,18 +135,18 @@ define([
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var duration = ((days * 24) + parseFloat(hours));
-            var rate = amount / duration;
+            this.rate = amount / duration;
             var units = this.$('#units').val();
-            this.$('#spill-rate').val(rate);
+            this.$('#spill-rate').val(this.rate);
             this.$('#rate-units').val(units + '/hr');
         },
 
         updateAmount: function(){
-            var rate = parseFloat(this.$('#spill-rate').val());
+            this.rate = parseFloat(this.$('#spill-rate').val());
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var duration = ((days * 24) + parseFloat(hours));
-            var amount = rate * duration;
+            var amount = this.rate * duration;
             this.$('#spill-amount').val(amount);
             var units = this.$('#rate-units').val().split('/')[0];
             this.$('#units').val(units);
