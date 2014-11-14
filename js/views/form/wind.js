@@ -81,10 +81,10 @@ define([
             this.form.variable = [];
             this.form.variable.speed = this.$('#variable-speed');
             this.form.variable.direction = this.$('#variable-direction');
-            this.form.variable.datetime = this.$('#datetime');
+            this.form.variable.datetime = this.$('#datetime-input');
             this.form.variable.increment = this.$('#incrementCount');
 
-            this.$('#datetime').datetimepicker({
+            this.$('#datetime-input').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');

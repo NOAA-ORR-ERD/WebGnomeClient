@@ -14,8 +14,13 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label" for="start_time">Start Time</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control date" id="start_time" value="{{ start_time }}" name="start">                        
-                        </div>
+                            <div class="input-group" id="datetime">
+                                <input type="text" id="datetime" class="form-control date" value="{{ start_time }}" name="start">
+                                <span class="input-group-addon">
+                                    <i></i>
+                                </span>
+                            </div>
+                        </div>                        
                     </div>
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Max Duration</label>
