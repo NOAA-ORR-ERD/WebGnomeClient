@@ -257,7 +257,7 @@ define([
                     container: 'body',
                     delay: delay
                 });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete').length){
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length){
                     this.$('.stage-3').show();
                     this.updateResponse();
                 } else {

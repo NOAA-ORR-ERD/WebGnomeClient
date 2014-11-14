@@ -6,14 +6,16 @@ define([
     'nucos',
     'model/step',
     'text!templates/model/fate.html',
+    'text!templates/model/ics209.html',
     'flot',
     'flottime',
     'flotresize',
     'flotstack',
     'flotcrosshair',
     'flotpie',
-    'flotfillarea'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate){
+    'flotfillarea',
+    'flotselect'
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
@@ -22,7 +24,12 @@ define([
         events: {
             'shown.bs.tab': 'renderGraphs',
             'change #budget-table select': 'renderTableOilBudget',
-            'click #budget-table .export a': 'downloadTableOilBudget'
+            'click #budget-table .export a.download': 'downloadTableOilBudget',
+            'click #budget-table .export a.print': 'printTableOilBudget',
+            'change #ics209 input': 'ICSInputSelect',
+            'change #ics209 select': 'renderTableICS',
+            'click #ics209 .export a.download': 'downloadTableICS',
+            'click #ics209 .export a.print': 'printTableICS'
         },
 
         initialize: function(){
@@ -77,9 +84,15 @@ define([
             });
             
             this.$el.html(compiled);
+
+            this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker
+            });
             var units = spills.at(0).get('units');
             this.$('#budget-table .released').val(units);
-            this.$('#budget-table .export a').tooltip({
+            this.$('#ics209 .vol-units').val(units);
+
+            this.$('.export a').tooltip({
                 placement: 'bottom',
                 container: 'body'
             });
@@ -101,6 +114,7 @@ define([
         renderGraphs: function(){
             // find active tab and render it's graph.
             var active = this.$('.active a').attr('href');
+
             if(active == '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
             } else if(active == '#budget-table') {
@@ -115,6 +129,8 @@ define([
                 this.renderGraphEmulsification(this.dataset);
             } else if(active == '#viscosity') {
                 this.renderGraphViscosity(this.dataset);
+            } else if(active == '#ics209') {
+                this.renderGraphICS(this.dataset);
             }
         },
 
@@ -345,10 +361,10 @@ define([
 
             switch(type){
                 case 'csv':
-                    content = this.tableToCSV(table);
+                    content = this.tableToCSV(table, this.$('#budget-table .info div'));
                     break;
                 case 'html':
-                    content = this.tableToHTML(table);
+                    content = this.tableToHTML(table, this.$('#budget-table .info').html());
                     break;
             }
 
@@ -358,34 +374,8 @@ define([
             pom.click();
         },
 
-        tableToCSV: function(table){
-            var csv = [];
-            var rows = table.find('tr');
-            rows.each(function(row){
-                var csv_row = [];
-                var cells = $(rows[row]).find('th, td');
-                cells.each(function(cell){
-                    csv_row.push($(cells[cell]).text());
-                });
-                csv.push(csv_row.join(','));
-            });
-
-            var info = this.$('#budget-table .info div');
-            var cols = csv[0].split(',').length;
-            info.each(function(row){
-                cells = $(info[row]).text().split(':');
-                csv_row = [cells[0] + ':', cells[1]];
-
-                for(i = 0; i < cols.length - cells.length; i++){
-                    csv_row.push(' ');
-                }
-                csv.unshift(csv_row.join(','));
-            });
-            return csv.join('\r\n');
-        },
-
-        tableToHTML: function(table){
-            return this.$('#budget-table .info').html() + '<table>' + table.html() + '</table>';
+        printTableOilBudget: function(e){
+            window.print();
         },
 
         renderGraphEvaporation: function(dataset){
@@ -532,6 +522,243 @@ define([
                 this.graphViscosity.draw();
             }
             dataset[0].fillArea = null;
+        },
+
+        renderGraphICS: function(dataset){
+            if(!_.isArray(dataset)){
+                dataset = this.dataset;
+            }
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
+            if(_.isUndefined(this.graphICS)){
+                this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
+                
+                // prevent the user from accidentally or purposfully unselecting
+                // the time range.
+                this.$('#ics209 .timeline .chart .canvas').on('plotunselected', _.bind(function(e, ranges){
+                    this.graphICS.setSelection(this.ICSSelection);
+                }, this));
+                
+                this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, {
+                    grid: {
+                        borderWidth: 1,
+                        borderColor: '#ddd',
+                        hoverable: true,
+                        autoHighlight: false
+                    },
+                    xaxis: {
+                        mode: 'time',
+                        timezone: 'browser'
+                    },
+                    series: {
+                        stack: true,
+                        group: true,
+                        groupInterval: 1,
+                        lines: {
+                            show: true,
+                            fill: true,
+                            lineWidth: 1
+                        },
+                        shadowSize: 0
+                    },
+                    selection: {
+                        mode: 'x',
+                        color: '#428bca'
+                    }
+                });
+
+            } else {
+                this.graphICS.setData(dataset);
+                this.graphICS.setupGrid();
+                this.graphICS.draw();
+                if(this.ICSSelection){
+                    this.graphICS.setSelection(this.ICSSelection);
+                }
+            }
+        },
+
+        ICSPlotSelect: function(e, ranges){
+            var start_input = this.$('#ics209 #start_time');
+            var end_input = this.$('#ics209 #end_time');
+            var date_format = webgnome.config.date_format.moment;
+            var start_time = moment(parseInt(ranges.xaxis.from, 10) / 1000, 'X');
+            var end_time = moment(parseInt(ranges.xaxis.to, 10) / 1000, 'X');
+            var selection = {
+                xaxis: {
+                    from: start_time.unix() * 1000,
+                    to: end_time.unix() * 1000
+                },
+                yaxis:{
+                    from: ranges.yaxis.from,
+                    to: ranges.yaxis.to
+                }
+            };
+
+            this.updateICSSelection(selection);
+        },
+
+        ICSInputSelect: function(){
+            var start_input = this.$('#ics209 #start_time');
+            var end_input = this.$('#ics209 #end_time');
+            var date_format = webgnome.config.date_format.moment;
+            var start_time = moment(start_input.val(), date_format);
+            var end_time = moment(end_input.val(), date_format);
+            var selection = {
+                xaxis: {
+                    from: start_time.unix() * 1000,
+                    to: end_time.unix() * 1000
+                },
+                yaxis:{
+                    from: this.ICSSelection.yaxis.from,
+                    to: this.ICSSelection.yaxis.to
+                }
+            };
+
+            this.updateICSSelection(selection);
+        },
+
+        updateICSSelection: function(selection){
+            var start_input = this.$('#ics209 #start_time');
+            var end_input = this.$('#ics209 #end_time');
+            var date_format = webgnome.config.date_format.moment;
+            var changed = true;
+
+            if(!_.isUndefined(this.ICSSelection)){
+                if(selection.xaxis.to !== this.ICSSelection.xaxis.to ||
+                selection.xaxis.from !== this.ICSSelection.xaxis.from){
+                    start_input.val(moment(selection.xaxis.from / 1000, 'X').format(date_format));
+                    end_input.val(moment(selection.xaxis.to / 1000, 'X').format(date_format));
+
+                    changed = true;
+                } else {
+                    changed = false;
+                }
+            } else {
+                start_input.val(moment(selection.xaxis.from / 1000, 'X').format(date_format));
+                end_input.val(moment(selection.xaxis.to / 1000, 'X').format(date_format));
+
+            }
+
+            if(changed){
+                this.renderTableICS(selection);
+                this.graphICS.setSelection(selection, true);
+            }
+            this.ICSSelection = selection;
+        },
+
+        renderTableICS: function(selection){
+            if(!_.has(selection, 'xaxis') && _.isUndefined(this.ICSSelection)){
+                return false;
+            } else if(!_.has(selection, 'xaxis')){
+                selection = this.ICSSelection;
+            }
+
+            var start = selection.xaxis.from;
+            var end = selection.xaxis.to;
+            var units = this.$('#ics209 .vol-units').val();
+            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var dataset = this.pluckDataset(this.dataset, ['amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
+            var report = {
+                spilled: 0,
+                evaporated: 0,
+                dispersed: 0,
+                burned: 0,
+                skimmed: 0,
+                floating: 0,
+                amount_released: 0
+            };
+            var cumulative = _.clone(report);
+
+            for(var set in dataset){
+                for(var step in dataset[set].data){
+                    if(dataset[set].data[step][0] >= start && dataset[set].data[step][0] <= end){
+                        report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
+                    }
+                }
+            }
+            for(var set in dataset){
+                for(var step in dataset[set].data){
+                    if(dataset[set].data[step][0] <= end){
+                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
+                    }
+                }
+            }
+
+            var converter = new nucos.OilQuantityConverter();
+            for(var value in report){
+                report[value] = Math.round(converter.Convert(report[value], 'kg', api, 'API degree', units));
+                
+            }
+            for(var value in cumulative){
+                cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
+            }
+            
+            var compiled = _.template(ICSTemplate, {
+                report: report,
+                cumulative: cumulative,
+                units: units
+            });
+
+            this.$('#ics209 .ics-table').html(compiled);
+        },
+
+        downloadTableICS: function(e){
+            var table = this.$('#ics209 table:last');
+            var type = $(e.target).data('type');
+            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
+            var filename = name + '.' + type;
+            var content = '';
+
+            switch(type){
+                case 'csv':
+                    content = this.tableToCSV(table);
+                    break;
+                case 'html':
+                    content = this.tableToHTML(table);
+                    break;
+            }
+
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            pom.setAttribute('download', filename);
+            pom.click();
+        },
+
+        printTableICS: function(){
+            window.print();
+        },
+
+        tableToCSV: function(table, header){
+            var csv = [];
+            var rows = table.find('tr');
+            rows.each(function(row){
+                var csv_row = [];
+                var cells = $(rows[row]).find('th, td');
+                cells.each(function(cell){
+                    csv_row.push($(cells[cell]).text());
+                });
+                csv.push(csv_row.join(','));
+            });
+
+            if(!_.isUndefined(header)){
+                var cols = csv[0].split(',').length;
+                header.each(function(row){
+                    cells = $(header[row]).text().split(':');
+                    csv_row = [cells[0] + ':', cells[1]];
+
+                    for(i = 0; i < cols.length - cells.length; i++){
+                        csv_row.push(' ');
+                    }
+                    csv.unshift(csv_row.join(','));
+                });
+            }
+            return csv.join('\r\n');
+        },
+
+        tableToHTML: function(table, header){
+            if(_.isUndefined(header)){
+                header = '';
+            }
+            return header + '<table>' + table.html() + '</table>';
         },
 
         buildDataset: function(cb){
@@ -681,6 +908,7 @@ define([
         },
 
         close: function(){
+            $('.xdsoft_datetimepicker').remove();
             this.step = null;
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
             Backbone.View.prototype.close.call(this);

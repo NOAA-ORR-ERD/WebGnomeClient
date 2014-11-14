@@ -15,6 +15,32 @@ img{
         }
     }
 }
+@media print {
+    body{
+        font-size: 10px !important;
+    }
+    .form-control{
+        font-size: 10px !important;
+    }
+    .menu {
+        display: none;
+    }
+    .nav-tabs {
+        display: none;
+    }
+    .view-toggle{
+        display: none !important;
+    }
+    .settings{
+        display: none;
+    }
+    .export{
+        display: none
+    }
+    .print{
+        display: block;
+    }
+}
 
 .sweet-alert{
     border-radius: 0;
@@ -1005,6 +1031,16 @@ nav.navbar{
                 td{
                     visibility: hidden;
                 }
+            }
+            .form-group{
+                margin-bottom: 0;
+            }
+        }
+
+        #ics209{
+            .timeline{
+                height: 200px;
+                margin-bottom: 20px;
             }
             .form-group{
                 margin-bottom: 0;
