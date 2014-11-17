@@ -20,7 +20,9 @@ define([
                 'blur #spill-amount': 'updateRate',
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
-                'blur #units': 'updateRate'
+                'blur #units': 'updateRate',
+                'click #amount': 'updateAmountTooltip',
+                'click #constant': 'updateRateTooltip'
             }, BaseSpillForm.prototype.events());
         },
 
@@ -59,7 +61,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                    this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateAmountSlide(ui);
@@ -71,7 +73,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
+                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateRateSlide(ui);
@@ -176,14 +178,14 @@ define([
             if(this.model.get('amount') !== 0){
                 var amount = this.model.get('amount');
                 if(value === 0){
-                    this.$('.active .tooltip-inner').text(amount);
+                    this.$('#amount-tooltip').text(amount);
                 } else {
                     var bottom = parseInt(Math.round((amount * (1 - ((value / 100.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
                     var top = parseInt(Math.round((amount * (1 + ((value / 100.0) * 5)))), 10);
-                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                    this.$('#amount-tooltip').text(bottom + ' - ' + top);
                 }
             }
             
@@ -199,16 +201,24 @@ define([
             if(this.rate){
                 var amount = this.rate;
                 if(value === 0){
-                    this.$('.active .tooltip-inner').text(amount);
+                    this.$('#rate-tooltip').text(amount);
                 } else {
                     var bottom = parseInt(Math.round((amount * (1 - ((value / 100.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
                     var top = parseInt(Math.round((amount * (1 + ((value / 100.0) * 5)))), 10);
-                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                    this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
+        },
+
+        updateAmountTooltip: function(){
+            this.updateAmountSlide();
+        },
+
+        updateRateTooltip: function(){
+            this.updateRateSlide();
         }
 
     });
