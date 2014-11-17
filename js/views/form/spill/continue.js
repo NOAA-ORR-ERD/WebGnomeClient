@@ -54,7 +54,13 @@ define([
             var rate = parseFloat(amount) / durationInMins;
 
             this.$('#spill-rate').val(rate);
-            this.$('#rate-units').val(units + '/hr');
+
+            if (!_.isUndefined(units)){
+                this.$('#rate-units').val(units + '/hr');
+            } else {
+                var amountUnits = this.$('#units').val();
+                this.$('#rate-units').val(amountUnits + '/hr');
+            }
 
             this.$('#amount .slider').slider({
                 min: 0,
@@ -141,6 +147,8 @@ define([
             var units = this.$('#units').val();
             this.$('#spill-rate').val(this.rate);
             this.$('#rate-units').val(units + '/hr');
+            this.updateRateSlide();
+            this.updateAmountSlide();
         },
 
         updateAmount: function(){
@@ -152,6 +160,8 @@ define([
             this.$('#spill-amount').val(amount);
             var units = this.$('#rate-units').val().split('/')[0];
             this.$('#units').val(units);
+            this.updateAmountSlide();
+            this.updateRateSlide();
         },
 
         parseDuration: function(start, end){
@@ -198,7 +208,7 @@ define([
             } else {
                 value = this.$('#constant .slider').slider('value');
             }
-            if(this.rate){
+            if(!_.isUndefined(this.rate)){
                 var amount = this.rate;
                 if(value === 0){
                     this.$('#rate-tooltip').text(amount);
@@ -214,10 +224,12 @@ define([
         },
 
         updateAmountTooltip: function(){
+            this.update();
             this.updateAmountSlide();
         },
 
         updateRateTooltip: function(){
+            this.update();
             this.updateRateSlide();
         }
 
