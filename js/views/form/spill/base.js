@@ -8,8 +8,9 @@ define([
 	'nucos',
 	'ol',
 	'moment',
+    'sweetalert',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, nucos, ol, moment){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -32,7 +33,8 @@ define([
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput'
+				'blur .geo-info': 'manualMapInput',
+                'click .delete': 'deleteSpill'
 			}, FormModal.prototype.events);
 		},
 
@@ -264,6 +266,30 @@ define([
                 coordsArray[i] = parseFloat(coordsArray[i]);
             }
             return coordsArray;
+        },
+
+        deleteSpill: function(){
+            var id = this.model.get('id');
+            var spill = webgnome.model.get('spills').get(id);
+            swal({
+                title: 'Delete "' + spill.get('name') + '"',
+                text: 'Are you sure you want to delete this spill?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('spills').remove(id);
+                    this.close();
+                    $('.modal-backdrop').remove();
+                    webgnome.model.save({
+                        success: _.bind(function(){
+
+                        }, this)
+                    });
+                }
+            }, this));
         },
 
 		next: function(){
