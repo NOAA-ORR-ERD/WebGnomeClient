@@ -80,6 +80,10 @@ define([
                         anchor: [0.5, 1.0],
                         src: '/img/spill-pin.png',
                         size: [32, 40]
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#3399CC',
+                        width: 1.25
                     })
                 })
             });
@@ -483,15 +487,20 @@ define([
             spills = webgnome.model.get('spills');
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
-                if(start_position.length > 2){
+                var end_position = spill.get('release').get('end_position');
+                var geom;
+                if(start_position.length > 2 && start_position[0] == end_position[0] && start_position[1] == end_position[1]){
                     start_position = [start_position[0], start_position[1]];
+                    geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+                } else {
+                    start_position = [start_position[0], start_position[1]];
+                    end_position = [end_position[0], end_position[1]];
+                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
                 }
-                var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 var feature = new ol.Feature({
                     geometry: geom,
                     spill: spill.get('id')
                 });
-
                 this.SpillIndexSource.addFeature(feature);
             }, this);
 
@@ -530,13 +539,13 @@ define([
                 });
                 spillform.on('hidden', spillform.close);
                 this.toggleSpill();
-                console.log(spill);
 
             }, this));
         },
 
         addPointSpill: function(e){
             // add a spill to the model.
+            console.log(e.coordinate);
             var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
             var spill = new GnomeSpill();
             // add the dummy z-index thing
