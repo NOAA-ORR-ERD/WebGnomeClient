@@ -599,7 +599,7 @@ define([
                 return false;
             });
             if(spill){
-                var spillform = new SpillForm(null, webgnome.model.get('spills').get(spill));
+                var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
                 spillform.on('hidden', function(){
                     webgnome.model.trigger('sync');
                 });
