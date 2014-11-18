@@ -600,9 +600,10 @@ define([
             });
             if(spill){
                 var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
-                spillform.on('hidden', function(){
+                spillform.on('hidden', _.bind(function(){
                     webgnome.model.trigger('sync');
-                });
+                    this.resetSpills();
+                }, this));
                 spillform.on('hidden', spillform.close);
                 spillform.render();
             }
