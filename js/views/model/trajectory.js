@@ -68,6 +68,13 @@ define([
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
                         name: 'basemap'
+                    }),
+                    new ol.layer.Tile({
+                        name: 'noaachart-gen',
+                        source: new ol.source.TileWMS({
+                            url: 'http://encdirect.noaa.gov/arcgis/services/encdirect/enc_general/MapServer/WMSServer',
+                            params: {'LAYERS': '15', 'TILED': true}
+                        })
                     })
                 ]
             });
