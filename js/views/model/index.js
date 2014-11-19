@@ -15,14 +15,8 @@ define([
         },
 
         events: {
-            'click .resize': 'toggle',
             'click .view-toggle .toggle': 'switchView',
             'click .view-toggle label': 'switchView'
-        },
-
-        toggle: function(){
-            this.TreeView.toggle();
-            this.TrajectoryView.toggle(offset);
         },
 
         render: function(){
@@ -51,7 +45,7 @@ define([
         renderTrajectory: function(){
             this.TreeView = new TreeView();
             this.TrajectoryView = new TrajectoryView();
-            this.TreeView.on('toggle', this.TrajectoryView.contract, this.TrajectoryView);
+            this.TreeView.on('toggle', this.TrajectoryView.toggle, this.TrajectoryView);
             this.$el.append(this.TreeView.$el).append(this.TrajectoryView.$el);
         },
 

@@ -140,13 +140,16 @@ define([
             }
 
             this.contextualize();
-            
+            if(localStorage.getItem('advanced') === 'true'){
+                this.toggle();
+            }
+
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
         },
 
-        contract: function(){
+        toggle: function(){
             if(this.contracted === true){
                 this.$el.removeClass('contracted');
                 this.contracted = false;
@@ -165,10 +168,6 @@ define([
                 this.disableUI();
             } else {
                 this.enableUI();
-            }
-
-            if (localStorage.getItem('advanced') == 'true'){
-                this.contract();
             }
 
             // set the slider to the correct number of steps
@@ -365,19 +364,6 @@ define([
             Mousetrap.bind('space', _.bind(this.togglePlay, this));
             Mousetrap.bind('right', _.bind(this.next, this));
             Mousetrap.bind('left', _.bind(this.prev, this));
-        },
-
-        toggle: function(offset){
-            offset = typeof offset !== 'undefined' ? offset : 0;
-
-            if(this.full){
-                this.full = false;
-                this.$el.css({width: this.width, paddingLeft: 0});
-            } else{
-                this.full = true;
-                this.$el.css({width: '100%', paddingLeft: offset});
-            }
-            this.ol.map.updateSize();
         },
 
         renderMap: function(){
