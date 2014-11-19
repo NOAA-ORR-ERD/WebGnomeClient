@@ -70,10 +70,10 @@ define([
                         name: 'basemap'
                     }),
                     new ol.layer.Tile({
-                        name: 'noaachart-gen',
+                        name: 'noaanavcharts',
                         source: new ol.source.TileWMS({
-                            url: 'http://encdirect.noaa.gov/arcgis/services/encdirect/enc_general/MapServer/WMSServer',
-                            params: {'LAYERS': '15', 'TILED': true}
+                            url: 'http://egisws02.nos.noaa.gov/ArcGIS/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                            params: {'LAYERS': 'RNC/NOAA_RNC', 'TILED': true}
                         })
                     })
                 ]
@@ -132,6 +132,7 @@ define([
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
                 }, this));
+                this.$('.layers input[type="radio"]').click(_.bind(this.toggleBase, this));
                 this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
                 this.controls = {
                     'play': this.$('.controls .play'),
@@ -438,7 +439,6 @@ define([
 
         toggleLayer: function(event){
             var layer = event.target.id;
-
             if(layer){
                 this.ol.map.getLayers().forEach(function(el){
                     if(el.get('name') == layer){
@@ -447,6 +447,19 @@ define([
                         } else {
                             el.setVisible(true);
                         }
+                    }
+                });
+            }
+        },
+
+        toggleBase: function(event){
+            var layer = event.target.id;
+            if (layer){
+                this.ol.map.getLayers().forEach(function(el){
+                    if (el.get('name') == layer){
+                        el.setVisible(true);
+                    } else {
+                        el.setVisible(false);
                     }
                 });
             }
