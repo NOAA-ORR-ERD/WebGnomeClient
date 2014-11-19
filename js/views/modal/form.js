@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'views/modal/base',
-    'text!templates/default/alert-danger.html'
-], function($, _, Backbone, BaseModal, AlertDangerTemplate){
+    'text!templates/default/alert-danger.html',
+    'model/help'
+], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpModel){
     formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
@@ -24,8 +25,42 @@ define([
             'click .finish': 'finish'
         },
 
+        initialize: function(options){
+            BaseModal.prototype.initialize.call(this, options);
+            if (this.module) {
+                this.getHelp();
+            }
+        },
+
+        getHelp: function(){
+            this.help = new HelpModel({id: this.module.id});
+            this.help.fetch({
+                success: _.bind(function(){
+                    this.set('ready', true);
+                    this.trigger('ready');
+                }, this.help),
+                fail: _.bind(function(){
+                    this.trigger('failed');
+                }, this.help)
+            });
+        },
+
+        renderHelp: function(){
+            var html = '<div class="help" data-toggle="popover" data-content="' + this.help.get('html') + '"></div>';
+            this.$('.modal-header h4').append(html);
+            this.$('.modal-header .help').popover({
+                html: true,
+                placement: 'bottom'
+            });
+        },
+
         ready: function() {
             this.trigger('ready');
+            if(this.help.get('ready')){
+                this.renderHelp();
+            } else {
+                this.help.on('ready', this.renderHelp, this);
+            }
         },
 
         hidden: function() {

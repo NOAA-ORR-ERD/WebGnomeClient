@@ -21,7 +21,6 @@ define([
         },
 
         initialize: function(options){
-
             if(options){
                 if(options.body) {
                     this.body = options.body;

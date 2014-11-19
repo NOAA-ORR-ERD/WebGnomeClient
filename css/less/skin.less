@@ -47,6 +47,23 @@ img{
 }
 
 .modal-dialog{
+    .modal-header{
+        .help{
+            .glyphicon;
+            .glyphicon-question-sign;
+            margin-left: 15px;
+            color: white;
+            background: #ccc;
+            border-radius: 200px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+
+            &:hover{
+                background: darken(#ccc, 10%);
+                border-color: darken(#ccc, 10%);
+            }
+        }
+    }
     .modal-content{
         .box-shadow(0 0 0 0);
         border: none;
