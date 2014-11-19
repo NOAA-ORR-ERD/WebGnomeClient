@@ -281,13 +281,8 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    this.close();
-                    $('.modal-backdrop').remove();
-                    webgnome.model.save({
-                        success: _.bind(function(){
-
-                        }, this)
-                    });
+                    webgnome.model.trigger('sync');
+                    this.hide();
                 }
             }, this));
         },

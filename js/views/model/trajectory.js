@@ -57,6 +57,7 @@ define([
 
         spillListeners: function(){
             webgnome.model.get('spills').on('add', this.resetSpills, this);
+            webgnome.model.get('spills').on('change', this.resetSpills, this);
             webgnome.model.get('spills').on('remove', this.resetSpills, this);
         },
 
@@ -382,8 +383,7 @@ define([
         renderMap: function(){
             // check if the model has a map, specifically a bna map that has a geojson output
             // if it does load it's geojson and put it in a layer on the map
-            // named modelmap
-                        
+            // named modelmap     
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                     // the map isn't rendered yet, so draw it before adding the layer.
@@ -417,6 +417,9 @@ define([
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.SpillGroupLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
+
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
                     }
                     if(this.ol.redraw === false){
                         this.renderSpills();
@@ -425,12 +428,17 @@ define([
             } else {
                 // if the model doens't have a renderable map yet just render the base layer
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    this.ol.render();
-                    this.graticule.setMap(this.ol.map);
-                    this.ol.map.addLayer(this.SpillIndexLayer);
-                    this.ol.map.addLayer(this.SpillGroupLayer);
-                    this.ol.map.render();
-                    this.resetSpills();
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
+                        this.ol.render();
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillGroupLayer);
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
                 }
             }
         },
@@ -504,8 +512,6 @@ define([
                 this.SpillIndexSource.addFeature(feature);
             }, this);
 
-            this.ol.map.on('pointermove', this.spillHover, this);
-            this.ol.map.on('click', this.spillClick, this);
         },
 
         resetSpills: function(){
@@ -533,9 +539,9 @@ define([
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
                 var spillform = new SpillForm({showMap: true}, spill);
                 spillform.render();
-                spillform.on('save', function(){
+                spillform.on('save', function(spill){
                     webgnome.model.get('spills').add(spill);
-                    webgnome.model.save();
+                    webgnome.model.trigger('sync');
                 });
                 spillform.on('hidden', spillform.close);
                 this.toggleSpill();
@@ -545,7 +551,6 @@ define([
 
         addPointSpill: function(e){
             // add a spill to the model.
-            console.log(e.coordinate);
             var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
             var spill = new GnomeSpill();
             // add the dummy z-index thing
@@ -555,18 +560,13 @@ define([
             spill.get('release').set('release_time', webgnome.model.get('start_time'));
             spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
 
-            spill.save(null, {
-                validate: false,
-                success: function(){
-                    var spillform = new SpillForm({showMap: true}, spill);
-                    spillform.render();
-                    spillform.on('save', function(){
-                        webgnome.model.get('spills').add(spill);
-                        webgnome.model.save();
-                    });
-                    spillform.on('hidden', spillform.close);
-                }
+            var spillform = new SpillForm({showMap: true}, spill);
+            spillform.render();
+            spillform.on('save', function(spill){
+                webgnome.model.get('spills').add(spill);
+                webgnome.model.trigger('sync');
             });
+            spillform.on('hidden', spillform.close);
 
             this.toggleSpill();
         },
@@ -600,11 +600,11 @@ define([
             });
             if(spill){
                 var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
-                spillform.on('hidden', _.bind(function(){
-                    webgnome.model.trigger('sync');
-                    this.resetSpills();
-                }, this));
                 spillform.on('hidden', spillform.close);
+                spillform.on('save', function(spill){
+                    webgnome.model.get('spills').trigger('change');
+                    webgnome.model.trigger('sync');
+                });
                 spillform.render();
             }
         },
