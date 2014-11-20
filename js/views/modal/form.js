@@ -65,10 +65,12 @@ define([
 
         ready: function() {
             this.trigger('ready');
-            if(this.help.get('ready')){
-                this.renderHelp();
-            } else {
-                this.help.on('ready', this.renderHelp, this);
+            if(!_.isUndefined(this.help)){
+                if(this.help.get('ready')){
+                    this.renderHelp();
+                } else {
+                    this.help.on('ready', this.renderHelp, this);
+                }
             }
         },
 
