@@ -439,13 +439,11 @@ define([
 
         toggleLayer: function(event){
             var layer = event.target.id;
-            if(layer){
+            if(layer == 'basemap'){
                 this.ol.map.getLayers().forEach(function(el){
-                    if(el.get('name') == layer){
+                    if(el.get('name') == 'noaanavcharts' || el.get('name') == 'basemap'){
                         if(el.getVisible()){
                             el.setVisible(false);
-                        } else {
-                            el.setVisible(true);
                         }
                     }
                 });
