@@ -222,7 +222,6 @@ define([
         },
 
         updateConstantSlide: function(ui){
-            console.trace();
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;

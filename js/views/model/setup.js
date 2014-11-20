@@ -102,7 +102,7 @@ define([
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
-            this.$('.date').datetimepicker({
+            this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
         },
@@ -129,7 +129,7 @@ define([
         },
 
         updateModel: function(){
-            var start_time = moment(this.$('.date').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+            var start_time = moment(this.$('.datetime').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
