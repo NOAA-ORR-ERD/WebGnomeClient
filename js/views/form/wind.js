@@ -71,7 +71,6 @@ define([
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units')
             });
-            
             FormModal.prototype.render.call(this, options);
             this.trigger('show');
 
@@ -83,7 +82,6 @@ define([
             this.form.variable.direction = this.$('#variable-direction');
             this.form.variable.datetime = this.$('#datetime');
             this.form.variable.increment = this.$('#incrementCount');
-
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
@@ -224,6 +222,7 @@ define([
         },
 
         updateConstantSlide: function(ui){
+            console.trace();
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;
@@ -235,7 +234,7 @@ define([
                 if(value === 0){
                     this.$('#constant .tooltip-inner').text(speed);
                 } else {
-                    var bottom = speed - value;
+                    var bottom = parseInt(speed, 10) - parseInt(value, 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
