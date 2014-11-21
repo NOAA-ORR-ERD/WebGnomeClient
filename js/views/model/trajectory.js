@@ -75,13 +75,6 @@ define([
                             url: 'http://egisws02.nos.noaa.gov/ArcGIS/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                             params: {'LAYERS': 'RNC/NOAA_RNC', 'TILED': true}
                         })
-                    }),
-                    new ol.layer.Tile({
-                        name: 'usgstopo',
-                        source: new ol.source.TileWMS({
-                            url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                            params: {'LAYERS': '1', 'VERSION': '1.1.1'}
-                        })
                     })
                 ]
             });
@@ -140,7 +133,7 @@ define([
                     this.$('.layers').toggleClass('expanded');
                 }, this));
                 this.$('.layers input[type="radio"]').click(_.bind(this.toggleBase, this));
-                this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleBase, this));
+                this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
                 this.controls = {
                     'play': this.$('.controls .play'),
                     'pause': this.$('.controls .play'),
@@ -444,7 +437,7 @@ define([
             }
         },
 
-        toggleLayer: function(event){
+        toggleBase: function(event){
             var layer = event.target.id;
             if(layer == 'basemap'){
                 this.ol.map.getLayers().forEach(function(el){
@@ -457,7 +450,7 @@ define([
             }
         },
 
-        toggleBase: function(event){
+        toggleLayer: function(event){
             var layer = event.target.id;
             if (layer){
                 this.ol.map.getLayers().forEach(function(el){
