@@ -4,9 +4,8 @@ define([
     'backbone',
     'views/modal/base',
     'text!templates/default/alert-danger.html',
-    'model/help',
-    'text!templates/form/help.html'
-], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpModel, HelpTemplate){
+    'views/default/help'
+], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
     formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
@@ -30,43 +29,26 @@ define([
         initialize: function(options){
             BaseModal.prototype.initialize.call(this, options);
             if (this.module) {
-                this.getHelp();
+                this.help = new HelpView({path: this.module.id});
             }
-        },
-
-        getHelp: function(){
-            this.help = new HelpModel({id: this.module.id});
-            this.help.fetch({
-                success: _.bind(function(){
-                    this.set('ready', true);
-                    this.trigger('ready');
-                }, this.help),
-                fail: _.bind(function(){
-                    this.trigger('failed');
-                }, this.help)
-            });
         },
 
         renderHelp: function(){
             var button = '<div class="help" title="Click for help"></div>';
             this.$('.modal-header h4').append(button);
             this.$('.modal-header .help').tooltip();
-
         },
 
         showHelp: function(){
             if(this.$('.help.alert').length === 0){
-                var compiled = _.template(HelpTemplate, {
-                    html: this.help.get('html')
-                });
-                this.$('.modal-body').prepend(compiled);
+                this.$('.modal-body').prepend(this.help.$el);
             }
         },
 
         ready: function() {
             this.trigger('ready');
             if(!_.isUndefined(this.help)){
-                if(this.help.get('ready')){
+                if(this.help.ready){
                     this.renderHelp();
                 } else {
                     this.help.on('ready', this.renderHelp, this);

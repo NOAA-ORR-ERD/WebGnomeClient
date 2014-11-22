@@ -5,7 +5,8 @@ define([
     var helpModel = Backbone.Model.extend({
         urlRoot: '/help',
         defaults: {
-            ready: false
+            helpful: false,
+            response: ''
         }
     });
 

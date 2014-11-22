@@ -46,6 +46,50 @@ img{
     border-radius: 0;
 }
 
+.help-content{
+    font-size: 12px;
+    .feedback{
+        .well;
+        .well-sm;
+        margin-bottom: 0;
+        .helpful{
+            a{
+                .btn;
+                .btn-xs;
+                .btn-info;
+
+                &.selected{
+                    .btn-success;
+                }
+
+                &.no{
+                    span{
+                        .glyphicon;
+                        .glyphicon-thumbs-down;
+                    }
+                }
+                &.yes{
+                    span{
+                        .glyphicon;
+                        .glyphicon-thumbs-up;
+                    }
+                }
+            }
+        }
+        .response{
+            display: none;
+            textarea{
+                margin: 10px 0;
+                resize: none;
+            }
+        }
+        .thankyou {
+            display: none;
+            font-weight: bold;
+        }
+    }
+}
+
 .modal-dialog{
     .modal-header{
         .help{
@@ -69,13 +113,6 @@ img{
         .box-shadow(0 0 0 0);
         border: none;
         border-radius: 0;
-    
-        .modal-body{
-            .help{
-                font-size: 12px;
-                padding-bottom: 5px;
-            }
-        }
     }
 }
 
