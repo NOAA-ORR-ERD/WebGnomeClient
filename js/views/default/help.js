@@ -12,7 +12,7 @@ define([
 
         events: {
             'click .helpful a': 'logHelpful',
-            'click .send': 'logHelp'
+            'click .send': 'logResponse'
         },
 
         initialize: function(options){
@@ -62,7 +62,7 @@ define([
             this.$('.response').show();
         },
 
-        logHelp: function(){
+        logResponse: function(){
             this.help.set('response', this.$('textarea').val());
             this.help.save(null, {
                 success: _.bind(function(){
