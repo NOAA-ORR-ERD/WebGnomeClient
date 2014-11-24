@@ -70,12 +70,20 @@ define([
                         name: 'basemap'
                     }),
                     new ol.layer.Tile({
+                        name: 'usgsbase',
+                        source: new ol.source.TileWMS({
+                            url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                            params: {'LAYERS': '0', 'TILED': true}
+                        }),
+                        visible: false
+                    }),
+                    new ol.layer.Tile({
                         name: 'noaanavcharts',
                         source: new ol.source.TileWMS({
                             url: 'http://egisws02.nos.noaa.gov/ArcGIS/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                             params: {'LAYERS': 'RNC/NOAA_RNC', 'TILED': true}
                         }),
-                        opacity: 0.5
+                        opacity: 0.7
                     })
                 ]
             });
@@ -441,12 +449,18 @@ define([
 
         toggleBase: function(event){
             var layer = event.target.id;
-            if(layer == 'basemap' && !this.$(".radio #basemap").is(':checked')){
+            console.log(layer);
+            if(layer){
                 this.ol.map.getLayers().forEach(function(el){
-                    if(el.getVisible()){
+                    if (layer === el.get('name')){
+                        if (layer === 'basemap'){
+                            el.setVisible(true);
+                        }
+                        if (layer === 'usgsbase'){
+                            el.setVisible(true);
+                        }
+                    } else if (el.get('name') === 'basemap' || el.get('name') === 'usgsbase'){
                         el.setVisible(false);
-                    } else {
-                        el.setVisible(true);
                     }
                 });
             }
