@@ -86,18 +86,20 @@ define([
                 format: webgnome.config.date_format.datetimepicker
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
-
-            this.$('#constant .slider').slider({
-                min: 0,
-                max: 5,
-                value: 0,
-                create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('speed') + '</div></div>');
-                }, this),
-                slide: _.bind(function(e, ui){
-                    this.updateConstantSlide(ui);
-                }, this)
-            });
+            
+            setTimeout(_.bind(function(){
+                this.$('#constant .slider').slider({
+                    min: 0,
+                    max: 5,
+                    value: 0,
+                    create: _.bind(function(){
+                        this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                    }, this),
+                    slide: _.bind(function(e, ui){
+                        this.updateConstantSlide(ui);
+                    }, this)
+                });
+            }, this), 1);
 
             var constantSliderMax = this.$('#constant .slider').slider("option", "max");
             this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * constantSliderMax);
@@ -226,7 +228,7 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#constant .slider').slider('value');
+                value = !_.isNaN(this.$('#constant .slider').slider('value')) ? this.$('#constant .slider').slider('value') : 0;
             }
             if(this.model.get('timeseries').length > 0){
                 var speed = this.model.get('timeseries')[0][1][0];
