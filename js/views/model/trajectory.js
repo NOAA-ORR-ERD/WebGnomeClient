@@ -134,6 +134,7 @@ define([
                     this.$('.layers').toggleClass('expanded');
                 }, this));
                 this.$('.layers input[type="radio"]').click(_.bind(this.toggleBase, this));
+                this.$('.radio #basemap').attr('checked', true);
                 this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
                 this.controls = {
                     'play': this.$('.controls .play'),
@@ -440,7 +441,7 @@ define([
 
         toggleBase: function(event){
             var layer = event.target.id;
-            if(layer == 'basemap'){
+            if(layer == 'basemap' && !this.$(".radio #basemap").is(':checked')){
                 this.ol.map.getLayers().forEach(function(el){
                     if(el.getVisible()){
                         el.setVisible(false);
