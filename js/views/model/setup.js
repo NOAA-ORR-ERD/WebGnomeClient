@@ -129,6 +129,8 @@ define([
         },
 
         updateModel: function(){
+            var name = this.$('#name').val();
+            webgnome.model.set('name', name);
             var start_time = moment(this.$('.datetime').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
