@@ -54,7 +54,13 @@ define([
         },
 
         updateEfficiency: function(ui){
-            
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('.slider').slider('value');
+            }
+            this.$('#rate-tooltip').text(value);
         }
     });
 
