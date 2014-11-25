@@ -67,7 +67,8 @@ define([
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'basemap'
+                        name: 'basemap',
+                        type: 'base'
                     }),
                     new ol.layer.Tile({
                         name: 'usgsbase',
@@ -75,7 +76,8 @@ define([
                             url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
                             params: {'LAYERS': '0', 'TILED': true}
                         }),
-                        visible: false
+                        visible: false,
+                        type: 'base'
                     }),
                     new ol.layer.Tile({
                         name: 'noaanavcharts',
@@ -449,14 +451,13 @@ define([
 
         toggleBase: function(event){
             var layer = event.target.id;
-            console.log(layer);
             if(layer){
                 this.ol.map.getLayers().forEach(function(el){
                     if (layer === el.get('name')){
-                        if (layer === 'basemap'){
+                        if (layer === 'basemap' && this.checkedBase){
                             el.setVisible(true);
                         }
-                        if (layer === 'usgsbase'){
+                        if (layer === 'usgsbase' && this.checkedBase){
                             el.setVisible(true);
                         }
                     } else if (el.get('name') === 'basemap' || el.get('name') === 'usgsbase'){
@@ -468,13 +469,25 @@ define([
 
         toggleLayer: function(event){
             var layer = event.target.id;
-            if (layer){
+            if (layer !== 'basemap'){
                 this.ol.map.getLayers().forEach(function(el){
                     if (layer == el.get('name')){
                         if (el.getVisible()){
                             el.setVisible(false);
                         } else {
                             el.setVisible(true);
+                        }
+                    }
+                });
+            } else {
+                this.ol.map.getLayers().forEach(function(el){
+                    if (el.get('type') === 'base'){
+                        if (this.$('#basemap:checked').length === 1){
+                            this.checkedBase = true;
+                            el.setVisible(true);
+                        } else {
+                            this.checkedBase = false;
+                            el.setVisible(false);
                         }
                     }
                 });
