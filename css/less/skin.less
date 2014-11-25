@@ -48,6 +48,13 @@ img{
 
 .help-content{
     font-size: 12px;
+
+    h1{
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 0;
+    }
+
     .feedback{
         .well;
         .well-sm;
@@ -90,25 +97,23 @@ img{
     }
 }
 
-.modal-dialog{
-    .modal-header{
-        .help{
-            .glyphicon;
-            .glyphicon-question-sign;
-            margin-left: 15px;
-            color: #ccc;
-            // background: #ccc;
-            border-radius: 200px;
-            // border: 1px solid #ccc;
-            cursor: pointer;
+.gnome-help{
+    .glyphicon;
+    .glyphicon-question-sign;
+    margin-left: 15px;
+    color: #ccc;
+    // background: #ccc;
+    border-radius: 200px;
+    // border: 1px solid #ccc;
+    cursor: pointer;
 
-            &:hover{
-                color: darken(#ccc, 10%);
-                // background: darken(#ccc, 10%);
-                // border-color: darken(#ccc, 10%);
-            }
-        }
+    &:hover{
+        color: darken(#ccc, 10%);
+        // background: darken(#ccc, 10%);
+        // border-color: darken(#ccc, 10%);
     }
+}
+.modal-dialog{
     .modal-content{
         .box-shadow(0 0 0 0);
         border: none;

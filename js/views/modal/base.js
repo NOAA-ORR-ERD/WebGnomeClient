@@ -57,7 +57,7 @@ define([
         },
 
         render: function(options){
-            if (!_.isString(this.body)){
+            if (_.isFunction(this.body)){
                 this.body = this.body();
             }
 
@@ -67,9 +67,14 @@ define([
                 body: this.body,
                 buttons: this.buttons
             });
+            this.$el.html(compiled);
 
+            if (_.isObject(this.body)){
+                this.$el.find('.modal-body').html('');
+                this.$el.find('.modal-body').append(this.body);
+            }
 
-            $('body').append(this.$el.html(compiled));
+            $('body').append(this.$el);
             this.$el.modal(this.options);
 
             // Bound enter event to submit the form modal in the same way as if a user clicked the save button

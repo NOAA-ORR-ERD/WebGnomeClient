@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'module',
     'moment',
     'ol',
     'masonry',
@@ -42,36 +44,40 @@ define([
     'flottooltip',
     'flotstack',
     'flotgantt'
-], function($, _, Backbone, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
-    var adiosSetupView = Backbone.View.extend({
+    var adiosSetupView = BaseView.extend({
         className: 'page setup',
 
-        events: {
-            'click .icon': 'selectPrediction',
-            'click .wind .add': 'clickWind',
-            'click .water .add': 'clickWater',
-            'click .spill .add': 'clickSpill',
-            'click .spill .single .edit': 'loadSpill',
-            'click .spill .single .trash': 'deleteSpill',
-            'mouseover .spill .single': 'hoverSpill',
-            'mouseout .spill .spill-list': 'unhoverSpill',
-            'click .location .add': 'clickLocation',
-            'click .response .add': 'clickResponse',
-            'click .response .single .edit': 'loadResponse',
-            'click .response .single .trash': 'deleteResponse',
-            'mouseover .response .single': 'hoverResponse',
-            'mouseout .response .response-list': 'unhoverResponse',
-            'blur input': 'updateModel',
-            'click .eval': 'evalModel'
+        events: function(){
+            return _.defaults({
+                'click .icon': 'selectPrediction',
+                'click .wind .add': 'clickWind',
+                'click .water .add': 'clickWater',
+                'click .spill .add': 'clickSpill',
+                'click .spill .single .edit': 'loadSpill',
+                'click .spill .single .trash': 'deleteSpill',
+                'mouseover .spill .single': 'hoverSpill',
+                'mouseout .spill .spill-list': 'unhoverSpill',
+                'click .location .add': 'clickLocation',
+                'click .response .add': 'clickResponse',
+                'click .response .single .edit': 'loadResponse',
+                'click .response .single .trash': 'deleteResponse',
+                'mouseover .response .single': 'hoverResponse',
+                'mouseout .response .response-list': 'unhoverResponse',
+                'blur input': 'updateModel',
+                'click .eval': 'evalModel',
+            }, BaseView.prototype.events);
         },
 
-        initialize: function(){
+        initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
                 this.render();
             } else {
@@ -89,7 +95,7 @@ define([
             });
 
             $('body').append(this.$el.append(compiled));
-            
+            BaseView.prototype.render.call(this);
             this.initMason();
 
             setTimeout(_.bind(function(){
@@ -105,6 +111,12 @@ define([
             this.$('.date').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+        },
+
+        showHelp: function(){
+            var compiled = '<div class="gnome-help" title="Click for help"></div>';
+            this.$('h2:first').append(compiled);
+            this.$('h2:first .gnome-help').tooltip();
         },
 
         initMason: function(){

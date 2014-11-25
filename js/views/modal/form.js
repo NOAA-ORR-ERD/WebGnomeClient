@@ -23,7 +23,7 @@ define([
             'keyup input': 'update',
             'change select': 'update',
             'click .finish': 'finish',
-            'click .modal-header .help': 'showHelp'
+            'click .modal-header .gnome-help': 'showHelp'
         },
 
         initialize: function(options){
@@ -34,13 +34,13 @@ define([
         },
 
         renderHelp: function(){
-            var button = '<div class="help" title="Click for help"></div>';
+            var button = '<div class="gnome-help" title="Click for help"></div>';
             this.$('.modal-header h4').append(button);
-            this.$('.modal-header .help').tooltip();
+            this.$('.modal-header .gnome-help').tooltip();
         },
 
         showHelp: function(){
-            if(this.$('.help.alert').length === 0){
+            if(this.$('.gnome-help.alert').length === 0){
                 this.$('.modal-body').prepend(this.help.$el);
             }
         },

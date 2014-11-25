@@ -7,7 +7,7 @@ define([
     'text!templates/default/help.html'
 ], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate){
     var helpView = Backbone.View.extend({
-        className: 'help-content alert alert-info alert-dismissable',
+        className: 'help-content',
         ready: false,
 
         events: {
@@ -29,9 +29,18 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(HelpTemplate, {
-                html: this.help.get('html')
-            });
+            var compiled;
+            console.log($('<div>' + this.help.get('html') + '</div>').find('.document').length);
+            if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1){
+                compiled = _.template(HelpTemplate, {
+                    html: this.help.get('html')
+                });
+                this.$el.addClass('alert alert-info alert-dismissable');
+            } else {
+                compiled = _.template(HelpTemplate, {
+                    html: this.help.get('html')
+                });
+            }
             this.$el.html(compiled);
         },
 
