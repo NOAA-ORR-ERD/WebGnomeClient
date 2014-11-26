@@ -26,7 +26,7 @@ define([
         },
 
         renderHelp: function(){
-            var modal = new HelpModal({view: this.help});
+            var modal = new HelpModal({help: this.help});
             modal.render();
         },
         

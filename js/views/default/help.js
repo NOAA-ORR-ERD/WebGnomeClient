@@ -4,8 +4,9 @@ define([
     'backbone',
     'model/help/help',
     'model/help/feedback',
-    'text!templates/default/help.html'
-], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate){
+    'text!templates/default/help.html',
+    'text!templates/default/help-tab.html'
+], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate, HelpTabTemplate){
     var helpView = Backbone.View.extend({
         className: 'help-content',
         ready: false,
@@ -30,18 +31,23 @@ define([
 
         render: function(){
             var compiled;
-            console.log($('<div>' + this.help.get('html') + '</div>').find('.document').length);
             if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1){
                 compiled = _.template(HelpTemplate, {
                     html: this.help.get('html')
                 });
                 this.$el.addClass('alert alert-info alert-dismissable');
             } else {
-                compiled = _.template(HelpTemplate, {
-                    html: this.help.get('html')
+                tabs = this.getTabs(this.help.get('html'));
+                html = $('<div>' + this.help.get('html') + '</div>');
+                html.find('h1').remove();
+                html.find('.document:first').addClass('active');
+                html.find('.document').addClass('tab-pane');
+                compiled = _.template(HelpTabTemplate, {
+                    tabs: tabs,
+                    html: html.html()
                 });
             }
-            this.$el.html(compiled);
+            this.$el.append(compiled);
         },
 
         logHelpful: function(e){
@@ -79,6 +85,21 @@ define([
                     this.$('.thankyou').fadeIn();
                 })
             });
+        },
+
+        getTabs: function(html){
+            if(_.isUndefined(html)) return '';
+            tabs = '';
+            html = $(html);
+            var headers = html.find('h1');
+            headers.each(function(i, el){
+                if(i === 0){
+                    tabs += '<li class="active"><a href="#' + $(el).parent().attr('id') + '" data-toggle="tab">' + $(el).text() + '</a></li>';
+                } else {
+                    tabs += '<li><a href="#' + $(el).parent().attr('id') + '" data-toggle="tab">' + $(el).text() + '</a></li>';
+                }
+            });
+            return tabs;
         }
     });
 
