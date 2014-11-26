@@ -82,8 +82,8 @@ define([
                     new ol.layer.Tile({
                         name: 'noaanavcharts',
                         source: new ol.source.TileWMS({
-                            url: 'http://egisws02.nos.noaa.gov/ArcGIS/services/RNC/NOAA_RNC/ImageServer/WMSServer',
-                            params: {'LAYERS': 'RNC/NOAA_RNC', 'TILED': true}
+                            url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                            params: {'LAYERS': '1', 'TILED': true}
                         }),
                         opacity: 0.7
                     })
