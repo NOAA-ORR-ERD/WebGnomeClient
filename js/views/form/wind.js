@@ -104,8 +104,6 @@ define([
                 this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * constantSliderMax);
             }, this), 1);
 
-            
-
             setTimeout(_.bind(function(){
                 this.$('#variable .slider').slider({
                     min: 0,
@@ -118,10 +116,11 @@ define([
 
                 var variableSliderMax = this.$('#variable .slider').slider("option", "max");
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * variableSliderMax);
+                this.renderTimeseries();
             }, this), 1);
             
 
-            this.renderTimeseries();
+            //this.renderTimeseries();
 
         },
 
@@ -164,7 +163,7 @@ define([
 
                 if(!_.isUndefined(this.originalTimeseries)){
                     this.model.set('timeseries', this.originalTimeseries);
-                }                
+                }
 
                 this.renderTimeseries();
             } else if (e.target.hash == '#nws'){
@@ -190,6 +189,7 @@ define([
             var active = this.$('.nav-tabs .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
+            var gnomeStart = webgnome.model.get('start_time');
             if(compass && speed !== '' && direction !== ''){
                 this.$('.' + active + '-compass').compassRoseUI('update', {
                     speed: speed,
@@ -200,6 +200,11 @@ define([
             if(active === 'constant'){
                 // if the constant wind pain is active a timeseries needs to be generated for the values provided
                 this.model.set('timeseries', [['2013-02-13T09:00:00', [speed, direction]]]);
+            }
+
+            if (active === 'variable' && this.model.get('timeseries')[0][0] === '2013-02-13T09:00:00'){
+                this.model.set('timeseries', [[gnomeStart, [speed, direction]]]);
+                this.renderTimeseries();
             }
 
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
