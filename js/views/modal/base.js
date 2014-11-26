@@ -67,11 +67,10 @@ define([
                 body: this.body,
                 buttons: this.buttons
             });
-            this.$el.html(compiled);
+            this.$el.append(compiled);
 
             if (_.isObject(this.body)){
-                this.$el.find('.modal-body').html('');
-                this.$el.find('.modal-body').append(this.body);
+                this.$el.find('.modal-body').html('').append(this.body);
             }
 
             $('body').append(this.$el);
