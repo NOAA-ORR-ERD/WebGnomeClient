@@ -203,6 +203,8 @@ define([
             }
 
             if (active === 'variable' && this.model.get('timeseries')[0][0] === '2013-02-13T09:00:00'){
+                speed = this.form['constant'].speed.val();
+                direction = this.form['constant'].direction.val();
                 this.model.set('timeseries', [[gnomeStart, [speed, direction]]]);
                 this.renderTimeseries();
             }
