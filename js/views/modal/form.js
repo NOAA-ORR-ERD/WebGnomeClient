@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'views/modal/base',
-    'text!templates/default/alert-danger.html'
-], function($, _, Backbone, BaseModal, AlertDangerTemplate){
+    'text!templates/default/alert-danger.html',
+    'views/default/help'
+], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
     formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
@@ -21,11 +22,38 @@ define([
             'change input': 'update',
             'keyup input': 'update',
             'change select': 'update',
-            'click .finish': 'finish'
+            'click .finish': 'finish',
+            'click .modal-header .gnome-help': 'showHelp'
+        },
+
+        initialize: function(options){
+            BaseModal.prototype.initialize.call(this, options);
+            if (this.module) {
+                this.help = new HelpView({path: this.module.id});
+            }
+        },
+
+        renderHelp: function(){
+            var button = '<div class="gnome-help" title="Click for help"></div>';
+            this.$('.modal-header h4').append(button);
+            this.$('.modal-header .gnome-help').tooltip();
+        },
+
+        showHelp: function(){
+            if(this.$('.gnome-help.alert').length === 0){
+                this.$('.modal-body').prepend(this.help.$el);
+            }
         },
 
         ready: function() {
             this.trigger('ready');
+            if(!_.isUndefined(this.help)){
+                if(this.help.ready){
+                    this.renderHelp();
+                } else {
+                    this.help.on('ready', this.renderHelp, this);
+                }
+            }
         },
 
         hidden: function() {
@@ -60,12 +88,12 @@ define([
         },
 
         error: function(strong, message) {
-            this.$('.modal-body .alert').remove();
+            this.$('.modal-body .alert.validation').remove();
             this.$('.modal-body').prepend(_.template(AlertDangerTemplate, {strong: strong, message: message}));
         },
 
         clearError: function() {
-            this.$('.modal-body .alert').remove();
+            this.$('.modal-body .alert.validation').remove();
         },
 
         isValid: function() {

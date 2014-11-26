@@ -46,11 +46,82 @@ img{
     border-radius: 0;
 }
 
+.help-content{
+    font-size: 12px;
+
+    h1{
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 0;
+    }
+
+    .tab-pane{
+        margin: 10px 0
+    }
+
+    .feedback{
+        .well;
+        .well-sm;
+        margin-bottom: 0;
+        .helpful{
+            a{
+                .btn;
+                .btn-xs;
+                .btn-info;
+
+                &.selected{
+                    .btn-success;
+                }
+
+                &.no{
+                    span{
+                        .glyphicon;
+                        .glyphicon-thumbs-down;
+                    }
+                }
+                &.yes{
+                    span{
+                        .glyphicon;
+                        .glyphicon-thumbs-up;
+                    }
+                }
+            }
+        }
+        .response{
+            display: none;
+            textarea{
+                margin: 10px 0;
+                resize: none;
+            }
+        }
+        .thankyou {
+            display: none;
+            font-weight: bold;
+        }
+    }
+}
+
+.gnome-help{
+    .glyphicon;
+    .glyphicon-question-sign;
+    margin-left: 15px;
+    color: #ccc;
+    // background: #ccc;
+    border-radius: 200px;
+    // border: 1px solid #ccc;
+    cursor: pointer;
+
+    &:hover{
+        color: darken(#ccc, 10%);
+        // background: darken(#ccc, 10%);
+        // border-color: darken(#ccc, 10%);
+    }
+}
 .modal-dialog{
     .modal-content{
         .box-shadow(0 0 0 0);
         border: none;
-        border-radius: 0
+        border-radius: 0;
     }
 }
 
