@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'moment',
     'ol',
     'views/modal/form',
@@ -11,13 +12,12 @@ define([
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
         events: function(){
             return _.defaults({
-                'shown.bs.modal': 'rendered',
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
                 'click tr': 'modifyTimeseriesEntry',
@@ -28,6 +28,7 @@ define([
         },
 
         initialize: function(options, GnomeWind){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = GnomeWind;
             this.source = new ol.source.Vector();
@@ -64,6 +65,7 @@ define([
                     this.layer
                 ]
             });
+            this.on('ready', this.rendered, this);
         },
 
         render: function(options){

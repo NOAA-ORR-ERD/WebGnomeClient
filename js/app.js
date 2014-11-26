@@ -28,7 +28,6 @@ define([
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.config.api + options.url;
                 }
-                
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
