@@ -86,7 +86,6 @@ define([
                 format: webgnome.config.date_format.datetimepicker
             });
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
-            
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
                     min: 0,
@@ -154,18 +153,20 @@ define([
                 }, this), 1);
                 
             } else if (e.target.hash == '#variable') {
-                if(this.$('.variable-compass canvas').length === 0){
-                    this.$('.variable-compass').compassRoseUI({
-                        'arrow-direction': 'in',
-                        'move': _.bind(this.variableCompassUpdate, this)
-                    });
-                }
+                setTimeout(_.bind(function(){
+                    if(this.$('.variable-compass canvas').length === 0){
+                        this.$('.variable-compass').compassRoseUI({
+                            'arrow-direction': 'in',
+                            'move': _.bind(this.variableCompassUpdate, this)
+                        });
+                    }
 
-                if(!_.isUndefined(this.originalTimeseries)){
-                    this.model.set('timeseries', this.originalTimeseries);
-                }
+                    if(!_.isUndefined(this.originalTimeseries)){
+                        this.model.set('timeseries', this.originalTimeseries);
+                    }
 
-                this.renderTimeseries();
+                    this.renderTimeseries();
+                }, this), 1);    
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
