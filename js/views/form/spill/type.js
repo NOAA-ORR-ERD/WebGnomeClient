@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
     'text!templates/form/spill/type.html',
     'model/spill',
@@ -9,7 +10,7 @@ define([
     'views/form/spill/continue',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel,
+], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
@@ -22,6 +23,11 @@ define([
                 'click .pipeline': 'pipeline',
                 'click .well-blowout': 'well'
             }, FormModal.prototype.events);
+        },
+
+        initialize: function(options){
+            this.module = module;
+            FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(options){

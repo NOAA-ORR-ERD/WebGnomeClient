@@ -2,18 +2,20 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/response/base',
     'text!templates/form/response/skim.html',
     'model/weatherers/skim',
     'moment',
     'jqueryDatetimepicker',
     'jqueryui/slider'
-], function($, _, Backbone, ResponseFormModal, FormTemplate, SkimModel, moment){
+], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
     var skimForm = ResponseFormModal.extend({
         title: 'Skim Response',
         className: 'modal fade form-modal skim-form',
 
         initialize: function(options, skimModel){
+            this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, skimModel);
             this.model = skimModel;
         },

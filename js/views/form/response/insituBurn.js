@@ -2,17 +2,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/response/base',
     'text!templates/form/response/burn.html',
     'model/weatherers/burn',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, ResponseFormModal, FormTemplate, BurnModel, moment){
+], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment){
     var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
         className: 'modal fade form-modal insituburn-form',
 
         initialize: function(options, burnModel){
+            this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, burnModel);
             this.model = burnModel;
         },

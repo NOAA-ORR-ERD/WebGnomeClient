@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill',
@@ -9,12 +10,13 @@ define([
     'views/default/map',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
+            this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             if (!_.isUndefined(options.model)){
                 this.model = options.model;

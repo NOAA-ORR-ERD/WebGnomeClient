@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
     'text!templates/form/response/type.html',
     'model/weatherers/burn',
@@ -10,7 +11,7 @@ define([
     'views/form/response/insituBurn',
     'views/form/response/disperse',
     'views/form/response/skim'
-], function($, _, Backbone, FormModal, FormTemplate, InSituBurnModel, DisperseModel, SkimModel, 
+], function($, _, Backbone, module, FormModal, FormTemplate, InSituBurnModel, DisperseModel, SkimModel, 
     InSituBurnForm, DisperseForm, SkimForm){
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
@@ -25,6 +26,7 @@ define([
         },
 
         render: function(options){
+            this.module = module;
             this.body = _.template(FormTemplate);
             this.buttons = null;
             FormModal.prototype.render.call(this, options);
