@@ -2,17 +2,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/response/base',
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
     'moment',
     'jqueryDatetimepicker'
-], function($, _, Backbone, ResponseFormModal, FormTemplate, DisperseModel, moment){
+], function($, _, Backbone, module, ResponseFormModal, FormTemplate, DisperseModel, moment){
     var disperseForm = ResponseFormModal.extend({
         title: 'Disperse Response',
         className: 'modal fade form-modal disperse-form',
 
         initialize: function(options, disperseModel){
+            this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, disperseModel);
             this.model = disperseModel;
         },

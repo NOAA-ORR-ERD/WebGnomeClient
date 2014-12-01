@@ -10,7 +10,8 @@ define([
         defaults: {
             timeseries: [['2014-07-07T12:00:00', [0, 0]]],
             units: 'm/s',
-            obj_type: 'gnome.environment.wind.Wind'
+            obj_type: 'gnome.environment.wind.Wind',
+            speed_uncertainty_scale: 0
         },
 
         validate: function(attrs, options){

@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'module',
     'moment',
     'ol',
     'masonry',
@@ -42,36 +44,40 @@ define([
     'flottooltip',
     'flotstack',
     'flotgantt'
-], function($, _, Backbone, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
-    var adiosSetupView = Backbone.View.extend({
+    var adiosSetupView = BaseView.extend({
         className: 'page setup',
 
-        events: {
-            'click .icon': 'selectPrediction',
-            'click .wind .add': 'clickWind',
-            'click .water .add': 'clickWater',
-            'click .spill .add': 'clickSpill',
-            'click .spill .single .edit': 'loadSpill',
-            'click .spill .single .trash': 'deleteSpill',
-            'mouseover .spill .single': 'hoverSpill',
-            'mouseout .spill .spill-list': 'unhoverSpill',
-            'click .location .add': 'clickLocation',
-            'click .response .add': 'clickResponse',
-            'click .response .single .edit': 'loadResponse',
-            'click .response .single .trash': 'deleteResponse',
-            'mouseover .response .single': 'hoverResponse',
-            'mouseout .response .response-list': 'unhoverResponse',
-            'blur input': 'updateModel',
-            'click .eval': 'evalModel'
+        events: function(){
+            return _.defaults({
+                'click .icon': 'selectPrediction',
+                'click .wind .add': 'clickWind',
+                'click .water .add': 'clickWater',
+                'click .spill .add': 'clickSpill',
+                'click .spill .single .edit': 'loadSpill',
+                'click .spill .single .trash': 'deleteSpill',
+                'mouseover .spill .single': 'hoverSpill',
+                'mouseout .spill .spill-list': 'unhoverSpill',
+                'click .location .add': 'clickLocation',
+                'click .response .add': 'clickResponse',
+                'click .response .single .edit': 'loadResponse',
+                'click .response .single .trash': 'deleteResponse',
+                'mouseover .response .single': 'hoverResponse',
+                'mouseout .response .response-list': 'unhoverResponse',
+                'blur input': 'updateModel',
+                'click .eval': 'evalModel',
+            }, BaseView.prototype.events);
         },
 
-        initialize: function(){
+        initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
                 this.render();
             } else {
@@ -86,10 +92,11 @@ define([
             var compiled = _.template(AdiosSetupTemplate, {
                 start_time: moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: webgnome.model.formatDuration(),
+                name: !_.isUndefined(webgnome.model.get('name')) ? webgnome.model.get('name') : ''
             });
 
             $('body').append(this.$el.append(compiled));
-            
+            BaseView.prototype.render.call(this);
             this.initMason();
 
             setTimeout(_.bind(function(){
@@ -102,9 +109,15 @@ define([
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
-            this.$('.date').datetimepicker({
+            this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+        },
+
+        showHelp: function(){
+            var compiled = '<div class="gnome-help" title="Click for help"></div>';
+            this.$('h2:first').append(compiled);
+            this.$('h2:first .gnome-help').tooltip();
         },
 
         initMason: function(){
@@ -129,7 +142,9 @@ define([
         },
 
         updateModel: function(){
-            var start_time = moment(this.$('.date').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
+            var name = this.$('#name').val();
+            webgnome.model.set('name', name);
+            var start_time = moment(this.$('.datetime').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
             var days = this.$('#days').val();
@@ -257,7 +272,7 @@ define([
                     container: 'body',
                     delay: delay
                 });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length){
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                     this.$('.stage-3').show();
                     this.updateResponse();
                 } else {

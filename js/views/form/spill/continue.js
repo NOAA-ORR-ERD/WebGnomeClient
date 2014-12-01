@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill',
@@ -10,7 +11,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
@@ -27,6 +28,7 @@ define([
         },
 
         initialize: function(options, spillModel){
+            this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
         },
@@ -79,7 +81,7 @@ define([
                 max: 5,
                 value: 0,
                 create: _.bind(function(){
-                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + this.model.get('rate') + '</div></div>');
+                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateRateSlide(ui);
@@ -209,7 +211,7 @@ define([
                 value = this.$('#constant .slider').slider('value');
             }
             if(!_.isUndefined(this.rate)){
-                var amount = this.rate;
+                var amount = this.rate ? this.rate : 0;
                 if(value === 0){
                     this.$('#rate-tooltip').text(amount);
                 } else {
