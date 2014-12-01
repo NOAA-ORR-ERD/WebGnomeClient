@@ -135,7 +135,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
             if(_.isUndefined(this.graphOilBudget)){
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
                     grid: {
@@ -190,7 +190,7 @@ define([
             }
             
             var i, j;
-            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released']);
+            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
             var pos = this.pos;
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
@@ -261,7 +261,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -528,7 +528,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
