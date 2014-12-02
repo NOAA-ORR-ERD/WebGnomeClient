@@ -3,7 +3,7 @@
     "main": "index.html",
     "scripts": {
         "start": "http-server",
-        "postinstall": "bower install",
+        "postinstall": "bower install && bower update",
         "postupdate": "bower update",
         "test": "node ./scripts/test.js"
     },
