@@ -7,8 +7,9 @@ define([
     'text!templates/form/response/burn.html',
     'model/weatherers/burn',
     'moment',
+    'nucos',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment){
+], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment, nucos){
     var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
         className: 'modal fade form-modal insituburn-form',
@@ -27,14 +28,33 @@ define([
             ResponseFormModal.prototype.render.call(this, options);
         },
 
+        convertLength: function(length, units){
+            switch (units) {
+                case "mm":
+                  return parseFloat(length) / 1000;
+                case "in":
+                  return parseFloat(length) / 39.370;
+                case "cm":
+                  return parseFloat(length) / 100;
+            }
+        },
+
         update: function(){
             ResponseFormModal.prototype.update.call(this);
             var boomedOilArea = this.$('#oilarea').val();
             var boomedAreaUnits = this.$('#areaunits').val();
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
+            var start_time = this.startTime;
+
+            console.log(nucos);
+
+            var thicknessInMeters = this.convertLength(boomedOilThickness, boomedThicknessUnits);
+            var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
+            var burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
 
             this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('active_stop', start_time.add(burnDuration, 's').format('YYYY-MM-DDTHH:mm:ss'));
         }
     });
 
