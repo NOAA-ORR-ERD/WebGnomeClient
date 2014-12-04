@@ -8,12 +8,21 @@
         "test": "node ./scripts/test.js"
     },
     "config": {
-        "port": "8080",
-        "api": "http://0.0.0.0:9899",
-        "oil_api": "http://0.0.0.0:9898",
-        "date_format": {
-            "moment": "YYYY/M/D H:mm",
-            "datetimepicker": "Y/n/j G:i"
+        "localhost,0.0.0.0": {
+            "port": "8080",
+            "api": "http://0.0.0.0:9899",
+            "oil_api": "http://0.0.0.0:9898"
+        },
+        "hazweb2.orr.noaa.gov": {
+            "port": "7448",
+            "api": "http://localhost:7450",
+            "oil_api": "http://localhost:7449"
+        },
+        "*": {
+            "date_format": {
+                "moment": "YYYY/M/D H:mm",
+                "datetimepicker": "Y/n/j G:i"
+            }
         }
     },
     "dependencies": {
