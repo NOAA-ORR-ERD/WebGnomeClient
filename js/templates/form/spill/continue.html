@@ -144,10 +144,38 @@
 		<div id="spill-form-map" class="map"></div>
 	{% } %}
     <div class="form-group">
-    	<label class="control-label col-sm-4">Oil Selected:</label>
-    	<div class="col-sm-3">
-    		<input class="col-sm-4 form-control oilName" value="{{ oilName }}"></input>
-    	</div>
+        <label class="control-label col-sm-2 col-sm-offset-1">Oil Info:</label>
+        <div class="well well-sm col-sm-10 col-sm-offset-1">
+            <div class="form-group">
+                <label class="control-label col-sm-4">Name:</label>
+                <div class="col-sm-3 form-control-static">
+                    {{ oil.get('name') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-4">API:</label>
+                <div class="col-sm-3 form-control-static">
+                    {{ oil.get('api') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-4">Pour Point:</label>
+                <div class="col-sm-3 form-control-static">
+                    {{ oil.get('pour_point_max_k') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-4">Flash Point:</label>
+                <div class="col-sm-3 form-control-static">
+                    {{ oil.get('flash_point_max_k') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-4">Categories:</label>
+                <div class="col-sm-3 form-control-static">
+                </div>
+            </div>
+        </div>
     </div>
 	<div class="form-group">
         <div class="col-sm-6">

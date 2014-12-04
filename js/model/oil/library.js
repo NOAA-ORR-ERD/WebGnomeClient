@@ -130,21 +130,18 @@ define([
                         oilCache['ts'] = now;
                         localStorage.setItem('oil_cache', JSON.stringify(oilCache));
                         success(resp, status, xhr);
-                    }
+                    };
                     Backbone.sync(method, model, options);
                 }
             } else {
-                var success = options.success;
                 options.success = function(resp, status, xhr){
                     var now = moment().unix();
                     var oilCache = {};
                     oilCache['oils'] = resp;
                     oilCache['ts'] = now;
                     localStorage.setItem('oil_cache', JSON.stringify(oilCache));
-                    console.log(JSON.stringify(oilCache));
-                    console.log(oilCache);
                     success(resp, status, xhr);
-                }
+                };
                 Backbone.sync(method, model, options);
             }
 

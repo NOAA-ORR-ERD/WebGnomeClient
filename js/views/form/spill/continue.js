@@ -39,7 +39,7 @@ define([
             var amount = this.model.get('amount');
             var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
             var units = this.model.get('units');
-            var oilName = this.model.get('element_type').get('substance').get('name') ? this.model.get('element_type').get('substance').get('name') : '';
+            var oil = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : '';
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
@@ -49,7 +49,7 @@ define([
                 showGeo: this.showGeo,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                oilName: oilName
+                oil: oil
             });
             BaseSpillForm.prototype.render.call(this, options);
             var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);

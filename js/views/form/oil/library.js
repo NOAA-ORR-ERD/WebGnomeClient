@@ -202,7 +202,6 @@ define([
             this.oilName = this.$('.select').data('name');
             this.elementModel.set('substance', this.oilName);
             this.elementModel.save();
-            console.log(this.elementModel);
             FormModal.prototype.save.call(this);
         },
 

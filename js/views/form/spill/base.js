@@ -45,6 +45,7 @@ define([
 			} else {
 				this.model = spillModel;
 			}
+            this.model.fetch();
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
             if(this.model.get('name') == 'Spill'){
