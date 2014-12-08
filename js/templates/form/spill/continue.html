@@ -149,6 +149,9 @@
             <a class="btn btn-default oilSelect">
                 Select Oil
             </a>
+            {% if (disabled){ %}
+                <p>You must select the oil from the first spill form</p>
+            {% } %}
         </div>
         {% if (showGeo){ %}
 	        <div class="col-sm-6">

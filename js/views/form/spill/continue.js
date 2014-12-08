@@ -49,6 +49,7 @@ define([
                 var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
                 var units = this.model.get('units');
                 var oil = this.oilDetails.get('substance') ? this.oilDetails.get('substance') : '';
+                var disabled = this.oilSelectDisabled();
                 this.body = _.template(FormTemplate, {
                     name: this.model.get('name'),
                     amount: amount,
@@ -56,7 +57,8 @@ define([
                     duration: duration,
                     showGeo: this.showGeo,
                     start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
+                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
+                    disabled: disabled
                 });
                 BaseSpillForm.prototype.render.call(this, options);
                 this.renderOilInfo();

@@ -19,6 +19,9 @@ define([
 		mapShown: false,
 
         oilSelectDisabled: function(){
+            if (_.isUndefined(webgnome.model.get('spills').at(0))){
+                return false;
+            }
             return this.model.get('id') !== webgnome.model.get('spills').at(0).get('id');
         },
         
@@ -80,7 +83,10 @@ define([
 		},
 
         renderOilInfo: function(){
-            var oil = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : {};
+            var oil = this.model.get('element_type').get('substance');
+            if (!_.isUndefined(webgnome.model.get('spills').at(0))){
+                oil = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            }
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil}));
         },
