@@ -17,6 +17,10 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 
 		mapShown: false,
+
+        oilSelectDisabled: function(){
+            return this.model.get('id') !== webgnome.model.get('spills').at(0).get('id');
+        },
         
         spillEndSet: function(){
             var startPosition = this.model.get('release').get('start_position');
@@ -67,6 +71,9 @@ define([
 			} else {
 				this.locationSelect();
 			}
+            if (this.oilSelectDisabled()){
+                this.$('.oilSelect').attr('disabled', true);
+            }
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
