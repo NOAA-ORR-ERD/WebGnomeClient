@@ -78,6 +78,7 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            $('body').append(this.$el);
             if(webgnome.hasModel()){
                 this.render();
             } else {
@@ -94,8 +95,7 @@ define([
                 duration: webgnome.model.formatDuration(),
                 name: !_.isUndefined(webgnome.model.get('name')) ? webgnome.model.get('name') : ''
             });
-
-            $('body').append(this.$el.append(compiled));
+            this.$el.append(compiled);
             BaseView.prototype.render.call(this);
             this.initMason();
 
