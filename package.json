@@ -15,8 +15,8 @@
         },
         "hazweb2.orr.noaa.gov": {
             "port": "7448",
-            "api": "http://localhost:7450",
-            "oil_api": "http://localhost:7449"
+            "api": "http://hazweb2.orr.noaa.gov:7450",
+            "oil_api": "http://hazweb2.orr.noaa.gov:7449"
         },
         "*": {
             "date_format": {
