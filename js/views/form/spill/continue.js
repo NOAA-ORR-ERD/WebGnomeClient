@@ -15,6 +15,7 @@ define([
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
+        ready: false,
 
         events: function(){
             return _.defaults({
@@ -31,62 +32,73 @@ define([
             this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
+            this.model.get('element_type').fetch({
+                success: _.bind(function(model, response, options){
+                    this.oilDetails = model;
+                    this.ready = true;
+                    this.trigger('ready');
+                    console.log(model);
+                }, this)
+            });
         },
 
         render: function(options){
-            var startPosition = this.model.get('release').get('start_position');
-            var endPosition = this.model.get('release').get('end_position');
-            var amount = this.model.get('amount');
-            var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
-            var units = this.model.get('units');
-            var oil = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : '';
+            if (this.ready){
+                var startPosition = this.model.get('release').get('start_position');
+                var endPosition = this.model.get('release').get('end_position');
+                var amount = this.model.get('amount');
+                var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
+                var units = this.model.get('units');
+                var oil = this.oilDetails.get('substance') ? this.oilDetails.get('substance') : '';
+                this.body = _.template(FormTemplate, {
+                    name: this.model.get('name'),
+                    amount: amount,
+                    time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
+                    duration: duration,
+                    showGeo: this.showGeo,
+                    start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
+                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
+                    oil: oil
+                });
+                BaseSpillForm.prototype.render.call(this, options);
+                var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
+                var rate = parseFloat(amount) / durationInMins;
 
-            this.body = _.template(FormTemplate, {
-                name: this.model.get('name'),
-                amount: amount,
-                time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                duration: duration,
-                showGeo: this.showGeo,
-                start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                oil: oil
-            });
-            BaseSpillForm.prototype.render.call(this, options);
-            var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
-            var rate = parseFloat(amount) / durationInMins;
+                this.$('#spill-rate').val(rate);
 
-            this.$('#spill-rate').val(rate);
+                if (!_.isUndefined(units)){
+                    this.$('#rate-units').val(units + '/hr');
+                } else {
+                    var amountUnits = this.$('#units').val();
+                    this.$('#rate-units').val(amountUnits + '/hr');
+                }
 
-            if (!_.isUndefined(units)){
-                this.$('#rate-units').val(units + '/hr');
+                this.$('#amount .slider').slider({
+                    min: 0,
+                    max: 5,
+                    value: 0,
+                    create: _.bind(function(){
+                        this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                    }, this),
+                    slide: _.bind(function(e, ui){
+                        this.updateAmountSlide(ui);
+                    }, this)
+                });
+
+                this.$('#constant .slider').slider({
+                    min: 0,
+                    max: 5,
+                    value: 0,
+                    create: _.bind(function(){
+                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
+                    }, this),
+                    slide: _.bind(function(e, ui){
+                        this.updateRateSlide(ui);
+                    }, this)
+                });
             } else {
-                var amountUnits = this.$('#units').val();
-                this.$('#rate-units').val(amountUnits + '/hr');
+                this.on('ready', this.render, this);
             }
-
-            this.$('#amount .slider').slider({
-                min: 0,
-                max: 5,
-                value: 0,
-                create: _.bind(function(){
-                    this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
-                }, this),
-                slide: _.bind(function(e, ui){
-                    this.updateAmountSlide(ui);
-                }, this)
-            });
-
-            this.$('#constant .slider').slider({
-                min: 0,
-                max: 5,
-                value: 0,
-                create: _.bind(function(){
-                    this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
-                }, this),
-                slide: _.bind(function(e, ui){
-                    this.updateRateSlide(ui);
-                }, this)
-            });
         },
 
         update: function(){

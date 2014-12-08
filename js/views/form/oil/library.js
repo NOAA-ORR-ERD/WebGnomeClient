@@ -32,7 +32,7 @@ define([
         
         initialize: function(elementModel, options){
             this.oilTable = new OilTable();
-            this.elementModel = elementModel;
+            this.model = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
@@ -200,8 +200,7 @@ define([
 
         save: function(){
             this.oilName = this.$('.select').data('name');
-            this.elementModel.set('substance', this.oilName);
-            this.elementModel.save();
+            this.model.get('substance').set('name', this.oilName);
             FormModal.prototype.save.call(this);
         },
 
