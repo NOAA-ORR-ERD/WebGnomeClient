@@ -5,12 +5,13 @@ define([
 	'views/modal/form',
 	'views/form/oil/library',
 	'views/default/map',
+    'text!templates/form/spill/oilInfo.html',
 	'nucos',
 	'ol',
 	'moment',
     'sweetalert',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoTemplate, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -34,8 +35,7 @@ define([
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
 				'blur .geo-info': 'manualMapInput',
-                'click .delete': 'deleteSpill',
-                'show.bs.modal': 'render'
+                'click .delete': 'deleteSpill'
 			}, FormModal.prototype.events);
 		},
 
@@ -71,6 +71,12 @@ define([
 				format: 'Y/n/j G:i',
 			});
 		},
+
+        renderOilInfo: function(){
+            var oil = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : {};
+            this.$('#oilInfo').html('');
+            this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil}));
+        },
 
 		update: function(){
             var oilName = this.model.get('element_type').get('substance').get('name');

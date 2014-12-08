@@ -5,6 +5,7 @@ define([
     'module',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
+    'text!templates/form/spill/oilInfo.html',
     'model/spill',
     'views/form/oil/library',
     'views/default/map',
@@ -37,7 +38,6 @@ define([
                     this.oilDetails = model;
                     this.ready = true;
                     this.trigger('ready');
-                    console.log(model);
                 }, this)
             });
         },
@@ -57,10 +57,10 @@ define([
                     duration: duration,
                     showGeo: this.showGeo,
                     start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                    oil: oil
+                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]}
                 });
                 BaseSpillForm.prototype.render.call(this, options);
+                this.renderOilInfo();
                 var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
                 var rate = parseFloat(amount) / durationInMins;
 
