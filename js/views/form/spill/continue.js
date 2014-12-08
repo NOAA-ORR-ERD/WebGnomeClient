@@ -5,7 +5,6 @@ define([
     'module',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
-    'text!templates/form/spill/oilInfo.html',
     'model/spill',
     'views/form/oil/library',
     'views/default/map',

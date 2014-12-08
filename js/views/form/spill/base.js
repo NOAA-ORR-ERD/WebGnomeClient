@@ -94,6 +94,7 @@ define([
 			var oilLibraryView = new OilLibraryView(this.model.get('element_type'));
 			oilLibraryView.render();
 			oilLibraryView.on('save', _.bind(this.show, this));
+            oilLibraryView.on('save', _.bind(this.renderOilInfo, this));
 			oilLibraryView.on('hidden', _.bind(this.show, this));
 		},
 
