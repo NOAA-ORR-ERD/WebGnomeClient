@@ -388,7 +388,6 @@ define([
             }
             var waterForm = new WaterForm(null, water);
             waterForm.on('hidden', waterForm.close);
-            waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
             waterForm.on('save', function(){
                 webgnome.model.get('environment').add(water);
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
