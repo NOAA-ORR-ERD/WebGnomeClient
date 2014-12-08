@@ -75,14 +75,14 @@
     {% } %}
     <div id="oilInfo"></div>
     <div class="form-group">
-        <div class="col-sm-6">
+        <div class="col-sm-3">
             <a class="btn btn-default oilSelect">
                 Select Oil
             </a>
-            {% if (disabled){ %}
-                <p>You must select the oil from the first spill form</p>
-            {% } %}
         </div>
+        {% if (disabled){ %}
+            <div class="col-sm-3">You must select the oil from the first spill form</div>
+        {% } %}
         {% if (showGeo){ %}
             <div class="col-sm-6">
                 <a class="pull-right btn btn-default locationSelect">
