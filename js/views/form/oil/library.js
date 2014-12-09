@@ -178,7 +178,6 @@ define([
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
             this.model.get('substance').set('adios_oil_id', this.$('.select').data('id'));
-            console.log(this.model.get('substance'));
         },
 
         viewSpecificOil: function(){
