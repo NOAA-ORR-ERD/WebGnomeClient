@@ -169,7 +169,7 @@ define([
                 swal({
                     title: 'Warning!',
                     type: 'warning',
-                    text: 'Switching to a fate only model will remove any geospacial objects (map, currents, etc...).',
+                    text: 'Switching to a fate only model will remove any geospatial objects (map, currents, etc...).',
                     showCancelButton: true,
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
