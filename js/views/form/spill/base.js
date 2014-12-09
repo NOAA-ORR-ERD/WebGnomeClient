@@ -77,6 +77,8 @@ define([
 			}
             if (this.oilSelectDisabled()){
                 this.$('.oilSelect').attr('disabled', true);
+                this.$('#geoButton').removeClass('col-sm-9');
+                this.$('#geoButton').addClass('col-sm-6');
             }
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
@@ -123,7 +125,7 @@ define([
 
 		elementSelect: function(){
             this.hide();
-			var oilLibraryView = new OilLibraryView(this.model.get('element_type'));
+			var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
 			oilLibraryView.render();
 			oilLibraryView.on('save', _.bind(this.show, this));
             oilLibraryView.on('save', _.bind(this.renderOilInfo, this));
