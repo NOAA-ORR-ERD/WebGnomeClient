@@ -254,10 +254,13 @@ define([
             map.save(null, {
                 success: _.bind(function(){
                     this.set('map', map);
-                    // remove any environment other than wind
+                    // remove any environment other than wind and water
                     var environment = this.get('environment');
                     var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+                    var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
                     environment.reset(winds);
+                    environment.add(water);
+                    
                     this.trigger('reset:location');
                 }, this)
             });
