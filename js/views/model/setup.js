@@ -78,6 +78,7 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            $('body').append(this.$el);
             if(webgnome.hasModel()){
                 this.render();
             } else {
@@ -94,8 +95,7 @@ define([
                 duration: webgnome.model.formatDuration(),
                 name: !_.isUndefined(webgnome.model.get('name')) ? webgnome.model.get('name') : ''
             });
-
-            $('body').append(this.$el.append(compiled));
+            this.$el.append(compiled);
             BaseView.prototype.render.call(this);
             this.initMason();
 
@@ -388,7 +388,6 @@ define([
             }
             var waterForm = new WaterForm(null, water);
             waterForm.on('hidden', waterForm.close);
-            waterForm.on('hidden', function(){webgnome.model.trigger('sync');});
             waterForm.on('save', function(){
                 webgnome.model.get('environment').add(water);
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});

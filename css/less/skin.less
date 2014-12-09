@@ -2,6 +2,7 @@ body{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Droid Sans';
+    background: #2c2c2e;
 }
 
 img{
@@ -318,6 +319,11 @@ nav.navbar{
     }
 }
 
+.page {
+    .clearfix;
+    background: white;
+}
+
 .page.home{
     .container{
         padding-top: 30px;
@@ -467,6 +473,10 @@ nav.navbar{
 
     .stage-2, .stage-3{
         display: none;
+    }
+
+    .stage-3:last-of-type{
+        margin-bottom: 30px;
     }
 
     .model-objects, .response-objects{
@@ -697,10 +707,8 @@ nav.navbar{
 }
 
 .page.model{
-    position: absolute;
-    top: 52px;
-    bottom: 0;
     width: 100%;
+    position: relative;
 
     > div{
         display: inline-block;
@@ -708,7 +716,7 @@ nav.navbar{
     .view-toggle{
         position: absolute;
         right: 0px;
-        top: -38px;
+        top: -37px;
         width: 200px;
 
         label{
@@ -1123,6 +1131,38 @@ nav.navbar{
             }
             .form-group{
                 margin-bottom: 0;
+            }
+        }
+    }
+}
+
+.footer{
+    padding: 15px 0;
+    background: #2c2c2e;
+    img{
+        width: 64px;
+        height: 64px;
+    }
+    .nav{
+        margin-top: 20px;
+        li{
+            a{
+                .transition(all .2s);
+                color: #aeaeae;
+                font-size: 11px;
+                padding: 5px 10px;
+
+                &.help{
+                    background: #3a3a3a;
+                    span{
+                        .glyphicon;
+                        .glyphicon-exclamation-sign;
+                    }
+                }
+
+                &:hover{
+                    background: #282828;
+                }
             }
         }
     }
