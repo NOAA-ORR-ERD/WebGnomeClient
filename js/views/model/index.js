@@ -75,6 +75,7 @@ define([
                 this.renderFate();
             } else {
                 this.renderTrajectory();
+                this.updateHeight();
             }
 
         },
@@ -95,7 +96,7 @@ define([
             var view = localStorage.getItem('view');
             if(view == 'trajectory'){
                 var win = $(window).height();
-                var height = win - 94 - 52
+                var height = win - 94 - 52;
                 this.$el.css('height', height + 'px');
             }
         },
