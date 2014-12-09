@@ -72,6 +72,7 @@ define([
         },
 
         close: function(){
+            console.log('close');
             this.locationView.close();
             FormModal.prototype.close.call(this);
         }
