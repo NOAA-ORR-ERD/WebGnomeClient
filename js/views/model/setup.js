@@ -646,6 +646,7 @@ define([
 
         clickLocation: function(){
             var locationForm = new LocationForm();
+            locationForm.on('hidden', locationForm.close);
             locationForm.on('loaded', _.bind(function(){
                 locationForm.close();
                 this.updateObjects();

@@ -5,7 +5,7 @@ define([
     'text!templates/default/notfound.html'
 ], function($, _, Backbone, NotFoundTemplate){
     var notFoundView = Backbone.View.extend({
-        className: 'container page notfound',
+        className: 'page notfound',
 
         initialize: function() {
             this.render();
