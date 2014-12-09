@@ -42,7 +42,8 @@ define([
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
 				'blur .geo-info': 'manualMapInput',
-                'click .delete': 'deleteSpill'
+                'click .delete': 'deleteSpill',
+                'show.bs.modal': 'renderOilInfo'
 			}, FormModal.prototype.events);
 		},
 

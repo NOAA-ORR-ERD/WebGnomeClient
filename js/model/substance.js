@@ -4,6 +4,10 @@ define([
     'model/base'
 ], function(_, Backbone, BaseModel){
     var gnomeSubstance = BaseModel.extend({
+        url: function(){
+            return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
+        },
+
         defaults: {
             name: 'ALAMO',
             api: 23.3,

@@ -177,6 +177,8 @@ define([
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
+            this.model.get('substance').set('adios_oil_id', this.$('.select').data('id'));
+            console.log(this.model.get('substance'));
         },
 
         viewSpecificOil: function(){
@@ -201,8 +203,12 @@ define([
         save: function(){
             this.oilName = this.$('.select').data('name');
             this.model.get('substance').set('name', this.oilName);
-            console.log(this.model);
-            FormModal.prototype.save.call(this);
+            this.model.get('substance').fetch({
+                success: _.bind(function(model){
+                    this.model.set('substance', model);
+                    FormModal.prototype.save.call(this);
+                }, this)
+            });
         },
 
         createSliders: function(minNum, maxNum, selector){
