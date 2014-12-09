@@ -12,6 +12,9 @@ define([
 
         initialize: function(){
             this.render();
+            $(window).on('resize', _.bind(function(){
+                this.updateHeight();
+            }, this));
         },
 
         events: {
@@ -39,6 +42,7 @@ define([
                 this.renderFate();
             } else {
                 this.renderTrajectory();
+                this.updateHeight();
             }
         },
 
@@ -84,6 +88,15 @@ define([
             }
             if(this.FateView){
                 this.FateView.close();
+            }
+        },
+
+        updateHeight: function(){
+            var view = localStorage.getItem('view');
+            if(view == 'trajectory'){
+                var win = $(window).height();
+                var height = win - 94 - 52
+                this.$el.css('height', height + 'px');
             }
         },
 

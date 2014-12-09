@@ -9,7 +9,9 @@ define([
         rendered: false,
 
         initialize: function(){
-            this.render();
+            if($('body > .footer').length < 1){
+                this.render();
+            }
         },
 
         render: function(){
