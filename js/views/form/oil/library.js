@@ -206,7 +206,8 @@ define([
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
-                    FormModal.prototype.save.call(this);
+                    this.hide();
+                    this.trigger('save');
                 }, this)
             });
         },
