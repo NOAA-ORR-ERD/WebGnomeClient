@@ -83,13 +83,31 @@ define([
 			});
 		},
 
+        parseTemperatures: function(oil){
+            var flashPointK = oil.get('flash_point_max_k');
+            var pourPointK = oil.get('pour_point_max_k');
+
+            var flashPointC = flashPointK - 273.15;
+            var flashPointF = (flashPointC * (9 / 5)) + 32;
+
+            var pourPointC = pourPointK - 273.15;
+            var pourPointF = (pourPointC * (9 / 5)) + 32;
+
+            return {'pour_point_max_c': pourPointC.toFixed(3), 
+                    'pour_point_max_f': pourPointF.toFixed(3), 
+                    'flash_point_max_c': flashPointC.toFixed(3), 
+                    'flash_point_max_f': flashPointF.toFixed(3)
+                   };
+        },
+
         renderOilInfo: function(){
             var oil = this.model.get('element_type').get('substance');
+            var temps = this.parseTemperatures(oil);
             if (!_.isUndefined(webgnome.model.get('spills').at(0))){
                 oil = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             }
             this.$('#oilInfo').html('');
-            this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil}));
+            this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil, temps: temps}));
         },
 
 		update: function(){

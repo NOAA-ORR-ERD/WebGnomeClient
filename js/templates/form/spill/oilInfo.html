@@ -14,16 +14,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-4">Pour Point:</label>
-            <div class="col-sm-3 form-control-static">
-                {{ oil.get('pour_point_max_k') }}
+            <label class="control-label col-sm-4">Pour Point &deg;F (&deg;C):</label>
+            <div class="col-sm-6 form-control-static">
+                {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-4">Flash Point:</label>
-            <div class="col-sm-3 form-control-static">
-                {% var flashPoint = oil.get('flash_point_max_k').toFixed(3); %}
-                {{ flashPoint }}
+            <label class="control-label col-sm-4">Flash Point &deg;F (&deg;C):</label>
+            <div class="col-sm-6 form-control-static">
+                {{ temps.flash_point_max_f }} ({{ temps.flash_point_max_c }})
             </div>
         </div>
         <div class="form-group">
