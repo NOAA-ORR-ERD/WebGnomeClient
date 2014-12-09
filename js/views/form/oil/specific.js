@@ -113,7 +113,7 @@ define([
                     oil[attr] = (oil[attr] * 100).toFixed(3);
                 }
                 // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
-                else if (attr === 'oil_seawater_interfacial_tension' || attr === 'oil_water_interfacial_tension') {
+                else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
                     oil[attr] = (oil[attr] * 1000).toFixed(3);
                 }
 			}
