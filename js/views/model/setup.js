@@ -647,7 +647,7 @@ define([
         clickLocation: function(){
             var locationForm = new LocationForm();
             locationForm.on('loaded', _.bind(function(){
-                locationForm.close();
+                locationForm.hide();
                 this.updateObjects();
                 this.configureWeatherers(this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim());
                 webgnome.model.on('sync', this.updateObjects, this);
