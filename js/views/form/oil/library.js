@@ -30,7 +30,7 @@ define([
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
-        initialize: function(elementModel, options){
+        initialize: function(options, elementModel){
             this.oilTable = new OilTable();
             this.model = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
