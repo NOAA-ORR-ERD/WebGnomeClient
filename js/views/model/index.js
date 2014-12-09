@@ -73,6 +73,7 @@ define([
             this.reset();
             if(view == 'fate'){
                 this.renderFate();
+                this.$el.css('height', 'auto');
             } else {
                 this.renderTrajectory();
                 this.updateHeight();
