@@ -194,7 +194,9 @@ define([
         },
 
         close: function(){
-            this.specificOil.close();
+            if(this.specificOil){
+                this.specificOil.close();
+            }
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
