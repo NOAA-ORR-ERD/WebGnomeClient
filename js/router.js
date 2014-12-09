@@ -9,9 +9,10 @@ define([
     'views/model/setup',
     'views/model/index',
     'views/tests/index',
-    'views/default/adios'
+    'views/default/adios',
+    'views/default/footer'
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, FooterView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -31,6 +32,7 @@ define([
             }
             this.views = [];
             if(callback) callback.apply(this, args);
+            this.views.push(new FooterView());
         },
 
         index: function(){
