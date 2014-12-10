@@ -16,8 +16,8 @@ define([
                 'temperature': 'F',
                 'salinity': 'psu',
                 'sediment': 'mg/l',
-                'wave_height': 'm',
-                'fetch': 'm',
+                'wave_height': 'ft',
+                'fetch': 'mi',
                 'kinematic_viscosity': 'm^2/s',
                 'density': 'kg/m^3'
             },

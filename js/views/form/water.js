@@ -31,6 +31,7 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
+            this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
 
             if (this.model.get('fetch')){
                 this.$('#data-source').val('fetch');
