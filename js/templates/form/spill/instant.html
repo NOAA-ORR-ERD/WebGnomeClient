@@ -70,19 +70,11 @@
             </div>
         {% } %}
    	</div>
+    <div id="oilInfo"></div>
     {% if (showGeo){ %}
         <div id="spill-form-map" class="map"></div>
     {% } %}
-    <div id="oilInfo"></div>
     <div class="form-group">
-        <div class="col-sm-3">
-            <a class="btn btn-default oilSelect">
-                Select Oil
-            </a>
-        </div>
-        {% if (disabled){ %}
-            <div class="col-sm-3">You must select the oil from the first spill form</div>
-        {% } %}
         {% if (showGeo){ %}
             <div class="col-sm-6">
                 <a class="pull-right btn btn-default locationSelect">

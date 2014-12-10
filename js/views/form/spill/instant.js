@@ -50,7 +50,6 @@ define([
                 disabled: disabled
             });
             BaseSpillForm.prototype.render.call(this, options);
-            this.renderOilInfo();
             this.$('.slider').slider({
                 min: 0,
                 max: 5,

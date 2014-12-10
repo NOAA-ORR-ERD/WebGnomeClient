@@ -117,7 +117,6 @@ define([
                     oil[attr] = (oil[attr] * 1000).toFixed(3);
                 }
 			}
-            console.log(oil);
 			return oil;
 		}
 
