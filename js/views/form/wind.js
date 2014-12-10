@@ -23,7 +23,8 @@ define([
                 'click tr': 'modifyTimeseriesEntry',
                 'click td span': 'removeTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
-                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap'
+                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
+                'shown.bs.modal': 'rendered'
             }, FormModal.prototype.events);
         },
 
