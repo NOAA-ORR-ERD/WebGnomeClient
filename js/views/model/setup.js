@@ -66,7 +66,7 @@ define([
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
                 'click .location .add': 'clickLocation',
-                'click .risk .run': 'clickRisk',
+                'click .resources .run-risk': 'clickRisk',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
                 'click .response .single .trash': 'deleteResponse',

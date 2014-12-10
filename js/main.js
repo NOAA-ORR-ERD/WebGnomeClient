@@ -44,7 +44,7 @@ require.config({
         outlayer: 'lib/outlayer/',
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         fabric: 'lib/fabric/dist/fabric',
-        gauge: 'lib/gauge/index'
+        gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos'
     },
     shim: {

@@ -138,7 +138,11 @@ define([
                 var et = model.get('element_type');
                 var s = et.get('substance');
                 // TODO: figure out how multiple densities may correspond to one spill volume.
-                var rho = s.densities[0].kg_m_3;
+                var densities = s.get('densities');
+                var rho = 0;
+                $.each(densities, function(i, density) {
+                    rho = density.kg_m_3;
+                });
                 massTotal += (a*rho);
             });
 
