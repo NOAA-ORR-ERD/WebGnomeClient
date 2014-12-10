@@ -1,0 +1,21 @@
+<div class="col-md-8">
+    <div class="panel complete {% if(!enabled){ %} disabled {% } %}">
+        <div class="panel-heading">
+            <div class="add oil-select" title="Edit Substance"></div>
+            <span class="locked" title="Only a single substance is supported currently. Please refere to the first spill to change the substance.">Editing Disabled</span>
+            Released Substance
+        </div>
+        <div class="panel-body">
+            <div><label>Name:</label> {{ name }}</div>
+            <div><label>API:</label> {{ api }}</div>
+            <div><label>Pour Point &deg;F (&deg;C):</label> {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})</div>
+            <div><label>Flash Point &deg;F (&deg;C):</label> {{ temps.flash_point_max_f }} ({{ temps.flash_point_max_c }})</div>
+            <div>
+                <label>Categories: </label>
+                {% for(c in categories){ %}
+                    <div class="label label-warning">{{ categories[c] }}</div>
+                {% } %}
+            </div>
+        </div>
+    </div>
+</div>

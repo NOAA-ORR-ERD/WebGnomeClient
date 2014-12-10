@@ -145,6 +145,11 @@ img{
     .panel-heading{
         border-radius: 0;
     }
+
+    .panel-body{
+        // border-top: 1px solid #d7d7d7;
+        border-top: 1px solid white;
+    }
 }
 
 .chart{
@@ -1192,6 +1197,108 @@ nav.navbar{
     .sub-title{
         color: #ccc;
         margin-left: 15px
+    }
+
+    .panel{
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background: #efefef;
+
+        &.complete{
+            .panel-heading{
+                .add{
+                    .glyphicon-pencil;
+
+                }
+
+                .state{
+                    .glyphicon-ok;
+                }
+            }
+
+            &:hover{
+                .panel-heading{
+                    .state{
+                        color: rgba(18, 129, 0, 0.57);
+                    }
+                }
+            }
+        }
+
+        &.disabled{
+            .panel-heading{
+                .add{
+                    display: none;
+                }
+                .locked{
+                    display: block;
+                }
+            }
+        }
+
+        &:hover{
+            .panel-heading{
+                > div{
+                    color: #a1a1a1;
+                }
+
+                .add:hover{
+                    color: #666;
+                }
+                
+                .state{
+                    color: rgba(176, 13, 0, 0.57)
+                }
+            }
+        }
+
+        .panel-heading{
+            border: 0;
+            border-radius: 0;
+            padding-right: 10px;
+            background: #efefef;
+
+            > div{
+                .glyphicon;
+                top: 0;
+                font-size: 17px;
+                height: 20px;
+                width: 20px;
+                color: #BEBEBE;
+                float: right;
+                .transition(all .2s);
+                text-align: center;
+            }
+            
+            .locked {
+                .pull-right;
+                .label;
+                .label-danger;
+                display: none;
+                margin-top: 2px;
+            }
+
+            .add{
+                .glyphicon-plus;
+                cursor: pointer;
+            }
+
+            .state{
+                .glyphicon-warning-sign;
+                margin-right: 10px;
+
+                &.complete{
+                    .glyphicon-ok-sign;
+                    color: green;
+                }
+
+                &.optional{
+                    .glyphicon-info-sign;
+                    color: #0099ff;                  
+                }
+            }
+        }
     }
 
     .delete {

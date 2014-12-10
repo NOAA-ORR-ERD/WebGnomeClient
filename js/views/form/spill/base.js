@@ -5,13 +5,13 @@ define([
 	'views/modal/form',
 	'views/form/oil/library',
 	'views/default/map',
-    'text!templates/form/spill/oilInfo.html',
+    'text!templates/form/spill/substance.html',
 	'nucos',
 	'ol',
 	'moment',
     'sweetalert',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoTemplate, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -36,14 +36,13 @@ define([
 
 		events: function(){
 			return _.defaults({
-				'click .oilSelect': 'elementSelect',
-                'click .oilName': 'elementSelect',
+				'click .oil-select': 'elementSelect',
 				'click .locationSelect': 'locationSelect',
 				'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
 				'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderOilInfo'
+                'show.bs.modal': 'renderSubstanceInfo'
 			}, FormModal.prototype.events);
 		},
 
@@ -75,41 +74,41 @@ define([
 			} else {
 				this.locationSelect();
 			}
-            if (this.oilSelectDisabled()){
-                this.$('.oilSelect').attr('disabled', true);
-                this.$('#geoButton').removeClass('col-sm-9');
-                this.$('#geoButton').addClass('col-sm-6');
-            }
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
 		},
 
-        parseTemperatures: function(oil){
-            var flashPointK = oil.get('flash_point_max_k');
-            var pourPointK = oil.get('pour_point_max_k');
-
-            var flashPointC = flashPointK - 273.15;
-            var flashPointF = (flashPointC * (9 / 5)) + 32;
-
-            var pourPointC = pourPointK - 273.15;
-            var pourPointF = (pourPointC * (9 / 5)) + 32;
-
-            return {'pour_point_max_c': pourPointC.toFixed(3), 
-                    'pour_point_max_f': pourPointF.toFixed(3), 
-                    'flash_point_max_c': flashPointC.toFixed(3), 
-                    'flash_point_max_f': flashPointF.toFixed(3)
-                   };
-        },
-
-        renderOilInfo: function(){
-            var oil = this.model.get('element_type').get('substance');
-            var temps = this.parseTemperatures(oil);
+        renderSubstanceInfo: function(){
+            var substance, enabled = true;
             if (!_.isUndefined(webgnome.model.get('spills').at(0))){
-                oil = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+                var first_spill = webgnome.model.get('spills').at(0);
+                substance = first_spill.get('element_type').get('substance');
+                if(first_spill.get('id') != this.model.get('id')){
+                    enabled = false;
+                }
+            } else {
+                substance = this.model.get('element_type').get('substance');
+                enabled = true;
             }
+            
+            var compiled = _.template(SubstanceTemplate, {
+                name: substance.get('name'),
+                api: Math.round(substance.get('api') * 1000) / 1000,
+                temps: substance.parseTemperatures(),
+                categories: substance.parseCategories(),
+                enabled: enabled
+            });
             this.$('#oilInfo').html('');
-            this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil, temps: temps}));
+            this.$('#oilInfo').html(compiled);
+
+            this.$('#oilInfo .add, #oilInfo .locked').tooltip({
+                delay: {
+                    show: 500,
+                    hide: 100
+                },
+                container: '.modal-body'
+            });
         },
 
 		update: function(){
@@ -128,7 +127,7 @@ define([
 			var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
 			oilLibraryView.render();
 			oilLibraryView.on('save', _.bind(this.show, this));
-            oilLibraryView.on('save', _.bind(this.renderOilInfo, this));
+            oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
 			oilLibraryView.on('hidden', _.bind(this.show, this));
             oilLibraryView.on('hidden', oilLibraryView.close);
 		},
