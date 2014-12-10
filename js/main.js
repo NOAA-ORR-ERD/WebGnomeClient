@@ -11,7 +11,6 @@ require.config({
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
-        geolib: 'lib/geolib/dist/geolib',
         text: 'lib/requirejs-text/text',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
@@ -31,6 +30,10 @@ require.config({
         flotcrosshair: 'lib/flot/jquery.flot.crosshair',
         flotstack: 'lib/flot/jquery.flot.stack',
         flotpie: 'lib/flot/jquery.flot.pie',
+        flotfillarea: 'lib/flotfillarea/jquery.flot.fillarea',
+        flotselect: 'lib/flot/jquery.flot.selection',
+        flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
+        JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
         'doc-ready': 'lib/doc-ready/',
@@ -42,7 +45,7 @@ require.config({
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index'
-        // nucos: 'lib/nucos/nucos'
+        nucos: 'lib/nucos/nucos'
     },
     shim: {
         jquery: {
@@ -60,6 +63,10 @@ require.config({
         flotcrosshair: ['flot'],
         flotstack: ['flot'],
         flotpie: ['flot'],
+        flotfillarea: ['flot'],
+        flotselect: ['flot'],
+        flotgantt: ['JUMFlotLib'],
+        JUMFlotLib: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'
@@ -74,9 +81,6 @@ require.config({
         chosen: {
             deps: ['jquery'],
             exports: 'jQuery.fn.chosen'
-        },
-        geolib: {
-            exports: 'geolib'
         },
         sweetalert: {
             exports: 'swal'

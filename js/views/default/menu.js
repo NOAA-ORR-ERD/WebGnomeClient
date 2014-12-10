@@ -86,6 +86,7 @@ define([
             event.preventDefault();
             webgnome.model = null;
             webgnome.router.navigate('', true);
+            localStorage.setItem('prediction', null);
             webgnome.router.navigate('setup', true);
         },
 

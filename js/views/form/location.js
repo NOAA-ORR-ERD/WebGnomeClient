@@ -19,6 +19,7 @@ define([
 
             this.LocationView = LocationView.extend({
                 load: function(options){
+                    this.loading = true;
                     this.trigger('load');
                     webgnome.model.resetLocation();
                     var locationModel = new GnomeLocation({id: options.slug});
@@ -28,6 +29,7 @@ define([
                                 success: _.bind(function(){
                                     webgnome.model.setup(_.bind(function(){
                                         this.trigger('loaded');
+                                        this.loading = false;
                                     }, this));
                                 }, this)
                             });
@@ -41,7 +43,8 @@ define([
         events: function(){
             return _.defaults({
                 'show.bs.modal': 'renderSubview',
-                'shown.bs.modal': 'updateMapSize'
+                'shown.bs.modal': 'updateMapSize',
+                'hidden.bs.modal': 'close'
             }, FormModal.prototype.events);
         },
 
@@ -60,7 +63,9 @@ define([
         },
 
         handoff: function(){
-            this.hide();
+            if(!this.locationView.loading){
+                this.hide();
+            }
         },
 
         loaded: function(){

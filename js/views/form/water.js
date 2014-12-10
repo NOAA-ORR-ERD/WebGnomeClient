@@ -2,10 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
     'text!templates/form/water.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, WaterTemplate){
+], function($, _, Backbone, module, FormModal, WaterTemplate){
     var waterForm = FormModal.extend({
         className: 'modal fade form-modal model-form',
         title: 'Water Properties',
@@ -13,11 +14,11 @@ define([
         events: function(){
             return _.defaults({
                 'change select': 'revealManualInputs',
-                'shown.bs.modal': 'triggerInputs'
             }, FormModal.prototype.events);
         },
 
         initialize: function(options, model){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
         },
@@ -67,6 +68,11 @@ define([
             temp += 273.15;
 
             return temp;
+        },
+
+        ready: function(){
+            FormModal.prototype.ready.call(this);
+            this.triggerInputs();
         },
 
         triggerInputs: function(){

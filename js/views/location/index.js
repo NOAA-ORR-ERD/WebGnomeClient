@@ -8,7 +8,7 @@ define([
     'views/wizard/location'
 ], function($, _, Backbone, ol, olMapView, LocationsTemplate, LocationWizard){
     var locationsView = Backbone.View.extend({
-        className: 'container page locations',
+        className: 'page locations',
         mapView: null,
         popup: null,
 

@@ -2,23 +2,28 @@
     <div class="col-md-12"><h2>Setup Your Model</h2></div>
     <div class="col-md-6">
         <div class="panel-primary panel">
-            <div class="panel-heading">General Model Info</div>
+            <div class="panel-heading">Incident</div>
             <div class="panel-body">
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-4 control-label" for="name">Incident Name</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="name" name="name">                        
+                            <input type="text" class="form-control" id="name" name="name" value="{{ name }}">                        
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-4 control-label" for="start_time">Start Time</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control date" id="start_time" value="{{ start_time }}" name="start">                        
-                        </div>
+                            <div class="input-group date">
+                                <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
+                                <span class="input-group-addon">
+                                    <i></i>
+                                </span>
+                            </div>
+                        </div>                        
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Duration</label>
+                        <label class="col-sm-4 control-label">Max Duration</label>
                         <div class="col-sm-3">
                             <label class="control-label" for="days">Day(s)</label>
                             <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}">
@@ -59,10 +64,10 @@
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container stage-2">
     <div class="col-md-12"><h4>Model</h3></div>
 </div>
-<div class="container">
+<div class="container stage-2">
     <div class="model-objects">
         <div class="col-md-3 spill object">
             <div class="panel panel-default">
@@ -106,28 +111,28 @@
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container stage-3">
     <div class="response-objects">
         <div class="col-md-12"><h4>Response</h3></div>
-        <div class="col-md-3 risk object">
+        <div class="col-md-3 response">
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="glyphicon-random run"></div>
-                    Resources at Risk
+                <div class="panel-heading"><div class="add"></div><div class="state optional"></div>
+                Response Options</div>
+                <div class="panel-body">
                 </div>
                 <div class="panel-body"></div>
             </div>
         </div>
-        <div class="col-md-4 response">
+        <div class="col-md-3 resources">
             <div class="panel panel-default">
-                <div class="panel-heading"><div class="state optional"></div>Response Options/Beaching</div>
+                <div class="panel-heading"><div class="state optional"><div class="glyphicon-random run"></div></div>Resources at Risk</div>
                 <div class="panel-body">
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container stage-3">
     <div class="col-md-12">
         <a href="#" class="eval btn btn-primary">Evaluate Model</a>
     </div>

@@ -104,7 +104,7 @@ define([
                         ok(!_.isUndefined(gnomemodel.get('id')), 'model was created');
                         spill = new GnomeSpill();
                         spill.set('amount', '200');
-                        spill.set('units', 'cubic meters');
+                        spill.set('units', 'm^3');
                         spill.get('release').set('release_time', '2014-09-24T08:00:00');
                         spill.get('release').set('end_release_time', '2014-09-24T14:00:00');
                         spill.save(null, {

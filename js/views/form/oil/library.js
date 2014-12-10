@@ -30,9 +30,9 @@ define([
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
-        initialize: function(elementModel, options){
+        initialize: function(options, elementModel){
             this.oilTable = new OilTable();
-            this.elementModel = elementModel;
+            this.model = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
 
             this.loadingGif = new LoadingModal();
@@ -177,6 +177,7 @@ define([
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
+            this.model.get('substance').set('adios_oil_id', this.$('.select').data('id'));
         },
 
         viewSpecificOil: function(){
@@ -192,7 +193,9 @@ define([
         },
 
         close: function(){
-            this.specificOil.close();
+            if(this.specificOil){
+                this.specificOil.close();
+            }
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
@@ -200,10 +203,14 @@ define([
 
         save: function(){
             this.oilName = this.$('.select').data('name');
-            this.elementModel.set('substance', this.oilName);
-            this.elementModel.save();
-            console.log(this.elementModel);
-            FormModal.prototype.save.call(this);
+            this.model.get('substance').set('name', this.oilName);
+            this.model.get('substance').fetch({
+                success: _.bind(function(model){
+                    this.model.set('substance', model);
+                    this.hide();
+                    this.trigger('save');
+                }, this)
+            });
         },
 
         createSliders: function(minNum, maxNum, selector){

@@ -16,12 +16,14 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
-    'model/weatherers/dispersion'
+    'model/weatherers/dispersion',
+    'model/weatherers/burn',
+    'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, RiskModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, BurnWeatherer, SkimWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -47,7 +49,9 @@ define([
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
-                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer
+                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
+                'gnome.weatherers.cleanup.Burn': BurnWeatherer,
+                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
         },
 
@@ -252,10 +256,13 @@ define([
             map.save(null, {
                 success: _.bind(function(){
                     this.set('map', map);
-                    // remove any environment other than wind
+                    // remove any environment other than wind and water
                     var environment = this.get('environment');
                     var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+                    var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
                     environment.reset(winds);
+                    environment.add(water);
+                    
                     this.trigger('reset:location');
                 }, this)
             });
@@ -280,6 +287,7 @@ define([
                                         success: _.bind(function(model, response, options){
                                             this.get('weatherers').add(evaporation);
                                             var dispersion = new DispersionWeatherer();
+                                            dispersion.set('name', '_natural');
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);

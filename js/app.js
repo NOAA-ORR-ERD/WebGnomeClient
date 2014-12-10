@@ -20,15 +20,13 @@ define([
                 }
             });
 
-            this.config = JSON.parse(Package).config;
-
+            this.config = this.getConfig();
 
             // Filter json requestions to redirect them to the api server
             $.ajaxPrefilter('json', function(options){
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.config.api + options.url;
                 }
-                
             });
 
             // Use Django-style templates semantics with Underscore's _.template.
@@ -229,11 +227,35 @@ define([
                 }
             });
         },
+
         hasModel: function(){
             if(_.has(webgnome, 'model') && !_.isUndefined(webgnome.model) && _.isObject(webgnome.model) && !_.isUndefined(webgnome.model.get('id'))){
                 return true;
             }
             return false;
+        },
+
+        getConfig: function(){
+            var config = {};
+            var sets = JSON.parse(Package).config;
+            var domains = _.keys(sets);
+            var loc = window.location.href.split('/')[2].replace(/:.*/, '');
+            for(var set in domains){
+                var dset = domains[set].split(',');
+                if(dset.indexOf(loc) != -1){
+                    var keys = _.keys(sets[domains[set]]);
+                    for(var attr in keys){
+                        config[keys[attr]] = sets[domains[set]][keys[attr]];
+                    }
+                }
+            }
+
+            var defaults = _.keys(sets['*']);
+            for(var attr in defaults){
+                config[defaults[attr]] = sets['*'][defaults[attr]];
+            }
+
+            return config;
         },
         
         validModel: function(){

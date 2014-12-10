@@ -1,7 +1,7 @@
 <div id="specificOilContainer"> 
     <div class="row">
     	<div class="col-md-12">
-    		<h4>{{ data.imported.oil_name }}</h4>
+    		<h4>{{ data.name }}</h4>
     	</div>
     </div>
     <div>
@@ -41,12 +41,11 @@
     				</div>
     				<div class="col-md-12">
     					<div><label>Synonyms:</label>
-                            {% if (!data.imported.synonyms){ %}
-                                --
-                            {% } %} 
-    						{% for (var i = 0; i < data.imported.synonyms.length; i++){ %}
-    							{{ data.imported.synonyms[i].name }}
-    						{% } %}
+                            {% if (data.synonyms){ %}
+        						{% for (var i = 0; i < data.synonyms.length; i++){ %}
+        							{{ data.synonyms[i].name }}
+        						{% } %}
+                            {% } %}
     					</div>
     				</div>
     				<div class="col-md-12">
@@ -61,7 +60,7 @@
     		<div class="tab-pane" id="properties">
     			<div class="row">
     				<div class="col-md-12">
-    					<div><label>API:</label> {{ data.imported.api }}</div>
+    					<div><label>API:</label> {{ data.api }}</div>
     				</div>
     				<div class="col-md-12">
     					<div><label>Pour Point:</label> {{ data.pour_point_min_k }} {{ data.pour_point_max_k }} </div>
@@ -81,16 +80,16 @@
             								<th>Reference Temperature &deg;C (&deg;F)</th>
             								<th>Weathering (%)</th>
             							</tr>
-            						{% for (var i = 0; i < data.imported.kvis.length; i++){ %}
-            							{% var centiStokes = (data.imported.kvis[i].m_2_s * 1000000).toFixed(3); %}
-                                        {% if (_.isNumber(data.imported.kvis[i].weathering)) { %}
-                                            {% var viscosityWeather = (data.imported.kvis[i].weathering * 100).toFixed(3); %}
+            						{% for (var i = 0; i < data.kvis.length; i++){ %}
+            							{% var centiStokes = (data.kvis[i].m_2_s * 1000000).toFixed(3); %}
+                                        {% if (_.isNumber(data.kvis[i].weathering)) { %}
+                                            {% var viscosityWeather = (data.kvis[i].weathering * 100).toFixed(3); %}
                                         {% } else { %}
                                             {% var viscosityWeather = '--' %}
                                         {% } %}
             							<tr>
             								<td>{{ centiStokes }}</td>
-            								<td>{{ data.imported.kvis[i].ref_temp_k }} {{ data.imported.kvis[i].ref_temp_f }}</td>
+            								<td>{{ data.kvis[i].ref_temp_k }} {{ data.kvis[i].ref_temp_f }}</td>
             								<td>{{ viscosityWeather }}</td>
             							</tr>
             						{% } %}
@@ -105,7 +104,7 @@
                                 Density
                             </div>
                             <div class="panel-body">
-                                {% if (!data.imported.densities){ %}
+                                {% if (!data.densities){ %}
                                     <div>No Density Data on Record.</div>
                                 {% } else { %}
                                     <table class="table">
@@ -114,16 +113,16 @@
                                             <th>Reference Temperature &deg;C (&deg;F)</th>
                                             <th>Weathering (%)</th>
                                         </tr>
-                                    {% for (var i = 0; i < data.imported.densities.length; i++){ %}
-                                        {% var density = (data.imported.densities[i].kg_m_3 / 1000).toFixed(3); %}
-                                        {% if (_.isNumber(data.imported.densities[i].weathering)) { %}
-                                            {% var densityWeather = (data.imported.densities[i].weathering * 100).toFixed(3); %}
+                                    {% for (var i = 0; i < data.densities.length; i++){ %}
+                                        {% var density = (data.densities[i].kg_m_3 / 1000).toFixed(3); %}
+                                        {% if (_.isNumber(data.densities[i].weathering)) { %}
+                                            {% var densityWeather = (data.densities[i].weathering * 100).toFixed(3); %}
                                         {% } else { %}
                                             {% var densityWeather = '--'; %}
                                         {% } %}
                                         <tr>
                                             <td>{{ density }}</td>
-                                            <td>{{ data.imported.densities[i].ref_temp_k }} {{ data.imported.densities[i].ref_temp_f }}</td>
+                                            <td>{{ data.densities[i].ref_temp_k }} {{ data.densities[i].ref_temp_f }}</td>
                                             <td>{{ densityWeather }}</td>
                                         </tr>
                                     {% } %}
@@ -139,7 +138,7 @@
     			<div class="row">
                     <div class="col-md-12">
         				<h4>Distillation Cuts</h4>
-        				{% if (!data.imported.cuts){ %}
+        				{% if (!data.cuts){ %}
         					<div>No Distillation Cuts on Record.</div>
         				{% } else { %}
         					<table class="table">
@@ -149,14 +148,14 @@
         							<th>Vapor Temperature &deg;C (&deg;F)</th>
         							<th>Liquid Temperature &deg;C (&deg;F)</th>
         						</tr>
-        					{% for (var i = 0; i < data.imported.cuts.length; i++){ %}
+        					{% for (var i = 0; i < data.cuts.length; i++){ %}
         						{% var count = i + 1; %}
-        						{% var percentCut = (data.imported.cuts[i].fraction * 100).toFixed(3); %}
+        						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
         						<tr>
         							<td>{{ count }}</td>
         							<td>{{ percentCut }}</td>
-        							<td>{{ data.imported.cuts[i].vapor_temp_k }} {{ data.imported.cuts[i].vapor_temp_f }}</td>
-        							<td>{{ data.imported.cuts[i].liquid_temp_k }} {{ data.imported.cuts[i].liquid_temp_f }}</td>
+        							<td>{{ data.cuts[i].vapor_temp_k }} {{ data.cuts[i].vapor_temp_f }}</td>
+        							<td>{{ data.cuts[i].liquid_temp_k }} {{ data.cuts[i].liquid_temp_f }}</td>
         						</tr>
         					{% } %}
         					</table>
@@ -167,9 +166,9 @@
 
     		<div class="tab-pane" id="moreproperties">
     			<div class="row">
-					<div class="col-md-6"><label>Flash Point:</label> {{ data.imported.flash_point_min_k }} {{data.imported.flash_point_max_k }} </div>
-					<div class="col-md-6"><label>Emulsification Constant:</label> {{ data.imported.emuls_constant_min }} {{ data.imported.emuls_constant_max }}</div>
-    				<div class="col-md-12"><label>Adhesion:</label> {{ data.imported.adhesion }}</div>
+					<div class="col-md-6"><label>Flash Point:</label> {{ data.flash_point_min_k }} {{data.flash_point_max_k }} </div>
+					<div class="col-md-6"><label>Emulsification Constant:</label> {{ data.emuls_constant_min }} {{ data.emuls_constant_max }}</div>
+    				<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion }}</div>
 
                     <div class="col-md-12">
                         <div class="panel panel-default">
@@ -177,8 +176,8 @@
                                 Interfacial Tension (Dynes/cm)
                             </div>
                             <div class="panel-body">
-            					<div class="col-md-6"><label>Oil-Water:</label> {{ data.imported.oil_water_interfacial_tension_n_m }}</div>
-            					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.imported.oil_seawater_interfacial_tension_n_m }}</div>
+            					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension_n_m }}</div>
+            					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension_n_m }}</div>
                             </div>
                         </div>
                     </div>
@@ -188,8 +187,8 @@
                                 Metals (ppm)
                             </div>
                             <div class="panel-body">
-            					<div class="col-md-6"><label>Nickel:</label> {{ data.imported.nickel }}</div>
-            					<div class="col-md-6"><label>Vanadium:</label> {{ data.imported.vanadium }}</div>
+            					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel }}</div>
+            					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium }}</div>
                             </div>
                         </div>
                     </div>
@@ -199,14 +198,14 @@
                                 Group Analysis (weight %)
                             </div>
                             <div class="panel-body">
-            					<div class="col-md-6"><label>Aromatics:</label> {{ data.imported.aromatics }}</div>
-            					<div class="col-md-6"><label>Polars:</label> {{ data.imported.polars }}</div>
-                                <div class="col-md-6"><label>Resins:</label> {{ data.imported.resins }}</div>
-                                <div class="col-md-6"><label>Benzene:</label> {{ data.imported.benezene }}</div>
-                                <div class="col-md-6"><label>Saturates:</label> {{ data.imported.saturates }}</div>
-                                <div class="col-md-6"><label>Sulphur:</label> {{ data.imported.sulphur }}</div>
-                                <div class="col-md-6"><label>Paraffins:</label> {{ data.imported.paraffins }}</div>
-                                <div class="col-md-6"><label>Wax Content:</label> {{ data.imported.wax_content }}</div>
+            					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics }}</div>
+            					<div class="col-md-6"><label>Polars:</label> {{ data.polars }}</div>
+                                <div class="col-md-6"><label>Resins:</label> {{ data.resins }}</div>
+                                <div class="col-md-6"><label>Benzene:</label> {{ data.benezene }}</div>
+                                <div class="col-md-6"><label>Saturates:</label> {{ data.saturates }}</div>
+                                <div class="col-md-6"><label>Sulphur:</label> {{ data.sulphur }}</div>
+                                <div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins }}</div>
+                                <div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content }}</div>
                             </div>
                         </div>
                     </div>

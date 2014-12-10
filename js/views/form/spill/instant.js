@@ -2,20 +2,21 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill',
     'views/form/oil/library',
     'views/default/map',
-    'geolib',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView, geolib){
+], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
 
         initialize: function(options, spillModel){
+            this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             if (!_.isUndefined(options.model)){
                 this.model = options.model;
@@ -38,7 +39,7 @@ define([
 
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
-            var oilName = this.model.get('element_type').get('substance') ? this.model.get('element_type').get('substance') : '';
+            var disabled = this.oilSelectDisabled();
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
@@ -46,10 +47,10 @@ define([
                 showGeo: this.showGeo,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                oilName: oilName
+                disabled: disabled
             });
             BaseSpillForm.prototype.render.call(this, options);
-
+            this.renderOilInfo();
             this.$('.slider').slider({
                 min: 0,
                 max: 5,
@@ -76,14 +77,6 @@ define([
             var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
             var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
             var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
-
-            if (startLat.indexOf('°') !== -1){
-                startLat = geolib.sexagesimal2decimal(startLat);
-            }
-
-            if (startLon.indexOf('°') !== -1){
-                startLon = geolib.sexagesimal2decimal(startLon);
-            }
 
             var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
             var end_position = [parseFloat(endLon), parseFloat(endLat), 0];

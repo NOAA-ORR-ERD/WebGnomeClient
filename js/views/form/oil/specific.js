@@ -38,21 +38,22 @@ define([
                              'flash_point_min_k'
                              ];
 
-			for (attr in oil){
+			for (var attr in oil){
 
                 // When value of oil attribute is null
 
 				if (!oil[attr] && tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
-					oil[attr] = "--";				
+					oil[attr] = "--";
 				} else if (tempAttrs.indexOf(attr) !== -1){
+                    var str;
                     if (oil[attr]){
                         if (attr.indexOf('max') > -1){
-                            var str = attr.substring(0, attr.length - 6) + '_min_k';
+                            str = attr.substring(0, attr.length - 6) + '_min_k';
                             if (oil[str] === oil[attr]){
                                 oil[str] = '';
                             }
                         } else {
-                            var str = attr.substring(0, attr.length - 6) + '_max_k';
+                            str = attr.substring(0, attr.length - 6) + '_max_k';
                             if (oil[str] === oil[attr]){
                                 oil[str] = '';
                             }
@@ -62,12 +63,12 @@ define([
                         for (var i = 0; i < tempAttrs.length; i++){
                             if (attr === tempAttrs[i]){
                                 if (attr.indexOf('max') > -1){
-                                    var str = attr.substring(0, attr.length - 6) + '_min_k';
+                                    str = attr.substring(0, attr.length - 6) + '_min_k';
                                     if (oil[str] === oil[attr]){
                                         oil[str] = '';
                                     }
                                 } else {
-                                    var str = attr.substring(0, attr.length - 6) + '_max_k';
+                                    str = attr.substring(0, attr.length - 6) + '_max_k';
                                     if (oil[str] === oil[attr]){
                                         oil[str] = '';
                                     }
@@ -95,12 +96,12 @@ define([
                     } else {
                         // For loop that goes through array
     					for (var i = 0; i < oil[attr].length; i++){
-    						for (k in oil[attr][i]) {
+    						for (var k in oil[attr][i]) {
     							if (!oil[attr][i][k] && oil[attr][i] !== 'weathering'){
     								oil[attr][i][k] = "--";
     							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                     oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
-                                    k2 = k.substring(0, k.length - 2) + '_f';
+                                    var k2 = k.substring(0, k.length - 2) + '_f';
                                     oil[attr][i][k2] = '(' + this.cToF(oil[attr][i][k]).toFixed(3) + ')';
                                 }
     						}
@@ -110,12 +111,13 @@ define([
                 // Checks if oil attribute is one of the group analysis terms and if so converts to percent
                 else if (groupAnalysis.indexOf(attr) !== -1){
                     oil[attr] = (oil[attr] * 100).toFixed(3);
-                } 
+                }
                 // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
-                else if (attr === 'oil_seawater_interfacial_tension' || attr === 'oil_water_interfacial_tension') {
+                else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
                     oil[attr] = (oil[attr] * 1000).toFixed(3);
                 }
 			}
+            console.log(oil);
 			return oil;
 		}
 

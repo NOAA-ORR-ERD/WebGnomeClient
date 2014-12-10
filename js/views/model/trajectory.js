@@ -7,7 +7,7 @@ define([
     'views/default/map',
     'ol',
     'model/spill',
-    'views/form/spill',
+    'views/form/spill/continue',
     'model/step',
     'mousetrap',
     'jqueryui/slider',
@@ -57,6 +57,7 @@ define([
 
         spillListeners: function(){
             webgnome.model.get('spills').on('add', this.resetSpills, this);
+            webgnome.model.get('spills').on('change', this.resetSpills, this);
             webgnome.model.get('spills').on('remove', this.resetSpills, this);
         },
 
@@ -66,7 +67,25 @@ define([
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'basemap'
+                        name: 'basemap',
+                        type: 'base'
+                    }),
+                    new ol.layer.Tile({
+                        name: 'usgsbase',
+                        source: new ol.source.TileWMS({
+                            url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                            params: {'LAYERS': '0', 'TILED': true}
+                        }),
+                        visible: false,
+                        type: 'base'
+                    }),
+                    new ol.layer.Tile({
+                        name: 'noaanavcharts',
+                        source: new ol.source.TileWMS({
+                            url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                            params: {'LAYERS': '1', 'TILED': true}
+                        }),
+                        opacity: 0.7
                     })
                 ]
             });
@@ -80,6 +99,10 @@ define([
                         anchor: [0.5, 1.0],
                         src: '/img/spill-pin.png',
                         size: [32, 40]
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#3399CC',
+                        width: 1.25
                     })
                 })
             });
@@ -120,6 +143,8 @@ define([
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
                 }, this));
+                this.$('.layers input[type="radio"]').click(_.bind(this.toggleBase, this));
+                this.$('.radio #basemap').attr('checked', true);
                 this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
                 this.controls = {
                     'play': this.$('.controls .play'),
@@ -135,13 +160,16 @@ define([
             }
 
             this.contextualize();
-            
+            if(localStorage.getItem('advanced') === 'true'){
+                this.toggle();
+            }
+
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
         },
 
-        contract: function(){
+        toggle: function(){
             if(this.contracted === true){
                 this.$el.removeClass('contracted');
                 this.contracted = false;
@@ -160,10 +188,6 @@ define([
                 this.disableUI();
             } else {
                 this.enableUI();
-            }
-
-            if (localStorage.getItem('advanced') == 'true'){
-                this.contract();
             }
 
             // set the slider to the correct number of steps
@@ -362,24 +386,10 @@ define([
             Mousetrap.bind('left', _.bind(this.prev, this));
         },
 
-        toggle: function(offset){
-            offset = typeof offset !== 'undefined' ? offset : 0;
-
-            if(this.full){
-                this.full = false;
-                this.$el.css({width: this.width, paddingLeft: 0});
-            } else{
-                this.full = true;
-                this.$el.css({width: '100%', paddingLeft: offset});
-            }
-            this.ol.map.updateSize();
-        },
-
         renderMap: function(){
             // check if the model has a map, specifically a bna map that has a geojson output
             // if it does load it's geojson and put it in a layer on the map
-            // named modelmap
-                        
+            // named modelmap     
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                     // the map isn't rendered yet, so draw it before adding the layer.
@@ -413,6 +423,9 @@ define([
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.SpillGroupLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
+
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
                     }
                     if(this.ol.redraw === false){
                         this.renderSpills();
@@ -421,26 +434,60 @@ define([
             } else {
                 // if the model doens't have a renderable map yet just render the base layer
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    this.ol.render();
-                    this.graticule.setMap(this.ol.map);
-                    this.ol.map.addLayer(this.SpillIndexLayer);
-                    this.ol.map.addLayer(this.SpillGroupLayer);
-                    this.ol.map.render();
-                    this.resetSpills();
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
+                        this.ol.render();
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillGroupLayer);
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
                 }
+            }
+        },
+
+        toggleBase: function(event){
+            var layer = event.target.id;
+            if(layer){
+                this.ol.map.getLayers().forEach(function(el){
+                    if (layer === el.get('name')){
+                        if (layer === 'basemap' && this.checkedBase){
+                            el.setVisible(true);
+                        }
+                        if (layer === 'usgsbase' && this.checkedBase){
+                            el.setVisible(true);
+                        }
+                    } else if (el.get('name') === 'basemap' || el.get('name') === 'usgsbase'){
+                        el.setVisible(false);
+                    }
+                });
             }
         },
 
         toggleLayer: function(event){
             var layer = event.target.id;
-
-            if(layer){
+            if (layer !== 'basemap'){
                 this.ol.map.getLayers().forEach(function(el){
-                    if(el.get('name') == layer){
-                        if(el.getVisible()){
+                    if (layer == el.get('name')){
+                        if (el.getVisible()){
                             el.setVisible(false);
                         } else {
                             el.setVisible(true);
+                        }
+                    }
+                });
+            } else {
+                this.ol.map.getLayers().forEach(function(el){
+                    if (el.get('type') === 'base'){
+                        if (this.$('#basemap:checked').length === 1){
+                            this.checkedBase = true;
+                            el.setVisible(true);
+                        } else {
+                            this.checkedBase = false;
+                            el.setVisible(false);
                         }
                     }
                 });
@@ -456,7 +503,7 @@ define([
                 if(this.$('.on').hasClass('fixed')){
                     this.ol.map.un('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.un('click', this.addLineSpill, this);
+                    this.ol.map.removeInteraction(this.draw);
                 }
 
                 this.$('.on').toggleClass('on');
@@ -469,7 +516,7 @@ define([
                 if(this.$(e.target).hasClass('fixed')){
                     this.ol.map.on('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.on('click', this.addLineSpill, this);
+                    this.addLineSpill();
                 }
             }
         },
@@ -483,20 +530,23 @@ define([
             spills = webgnome.model.get('spills');
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
-                if(start_position.length > 2){
+                var end_position = spill.get('release').get('end_position');
+                var geom;
+                if(start_position.length > 2 && start_position[0] == end_position[0] && start_position[1] == end_position[1]){
                     start_position = [start_position[0], start_position[1]];
+                    geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+                } else {
+                    start_position = [start_position[0], start_position[1]];
+                    end_position = [end_position[0], end_position[1]];
+                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
                 }
-                var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 var feature = new ol.Feature({
                     geometry: geom,
                     spill: spill.get('id')
                 });
-
                 this.SpillIndexSource.addFeature(feature);
             }, this);
 
-            this.ol.map.on('pointermove', this.spillHover, this);
-            this.ol.map.on('click', this.spillClick, this);
         },
 
         resetSpills: function(){
@@ -506,33 +556,32 @@ define([
         },
 
         addLineSpill: function(e){
-            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-            coord.push(0);
-            this.spillCoords.push(coord);
-            if(this.spillCoords.length > 1){
+            this.draw = new ol.interaction.Draw({
+                source: this.SpillIndexSource,
+                type: 'LineString'
+            });
+            this.ol.map.addInteraction(this.draw);
+            this.draw.on('drawend', _.bind(function(e){
+                var spillCoords = e.feature.getGeometry().getCoordinates();
+                for (var i = 0; i < spillCoords.length; i++){
+                    spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
+                    spillCoords[i].push('0');
+                }
                 var spill = new GnomeSpill();
-                // add the dummy z-index thing
-                spill.get('release').set('start_position', this.spillCoords[0]);
-                spill.get('release').set('end_position', this.spillCoords[1]);
+                spill.get('release').set('start_position', spillCoords[0]);
+                spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
                 spill.get('release').set('release_time', webgnome.model.get('start_time'));
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-
-                spill.save(null, {
-                    validate: false,
-                    success: function(){
-                        var spillform = new SpillForm(null, spill);
-                        spillform.render();
-                        spillform.on('save', function(){
-                            webgnome.model.get('spills').add(spill);
-                            webgnome.model.save();
-                        });
-                        spillform.on('hidden', spillform.close);
-                    }
+                var spillform = new SpillForm({showMap: true}, spill);
+                spillform.render();
+                spillform.on('save', function(spill){
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.trigger('sync');
                 });
-
+                spillform.on('hidden', spillform.close);
                 this.toggleSpill();
 
-            }
+            }, this));
         },
 
         addPointSpill: function(e){
@@ -546,18 +595,13 @@ define([
             spill.get('release').set('release_time', webgnome.model.get('start_time'));
             spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
 
-            spill.save(null, {
-                validate: false,
-                success: function(){
-                    var spillform = new SpillForm(null, spill);
-                    spillform.render();
-                    spillform.on('save', function(){
-                        webgnome.model.get('spills').add(spill);
-                        webgnome.model.save();
-                    });
-                    spillform.on('hidden', spillform.close);
-                }
+            var spillform = new SpillForm({showMap: true}, spill);
+            spillform.render();
+            spillform.on('save', function(spill){
+                webgnome.model.get('spills').add(spill);
+                webgnome.model.trigger('sync');
             });
+            spillform.on('hidden', spillform.close);
 
             this.toggleSpill();
         },
@@ -590,11 +634,12 @@ define([
                 return false;
             });
             if(spill){
-                var spillform = new SpillForm(null, webgnome.model.get('spills').get(spill));
-                spillform.on('hidden', function(){
+                var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
+                spillform.on('hidden', spillform.close);
+                spillform.on('save', function(spill){
+                    webgnome.model.get('spills').trigger('change');
                     webgnome.model.trigger('sync');
                 });
-                spillform.on('hidden', spillform.close);
                 spillform.render();
             }
         },

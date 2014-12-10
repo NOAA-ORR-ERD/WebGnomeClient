@@ -15,7 +15,7 @@ define([
             'element_type': null,
             'name': 'Spill',
             'amount': 0,
-            'units': 'cubic meters'
+            'units': 'bbl'
         },
 
         model: {

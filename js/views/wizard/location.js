@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'sweetalert',
     'views/wizard/base',
     'model/gnome',
     'model/location',
@@ -12,7 +13,7 @@ define([
     'views/form/model',
     'views/form/wind',
     'views/modal/loading'
-], function($, _, Backbone, BaseWizard, GnomeModel,
+], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
     GeojsonOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
@@ -39,7 +40,11 @@ define([
 
         failed_load: function(){
             console.log('Location model failed to load');
-            alert('Location model failed to load.');
+            swal({
+                title: 'Failed to Load Location',
+                text: 'Something went wrong while loading the location model.',
+                type: 'error',
+            });
             this.loadingGif.hide();
         },
 
@@ -112,7 +117,11 @@ define([
 
         notfound: function(){
             console.log('location was not found');
-            alert('There was not a location found with that id.');
+            swal({
+                title: 'Location Not Found',
+                text: 'The requested location wasn\'t found on the server',
+                type: 'error',
+            });
             this.loadingGif.hide();
         }
     });

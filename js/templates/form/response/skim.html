@@ -1,0 +1,112 @@
+<form class="form-horizontal" role="form">
+
+	<div class="form-group">
+        <label class="col-sm-4 control-label" for="name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="name" class="form-control" value="{{ name }}">
+        </div>
+    </div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="datetime">Time of In-Situ Burn:</label>
+		<div class="col-sm-5">
+			<div class="input-group date">
+				<input type="text" id="datetime" class="form-control" value="{{ time }}">
+				<span class="input-group-addon">
+					<i></i>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="duration">Duration (hours):</label>
+		<div class="col-sm-4">
+			<input type="number" id="duration" class="form-control" value="{{ duration }}">
+		</div>
+	</div>
+
+	<div class="form-group">
+        <label class="control-label col-sm-4">Skimmer Efficiency:</label>
+        <div class="col-sm-8 col-sm-offset-1">
+            <div class="slider"></div>
+        </div>
+        <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>0%</sup></div>
+        <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>100%</sup></div>
+    </div>
+
+	<ul class="nav nav-tabs">
+	    <li class="amount active">
+	        <a href="#rate" data-toggle="tab">Recovery Rate</a>
+	    </li>
+	    <li class="constant">
+	        <a href="#amount" data-toggle="tab">Amount Recovered</a>
+	    </li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane active" id="rate">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="recovery-rate">Recovery Rate:</label>
+					<div class="col-sm-4">
+						<input type="text" id="recovery-rate" class="form-control" value="">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control" id="rate-units">
+							<option value="bbl/hr">
+								bbl/hr
+							</option>
+							<option value="gal/hr">
+								gal/hr
+							</option>
+							<option value="gal/min">
+								gal/min
+							</option>
+							<option value="m^3/hr">
+								m^3/hr
+							</option>
+							<option value="ton/hr">
+								tons/hr
+							</option>
+							<option value="metric ton/hr">
+								metric tons/hr
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane" id="amount">
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="recovery-amount">Recovery Amount:</label>
+					<div class="col-sm-4">
+						<input type="number" id="recovery-amount" class="form-control" value="">
+					</div>
+					<div class="col-sm-3">
+						<select class="form-control" id="amount-units">
+							<option value="m^3">
+								m^3
+							</option>
+							<option value="gal">
+								gal
+							</option>
+							<option value="bbl">
+								bbl
+							</option>
+							<option value="ton">
+								tons
+							</option>
+							<option value="metric ton">
+								metric tons
+							</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</form>

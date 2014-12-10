@@ -12,17 +12,14 @@ define([
 
         initialize: function(){
             this.render();
+            $(window).on('resize', _.bind(function(){
+                this.updateHeight();
+            }, this));
         },
 
         events: {
-            'click .resize': 'toggle',
             'click .view-toggle .toggle': 'switchView',
             'click .view-toggle label': 'switchView'
-        },
-
-        toggle: function(){
-            this.TreeView.toggle();
-            this.TrajectoryView.toggle(offset);
         },
 
         render: function(){
@@ -45,13 +42,14 @@ define([
                 this.renderFate();
             } else {
                 this.renderTrajectory();
+                this.updateHeight();
             }
         },
 
         renderTrajectory: function(){
             this.TreeView = new TreeView();
             this.TrajectoryView = new TrajectoryView();
-            this.TreeView.on('toggle', this.TrajectoryView.contract, this.TrajectoryView);
+            this.TreeView.on('toggle', this.TrajectoryView.toggle, this.TrajectoryView);
             this.$el.append(this.TreeView.$el).append(this.TrajectoryView.$el);
         },
 
@@ -75,8 +73,10 @@ define([
             this.reset();
             if(view == 'fate'){
                 this.renderFate();
+                this.$el.css('height', 'auto');
             } else {
                 this.renderTrajectory();
+                this.updateHeight();
             }
 
         },
@@ -90,6 +90,15 @@ define([
             }
             if(this.FateView){
                 this.FateView.close();
+            }
+        },
+
+        updateHeight: function(){
+            var view = localStorage.getItem('view');
+            if(view == 'trajectory'){
+                var win = $(window).height();
+                var height = win - 94 - 52;
+                this.$el.css('height', height + 'px');
             }
         },
 
