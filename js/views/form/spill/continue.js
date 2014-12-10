@@ -212,7 +212,7 @@ define([
                     this.$('#amount-tooltip').text(bottom + ' - ' + top);
                 }
             }
-            
+            this.model.set('amount_uncertainty_scale', value);
         },
 
         updateRateSlide: function(ui){

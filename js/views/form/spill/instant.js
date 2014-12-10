@@ -112,7 +112,7 @@ define([
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
-            
+            this.model.set('amount_uncertainty_scale', value);
         }
 
     });
