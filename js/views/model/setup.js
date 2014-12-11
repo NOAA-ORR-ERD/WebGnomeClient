@@ -333,7 +333,7 @@ define([
                 this.$('.wind .panel').addClass('complete');
                 if(wind.get('timeseries').length == 1){
                     var windSpeed;
-                    if (wind.get('speed_uncertainty_scale') == 0) {
+                    if (wind.get('speed_uncertainty_scale') === 0) {
                         windSpeed = wind.get('timeseries')[0][1][0];
                     } else {
                         windSpeed = this.windSpeedParse(wind);
