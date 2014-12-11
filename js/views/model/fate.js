@@ -176,22 +176,20 @@ define([
 
         timelineHover: function(e, pos, item){
             if(!this.renderPiesTimeout){
-                this.pos = pos;
                 this.renderPiesTimeout = setTimeout(_.bind(function(){
-                    this.renderPies();
+                    this.renderPies(this.dataset, pos);
                 }, this), 50);
             }
         },
 
-        renderPies: function(){
+        renderPies: function(dataset, pos){
             this.renderPiesTimeout = null;
             if(this.$('#budget-graph:visible .timeline .chart').length != 1){
                 return;
             }
             
             var i, j;
-            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
-            var pos = this.pos;
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -228,12 +226,12 @@ define([
 
         getPieData: function(pos, dataset, key){
             d = [];
-            for (i = 0; i < dataset.length; ++i) {
+            for (var i = 0; i < dataset.length; ++i) {
 
                 var series = dataset[i];
 
-                for (j = 0; j < series[key].length; ++j) {
-                    if (series[key][j][0] > pos.x) {
+                for (var j = 0; j < series[key].length; ++j) {
+                    if (series[key][j][0] >= pos.x) {
                         break;
                     }
                 }
@@ -497,7 +495,6 @@ define([
         renderGraphViscosity: function(dataset){
             dataset = this.pluckDataset(dataset, ['viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            console.log(dataset);
             if(_.isUndefined(this.graphViscosity)){
                 this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
                     grid: {
