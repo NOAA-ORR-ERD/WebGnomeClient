@@ -16,7 +16,19 @@ define([
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
             'substance': null,
-            'initializers': []
+            'initializers': [
+                {
+                    'windage_range': [
+                         0.01,
+                         0.04
+                    ],
+                    'obj_type': 'gnome.spill.elements.InitWindages',
+                    'windage_persist': 900
+                },
+                {
+                    'obj_type': 'gnome.spill.elements.initializers.InitMassFromSpillAmount'
+                }
+            ]
         },
 
         validate: function(){
