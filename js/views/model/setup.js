@@ -312,14 +312,34 @@ define([
             windForm.render();
         },
 
+        // TODO: Change it so that we don't have to use a hard-coded value for the 
+        // max uncertainty value
+        windSpeedParse: function(wind){
+            var uncertainty = wind.get('speed_uncertainty_scale') * 5;
+            var speed = wind.get('timeseries')[0][1][0];
+
+            var bottom = parseInt(speed, 10) - parseInt(uncertainty, 10);
+            if (bottom < 0){
+                bottom = 0;
+            }
+            var top = parseInt(speed, 10) + parseInt(uncertainty, 10);
+            return (bottom + ' - ' + top);
+        },
+
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
                 var compiled;
                 this.$('.wind .panel').addClass('complete');
                 if(wind.get('timeseries').length == 1){
+                    var windSpeed;
+                    if (wind.get('speed_uncertainty_scale') == 0) {
+                        windSpeed = wind.get('timeseries')[0][1][0];
+                    } else {
+                        windSpeed = this.windSpeedParse(wind);
+                    }
                     compiled = _.template(WindPanelTemplate, {
-                        speed: wind.get('timeseries')[0][1][0],
+                        speed: windSpeed,
                         direction: wind.get('timeseries')[0][1][1],
                         units: wind.get('units')
                     });
