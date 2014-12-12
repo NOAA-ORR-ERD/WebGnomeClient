@@ -158,8 +158,10 @@ define([
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
-            }
-            else {
+            } else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
+                search.text = search.text.replace(/^.*(number|#).*$/, "no.");
+                this.oilTable.oilLib.search(search);
+            } else {
                 this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();
