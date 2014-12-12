@@ -243,34 +243,36 @@ define([
         },
 
 		locationSelect: function(){
-            this.mapRender();
-            var map = webgnome.model.get('map');
-            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(data){
-                    this.shorelineSource = new ol.source.GeoJSON({
-                        object: data,
-                        projection: 'EPSG:3857'
-                    });
-                    var extent = this.shorelineSource.getExtent();
-                    this.shorelineLayer = new ol.layer.Vector({
-                        source: this.shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
+            if (!this.mapShown){
+                this.mapRender();
+                var map = webgnome.model.get('map');
+                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                    map.getGeoJSON(_.bind(function(data){
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: data,
+                            projection: 'EPSG:3857'
+                        });
+                        var extent = this.shorelineSource.getExtent();
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
                             })
-                        })
-                    });
-                    if(this.spillMapView.map){
-                        var startPosition = _.initial(this.model.get('release').get('start_position'));
-                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                    }
+                        });
+                        if(this.spillMapView.map){
+                            var startPosition = _.initial(this.model.get('release').get('start_position'));
+                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
+                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
+                        }
 
-                }, this));
+                    }, this));
+                }
             }
 		},
 

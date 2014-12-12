@@ -95,7 +95,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateConstantSlide(ui);
@@ -111,6 +111,9 @@ define([
                     min: 0,
                     max: 5,
                     value: 0,
+                    create: _.bind(function(){
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                    }, this),
                     slide: _.bind(function(e, ui){
                         this.updateVariableSlide(ui);
                     }, this)
@@ -120,10 +123,6 @@ define([
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * variableSliderMax);
                 this.renderTimeseries();
             }, this), 1);
-            
-
-            //this.renderTimeseries();
-
         },
 
         rendered: function(){
@@ -231,6 +230,7 @@ define([
             } else {
                 value = this.$('#variable .slider').slider('value');
             }
+            this.$('#variable .tooltip-inner').text('+/- ' + value);
             var variableSliderMax = this.$('#variable .slider').slider("option", "max");
             this.model.set('speed_uncertainty_scale', value / parseFloat(variableSliderMax));
             this.renderTimeseries(value);
@@ -253,7 +253,7 @@ define([
                         bottom = 0;
                     }
                     var top = parseInt(speed, 10) + parseInt(value, 10);
-                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                    this.$('#constant .tooltip-inner').text(bottom + ' - ' + top);
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
                 this.model.set('speed_uncertainty_scale', value / parseFloat(constantSliderMax));
