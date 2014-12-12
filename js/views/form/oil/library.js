@@ -23,8 +23,8 @@ define([
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
-            formModalHash['change input:not(.chosen)'] = 'update';
-            formModalHash['keyup input:not(.chosen)'] = 'update';
+            formModalHash['change input:not(.chosen-search input)'] = 'update';
+            formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
             formModalHash['shown.bs.modal'] = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
@@ -162,6 +162,7 @@ define([
             else {
                 this.oilTable.oilLib.search(search);
             }
+            console.log("update ran");
             this.oilTable.render();
             this.triggerTableResize();
             this.$('.resultsLength').empty();
