@@ -15,8 +15,18 @@ define([
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
-
 		mapShown: false,
+
+        events: function(){
+            return _.defaults({
+                'click .oil-select': 'elementSelect',
+                'click #spill-form-map': 'update',
+                'contextmenu #spill-form-map': 'update',
+                'blur .geo-info': 'manualMapInput',
+                'click .delete': 'deleteSpill',
+                'show.bs.modal': 'renderSubstanceInfo'
+            }, FormModal.prototype.events);
+        },
 
         oilSelectDisabled: function(){
             if (_.isUndefined(webgnome.model.get('spills').at(0))){
@@ -33,18 +43,6 @@ define([
             }
             return true;
         },
-
-		events: function(){
-			return _.defaults({
-				'click .oil-select': 'elementSelect',
-				'click .locationSelect': 'locationSelect',
-				'click #spill-form-map': 'update',
-                'contextmenu #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput',
-                'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderSubstanceInfo'
-			}, FormModal.prototype.events);
-		},
 
 		initialize: function(options, spillModel){
 			FormModal.prototype.initialize.call(this, options);
@@ -69,7 +67,7 @@ define([
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
-			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
+			if (!this.showGeo) {
 				this.$('.map').hide();
 			} else {
 				this.locationSelect();
