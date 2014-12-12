@@ -162,7 +162,6 @@ define([
             else {
                 this.oilTable.oilLib.search(search);
             }
-            console.log("update ran");
             this.oilTable.render();
             this.triggerTableResize();
             this.$('.resultsLength').empty();
