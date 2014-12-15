@@ -34,9 +34,11 @@ define([
         },
 
         renderHelp: function(){
-            var button = '<div class="gnome-help" title="Click for help"></div>';
-            this.$('.modal-header h4').append(button);
-            this.$('.modal-header .gnome-help').tooltip();
+            if(this.$('.modal-header .gnome-help').length === 0){
+                var button = '<div class="gnome-help" title="Click for help"></div>';
+                this.$('.modal-header h4').append(button);
+                this.$('.modal-header .gnome-help').tooltip();
+            }
         },
 
         showHelp: function(){
