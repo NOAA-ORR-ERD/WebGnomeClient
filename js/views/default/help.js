@@ -53,7 +53,7 @@ define([
         logHelpful: function(e){
             var target;
             if (e.target.nodeName === 'SPAN'){
-               target = e.target.parentElement;
+                target = e.target.parentElement;
             } else {
                 target = e.target;
             }
