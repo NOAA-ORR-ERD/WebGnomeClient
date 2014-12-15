@@ -19,7 +19,7 @@ define([
 		},
 
         cToF: function(c){
-            return (c * (9/5)) + 32;
+            return (((c * (9/5)) + 32).toFixed(3));
         },
 
 		dataParse: function(oil){
@@ -58,7 +58,7 @@ define([
                                 oil[str] = '';
                             }
                         }
-                        oil[attr] = (oil[attr] - 273.15).toFixed(3) + ' &deg;C';
+                        oil[attr] = this.cToF((oil[attr] - 273.15).toFixed(3)) + ' &deg;F';
                     } else {
                         for (var i = 0; i < tempAttrs.length; i++){
                             if (attr === tempAttrs[i]){
@@ -102,7 +102,8 @@ define([
     							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                     oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
                                     var k2 = k.substring(0, k.length - 2) + '_f';
-                                    oil[attr][i][k2] = '(' + this.cToF(oil[attr][i][k]).toFixed(3) + ')';
+                                    oil[attr][i][k2] = this.cToF(oil[attr][i][k]).toString();
+                                    oil[attr][i][k] = '(' + oil[attr][i][k] + ')';
                                 }
     						}
     					}

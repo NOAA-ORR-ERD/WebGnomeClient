@@ -77,7 +77,7 @@
             						<table class="table">
             							<tr>
             								<th>Centistokes (cSt)</th>
-            								<th>Reference Temperature &deg;C (&deg;F)</th>
+            								<th>Reference Temperature &deg;F (&deg;C)</th>
             								<th>Weathering (%)</th>
             							</tr>
             						{% for (var i = 0; i < data.kvis.length; i++){ %}
@@ -89,7 +89,7 @@
                                         {% } %}
             							<tr>
             								<td>{{ centiStokes }}</td>
-            								<td>{{ data.kvis[i].ref_temp_k }} {{ data.kvis[i].ref_temp_f }}</td>
+            								<td>{{ data.kvis[i].ref_temp_f }} {{ data.kvis[i].ref_temp_k }}</td>
             								<td>{{ viscosityWeather }}</td>
             							</tr>
             						{% } %}
@@ -110,7 +110,7 @@
                                     <table class="table">
                                         <tr>
                                             <th>Density (g/cm^3)</th>
-                                            <th>Reference Temperature &deg;C (&deg;F)</th>
+                                            <th>Reference Temperature &deg;F (&deg;C)</th>
                                             <th>Weathering (%)</th>
                                         </tr>
                                     {% for (var i = 0; i < data.densities.length; i++){ %}
@@ -122,7 +122,7 @@
                                         {% } %}
                                         <tr>
                                             <td>{{ density }}</td>
-                                            <td>{{ data.densities[i].ref_temp_k }} {{ data.densities[i].ref_temp_f }}</td>
+                                            <td>{{ data.densities[i].ref_temp_f }} {{ data.densities[i].ref_temp_k }}</td>
                                             <td>{{ densityWeather }}</td>
                                         </tr>
                                     {% } %}
@@ -145,8 +145,8 @@
         						<tr>
         							<th>Cut #</th>
         							<th>Mass Percent (%)</th>
-        							<th>Vapor Temperature &deg;C (&deg;F)</th>
-        							<th>Liquid Temperature &deg;C (&deg;F)</th>
+        							<th>Vapor Temperature &deg;F (&deg;C)</th>
+        							<th>Liquid Temperature &deg;F (&deg;C)</th>
         						</tr>
         					{% for (var i = 0; i < data.cuts.length; i++){ %}
         						{% var count = i + 1; %}
@@ -154,8 +154,8 @@
         						<tr>
         							<td>{{ count }}</td>
         							<td>{{ percentCut }}</td>
-        							<td>{{ data.cuts[i].vapor_temp_k }} {{ data.cuts[i].vapor_temp_f }}</td>
-        							<td>{{ data.cuts[i].liquid_temp_k }} {{ data.cuts[i].liquid_temp_f }}</td>
+        							<td>{{ data.cuts[i].vapor_temp_f }} {{ data.cuts[i].vapor_temp_k }}</td>
+        							<td>{{ data.cuts[i].liquid_temp_f }} {{ data.cuts[i].liquid_temp_k }}</td>
         						</tr>
         					{% } %}
         					</table>
@@ -212,5 +212,8 @@
         		</div>
     		</div>
     	</div>
+        <div class="pull-right">
+            <sup>Calculated values are in italics</sup>
+        </div>
     </div>
 </div>
