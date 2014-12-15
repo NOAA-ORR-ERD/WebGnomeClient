@@ -41,7 +41,6 @@ define([
             // 'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial',
             'click .overview': 'overview',
             'click .faq': 'faq',
 
@@ -127,10 +126,6 @@ define([
         about: function(event){
             event.preventDefault();
             new AboutModal().render();
-        },
-
-        tutorial: function(event){
-
         },
 
         overview: function(event){
