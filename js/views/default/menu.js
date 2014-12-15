@@ -42,6 +42,8 @@ define([
 
             'click .about': 'about',
             'click .tutorial': 'tutorial',
+            'click .overview': 'overview',
+            'click .faq': 'faq',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
@@ -129,6 +131,16 @@ define([
 
         tutorial: function(event){
 
+        },
+
+        overview: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('overview', true);
+        },
+
+        faq: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('faq', true);
         },
 
         enableMenuItem: function(item){

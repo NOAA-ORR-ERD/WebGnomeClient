@@ -23,8 +23,8 @@ define([
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
-            formModalHash['change input:not(.chosen)'] = 'update';
-            formModalHash['keyup input:not(.chosen)'] = 'update';
+            formModalHash['change input:not(.chosen-search input)'] = 'update';
+            formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
             formModalHash['shown.bs.modal'] = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
@@ -158,8 +158,10 @@ define([
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
-            }
-            else {
+            } else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
+                search.text = search.text.replace(/^.*(number|#).*$/, "no.");
+                this.oilTable.oilLib.search(search);
+            } else {
                 this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();

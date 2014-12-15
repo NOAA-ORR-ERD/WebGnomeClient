@@ -15,8 +15,18 @@ define([
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
-
 		mapShown: false,
+
+        events: function(){
+            return _.defaults({
+                'click .oil-select': 'elementSelect',
+                'click #spill-form-map': 'update',
+                'contextmenu #spill-form-map': 'update',
+                'blur .geo-info': 'manualMapInput',
+                'click .delete': 'deleteSpill',
+                'show.bs.modal': 'renderSubstanceInfo'
+            }, FormModal.prototype.events);
+        },
 
         oilSelectDisabled: function(){
             if (_.isUndefined(webgnome.model.get('spills').at(0))){
@@ -33,18 +43,6 @@ define([
             }
             return true;
         },
-
-		events: function(){
-			return _.defaults({
-				'click .oil-select': 'elementSelect',
-				'click .locationSelect': 'locationSelect',
-				'click #spill-form-map': 'update',
-                'contextmenu #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput',
-                'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderSubstanceInfo'
-			}, FormModal.prototype.events);
-		},
 
 		initialize: function(options, spillModel){
 			FormModal.prototype.initialize.call(this, options);
@@ -69,7 +67,7 @@ define([
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
-			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
+			if (!this.showGeo) {
 				this.$('.map').hide();
 			} else {
 				this.locationSelect();
@@ -185,7 +183,7 @@ define([
                     this.$('#end-lon').val(endPoint[0]);
                     if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
                         var feature = this.source.forEachFeature(_.bind(function(feature){
-                                return feature;
+                            return feature;
                         }, this));
                         this.source.removeFeature(feature);
                         var point = startPoint;
@@ -224,7 +222,9 @@ define([
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                     }, this));
-                    this.source.removeFeature(feature);
+                    if (!_.isUndefined(feature)){
+                        this.source.removeFeature(feature);
+                    }
                     var point = _.initial(start);
                     point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
                     var feature = new ol.Feature(new ol.geom.Point(point));
@@ -241,34 +241,36 @@ define([
         },
 
 		locationSelect: function(){
-            this.mapRender();
-            var map = webgnome.model.get('map');
-            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(data){
-                    this.shorelineSource = new ol.source.GeoJSON({
-                        object: data,
-                        projection: 'EPSG:3857'
-                    });
-                    var extent = this.shorelineSource.getExtent();
-                    this.shorelineLayer = new ol.layer.Vector({
-                        source: this.shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
+            if (!this.mapShown){
+                this.mapRender();
+                var map = webgnome.model.get('map');
+                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                    map.getGeoJSON(_.bind(function(data){
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: data,
+                            projection: 'EPSG:3857'
+                        });
+                        var extent = this.shorelineSource.getExtent();
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
                             })
-                        })
-                    });
-                    if(this.spillMapView.map){
-                        var startPosition = _.initial(this.model.get('release').get('start_position'));
-                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                    }
+                        });
+                        if(this.spillMapView.map){
+                            var startPosition = _.initial(this.model.get('release').get('start_position'));
+                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
+                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
+                        }
 
-                }, this));
+                    }, this));
+                }
             }
 		},
 
