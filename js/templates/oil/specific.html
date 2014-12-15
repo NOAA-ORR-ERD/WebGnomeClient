@@ -145,8 +145,8 @@
         						<tr>
         							<th>Cut #</th>
         							<th>Mass Percent (%)</th>
-        							<th>Vapor Temperature &deg;C (&deg;F)</th>
-        							<th>Liquid Temperature &deg;C (&deg;F)</th>
+        							<th>Vapor Temperature &deg;F (&deg;C)</th>
+        							<th>Liquid Temperature &deg;F (&deg;C)</th>
         						</tr>
         					{% for (var i = 0; i < data.cuts.length; i++){ %}
         						{% var count = i + 1; %}
@@ -154,8 +154,8 @@
         						<tr>
         							<td>{{ count }}</td>
         							<td>{{ percentCut }}</td>
-        							<td>{{ data.cuts[i].vapor_temp_k }} {{ data.cuts[i].vapor_temp_f }}</td>
-        							<td>{{ data.cuts[i].liquid_temp_k }} {{ data.cuts[i].liquid_temp_f }}</td>
+        							<td>{{ data.cuts[i].vapor_temp_f }} {{ data.cuts[i].vapor_temp_k }}</td>
+        							<td>{{ data.cuts[i].liquid_temp_f }} {{ data.cuts[i].liquid_temp_k }}</td>
         						</tr>
         					{% } %}
         					</table>
