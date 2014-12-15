@@ -245,6 +245,11 @@ define([
         updateRateTooltip: function(){
             this.update();
             this.updateRateSlide();
+        },
+
+        close: function(){
+            this.model.off('ready', this.render, this)
+            BaseSpillForm.prototype.close.call(this);
         }
 
     });
