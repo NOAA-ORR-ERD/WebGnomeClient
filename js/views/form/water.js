@@ -62,7 +62,7 @@ define([
         },
 
         convertTemptoK: function(val, unit){
-            val = parseFloat(val, 10);
+            val = parseFloat(val);
             var temp = val;
             if (unit === 'F'){
                 temp = (5/9) * (val - 32) + 273.15;

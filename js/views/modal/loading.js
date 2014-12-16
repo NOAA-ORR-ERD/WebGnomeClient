@@ -10,7 +10,7 @@ define([
         size: 'sm',
         title: 'Loading...',
         body: _.template(LoadingTemplate),
-        buttons: '',
+        buttons: ''
     });
 
     return loadingModal;
