@@ -828,6 +828,7 @@ define([
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
+                webgnome.mass_balance = this.dataset;
             }
         },
 
