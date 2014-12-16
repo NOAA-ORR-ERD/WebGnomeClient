@@ -112,12 +112,20 @@ define([
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('.datetime').datetimepicker('show');
+            }, this));
         },
 
         showHelp: function(){
             var compiled = '<div class="gnome-help" title="Click for help"></div>';
             this.$('h2:first').append(compiled);
             this.$('h2:first .gnome-help').tooltip();
+        },
+
+        clickDate: function(){
+            this.$('.datetime').trigger('click');
+            console.log("calendar clicked");
         },
 
         initMason: function(){
