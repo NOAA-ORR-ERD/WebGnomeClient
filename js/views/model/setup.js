@@ -427,7 +427,7 @@ define([
                 var compiled;
                 this.$('.water .panel').addClass('complete');
                 compiled = _.template(WaterPanelTemplate, {
-                    temperature: water.get('temperature'),
+                    temperature: nucos.convert("Temperature", "K", water.get('units').temperature, water.get('temperature')).toFixed(3),
                     salinity: water.get('salinity'),
                     sediment: water.get('sediment'),
                     wave_height: water.get('wave_height'),

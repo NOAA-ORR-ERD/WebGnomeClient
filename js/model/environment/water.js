@@ -32,7 +32,7 @@ define([
                 return 'Sediment load must be greater than or equal to zero!';
             }
 
-            if(attrs.water_temp < 270.928 || attrs.water_temp > 308.706){
+            if(attrs.temperature < 270.928 || attrs.temperature > 293.15){
                 return 'Water temperature must be a reasonable degree.';
             }
         }

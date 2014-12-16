@@ -3,10 +3,11 @@ define([
     'underscore',
     'backbone',
     'module',
+    'nucos',
     'views/modal/form',
     'text!templates/form/water.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, FormModal, WaterTemplate){
+], function($, _, Backbone, module, nucos, FormModal, WaterTemplate){
     var waterForm = FormModal.extend({
         className: 'modal fade form-modal model-form',
         title: 'Water Properties',
@@ -25,7 +26,7 @@ define([
 
         render: function(options){
             this.body = _.template(WaterTemplate, {
-                water_temp: this.model.get('temperature')
+                water_temp: nucos.convert("Temperature", "K", this.model.get('units').temperature, this.model.get('temperature')).toFixed(3)
             });
 
             FormModal.prototype.render.call(this, options);
@@ -64,9 +65,10 @@ define([
             val = parseFloat(val, 10);
             var temp = val;
             if (unit === 'F'){
-                temp = (5/9) * (val - 32);
+                temp = (5/9) * (val - 32) + 273.15;
+            } else if (unit === 'C'){
+                temp += 273.15;
             }
-            temp += 273.15;
 
             return temp;
         },
@@ -101,7 +103,7 @@ define([
                 units.wave_height = this.$('#wave_height-units').val();
             }
             this.model.set('units', units);
-            this.model.set('temperature', this.$('#temp').val());
+            this.model.set('temperature', this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits').val()));
             this.model.set('salinity', this.$('.salinity:visible').val());
             this.model.set('sediment', this.$('.sediment:visible').val());
             if(!this.model.isValid()){

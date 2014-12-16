@@ -13,7 +13,7 @@ define([
 		},
 
 		render: function(){
-			var data = this.dataParse(this.model.attributes);
+			var data = this.dataParse(this.model);
 			var compiled = _.template(SpecificOilTemplate, {data: data});
 			$('.oil-form .modal-body').append(this.$el.html(compiled));
 		},
