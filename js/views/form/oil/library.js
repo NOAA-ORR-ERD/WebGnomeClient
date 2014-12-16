@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'chosen',
     'jqueryui/core',
     'model/oil/distinct',
@@ -10,7 +11,7 @@ define([
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html'
-], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+], function($, _, Backbone, module, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
@@ -26,11 +27,12 @@ define([
             formModalHash['change input:not(.chosen-search input)'] = 'update';
             formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
-            formModalHash['shown.bs.modal'] = 'triggerTableResize';
+            formModalHash['ready'] = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
         initialize: function(options, elementModel){
+            this.module = module;
             this.oilTable = new OilTable();
             this.model = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
