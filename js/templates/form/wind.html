@@ -16,6 +16,10 @@
             <div class="col-sm-7">
                 <div class="form-horizontal">
                     <div class="form-group">
+                        <div class="col-sm-5"><label for="constant-direction" class="control-label">Wind Direction:</label></div>
+                        <div class="col-sm-4"><input type="number" min="0" max="360" id="constant-direction" value="{{timeseries[0][1][1]}}" class="form-control"></div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-2"><label class="control-label" for="constant-speed">Speed:</label></div>
                         <div class="col-sm-4"><input type="number" min="1" id="constant-speed" class="form-control col-xs-3" value="{{timeseries[0][1][0]}}"></div>
                         <div class="col-sm-6">
@@ -25,10 +29,6 @@
                                 <option value="mph">miles / hour</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5"><label for="constant-direction" class="control-label">Wind Direction:</label></div>
-                        <div class="col-sm-4"><input type="number" min="0" max="360" id="constant-direction" value="{{timeseries[0][1][1]}}" class="form-control"></div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-12">
