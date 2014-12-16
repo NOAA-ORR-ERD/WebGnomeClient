@@ -28,6 +28,9 @@ define([
             if (attrs.salinity < 0 || attrs.salinity === ''){
                 return 'Salinity must be greater than or equal to zero!';
             }
+            if (attrs.salinity > 42){
+                return 'Salinity must be a reasonable value!';
+            }
             if (attrs.sediment_load < 0 || attrs.sediment_load === ''){
                 return 'Sediment load must be greater than or equal to zero!';
             }
