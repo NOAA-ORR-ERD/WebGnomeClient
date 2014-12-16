@@ -37,7 +37,7 @@ define([
             this.model = elementModel;
             // Initialize and render loading modal following request to view Oil Library collection
 
-            this.loadingGif = new LoadingModal();
+            this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
             this.loadingGif.render();
 
             // Passed oilTable's events hash to this view's events
