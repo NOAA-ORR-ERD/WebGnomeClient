@@ -8,14 +8,6 @@ define([
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
 
-        defaults: {
-            name: 'ALAMO',
-            api: 23.3,
-            pour_point_max_k: 266.483,
-            flash_point_max_k: 339.973,
-            categories: [{id: 6, name: "Medium", parent_id: 1, children: [], parent: {id: 1, name: "Crude", parent_id: null}}]
-        },
-
         parseTemperatures: function(){
             var flashPointK = this.get('flash_point_max_k');
             var pourPointK = this.get('pour_point_max_k');
