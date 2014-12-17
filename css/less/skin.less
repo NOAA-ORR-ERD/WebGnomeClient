@@ -1243,6 +1243,10 @@ nav.navbar{
         box-shadow: none;
         background: #efefef;
 
+        .panel-body{
+            display: none;
+        }
+
         &.complete{
             .panel-heading{
                 .add{
@@ -1253,6 +1257,10 @@ nav.navbar{
                 .state{
                     .glyphicon-ok;
                 }
+            }
+
+            .panel-body{
+                display: block;
             }
 
             &:hover{
