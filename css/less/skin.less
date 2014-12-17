@@ -44,6 +44,7 @@ img{
         }
     }
 }
+
 @media print {
     body{
         font-size: 10px !important;
@@ -76,6 +77,21 @@ img{
 }
 .sweet-alert{
     border-radius: 0;
+}
+
+.app-state{
+    z-index: 999999;
+    position: fixed;
+    top: 35px;
+    left: 50%;
+    margin-left: -50px;
+
+    width: 100px;
+    padding: 4px 10px;
+    background: @state-warning-bg;
+    border: 1px solid @state-warning-border;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .15);
+    font-size: 14px;
 }
 
 .help-content{
@@ -1254,8 +1270,7 @@ nav.navbar{
 
                 }
 
-                .state{
-                    .glyphicon-ok;
+                .state{.glyphicon-ok;
                 }
             }
 
