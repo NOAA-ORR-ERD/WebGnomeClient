@@ -88,6 +88,12 @@ define([
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick_start').on('click', _.bind(function(){
+                this.$('#start_time').datetimepicker('show');
+            }, this));
+            this.$('#datepick_end').on('click', _.bind(function(){
+                this.$('#end_time').datetimepicker('show');
+            }, this));
             var units = spills.at(0).get('units');
             this.$('#budget-table .released').val(units);
             this.$('#ics209 .vol-units').val(units);

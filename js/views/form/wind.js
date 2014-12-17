@@ -88,6 +88,9 @@ define([
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
