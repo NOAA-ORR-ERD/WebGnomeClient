@@ -91,8 +91,7 @@ define([
             } else {
                 substance = this.model.get('element_type').get('substance');
                 enabled = true;
-            }
-            
+            } 
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
@@ -102,6 +101,7 @@ define([
             });
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
+            
 
             this.$('#oilInfo .add, #oilInfo .locked').tooltip({
                 delay: {
@@ -110,6 +110,11 @@ define([
                 },
                 container: '.modal-body'
             });
+            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name'))){
+                this.$('#substancepanel').addClass('complete');
+            } else {
+                this.$('#substancepanel').removeClass('complete');
+            }
         },
 
 		update: function(){
