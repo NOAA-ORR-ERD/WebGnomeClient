@@ -81,17 +81,8 @@ define([
 		},
 
         renderSubstanceInfo: function(){
-            var substance, enabled = true;
-            if (!_.isUndefined(webgnome.model.get('spills').at(0))){
-                var first_spill = webgnome.model.get('spills').at(0);
-                substance = first_spill.get('element_type').get('substance');
-                if(first_spill.get('id') != this.model.get('id')){
-                    enabled = false;
-                }
-            } else {
-                substance = this.model.get('element_type').get('substance');
-                enabled = true;
-            } 
+            var substance = this.model.get('element_type').get('substance');
+            var enabled = !_.isUndefined(this.model.get('element_type').get('substance').get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
@@ -110,6 +101,21 @@ define([
                 },
                 container: '.modal-body'
             });
+
+            this.$('.panel-heading .state').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
+
+                        if($(this).parents('.panel').hasClass('complete')){
+                            return object + ' requirement met';
+                        } else {
+                            return object + ' required';
+                        }
+                    },
+                    container: '.modal-body',
+                    delay: {show: 500, hide: 100}
+                });
+
             if (!_.isUndefined(this.model.get('element_type').get('substance').get('name'))){
                 this.$('#substancepanel').addClass('complete');
             } else {
