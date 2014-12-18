@@ -68,7 +68,8 @@ define([
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
                         name: 'basemap',
-                        type: 'base'
+                        type: 'base',
+                        visible: false
                     }),
                     new ol.layer.Tile({
                         name: 'usgsbase',
@@ -85,7 +86,8 @@ define([
                             url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                             params: {'LAYERS': '1', 'TILED': true}
                         }),
-                        opacity: 0.7
+                        opacity: 0.7,
+                        visible: false
                     })
                 ]
             });
