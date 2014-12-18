@@ -1,9 +1,9 @@
 <div class="col-md-8">
-    <div class="panel complete {% if(!enabled){ %} disabled {% } %}">
+    <div class="panel complete" id="substancepanel">
         <div class="panel-heading">
-            <div class="add oil-select" title="Edit Substance"></div>
-            <span class="locked" title="Only a single substance is supported currently. Please refer to the first spill to change the substance.">Editing Disabled</span>
-            Released Substance
+            <div class="add oil-select" title="{% if(enabled){ %} Edit Substance {% } else { %} Select Substance {% } %}"></div>
+            <div class="state" data-original-title title></div>
+            Substance
         </div>
         <div class="panel-body">
             <div><label>Name:</label> {{ name }}</div>

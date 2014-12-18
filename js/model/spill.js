@@ -29,7 +29,15 @@ define([
             }
 
             if(!attrs.element_type.isValid()){
-                return attr.element_type.validationError;
+                return attrs.element_type.validationError;
+            }
+
+            if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                return "You must select an oil!";
+            }
+
+            if(!attrs.element_type.get('substance').isValid()){
+                return attrs.element_type.get('substance').validationError;
             }
 
             if(isNaN(attrs.amount)){
@@ -37,6 +45,7 @@ define([
             } else if (attrs.amount < 0) {
                 return 'Amount must be a positive number';
             }
+
         },
 
         toTree: function(){
