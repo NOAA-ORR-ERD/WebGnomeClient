@@ -81,8 +81,13 @@ define([
 		},
 
         renderSubstanceInfo: function(){
-            var substance = this.model.get('element_type').get('substance');
-            var enabled = !_.isUndefined(this.model.get('element_type').get('substance').get('name'));
+            var substance;
+            var enabled = !_.isUndefined(webgnome.model.get('spills').at(0));
+            if (enabled){
+                substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            } else {
+                substance = this.model.get('element_type').get('substance');
+            }
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
@@ -93,7 +98,6 @@ define([
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
             
-
             this.$('#oilInfo .add, #oilInfo .locked').tooltip({
                 delay: {
                     show: 500,
@@ -116,7 +120,10 @@ define([
                     delay: {show: 500, hide: 100}
                 });
 
-            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name'))){
+            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name')) || enabled){
+                if (enabled){
+                    this.model.get('element_type').set('substance', substance);
+                }
                 this.$('#substancepanel').addClass('complete');
             } else {
                 this.$('#substancepanel').removeClass('complete');
@@ -134,15 +141,52 @@ define([
 			}
 		},
 
-		elementSelect: function(){
+        initOilLib: function(){
             this.hide();
-			var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-			oilLibraryView.render();
-			oilLibraryView.on('save', _.bind(this.show, this));
+            var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+            oilLibraryView.render();
+            oilLibraryView.on('save', _.bind(this.show, this));
             oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
-			oilLibraryView.on('hidden', _.bind(this.show, this));
+            oilLibraryView.on('hidden', _.bind(this.show, this));
             oilLibraryView.on('hidden', oilLibraryView.close);
+        },
+
+		elementSelect: function(){
+            var spills = webgnome.model.get('spills');
+            if (this.model.isNew() && spills.length === 0 || !this.model.isNew() && spills.length === 1){
+               this.initOilLib();
+            } else {
+                swal({
+                    title: "Warning!",
+                    text: "Changing the oil here will change it for all spills!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Select new oil",
+                    cancelButtonText: "Keep original oil",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        this.initOilLib();
+                    }
+                }, this));
+            }
 		},
+
+        save: function(){
+            FormModal.prototype.save.call(this, _.bind(function(){
+                var oilSubstance = this.model.get('element_type').get('substance');
+                var spills = webgnome.model.get('spills');
+                spills.forEach(function(spill){
+                    if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
+                        spill.get('element_type').set('substance', oilSubstance);
+                        spill.save();
+                    }
+                });
+            }, this)
+            );
+        },
 
         show: function(){
             this.update();
