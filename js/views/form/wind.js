@@ -115,7 +115,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5 + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateVariableSlide(ui);
@@ -171,7 +171,7 @@ define([
                     }
 
                     this.renderTimeseries();
-                }, this), 1);    
+                }, this), 1);
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
