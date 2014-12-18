@@ -10,7 +10,7 @@ define([
         },
 
         render: function(){
-            if($('.app-state.loading').length === 0){
+            if($('.app-state.loading').length === 0 && $('.loading-modal').length === 0){
                 this.$el.append('Loading...');
                 $('body').append(this.$el);
             }
