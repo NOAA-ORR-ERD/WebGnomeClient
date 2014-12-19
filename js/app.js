@@ -39,7 +39,7 @@ define([
                         var loading;
                         if(this.monitor.requests.length > 0){
                             this.monitor.requests = this.monitor.requests.filter(function(req){
-                                return req.status !== 200;
+                                return req.status === undefined;
                             });
                         } else {
                             clearInterval(this.monitor);
