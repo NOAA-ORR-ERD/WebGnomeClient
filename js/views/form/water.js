@@ -25,11 +25,8 @@ define([
         },
 
         render: function(options){
-            if (this.model.get('units').temperature !== 'K'){
-                this.model.set('temperature', this.convertTemptoK(this.model.get('temperature'), this.model.get('units').temperature));
-            }
             this.body = _.template(WaterTemplate, {
-                water_temp: nucos.convert("Temperature", "K", this.model.get('units').temperature, this.model.get('temperature')).toFixed(3)
+                water_temp: this.model.get('temperature').toFixed(3)
             });
 
             FormModal.prototype.render.call(this, options);

@@ -39,7 +39,6 @@ define([
                              ];
 
 			for (var attr in oil){
-
                 // When value of oil attribute is null
 
 				if (!oil[attr] && tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
@@ -81,6 +80,29 @@ define([
                     if (attr === 'emuls_constant_max'){
                         if (oil[attr] && oil[attr] === oil['emuls_constant_min']){
                             oil['emuls_constant_min'] = '';
+                        }
+                    }
+                } else if (_.isObject(oil[attr]) && !_.isArray(oil[attr])) {
+                    for (var key in oil[attr]){
+                        if (_.isArray(oil[attr][key]) && oil[attr][key].length === 0){
+                            if (key === 'kvis' || key === 'synonyms'){
+                                oil[attr][key] = false;
+                            }
+                        } else if (_.isArray(oil[attr][key])) {
+                        // For loop that goes through array
+                            console.log(oil[attr][key]);
+                            for (var i = 0; i < oil[attr][key].length; i++){
+                                for (var k in oil[attr][key][i]) {
+                                    if (!oil[attr][key][i][k] && oil[attr][key][i] !== 'weathering'){
+                                        oil[attr][key][i][k] = "--";
+                                    } else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
+                                        oil[attr][key][i][k] = (oil[attr][key][i][k] - 273.15).toFixed(3);
+                                        var k2 = k.substring(0, k.length - 2) + '_f';
+                                        oil[attr][key][i][k2] = this.cToF(oil[attr][key][i][k]).toString();
+                                        oil[attr][key][i][k] = '(' + oil[attr][key][i][k] + ')';
+                                    }
+                                }
+                            }
                         }
                     }
                 }
