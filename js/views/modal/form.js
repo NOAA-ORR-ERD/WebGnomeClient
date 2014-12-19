@@ -48,6 +48,7 @@ define([
         showHelp: function(){
             if(this.$('.gnome-help.alert').length === 0){
                 this.$('.modal-body').prepend(this.help.$el);
+                this.help.delegateEvents();
             }
         },
 
