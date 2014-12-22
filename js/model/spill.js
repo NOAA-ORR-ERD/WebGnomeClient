@@ -35,7 +35,7 @@ define([
 
             if (this.onSave){
                 if(_.isUndefined(this.get('element_type').get('substance').get('name'))){
-                    return "Oil must be defined!";
+                    return "A substance must be selected!";
                 }
             }
 
