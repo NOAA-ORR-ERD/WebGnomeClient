@@ -70,6 +70,12 @@ define([
                 this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
 
+                var oilImported = this.model.get('substance').get('imported');
+
+                if (!_.isUndefined(oilImported)){
+                    this.$('tr[data-id="' + oilImported.adios_oil_id + '"]').addClass('select');
+                }
+
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
                 this.populateSelect();
