@@ -24,6 +24,16 @@ define([
             kinematic_viscosity: 1
         },
 
+        convertToK: function(temp){
+            if (this.get('units').temperature === 'F'){
+                temp = (temp - 32) * (5.0 / 9);
+            }
+            if (this.get('units').temperature !== 'K'){
+                temp = parseFloat(temp) + 273.15;
+            }
+            return temp;
+        },
+
         validate: function(attrs, options){
             if (attrs.salinity < 0 || attrs.salinity === ''){
                 return 'Salinity must be greater than or equal to zero!';
@@ -35,7 +45,7 @@ define([
                 return 'Sediment load must be greater than or equal to zero!';
             }
 
-            if(attrs.temperature < 270.928 || attrs.temperature > 313.15){
+            if(this.convertToK(attrs.temperature) < 270.928 || this.convertToK(attrs.temperature) > 308.15){
                 return 'Water temperature must be a reasonable degree.';
             }
         }

@@ -90,7 +90,6 @@ define([
                             }
                         } else if (_.isArray(oil[attr][key])) {
                         // For loop that goes through array
-                            console.log(oil[attr][key]);
                             for (var i = 0; i < oil[attr][key].length; i++){
                                 for (var k in oil[attr][key][i]) {
                                     if (!oil[attr][key][i][k] && oil[attr][key][i] !== 'weathering'){

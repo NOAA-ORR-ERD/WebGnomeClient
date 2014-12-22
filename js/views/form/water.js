@@ -103,7 +103,7 @@ define([
                 units.wave_height = this.$('#wave_height-units').val();
             }
             this.model.set('units', units);
-            this.model.set('temperature', this.convertTemptoK(this.$('#temp').val(), this.$('#tempunits').val()));
+            this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
             this.model.set('sediment', this.$('.sediment:visible').val());
             if(!this.model.isValid()){
