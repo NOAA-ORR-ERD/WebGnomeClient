@@ -77,10 +77,11 @@ define([
             FormModal.prototype.render.call(this, options);
             this.trigger('show');
 
-            this.form.constant = [];
+            this.form = {};
+            this.form.constant = {};
             this.form.constant.speed = this.$('#constant-speed');
             this.form.constant.direction = this.$('#constant-direction');
-            this.form.variable = [];
+            this.form.variable = {};
             this.form.variable.speed = this.$('#variable-speed');
             this.form.variable.direction = this.$('#variable-direction');
             this.form.variable.datetime = this.$('#datetime');
@@ -195,11 +196,15 @@ define([
             var active = this.$('.nav-tabs .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
+            }
             var gnomeStart = webgnome.model.get('start_time');
             if(compass && speed !== '' && direction !== ''){
                 this.$('.' + active + '-compass').compassRoseUI('update', {
                     speed: speed,
-                    direction: direction
+                    direction: direction,
+                    trigger_move: false
                 });
             }
 
@@ -282,6 +287,9 @@ define([
             var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
             var speed = this.form.variable.speed.val();
             var direction = this.form.variable.direction.val();
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            }
             var entry = [date, [speed, direction]];
             var incrementer = parseInt(this.form.variable.increment.val(), 10);
 
