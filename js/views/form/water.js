@@ -26,7 +26,7 @@ define([
 
         render: function(options){
             this.body = _.template(WaterTemplate, {
-                water_temp: this.model.get('temperature').toFixed(3)
+                water_temp: this.model.get('temperature')
             });
 
             FormModal.prototype.render.call(this, options);

@@ -179,12 +179,14 @@ define([
             FormModal.prototype.save.call(this, _.bind(function(){
                 var oilSubstance = this.model.get('element_type').get('substance');
                 var spills = webgnome.model.get('spills');
-                spills.forEach(function(spill){
-                    if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
-                        spill.get('element_type').set('substance', oilSubstance);
-                        spill.save();
-                    }
-                });
+                if (!_.isUndefined(spills)){
+                    spills.forEach(function(spill){
+                        if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
+                            spill.get('element_type').set('substance', oilSubstance);
+                            spill.save();
+                        }
+                    });
+                }
             }, this)
             );
         },

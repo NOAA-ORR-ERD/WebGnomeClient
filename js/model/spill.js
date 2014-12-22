@@ -29,13 +29,17 @@ define([
                 return attrs.release.validationError;
             }
 
+            if ($.trim(attrs.name) === ''){
+                return 'A spill name is required!';
+            }
+
             if(!attrs.element_type.isValid()){
                 return attrs.element_type.validationError;
             }
 
             if (this.onSave){
                 if(_.isUndefined(this.get('element_type').get('substance').get('name'))){
-                    return "A substance must be selected!";
+                    return 'A substance must be selected!';
                 }
             }
 
