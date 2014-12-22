@@ -175,6 +175,7 @@ define([
 		},
 
         save: function(){
+            this.model.validateSubstance(this.model.attributes);
             FormModal.prototype.save.call(this, _.bind(function(){
                 var oilSubstance = this.model.get('element_type').get('substance');
                 var spills = webgnome.model.get('spills');

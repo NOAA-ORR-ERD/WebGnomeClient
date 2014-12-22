@@ -7,6 +7,7 @@ define([
 ], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
+        onSave: false,
 
         defaults: {
             'on': true,
@@ -32,12 +33,10 @@ define([
                 return attrs.element_type.validationError;
             }
 
-            if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
-                return "You must select an oil!";
-            }
-
-            if(!attrs.element_type.get('substance').isValid()){
-                return attrs.element_type.get('substance').validationError;
+            if (this.onSave){
+                if(_.isUndefined(this.get('element_type').get('substance').get('name'))){
+                    return "Oil must be defined!";
+                }
             }
 
             if(isNaN(attrs.amount)){
@@ -46,6 +45,13 @@ define([
                 return 'Amount must be a positive number';
             }
 
+        },
+
+        validateSubstance: function(attrs){
+            if(_.isUndefined(attrs.element_type.get('substance').name)){
+                this.onSave = true;
+                this.validate(attrs);
+            }
         },
 
         toTree: function(){
@@ -60,7 +66,7 @@ define([
 
             tree = attrs.concat(tree);
 
-            return tree;           
+            return tree;
         }
     });
 
