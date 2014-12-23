@@ -18,7 +18,7 @@ define([
         title: 'Oil Query Form',
         size: 'lg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
-
+        
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
             var formModalHash = FormModal.prototype.events;
@@ -35,10 +35,13 @@ define([
             this.module = module;
             this.oilTable = new OilTable();
             this.model = elementModel;
+            this.oilCache = localStorage.getItem('oil_cache');
             // Initialize and render loading modal following request to view Oil Library collection
 
-            this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
-            this.loadingGif.render();
+            if (_.isNull(this.oilCache)){
+                this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
+                this.loadingGif.render();
+            }
 
             // Passed oilTable's events hash to this view's events
             
@@ -54,8 +57,9 @@ define([
             if(this.oilTable.ready){
                 // Removes loading modal just prior to render call of oilLib
 
-                this.loadingGif.hide();
-                
+                if (_.isNull(this.oilCache)){
+                    this.loadingGif.hide();
+                }
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {

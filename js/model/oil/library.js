@@ -124,6 +124,7 @@ define([
 
         sync: function(method, model, options){
             var oilCache = localStorage.getItem('oil_cache');
+            var success = options.success;
             if (!_.isNull(oilCache)){
                 oilCache = JSON.parse(oilCache);
                 var ts = oilCache['ts'];
@@ -134,7 +135,6 @@ define([
                         options.success(data, 'success', null);
                     }, 500);
                 } else {
-                    var success = options.success;
                     options.success = function(resp, status, xhr){
                         var oilCache = {};
                         oilCache['oils'] = resp;
