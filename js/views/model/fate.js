@@ -761,7 +761,7 @@ define([
             if(_.isUndefined(header)){
                 header = '';
             }
-            return header + '<table>' + table.html() + '</table>';
+            return header.replace(/°/g, '') + '<table>' + table.html() + '</table>';
         },
 
         buildDataset: function(cb){
