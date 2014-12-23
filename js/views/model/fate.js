@@ -359,6 +359,9 @@ define([
         downloadTableOilBudget: function(e){
             var table = this.$('#budget-table table');
             var type = $(e.target).data('type');
+            if(type == undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' Oil Budget Table Export' : 'Oil Budget Table Export';
             var filename = name + '.' + type;
             var content = '';
@@ -707,6 +710,9 @@ define([
         downloadTableICS: function(e){
             var table = this.$('#ics209 table:last');
             var type = $(e.target).data('type');
+            if (type === undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
             var filename = name + '.' + type;
             var content = '';
