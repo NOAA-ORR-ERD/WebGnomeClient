@@ -7,6 +7,7 @@ define([
     'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
+    'text!templates/default/export.html',
     'flot',
     'flottime',
     'flotresize',
@@ -15,7 +16,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate){
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
@@ -767,7 +768,7 @@ define([
             if(_.isUndefined(header)){
                 header = '';
             }
-            return header.replace(/°/g, '') + '<table>' + table.html() + '</table>';
+            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         buildDataset: function(cb){
