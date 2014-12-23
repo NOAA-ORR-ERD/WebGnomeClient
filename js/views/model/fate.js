@@ -765,7 +765,7 @@ define([
         },
 
         buildDataset: function(cb){
-            if(this.frame < webgnome.model.get('num_time_steps')){
+            if(this.frame <= webgnome.model.get('num_time_steps')){
                 this.step.fetch({
                     success: _.bind(function(){
                         if(this.step){
