@@ -179,7 +179,7 @@ define([
             FormModal.prototype.save.call(this, _.bind(function(){
                 var oilSubstance = this.model.get('element_type').get('substance');
                 var spills = webgnome.model.get('spills');
-                if (!_.isUndefined(spills)){
+                if (spills.length > 1){
                     spills.forEach(function(spill){
                         if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
                             spill.get('element_type').set('substance', oilSubstance);
