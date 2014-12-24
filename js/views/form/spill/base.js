@@ -172,8 +172,9 @@ define([
 		},
 
         save: function(){
-            if (!_.isUndefined(this.model.validateSubstance(this.model.attributes))){
-                this.error('Error!', this.model.validateSubstance(this.model.attributes));
+            var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (!_.isUndefined(validSubstance)){
+                this.error('Error!', validSubstance);
             } else {
                 this.clearError();
                 FormModal.prototype.save.call(this, _.bind(function(){
