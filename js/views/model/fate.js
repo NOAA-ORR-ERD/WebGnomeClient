@@ -7,6 +7,7 @@ define([
     'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
+    'text!templates/default/export.html',
     'flot',
     'flottime',
     'flotresize',
@@ -15,7 +16,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate){
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
@@ -359,6 +360,9 @@ define([
         downloadTableOilBudget: function(e){
             var table = this.$('#budget-table table');
             var type = $(e.target).data('type');
+            if(type === undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' Oil Budget Table Export' : 'Oil Budget Table Export';
             var filename = name + '.' + type;
             var content = '';
@@ -707,6 +711,9 @@ define([
         downloadTableICS: function(e){
             var table = this.$('#ics209 table:last');
             var type = $(e.target).data('type');
+            if (type === undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
             var filename = name + '.' + type;
             var content = '';
@@ -761,7 +768,7 @@ define([
             if(_.isUndefined(header)){
                 header = '';
             }
-            return header + '<table>' + table.html() + '</table>';
+            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         buildDataset: function(cb){
