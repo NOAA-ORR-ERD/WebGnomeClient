@@ -7,7 +7,6 @@ define([
 ], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
-        onSave: false,
 
         defaults: {
             'on': true,
@@ -33,16 +32,6 @@ define([
                 return 'A spill name is required!';
             }
 
-            if(!attrs.element_type.isValid()){
-                return attrs.element_type.validationError;
-            }
-
-            if (this.onSave){
-                if(_.isUndefined(this.get('element_type').get('substance').get('name'))){
-                    return 'A substance must be selected!';
-                }
-            }
-
             if(isNaN(attrs.amount)){
                 return 'Amount must be a number';
             } else if (attrs.amount < 0) {
@@ -52,9 +41,8 @@ define([
         },
 
         validateSubstance: function(attrs){
-            if(_.isUndefined(attrs.element_type.get('substance').name)){
-                this.onSave = true;
-                this.validate(attrs);
+            if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                return 'A substance must be selected!';
             }
         },
 

@@ -131,9 +131,6 @@ define([
         },
 
 		update: function(){
-            var oilName = this.model.get('element_type').get('substance').get('name');
-            this.$('.oilName').val(oilName);
-
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
 			} else {
@@ -175,20 +172,25 @@ define([
 		},
 
         save: function(){
-            this.model.validateSubstance(this.model.attributes);
-            FormModal.prototype.save.call(this, _.bind(function(){
-                var oilSubstance = this.model.get('element_type').get('substance');
-                var spills = webgnome.model.get('spills');
-                if (spills.length > 1){
-                    spills.forEach(function(spill){
-                        if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
-                            spill.get('element_type').set('substance', oilSubstance);
-                            spill.save();
-                        }
-                    });
-                }
-            }, this)
-            );
+            var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (!_.isUndefined(validSubstance)){
+                this.error('Error!', validSubstance);
+            } else {
+                this.clearError();
+                FormModal.prototype.save.call(this, _.bind(function(){
+                    var oilSubstance = this.model.get('element_type').get('substance');
+                    var spills = webgnome.model.get('spills');
+                    if (spills.length > 1){
+                        spills.forEach(function(spill){
+                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
+                                spill.get('element_type').set('substance', oilSubstance);
+                                spill.save();
+                            }
+                        });
+                    }
+                }, this)
+                );
+            }
         },
 
         show: function(){
