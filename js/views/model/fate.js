@@ -21,6 +21,15 @@ define([
         step: new StepModel(),
         className: 'fate',
         frame: 0,
+        colors: [
+            'rgb(203,75,75)',
+            'rgb(237,194,64)',
+            'rgb(175,216,248)',
+            'rgb(77,167,77)',
+            'rgb(148,64,237)',
+            'rgb(189,155,51)',
+            'rgb(140,172,198)'
+        ],
 
         events: {
             'shown.bs.tab': 'renderGraphs',
@@ -166,6 +175,7 @@ define([
                         },
                         shadowSize: 0
                     },
+                    colors: this.colors,
                     crosshair: {
                         mode: 'x',
                         color: '#999'
@@ -217,6 +227,7 @@ define([
                         }
                     }
                 },
+                colors: this.colors,
                 legend: {
                     show: false
                 }
@@ -284,8 +295,8 @@ define([
             table.html('');
             table = '';
             m_date = moment(webgnome.model.get('start_time'));
+            var opacity;
             for (var row = 0; row < dataset[0].data.length; row++){
-
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
@@ -294,7 +305,18 @@ define([
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
                     
-                    var row_html = '<tr>';
+                    if(opacity === 0.10){
+                        opacity = 0.25;
+                    } else {
+                        opacity = 0.10;
+                    }
+
+                    var row_html = '';
+                    if(row === 0){
+                        row_html += '<thead><tr>';
+                    } else {
+                        row_html += '<tr>';
+                    }
                     if(display.time === 'date'){
                         if(row === 0){
                             row_html += '<th>Date - Time</th>';
@@ -308,14 +330,21 @@ define([
                             row_html += '<td>' + duration.asHours() + '</td>';
                         }
                     }
-                     
+
                     for (var set in dataset){
                         to_unit = display.released;
+                        var color = '';
+
+                        if(dataset[set].name !== 'amount_released'){
+                            color = this.colors[set];
+                            color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
+                        }
+
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
-                                row_html +='<th>' + dataset[set].label + ' (' + to_unit + ')</th>';
+                                row_html +='<th style="background: ' + color + ';">' + dataset[set].label + ' (' + to_unit + ')</th>';
                             } else {
-                                row_html += '<th>' + dataset[set].label + ' (' + display.other + ')</th>';
+                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + ' (' + display.other + ')</th>';
                             }
 
                         } else {
@@ -332,10 +361,14 @@ define([
                                     value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
-                            row_html += '<td>' + value + '</td>';
+                            row_html += '<td style="background: ' + color + ';">' + value + '</td>';
                         }
                     }
-                    row_html += '</tr>';
+                    if(row === 0){
+                        row_html += '</tr></thead>';
+                    } else {
+                        row_html += '</tr>';                        
+                    }
                     table += row_html;
                 }
             }
@@ -405,7 +438,8 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    }
+                    },
+                    colors: [this.colors[1]]
                 });
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -434,7 +468,8 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    }
+                    },
+                    colors: [this.colors[2]]
                 });
             } else {
                 this.graphDispersion.setData(dataset);
@@ -567,6 +602,7 @@ define([
                         },
                         shadowSize: 0
                     },
+                    colors: this.colors,
                     selection: {
                         mode: 'x',
                         color: '#428bca'
@@ -794,7 +830,14 @@ define([
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
                 var titles = _.clone(nominal);
+                delete titles.step_num;
+                delete titles.time_stamp;
+                delete titles.floating;
+                delete titles.dispersed;
+                delete titles.evaporated;
                 var keys = Object.keys(titles);
+                keys.unshift('floating', 'evaporated', 'dispersed');
+
                 for(var type in keys){
                     this.dataset.push({
                         data: [],
