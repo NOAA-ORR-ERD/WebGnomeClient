@@ -289,7 +289,7 @@ define([
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);
-                                                    this.save({start_time: moment().format('YYYY-MM-DDThh:mm:00')}, {
+                                                    this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
                                                         validate: false,
                                                         success: _.bind(function(model, response, options){
                                                             if(_.isFunction(cb)){
