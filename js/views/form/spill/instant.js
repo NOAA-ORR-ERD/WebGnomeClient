@@ -64,6 +64,7 @@ define([
 
             if (!this.model.isNew()){
                 this.$('.slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                this.updateConstantSlide();
             }
         },
 
