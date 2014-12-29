@@ -27,7 +27,7 @@
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
-    "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.10",
+    "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.11",
     "sweetalert": "0.2.1"
   },
   "devDependencies": {
