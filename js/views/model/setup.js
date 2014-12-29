@@ -323,15 +323,11 @@ define([
         // TODO: Change it so that we don't have to use a hard-coded value for the 
         // max uncertainty value
         windSpeedParse: function(wind){
-            var uncertainty = wind.get('speed_uncertainty_scale') * 5;
+            var uncertainty = wind.get('speed_uncertainty_scale');
             var speed = wind.get('timeseries')[0][1][0];
 
-            var bottom = parseInt(speed, 10) - parseInt(uncertainty, 10);
-            if (bottom < 0){
-                bottom = 0;
-            }
-            var top = parseInt(speed, 10) + parseInt(uncertainty, 10);
-            return (bottom + ' - ' + top);
+            var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
+            return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
         },
 
         updateWind: function(){
