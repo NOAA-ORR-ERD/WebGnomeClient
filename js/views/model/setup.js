@@ -268,6 +268,8 @@ define([
 
                         if($(this).parents('.panel').hasClass('complete')){
                             return object + ' requirement met';
+                        } else if($(this).parents('.panel').hasClass('optional')){
+                            return object + ' optional';                            
                         } else {
                             return object + ' required';
                         }

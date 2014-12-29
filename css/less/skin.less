@@ -550,7 +550,6 @@ nav.navbar{
                     .panel-heading{
                         .add{
                             .glyphicon-pencil;
-
                         }
 
                         .state{
@@ -567,6 +566,16 @@ nav.navbar{
                     }
                 }
 
+                &.optional{
+                   &:hover{
+                        .panel-heading{
+                            .state{
+                                color: rgba(0, 147, 200, 0.57);
+                            }
+                        }
+                    }
+                }
+
                 &:hover{
                     .panel-heading{
                         > div{
@@ -578,7 +587,7 @@ nav.navbar{
                         }
                         
                         .state{
-                            color: rgba(176, 13, 0, 0.57)
+                            color: rgba(176, 13, 0, 0.57);
                         }
                     }
                 }
@@ -616,7 +625,8 @@ nav.navbar{
 
                         &.optional{
                             .glyphicon-info-sign;
-                            color: #0099ff;                  
+                            color: #bebebe;   
+                            padding-top: 1px;               
                         }
                     }
                 }
