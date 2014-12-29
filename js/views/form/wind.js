@@ -108,7 +108,7 @@ define([
                 });
 
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
-                this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * constantSliderMax);
+                this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
             }, this), 1);
 
             setTimeout(_.bind(function(){
@@ -125,7 +125,7 @@ define([
                 });
 
                 var variableSliderMax = this.$('#variable .slider').slider("option", "max");
-                this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * variableSliderMax);
+                this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
             }, this), 1);
         },
