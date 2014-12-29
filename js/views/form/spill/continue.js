@@ -96,6 +96,14 @@ define([
                         this.updateRateSlide(ui);
                     }, this)
                 });
+
+                if (!this.model.isNew()){
+                    this.$('#amount .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.$('#constant .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.updateAmountSlide();
+                    this.updateRateSlide();
+                }
+
             } else {
                 this.model.on('ready', this.render, this);
             }

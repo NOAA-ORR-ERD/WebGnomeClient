@@ -61,6 +61,11 @@ define([
                     this.updateConstantSlide(ui);
                 }, this)
             });
+
+            if (!this.model.isNew()){
+                this.$('.slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                this.updateConstantSlide();
+            }
         },
 
         update: function(){
