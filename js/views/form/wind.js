@@ -172,6 +172,7 @@ define([
                         this.model.set('timeseries', this.originalTimeseries);
                     }
 
+                    this.unbindBaseMouseTrap();
                     this.renderTimeseries();
                 }, this), 1);
             } else if (e.target.hash == '#nws'){
@@ -294,7 +295,6 @@ define([
             if(this.variableFormValidation(entry)){
                 var not_replaced = true;
                 _.each(this.model.get('timeseries'), function(el, index, array){
-                    console.log(el[0], entry[0]);
                     if(el[0] === entry[0]){
                         not_replaced = false;
                         array[index] = entry;
@@ -312,7 +312,7 @@ define([
                 this.renderTimeseries();
             }
             this.update();
-            this.$('#variable-speed').focus();
+            this.$('#variable-speed').focus().select();
         },
 
         modifyTimeseriesEntry: function(e){
