@@ -5,6 +5,7 @@ define([
     'module',
     'moment',
     'ol',
+    'nucos',
     'views/modal/form',
     'text!templates/form/wind.html',
     'views/default/map',
@@ -12,7 +13,7 @@ define([
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
@@ -246,27 +247,23 @@ define([
 
         updateConstantSlide: function(ui){
             var value;
-            if(!_.isUndefined(ui)){
+            if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
                 value = !_.isNaN(this.$('#constant .slider').slider('value')) ? this.$('#constant .slider').slider('value') : 0;
             }
-            if(this.model.get('timeseries').length > 0){
+            if (this.model.get('timeseries').length > 0){
                 var speed = this.model.get('timeseries')[0][1][0];
-                if(value === 0){
+                var uncertainty = value / (50.0 / 3);
+                if (value === 0){
                     this.$('#constant .tooltip-inner').text(speed);
                 } else {
-                    var bottom = parseInt(speed, 10) - parseInt(value, 10);
-                    if (bottom < 0) {
-                        bottom = 0;
-                    }
-                    var top = parseInt(speed, 10) + parseInt(value, 10);
-                    this.$('#constant .tooltip-inner').text(bottom + ' - ' + top);
+                    var rangeObj = nucos.rayleighDist().rangeFinder(speed, uncertainty);
+                    this.$('#constant .tooltip-inner').text(rangeObj.low.toFixed(1) + ' - ' + rangeObj.high.toFixed(1));
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
-                this.model.set('speed_uncertainty_scale', value / parseFloat(constantSliderMax));
+                this.model.set('speed_uncertainty_scale', uncertainty / parseFloat(constantSliderMax));
             }
-            
         },
 
         constantCompassUpdate: function(magnitude, direction){
