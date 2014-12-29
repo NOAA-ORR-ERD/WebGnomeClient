@@ -239,9 +239,10 @@ define([
             } else {
                 value = this.$('#variable .slider').slider('value');
             }
-            this.$('#variable .tooltip-inner').text('+/- ' + value);
+            var percentRange = value * 3.0;
+            this.$('#variable .tooltip-inner').text('+/- ' + percentRange.toFixed(1) + ' %');
             var variableSliderMax = this.$('#variable .slider').slider("option", "max");
-            this.model.set('speed_uncertainty_scale', value / parseFloat(variableSliderMax));
+            this.model.set('speed_uncertainty_scale', value / (50.0 / 3));
             this.renderTimeseries(value);
         },
 
@@ -262,7 +263,7 @@ define([
                     this.$('#constant .tooltip-inner').text(rangeObj.low.toFixed(1) + ' - ' + rangeObj.high.toFixed(1));
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
-                this.model.set('speed_uncertainty_scale', uncertainty / parseFloat(constantSliderMax));
+                this.model.set('speed_uncertainty_scale', uncertainty);
             }
         },
 
@@ -335,8 +336,12 @@ define([
         renderTimeseries: function(uncertainty){
             this.model.sortTimeseries();
 
+            if(!_.isUndefined(uncertainty)){
+                uncertainty = uncertainty / (50.0 / 3);
+            }
+
             if(_.isUndefined(uncertainty)){
-                uncertainty = this.$('#variable .slider').slider('value');
+                uncertainty = this.$('#variable .slider').slider('value') / (50.0 / 3);
             }
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
@@ -344,8 +349,9 @@ define([
                 var direction = el[1][1];
 
                 if (uncertainty > 0){
-                    var low = parseInt(velocity, 10) - parseInt(uncertainty, 10);
-                    var high = parseInt(uncertainty, 10) + parseInt(velocity, 10);
+                    var rangeObj = nucos.rayleighDist().rangeFinder(velocity, uncertainty);
+                    var low = rangeObj.low.toFixed(1);
+                    var high = rangeObj.high.toFixed(1);
                     if (low < 0) {
                         low = 0;
                     }
