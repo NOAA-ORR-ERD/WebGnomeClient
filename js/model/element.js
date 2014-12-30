@@ -24,9 +24,6 @@ define([
                     ],
                     'obj_type': 'gnome.spill.elements.InitWindages',
                     'windage_persist': 900
-                },
-                {
-                    'obj_type': 'gnome.spill.elements.initializers.InitMassFromSpillAmount'
                 }
             ]
         },
