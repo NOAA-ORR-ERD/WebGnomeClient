@@ -172,6 +172,7 @@ define([
                         this.model.set('timeseries', this.originalTimeseries);
                     }
 
+                    this.unbindBaseMouseTrap();
                     this.renderTimeseries();
                 }, this), 1);
             } else if (e.target.hash == '#nws'){
@@ -282,7 +283,7 @@ define([
         addTimeseriesEntry: function(e){
             e.preventDefault();
             var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-            var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
+            var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
             var speed = this.form.variable.speed.val();
             var direction = this.form.variable.direction.val();
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
@@ -302,14 +303,16 @@ define([
 
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
-                    // Code for time incrementer updates assuming values in form are in hours
-                    dateObj.add('h', incrementer);
-                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
                 }
+
+                // Code for time incrementer updates assuming values in form are in hours
+                dateObj.add('h', incrementer);
+                this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
+
                 this.renderTimeseries();
             }
             this.update();
-            this.$('#variable-speed').focus();
+            this.$('#variable-speed').focus().select();
         },
 
         modifyTimeseriesEntry: function(e){
