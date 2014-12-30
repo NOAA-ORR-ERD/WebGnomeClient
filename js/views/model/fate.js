@@ -538,7 +538,7 @@ define([
         },
 
         renderGraphViscosity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['viscosity']);
+            dataset = this.pluckDataset(dataset, ['avg_viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
