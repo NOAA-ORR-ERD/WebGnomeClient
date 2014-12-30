@@ -304,7 +304,7 @@ define([
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
-                    
+
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {

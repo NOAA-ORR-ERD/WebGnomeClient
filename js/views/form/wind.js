@@ -128,6 +128,8 @@ define([
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
             }, this), 1);
+            $('.modal').on('scroll', this.variableWindStickyHeader);
+
         },
 
         rendered: function(){
@@ -391,6 +393,23 @@ define([
             Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
         },
 
+        variableWindStickyHeader: function(e){
+            if($('.wind-form #variable table:visible').length > 0){
+                var top = $('.modal').scrollTop();
+                var offset = $('.wind-form #variable table:first').offset();
+
+                if(offset.top < 0 && $('.wind-form .sticky').length === 0){
+                    // a sticky header to the table.
+                    $('<div class="sticky"><table class="table">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
+                } else if(top <= offset.top && $('.wind-form #variable .sticky').length > 0) {
+                    // remove the sticky header from the table.
+                    $('.wind-form #variable .sticky').remove();
+                } else {
+                    $('.wind-form #variable .sticky').css('top', top - 30 + 'px');
+                }
+            }
+        },
+
         next: function(){
             $('.xdsoft_datetimepicker:last').remove();
             this.ol.close();
@@ -405,6 +424,7 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker:last').remove();
+            $('.modal').off('scroll', this.variableWindStickyHeader);
             this.ol.close();
             FormModal.prototype.close.call(this);
         },
