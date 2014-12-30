@@ -78,6 +78,9 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('#datetime').datetimepicker('show');
             }, this));
+            if (this.model.isNew()){
+                this.$('.delete').prop('disabled', true);
+            }
 		},
 
         renderSubstanceInfo: function(){
