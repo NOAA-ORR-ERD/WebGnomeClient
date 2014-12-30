@@ -33,6 +33,10 @@ define([
             }
         },
 
+        stickyFooter: function(){
+            
+        },
+
         renderHelp: function(){
             if(this.$('.modal-header').length > 0){
                 if(this.$('.modal-header .gnome-help').length === 0){
