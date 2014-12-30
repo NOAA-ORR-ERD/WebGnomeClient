@@ -396,12 +396,14 @@ define([
         variableWindStickyHeader: function(e){
             if($('.wind-form #variable table:visible').length > 0){
                 var top = $('.modal').scrollTop();
+                var modal_offset = $('.modal').offset();
                 var offset = $('.wind-form #variable table:first').offset();
+                offset.top -= modal_offset.top;
 
                 if(offset.top < 0 && $('.wind-form .sticky').length === 0){
                     // a sticky header to the table.
-                    $('<div class="sticky"><table class="table">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
-                } else if(top <= offset.top && $('.wind-form #variable .sticky').length > 0) {
+                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
+                } else if(offset.top > 0 && $('.wind-form #variable .sticky').length > 0) {
                     // remove the sticky header from the table.
                     $('.wind-form #variable .sticky').remove();
                 } else {
