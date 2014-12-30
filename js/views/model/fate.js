@@ -498,6 +498,10 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
+                    },
+                    yaxis: {
+                        ticks: 4,
+                        tickDecimals: 3
                     }
                 });
             } else {
