@@ -227,6 +227,7 @@ define([
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             
             this.updateConstantSlide();
+            this.updateVariableSlide();
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -247,6 +248,7 @@ define([
             var variableSliderMax = this.$('#variable .slider').slider("option", "max");
             this.model.set('speed_uncertainty_scale', value / (50.0 / 3));
             this.renderTimeseries(value);
+            this.updateTooltipWidth();
         },
 
         updateConstantSlide: function(ui){
@@ -267,6 +269,7 @@ define([
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
                 this.model.set('speed_uncertainty_scale', uncertainty);
+                this.updateTooltipWidth();
             }
         },
 

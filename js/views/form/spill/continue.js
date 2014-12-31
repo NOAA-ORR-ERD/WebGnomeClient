@@ -221,6 +221,7 @@ define([
                 }
             }
             this.model.set('amount_uncertainty_scale', value / 5);
+            this.updateTooltipWidth();
         },
 
         updateRateSlide: function(ui){
@@ -243,6 +244,7 @@ define([
                     this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
+            this.updateTooltipWidth();
         },
 
         updateAmountTooltip: function(){
