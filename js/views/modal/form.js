@@ -37,14 +37,23 @@ define([
             var win_top = $(window).scrollTop();
             var modal_top = $('.modal').scrollTop();
             var modal_offset = $('.modal-footer:first').offset();
+            var modal_height = $('.modal').height();
+            //var modal_padding = $('.modal').css('padding-top');
+            var modal_footer_height = $('.modal-footer').height();
 
-            console.log(win_top);
-            console.log(modal_top);
-            console.log(modal_offset);
+            var window_bottom = win_top + $(window).height();
+            var modal_footer_height_adjusted = modal_offset.top + modal_height - modal_footer_height;
 
-            if (modal_offset.top < 0 && $('.modal-footer .sticky').length === 0){
+            console.log(window_bottom);
+            console.log(modal_footer_height_adjusted);
+
+            if (window_bottom < modal_footer_height_adjusted && $('.sticky').length === 0){
                 $('.modal-footer').clone().appendTo('.modal-content');
-                console.log('appended!');
+                $('.modal-footer:last').addClass('sticky');
+            } else if (window_bottom > modal_footer_height_adjusted && $('.sticky').length > 0){
+                $('.sticky').remove();
+            } else {
+                $('.sticky').css('top', modal_top - 300 + 'px');
             }
         },
 
