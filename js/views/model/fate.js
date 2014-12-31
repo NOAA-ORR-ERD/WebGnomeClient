@@ -554,6 +554,13 @@ define([
                         mode: 'time',
                         timezone: 'browser'
                     },
+                    yaxis: {
+                        ticks: [0, 10, 100, 1000, 10000, 100000],
+                        transform: function(v){
+                            return Math.log(v+10);
+                        },
+                        tickDecimals: 0
+                    },
                     series: {
                         lines: {
                             show: true,
