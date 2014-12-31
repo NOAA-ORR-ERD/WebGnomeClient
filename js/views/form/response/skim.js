@@ -63,6 +63,7 @@ define([
                 value = this.$('.slider').slider('value');
             }
             this.$('#rate-tooltip').text(value);
+            this.updateTooltipWidth();
         }
     });
 
