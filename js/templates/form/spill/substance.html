@@ -16,6 +16,19 @@
                     <div class="label label-warning">{{ categories[c] }}</div>
                 {% } %}
             </div>
+            <div class="panel panel-default">
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#sub-panel">
+                        <a class="btn btn-primary">Emulsion Override</a>
+                    </div>
+                </div>
+                <div id="sub-panel" class="collapse">
+                    <div class="panel-body">
+                        <div><label>Emulsification Constant:</label><input class="form-control" value="{{ emuls }}"></input></div>
+                        <div><label>Bullwinkle Fraction:</label><input class="form-control" value="{{ bullwinkle }}"></input></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

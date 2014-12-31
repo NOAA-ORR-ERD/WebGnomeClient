@@ -96,7 +96,9 @@ define([
                 api: Math.round(substance.get('api') * 1000) / 1000,
                 temps: substance.parseTemperatures(),
                 categories: substance.parseCategories(),
-                enabled: enabled
+                enabled: enabled,
+                emuls: substance.get('emulsion_water_fraction_max'),
+                bullwinkle: substance.get('bullwinkle_fraction')
             });
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
