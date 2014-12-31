@@ -34,7 +34,18 @@ define([
         },
 
         stickyFooter: function(){
-            
+            var win_top = $(window).scrollTop();
+            var modal_top = $('.modal').scrollTop();
+            var modal_offset = $('.modal-footer:first').offset();
+
+            console.log(win_top);
+            console.log(modal_top);
+            console.log(modal_offset);
+
+            if (modal_offset.top < 0 && $('.modal-footer .sticky').length === 0){
+                $('.modal-footer').clone().appendTo('.modal-content');
+                console.log('appended!');
+            }
         },
 
         renderHelp: function(){
@@ -65,6 +76,7 @@ define([
                     this.help.on('ready', this.renderHelp, this);
                 }
             }
+            this.$el.on('scroll', this.stickyFooter);
         },
 
         hidden: function() {
