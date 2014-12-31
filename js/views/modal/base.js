@@ -111,8 +111,10 @@ define([
                 var width = 0;
                 if(chars <= 3){
                     width = 40;
+                } else if(chars === 4){
+                    width = chars * 10;
                 } else {
-                    width = chars * 8;
+                    width = chars * 9;
                 }
                 var margin = (width / 2) - parseInt(7);
                 $(this).css({
