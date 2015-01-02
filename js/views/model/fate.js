@@ -721,6 +721,8 @@ define([
                 amount_released: 0
             };
             var cumulative = _.clone(report);
+            var low = _.clone(report);
+            var high =  _.clone(report);
 
             for(var set in dataset){
                 for(var step in dataset[set].data){
@@ -736,6 +738,20 @@ define([
                     }
                 }
             }
+            for(var set in dataset){
+                for(var step in dataset[set].low){
+                    if(dataset[set].low[step][0] <= end){
+                        low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
+                    }
+                }
+            }
+            for(var set in dataset){
+                for(var step in dataset[set].high){
+                    if(dataset[set].high[step][0] <= end){
+                        high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
+                    }
+                }
+            }
 
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
@@ -744,11 +760,15 @@ define([
             }
             for(var value in cumulative){
                 cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
+                low[value] = Math.round(converter.Convert(low[value], 'kg', api, 'API degree', units));
+                high[value] = Math.round(converter.Convert(high[value], 'kg', api, 'API degree', units));
             }
             
             var compiled = _.template(ICSTemplate, {
                 report: report,
                 cumulative: cumulative,
+                low: low,
+                high: high,
                 units: units
             });
 
