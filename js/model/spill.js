@@ -28,6 +28,10 @@ define([
                 return attrs.release.validationError;
             }
 
+            if (!attrs.element_type.isValid()){
+                return attrs.element_type.validationError;
+            }
+
             if ($.trim(attrs.name) === ''){
                 return 'A spill name is required!';
             }

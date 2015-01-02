@@ -118,7 +118,7 @@ define([
                 }
             }
             this.model.set('amount_uncertainty_scale', value / 5);
-            this.updateTooltipSize();            
+            //this.updateTooltipSize();            
         }
 
     });

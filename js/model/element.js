@@ -28,8 +28,10 @@ define([
             ]
         },
 
-        validate: function(){
-            
+        validate: function(attrs, options){
+            if (!attrs.substance.isValid()){
+                return attrs.substance.validationError;
+            }
         },
 
         toTree: function(){
