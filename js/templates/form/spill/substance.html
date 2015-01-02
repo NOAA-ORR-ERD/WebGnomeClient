@@ -23,30 +23,34 @@
                     </div>
                 </div>
                 <div id="sub-panel" class="collapse">
-                    <div class="panel-body col-md-6">
+                    <div class="panel-body col-md-10">
                         <div class="radio">
-                            <label id="default">
-                                <input type="radio" name="bullwinkle" value="default" selected>
-                                Default - computed from oil and weather information
-                            </label>
-                            <label id="manual">
-                                <input type="radio" name="bullwinkle" value="manual">
-                                <input type="number" class="manual form-control col-sm-3" min="0" disabled>
-                                <select class="form-control col-sm-3 manual" id="units-bullwinkle" disabled>
-                                    <option value="time">
-                                        hours
-                                    </option>
-                                    <option value="percent">
-                                        %
-                                    </option>
-                                </select>
-                                <div id="percent">
-                                    of any part of the spill has evaporated
-                                </div>
-                                <div id="hours">
-                                    hours have elapsed since start of spill
-                                </div>
-                            </label>
+                            <div>
+                                <label id="default">
+                                    <input type="radio" name="bullwinkle" value="default" selected>
+                                    Default - computed from oil and weather information
+                                </label>
+                            </div>
+                            <div>
+                                <label id="manual">
+                                    <input type="radio" name="bullwinkle" value="manual">
+                                    <input type="number" class="manual form-control col-md-1" min="0" disabled>
+                                    <select class="form-control col-md-3 manual" id="units-bullwinkle" disabled>
+                                        <option value="time">
+                                            hours
+                                        </option>
+                                        <option value="percent">
+                                            %
+                                        </option>
+                                    </select>
+                                    <div id="percent">
+                                        of any part of the spill has evaporated
+                                    </div>
+                                    <div id="hours">
+                                        hours have elapsed since start of spill
+                                    </div>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
