@@ -136,6 +136,17 @@ define([
         },
 
 		update: function(){
+            var emulsion_constant = parseFloat(this.$('#emuls_constant').val());
+            var bullwinkle_fract = parseFloat(this.$('#bullwinkle_fract').val());
+            var bullwinkle_time = parseFloat(this.$('#bullwinkle_time').val());
+
+            this.model.get('element_type').get('substance').set('emulsion_water_fraction_max', emulsion_constant);
+            this.model.get('element_type').get('substance').set('bullwinkle_fraction', bullwinkle_fract);
+
+            if (bullwinkle_time !== ''){
+                //this.model.set('bullwinkle_time', bullwinkle_time);
+            }
+
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
 			} else {
