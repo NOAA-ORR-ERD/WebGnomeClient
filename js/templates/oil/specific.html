@@ -114,14 +114,13 @@
                                             <th>Weathering (%)</th>
                                         </tr>
                                     {% for (var i = 0; i < data.densities.length; i++){ %}
-                                        {% var density = (data.densities[i].kg_m_3 / 1000).toFixed(3); %}
                                         {% if (_.isNumber(data.densities[i].weathering)) { %}
                                             {% var densityWeather = (data.densities[i].weathering * 100).toFixed(3); %}
                                         {% } else { %}
                                             {% var densityWeather = '--'; %}
                                         {% } %}
                                         <tr>
-                                            <td>{{ density }}</td>
+                                            <td>{{ data.densities[i].kg_m_3 }}</td>
                                             <td>{{ data.densities[i].ref_temp_f }} {{ data.densities[i].ref_temp_k }}</td>
                                             <td>{{ densityWeather }}</td>
                                         </tr>
