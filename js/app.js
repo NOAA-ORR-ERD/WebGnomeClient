@@ -5,11 +5,12 @@ define([
     'backbone',
     'router',
     'moment',
+    'sweetalert',
     'text!/package.json',
     'model/session',
     'model/gnome',
     'views/default/loading'
-], function($, _, Backbone, Router, moment, Package, SessionModel, GnomeModel, LoadingView) {
+], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, LoadingView) {
     'use strict';
     var app = {
         initialize: function(){
@@ -39,6 +40,22 @@ define([
                         var loading;
                         if(this.monitor.requests.length > 0){
                             this.monitor.requests = this.monitor.requests.filter(function(req){
+                                if(req.status !== undefined){
+                                    if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
+                                        if($('.modal').length === 0){
+                                            swal({
+                                                title: 'Application Error!',
+                                                text: 'An error in the application has occured, if this problem persists please contact support.',
+                                                type: 'error',
+                                                confirmButtonText: 'Refresh'
+                                            }, function(isConfirm){
+                                                if(isConfirm){
+                                                    window.location.reload();
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
                                 return req.status === undefined;
                             });
                         } else {
