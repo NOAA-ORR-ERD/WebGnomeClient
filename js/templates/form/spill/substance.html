@@ -26,13 +26,13 @@
                     <div class="panel-body col-md-6">
                         <div class="radio">
                             <label id="default">
-                                <input type="radio" name="bullwinkle" value="default">
+                                <input type="radio" name="bullwinkle" value="default" selected>
                                 Default - computed from oil and weather information
                             </label>
                             <label id="manual">
                                 <input type="radio" name="bullwinkle" value="manual">
-                                <input type="number" class="form-control col-sm-3" min="0">
-                                <select class="form-control col-sm-3" id="units">
+                                <input type="number" class="manual form-control col-sm-3" min="0" disabled>
+                                <select class="form-control col-sm-3 manual" id="units-bullwinkle" disabled>
                                     <option value="time">
                                         hours
                                     </option>
