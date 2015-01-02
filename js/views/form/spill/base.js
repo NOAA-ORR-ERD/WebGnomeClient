@@ -81,6 +81,7 @@ define([
             if (this.model.isNew()){
                 this.$('.delete').prop('disabled', true);
             }
+            this.subtextUpdate();
 		},
 
         renderSubstanceInfo: function(){
@@ -135,16 +136,22 @@ define([
             }
         },
 
+        subtextUpdate: function(){
+            if (this.$('#units-bullwinkle').val() === 'time'){
+                this.$('#hours').show();
+                this.$('#percent').hide();
+            } else {
+                this.$('#hours').hide();
+                this.$('#percent').show();
+            }
+        },
+
 		update: function(){
-            var emulsion_constant = parseFloat(this.$('#emuls_constant').val());
-            var bullwinkle_fract = parseFloat(this.$('#bullwinkle_fract').val());
-            var bullwinkle_time = parseFloat(this.$('#bullwinkle_time').val());
-
-            this.model.get('element_type').get('substance').set('emulsion_water_fraction_max', emulsion_constant);
-            this.model.get('element_type').get('substance').set('bullwinkle_fraction', bullwinkle_fract);
-
-            if (bullwinkle_time !== ''){
-                //this.model.set('bullwinkle_time', bullwinkle_time);
+            this.subtextUpdate();
+            if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
+                this.$('.manual').prop('disabled', false);
+            } else {
+                this.$('.manual').prop('disabled', true);
             }
 
 			if(!this.model.isValid()){
