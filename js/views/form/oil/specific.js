@@ -171,6 +171,10 @@ define([
                     } else {
                         oil[attr] = oil[attr].toFixed(3);
                     }
+                } else if (attr === 'adhesion_kg_m_2'){
+                    if (oil['estimated'][attr]){
+                        oil[attr] = '<i>' + oil[attr] + '</i>';
+                    }
                 }
 			}
 			return oil;
