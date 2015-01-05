@@ -34,26 +34,24 @@ define([
         },
 
         stickyFooter: function(){
-            var win_top = $(window).scrollTop();
-            var modal_top = $('.modal').scrollTop();
-            var modal_offset = $('.modal-footer:first').offset();
+            var modal_offset = $('.modal').offset();
+            var footer_offset = $('.modal-footer:first').offset();
+            modal_offset.top += $(window).height();
+            footer_offset.top -= modal_offset.top;
             var modal_height = $('.modal').height();
-            //var modal_padding = $('.modal').css('padding-top');
-            var modal_footer_height = $('.modal-footer').height();
+            var top = $('.modal').scrollTop();
 
-            var window_bottom = win_top + $(window).height();
-            var modal_footer_height_adjusted = modal_offset.top + modal_height - modal_footer_height;
+            var bottom = (modal_height - top - $(window).height());
 
-            console.log(window_bottom);
-            console.log(modal_footer_height_adjusted);
+            // var modal_footer_height = $('.modal-footer').height();
 
-            if (window_bottom < modal_footer_height_adjusted && $('.sticky').length === 0){
+            if (footer_offset.top > 0 && $('.sticky-modal-footer').length === 0){
                 $('.modal-footer').clone().appendTo('.modal-content');
-                $('.modal-footer:last').addClass('sticky');
-            } else if (window_bottom > modal_footer_height_adjusted && $('.sticky').length > 0){
-                $('.sticky').remove();
+                $('.modal-footer:last').addClass('sticky-modal-footer');
+            } else if (footer_offset.top < 0 && $('.sticky-modal-footer').length > 0){
+                $('.sticky-modal-footer').remove();
             } else {
-                $('.sticky').css('top', modal_top - 300 + 'px');
+                $('.sticky-modal-footer').css('bottom', bottom + 'px');
             }
         },
 
