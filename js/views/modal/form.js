@@ -38,20 +38,21 @@ define([
             var footer_offset = $('.modal-footer:first').offset();
             modal_offset.top += $(window).height();
             footer_offset.top -= modal_offset.top;
-            var modal_height = $('.modal').height();
+            var modal_height = $('.modal-dialog').height();
             var top = $('.modal').scrollTop();
-
-            var bottom = (modal_height - top - $(window).height());
-
-            // var modal_footer_height = $('.modal-footer').height();
 
             if (footer_offset.top > 0 && $('.sticky-modal-footer').length === 0){
                 $('.modal-footer').clone().appendTo('.modal-content');
                 $('.modal-footer:last').addClass('sticky-modal-footer');
+                if(this.stickyFooter()){
+                    this.stickyFooter();
+                }
+
             } else if (footer_offset.top < 0 && $('.sticky-modal-footer').length > 0){
                 $('.sticky-modal-footer').remove();
             } else {
-                $('.sticky-modal-footer').css('bottom', bottom + 'px');
+                var bottom = (modal_height - top - $(window).height());
+                $('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
             }
         },
 
@@ -84,6 +85,7 @@ define([
                 }
             }
             this.$el.on('scroll', this.stickyFooter);
+            this.stickyFooter();
         },
 
         hidden: function() {
@@ -168,6 +170,8 @@ define([
         close: function(){
             this.remove();
             this.unbind();
+            this.$el.off('scroll', this.stickyFooter);
+
         }
     });
 
