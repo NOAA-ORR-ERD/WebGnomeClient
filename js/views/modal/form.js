@@ -41,18 +41,19 @@ define([
             footer_offset.top += this.$('.modal-footer:first').outerHeight();
             var modal_height = this.$('.modal-dialog').height();
             var top = this.$el.scrollTop();
+            var bottom;
 
-            if (footer_offset.top > 0 && $('.sticky-modal-footer').length === 0){
-                this.$('.modal-footer').clone().appendTo('.modal-content');
+            if (footer_offset.top > 0 && this.$('.sticky-modal-footer').length === 0){
+                var modalClone = this.$('.modal-footer').clone();
+                this.$('.modal-content').append(modalClone);
                 this.$('.modal-footer:last').addClass('sticky-modal-footer');
                 this.$('.modal-footer:last button').addClass('btn-sm btn');
-                if(this.stickyFooter()){
-                    this.stickyFooter();
-                }
-            } else if (footer_offset.top < 0 && $('.sticky-modal-footer').length > 0){
+                bottom = (modal_height - top - $(window).height());
+                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+            } else if (footer_offset.top < 0 && this.$('.sticky-modal-footer').length > 0){
                 this.$('.sticky-modal-footer').remove();
             } else {
-                var bottom = (modal_height - top - $(window).height());
+                bottom = (modal_height - top - $(window).height());
                 this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
             }
         },
@@ -85,7 +86,9 @@ define([
                     this.help.on('ready', this.renderHelp, this);
                 }
             }
-            this.$el.on('scroll', _.bind(this.stickyFooter, this));
+            if (_.isUndefined(this.scrollEvent)){
+                this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
+            }
             this.stickyFooter();
         },
 
@@ -171,8 +174,7 @@ define([
         close: function(){
             this.remove();
             this.unbind();
-            this.$el.off('scroll', this.stickyFooter);
-
+            this.$el.off('scroll');
         }
     });
 
