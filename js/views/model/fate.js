@@ -866,8 +866,10 @@ define([
                 delete titles.floating;
                 delete titles.dispersed;
                 delete titles.evaporated;
+                delete titles.amount_released;
                 var keys = Object.keys(titles);
                 keys.unshift('floating', 'evaporated', 'dispersed');
+                keys.push('amount_released');
 
                 for(var type in keys){
                     this.dataset.push({
