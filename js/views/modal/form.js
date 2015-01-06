@@ -34,25 +34,26 @@ define([
         },
 
         stickyFooter: function(){
-            var modal_offset = $('.modal').offset();
-            var footer_offset = $('.modal-footer:first').offset();
+            var modal_offset = this.$el.offset();
+            var footer_offset = this.$('.modal-footer:first').offset();
             modal_offset.top += $(window).height();
             footer_offset.top -= modal_offset.top;
-            var modal_height = $('.modal-dialog').height();
-            var top = $('.modal').scrollTop();
+            footer_offset.top += this.$('.modal-footer:first').outerHeight();
+            var modal_height = this.$('.modal-dialog').height();
+            var top = this.$el.scrollTop();
 
             if (footer_offset.top > 0 && $('.sticky-modal-footer').length === 0){
-                $('.modal-footer').clone().appendTo('.modal-content');
-                $('.modal-footer:last').addClass('sticky-modal-footer');
+                this.$('.modal-footer').clone().appendTo('.modal-content');
+                this.$('.modal-footer:last').addClass('sticky-modal-footer');
+                this.$('.modal-footer:last button').addClass('btn-sm btn');
                 if(this.stickyFooter()){
                     this.stickyFooter();
                 }
-
             } else if (footer_offset.top < 0 && $('.sticky-modal-footer').length > 0){
-                $('.sticky-modal-footer').remove();
+                this.$('.sticky-modal-footer').remove();
             } else {
                 var bottom = (modal_height - top - $(window).height());
-                $('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
             }
         },
 
@@ -84,7 +85,7 @@ define([
                     this.help.on('ready', this.renderHelp, this);
                 }
             }
-            this.$el.on('scroll', this.stickyFooter);
+            this.$el.on('scroll', _.bind(this.stickyFooter, this));
             this.stickyFooter();
         },
 
