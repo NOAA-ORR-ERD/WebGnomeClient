@@ -31,7 +31,7 @@ define([
             this.$('.slider').slider({
                 min: 0,
                 max: 100,
-                value: 0,
+                value: 20,
                 create: _.bind(function(){
                     this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
                 }, this),
@@ -39,6 +39,7 @@ define([
                     this.updateEfficiency(ui);
                 }, this)
             });
+            this.updateEfficiency();
         },
 
         update: function(){
