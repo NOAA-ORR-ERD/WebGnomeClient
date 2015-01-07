@@ -27,10 +27,8 @@ define([
                         success: _.bind(function(){
                             webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    webgnome.model.setup(_.bind(function(){
-                                        this.trigger('loaded');
-                                        this.loading = false;
-                                    }, this));
+                                    this.trigger('loaded');
+                                    this.loading = false;
                                 }, this)
                             });
                         }, this)
