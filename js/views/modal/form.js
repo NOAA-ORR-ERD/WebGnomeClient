@@ -89,6 +89,9 @@ define([
             if (_.isUndefined(this.scrollEvent)){
                 this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
             }
+            if (_.isUndefined(this.resizeEvent)){
+                this.resizeEvent = this.$('.modal-dialog').on('resize', _.bind(this.stickyFooter, this));
+            }
             this.stickyFooter();
         },
 
