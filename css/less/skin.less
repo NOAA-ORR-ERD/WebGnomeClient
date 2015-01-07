@@ -101,6 +101,42 @@ img{
     font-weight: bold;
 }
 
+.chosen-container{
+    &.chosen-container-active{
+        .chosen-single{
+            box-shadow: none;
+            border: 1px solid #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+            background: rgba(255, 255, 255, .58);
+        }
+    }
+
+    .chosen-single{
+        padding: 6px 12px;
+        height: auto;
+        background: rgba(255, 255, 255, .58);
+        font-size: 14px;
+        border: 1px solid #ccc;
+        box-shadow: none;
+
+        div{
+            top: 7px;
+            width: 16px;
+        }
+    }
+    .chosen-drop{
+        border: 1px solid #66afe9;
+        border-top: 0;
+    }
+    .chosen-results{
+        li.highlighted{
+            background: #428bca
+        }
+    }
+}
+
 .help-content{
     font-size: 12px;
 
