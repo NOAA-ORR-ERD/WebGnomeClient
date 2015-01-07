@@ -4,6 +4,7 @@ define([
     'backbone',
     'module',
     'chosen',
+    'moment',
     'jqueryui/core',
     'model/oil/distinct',
     'views/modal/form',
@@ -11,7 +12,7 @@ define([
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html'
-], function($, _, Backbone, module, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+], function($, _, Backbone, module, chosen, moment, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
@@ -36,9 +37,15 @@ define([
             this.oilTable = new OilTable();
             this.model = elementModel;
             this.oilCache = localStorage.getItem('oil_cache');
+            var loadModal;
+            var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            if (_.isNull(this.oilCache)){
+            if (moment().unix() - oilCacheJson.ts > 86400){
+                loadModal = true;
+            }
+
+            if (_.isNull(this.oilCache) || loadModal){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
             }
