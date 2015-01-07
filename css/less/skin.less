@@ -1280,6 +1280,7 @@ nav.navbar{
 
     .emulsionPanel{
         padding-bottom: 0px;
+        border: none;
     }
 
     .panel{
@@ -1300,10 +1301,14 @@ nav.navbar{
             .panel-heading{
                 .add{
                     .glyphicon-pencil;
-
                 }
 
-                .state{.glyphicon-ok;
+                .emulsionToggle:after{
+                    .glyphicon-chevron-right;
+                }
+
+                .state{
+                    .glyphicon-ok;
                 }
             }
 
@@ -1317,6 +1322,11 @@ nav.navbar{
                         color: rgba(18, 129, 0, 0.57);
                     }
                 }
+            }
+
+            .emulsion{
+                margin-bottom: 0px;
+                border: 0px;
             }
 
             #emulsionHeader{
