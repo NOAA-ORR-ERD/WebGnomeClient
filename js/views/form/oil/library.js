@@ -37,15 +37,15 @@ define([
             this.oilTable = new OilTable();
             this.model = elementModel;
             this.oilCache = localStorage.getItem('oil_cache');
-            var loadModal;
+            this.loadModal;
             var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
             if (moment().unix() - oilCacheJson.ts > 86400){
-                loadModal = true;
+                this.loadModal = true;
             }
 
-            if (_.isNull(this.oilCache) || loadModal){
+            if (_.isNull(this.oilCache) || this.loadModal){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
             }
@@ -64,7 +64,7 @@ define([
             if(this.oilTable.ready){
                 // Removes loading modal just prior to render call of oilLib
 
-                if (_.isNull(this.oilCache)){
+                if (_.isNull(this.oilCache) || this.loadModal){
                     this.loadingGif.hide();
                 }
                 // Template in oilTable's html to oilLib's template prior to render call
