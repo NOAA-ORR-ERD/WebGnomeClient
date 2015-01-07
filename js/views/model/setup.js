@@ -550,7 +550,8 @@ define([
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
-                var compiled = _.template(SpillPanelTemplate, {spills: spills.models});
+                var substance = spills.at(0).get('element_type').get('substance');
+                var compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories()});
 
                 var dataset = [];
                 for (var spill in spills.models){
