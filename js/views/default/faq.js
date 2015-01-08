@@ -13,7 +13,8 @@ define([
             'click .resume': 'resume',
             'click .build': 'build',
             'click .load': 'load',
-            'focus #helpquery': 'renderContent'
+            'focus #helpquery': 'renderContent',
+            'click .back': 'restoreDefault'
         },
 
         initialize: function(){
@@ -28,6 +29,12 @@ define([
 
         renderContent: function(){
             var subtemplate = _.template(SpecificTemplate, {});
+            this.$('.helpcontent').html('');
+            this.$('.helpcontent').append(subtemplate);
+        },
+
+        restoreDefault: function(){
+            var subtemplate = _.template(DefaultTemplate, {});
             this.$('.helpcontent').html('');
             this.$('.helpcontent').append(subtemplate);
         }
