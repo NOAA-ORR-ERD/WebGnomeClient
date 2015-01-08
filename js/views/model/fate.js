@@ -480,7 +480,7 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_density']);
+            var dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, {
@@ -891,7 +891,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['avg_density', 'dispersed', 'evaporated', 'emulsified', 'avg_viscosity'].indexOf(this.dataset[set].name) !== -1){
+                if(['dispersed', 'evaporated', 'emulsified', 'floating', 'amount_released', 'skimmed', 'burned'].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
@@ -903,16 +903,16 @@ define([
                     }, this);
                     high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
+
+                    nominal_value = nominal[this.dataset[set].name];
+                    nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 } else {
                     low_value = low[this.dataset[set].name];
-                    low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
-
+                    nominal_value = nominal[this.dataset[set].name];
                     high_value = high[this.dataset[set].name];
-                    high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
                 }
 
-                nominal_value = nominal[this.dataset[set].name];
-                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+                
 
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
