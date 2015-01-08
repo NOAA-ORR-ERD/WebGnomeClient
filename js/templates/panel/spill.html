@@ -5,10 +5,14 @@
 </div>
 {% if (spills.length > 0) { %}
     <div id="substanceInfo" class="single row">
-        <div><label>Substance Information</label></div>
+        <div class="col-sm-12"><label>Substance Information</label></div>
         <div class="col-sm-6">
             <label>Name: </label>
             {{ substance.get('name') }}
+        </div>
+        <div class="col-sm-6">
+            <label>API: </label>
+            {{ substance.get('api') }}
         </div>
         <div class="col-sm-6">
             <label>Categories: </label>
