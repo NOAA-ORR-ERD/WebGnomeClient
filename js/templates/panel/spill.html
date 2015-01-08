@@ -4,6 +4,23 @@
     <div class="canvas"></div>
 </div>
 {% if (spills.length > 0) { %}
+    <div id="substanceInfo" class="single row">
+        <div class="col-sm-12"><label>Substance Information</label></div>
+        <div class="col-sm-6">
+            <label>Name: </label>
+            {{ substance.get('name') }}
+        </div>
+        <div class="col-sm-6">
+            <label>API: </label>
+            {{ substance.get('api') }}
+        </div>
+        <div class="col-sm-6">
+            <label>Categories: </label>
+                {% for(c in categories){ %}
+                    <div class="label label-warning">{{ categories[c] }}</div>
+                {% } %}
+        </div>
+    </div>
 	<div class="spill-list">
 	{% for (var i = 0; i < spills.length; i++){ %}
 		<div class="single row" data-id="{{ spills[i].get('id') }}">
