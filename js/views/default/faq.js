@@ -2,8 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/default/faq.html'
-], function($, _, Backbone, FAQTemplate){
+    'text!templates/default/faq.html',
+    'text!templates/faq/specific.html',
+    'text!templates/faq/default.html'
+], function($, _, Backbone, FAQTemplate, SpecificTemplate, DefaultTemplate){
 	var faqView = Backbone.View.extend({
         className: 'page faq',
 
@@ -18,8 +20,13 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(FAQTemplate, {});
+            var subtemplate = _.template(DefaultTemplate, {});
+            var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('body').append(this.$el.append(compiled));
+        },
+
+        renderContent: function(){
+            
         }
     });
 
