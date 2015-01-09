@@ -20,6 +20,7 @@ define([
         },
 
         initialize: function(){
+            this.seed();
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
         },
@@ -27,7 +28,11 @@ define([
         render: function(){
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
-            $('body').append(this.$el.append(compiled));
+            $('.faqspace').append(this.$el.append(compiled));
+        },
+
+        seed: function(){
+            $('body').append('<div class="faqspace"></div>');
         },
 
         parseHelp: function(){
