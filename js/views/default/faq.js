@@ -20,36 +20,51 @@ define([
         },
 
         initialize: function(){
-            this.render();
+            this.on('ready', this.parseHelp);
+            this.fetchQuestions();
         },
 
         render: function(){
-            var subtemplate = _.template(DefaultTemplate, {});
+            var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('body').append(this.$el.append(compiled));
-            var helpModel = new HelpModel();
-            helpModel.fetch({
-                success: _.bind(function(model){
-                    this.questions = model;
-                    this.parseHelp(model);
-                }, this)
-            });
         },
 
-        parseHelp: function(model){
-            for (var i = 0; i < 20; i++){
-                console.log(this.questions);
+        parseHelp: function(){
+            var model = this.questions;
+            this.parsedData = [];
+            for (var i = 0; i < 5; i++){
                 if (_.isObject(model.attributes[i])){
                     var helpHTML = $('<div />').append(model.attributes[i].html);
                     var path = model.attributes[i].path;
                     var helpTitle = $($.parseHTML(helpHTML[0].innerHTML)).find('h1')[i].innerHTML;
-                    this.$('.helpcontent').append('<div class="col-md-6"><h4 data-path="' + path + '">' + helpTitle + '</h4></div>');
+                    var helpContent = $($.parseHTML(helpHTML[0].innerHTML)).find('p')[i].innerHTML;
+                    this.parsedData.push({title: helpTitle, content: helpContent});
                 }
             }
+            this.render();
+        },
+
+        fetchQuestions: function(){
+            var helpModel = new HelpModel();
+            helpModel.fetch({
+                success: _.bind(function(model){
+                    this.questions = model;
+                    this.trigger('ready');
+                }, this)
+            });
         },
 
         specificHelp: function(e){
-            console.log(e.target.dataset);
+            var models = this.questions.attributes;
+            for (var i in models){
+                if (models[i].path === e.target.dataset.path){
+                    var compiled = _.template(SpecificTemplate, {title: 'moo', content: models[i].html});
+                    this.$('#support').html('');
+                    this.$('#support').append(compiled);
+                    break;
+                }
+            }
         },
 
         renderContent: function(){
@@ -59,9 +74,9 @@ define([
         },
 
         restoreDefault: function(){
-            var subtemplate = _.template(DefaultTemplate, {});
-            this.$('.helpcontent').html('');
-            this.$('.helpcontent').append(subtemplate);
+            var subtemplate = _.template(DefaultTemplate, { topics: this.parsedData });
+            this.$('#support').html('');
+            this.$('#support').append(subtemplate);
         }
     });
 
