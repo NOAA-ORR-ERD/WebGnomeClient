@@ -56,10 +56,10 @@ define([
         },
 
         specificHelp: function(e){
-            var models = this.questions.attributes;
-            for (var i in models){
-                if (models[i].path === e.target.dataset.path){
-                    var compiled = _.template(SpecificTemplate, {title: 'moo', content: models[i].html});
+            var data = this.parsedData;
+            for (var i in data){
+                if (data[i].title === e.target.dataset.title){
+                    var compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content });
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
