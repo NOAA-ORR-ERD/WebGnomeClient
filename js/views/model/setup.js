@@ -125,7 +125,6 @@ define([
 
         clickDate: function(){
             this.$('.datetime').trigger('click');
-            console.log("calendar clicked");
         },
 
         initMason: function(){
@@ -630,9 +629,7 @@ define([
         },
 
         hoverSpill: function(e){
-            console.log($(e.target).parent());
             if ($(e.target).attr('id') !== 'substanceInfo'){
-                console.log('if ran');
                 var id = $(e.target).data('id');
                 if (_.isUndefined(id)){
                     id = $(e.target).parents('.single').data('id');
