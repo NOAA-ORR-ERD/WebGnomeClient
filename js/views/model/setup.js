@@ -759,7 +759,7 @@ define([
                 this.$('.response .panel-body').html(compiled);
                 this.$('.response .panel-body').show();
 
-                this.graphDraw(this.responses);
+                this.graphReponses(this.responses);
 
             } else {
                 this.$('.response .panel').removeClass('complete');
@@ -768,7 +768,7 @@ define([
             }   
         },
 
-        graphDraw: function(responses){
+        graphReponses: function(responses){
             var burnData = [];
             var skimData = [];
             var disperseData = [];
@@ -856,11 +856,11 @@ define([
             if (_.isUndefined(id)){
                 id = $(e.target).parents('.single').data('id');
             }
-            this.graphDraw([webgnome.model.get('weatherers').get(id)]);
+            this.graphReponses([webgnome.model.get('weatherers').get(id)]);
         },
 
         unhoverResponse: function(){
-            this.graphDraw(this.responses);
+            this.graphReponses(this.responses);
         },
 
         loadResponse: function(e){
