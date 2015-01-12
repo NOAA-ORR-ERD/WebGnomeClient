@@ -1360,8 +1360,12 @@ nav.navbar{
     }
 
     .emulsionPanel{
-        padding-bottom: 0px;
         border: none;
+        .radio {
+            div:first-child {
+                margin-bottom: 20px;
+            }
+        }
     }
 
     .panel{
@@ -1375,7 +1379,9 @@ nav.navbar{
         }
 
         #sub-panel{
-            padding-bottom: 0px;
+            border: 1px solid white;
+            border-top: 0;
+            background-color: white;
         }
 
         &.complete{
