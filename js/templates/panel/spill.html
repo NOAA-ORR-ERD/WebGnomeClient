@@ -27,7 +27,7 @@
 			<div class="col-sm-9">
                 <h5>{{ spills[i].get('name') }}</h5>
                 <span class="label label-default">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</span>
-                {% if (spills[i].get('release').get('start_position')){ %}
+                {% if (spills[i].get('release').get('start_position') && localStorage.getItem('prediction') !== 'fate'){ %}
                     {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
                     {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
                     {% var start = lat + ', ' + lon %}

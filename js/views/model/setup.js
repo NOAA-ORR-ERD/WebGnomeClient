@@ -630,21 +630,25 @@ define([
         },
 
         hoverSpill: function(e){
-            var id = $(e.target).data('id');
-            if (_.isUndefined(id)){
-                id = $(e.target).parents('.single').data('id');
-            }
-            var coloredSet = [];
-            for(var dataset in this.spillDataset){
-                var ds = _.clone(this.spillDataset[dataset]);
-                if (this.spillDataset[dataset].id != id){
-                    ds.color = '#ddd';
+            console.log($(e.target).parent());
+            if ($(e.target).attr('id') !== 'substanceInfo'){
+                console.log('if ran');
+                var id = $(e.target).data('id');
+                if (_.isUndefined(id)){
+                    id = $(e.target).parents('.single').data('id');
                 }
+                var coloredSet = [];
+                for(var dataset in this.spillDataset){
+                    var ds = _.clone(this.spillDataset[dataset]);
+                    if (this.spillDataset[dataset].id != id){
+                        ds.color = '#ddd';
+                    }
 
-                coloredSet.push(ds);
+                    coloredSet.push(ds);
+                }
+                this.spillPlot.setData(coloredSet);
+                this.spillPlot.draw();
             }
-            this.spillPlot.setData(coloredSet);
-            this.spillPlot.draw();
         },
 
         unhoverSpill: function(){
