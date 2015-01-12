@@ -36,17 +36,18 @@ define([
         },
 
         parseHelp: function(){
-            var model = this.questions;
+            var body = this.body;
             this.parsedData = [];
             for (var i = 0; i < 5; i++){
-                if (_.isObject(model.attributes[i])){
-                    var helpHTML = $('<div />').append(model.attributes[i].html);
-                    var path = model.attributes[i].path;
-                    var helpTitle = $($.parseHTML(helpHTML[0].innerHTML)).find('h1')[i].innerHTML;
-                    var helpContent = $($.parseHTML(helpHTML[0].innerHTML)).find('p')[i].innerHTML;
+                if (_.isObject(body.get(i))){
+                    var helpTopicBody = $('<div>' + body.get(i).html + '</div>');
+                    var helpTitle = helpTopicBody.find('h1:first').text();
+                    helpTopicBody.find('h1:first').remove();
+                    var helpContent = helpTopicBody.html();
                     this.parsedData.push({title: helpTitle, content: helpContent});
                 }
             }
+            window.parsedData = this.parsedData;
             this.render();
         },
 
@@ -54,7 +55,7 @@ define([
             var helpModel = new HelpModel();
             helpModel.fetch({
                 success: _.bind(function(model){
-                    this.questions = model;
+                    this.body = model;
                     this.trigger('ready');
                 }, this)
             });
