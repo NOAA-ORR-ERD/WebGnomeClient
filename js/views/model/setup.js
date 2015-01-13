@@ -181,9 +181,9 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation();
-                        webgnome.model.on('reset:location', webgnome.model.save);
-                        this.togglePrediction(e, target);
+                        webgnome.model.resetLocation(_.bind(function(){
+                            this.togglePrediction(e, target);
+                        }, this));
                     }
                 }, this));
             } else {
@@ -927,6 +927,7 @@ define([
                     weatherer.save();
                 });
             }
+            webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
         },
 
         close: function(){
