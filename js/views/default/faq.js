@@ -39,13 +39,16 @@ define([
         parseHelp: function(){
             var body = this.body.models;
             this.parsedData = [];
-            for (var i = 0; i < 20; i++){
+            for (var i = 0; i < 14; i++){
                 if (_.isObject(body[i])){
                     var helpTopicBody = $('<div>' + body[i].get('html') + '</div>');
                     var helpTitle = helpTopicBody.find('h1').text();
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
-                    this.parsedData.push({title: helpTitle, content: helpContent});
+                    var path = body[i].get('path');
+                    if (helpTitle !== ''){
+                        this.parsedData.push({title: helpTitle, content: helpContent, path: path});
+                    }
                 }
             }
             window.bodyData = body;
