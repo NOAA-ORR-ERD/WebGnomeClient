@@ -5,8 +5,9 @@ define([
     'text!templates/default/faq.html',
     'text!templates/faq/specific.html',
     'text!templates/faq/default.html',
-    'model/help/help'
-], function($, _, Backbone, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel){
+    'model/help/help',
+    'collection/help'
+], function($, _, Backbone, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
 	var faqView = Backbone.View.extend({
         className: 'page faq',
 
@@ -36,24 +37,25 @@ define([
         },
 
         parseHelp: function(){
-            var body = this.body;
+            var body = this.body.models;
             this.parsedData = [];
-            for (var i = 0; i < 5; i++){
-                if (_.isObject(body.get(i))){
-                    var helpTopicBody = $('<div>' + body.get(i).html + '</div>');
-                    var helpTitle = helpTopicBody.find('h1:first').text();
+            for (var i = 0; i < 20; i++){
+                if (_.isObject(body[i])){
+                    var helpTopicBody = $('<div>' + body[i].get('html') + '</div>');
+                    var helpTitle = helpTopicBody.find('h1').text();
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     this.parsedData.push({title: helpTitle, content: helpContent});
                 }
             }
+            window.bodyData = body;
             window.parsedData = this.parsedData;
             this.render();
         },
 
         fetchQuestions: function(){
-            var helpModel = new HelpModel();
-            helpModel.fetch({
+            var helpCollection = new HelpCollection();
+            helpCollection.fetch({
                 success: _.bind(function(model){
                     this.body = model;
                     this.trigger('ready');
