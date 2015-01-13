@@ -241,7 +241,7 @@ define([
             return false;
         },
 
-        resetLocation: function(){
+        resetLocation: function(cb){
             // clear any location relevant objects from the model.
 
             // reset movers only preserving the wind at the moment.
@@ -261,7 +261,13 @@ define([
             map.save(null, {
                 success: _.bind(function(){
                     this.set('map', map);
-                    this.trigger('reset:location');
+                    this.save(null, {
+                        success: _.bind(function(){
+                            if(cb){
+                                cb();
+                            }
+                        }, this)
+                    });
                 }, this)
             });
         },
