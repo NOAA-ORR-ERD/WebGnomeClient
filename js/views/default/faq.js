@@ -17,7 +17,7 @@ define([
             'click .load': 'load',
             'focus #helpquery': 'renderContent',
             'click .back': 'restoreDefault',
-            'click h4': 'specificHelp'
+            'click .topic': 'specificHelp'
         },
 
         initialize: function(){
