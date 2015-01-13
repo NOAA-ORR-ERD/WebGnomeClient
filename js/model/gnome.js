@@ -249,18 +249,18 @@ define([
             var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
             movers.reset(windMovers);
 
+            // remove any environment other than wind and water
+            var environment = this.get('environment');
+            var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
+            environment.reset(winds);
+            environment.add(water);
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             map.save(null, {
                 success: _.bind(function(){
                     this.set('map', map);
-                    // remove any environment other than wind and water
-                    var environment = this.get('environment');
-                    var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
-                    var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
-                    environment.reset(winds);
-                    environment.add(water);
-                    
                     this.trigger('reset:location');
                 }, this)
             });
