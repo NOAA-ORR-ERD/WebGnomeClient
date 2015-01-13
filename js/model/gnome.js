@@ -16,13 +16,14 @@ define([
     'model/outputters/weathering',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
+    'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
     BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer, BurnWeatherer, SkimWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -48,6 +49,7 @@ define([
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
                 'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
+                'gnome.weatherers.emulsification.Emulsification': EmulsificationWeatherer,
                 'gnome.weatherers.cleanup.Burn': BurnWeatherer,
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
@@ -295,12 +297,18 @@ define([
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);
-                                                    this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
-                                                        validate: false,
+                                                    var emulsification = new EmulsificationWeatherer();
+                                                    emulsification.save(null, {
                                                         success: _.bind(function(model, response, options){
-                                                            if(_.isFunction(cb)){
-                                                                cb();
-                                                            }
+                                                            this.get('weatherers').add(emulsification);
+                                                            this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
+                                                                validate: false,
+                                                                success: _.bind(function(model, response, options){
+                                                                    if(_.isFunction(cb)){
+                                                                        cb();
+                                                                    }
+                                                                }, this)
+                                                            });
                                                         }, this)
                                                     });
                                                 }, this)
