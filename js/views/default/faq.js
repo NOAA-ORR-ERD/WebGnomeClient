@@ -2,12 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'chosen',
     'text!templates/default/faq.html',
     'text!templates/faq/specific.html',
     'text!templates/faq/default.html',
     'model/help/help',
     'collection/help'
-], function($, _, Backbone, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
+], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
 	var faqView = Backbone.View.extend({
         className: 'page faq',
 
@@ -23,6 +24,7 @@ define([
         initialize: function(){
             this.seed();
             this.on('ready', this.parseHelp);
+            this.on('topicsReady', this.populateTopics);
             this.fetchQuestions();
         },
 
@@ -30,6 +32,19 @@ define([
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('.faqspace').append(this.$el.append(compiled));
+            this.trigger('topicsReady');
+        },
+
+        populateTopics: function(){
+            this.$('.chosen-select').chosen({width: '200px', no_results_text: 'No results match: '});
+            this.$('.chosen-select').append($('<option></option>').attr('value', 'none').text('none'));
+            for (var k in this.parsedData){
+                this.$('.chosen-select')
+                    .append($('<option></option>'))
+                        .attr('value', this.parsedData[k].title)
+                        .text(this.parsedData[k].title);
+            }
+            this.$('.chosen-select').trigger('chosen:updated');
         },
 
         seed: function(){
@@ -39,10 +54,10 @@ define([
         parseHelp: function(){
             var body = this.body.models;
             this.parsedData = [];
-            for (var i = 0; i < 14; i++){
+            for (var i in body){
                 if (_.isObject(body[i])){
                     var helpTopicBody = $('<div>' + body[i].get('html') + '</div>');
-                    var helpTitle = helpTopicBody.find('h1').text();
+                    var helpTitle = helpTopicBody.find('h1:first').text();
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     var path = body[i].get('path');
@@ -51,8 +66,6 @@ define([
                     }
                 }
             }
-            window.bodyData = body;
-            window.parsedData = this.parsedData;
             this.render();
         },
 
