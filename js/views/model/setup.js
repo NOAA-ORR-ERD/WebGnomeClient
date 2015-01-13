@@ -927,6 +927,7 @@ define([
                     weatherer.save();
                 });
             }
+            webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
         },
 
         close: function(){
