@@ -24,7 +24,6 @@ define([
         initialize: function(){
             this.seed();
             this.on('ready', this.parseHelp);
-            this.on('topicsReady', this.populateTopics);
             this.fetchQuestions();
         },
 
@@ -32,17 +31,18 @@ define([
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('.faqspace').append(this.$el.append(compiled));
-            this.trigger('topicsReady');
+            setTimeout(_.bind(function(){this.populateTopics();}, this), 1000);
         },
 
         populateTopics: function(){
-            this.$('.chosen-select').chosen({width: '200px', no_results_text: 'No results match: '});
-            this.$('.chosen-select').append($('<option></option>').attr('value', 'none').text('none'));
-            for (var k in this.parsedData){
+            this.$('.chosen-select').chosen({width: '200px', no_results_text: 'No results match!'});
+            //this.$('.chosen-select').append($('<option></option>').attr('value', 'none').text('none'));
+            var data = this.parsedData;
+            for (var k in data){
                 this.$('.chosen-select')
-                    .append($('<option></option>'))
-                        .attr('value', this.parsedData[k].title)
-                        .text(this.parsedData[k].title);
+                    .append($('<option></option>')
+                        .attr('value', data[k].title)
+                        .text(data[k].title));
             }
             this.$('.chosen-select').trigger('chosen:updated');
         },
