@@ -197,7 +197,7 @@ define([
         },
 
         update: function(compass){
-            var active = this.$('.nav-tabs .active a').attr('href').replace('#', '');
+            var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
