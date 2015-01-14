@@ -143,11 +143,28 @@ img{
     h1{
         font-size: 20px;
         font-weight: bold;
+        &:first-of-type{
+            margin-top: 0px;
+        }
     }
 
-    .section:first-of-type {
-        h1{
-            margin-top: 0px;
+    
+
+    .nav-tabs{
+        border-bottom-color: #bce8f1;
+
+        li{
+            a:hover{
+                border-color: #d9edf7 #d9edf7 #bce8f1;
+                background: #ACD6EF;
+            }
+            &.active{
+                a{
+                    background: #d9edf7;
+                    border-color: #bce8f1;
+                    border-bottom-color: transparent;
+                }
+            }
         }
     }
 
@@ -751,11 +768,17 @@ nav.navbar{
                 .substance-info{
                     background: rgba(252, 219, 102, 0.5);
                     margin-top: 20px;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+
+                    .substance-data{
+                        font-size: 12px;
+                        label{
+                            font-weight: normal;
+                        }
+                    }
                 }
 
-                .substance-data{
-                    font-size: 12px;
-                }
 
                 .spill-list, .response-list{
                     h5{

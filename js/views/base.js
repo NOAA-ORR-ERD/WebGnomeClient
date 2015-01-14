@@ -13,7 +13,7 @@ define([
 
         initialize: function(){
             if (this.module) {
-                this.help = new HelpView({path: this.module.id});
+                this.help = new HelpView({path: this.module.id, context: 'view'});
             }
         },
 
