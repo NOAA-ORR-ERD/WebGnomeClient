@@ -744,7 +744,7 @@ define([
                 var weatherers = webgnome.model.get('weatherers').models;
             }
             var timeSeries = this.timeSeries;
-            var filteredNames = ["_natural", "Evaporation", "Weatherer"];
+            var filteredNames = ["_natural", "Evaporation", "Weatherer", "Emulsion"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].attributes.name) === -1){
