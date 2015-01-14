@@ -48,6 +48,10 @@ define([
             if(this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15){
                 return 'Water temperature must be a reasonable degree.';
             }
+
+            if (attrs.wave_height < 0 || attrs.wave_height === ''){
+                return 'Wave height must be a positive number!';
+            }
         }
 
     });
