@@ -36,13 +36,11 @@ define([
 
         validate: function(attrs, options){
             if (attrs.salinity < 0 || attrs.salinity === ''){
-                return 'Salinity must be greater than or equal to zero!';
+                return 'Salinity must be a number greater than or equal to zero!';
             }
-            if (attrs.salinity < 0){
-                return 'Salinity must be greater than or equal to zero!';
-            }
-            if (attrs.sediment_load < 0 || attrs.sediment_load === ''){
-                return 'Sediment load must be greater than or equal to zero!';
+
+            if (attrs.sediment < 0 || attrs.sediment === ''){
+                return 'Sediment load must be a number greater than or equal to zero!';
             }
 
             if(this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15){
@@ -50,8 +48,13 @@ define([
             }
 
             if (attrs.wave_height < 0 || attrs.wave_height === ''){
-                return 'Wave height must be a positive number!';
+                return 'Wave height must be a number greater than or equal to zero!';
             }
+
+            if (attrs.fetch < 0 || attrs.fetch === ''){
+                return 'Fetch must be a number greater than or equal to zero!';
+            }
+
         }
 
     });
