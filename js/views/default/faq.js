@@ -31,7 +31,7 @@ define([
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('.faqspace').append(this.$el.append(compiled));
-            setTimeout(_.bind(function(){this.populateTopics();}, this), 1000);
+            this.populateTopics();
         },
 
         populateTopics: function(){
