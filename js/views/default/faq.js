@@ -48,6 +48,7 @@ define([
         },
 
         seed: function(){
+            $('.faqspace').remove();
             $('body').append('<div class="faqspace"></div>');
         },
 
