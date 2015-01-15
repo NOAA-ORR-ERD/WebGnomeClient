@@ -37,15 +37,10 @@ define([
             this.oilTable = new OilTable();
             this.model = elementModel;
             this.oilCache = localStorage.getItem('oil_cache');
-            this.loadModal;
             var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            if (moment().unix() - oilCacheJson.ts > 86400){
-                this.loadModal = true;
-            }
-
-            if (_.isNull(this.oilCache) || this.loadModal){
+            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
             }

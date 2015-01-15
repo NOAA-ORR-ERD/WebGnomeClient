@@ -765,7 +765,7 @@ define([
                 this.$('.response .panel').removeClass('complete');
                 this.$('.response .panel-body').hide().html('');
                 this.$('.response').removeClass('col-md-6').addClass('col-md-3');
-            }   
+            }
         },
 
         graphReponses: function(responses){
@@ -773,7 +773,7 @@ define([
             var skimData = [];
             var disperseData = [];
             var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
-            for (i in responses){
+            for (var i in responses){
                 var responseObjType = responses[i].get('obj_type').split(".");
                 var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                 var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
