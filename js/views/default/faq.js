@@ -42,6 +42,20 @@ define([
                 titles.push(obj[i].title);
             }
             this.$('#helpquery').autocomplete({source: titles});
+            if (this.exactMatch(term, titles)){
+                this.specificHelp(null, term);
+            } else {
+                this.restoreDefault();
+            }
+        },
+
+        exactMatch: function(term, titles){
+            for (var i in titles){
+                if (term === titles[i]){
+                    return true;
+                }
+            }
+            return false;
         },
 
         populateTopics: function(){
@@ -95,15 +109,22 @@ define([
             });
         },
 
-        specificHelp: function(e){
+        specificHelp: function(e, title){
             var data = this.parsedData;
+            var target;
+            var compiled;
+            if (_.isNull(e)){
+                target = null;
+            } else {
+                target = e.target.dataset.title;
+            }
             for (var i in data){
-                if (data[i].title === e.target.dataset.title){
-                    var compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content });
+                if (title === data[i].title || data[i].title === target){
+                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content });
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
-                }
+                } 
             }
         },
 
