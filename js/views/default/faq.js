@@ -16,8 +16,7 @@ define([
         events: {
             'keyup input': 'update',
             'click .back': 'back',
-            'click .topic': 'specificHelp',
-            'focus .chosen-select': 'update'
+            'click .topic': 'specificHelp'
         },
 
         initialize: function(){
