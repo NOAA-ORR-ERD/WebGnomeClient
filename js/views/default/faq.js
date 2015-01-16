@@ -7,16 +7,14 @@ define([
     'text!templates/faq/specific.html',
     'text!templates/faq/default.html',
     'model/help/help',
-    'collection/help'
+    'collection/help',
+    'jqueryui/autocomplete'
 ], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
 	var faqView = Backbone.View.extend({
         className: 'page faq',
 
         events: {
-            'click .resume': 'resume',
-            'click .build': 'build',
-            'click .load': 'load',
-            'focus #helpquery': 'renderContent',
+            'keyup input': 'update',
             'click .back': 'restoreDefault',
             'click .topic': 'specificHelp'
         },
@@ -34,17 +32,27 @@ define([
             this.populateTopics();
         },
 
+        update: function(){
+            var term = this.$('.chosen-select').val();
+            var topicArray = this.collection.search(term);
+            var obj = this.getData(topicArray);
+            var titles = [];
+
+            for (var i in obj){
+                titles.push(obj[i].title);
+            }
+            this.$('#helpquery').autocomplete({source: titles});
+        },
+
         populateTopics: function(){
-            this.$('.chosen-select').chosen({width: '200px', no_results_text: 'No results match!'});
             //this.$('.chosen-select').append($('<option></option>').attr('value', 'none').text('none'));
             var data = this.parsedData;
-            for (var k in data){
-                this.$('.chosen-select')
-                    .append($('<option></option>')
-                        .attr('value', data[k].title)
-                        .text(data[k].title));
-            }
-            this.$('.chosen-select').trigger('chosen:updated');
+            // for (var k in data){
+            //     this.$('.chosen-select')
+            //         .append($('<option></option>')
+            //             .attr('value', data[k].title)
+            //             .text(data[k].title));
+            // }
         },
 
         seed: function(){
@@ -52,27 +60,34 @@ define([
             $('body').append('<div class="faqspace"></div>');
         },
 
-        parseHelp: function(){
-            var body = this.body.models;
-            this.parsedData = [];
-            for (var i in body){
-                if (_.isObject(body[i])){
-                    var helpTopicBody = $('<div>' + body[i].get('html') + '</div>');
+        getData: function(models){
+            var data = [];
+            if (_.isUndefined(models)){
+                models = this.body.models;
+            }
+            for (var i in models){
+                if (_.isObject(models[i])){
+                    var helpTopicBody = $('<div>' + models[i].get('html') + '</div>');
                     var helpTitle = helpTopicBody.find('h1:first').text();
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
-                    var path = body[i].get('path');
+                    var path = models[i].get('path');
                     if (helpTitle !== ''){
-                        this.parsedData.push({title: helpTitle, content: helpContent, path: path});
+                        data.push({title: helpTitle, content: helpContent, path: path});
                     }
                 }
             }
+            return data;
+        },
+
+        parseHelp: function(){
+            this.parsedData = this.getData();
             this.render();
         },
 
         fetchQuestions: function(){
-            var helpCollection = new HelpCollection();
-            helpCollection.fetch({
+            this.collection = new HelpCollection();
+            this.collection.fetch({
                 success: _.bind(function(model){
                     this.body = model;
                     this.trigger('ready');
