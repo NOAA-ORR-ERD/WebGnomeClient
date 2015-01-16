@@ -31,8 +31,11 @@ define([
             $('.faqspace').append(this.$el.append(compiled));
         },
 
-        update: function(e){
+        update: function(e, str){
             var term = this.$('.chosen-select').val();
+            if (str){
+                term = str;
+            }
             this.topicArray = this.collection.search(term);
             var obj = this.getData(this.topicArray);
             var titles = [];
@@ -40,17 +43,27 @@ define([
             for (var i in obj){
                 titles.push(obj[i].title);
             }
-            this.$('#helpquery').autocomplete({source: titles});
+
+            var autocompleteConfig = {
+                                        source: titles,
+                                        select: _.bind(function(e){
+                                            this.update(null, e.toElement.innerHTML);
+                                        }, this)
+                                     };
+
+            this.$('#helpquery').autocomplete(autocompleteConfig);
+
             if (this.exactMatch(term, titles)){
                 this.specificHelp(null, term);
             } else {
                 this.restoreDefault(true);
             }
 
-            if (e.which === 13 && titles.length === 1){
+            if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
                 this.$('.chosen-select').val(titles[0]);
                 this.update();
             }
+            this.trigger('updated');
         },
 
         exactMatch: function(term, titles){
