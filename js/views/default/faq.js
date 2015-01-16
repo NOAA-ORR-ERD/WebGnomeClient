@@ -15,8 +15,9 @@ define([
 
         events: {
             'keyup input': 'update',
-            'click .back': 'restoreDefault',
-            'click .topic': 'specificHelp'
+            'click .back': 'back',
+            'click .topic': 'specificHelp',
+            'focus .chosen-select': 'update'
         },
 
         initialize: function(){
@@ -29,13 +30,12 @@ define([
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('.faqspace').append(this.$el.append(compiled));
-            this.populateTopics();
         },
 
-        update: function(){
+        update: function(e){
             var term = this.$('.chosen-select').val();
-            var topicArray = this.collection.search(term);
-            var obj = this.getData(topicArray);
+            this.topicArray = this.collection.search(term);
+            var obj = this.getData(this.topicArray);
             var titles = [];
 
             for (var i in obj){
@@ -45,7 +45,12 @@ define([
             if (this.exactMatch(term, titles)){
                 this.specificHelp(null, term);
             } else {
-                this.restoreDefault();
+                this.restoreDefault(true);
+            }
+
+            if (e.which === 13 && titles.length === 1){
+                this.$('.chosen-select').val(titles[0]);
+                this.update();
             }
         },
 
@@ -56,17 +61,6 @@ define([
                 }
             }
             return false;
-        },
-
-        populateTopics: function(){
-            //this.$('.chosen-select').append($('<option></option>').attr('value', 'none').text('none'));
-            var data = this.parsedData;
-            // for (var k in data){
-            //     this.$('.chosen-select')
-            //         .append($('<option></option>')
-            //             .attr('value', data[k].title)
-            //             .text(data[k].title));
-            // }
         },
 
         seed: function(){
@@ -124,7 +118,7 @@ define([
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
-                } 
+                }
             }
         },
 
@@ -134,7 +128,12 @@ define([
             this.$('.helpcontent').append(subtemplate);
         },
 
-        restoreDefault: function(){
+        back: function(){
+            this.restoreDefault();
+            this.$('.chosen-select').val('');
+        },
+
+        restoreDefault: function(clear){
             var subtemplate = _.template(DefaultTemplate, { topics: this.parsedData });
             this.$('#support').html('');
             this.$('#support').append(subtemplate);
