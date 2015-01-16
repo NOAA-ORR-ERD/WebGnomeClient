@@ -46,7 +46,7 @@ define([
 
             var autocompleteConfig = {
                                         source: titles,
-                                        select: _.bind(function(e){
+                                        select: _.bind(function(e, ui){
                                             this.update(null, e.toElement.innerHTML);
                                         }, this)
                                      };
