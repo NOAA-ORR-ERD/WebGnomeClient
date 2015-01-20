@@ -58,11 +58,12 @@ define([
 
             if (this.exactMatch(term, titles) && e.which === 13){
                 this.specificHelp(null, term);
+                this.$('.chosen-select').autocomplete('close');
             }
 
             if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
                 this.$('.chosen-select').val(titles[0]);
-                this.update();
+                this.specificHelp(null, titles[0]);
                 this.$('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
