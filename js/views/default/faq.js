@@ -36,6 +36,7 @@ define([
             if (str){
                 term = str;
             }
+            console.log(term);
             this.topicArray = this.collection.search(term);
             var obj = this.getData(this.topicArray);
             var titles = [];
@@ -48,20 +49,21 @@ define([
                                         source: titles,
                                         select: _.bind(function(e, ui){
                                             this.update(null, e.toElement.innerHTML);
+                                            $('.chosen-select').autocomplete('close');
+                                            $('.chosen-select').val(ui.item.value);
                                         }, this)
                                      };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
-            if (this.exactMatch(term, titles)){
+            if (this.exactMatch(term, titles) && e.which === 13){
                 this.specificHelp(null, term);
-            } else {
-                this.restoreDefault(true);
             }
 
             if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
                 this.$('.chosen-select').val(titles[0]);
                 this.update();
+                this.$('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
         },
