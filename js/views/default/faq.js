@@ -36,7 +36,6 @@ define([
             if (str){
                 term = str;
             }
-            console.log(term);
             this.topicArray = this.collection.search(term);
             var obj = this.getData(this.topicArray);
             var titles = [];
@@ -105,6 +104,7 @@ define([
 
         parseHelp: function(){
             this.parsedData = this.getData();
+            window.data2 = this.collection;
             this.render();
         },
 
