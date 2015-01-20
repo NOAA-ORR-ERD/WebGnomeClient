@@ -43,6 +43,7 @@ define([
             if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
+                this.loadModal = true;
             }
 
             // Passed oilTable's events hash to this view's events
