@@ -2,9 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'text!templates/default/footer.html',
-    'views/modal/base'
-], function($, _, Backbone, FooterTemplate, BaseModal){
+    'text!templates/default/footer/footer.html',
+    'views/modal/base',
+    'text!templates/default/footer/disclaimer.html',
+    'text!templates/default/footer/privacy.html'
+], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate, PrivacyTemplate){
     var footerView = Backbone.View.extend({
         className: 'footer',
         rendered: false,
@@ -31,7 +33,7 @@ define([
             e.preventDefault();
             var modal = new BaseModal({
                 title: 'Disclaimer',
-                body: 'Disclaimer here!',
+                body: DisclaimerTemplate,
                 buttons: '<a href="" class="btn btn-primary" data-dismiss="modal">Ok</a>'
             });
             modal.render();
@@ -41,7 +43,7 @@ define([
             e.preventDefault();
             var modal = new BaseModal({
                 title: 'Privacy Policy',
-                body: 'Privacy Policy Here!',
+                body: PrivacyTemplate,
                 buttons: '<a href="" class="btn btn-primary" data-dismiss="modal">Ok</a>'
             });
             modal.render(); 

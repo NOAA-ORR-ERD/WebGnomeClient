@@ -114,12 +114,19 @@ define([
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('.datetime').datetimepicker('show');
+            }, this));
         },
 
         showHelp: function(){
             var compiled = '<div class="gnome-help" title="Click for help"></div>';
             this.$('h2:first').append(compiled);
             this.$('h2:first .gnome-help').tooltip();
+        },
+
+        clickDate: function(){
+            this.$('.datetime').trigger('click');
         },
 
         initMason: function(){
@@ -176,9 +183,9 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation();
-                        webgnome.model.on('reset:location', webgnome.model.save);
-                        this.togglePrediction(e, target);
+                        webgnome.model.resetLocation(_.bind(function(){
+                            this.togglePrediction(e, target);
+                        }, this));
                     }
                 }, this));
             } else {
@@ -262,6 +269,8 @@ define([
 
                         if($(this).parents('.panel').hasClass('complete')){
                             return object + ' requirement met';
+                        } else if($(this).parents('.panel').hasClass('optional')){
+                            return object + ' optional';                            
                         } else {
                             return object + ' required';
                         }
@@ -314,14 +323,30 @@ define([
             windForm.render();
         },
 
+        // TODO: Change it so that we don't have to use a hard-coded value for the 
+        // max uncertainty value
+        windSpeedParse: function(wind){
+            var uncertainty = wind.get('speed_uncertainty_scale');
+            var speed = wind.get('timeseries')[0][1][0];
+
+            var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
+            return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
+        },
+
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
                 var compiled;
                 this.$('.wind .panel').addClass('complete');
                 if(wind.get('timeseries').length == 1){
+                    var windSpeed;
+                    if (wind.get('speed_uncertainty_scale') === 0) {
+                        windSpeed = wind.get('timeseries')[0][1][0];
+                    } else {
+                        windSpeed = this.windSpeedParse(wind);
+                    }
                     compiled = _.template(WindPanelTemplate, {
-                        speed: wind.get('timeseries')[0][1][0],
+                        speed: windSpeed,
                         direction: wind.get('timeseries')[0][1][1],
                         units: wind.get('units')
                     });
@@ -330,10 +355,13 @@ define([
                     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Timeline (24 hrs)</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
-
+                    var rate = Math.round(ts.length / 24);
+                    
                     for (var entry in ts){
-                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                        data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10), parseInt(ts[entry][1][1], 10) - 180]);
+                        if(rate === 0 ||  entry % rate === 0){
+                            var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                            data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10), parseInt(ts[entry][1][1], 10) - 180]);
+                        }
                     }
 
                     var dataset = [{
@@ -523,7 +551,8 @@ define([
             var spillArray = this.calculateSpillAmount(timeSeries);
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
-                var compiled = _.template(SpillPanelTemplate, {spills: spills.models});
+                var substance = spills.at(0).get('element_type').get('substance');
+                var compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories()});
 
                 var dataset = [];
                 for (var spill in spills.models){
@@ -602,21 +631,23 @@ define([
         },
 
         hoverSpill: function(e){
-            var id = $(e.target).data('id');
-            if (_.isUndefined(id)){
-                id = $(e.target).parents('.single').data('id');
-            }
-            var coloredSet = [];
-            for(var dataset in this.spillDataset){
-                var ds = _.clone(this.spillDataset[dataset]);
-                if (this.spillDataset[dataset].id != id){
-                    ds.color = '#ddd';
+            if ($(e.target).attr('id') !== 'substanceInfo'){
+                var id = $(e.target).data('id');
+                if (_.isUndefined(id)){
+                    id = $(e.target).parents('.single').data('id');
                 }
+                var coloredSet = [];
+                for(var dataset in this.spillDataset){
+                    var ds = _.clone(this.spillDataset[dataset]);
+                    if (this.spillDataset[dataset].id != id){
+                        ds.color = '#ddd';
+                    }
 
-                coloredSet.push(ds);
+                    coloredSet.push(ds);
+                }
+                this.spillPlot.setData(coloredSet);
+                this.spillPlot.draw();
             }
-            this.spillPlot.setData(coloredSet);
-            this.spillPlot.draw();
         },
 
         unhoverSpill: function(){
@@ -715,10 +746,10 @@ define([
                 var weatherers = webgnome.model.get('weatherers').models;
             }
             var timeSeries = this.timeSeries;
-            var filteredNames = ["_natural", "Evaporation", "Weatherer"];
+            var filteredNames = ["Dispersion", "Skimmer", "Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
-                if (filteredNames.indexOf(weatherers[i].attributes.name) === -1){
+                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
                     this.responses.push(weatherers[i]);
                 }
             }
@@ -730,21 +761,21 @@ define([
                 this.$('.response .panel-body').html(compiled);
                 this.$('.response .panel-body').show();
 
-                this.graphDraw(this.responses);
+                this.graphReponses(this.responses);
 
             } else {
                 this.$('.response .panel').removeClass('complete');
                 this.$('.response .panel-body').hide().html('');
                 this.$('.response').removeClass('col-md-6').addClass('col-md-3');
-            }   
+            }
         },
 
-        graphDraw: function(responses){
+        graphReponses: function(responses){
             var burnData = [];
             var skimData = [];
             var disperseData = [];
             var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
-            for (i in responses){
+            for (var i in responses){
                 var responseObjType = responses[i].get('obj_type').split(".");
                 var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                 var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
@@ -827,11 +858,11 @@ define([
             if (_.isUndefined(id)){
                 id = $(e.target).parents('.single').data('id');
             }
-            this.graphDraw([webgnome.model.get('weatherers').get(id)]);
+            this.graphReponses([webgnome.model.get('weatherers').get(id)]);
         },
 
         unhoverResponse: function(){
-            this.graphDraw(this.responses);
+            this.graphReponses(this.responses);
         },
 
         loadResponse: function(e){
@@ -902,6 +933,7 @@ define([
                     weatherer.save();
                 });
             }
+            webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
         },
 
         close: function(){

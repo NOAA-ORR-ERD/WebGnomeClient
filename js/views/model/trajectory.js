@@ -68,7 +68,8 @@ define([
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
                         name: 'basemap',
-                        type: 'base'
+                        type: 'base',
+                        visible: false
                     }),
                     new ol.layer.Tile({
                         name: 'usgsbase',
@@ -85,7 +86,8 @@ define([
                             url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                             params: {'LAYERS': '1', 'TILED': true}
                         }),
-                        opacity: 0.7
+                        opacity: 0.7,
+                        visible: false
                     })
                 ]
             });
@@ -217,7 +219,7 @@ define([
                     // the step doesn't already exist on the map and it's with in the number of 
                     // time steps this model should have so load
 
-                    this.controls.progress.addClass('active').addClass('progress-bar-striped');
+                    this.controls.progress.addClass('progress-bar-stripes active');
                     var percent = Math.round(((this.frame + 1) / (webgnome.model.get('num_time_steps') - 1)) * 100);
                     this.controls.progress.css('width', percent + '%');
                     this.step.fetch({
@@ -229,11 +231,9 @@ define([
                     });
                 } else {
                     this.pause();
-                    this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
                 }
             } else {
                 this.pause();
-                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
         },
 
@@ -257,6 +257,7 @@ define([
             if($('.modal').length === 0){
                 this.state = 'pause';
                 this.controls.play.addClass('play').removeClass('pause');
+                // this.controls.progress.removeClass('active progress-bar-striped');
             }
         },
 
@@ -364,7 +365,6 @@ define([
                 this.controls.seek.slider('value', this.frame + 1);
             } else {
                 this.pause();
-                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
         },
 

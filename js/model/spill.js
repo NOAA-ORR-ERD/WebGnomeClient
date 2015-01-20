@@ -28,14 +28,25 @@ define([
                 return attrs.release.validationError;
             }
 
-            if(!attrs.element_type.isValid()){
-                return attr.element_type.validationError;
+            if (!attrs.element_type.isValid()){
+                return attrs.element_type.validationError;
+            }
+
+            if ($.trim(attrs.name) === ''){
+                return 'A spill name is required!';
             }
 
             if(isNaN(attrs.amount)){
                 return 'Amount must be a number';
             } else if (attrs.amount < 0) {
                 return 'Amount must be a positive number';
+            }
+
+        },
+
+        validateSubstance: function(attrs){
+            if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                return 'A substance must be selected!';
             }
         },
 
@@ -51,7 +62,7 @@ define([
 
             tree = attrs.concat(tree);
 
-            return tree;           
+            return tree;
         }
     });
 

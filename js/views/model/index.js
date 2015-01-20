@@ -5,8 +5,9 @@ define([
     'views/model/tree',
     'views/model/trajectory',
     'views/model/fate',
-    'text!templates/model/index.html'
-], function($, _, Backbone, TreeView, TrajectoryView, FateView, IndexTemplate){
+    'text!templates/model/index.html',
+    'sweetalert'
+], function($, _, Backbone, TreeView, TrajectoryView, FateView, IndexTemplate, swal){
     var modelView = Backbone.View.extend({
         className: 'page model',
 
@@ -79,6 +80,23 @@ define([
                 this.updateHeight();
             }
 
+            if(view === 'trajectory' && localStorage.getItem('prediction') === 'fate'){
+                swal({
+                    title: 'Unable to run trajectory on a weathering model',
+                    text: 'If you would like to see the trajectory prediction for this model please setup the model accordingly.',
+                    type: 'error',
+                    confirmButtonText: 'Add Trajectory',
+                    cancelButtonText: 'Back to Weathering',
+                    showCancelButton: true,
+                }, function(isConfirm){
+                    if(isConfirm){
+                        webgnome.router.navigate('setup', true);
+                    } else {
+                        webgnome.router.navigate('setup', true);
+                        webgnome.router.navigate('model', true);
+                    }
+                });
+            }
         },
 
         reset: function(){

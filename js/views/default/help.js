@@ -17,25 +17,29 @@ define([
         },
 
         initialize: function(options){
+            _.defaults(options, {
+                context: 'modal'
+            });
+
             if (_.has(options, 'path')){
                 this.help = new HelpModel({id: options.path});
                 this.help.fetch({
                     success: _.bind(function(){
                         this.ready = true;
-                        this.render();
+                        this.render(options.context);
                         this.trigger('ready');
                     }, this)
                 });
             }
         },
 
-        render: function(){
+        render: function(context){
             var compiled;
+
             if($('<div>' + this.help.get('html') + '</div>').find('.document').length <= 1){
                 compiled = _.template(HelpTemplate, {
                     html: this.help.get('html')
                 });
-                this.$el.addClass('alert alert-info alert-dismissable');
             } else {
                 tabs = this.getTabs(this.help.get('html'));
                 html = $('<div>' + this.help.get('html') + '</div>');
@@ -48,12 +52,19 @@ define([
                 });
             }
             this.$el.append(compiled);
+
+            if(context === 'modal'){
+                this.$el.addClass('alert alert-info alert-dismissable');
+            } else if(context === 'view'){
+                this.$('h1:first').hide();
+                this.$('.close').remove();
+            }
         },
 
         logHelpful: function(e){
             var target;
             if (e.target.nodeName === 'SPAN'){
-               target = e.target.parentElement;
+                target = e.target.parentElement;
             } else {
                 target = e.target;
             }

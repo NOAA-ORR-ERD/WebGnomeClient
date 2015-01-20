@@ -8,12 +8,48 @@ define([
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
 
-        defaults: {
-            name: 'ALAMO',
-            api: 23.3,
-            pour_point_max_k: 266.4833,
-            flash_point_max_k: 339.97349999999994,
-            categories: [{id: 6, name: "Medium", parent_id: 1, children: [], parent: {id: 1, name: "Crude", parent_id: null}}]
+        parseTemperatures: function(){
+            var flashPointK = this.get('flash_point_max_k');
+            var pourPointK = this.get('pour_point_max_k');
+
+            var flashPointC = flashPointK - 273.15;
+            var flashPointF = (flashPointC * (9 / 5)) + 32;
+
+            var pourPointC = pourPointK - 273.15;
+            var pourPointF = (pourPointC * (9 / 5)) + 32;
+
+            return {'pour_point_max_c': pourPointC.toFixed(3),
+                    'pour_point_max_f': pourPointF.toFixed(3),
+                    'flash_point_max_c': flashPointC.toFixed(3),
+                    'flash_point_max_f': flashPointF.toFixed(3)
+                   };
+        },
+
+        validate: function(attrs, options){
+            // if (_.isUndefined(attrs.bullwinkle_fraction)){
+            //     return 'Stable emulsion fraction must be defined!';
+            // }
+
+            // if (_.isUndefined(attrs.emulsion_water_fraction_max)){
+            //     return 'Emulsion constant must be defined!';
+            // }
+            
+            // if (!_.isNumber(attrs.bullwinkle_fraction) || (attrs.bullwinkle_fraction < 0 || attrs.bullwinkle_fraction > 1)){
+            //     return 'Stable emulsion fraction must be a number between zero and one!';
+            // }
+
+            // if (!_.isNumber(attrs.emulsion_water_fraction_max) || (attrs.emulsion_water_fraction_max < 0 || attrs.emulsion_water_fraction_max > 1)){
+            //     return 'Emulsion constant must be a number between zero and one!';
+            // }
+        },
+
+        parseCategories: function(){
+            var cats = this.get('categories');
+            var output = [];
+            for(var c in cats){
+                output.push(cats[c].parent.name + ' - ' + cats[c].name);
+            }
+            return output;
         }
     });
     return gnomeSubstance;

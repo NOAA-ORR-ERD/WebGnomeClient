@@ -50,7 +50,6 @@ define([
                 disabled: disabled
             });
             BaseSpillForm.prototype.render.call(this, options);
-            this.renderOilInfo();
             this.$('.slider').slider({
                 min: 0,
                 max: 5,
@@ -62,6 +61,11 @@ define([
                     this.updateConstantSlide(ui);
                 }, this)
             });
+
+            if (!this.model.isNew()){
+                this.$('.slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                this.updateConstantSlide();
+            }
         },
 
         update: function(){
@@ -113,7 +117,8 @@ define([
                     this.$('.tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
-            
+            this.model.set('amount_uncertainty_scale', value / 5);
+            this.updateTooltipWidth();
         }
 
     });

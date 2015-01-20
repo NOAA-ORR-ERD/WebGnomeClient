@@ -1,5 +1,10 @@
 <div class="container">
-    <div class="col-md-12"><h2>Setup Your Model</h2></div>
+    <div class="col-md-12">
+        <h2>
+            Setup Your Model
+            <div class="stage-3 pull-right"><a href="#" class="eval btn btn-success">Evaluate Model</a></div>
+        </h2>
+    </div>
     <div class="col-md-6">
         <div class="panel-primary panel">
             <div class="panel-heading">Incident</div>
@@ -16,7 +21,7 @@
                         <div class="col-sm-6">
                             <div class="input-group date">
                                 <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
-                                <span class="input-group-addon">
+                                <span class="input-group-addon" id="datepick">
                                     <i></i>
                                 </span>
                             </div>
@@ -115,12 +120,11 @@
     <div class="response-objects">
         <div class="col-md-12"><h4>Response</h3></div>
         <div class="col-md-3 response">
-            <div class="panel panel-default">
+            <div class="panel panel-default optional">
                 <div class="panel-heading"><div class="add"></div><div class="state optional"></div>
                 Response Options</div>
                 <div class="panel-body">
                 </div>
-                <div class="panel-body"></div>
             </div>
         </div>
         <div class="col-md-3 resources">
@@ -134,6 +138,6 @@
 </div>
 <div class="container stage-3">
     <div class="col-md-12">
-        <a href="#" class="eval btn btn-primary">Evaluate Model</a>
+        <a href="#" class="eval btn btn-success">Evaluate Model</a>
     </div>
 </div>

@@ -1,7 +1,8 @@
 <div class="container">
+    <a href="#setup" class="btn btn-success pull-right">Edit Model</a>
     <ul class="nav nav-tabs" role="tablist">
-        <li class="active"><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
-        <li><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
+        <li class="active"><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
+        <li><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
         <li><a href="#evaporation" role="tab" data-toggle="tab">Evaporation</a></li>
         <li><a href="#dispersion" role="tab" data-toggle="tab">Dispersion</a></li>
         <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
@@ -11,21 +12,21 @@
     </ul>
 
     <div class="tab-content">
-        <div class="tab-pane active" id="budget-graph">
+        <div class="tab-pane" id="budget-graph">
             <div class="chart-holder">
-                <h6>Least Remaining</h6>
+                <h6>Least Floating</h6>
                 <div class="chart minimum">
                     <div class="canvas"></div>
                 </div>
             </div>
             <div class="chart-holder">
-                <h6>Expected Remaining</h6>
+                <h6>Expected Floating</h6>
                 <div class="chart mean">
                     <div class="canvas"></div>
                 </div>
             </div>
             <div class="chart-holder">
-                <h6>Most Remaining</h6>
+                <h6>Most Floating</h6>
                 <div class="chart maximum">
                     <div class="canvas"></div>
                 </div>
@@ -38,7 +39,7 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="budget-table">
+        <div class="tab-pane active" id="budget-table">
             <div class="col-md-8">
                 <div class="panel panel-default settings">
                     <div class="panel-heading">Table Column Display</div>
@@ -49,7 +50,7 @@
                                 <div class="col-md-2">
                                     <select class="form-control time">
                                         <option value="date">Date</option>
-                                        <option value="hour">Hour</option>
+                                        <option value="hour" selected>Hour</option>
                                     </select>
                                 </div>
                                 <label for="" class="control-label col-md-2">Released</label>
@@ -122,7 +123,7 @@
         <div class="tab-pane" id="density">
             <div class="timeline">
                 <div class="chart">
-                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel yaxisLabel">kg/cu m</div>
                     <div class="axisLabel xaxisLabel">Timeline (24 hrs)</div> 
                     <div class="canvas"></div>
                 </div>
@@ -140,7 +141,7 @@
         <div class="tab-pane" id="viscosity">
             <div class="timeline">
                 <div class="chart">
-                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel yaxisLabel">cSt</div>
                     <div class="axisLabel xaxisLabel">Timeline (24 hrs)</div> 
                     <div class="canvas"></div>
                 </div>
@@ -165,7 +166,7 @@
                                     <div class="col-xs-4">
                                         <div class="input-group date">
                                             <input type="text" class="form-control" id="start_time" value="">
-                                            <span class="input-group-addon">
+                                            <span class="input-group-addon" id="datepick_start">
                                                 <i></i>
                                             </span>
                                         </div>
@@ -174,7 +175,7 @@
                                     <div class="col-xs-4">
                                         <div class="input-group date">
                                             <input type="text" class="form-control" id="end_time" value="">
-                                            <span class="input-group-addon">
+                                            <span class="input-group-addon" id="datepick_end">
                                                 <i></i>
                                             </span>
                                         </div>
@@ -190,7 +191,7 @@
                     <div class="panel-heading">Settings </div>
                     <div class="panel-body">
                         <form class="form-horizontal">
-                            <label for="" class="control-label col-md-5">Unit</label>
+                            <label for="" class="control-label col-md-2">Unit</label>
                             <div class="col-md-6">
                                 <select name="" id="" class="form-control vol-units">
                                     <option value="bbl">bbl</option>

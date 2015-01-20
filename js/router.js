@@ -10,9 +10,11 @@ define([
     'views/model/index',
     'views/tests/index',
     'views/default/adios',
+    'views/default/overview',
+    'views/default/faq',
     'views/default/footer'
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, FooterView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, FooterView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -21,6 +23,8 @@ define([
             'locations': 'locations',
             'setup': 'setup',
             'model': 'model',
+            'overview': 'overview',
+            'faq': 'faq',
 
             '*actions': 'notfound'
         },
@@ -60,6 +64,16 @@ define([
             } else {
                 this.navigate('setup', true);
             }
+        },
+
+        overview: function(){
+            this.views.push(new MenuView());
+            this.views.push(new OverviewView());
+        },
+
+        faq: function(){
+            this.views.push(new MenuView());
+            this.views.push(new FAQView());
         },
 
         notfound: function(actions){

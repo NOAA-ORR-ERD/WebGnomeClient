@@ -103,6 +103,25 @@ define([
         cancelByEsc: function(e){
             e.preventDefault();
             this.$('.cancel').click();
+        },
+
+        updateTooltipWidth: function(){
+            this.$('.tooltip').each(function(){
+                var chars = $(this).text().split('').length;
+                var width = 0;
+                if(chars <= 3){
+                    width = 40;
+                } else if(chars === 4){
+                    width = chars * 10;
+                } else {
+                    width = chars * 9;
+                }
+                var margin = (width / 2) - parseInt(7);
+                $(this).css({
+                    width: width + 'px',
+                    marginLeft: '-' + margin + 'px'
+                });
+            });
         }
     });
 

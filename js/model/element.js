@@ -24,15 +24,14 @@ define([
                     ],
                     'obj_type': 'gnome.spill.elements.InitWindages',
                     'windage_persist': 900
-                },
-                {
-                    'obj_type': 'gnome.spill.elements.InitArraysFromOilProps'
                 }
             ]
         },
 
-        validate: function(){
-            
+        validate: function(attrs, options){
+            if (!attrs.substance.isValid()){
+                return attrs.substance.validationError;
+            }
         },
 
         toTree: function(){

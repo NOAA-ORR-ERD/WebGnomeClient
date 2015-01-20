@@ -10,7 +10,7 @@
 		<div class="col-sm-5">
             <div class="input-group date">
                 <input type="text" id="datetime" class="form-control" value="{{ time }}">
-                <span class="input-group-addon">
+                <span class="input-group-addon" id="datepick">
                     <i></i>
                 </span>
             </div>
@@ -23,6 +23,9 @@
     	</div>
     	<div class="col-sm-3">
     		<select class="form-control" id="units">
+                <option value="kg">
+                    kg
+                </option>
     			<option value="m^3">
     				m^3
     			</option>
@@ -41,7 +44,7 @@
     		</select>
     	</div>
         <div class="form-group">
-            <label class="control-label col-sm-4">Confidence in Data:</label>
+            <label class="control-label col-sm-6">Confidence in Spilled Amount:</label>
             <div class="col-sm-8 col-sm-offset-1">
                 <div class="slider"></div>
             </div>
@@ -70,25 +73,8 @@
             </div>
         {% } %}
    	</div>
+    <div id="oilInfo"></div>
     {% if (showGeo){ %}
         <div id="spill-form-map" class="map"></div>
     {% } %}
-    <div id="oilInfo"></div>
-    <div class="form-group">
-        <div class="col-sm-3">
-            <a class="btn btn-default oilSelect">
-                Select Oil
-            </a>
-        </div>
-        {% if (disabled){ %}
-            <div class="col-sm-3">You must select the oil from the first spill form</div>
-        {% } %}
-        {% if (showGeo){ %}
-            <div class="col-sm-6">
-                <a class="pull-right btn btn-default locationSelect">
-                    Plot Location on Map
-                </a>
-            </div>
-        {% } %}
-    </div>
 </form>

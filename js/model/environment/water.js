@@ -16,25 +16,45 @@ define([
                 'temperature': 'F',
                 'salinity': 'psu',
                 'sediment': 'mg/l',
-                'wave_height': 'm',
-                'fetch': 'm',
+                'wave_height': 'ft',
+                'fetch': 'mi',
                 'kinematic_viscosity': 'm^2/s',
                 'density': 'kg/m^3'
             },
             kinematic_viscosity: 1
         },
 
+        convertToK: function(temp){
+            if (this.get('units').temperature === 'F'){
+                temp = (temp - 32) * (5.0 / 9);
+            }
+            if (this.get('units').temperature !== 'K'){
+                temp = parseFloat(temp) + 273.15;
+            }
+            return temp;
+        },
+
         validate: function(attrs, options){
             if (attrs.salinity < 0 || attrs.salinity === ''){
-                return 'Salinity must be greater than or equal to zero!';
-            }
-            if (attrs.sediment_load < 0 || attrs.sediment_load === ''){
-                return 'Sediment load must be greater than or equal to zero!';
+                return 'Salinity must be a number greater than or equal to zero!';
             }
 
-            if(attrs.water_temp < 270.928 || attrs.water_temp > 308.706){
+            if (attrs.sediment < 0 || attrs.sediment === ''){
+                return 'Sediment load must be a number greater than or equal to zero!';
+            }
+
+            if(this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15){
                 return 'Water temperature must be a reasonable degree.';
             }
+
+            if (attrs.wave_height < 0 || attrs.wave_height === ''){
+                return 'Wave height must be a number greater than or equal to zero!';
+            }
+
+            if (attrs.fetch < 0 || attrs.fetch === ''){
+                return 'Fetch must be a number greater than or equal to zero!';
+            }
+
         }
 
     });

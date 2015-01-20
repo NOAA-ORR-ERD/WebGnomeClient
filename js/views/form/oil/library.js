@@ -2,7 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'chosen',
+    'moment',
     'jqueryui/core',
     'model/oil/distinct',
     'views/modal/form',
@@ -10,33 +12,38 @@ define([
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html'
-], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+], function($, _, Backbone, module, chosen, moment, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
-
+        
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
-            formModalHash['change input:not(.chosen)'] = 'update';
-            formModalHash['keyup input:not(.chosen)'] = 'update';
+            formModalHash['change input:not(.chosen-search input)'] = 'update';
+            formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
-            formModalHash['shown.bs.modal'] = 'triggerTableResize';
+            formModalHash['ready'] = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
         initialize: function(options, elementModel){
+            this.module = module;
             this.oilTable = new OilTable();
             this.model = elementModel;
+            this.oilCache = localStorage.getItem('oil_cache');
+            var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            this.loadingGif = new LoadingModal();
-            this.loadingGif.render();
+            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
+                this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
+                this.loadingGif.render();
+            }
 
             // Passed oilTable's events hash to this view's events
             
@@ -52,8 +59,9 @@ define([
             if(this.oilTable.ready){
                 // Removes loading modal just prior to render call of oilLib
 
-                this.loadingGif.hide();
-                
+                if (_.isNull(this.oilCache) || this.loadModal){
+                    this.loadingGif.hide();
+                }
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
@@ -67,6 +75,12 @@ define([
 
                 this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
+
+                var oilImported = this.model.get('substance').get('imported');
+
+                if (!_.isUndefined(oilImported)){
+                    this.$('tr[data-id="' + oilImported.adios_oil_id + '"]').addClass('select');
+                }
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -128,8 +142,7 @@ define([
         },
 
         populateSelect: function(){
-            var chosen = jQuery.fn.chosen;
-            this.$('.chosen-select').chosen({width: '265px', no_results_text: 'No results match: '});
+            this.$('.chosen-select').chosen({width: '192.5px', no_results_text: 'No results match: '});
             var valueObj = this.oilDistinct.at(2).get('values');
             this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
             for (var key in valueObj){
@@ -158,8 +171,10 @@ define([
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
-            }
-            else {
+            } else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
+                search.text = search.text.replace(/^.*(number|#).*$/, "no.");
+                this.oilTable.oilLib.search(search);
+            } else {
                 this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();

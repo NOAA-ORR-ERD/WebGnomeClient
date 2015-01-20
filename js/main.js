@@ -80,7 +80,7 @@ require.config({
         },
         chosen: {
             deps: ['jquery'],
-            exports: 'jQuery.fn.chosen'
+            exports: '$'
         },
         sweetalert: {
             exports: 'swal'

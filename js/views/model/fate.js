@@ -7,6 +7,7 @@ define([
     'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
+    'text!templates/default/export.html',
     'flot',
     'flottime',
     'flotresize',
@@ -15,11 +16,20 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate){
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
         frame: 0,
+        colors: [
+            'rgb(203,75,75)',
+            'rgb(237,194,64)',
+            'rgb(175,216,248)',
+            'rgb(77,167,77)',
+            'rgb(148,64,237)',
+            'rgb(189,155,51)',
+            'rgb(140,172,198)'
+        ],
 
         events: {
             'shown.bs.tab': 'renderGraphs',
@@ -88,6 +98,12 @@ define([
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick_start').on('click', _.bind(function(){
+                this.$('#start_time').datetimepicker('show');
+            }, this));
+            this.$('#datepick_end').on('click', _.bind(function(){
+                this.$('#end_time').datetimepicker('show');
+            }, this));
             var units = spills.at(0).get('units');
             this.$('#budget-table .released').val(units);
             this.$('#ics209 .vol-units').val(units);
@@ -159,6 +175,7 @@ define([
                         },
                         shadowSize: 0
                     },
+                    colors: this.colors,
                     crosshair: {
                         mode: 'x',
                         color: '#999'
@@ -176,22 +193,20 @@ define([
 
         timelineHover: function(e, pos, item){
             if(!this.renderPiesTimeout){
-                this.pos = pos;
                 this.renderPiesTimeout = setTimeout(_.bind(function(){
-                    this.renderPies();
+                    this.renderPies(this.dataset, pos);
                 }, this), 50);
             }
         },
 
-        renderPies: function(){
+        renderPies: function(dataset, pos){
             this.renderPiesTimeout = null;
             if(this.$('#budget-graph:visible .timeline .chart').length != 1){
                 return;
             }
             
             var i, j;
-            var dataset = this.pruneDataset(this.dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
-            var pos = this.pos;
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -212,6 +227,7 @@ define([
                         }
                     }
                 },
+                colors: this.colors,
                 legend: {
                     show: false
                 }
@@ -228,12 +244,12 @@ define([
 
         getPieData: function(pos, dataset, key){
             d = [];
-            for (i = 0; i < dataset.length; ++i) {
+            for (var i = 0; i < dataset.length; ++i) {
 
                 var series = dataset[i];
 
-                for (j = 0; j < series[key].length; ++j) {
-                    if (series[key][j][0] > pos.x) {
+                for (var j = 0; j < series[key].length; ++j) {
+                    if (series[key][j][0] >= pos.x) {
                         break;
                     }
                 }
@@ -279,8 +295,8 @@ define([
             table.html('');
             table = '';
             m_date = moment(webgnome.model.get('start_time'));
+            var opacity;
             for (var row = 0; row < dataset[0].data.length; row++){
-
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
@@ -288,8 +304,19 @@ define([
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
-                    
-                    var row_html = '<tr>';
+
+                    if(opacity === 0.10){
+                        opacity = 0.25;
+                    } else {
+                        opacity = 0.10;
+                    }
+
+                    var row_html = '';
+                    if(row === 0){
+                        row_html += '<thead><tr>';
+                    } else {
+                        row_html += '<tr>';
+                    }
                     if(display.time === 'date'){
                         if(row === 0){
                             row_html += '<th>Date - Time</th>';
@@ -303,14 +330,21 @@ define([
                             row_html += '<td>' + duration.asHours() + '</td>';
                         }
                     }
-                     
+
                     for (var set in dataset){
                         to_unit = display.released;
+                        var color = '';
+
+                        if(dataset[set].name !== 'amount_released'){
+                            color = this.colors[set];
+                            color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
+                        }
+
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
-                                row_html +='<th>' + dataset[set].label + ' (' + to_unit + ')</th>';
+                                row_html +='<th style="background: ' + color + ';">' + dataset[set].label + ' (' + to_unit + ')</th>';
                             } else {
-                                row_html += '<th>' + dataset[set].label + ' (' + display.other + ')</th>';
+                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + ' (' + display.other + ')</th>';
                             }
 
                         } else {
@@ -327,10 +361,14 @@ define([
                                     value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                 }
                             }
-                            row_html += '<td>' + value + '</td>';
+                            row_html += '<td style="background: ' + color + ';">' + value + '</td>';
                         }
                     }
-                    row_html += '</tr>';
+                    if(row === 0){
+                        row_html += '</tr></thead>';
+                    } else {
+                        row_html += '</tr>';                        
+                    }
                     table += row_html;
                 }
             }
@@ -355,6 +393,9 @@ define([
         downloadTableOilBudget: function(e){
             var table = this.$('#budget-table table');
             var type = $(e.target).data('type');
+            if(type === undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' Oil Budget Table Export' : 'Oil Budget Table Export';
             var filename = name + '.' + type;
             var content = '';
@@ -397,7 +438,8 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    }
+                    },
+                    colors: [this.colors[1]]
                 });
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -426,7 +468,8 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    }
+                    },
+                    colors: [this.colors[2]]
                 });
             } else {
                 this.graphDispersion.setData(dataset);
@@ -437,7 +480,7 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_density']);
+            var dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, {
@@ -455,6 +498,10 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
+                    },
+                    yaxis: {
+                        ticks: 4,
+                        tickDecimals: 3
                     }
                 });
             } else {
@@ -495,9 +542,8 @@ define([
         },
 
         renderGraphViscosity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['viscosity']);
+            dataset = this.pluckDataset(dataset, ['avg_viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            console.log(dataset);
             if(_.isUndefined(this.graphViscosity)){
                 this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
                     grid: {
@@ -507,6 +553,13 @@ define([
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
+                    },
+                    yaxis: {
+                        ticks: [0, 10, 100, 1000, 10000, 100000],
+                        transform: function(v){
+                            return Math.log(v+10);
+                        },
+                        tickDecimals: 0
                     },
                     series: {
                         lines: {
@@ -560,6 +613,7 @@ define([
                         },
                         shadowSize: 0
                     },
+                    colors: this.colors,
                     selection: {
                         mode: 'x',
                         color: '#428bca'
@@ -667,6 +721,8 @@ define([
                 amount_released: 0
             };
             var cumulative = _.clone(report);
+            var low = _.clone(report);
+            var high =  _.clone(report);
 
             for(var set in dataset){
                 for(var step in dataset[set].data){
@@ -682,6 +738,20 @@ define([
                     }
                 }
             }
+            for(var set in dataset){
+                for(var step in dataset[set].low){
+                    if(dataset[set].low[step][0] <= end){
+                        low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
+                    }
+                }
+            }
+            for(var set in dataset){
+                for(var step in dataset[set].high){
+                    if(dataset[set].high[step][0] <= end){
+                        high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
+                    }
+                }
+            }
 
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
@@ -690,11 +760,15 @@ define([
             }
             for(var value in cumulative){
                 cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
+                low[value] = Math.round(converter.Convert(low[value], 'kg', api, 'API degree', units));
+                high[value] = Math.round(converter.Convert(high[value], 'kg', api, 'API degree', units));
             }
             
             var compiled = _.template(ICSTemplate, {
                 report: report,
                 cumulative: cumulative,
+                low: low,
+                high: high,
                 units: units
             });
 
@@ -704,6 +778,9 @@ define([
         downloadTableICS: function(e){
             var table = this.$('#ics209 table:last');
             var type = $(e.target).data('type');
+            if (type === undefined){
+                type = $(e.target).parent().data('type');
+            }
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
             var filename = name + '.' + type;
             var content = '';
@@ -758,11 +835,11 @@ define([
             if(_.isUndefined(header)){
                 header = '';
             }
-            return header + '<table>' + table.html() + '</table>';
+            return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
         buildDataset: function(cb){
-            if(this.frame < webgnome.model.get('num_time_steps')){
+            if(this.frame <= webgnome.model.get('num_time_steps')){
                 this.step.fetch({
                     success: _.bind(function(){
                         if(this.step){
@@ -784,7 +861,16 @@ define([
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
                 var titles = _.clone(nominal);
+                delete titles.step_num;
+                delete titles.time_stamp;
+                delete titles.floating;
+                delete titles.dispersed;
+                delete titles.evaporated;
+                delete titles.amount_released;
                 var keys = Object.keys(titles);
+                keys.unshift('floating', 'evaporated', 'dispersed');
+                keys.push('amount_released');
+
                 for(var type in keys){
                     this.dataset.push({
                         data: [],
@@ -805,7 +891,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['avg_density', 'dispersed', 'evaporated', 'emulsified', 'avg_viscosity'].indexOf(this.dataset[set].name) !== -1){
+                if(['dispersed', 'evaporated', 'emulsified', 'floating', 'amount_released', 'skimmed', 'burned'].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
@@ -817,20 +903,21 @@ define([
                     }, this);
                     high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
+
+                    nominal_value = nominal[this.dataset[set].name];
+                    nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 } else {
                     low_value = low[this.dataset[set].name];
-                    low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
-
+                    nominal_value = nominal[this.dataset[set].name];
                     high_value = high[this.dataset[set].name];
-                    high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
                 }
 
-                nominal_value = nominal[this.dataset[set].name];
-                nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+                
 
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
+                webgnome.mass_balance = this.dataset;
             }
         },
 

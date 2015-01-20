@@ -5,6 +5,7 @@ define([
     'module',
     'moment',
     'ol',
+    'nucos',
     'views/modal/form',
     'text!templates/form/wind.html',
     'views/default/map',
@@ -12,7 +13,7 @@ define([
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
@@ -23,7 +24,8 @@ define([
                 'click tr': 'modifyTimeseriesEntry',
                 'click td span': 'removeTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
-                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap'
+                'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
+                'ready': 'rendered'
             }, FormModal.prototype.events);
         },
 
@@ -76,10 +78,11 @@ define([
             FormModal.prototype.render.call(this, options);
             this.trigger('show');
 
-            this.form.constant = [];
+            this.form = {};
+            this.form.constant = {};
             this.form.constant.speed = this.$('#constant-speed');
             this.form.constant.direction = this.$('#constant-direction');
-            this.form.variable = [];
+            this.form.variable = {};
             this.form.variable.speed = this.$('#variable-speed');
             this.form.variable.direction = this.$('#variable-direction');
             this.form.variable.datetime = this.$('#datetime');
@@ -87,6 +90,9 @@ define([
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
@@ -94,7 +100,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateConstantSlide(ui);
@@ -102,7 +108,7 @@ define([
                 });
 
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
-                this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * constantSliderMax);
+                this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
             }, this), 1);
 
             setTimeout(_.bind(function(){
@@ -110,18 +116,19 @@ define([
                     min: 0,
                     max: 5,
                     value: 0,
+                    create: _.bind(function(){
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5 + '</div></div>');
+                    }, this),
                     slide: _.bind(function(e, ui){
                         this.updateVariableSlide(ui);
                     }, this)
                 });
 
                 var variableSliderMax = this.$('#variable .slider').slider("option", "max");
-                this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * variableSliderMax);
+                this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
             }, this), 1);
-            
-
-            //this.renderTimeseries();
+            $('.modal').on('scroll', this.variableWindStickyHeader);
 
         },
 
@@ -167,8 +174,9 @@ define([
                         this.model.set('timeseries', this.originalTimeseries);
                     }
 
+                    this.unbindBaseMouseTrap();
                     this.renderTimeseries();
-                }, this), 1);    
+                }, this), 1);
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
@@ -189,14 +197,18 @@ define([
         },
 
         update: function(compass){
-            var active = this.$('.nav-tabs .active a').attr('href').replace('#', '');
+            var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
+            }
             var gnomeStart = webgnome.model.get('start_time');
             if(compass && speed !== '' && direction !== ''){
                 this.$('.' + active + '-compass').compassRoseUI('update', {
                     speed: speed,
-                    direction: direction
+                    direction: direction,
+                    trigger_move: false
                 });
             }
 
@@ -215,6 +227,7 @@ define([
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             
             this.updateConstantSlide();
+            this.updateVariableSlide();
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -230,34 +243,34 @@ define([
             } else {
                 value = this.$('#variable .slider').slider('value');
             }
+            var percentRange = value * 3.0;
+            this.$('#variable .tooltip-inner').text('+/- ' + percentRange.toFixed(1) + ' %');
             var variableSliderMax = this.$('#variable .slider').slider("option", "max");
-            this.model.set('speed_uncertainty_scale', value / parseFloat(variableSliderMax));
+            this.model.set('speed_uncertainty_scale', value / (50.0 / 3));
             this.renderTimeseries(value);
+            this.updateTooltipWidth();
         },
 
         updateConstantSlide: function(ui){
             var value;
-            if(!_.isUndefined(ui)){
+            if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
                 value = !_.isNaN(this.$('#constant .slider').slider('value')) ? this.$('#constant .slider').slider('value') : 0;
             }
-            if(this.model.get('timeseries').length > 0){
+            if (this.model.get('timeseries').length > 0){
                 var speed = this.model.get('timeseries')[0][1][0];
-                if(value === 0){
+                var uncertainty = value / (50.0 / 3);
+                if (value === 0){
                     this.$('#constant .tooltip-inner').text(speed);
                 } else {
-                    var bottom = parseInt(speed, 10) - parseInt(value, 10);
-                    if (bottom < 0) {
-                        bottom = 0;
-                    }
-                    var top = parseInt(speed, 10) + parseInt(value, 10);
-                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                    var rangeObj = nucos.rayleighDist().rangeFinder(speed, uncertainty);
+                    this.$('#constant .tooltip-inner').text(rangeObj.low.toFixed(1) + ' - ' + rangeObj.high.toFixed(1));
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
-                this.model.set('speed_uncertainty_scale', value / parseFloat(constantSliderMax));
+                this.model.set('speed_uncertainty_scale', uncertainty);
+                this.updateTooltipWidth();
             }
-            
         },
 
         constantCompassUpdate: function(magnitude, direction){
@@ -275,9 +288,12 @@ define([
         addTimeseriesEntry: function(e){
             e.preventDefault();
             var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-            var date = dateObj.format('YYYY-MM-DDTHH:mm:ss');
+            var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
             var speed = this.form.variable.speed.val();
             var direction = this.form.variable.direction.val();
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            }
             var entry = [date, [speed, direction]];
             var incrementer = parseInt(this.form.variable.increment.val(), 10);
 
@@ -292,14 +308,16 @@ define([
 
                 if(not_replaced){
                     this.model.get('timeseries').push(entry);
-                    // Code for time incrementer updates assuming values in form are in hours
-                    dateObj.add('h', incrementer);
-                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
                 }
+
+                // Code for time incrementer updates assuming values in form are in hours
+                dateObj.add('h', incrementer);
+                this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
+
                 this.renderTimeseries();
             }
             this.update();
-            this.$('#variable-speed').focus();
+            this.$('#variable-speed').focus().select();
         },
 
         modifyTimeseriesEntry: function(e){
@@ -326,8 +344,12 @@ define([
         renderTimeseries: function(uncertainty){
             this.model.sortTimeseries();
 
+            if(!_.isUndefined(uncertainty)){
+                uncertainty = uncertainty / (50.0 / 3);
+            }
+
             if(_.isUndefined(uncertainty)){
-                uncertainty = this.$('#variable .slider').slider('value');
+                uncertainty = this.$('#variable .slider').slider('value') / (50.0 / 3);
             }
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
@@ -335,8 +357,9 @@ define([
                 var direction = el[1][1];
 
                 if (uncertainty > 0){
-                    var low = parseInt(velocity, 10) - parseInt(uncertainty, 10);
-                    var high = parseInt(uncertainty, 10) + parseInt(velocity, 10);
+                    var rangeObj = nucos.rayleighDist().rangeFinder(velocity, uncertainty);
+                    var low = rangeObj.low.toFixed(1);
+                    var high = rangeObj.high.toFixed(1);
                     if (low < 0) {
                         low = 0;
                     }
@@ -373,6 +396,25 @@ define([
             Mousetrap.bind('enter', _.bind(this.submitByEnter, this));
         },
 
+        variableWindStickyHeader: function(e){
+            if($('.wind-form #variable table:visible').length > 0){
+                var top = $('.modal').scrollTop();
+                var modal_offset = $('.modal').offset();
+                var offset = $('.wind-form #variable table:first').offset();
+                offset.top -= modal_offset.top;
+
+                if(offset.top < 0 && $('.wind-form .sticky').length === 0){
+                    // a sticky header to the table.
+                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
+                } else if(offset.top > 0 && $('.wind-form #variable .sticky').length > 0) {
+                    // remove the sticky header from the table.
+                    $('.wind-form #variable .sticky').remove();
+                } else {
+                    $('.wind-form #variable .sticky').css('top', top - 30 + 'px');
+                }
+            }
+        },
+
         next: function(){
             $('.xdsoft_datetimepicker:last').remove();
             this.ol.close();
@@ -387,6 +429,7 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker:last').remove();
+            $('.modal').off('scroll', this.variableWindStickyHeader);
             this.ol.close();
             FormModal.prototype.close.call(this);
         },

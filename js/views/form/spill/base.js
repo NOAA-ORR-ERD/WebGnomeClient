@@ -5,18 +5,28 @@ define([
 	'views/modal/form',
 	'views/form/oil/library',
 	'views/default/map',
-    'text!templates/form/spill/oilInfo.html',
+    'text!templates/form/spill/substance.html',
 	'nucos',
 	'ol',
 	'moment',
     'sweetalert',
 	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoTemplate, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
-
 		mapShown: false,
+
+        events: function(){
+            return _.defaults({
+                'click .oil-select': 'elementSelect',
+                'click #spill-form-map': 'update',
+                'contextmenu #spill-form-map': 'update',
+                'blur .geo-info': 'manualMapInput',
+                'click .delete': 'deleteSpill',
+                'show.bs.modal': 'renderSubstanceInfo'
+            }, FormModal.prototype.events);
+        },
 
         oilSelectDisabled: function(){
             if (_.isUndefined(webgnome.model.get('spills').at(0))){
@@ -34,19 +44,6 @@ define([
             return true;
         },
 
-		events: function(){
-			return _.defaults({
-				'click .oilSelect': 'elementSelect',
-                'click .oilName': 'elementSelect',
-				'click .locationSelect': 'locationSelect',
-				'click #spill-form-map': 'update',
-                'contextmenu #spill-form-map': 'update',
-				'blur .geo-info': 'manualMapInput',
-                'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderOilInfo'
-			}, FormModal.prototype.events);
-		},
-
 		initialize: function(options, spillModel){
 			FormModal.prototype.initialize.call(this, options);
 			if (!_.isUndefined(options.model)){
@@ -54,7 +51,6 @@ define([
 			} else {
 				this.model = spillModel;
 			}
-            this.model.fetch();
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
             if(this.model.get('name') == 'Spill'){
@@ -70,51 +66,92 @@ define([
 
             this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
-			if (geoCoords_start[0] === 0 && geoCoords_start[1] === 0 && map === 'gnome.map.GnomeMap') {
+			if (!this.showGeo) {
 				this.$('.map').hide();
 			} else {
 				this.locationSelect();
 			}
-            if (this.oilSelectDisabled()){
-                this.$('.oilSelect').attr('disabled', true);
-                this.$('#geoButton').removeClass('col-sm-9');
-                this.$('#geoButton').addClass('col-sm-6');
-            }
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
+            if (this.model.isNew()){
+                this.$('.delete').prop('disabled', true);
+            }
+            this.subtextUpdate();
 		},
 
-        parseTemperatures: function(oil){
-            var flashPointK = oil.get('flash_point_max_k');
-            var pourPointK = oil.get('pour_point_max_k');
+        renderSubstanceInfo: function(){
+            var substance;
+            var enabled = !_.isUndefined(webgnome.model.get('spills').at(0));
+            if (enabled){
+                substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            } else {
+                substance = this.model.get('element_type').get('substance');
+            }
+            var compiled = _.template(SubstanceTemplate, {
+                name: substance.get('name'),
+                api: Math.round(substance.get('api') * 1000) / 1000,
+                temps: substance.parseTemperatures(),
+                categories: substance.parseCategories(),
+                enabled: enabled,
+                emuls: substance.get('emulsion_water_fraction_max'),
+                bullwinkle: substance.get('bullwinkle_fraction')
+            });
+            this.$('#oilInfo').html('');
+            this.$('#oilInfo').html(compiled);
+            
+            this.$('#oilInfo .add, #oilInfo .locked').tooltip({
+                delay: {
+                    show: 500,
+                    hide: 100
+                },
+                container: '.modal-body'
+            });
 
-            var flashPointC = flashPointK - 273.15;
-            var flashPointF = (flashPointC * (9 / 5)) + 32;
+            this.$('.panel-heading .state').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
 
-            var pourPointC = pourPointK - 273.15;
-            var pourPointF = (pourPointC * (9 / 5)) + 32;
+                        if($(this).parents('.panel').hasClass('complete')){
+                            return object + ' requirement met';
+                        } else {
+                            return object + ' required';
+                        }
+                    },
+                    container: '.modal-body',
+                    delay: {show: 500, hide: 100}
+                });
 
-            return {'pour_point_max_c': pourPointC.toFixed(3), 
-                    'pour_point_max_f': pourPointF.toFixed(3), 
-                    'flash_point_max_c': flashPointC.toFixed(3), 
-                    'flash_point_max_f': flashPointF.toFixed(3)
-                   };
+            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name')) || enabled){
+                if (enabled){
+                    this.model.get('element_type').set('substance', substance);
+                }
+                this.$('#substancepanel').addClass('complete');
+            } else {
+                this.$('#substancepanel').removeClass('complete');
+            }
         },
 
-        renderOilInfo: function(){
-            var oil = this.model.get('element_type').get('substance');
-            var temps = this.parseTemperatures(oil);
-            if (!_.isUndefined(webgnome.model.get('spills').at(0))){
-                oil = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+        subtextUpdate: function(){
+            if (this.$('#units-bullwinkle').val() === 'time'){
+                this.$('#hours').show();
+                this.$('#percent').hide();
+            } else {
+                this.$('#hours').hide();
+                this.$('#percent').show();
             }
-            this.$('#oilInfo').html('');
-            this.$('#oilInfo').html(_.template(OilInfoTemplate, {oil: oil, temps: temps}));
         },
 
 		update: function(){
-            var oilName = this.model.get('element_type').get('substance').get('name');
-            this.$('.oilName').val(oilName);
+            this.subtextUpdate();
+            if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
+                this.$('.manual').prop('disabled', false);
+            } else {
+                this.$('.manual').prop('disabled', true);
+            }
 
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
@@ -123,15 +160,60 @@ define([
 			}
 		},
 
-		elementSelect: function(){
+        initOilLib: function(){
             this.hide();
-			var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-			oilLibraryView.render();
-			oilLibraryView.on('save', _.bind(this.show, this));
-            oilLibraryView.on('save', _.bind(this.renderOilInfo, this));
-			oilLibraryView.on('hidden', _.bind(this.show, this));
+            var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+            oilLibraryView.render();
+            oilLibraryView.on('save', _.bind(this.show, this));
+            oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
+            oilLibraryView.on('hidden', _.bind(this.show, this));
             oilLibraryView.on('hidden', oilLibraryView.close);
+        },
+
+		elementSelect: function(){
+            var spills = webgnome.model.get('spills');
+            if (this.model.isNew() && spills.length === 0 || !this.model.isNew() && spills.length === 1){
+               this.initOilLib();
+            } else {
+                swal({
+                    title: "Warning!",
+                    text: "Changing the oil here will change it for all spills!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Select new oil",
+                    cancelButtonText: "Keep original oil",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        this.initOilLib();
+                    }
+                }, this));
+            }
 		},
+
+        save: function(){
+            var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (!_.isUndefined(validSubstance)){
+                this.error('Error!', validSubstance);
+            } else {
+                this.clearError();
+                FormModal.prototype.save.call(this, _.bind(function(){
+                    var oilSubstance = this.model.get('element_type').get('substance');
+                    var spills = webgnome.model.get('spills');
+                    if (spills.length > 1){
+                        spills.forEach(function(spill){
+                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
+                                spill.get('element_type').set('substance', oilSubstance);
+                                spill.save();
+                            }
+                        });
+                    }
+                }, this)
+                );
+            }
+        },
 
         show: function(){
             this.update();
@@ -186,7 +268,7 @@ define([
                     this.$('#end-lon').val(endPoint[0]);
                     if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
                         var feature = this.source.forEachFeature(_.bind(function(feature){
-                                return feature;
+                            return feature;
                         }, this));
                         this.source.removeFeature(feature);
                         var point = startPoint;
@@ -225,7 +307,9 @@ define([
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                     }, this));
-                    this.source.removeFeature(feature);
+                    if (!_.isUndefined(feature)){
+                        this.source.removeFeature(feature);
+                    }
                     var point = _.initial(start);
                     point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
                     var feature = new ol.Feature(new ol.geom.Point(point));
@@ -242,34 +326,36 @@ define([
         },
 
 		locationSelect: function(){
-            this.mapRender();
-            var map = webgnome.model.get('map');
-            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(data){
-                    this.shorelineSource = new ol.source.GeoJSON({
-                        object: data,
-                        projection: 'EPSG:3857'
-                    });
-                    var extent = this.shorelineSource.getExtent();
-                    this.shorelineLayer = new ol.layer.Vector({
-                        source: this.shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
+            if (!this.mapShown){
+                this.mapRender();
+                var map = webgnome.model.get('map');
+                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                    map.getGeoJSON(_.bind(function(data){
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: data,
+                            projection: 'EPSG:3857'
+                        });
+                        var extent = this.shorelineSource.getExtent();
+                        this.shorelineLayer = new ol.layer.Vector({
+                            source: this.shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
                             })
-                        })
-                    });
-                    if(this.spillMapView.map){
-                        var startPosition = _.initial(this.model.get('release').get('start_position'));
-                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
-                    }
+                        });
+                        if(this.spillMapView.map){
+                            var startPosition = _.initial(this.model.get('release').get('start_position'));
+                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
+                            this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
+                        }
 
-                }, this));
+                    }, this));
+                }
             }
 		},
 

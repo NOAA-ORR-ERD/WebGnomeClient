@@ -29,6 +29,9 @@ define([
             this.$('#datetime').datetimepicker({
                 format: 'Y/n/j G:i',
             });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
         },
 
         update: function(){
