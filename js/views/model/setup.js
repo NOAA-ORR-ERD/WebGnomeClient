@@ -36,7 +36,6 @@ define([
     'model/outputters/geojson',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
-    'views/wizard/risk',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
@@ -51,7 +50,7 @@ define([
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-    GeojsonOutputter, WeatheringOutputter, EvaporationModel, RiskWizardForm){
+    GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
 
@@ -66,7 +65,6 @@ define([
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
                 'click .location .add': 'clickLocation',
-                'click .resources .run-risk': 'clickRisk',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
                 'click .response .single .trash': 'deleteResponse',
@@ -915,10 +913,6 @@ define([
             }, this));
         },
         
-        clickRisk: function(){
-            new RiskWizardForm();
-        },
-
         configureWeatherers: function(prediction){
             if (prediction == 'fate' || prediction == 'both'){
                 // turn on weatherers

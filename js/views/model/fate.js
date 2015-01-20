@@ -8,6 +8,7 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
+    'views/wizard/risk',
     'flot',
     'flottime',
     'flotresize',
@@ -16,7 +17,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate, RiskWizardForm){
     var fateView = Backbone.View.extend({
         step: new StepModel(),
         className: 'fate',
@@ -33,6 +34,7 @@ define([
 
         events: {
             'shown.bs.tab': 'renderGraphs',
+            'click a.run-risk': 'clickRisk',
             'change #budget-table select': 'renderTableOilBudget',
             'click #budget-table .export a.download': 'downloadTableOilBudget',
             'click #budget-table .export a.print': 'printTableOilBudget',
@@ -115,6 +117,10 @@ define([
 
             $.get(webgnome.config.api + '/rewind');
             this.renderLoop();
+        },
+
+        clickRisk: function(){
+            new RiskWizardForm();
         },
 
         renderLoop: function(){
