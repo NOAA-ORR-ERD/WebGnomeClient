@@ -48,20 +48,22 @@ define([
                                         source: titles,
                                         select: _.bind(function(e, ui){
                                             this.update(null, e.toElement.innerHTML);
+                                            $('.chosen-select').autocomplete('close');
+                                            $('.chosen-select').val(ui.item.value);
                                         }, this)
                                      };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
-            if (this.exactMatch(term, titles)){
+            if (this.exactMatch(term, titles) && e.which === 13){
                 this.specificHelp(null, term);
-            } else {
-                this.restoreDefault(true);
+                this.$('.chosen-select').autocomplete('close');
             }
 
             if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
                 this.$('.chosen-select').val(titles[0]);
-                this.update();
+                this.specificHelp(null, titles[0]);
+                this.$('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
         },
@@ -102,6 +104,7 @@ define([
 
         parseHelp: function(){
             this.parsedData = this.getData();
+            window.data2 = this.collection;
             this.render();
         },
 

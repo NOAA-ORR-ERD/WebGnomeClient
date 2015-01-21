@@ -4,7 +4,8 @@ define([
 	'backbone',
 	'views/modal/form',
 	'moment',
-	'jqueryDatetimepicker'
+	'jqueryDatetimepicker',
+    'jqueryui/slider'
 ], function($, _, Backbone, FormModal, moment){
 	var baseResponseForm = FormModal.extend({
 
@@ -32,6 +33,19 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('#datetime').datetimepicker('show');
             }, this));
+
+            this.$('.slider').slider({
+                min: 0,
+                max: 100,
+                value: 20,
+                create: _.bind(function(e, ui){
+                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + ui.value + '</div></div>');
+                }, this),
+                slide: _.bind(function(e, ui){
+                    this.updateEfficiency(ui);
+                }, this)
+            });
+            this.updateEfficiency();
         },
 
         update: function(){
@@ -69,6 +83,17 @@ define([
                 }
                 this.model.set('name', responseName + " #" + nameCount);
             }
+        },
+
+        updateEfficiency: function(ui){
+            var value;
+            if(!_.isUndefined(ui)){
+                value = ui.value;
+            } else {
+                value = this.$('.slider').slider('value');
+            }
+            this.$('#rate-tooltip').text(value);
+            this.updateTooltipWidth();
         }
 	});
 

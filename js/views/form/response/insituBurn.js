@@ -8,11 +8,12 @@ define([
     'model/weatherers/burn',
     'moment',
     'nucos',
-    'jqueryDatetimepicker'
+    'jqueryDatetimepicker',
+    'jqueryui/slider'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment, nucos){
     var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
-        className: 'modal fade form-modal insituburn-form',
+        className: 'modal response fade form-modal insituburn-form',
 
         initialize: function(options, burnModel){
             this.module = module;
