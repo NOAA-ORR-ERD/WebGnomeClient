@@ -40,7 +40,7 @@ define([
             var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 2){
+            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
                 this.loadModal = true;
