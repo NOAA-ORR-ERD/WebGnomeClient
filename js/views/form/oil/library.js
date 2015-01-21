@@ -40,10 +40,11 @@ define([
             var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
+            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 2){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
                 this.loadModal = true;
+                this.oilTable.on('ready', this.loadingGif.hide, this);
             }
 
             // Passed oilTable's events hash to this view's events
@@ -58,11 +59,6 @@ define([
 
         render: function(options){
             if(this.oilTable.ready){
-                // Removes loading modal just prior to render call of oilLib
-
-                if (_.isNull(this.oilCache) || this.loadModal){
-                    this.loadingGif.hide();
-                }
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
@@ -215,6 +211,7 @@ define([
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
+            this.loadingGif.close();
         },
 
         save: function(){
@@ -224,7 +221,6 @@ define([
                 success: _.bind(function(model){
                     this.model.set('substance', model);
                     this.hide();
-                    this.trigger('save');
                 }, this)
             });
         },
