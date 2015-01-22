@@ -10,7 +10,17 @@ define([
         size: 'sm',
         title: 'Loading...',
         body: _.template(LoadingTemplate),
-        buttons: ''
+        buttons: '',
+
+        events: function(){
+            var loadingModalHash = BaseModal.prototype.events;
+            delete loadingModalHash['hidden.bs.modal'];
+            return loadingModalHash;
+        },
+
+        close: function(){
+            BaseModal.prototype.close.call(this);
+        }
     });
 
     return loadingModal;
