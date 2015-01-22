@@ -162,12 +162,10 @@ define([
 
         initOilLib: function(){
             this.hide();
-            var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-            oilLibraryView.render();
-            oilLibraryView.on('save', _.bind(this.show, this));
-            oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
-            oilLibraryView.on('hidden', _.bind(this.show, this));
-            oilLibraryView.on('hidden', oilLibraryView.close);
+            this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+            this.oilLibraryView.render();
+            this.oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
+            this.oilLibraryView.on('hidden', _.bind(this.show, this));
         },
 
 		elementSelect: function(){
@@ -431,6 +429,10 @@ define([
 			$('.xdsoft_datetimepicker:last').remove();
             if (!_.isUndefined(this.spillMapView)){
                 this.spillMapView.close();
+            }
+
+            if (!_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView.close();
             }
 			FormModal.prototype.close.call(this);
 		}
