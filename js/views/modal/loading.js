@@ -12,14 +12,12 @@ define([
         body: _.template(LoadingTemplate),
         buttons: '',
 
-        events: function(){
-            var loadingModalHash = BaseModal.prototype.events;
-            delete loadingModalHash['hidden.bs.modal'];
-            return loadingModalHash;
+        events: {
+            'hidden.bs.modal': 'hidden'
         },
 
-        close: function(){
-            BaseModal.prototype.close.call(this);
+        hidden: function(){
+            $('body').addClass('modal-open');
         }
     });
 

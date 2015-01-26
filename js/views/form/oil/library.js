@@ -43,8 +43,6 @@ define([
             if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
-                this.loadModal = true;
-                this.oilTable.on('ready', this.loadingGif.hide, this);
             }
 
             // Passed oilTable's events hash to this view's events
@@ -65,6 +63,10 @@ define([
                     oilTable: this.oilTable.$el.html(),
                     results: this.oilTable.oilLib.length
                 });
+
+                if (!_.isUndefined(this.loadingGif)){
+                    this.loadingGif.hide();
+                }
 
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
@@ -211,7 +213,9 @@ define([
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
-            this.loadingGif.close();
+            if (!_.isUndefined(this.loadingGif)){
+                this.loadingGif.close();
+            }
         },
 
         save: function(){

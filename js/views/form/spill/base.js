@@ -433,11 +433,10 @@ define([
             if (!_.isUndefined(this.spillMapView)){
                 this.spillMapView.close();
             }
-
-            if(!_.isUndefined(this.oilLibraryView)){
+            
+            if (!_.isUndefined(this.oilLibraryView)){
                 this.oilLibraryView.close();
             }
-
 			FormModal.prototype.close.call(this);
 		}
 
