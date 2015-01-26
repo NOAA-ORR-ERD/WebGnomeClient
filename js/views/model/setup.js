@@ -170,6 +170,7 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
+            this.configureTimestep(target);
             this.configureWeatherers(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
@@ -188,6 +189,7 @@ define([
                 }, this));
             } else {
                 this.togglePrediction(e, target);
+                webgnome.model.save();
             }
             this.$('.stage-2').show();
         },
@@ -928,6 +930,15 @@ define([
                 });
             }
             webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
+        },
+
+        configureTimestep: function(prediction){
+            if(prediction == 'trajectory' || prediction == 'both'){
+                webgnome.model.set('time_step', 900);
+            } else {
+                webgnome.model.set('time_step', 3600);
+            }
+
         },
 
         close: function(){
