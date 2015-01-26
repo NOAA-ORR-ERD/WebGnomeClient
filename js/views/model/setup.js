@@ -80,6 +80,13 @@ define([
             BaseView.prototype.initialize.call(this, options);
             $('body').append(this.$el);
             if(webgnome.hasModel()){
+                // clear the cache not the first time the is sync but the time after that.
+                webgnome.model.once('sync', function(){
+                    webgnome.model.once('sync', function(){
+                        webgnome.cache = {};
+                    });
+                });
+
                 this.render();
             } else {
                 webgnome.model = new GnomeModel();
@@ -947,7 +954,7 @@ define([
                 this.windPlot.shutdown();
             }
             if(webgnome.model){
-                webgnome.model.off('sync', this.updateObjects, this);
+                webgnome.model.off('sync');
             }
             Backbone.View.prototype.close.call(this);
         }
