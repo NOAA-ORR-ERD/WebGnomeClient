@@ -320,12 +320,14 @@ define([
                         validate: false,
                         success: function(){
                             webgnome.model.get('movers').add(windMover);
+
                             webgnome.model.save();
                         }
                     });
                 } else {
                     webgnome.model.save();
                 }
+                webgnome.model.updateWaves();
             });
             windForm.render();
         },
@@ -434,6 +436,7 @@ define([
                         webgnome.model.save();
                     }
                 });
+                webgnome.model.updateWaves();
             });
             waterForm.render();
         },
@@ -936,7 +939,6 @@ define([
                     weatherer.save();
                 });
             }
-            webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
         },
 
         configureTimestep: function(prediction){
