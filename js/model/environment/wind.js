@@ -25,6 +25,10 @@ define([
                     if(el[1][1] < 0 || el[1][1] > 360){
                         msg = 'Direction must be between 0 and 360 degrees';
                     }
+
+                    if(_.isNull(el[1][1])){
+                        msg = 'Enter a valid direction!';
+                    }
                 });
                 if (msg) {
                     return msg;
