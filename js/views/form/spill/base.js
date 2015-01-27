@@ -162,10 +162,13 @@ define([
 
         initOilLib: function(){
             this.hide();
-            this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-            this.oilLibraryView.render();
-            this.oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
-            this.oilLibraryView.on('hidden', _.bind(this.show, this));
+            if(_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+                this.oilLibraryView.render();
+                this.oilLibraryView.on('hidden', _.bind(this.show, this));
+            } else {
+                this.oilLibraryView.show();
+            }
         },
 
 		elementSelect: function(){
@@ -430,7 +433,7 @@ define([
             if (!_.isUndefined(this.spillMapView)){
                 this.spillMapView.close();
             }
-
+            
             if (!_.isUndefined(this.oilLibraryView)){
                 this.oilLibraryView.close();
             }

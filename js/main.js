@@ -91,5 +91,6 @@ require([
     'app',
 ], function(App){
     window.webgnome = App;
+    window.webgnome.cache = {};
     webgnome.initialize();
 });

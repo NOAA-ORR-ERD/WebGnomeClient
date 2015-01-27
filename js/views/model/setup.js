@@ -80,6 +80,13 @@ define([
             BaseView.prototype.initialize.call(this, options);
             $('body').append(this.$el);
             if(webgnome.hasModel()){
+                // clear the cache not the first time the is sync but the time after that.
+                webgnome.model.once('sync', function(){
+                    webgnome.model.once('sync', function(){
+                        webgnome.cache = {};
+                    });
+                });
+
                 this.render();
             } else {
                 webgnome.model = new GnomeModel();
@@ -170,6 +177,7 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
+            this.configureTimestep(target);
             this.configureWeatherers(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
@@ -188,6 +196,7 @@ define([
                 }, this));
             } else {
                 this.togglePrediction(e, target);
+                webgnome.model.save();
             }
             this.$('.stage-2').show();
         },
@@ -311,12 +320,14 @@ define([
                         validate: false,
                         success: function(){
                             webgnome.model.get('movers').add(windMover);
+
                             webgnome.model.save();
                         }
                     });
                 } else {
                     webgnome.model.save();
                 }
+                webgnome.model.updateWaves();
             });
             windForm.render();
         },
@@ -425,6 +436,7 @@ define([
                         webgnome.model.save();
                     }
                 });
+                webgnome.model.updateWaves();
             });
             waterForm.render();
         },
@@ -927,7 +939,15 @@ define([
                     weatherer.save();
                 });
             }
-            webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('on', false).save();
+        },
+
+        configureTimestep: function(prediction){
+            if(prediction == 'trajectory' || prediction == 'both'){
+                webgnome.model.set('time_step', 900);
+            } else {
+                webgnome.model.set('time_step', 3600);
+            }
+
         },
 
         close: function(){
@@ -936,7 +956,7 @@ define([
                 this.windPlot.shutdown();
             }
             if(webgnome.model){
-                webgnome.model.off('sync', this.updateObjects, this);
+                webgnome.model.off('sync');
             }
             Backbone.View.prototype.close.call(this);
         }
