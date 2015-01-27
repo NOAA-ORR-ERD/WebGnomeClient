@@ -57,6 +57,11 @@ define([
             }
         },
 
+        defaults: {
+            obj_type: 'gnome.model.Model',
+            time_step: 900
+        },
+
         // sync: function(method, model, options){
         //     // because of the unique structure of the gnome model, it's relation to other child object
         //     // via ids, we need to dehydrate any child objects into just an id before sending it to the
