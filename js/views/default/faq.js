@@ -39,15 +39,15 @@ define([
             this.topicArray = this.collection.search(term);
             var obj = this.getData(this.topicArray);
             var titles = [];
-
             for (var i in obj){
                 titles.push(obj[i].title);
             }
-
             var autocompleteConfig = {
-                                        source: titles,
+                                        source: function(req, res){
+                                            res(titles);
+                                        },
                                         select: _.bind(function(e, ui){
-                                            this.update(null, e.toElement.innerHTML);
+                                            // this.update(null, e.toElement.innerHTML);
                                             $('.chosen-select').autocomplete('close');
                                             $('.chosen-select').val(ui.item.value);
                                         }, this)
@@ -94,8 +94,9 @@ define([
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     var path = models[i].get('path');
+                    var keywords = models[i].get('keywords');                    
                     if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path});
+                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords});
                     }
                 }
             }
@@ -129,7 +130,7 @@ define([
             }
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
-                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content });
+                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
