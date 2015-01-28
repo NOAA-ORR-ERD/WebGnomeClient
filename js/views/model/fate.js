@@ -43,9 +43,6 @@ define([
         },
 
         initialize: function(){
-            if(_.has(webgnome.cache, 'fate')){
-                this.dataset = webgnome.cache.fate;
-            }
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
         },
@@ -117,13 +114,13 @@ define([
             });
 
             $.get(webgnome.config.api + '/rewind');
+
             this.renderLoop();
         },
 
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
                 this.buildDataset(_.bind(function(dataset){
-                    webgnome.cache.fate = dataset;
                     this.renderGraphs();
                 }, this));
             } else {

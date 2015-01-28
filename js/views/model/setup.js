@@ -80,13 +80,6 @@ define([
             BaseView.prototype.initialize.call(this, options);
             $('body').append(this.$el);
             if(webgnome.hasModel()){
-                // clear the cache not the first time the is sync but the time after that.
-                webgnome.model.once('sync', function(){
-                    webgnome.model.once('sync', function(){
-                        webgnome.cache = {};
-                    });
-                });
-
                 this.render();
             } else {
                 webgnome.model = new GnomeModel();
