@@ -16,7 +16,7 @@ define([
         },
 
         test: function(){
-            asyncTest('Get a GeoJSON list of all the posible locations', _.bind(function(){
+            asyncTest('Get a GeoJSON list of all the possible locations', _.bind(function(){
                 ok(!_.isUndefined(this.locations), 'A response was recieved');
                 equal(this.locations.type, 'FeatureCollection', 'json response is geojson');
                 ok(this.locations.features.length > 0, 'there are locations in the geojson');

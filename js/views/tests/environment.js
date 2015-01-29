@@ -21,18 +21,18 @@ define([
                         ok(!_.isUndefined(water.get('id')), 'water has an id');
                         ok(!_.isUndefined(water.toTree()), 'water too tree works!');
                         equal(water.convertToK(32), 273.15, 'Fahrenheit to Kelvin conversion works');
-                        // water.get('units').set('temperature', 'C');
-                        // equal(water.get('units').get('temperature'), 'C', 'Temperature unit changed successfully');
-                        // equal(water.convertToK(0), 273.15, 'Celsius to Kelvin conversion works');
+                        water.get('units')['temperature'] = 'C';
+                        equal(water.get('units')['temperature'], 'C', 'Temperature unit changed successfully');
+                        equal(water.convertToK(0), 273.15, 'Celsius to Kelvin conversion works');
                         start();
                     },
                     error: function(){
                         ok(!_.isUndefined(water.get('id')), 'water has an id');
                         ok(!_.isUndefined(water.toTree()), 'water too tree works!');
                         equal(water.convertToK(32), 273.15, 'Fahrenheit to Kelvin conversion works');
-                        // water.get('units').set('temperature', 'C');
-                        // equal(water.get('units').get('temperature'), 'C', 'Temperature unit changed successfully');
-                        // equal(water.convertToK(0), 273.15, 'Celsius to Kelvin conversion works');
+                        water.get('units')['temperature'] = 'C';
+                        equal(water.get('units')['temperature'], 'C', 'Temperature unit changed successfully');
+                        equal(water.convertToK(0), 273.15, 'Celsius to Kelvin conversion works');
                         start();
                     }
 
