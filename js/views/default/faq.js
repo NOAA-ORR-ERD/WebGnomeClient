@@ -47,7 +47,9 @@ define([
                                             res(titles);
                                         },
                                         select: _.bind(function(e, ui){
-                                            this.update({which: 13}, e.toElement.innerHTML);
+                                            if (!_.isUndefined(e)){
+                                                this.update({which: 13}, e.toElement.innerHTML);
+                                            }
                                             $('.chosen-select').autocomplete('close');
                                             $('.chosen-select').val(ui.item.value);
                                         }, this)
@@ -94,7 +96,7 @@ define([
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     var path = models[i].get('path');
-                    var keywords = models[i].get('keywords');                    
+                    var keywords = models[i].get('keywords');
                     if (helpTitle !== ''){
                         data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords});
                     }

@@ -9,7 +9,7 @@ define([
         url: '/help',
 
         search: function(term){
-        	var options = {keys: ['attributes.keywords'], threshold: 0.5};
+        	var options = {keys: ['attributes.keywords'], threshold: 0.65};
         	var f = new Fuse(this.models, options);
         	var result = f.search(term);
         	return result;
