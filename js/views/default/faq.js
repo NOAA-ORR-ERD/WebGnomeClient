@@ -47,7 +47,7 @@ define([
                                             res(titles);
                                         },
                                         select: _.bind(function(e, ui){
-                                            // this.update(null, e.toElement.innerHTML);
+                                            this.update({which: 13}, e.toElement.innerHTML);
                                             $('.chosen-select').autocomplete('close');
                                             $('.chosen-select').val(ui.item.value);
                                         }, this)
@@ -105,7 +105,6 @@ define([
 
         parseHelp: function(){
             this.parsedData = this.getData();
-            window.data2 = this.collection;
             this.render();
         },
 

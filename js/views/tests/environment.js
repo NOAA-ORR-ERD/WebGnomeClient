@@ -35,7 +35,6 @@ define([
                         equal(water.convertToK(0), 273.15, 'Celsius to Kelvin conversion works');
                         start();
                     }
-
                 });
             });
 
