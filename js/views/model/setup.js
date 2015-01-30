@@ -179,6 +179,7 @@ define([
 
             this.configureTimestep(target);
             this.configureWeatherers(target);
+            this.configureRelease(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 swal({
@@ -941,13 +942,27 @@ define([
             }
         },
 
+        configureRelease: function(prediction){
+            var spills = webgnome.model.get('spills');
+            if (prediction == 'trajectory' || prediction == 'both'){
+                spills.forEach(function(spill, index, list){
+                    spill.get('release').set('num_per_timestep', null);
+                    spill.get('release').set('num_elements', 1000);
+                });
+            } else {
+                spills.forEach(function(spill, index, list){
+                    spill.get('release').set('num_per_timestep', 10);
+                    spill.get('release').set('num_elements', 0);
+                });
+            }
+        },
+
         configureTimestep: function(prediction){
             if(prediction == 'trajectory' || prediction == 'both'){
                 webgnome.model.set('time_step', 900);
             } else {
                 webgnome.model.set('time_step', 3600);
             }
-
         },
 
         close: function(){
