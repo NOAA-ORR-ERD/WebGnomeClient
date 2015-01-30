@@ -101,11 +101,7 @@ define([
 
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
-                if(pred){
-                    this.$('.' + pred).click();
-                } else {
-                    this.$('.fate').click();
-                }
+                this.togglePrediction({target: this.$('.' + pred)}, pred);
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
@@ -191,7 +187,6 @@ define([
                 this.togglePrediction(e, target);
                 webgnome.model.save();
             }
-            this.$('.stage-2').show();
         },
 
         togglePrediction: function(e, target){
@@ -212,6 +207,7 @@ define([
             } else{
                 this.showAllObjects();
             }
+            this.$('.stage-2').show();
 
             setTimeout(_.bind(function(){
                 this.updateObjects();
