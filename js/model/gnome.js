@@ -62,14 +62,6 @@ define([
             time_step: 900
         },
 
-        initialize: function(){
-            this.on('change', _.bind(function(){
-                if(this.hasChanged && !_.isUndefined(webgnome.cache)){
-                    webgnome.cache.rewind();
-                }
-            }, this));
-        },
-
         parse: function(response){
             // model needs a special parse function to turn object id's into objects
             for(var key in this.model){
