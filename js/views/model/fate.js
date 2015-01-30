@@ -155,7 +155,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'emulsified']);
             if(_.isUndefined(this.graphOilBudget)){
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
                     grid: {
