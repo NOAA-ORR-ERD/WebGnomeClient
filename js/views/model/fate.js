@@ -1004,6 +1004,8 @@ define([
         close: function(){
             $('.xdsoft_datetimepicker').remove();
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.off('step:recieved', this.buildDataset, this);
+
             this.rendered = false;
             Backbone.View.prototype.close.call(this);
         }

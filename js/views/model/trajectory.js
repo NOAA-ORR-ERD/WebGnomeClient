@@ -672,6 +672,8 @@ define([
                 webgnome.model.off('change', this.contextualize, this);
                 webgnome.model.off('sync', this.spillListeners, this);
             }
+            webgnome.cache.off('step:recieved', this.renderStep, this);
+            webgnome.cache.off('step:failed', this.pause, this);
             this.remove();
             this.unbind();
             this.ol.close();
