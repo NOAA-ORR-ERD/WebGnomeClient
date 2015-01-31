@@ -359,7 +359,7 @@ define([
                 visible = true;
             }
             var layer = new ol.layer.Vector({
-                step: step.get('GeoJson').step_num,
+                step_num: step.get('GeoJson').step_num,
                 ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
                 style: new ol.style.Style({
                     image: new ol.style.Circle({
