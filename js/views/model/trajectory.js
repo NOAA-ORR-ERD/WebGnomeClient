@@ -201,6 +201,8 @@ define([
                 this.SpillGroupLayers.push(layer);
                 this.updateProgress();
             }, this));
+            webgnome.cache.on('step:recieved', this.renderStep, this);
+            webgnome.cache.on('step:failed', this.pause, this);
         },
 
         loop: function(){
@@ -225,10 +227,7 @@ define([
                     // time steps this model should have so load
 
                     this.updateProgress();
-                    webgnome.cache.step({
-                        success: _.bind(this.renderStep, this),
-                        error: _.bind(this.pause, this)
-                    });
+                    webgnome.cache.step();
                 } else {
                     this.pause();
                 }

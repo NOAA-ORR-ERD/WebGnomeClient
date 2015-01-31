@@ -55,11 +55,10 @@ define([
                 }, this));
 
                 if(this.frame < webgnome.model.get('num_time_steps')){
-                    this.buildDataset(_.bind(function(dataset){
-                        this.renderGraphs();
-                    }, this));
+                    webgnome.cache.step();
                 }
             }
+            webgnome.cache.on('step:recieved', this.buildDataset, this);
         },
 
         render: function(){
@@ -134,9 +133,7 @@ define([
 
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
-                this.buildDataset(_.bind(function(dataset){
-                    this.renderGraphs();
-                }, this));
+                webgnome.cache.step();
             } else {
                 this.renderGraphs();
             }
@@ -854,16 +851,12 @@ define([
             return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
-        buildDataset: function(cb){
+        buildDataset: function(step){
             if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
-                webgnome.cache.step({
-                    success: _.bind(function(step){
-                        this.frame++;
-                        this.buildDataset(cb);
-                        this.formatDataset(step);
-                        cb(this.dataset);
-                    }, this)
-                });
+                webgnome.cache.step();
+                this.frame++;
+                this.formatDataset(step);
+                this.renderGraphs();
             }
         },
 

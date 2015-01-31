@@ -18,14 +18,17 @@ define([
             }
         },
 
-        step: function(cb){
+        step: function(){
             var step = new StepModel();
+            this.trigger('step:sent');
             step.fetch({
                 success: _.bind(function(step){
                     this.add(step);
-                    cb.success(step);
+                    this.trigger('step:recieved', step);
                 }, this),
-                error: cb.error
+                error: _.bind(function(){
+                    this.trigger('step:failed');
+                }, this)
             });
         },
 
