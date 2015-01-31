@@ -62,34 +62,6 @@ define([
             time_step: 900
         },
 
-        // sync: function(method, model, options){
-        //     // because of the unique structure of the gnome model, it's relation to other child object
-        //     // via ids, we need to dehydrate any child objects into just an id before sending it to the
-        //     // server.
-        //     if(_.indexOf(['update'], method) != -1){
-        //         for(var key in model.model){
-        //             if(model.get(key)){
-        //                 if(model.get(key) instanceof Backbone.Collection){
-        //                     var array = model.get(key).toArray();
-        //                     model.set(key, [], {silent: true});
-        //                     if(array.length > 0){
-        //                         _.each(array, function(element){
-        //                             if(!_.isUndefined(element.get('id'))){
-        //                                 model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
-        //                             } else {
-        //                                 model.get(key).push(element);
-        //                             }
-        //                         });
-        //                     }
-        //                 } else {
-        //                     model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')}, {silent: true});
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     return BaseModel.prototype.sync.call(this, method, model, options);
-        // },
-
         parse: function(response){
             // model needs a special parse function to turn object id's into objects
             for(var key in this.model){

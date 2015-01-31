@@ -4,7 +4,6 @@ define([
     'backbone',
     'moment',
     'nucos',
-    'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
@@ -16,11 +15,11 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = Backbone.View.extend({
-        step: new StepModel(),
         className: 'fate',
         frame: 0,
+        rendered: false,
         colors: [
             'rgb(203,75,75)',
             'rgb(237,194,64)',
@@ -42,12 +41,24 @@ define([
             'click #ics209 .export a.print': 'printTableICS'
         },
 
-        initialize: function(){
-            if(_.has(webgnome.cache, 'fate')){
-                this.dataset = webgnome.cache.fate;
-            }
+        initialize: function(options){
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
+        },
+
+        load: function(){
+            if(webgnome.cache.models.length > 0){
+
+                webgnome.cache.forEach(_.bind(function(step){
+                    this.frame++;
+                    this.formatDataset(step);
+                }, this));
+
+                if(this.frame < webgnome.model.get('num_time_steps')){
+                    webgnome.cache.step();
+                }
+            }
+            webgnome.cache.on('step:recieved', this.buildDataset, this);
         },
 
         render: function(){
@@ -97,6 +108,7 @@ define([
             });
             
             this.$el.html(compiled);
+            this.rendered = true;
 
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
@@ -115,17 +127,13 @@ define([
                 placement: 'bottom',
                 container: 'body'
             });
-
-            $.get(webgnome.config.api + '/rewind');
+            this.load();
             this.renderLoop();
         },
 
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
-                this.buildDataset(_.bind(function(dataset){
-                    webgnome.cache.fate = dataset;
-                    this.renderGraphs();
-                }, this));
+                webgnome.cache.step();
             } else {
                 this.renderGraphs();
             }
@@ -843,18 +851,12 @@ define([
             return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
-        buildDataset: function(cb){
-            if(this.frame <= webgnome.model.get('num_time_steps')){
-                this.step.fetch({
-                    success: _.bind(function(){
-                        if(this.step){
-                            this.frame++;
-                            this.buildDataset(cb);
-                            this.formatDataset(this.step);
-                            cb(this.dataset);
-                        }
-                    }, this)
-                });
+        buildDataset: function(step){
+            if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
+                webgnome.cache.step();
+                this.frame++;
+                this.formatDataset(step);
+                this.renderGraphs();
             }
         },
 
@@ -1001,8 +1003,8 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker').remove();
-            this.step = null;
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
+            this.rendered = false;
             Backbone.View.prototype.close.call(this);
         }
     });
