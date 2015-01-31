@@ -201,6 +201,11 @@ define([
                 this.SpillGroupLayers.push(layer);
                 this.updateProgress();
             }, this));
+            if(webgnome.cache.length > 0){
+                this.frame = webgnome.cache.length - 1;
+                this.seek(null, {value: this.frame});
+            }
+            this.play();
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
         },
