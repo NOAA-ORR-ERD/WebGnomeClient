@@ -8,12 +8,14 @@ define([
     'nucos',
     'views/modal/form',
     'text!templates/form/wind.html',
+    'text!templates/form/wind/variable-input.html',
+    'text!templates/form/wind/variable-static.html',
     'views/default/map',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
@@ -324,13 +326,21 @@ define([
             e.preventDefault();
             var index = e.target.parentElement.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
-            this.form.variable.speed.val(entry[1][0]);
-            this.form.variable.direction.val(entry[1][1]);
-            this.$('.variable-compass').compassRoseUI('update', {
-                speed: entry[1][0],
-                direction: entry[1][1]
+            var childArray = e.target.parentElement.children;
+            // this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
+            // this.form.variable.speed.val(entry[1][0]);
+            // this.form.variable.direction.val(entry[1][1]);
+            // this.$('.variable-compass').compassRoseUI('update', {
+            //     speed: entry[1][0],
+            //     direction: entry[1][1]
+            // });
+
+            this.$(childArray[0]).html('<input class="wind-date" value="' + moment(entry[0]).format(webgnome.config.date_format.moment) + '">');
+            this.$('.wind-date').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker
             });
+            this.$(childArray[1]).html('<input value="' + entry[1][0] + '">');
+            this.$(childArray[2]).html('<input value="' + entry[1][1] + '">');
         },
 
         removeTimeseriesEntry: function(e){
