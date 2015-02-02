@@ -374,7 +374,15 @@ define([
                 }
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
-                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                //html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                var compiled = _.template(VarStaticTemplate);
+                var template = compiled({
+                    tsindex: index,
+                    date: date,
+                    speed: velocity,
+                    direction: direction
+                });
+                html = html + template;
             });
             this.$('table tbody').html(html);
         },
