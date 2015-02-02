@@ -327,20 +327,17 @@ define([
             var index = e.target.parentElement.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
             var childArray = e.target.parentElement.children;
-            // this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
-            // this.form.variable.speed.val(entry[1][0]);
-            // this.form.variable.direction.val(entry[1][1]);
-            // this.$('.variable-compass').compassRoseUI('update', {
-            //     speed: entry[1][0],
-            //     direction: entry[1][1]
-            // });
-
-            this.$(childArray[0]).html('<input class="wind-date" value="' + moment(entry[0]).format(webgnome.config.date_format.moment) + '">');
-            this.$('.wind-date').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker
+            var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+            var compiled = _.template(VarInputTemplate);
+            var template = compiled({
+                'tsindex': index,
+                'date': date,
+                'speed': entry[1][0],
+                'direction': entry[1][1]
             });
-            this.$(childArray[1]).html('<input value="' + entry[1][0] + '">');
-            this.$(childArray[2]).html('<input value="' + entry[1][1] + '">');
+
+            this.$('tbody').html(template);
+
         },
 
         removeTimeseriesEntry: function(e){
