@@ -16,11 +16,9 @@ define([
     var trajectoryView = Backbone.View.extend({
         className: 'map',
         id: 'map',
-        full: false,
         spillToggle: false,
         spillCoords: [],
         state: 'pause',
-        step: new GnomeStep(),
         frame: 0,
         contracted: false,
 
@@ -38,11 +36,11 @@ define([
             'slidestop .seek > div': 'blur'
         },
 
-        initialize: function(){
+        initialize: function(options){
             if(webgnome.hasModel()){
                 this.modelListeners();
             }
-            
+
             webgnome.model.trigger('sync');
             this.render();
         },
@@ -159,6 +157,7 @@ define([
                 };
 
                 this.controls.seek.slider();
+                this.load();
             }
 
             this.contextualize();
@@ -194,8 +193,21 @@ define([
 
             // set the slider to the correct number of steps
             this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
-            this.SpillGroupLayers.clear();
-            this.rewind();
+        },
+
+        load: function(){
+            webgnome.cache.forEach(_.bind(function(step){
+                var layer = this.makeLayer(step, false);
+                this.SpillGroupLayers.push(layer);
+                this.updateProgress();
+            }, this));
+            if(webgnome.cache.length > 0){
+                this.frame = webgnome.cache.length - 1;
+                this.seek(null, {value: this.frame});
+            }
+            this.play();
+            webgnome.cache.on('step:recieved', this.renderStep, this);
+            webgnome.cache.on('step:failed', this.pause, this);
         },
 
         loop: function(){
@@ -219,22 +231,20 @@ define([
                     // the step doesn't already exist on the map and it's with in the number of 
                     // time steps this model should have so load
 
-                    this.controls.progress.addClass('progress-bar-stripes active');
-                    var percent = Math.round(((this.frame + 1) / (webgnome.model.get('num_time_steps') - 1)) * 100);
-                    this.controls.progress.css('width', percent + '%');
-                    this.step.fetch({
-                        success: _.bind(this.renderStep, this),
-                        error: _.bind(function(){
-                            this.pause();
-                            console.log('error loading step');
-                        }, this)
-                    });
+                    this.updateProgress();
+                    webgnome.cache.step();
                 } else {
                     this.pause();
                 }
             } else {
                 this.pause();
             }
+        },
+
+        updateProgress: function(){
+            this.controls.progress.addClass('progress-bar-stripes active');
+            var percent = Math.round(((this.SpillGroupLayers.getLength()) / (webgnome.model.get('num_time_steps') - 1)) * 100);
+            this.controls.progress.css('width', percent + '%');
         },
 
         togglePlay: function(){
@@ -266,7 +276,7 @@ define([
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.frame = 0;
-            $.get(webgnome.config.api + '/rewind');
+            webgnome.cache.rewind();
 
             // clean up the spill ... ha
             this.SpillGroupLayers.clear();
@@ -317,15 +327,44 @@ define([
                         this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
                     }
                 }
-            } else if(this.step.get('GeoJson')){
-                this.getStepLayer();
+            } else if(options.get('GeoJson')){
+                this.getStepLayer(options);
             }
         },
 
-        getStepLayer: function(){
+        getStepLayer: function(step){
+            var layer = this.makeLayer(step);
+            this.SpillGroupLayers.push(layer);
+
+            if(step.get('GeoJson').feature_collection.features[0].geometry.coordinates.length > 0){
+                layer.once('render', _.bind(function(){
+                    this.getStepLayerRendered(step);
+                }, this));
+            } else {
+                this.getStepLayerRendered(step);
+            }
+        },
+
+        getStepLayerRendered: function(step){
+            if(step.get('GeoJson').step_num > 0){
+                this.SpillGroupLayers.item(step.get('GeoJson').step_num - 1).setVisible(false);
+                this.frame = step.get('GeoJson').step_num;
+                this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
+            }
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+                this.controls.seek.slider('value', this.frame + 1);
+            } else {
+                this.pause();
+            }
+        },
+
+        makeLayer: function(step, visible){
+            if(_.isUndefined(visible)){
+                visible = true;
+            }
             var layer = new ol.layer.Vector({
-                step: this.step.get('GeoJson').step_num,
-                ts: moment(this.step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+                step_num: step.get('GeoJson').step_num,
+                ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
                 style: new ol.style.Style({
                     image: new ol.style.Circle({
                         fill: new ol.style.Fill({
@@ -337,35 +376,15 @@ define([
                         })
                     })
                 }),
+                visible: visible,
                 source: new ol.source.GeoJSON({
                     // url: ''
                     projection: 'EPSG:3857',
-                    object: this.step.get('GeoJson').feature_collection
+                    object: step.get('GeoJson').feature_collection
                 })
             });
-            
-            this.SpillGroupLayers.push(layer);
 
-            if(this.step.get('GeoJson').feature_collection.features[0].geometry.coordinates.length > 0){
-                layer.once('render', _.bind(function(){
-                    this.getStepLayerRendered();
-                }, this));
-            } else {
-                this.getStepLayerRendered();
-            }
-        },
-
-        getStepLayerRendered: function(){
-            if(this.step.get('GeoJson').step_num > 0){
-                this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
-                this.frame = this.step.get('GeoJson').step_num;
-                this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-            }
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
-                this.controls.seek.slider('value', this.frame + 1);
-            } else {
-                this.pause();
-            }
+            return layer;
         },
 
         disableUI: function(){
@@ -546,7 +565,6 @@ define([
                 });
                 this.SpillIndexSource.addFeature(feature);
             }, this);
-
         },
 
         resetSpills: function(){
@@ -659,6 +677,8 @@ define([
                 webgnome.model.off('change', this.contextualize, this);
                 webgnome.model.off('sync', this.spillListeners, this);
             }
+            webgnome.cache.off('step:recieved', this.renderStep, this);
+            webgnome.cache.off('step:failed', this.pause, this);
             this.remove();
             this.unbind();
             this.ol.close();
