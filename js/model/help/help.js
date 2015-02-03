@@ -14,7 +14,7 @@ define([
         makeExcerpt: function(){
             var topicBody = $('<div>' + this.get('html') + '</div>');
             topicBody.find('h1').remove();
-            return topicBody.text().substring(0,49).replace(/\n/g, ' ') + '...';
+            return topicBody.text().substring(0,150).replace(/\n/g, ' ') + '...';
         }
     });
 
