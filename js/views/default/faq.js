@@ -96,9 +96,10 @@ define([
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     var path = models[i].get('path');
+                    var excerpt = models[i].makeExcerpt();
                     var keywords = models[i].get('keywords');
                     if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords});
+                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt});
                     }
                 }
             }
