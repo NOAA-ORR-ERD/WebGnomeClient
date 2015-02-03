@@ -163,7 +163,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'emulsified']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
                     grid: {
@@ -218,7 +218,7 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'emulsified']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -289,7 +289,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -898,7 +898,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['dispersed', 'evaporated', 'emulsified', 'floating', 'amount_released', 'skimmed', 'burned'].indexOf(this.dataset[set].name) !== -1){
+                if(['dispersed', 'evaporated', 'floating', 'amount_released', 'skimmed', 'burned', 'beached'].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
