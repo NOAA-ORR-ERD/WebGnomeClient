@@ -16,7 +16,9 @@ define([
         events: {
             'keyup input': 'update',
             'click .back': 'back',
-            'click .topic': 'specificHelp'
+            'click .topic': 'specificHelp',
+            'click .helpful a': 'logHelpful',
+            'click .send': 'logResponse'
         },
 
         initialize: function(){
@@ -135,11 +137,49 @@ define([
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
                     compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
+                    this.helpModel = new HelpModel({id: data[i].path});
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
                 }
             }
+        },
+
+        logHelpful: function(e){
+            var target;
+            if (e.target.nodeName === 'SPAN'){
+                target = e.target.parentElement;
+            } else {
+                target = e.target;
+            }
+
+            var ishelpful = target.dataset.helpful;
+
+            this.$('.helpful a').removeClass('selected');
+            this.$(target).addClass('selected');
+
+            this.helpModel.set('helpful', ishelpful);
+            this.helpModel.save(null, {
+                success: _.bind(function(){
+                    if(this.helpModel.get('helpful') === 'false'){
+                        this.showResponse();
+                    }
+                }, this)
+            });
+        },
+
+        showResponse: function(){
+            this.$('.response').show();
+        },
+
+        logResponse: function(e){
+            this.helpModel.set('response', this.$('textarea').val());
+            this.helpModel.save(null, {
+                success: _.bind(function(){
+                    this.$('.helpful, .response').hide();
+                    this.$('.thankyou').fadeIn();
+                })
+            });
         },
 
         renderContent: function(){
