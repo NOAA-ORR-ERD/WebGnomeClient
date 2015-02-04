@@ -20,18 +20,25 @@ define([
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
         events: function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(tbody input)'] = 'update';
+            formModalHash['keyup input:not(tbody input)'] = 'update';
             return _.defaults({
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
-                'click tr': 'modifyTimeseriesEntry',
-                'click td span': 'removeTimeseriesEntry',
+                'click .edit': 'modifyTimeseriesEntry',
+                'click .trash': 'removeTimeseriesEntry',
+                'click .ok': 'enterTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered'
-            }, FormModal.prototype.events);
+            }, formModalHash);
         },
 
         initialize: function(options, GnomeWind){
+            console.log(this.events());
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = GnomeWind;
@@ -324,9 +331,9 @@ define([
 
         modifyTimeseriesEntry: function(e){
             e.preventDefault();
-            var index = e.target.parentElement.dataset.tsindex;
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            var childArray = e.target.parentElement.children;
             var date = moment(entry[0]).format(webgnome.config.date_format.moment);
             var compiled = _.template(VarInputTemplate);
             var template = compiled({
@@ -337,6 +344,24 @@ define([
             });
 
             this.$('tbody').html(template);
+            this.$('.date-pick').datetimepicker({format: webgnome.config.date_format.datetimepicker});
+        },
+
+        enterTimeseriesEntry: function(e){
+            e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            var speed = this.$('.input-speed').val();
+            var direction = this.$('.input-direction').val();
+            entry[1][0] = speed;
+            entry[1][1] = direction;
+            _.each(this.model.get('timeseries'), function(el, index, array){
+                if (el[0] === entry[0]){
+                    array[index] = entry;
+                }
+            });
+            this.renderTimeseries();
 
         },
 
