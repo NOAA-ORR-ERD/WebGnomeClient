@@ -331,17 +331,17 @@ define([
         modifyTimeseriesEntry: function(e){
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
+            console.log(this.$(row).html());
             var index = row.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
             var date = moment(entry[0]).format(webgnome.config.date_format.moment);
             var compiled = _.template(VarInputTemplate);
             var template = compiled({
-                'tsindex': index,
                 'date': date,
                 'speed': entry[1][0],
                 'direction': entry[1][1]
             });
-            this.$('tbody').html(template);
+            this.$(row).html(template);
             this.$('.date-pick').datetimepicker({format: webgnome.config.date_format.datetimepicker});
         },
 
@@ -353,6 +353,9 @@ define([
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
             var date = moment(this.$('.date-pick').val()).format('YYYY-MM-DDTHH:mm:00');
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            }
             entry[0] = date;
             entry[1][0] = speed;
             entry[1][1] = direction;
