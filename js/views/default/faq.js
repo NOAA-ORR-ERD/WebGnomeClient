@@ -125,7 +125,9 @@ define([
             var data = this.parsedData;
             var target;
             var compiled;
-            if (_.isUndefined(e.target.dataset.title)){
+            if (_.isNull(e)){
+                target = title;
+            } else if (_.isUndefined(e.target.dataset.title)){
                 target = this.$(e.target).siblings('h4')[0].dataset.title;
             } else {
                 target = e.target.dataset.title;
