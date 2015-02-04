@@ -8,25 +8,33 @@ define([
     'nucos',
     'views/modal/form',
     'text!templates/form/wind.html',
+    'text!templates/form/wind/variable-input.html',
+    'text!templates/form/wind/variable-static.html',
     'views/default/map',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
         events: function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(tbody input)'] = 'update';
+            formModalHash['keyup input:not(tbody input)'] = 'update';
             return _.defaults({
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
-                'click tr': 'modifyTimeseriesEntry',
-                'click td span': 'removeTimeseriesEntry',
+                'click .edit': 'modifyTimeseriesEntry',
+                'click .trash': 'removeTimeseriesEntry',
+                'click .ok': 'enterTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered'
-            }, FormModal.prototype.events);
+            }, formModalHash);
         },
 
         initialize: function(options, GnomeWind){
@@ -322,15 +330,42 @@ define([
 
         modifyTimeseriesEntry: function(e){
             e.preventDefault();
-            var index = e.target.parentElement.dataset.tsindex;
+            var row = this.$(e.target).parents('tr')[0];
+            console.log(this.$(e.target).parents('tr'));
+            var index = row.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
-            this.form.variable.speed.val(entry[1][0]);
-            this.form.variable.direction.val(entry[1][1]);
-            this.$('.variable-compass').compassRoseUI('update', {
-                speed: entry[1][0],
-                direction: entry[1][1]
+            var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+            var compiled = _.template(VarInputTemplate);
+            var template = compiled({
+                'date': date,
+                'speed': entry[1][0],
+                'direction': entry[1][1]
             });
+            this.$(row).html(template);
+            this.$('.date-pick').datetimepicker({format: webgnome.config.date_format.datetimepicker});
+        },
+
+        enterTimeseriesEntry: function(e){
+            e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            var speed = this.$('.input-speed').val();
+            var direction = this.$('.input-direction').val();
+            var date = moment(this.$('.date-pick').val()).format('YYYY-MM-DDTHH:mm:00');
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            }
+            entry[0] = date;
+            entry[1][0] = speed;
+            entry[1][1] = direction;
+            _.each(this.model.get('timeseries'), function(el, index, array){
+                if (el[0] === entry[0]){
+                    array[index] = entry;
+                }
+            });
+            this.renderTimeseries();
+            this.update();
         },
 
         removeTimeseriesEntry: function(e){
@@ -367,7 +402,14 @@ define([
                 }
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
-                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                var compiled = _.template(VarStaticTemplate);
+                var template = compiled({
+                    tsindex: index,
+                    date: date,
+                    speed: velocity,
+                    direction: direction
+                });
+                html = html + template;
             });
             this.$('table tbody').html(html);
         },

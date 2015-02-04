@@ -58,7 +58,7 @@ define([
                             }
                         }
                         if (oil['estimated'][attr]){
-                            oil[attr] = '<i>' + this.cToF((oil[attr] - 273.15).toFixed(3)) + '</i> &deg;F';
+                            oil[attr] = '<code>' + this.cToF((oil[attr] - 273.15).toFixed(3)) + '</code> &deg;F';
                         } else {
                             oil[attr] = this.cToF((oil[attr] - 273.15).toFixed(3)) + ' &deg;F';
                         }  
@@ -102,8 +102,8 @@ define([
                                         if (oil['estimated'][attr]){
                                             oil[attr][key][i][k] = (oil[attr][key][i][k] - 273.15).toFixed(3);
                                             var k2 = k.substring(0, k.length - 2) + '_f';
-                                            oil[attr][key][i][k2] = '<i>' + this.cToF(oil[attr][key][i][k]).toString() + '</i>';
-                                            oil[attr][key][i][k] = '<i>(' + oil[attr][key][i][k] + ')</i>';
+                                            oil[attr][key][i][k2] = '<code>' + this.cToF(oil[attr][key][i][k]).toString() + '</code>';
+                                            oil[attr][key][i][k] = '<code>(' + oil[attr][key][i][k] + ')</code>';
                                         } else {
                                             oil[attr][key][i][k] = (oil[attr][key][i][k] - 273.15).toFixed(3);
                                             var k2 = k.substring(0, k.length - 2) + '_f';
@@ -135,8 +135,8 @@ define([
                                     if (oil['estimated'][attr]){
                                         oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
                                         var k2 = k.substring(0, k.length - 2) + '_f';
-                                        oil[attr][i][k2] = '<i>' + this.cToF(oil[attr][i][k]).toString() + '</i>';
-                                        oil[attr][i][k] = '<i>(' + oil[attr][i][k] + ')</i>';
+                                        oil[attr][i][k2] = '<code>' + this.cToF(oil[attr][i][k]).toString() + '</code>';
+                                        oil[attr][i][k] = '<code>(' + oil[attr][i][k] + ')</code>';
                                     } else {
                                         oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
                                         var k2 = k.substring(0, k.length - 2) + '_f';
@@ -145,7 +145,7 @@ define([
                                     }
                                 } else if (k === 'kg_m_3'){
                                     if (oil['estimated'][attr]){
-                                        oil[attr][i][k] = '<i>' + (oil[attr][i][k] / 1000).toFixed(3) + '</i>';
+                                        oil[attr][i][k] = '<code>' + (oil[attr][i][k] / 1000).toFixed(3) + '</code>';
                                     } else {
                                         oil[attr][i][k] = (oil[attr][i][k] / 1000).toFixed(3);
                                     }
@@ -161,19 +161,19 @@ define([
                 // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
                 else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
                     if (oil['estimated'][attr]){
-                        oil[attr] = '<i>' + (oil[attr] * 1000).toFixed(3) + '</i>';
+                        oil[attr] = '<code>' + (oil[attr] * 1000).toFixed(3) + '</code>';
                     } else {
                         oil[attr] = (oil[attr] * 1000).toFixed(3);
                     }
                 } else if (attr === 'api'){
                     if (oil['estimated'][attr]){
-                        oil[attr] = '<i>' + oil[attr].toFixed(3) + '</i>';
+                        oil[attr] = '<code>' + oil[attr].toFixed(3) + '</code>';
                     } else {
                         oil[attr] = oil[attr].toFixed(3);
                     }
                 } else if (attr === 'adhesion_kg_m_2'){
                     if (oil['estimated'][attr]){
-                        oil[attr] = '<i>' + oil[attr] + '</i>';
+                        oil[attr] = '<code>' + oil[attr] + '</code>';
                     }
                 }
 			}
