@@ -342,7 +342,6 @@ define([
                 'speed': entry[1][0],
                 'direction': entry[1][1]
             });
-
             this.$('tbody').html(template);
             this.$('.date-pick').datetimepicker({format: webgnome.config.date_format.datetimepicker});
         },
@@ -354,6 +353,9 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
+            var dateObj = moment(this.$('.date-pick').val());
+            var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+            entry[0] = date;
             entry[1][0] = speed;
             entry[1][1] = direction;
             _.each(this.model.get('timeseries'), function(el, index, array){
@@ -362,7 +364,6 @@ define([
                 }
             });
             this.renderTimeseries();
-
         },
 
         removeTimeseriesEntry: function(e){
