@@ -331,7 +331,7 @@ define([
         modifyTimeseriesEntry: function(e){
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
-            console.log(this.$(row).html());
+            console.log(this.$(e.target).parents('tr'));
             var index = row.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
             var date = moment(entry[0]).format(webgnome.config.date_format.moment);
@@ -365,6 +365,7 @@ define([
                 }
             });
             this.renderTimeseries();
+            this.update();
         },
 
         removeTimeseriesEntry: function(e){
