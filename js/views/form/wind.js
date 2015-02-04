@@ -38,7 +38,6 @@ define([
         },
 
         initialize: function(options, GnomeWind){
-            console.log(this.events());
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = GnomeWind;
@@ -353,8 +352,7 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
-            var dateObj = moment(this.$('.date-pick').val());
-            var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+            var date = moment(this.$('.date-pick').val()).format('YYYY-MM-DDTHH:mm:00');
             entry[0] = date;
             entry[1][0] = speed;
             entry[1][1] = direction;
