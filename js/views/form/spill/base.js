@@ -161,14 +161,14 @@ define([
 		},
 
         initOilLib: function(){
-            this.hide();
             if(_.isUndefined(this.oilLibraryView)){
                 this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
                 this.oilLibraryView.render();
                 this.oilLibraryView.on('hidden', _.bind(this.show, this));
             } else {
-                this.oilLibraryView.show();
+                this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }
+            this.hide();
         },
 
 		elementSelect: function(){
