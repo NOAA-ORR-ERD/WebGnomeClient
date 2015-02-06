@@ -518,7 +518,7 @@ define([
                 var spillUnits = spills.models[j].get('units');
                 var amount = 0;
                 var amountArray = [];
-                for (var i = 1; i < timeseries.length + 1; i++){
+                for (var i = 0; i < timeseries.length; i++){
                     var upperBound = moment(timeseries[i]).unix();
                     var lowerBound = upperBound - timeStep;
                     if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i !== timeseries.length){
