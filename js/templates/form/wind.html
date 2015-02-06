@@ -6,7 +6,7 @@
         <a href="#variable" data-toggle="tab">Variable Wind</a>
     </li>
     <li class="nws">
-        <a href="#nws" data-toggle="tab">NWS Data</a>
+        <a href="#nws" data-toggle="tab">NWS Forecast <span class="label label-danger">underdevelopment</span></a>
     </li>
 </ul>
 
@@ -15,6 +15,10 @@
         <div class="row">
             <div class="col-sm-7">
                 <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-5"><label for="constant-direction" class="control-label">Wind Direction:</label></div>
+                        <div class="col-sm-4"><input type="text" id="constant-direction" value="{{timeseries[0][1][1]}}" class="form-control"></div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-2"><label class="control-label" for="constant-speed">Speed:</label></div>
                         <div class="col-sm-4"><input type="number" min="1" id="constant-speed" class="form-control col-xs-3" value="{{timeseries[0][1][0]}}"></div>
@@ -27,18 +31,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-5"><label for="constant-direction" class="control-label">Wind Direction:</label></div>
-                        <div class="col-sm-4"><input type="number" min="0" max="360" id="constant-direction" value="{{timeseries[0][1][1]}}" class="form-control"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <label class="control-label">Wind Speed Uncertainty:</label>
+                        <div class="col-sm-6">
+                            <label class="control-label" id="speedlabel">Speed Uncertainty:</label>
                         </div>
-                        <div class="col-sm-10 col-sm-offset-1">
+                        <div class="col-sm-6">
                             <div class="slider"></div>
                         </div>
-                        <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
-                        <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
+                        <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
+                        <div class="col-sm-2 col-sm-offset-3 slider-label"><sup>Uncertain</sup></div>
                     </div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                         <div class="col-sm-7">
                             <div class="input-group date">
                                 <input type="text" id="datetime" class="form-control" value="">
-                                <span class="input-group-addon">
+                                <span class="input-group-addon" id="datepick">
                                     <i></i>
                                 </span>
                             </div>
@@ -112,7 +112,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-5"><label for="variable-direction" class="control-label pull-right">Wind Direction:</label></div>
-                        <div class="col-sm-4"><input type="number" min="1" max="360" id="variable-direction" value="" class="form-control"></div>
+                        <div class="col-sm-4"><input type="text" id="variable-direction" value="" class="form-control"></div>
                     </div>
                     <div class="row"><div class="col-sm-12"><hr></div></div>
                     <div class="form-group">
@@ -131,4 +131,5 @@
         <p>Retrieve historical or forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
         <div id="wind-form-map" class="map"></div>
     </div>
+    <div class="additional-wind-compass" style="display: none;"></div>
 </div>

@@ -15,7 +15,7 @@ define([
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
-        ready: false,
+        loaded: false,
 
         events: function(){
             return _.defaults({
@@ -35,14 +35,14 @@ define([
             this.model.get('element_type').fetch({
                 success: _.bind(function(model, response, options){
                     this.oilDetails = model;
-                    this.ready = true;
-                    this.trigger('ready');
+                    this.loaded = true;
+                    this.model.trigger('ready');
                 }, this)
             });
         },
 
         render: function(options){
-            if (this.ready){
+            if (this.loaded){
                 var startPosition = this.model.get('release').get('start_position');
                 var endPosition = this.model.get('release').get('end_position');
                 var amount = this.model.get('amount');
@@ -96,8 +96,16 @@ define([
                         this.updateRateSlide(ui);
                     }, this)
                 });
+
+                if (!this.model.isNew()){
+                    this.$('#amount .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.$('#constant .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.updateAmountSlide();
+                    this.updateRateSlide();
+                }
+
             } else {
-                this.on('ready', this.render, this);
+                this.model.on('ready', this.render, this);
             }
         },
 
@@ -213,6 +221,7 @@ define([
                 }
             }
             this.model.set('amount_uncertainty_scale', value / 5);
+            this.updateTooltipWidth();
         },
 
         updateRateSlide: function(ui){
@@ -235,6 +244,7 @@ define([
                     this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
+            this.updateTooltipWidth();
         },
 
         updateAmountTooltip: function(){
@@ -245,6 +255,11 @@ define([
         updateRateTooltip: function(){
             this.update();
             this.updateRateSlide();
+        },
+
+        close: function(){
+            this.model.off('ready', this.render, this)
+            BaseSpillForm.prototype.close.call(this);
         }
 
     });

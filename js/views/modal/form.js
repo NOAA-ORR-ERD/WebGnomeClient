@@ -33,15 +33,47 @@ define([
             }
         },
 
+        stickyFooter: function(){
+            var modal_offset = this.$el.offset();
+            var footer_offset = this.$('.modal-footer:first').offset();
+            modal_offset.top += $(window).height();
+            footer_offset.top -= modal_offset.top;
+            footer_offset.top += this.$('.modal-footer:first').outerHeight();
+            var modal_height = this.$('.modal-dialog').height();
+            var top = this.$el.scrollTop();
+            var bottom;
+
+            if (footer_offset.top > 0 && this.$('.sticky-modal-footer').length === 0){
+                var modalClone = this.$('.modal-footer').clone();
+                this.$('.modal-content').append(modalClone);
+                this.$('.modal-footer:last').addClass('sticky-modal-footer');
+                this.$('.modal-footer:last button').addClass('btn-sm btn');
+                bottom = (modal_height - top - $(window).height());
+                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+            } else if (footer_offset.top < 0 && this.$('.sticky-modal-footer').length > 0){
+                this.$('.sticky-modal-footer').remove();
+            } else {
+                bottom = (modal_height - top - $(window).height());
+                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+            }
+        },
+
         renderHelp: function(){
-            var button = '<div class="gnome-help" title="Click for help"></div>';
-            this.$('.modal-header h4').append(button);
-            this.$('.modal-header .gnome-help').tooltip();
+            if(this.$('.modal-header').length > 0){
+                if(this.$('.modal-header .gnome-help').length === 0){
+                    var button = '<div class="gnome-help" title="Click for help"></div>';
+                    this.$('.modal-header h4').append(button);
+                    this.$('.modal-header .gnome-help').tooltip();
+                }
+            } else {
+                this.on('ready', this.renderHelp, this);
+            }
         },
 
         showHelp: function(){
             if(this.$('.gnome-help.alert').length === 0){
                 this.$('.modal-body').prepend(this.help.$el);
+                this.help.delegateEvents();
             }
         },
 
@@ -54,6 +86,13 @@ define([
                     this.help.on('ready', this.renderHelp, this);
                 }
             }
+            if (_.isUndefined(this.scrollEvent)){
+                this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
+            }
+            if (_.isUndefined(this.resizeEvent)){
+                this.resizeEvent = this.$('.modal-dialog').on('resize', _.bind(this.stickyFooter, this));
+            }
+            this.stickyFooter();
         },
 
         hidden: function() {
@@ -138,6 +177,7 @@ define([
         close: function(){
             this.remove();
             this.unbind();
+            this.$el.off('scroll');
         }
     });
 

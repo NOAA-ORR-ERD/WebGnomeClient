@@ -1,7 +1,7 @@
 define([
     'underscore',
     'backbone',
-    'model/base',
+    'model/weatherers/base',
     'model/environment/water',
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, WaterModel, WindModel){

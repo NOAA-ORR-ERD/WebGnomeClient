@@ -28,7 +28,11 @@ define([
                 this.set('active_stop', end_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
             BaseModel.prototype.initialize.call(this);
-		}
+		},
+
+        parseObjType: function(){
+            return this.get('obj_type').split('.').pop();
+        }
 
 	});
 

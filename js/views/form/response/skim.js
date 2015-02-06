@@ -12,7 +12,7 @@ define([
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
     var skimForm = ResponseFormModal.extend({
         title: 'Skim Response',
-        className: 'modal fade form-modal skim-form',
+        className: 'modal response fade form-modal skim-form',
 
         initialize: function(options, skimModel){
             this.module = module;
@@ -27,18 +27,6 @@ define([
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
             ResponseFormModal.prototype.render.call(this, options);
-
-            this.$('.slider').slider({
-                min: 0,
-                max: 100,
-                value: 0,
-                create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
-                }, this),
-                slide: _.bind(function(e, ui){
-                    this.updateEfficiency(ui);
-                }, this)
-            });
         },
 
         update: function(){
@@ -53,16 +41,6 @@ define([
             var amountUnits = this.$('#amount-units').val();
 
             this.model.set('active_stop', endTime);
-        },
-
-        updateEfficiency: function(ui){
-            var value;
-            if(!_.isUndefined(ui)){
-                value = ui.value;
-            } else {
-                value = this.$('.slider').slider('value');
-            }
-            this.$('#rate-tooltip').text(value);
         }
     });
 

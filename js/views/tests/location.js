@@ -16,7 +16,7 @@ define([
         },
 
         test: function(){
-            asyncTest('Get a GeoJSON list of all the posible locations', _.bind(function(){
+            asyncTest('Get a GeoJSON list of all the possible locations', _.bind(function(){
                 ok(!_.isUndefined(this.locations), 'A response was recieved');
                 equal(this.locations.type, 'FeatureCollection', 'json response is geojson');
                 ok(this.locations.features.length > 0, 'there are locations in the geojson');
@@ -29,39 +29,70 @@ define([
         },
 
         locationTest: function(){
-            var location = this.locations.features[this.locId];
-            ok(location.geometry.coordinates.length == 2, 'Location has a lat long position');
-            ok(_.has(location.properties, 'title'), 'Location has title');
-            ok(_.has(location.properties, 'slug'), 'Location has slug');
-            
-            location = new LocationModel({id: location.properties.slug});
-            location.fetch({
-                success: function(){
-                    ok(location.get('name') !== '', 'location has a name');
-                    ok(location.get('steps').length > 0, 'location wizard has steps');
-
-                    var model = new GnomeModel();
-                    model.fetch({
+            var model = new GnomeModel();
+            model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    var location = this.locations.features[this.locId];
+                    ok(location.geometry.coordinates.length == 2, 'Location has a lat long position');
+                    ok(_.has(location.properties, 'title'), 'Location has title');
+                    ok(_.has(location.properties, 'slug'), 'Location has slug');
+                    
+                    location = new LocationModel({id: location.properties.slug});
+                    location.fetch({
                         success: function(){
-                            ok(!_.isUndefined(model.get('map')), 'model has a map loaded');
-                            ok(model.toTree().length > 0, 'model to tree works');
-                            start();
+                            ok(location.get('name') !== '', 'location has a name');
+                            ok(location.get('steps').length > 0, 'location wizard has steps');
+
+                            var model = new GnomeModel();
+                            model.fetch({
+                                success: function(){
+                                    // equal(, , 'correct location was loaded');
+                                    var name = location.get('name').toLowerCase().replace(/ /g, '_');
+                                    var movers = model.get('movers').where({obj_type: 'gnome.movers.current_movers.CatsMover'});
+                                    var loc_movers = [];
+                                    var other_loc_movers = [];
+                                    for(var m in movers){
+                                        if(movers[m].get('filename').indexOf(name) != -1){
+                                            loc_movers.push(movers[m]);
+                                        } else {
+                                            other_loc_movers.push(movers[m]);
+                                        }
+                                    }
+                                    // ok(loc_movers.length > 0, 'model has location related information loaded');
+                                    // ok(other_loc_movers.length = 0, 'model doesn\'t have other location information loaded');
+                                    ok(!_.isUndefined(model.get('map')), 'model has a map loaded');
+                                    ok(model.toTree().length > 0, 'model to tree works');
+
+                                    start();
+                                },
+                                error: function(){
+                                    ok(!_.isUndefined(model.get('map')), 'model has a map loaded');
+                                    ok(model.toTree().length > 0, 'model to tree works');
+                                    start();
+                                }
+                            });
+
                         },
                         error: function(){
-                            ok(!_.isUndefined(model.get('map')), 'model has a map loaded');
-                            ok(model.toTree().length > 0, 'model to tree works');
+                            ok(location.get('name') !== '', 'location has a name');
+                            ok(location.get('steps').length > 0, 'location wizard has steps');
                             start();
                         }
                     });
-
-                },
-                error: function(){
-                    ok(location.get('name') !== '', 'location has a name');
-                    ok(location.get('steps').length > 0, 'location wizard has steps');
+                    this.locId++;
+                }, this),
+                error: _.bind(function(){
+                    var location = this.locations.features[this.locId];
+                    ok(location.geometry.coordinates.length == 2, 'Location has a lat long position');
+                    ok(_.has(location.properties, 'title'), 'Location has title');
+                    ok(_.has(location.properties, 'slug'), 'Location has slug');
+                    
+                    this.locId++;
                     start();
-                }
+                }, this)
             });
-            this.locId++;
+            
 
         }
     };

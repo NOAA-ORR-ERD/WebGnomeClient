@@ -4,8 +4,9 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
+    'sweetalert',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, swal) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -41,7 +42,8 @@ define([
             // 'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial',
+            'click .overview': 'overview',
+            'click .faq': 'faq',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
@@ -84,10 +86,20 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            webgnome.model = null;
-            webgnome.router.navigate('', true);
-            localStorage.setItem('prediction', null);
-            webgnome.router.navigate('setup', true);
+            swal({
+                title: 'Create New Model?',
+                text:'Creating a new model will delete all data related to any current model.',
+                type: 'warning',
+                showCancelButton: true,
+            }, function(isConfirm){
+                if(isConfirm){
+                    webgnome.model = null;
+                    webgnome.router.navigate('', true);
+                    localStorage.setItem('prediction', null);
+                    webgnome.router.navigate('setup', true);        
+                }
+            });
+            
         },
 
         editModel: function(event){
@@ -127,8 +139,14 @@ define([
             new AboutModal().render();
         },
 
-        tutorial: function(event){
+        overview: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('overview', true);
+        },
 
+        faq: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('faq', true);
         },
 
         enableMenuItem: function(item){

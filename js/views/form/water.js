@@ -3,10 +3,11 @@ define([
     'underscore',
     'backbone',
     'module',
+    'nucos',
     'views/modal/form',
     'text!templates/form/water.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, FormModal, WaterTemplate){
+], function($, _, Backbone, module, nucos, FormModal, WaterTemplate){
     var waterForm = FormModal.extend({
         className: 'modal fade form-modal model-form',
         title: 'Water Properties',
@@ -61,12 +62,13 @@ define([
         },
 
         convertTemptoK: function(val, unit){
-            val = parseFloat(val, 10);
+            val = parseFloat(val);
             var temp = val;
             if (unit === 'F'){
-                temp = (5/9) * (val - 32);
+                temp = (5/9) * (val - 32) + 273.15;
+            } else if (unit === 'C'){
+                temp += 273.15;
             }
-            temp += 273.15;
 
             return temp;
         },

@@ -12,19 +12,19 @@
             <td>Volumed Spilled</td>
             <td>{{ report.amount_released }}</td>
             <td>{{ cumulative.amount_released }}</td>
-            <td> </td>
+            <td>{{ low.amount_released }} - {{ high.amount_released }}</td>
         </tr>
         <tr>
             <td>Evaporated</td>
             <td>{{ report.evaporated }}</td>
             <td>{{ cumulative.evaporated }}</td>
-            <td> </td>
+            <td>{{ low.evaporated }} - {{ high.evaporated }}</td>
         </tr>
         <tr>
             <td>Dispersed (natural)</td>
             <td>{{ report.dispersed }}</td>
             <td>{{ cumulative.dispersed }}</td>
-            <td> </td>
+            <td>{{ low.dispersed }} - {{ high.dispersed }}</td>
         </tr>
         <tr>
             <td>Dispersed (chemical)</td>
@@ -36,13 +36,13 @@
             <td>Burned</td>
             <td>{{ report.burned }}</td>
             <td>{{ cumulative.burned }}</td>
-            <td> </td>
+            <td>{{ low.burned }} - {{ high.burned }}</td>
         </tr>
         <tr>
             <td>Mechanical Recovery</td>
-            <td>{{ report.skimed }}</td>
-            <td>{{ cumulative.skimed }}</td>
-            <td> </td>
+            <td>{{ report.skimmed }}</td>
+            <td>{{ cumulative.skimmed }}</td>
+            <td>{{ low.skimmed }} - {{ high.skimmed }}</td>
         </tr>
         <tr>
             <td>Other Natural Removal</td>
@@ -60,7 +60,7 @@
             <td>Remaining</td>
             <td>{{ report.floating }}</td>
             <td>{{ cumulative.floating }}</td>
-            <td> </td>
+            <td>{{ low.floating }} - {{ high.floating }}</td>
         </tr>
     </tbody>
 </table>

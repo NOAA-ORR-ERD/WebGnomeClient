@@ -9,6 +9,7 @@ define([
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
+    'model/environment/waves',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
@@ -16,13 +17,14 @@ define([
     'model/outputters/weathering',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
+    'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer, BurnWeatherer, SkimWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -34,7 +36,8 @@ define([
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
-                'gnome.environment.environment.Water': WaterModel
+                'gnome.environment.environment.Water': WaterModel,
+                'gnome.environment.waves.Waves': WavesModel
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
@@ -48,37 +51,15 @@ define([
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
                 'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
+                'gnome.weatherers.emulsification.Emulsification': EmulsificationWeatherer,
                 'gnome.weatherers.cleanup.Burn': BurnWeatherer,
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
             }
         },
 
-        sync: function(method, model, options){
-            // because of the unique structure of the gnome model, it's relation to other child object
-            // via ids, we need to dehydrate any child objects into just an id before sending it to the
-            // server.
-            if(_.indexOf(['update'], method) != -1){
-                for(var key in model.model){
-                    if(model.get(key)){
-                        if(model.get(key) instanceof Backbone.Collection){
-                            var array = model.get(key).toArray();
-                            model.set(key, [], {silent: true});
-                            if(array.length > 0){
-                                _.each(array, function(element){
-                                    if(!_.isUndefined(element.get('id'))){
-                                        model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
-                                    } else {
-                                        model.get(key).push(element);
-                                    }
-                                });
-                            }
-                        } else {
-                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')}, {silent: true});
-                        }
-                    }
-                }
-            }
-            return BaseModel.prototype.sync.call(this, method, model, options);
+        defaults: {
+            obj_type: 'gnome.model.Model',
+            time_step: 900
         },
 
         parse: function(response){
@@ -241,7 +222,7 @@ define([
             return false;
         },
 
-        resetLocation: function(){
+        resetLocation: function(cb){
             // clear any location relevant objects from the model.
 
             // reset movers only preserving the wind at the moment.
@@ -249,19 +230,25 @@ define([
             var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
             movers.reset(windMovers);
 
+            // remove any environment other than wind and water
+            var environment = this.get('environment');
+            var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
+            environment.reset(winds);
+            environment.add(water);
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             map.save(null, {
                 success: _.bind(function(){
                     this.set('map', map);
-                    // remove any environment other than wind and water
-                    var environment = this.get('environment');
-                    var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
-                    var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
-                    environment.reset(winds);
-                    environment.add(water);
-                    
-                    this.trigger('reset:location');
+                    this.save(null, {
+                        success: _.bind(function(){
+                            if(cb){
+                                cb();
+                            }
+                        }, this)
+                    });
                 }, this)
             });
         },
@@ -289,12 +276,18 @@ define([
                                             dispersion.save(null, {
                                                 success: _.bind(function(model, repsonse, options){
                                                     this.get('weatherers').add(dispersion);
-                                                    this.save(null, {
-                                                        validate: false,
+                                                    var emulsification = new EmulsificationWeatherer();
+                                                    emulsification.save(null, {
                                                         success: _.bind(function(model, response, options){
-                                                            if(_.isFunction(cb)){
-                                                                cb();
-                                                            }
+                                                            this.get('weatherers').add(emulsification);
+                                                            this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
+                                                                validate: false,
+                                                                success: _.bind(function(model, response, options){
+                                                                    if(_.isFunction(cb)){
+                                                                        cb();
+                                                                    }
+                                                                }, this)
+                                                            });
                                                         }, this)
                                                     });
                                                 }, this)
@@ -307,6 +300,33 @@ define([
                     });
                 }, this)
             });
+        },
+
+        updateWaves: function(){
+            var environment = this.get('environment');
+            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
+
+            if(wind && water){
+
+                var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
+                if(_.isUndefined(waves)){
+                    waves = new WavesModel();
+                    environment.add(waves);
+                }
+                waves.set('wind', wind);
+                waves.set('water', water);
+
+                waves.save(null, {
+                    success: _.bind(function(){
+                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                        emul.set('waves', waves);
+                        emul.save(null, {
+                            succes: this.save
+                        });
+                    }, this)
+                });
+            }
         },
 
         mergeModel: function(model){

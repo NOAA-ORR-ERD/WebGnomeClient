@@ -11,7 +11,7 @@
     "mousetrap": "1.4.6",
     "requirejs": "2.1.11",
     "requirejs-text": "2.0.12",
-    "bootstrap": "3.1.1",
+    "bootstrap": "3.*.*",
     "datetimepicker": "2.2.9",
     "jquery-file-upload": "*",
     "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git",
@@ -27,7 +27,7 @@
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
-    "nucos": "git://github.com/NOAA-ORR-ERD/nucos#0.0.10",
+    "nucos": "1.0.0",
     "sweetalert": "0.2.1"
   },
   "devDependencies": {

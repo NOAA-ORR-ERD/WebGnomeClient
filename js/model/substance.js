@@ -8,14 +8,6 @@ define([
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
 
-        defaults: {
-            name: 'ALAMO',
-            api: 23.3,
-            pour_point_max_k: 266.483,
-            flash_point_max_k: 339.973,
-            categories: [{id: 6, name: "Medium", parent_id: 1, children: [], parent: {id: 1, name: "Crude", parent_id: null}}]
-        },
-
         parseTemperatures: function(){
             var flashPointK = this.get('flash_point_max_k');
             var pourPointK = this.get('pour_point_max_k');
@@ -31,6 +23,24 @@ define([
                     'flash_point_max_c': flashPointC.toFixed(3),
                     'flash_point_max_f': flashPointF.toFixed(3)
                    };
+        },
+
+        validate: function(attrs, options){
+            // if (_.isUndefined(attrs.bullwinkle_fraction)){
+            //     return 'Stable emulsion fraction must be defined!';
+            // }
+
+            // if (_.isUndefined(attrs.emulsion_water_fraction_max)){
+            //     return 'Emulsion constant must be defined!';
+            // }
+            
+            // if (!_.isNumber(attrs.bullwinkle_fraction) || (attrs.bullwinkle_fraction < 0 || attrs.bullwinkle_fraction > 1)){
+            //     return 'Stable emulsion fraction must be a number between zero and one!';
+            // }
+
+            // if (!_.isNumber(attrs.emulsion_water_fraction_max) || (attrs.emulsion_water_fraction_max < 0 || attrs.emulsion_water_fraction_max > 1)){
+            //     return 'Emulsion constant must be a number between zero and one!';
+            // }
         },
 
         parseCategories: function(){

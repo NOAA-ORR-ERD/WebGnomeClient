@@ -51,7 +51,6 @@ define([
 			} else {
 				this.model = spillModel;
 			}
-            this.model.fetch();
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
             if(this.model.get('name') == 'Spill'){
@@ -75,31 +74,35 @@ define([
 			this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
+            if (this.model.isNew()){
+                this.$('.delete').prop('disabled', true);
+            }
+            this.subtextUpdate();
 		},
 
         renderSubstanceInfo: function(){
-            var substance, enabled = true;
-            if (!_.isUndefined(webgnome.model.get('spills').at(0))){
-                var first_spill = webgnome.model.get('spills').at(0);
-                substance = first_spill.get('element_type').get('substance');
-                if(first_spill.get('id') != this.model.get('id')){
-                    enabled = false;
-                }
+            var substance;
+            var enabled = !_.isUndefined(webgnome.model.get('spills').at(0));
+            if (enabled){
+                substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             } else {
                 substance = this.model.get('element_type').get('substance');
-                enabled = true;
             }
-            
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
                 temps: substance.parseTemperatures(),
                 categories: substance.parseCategories(),
-                enabled: enabled
+                enabled: enabled,
+                emuls: substance.get('emulsion_water_fraction_max'),
+                bullwinkle: substance.get('bullwinkle_fraction')
             });
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
-
+            
             this.$('#oilInfo .add, #oilInfo .locked').tooltip({
                 delay: {
                     show: 500,
@@ -107,11 +110,48 @@ define([
                 },
                 container: '.modal-body'
             });
+
+            this.$('.panel-heading .state').tooltip({
+                    title: function(){
+                        var object = $(this).parents('.panel-heading').text().trim();
+
+                        if($(this).parents('.panel').hasClass('complete')){
+                            return object + ' requirement met';
+                        } else {
+                            return object + ' required';
+                        }
+                    },
+                    container: '.modal-body',
+                    delay: {show: 500, hide: 100}
+                });
+
+            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name')) || enabled){
+                if (enabled){
+                    this.model.get('element_type').set('substance', substance);
+                }
+                this.$('#substancepanel').addClass('complete');
+            } else {
+                this.$('#substancepanel').removeClass('complete');
+            }
+        },
+
+        subtextUpdate: function(){
+            if (this.$('#units-bullwinkle').val() === 'time'){
+                this.$('#hours').show();
+                this.$('#percent').hide();
+            } else {
+                this.$('#hours').hide();
+                this.$('#percent').show();
+            }
         },
 
 		update: function(){
-            var oilName = this.model.get('element_type').get('substance').get('name');
-            this.$('.oilName').val(oilName);
+            this.subtextUpdate();
+            if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
+                this.$('.manual').prop('disabled', false);
+            } else {
+                this.$('.manual').prop('disabled', true);
+            }
 
 			if(!this.model.isValid()){
 				this.error('Error!', this.model.validationError);
@@ -120,15 +160,61 @@ define([
 			}
 		},
 
-		elementSelect: function(){
+        initOilLib: function(){
+            if(_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+                this.oilLibraryView.render();
+                this.oilLibraryView.on('hidden', _.bind(this.show, this));
+            } else {
+                this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
+            }
             this.hide();
-			var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-			oilLibraryView.render();
-			oilLibraryView.on('save', _.bind(this.show, this));
-            oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
-			oilLibraryView.on('hidden', _.bind(this.show, this));
-            oilLibraryView.on('hidden', oilLibraryView.close);
+        },
+
+		elementSelect: function(){
+            var spills = webgnome.model.get('spills');
+            if (this.model.isNew() && spills.length === 0 || !this.model.isNew() && spills.length === 1){
+               this.initOilLib();
+            } else {
+                swal({
+                    title: "Warning!",
+                    text: "Changing the oil here will change it for all spills!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Select new oil",
+                    cancelButtonText: "Keep original oil",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        this.initOilLib();
+                    }
+                }, this));
+            }
 		},
+
+        save: function(){
+            var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (!_.isUndefined(validSubstance)){
+                this.error('Error!', validSubstance);
+            } else {
+                this.clearError();
+                FormModal.prototype.save.call(this, _.bind(function(){
+                    var oilSubstance = this.model.get('element_type').get('substance');
+                    var spills = webgnome.model.get('spills');
+                    if (spills.length > 1){
+                        spills.forEach(function(spill){
+                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
+                                spill.get('element_type').set('substance', oilSubstance);
+                                spill.save();
+                            }
+                        });
+                    }
+                }, this)
+                );
+            }
+        },
 
         show: function(){
             this.update();
@@ -346,6 +432,10 @@ define([
 			$('.xdsoft_datetimepicker:last').remove();
             if (!_.isUndefined(this.spillMapView)){
                 this.spillMapView.close();
+            }
+            
+            if (!_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView.close();
             }
 			FormModal.prototype.close.call(this);
 		}

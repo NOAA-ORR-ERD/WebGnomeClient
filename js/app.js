@@ -5,10 +5,12 @@ define([
     'backbone',
     'router',
     'moment',
+    'sweetalert',
     'text!/package.json',
     'model/session',
-    'model/gnome'
-], function($, _, Backbone, Router, moment, Package, SessionModel, GnomeModel) {
+    'model/gnome',
+    'views/default/loading'
+], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, LoadingView) {
     'use strict';
     var app = {
         initialize: function(){
@@ -21,13 +23,64 @@ define([
             });
 
             this.config = this.getConfig();
+            this.monitor = {};
+            this.monitor.requests = [];
 
-            // Filter json requestions to redirect them to the api server
-            $.ajaxPrefilter('json', function(options){
+            $.ajaxPrefilter('json', _.bind(function(options, originalOptions, jqxhr){
+                // Filter json requestions to redirect them to the api server
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.config.api + options.url;
                 }
-            });
+
+                if(window.location.href.indexOf('test.html') === -1){
+                    // monitor interation to check the status of active ajax calls.
+                    this.monitor.requests.push(jqxhr);
+
+                    if(_.isUndefined(this.monitor.interval)){
+                        this.monitor.start_time = moment().valueOf();
+                        this.monitor.interval = setInterval(_.bind(function(){
+                            var loading;
+                            if(this.monitor.requests.length > 0){
+                                this.monitor.requests = this.monitor.requests.filter(function(req){
+                                    if(req.status !== undefined){
+                                        if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
+                                            if($('.modal').length === 0){
+                                                swal({
+                                                    title: 'Application Error!',
+                                                    text: 'An error in the application has occured, if this problem persists please contact support.',
+                                                    type: 'error',
+                                                    confirmButtonText: 'Refresh'
+                                                }, function(isConfirm){
+                                                    if(isConfirm){
+                                                        window.location.reload();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                    return req.status === undefined;
+                                });
+                            } else {
+                                clearInterval(this.monitor);
+                                this.monitor.interval = undefined;
+                                this.monitor.start_time = moment().valueOf();
+                            }
+
+                            // check if we need to display a loading message.
+                            if(moment().valueOf() - this.monitor.start_time > 300){
+                                if(_.isUndefined(this.monitor.loading)){
+                                    this.monitor.loading = new LoadingView();
+                                }
+                            } else {
+                                if(!_.isUndefined(this.monitor.loading)){
+                                    this.monitor.loading.close();
+                                    this.monitor.loading = undefined;
+                                }
+                            }
+                        }, this), 500);
+                    }
+                }
+            }, this));
 
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {

@@ -4,13 +4,34 @@
     <div class="canvas"></div>
 </div>
 {% if (spills.length > 0) { %}
+    <div class="row">
+        <div class="substance-info col-sm-12">
+            <div class="row">
+                <div class="col-sm-12"><label>Substance</label></div>
+                <div class="col-sm-6 substance-data">
+                    <label>Name: </label>
+                    {{ substance.get('name') }}
+                </div>
+                <div class="col-sm-6 substance-data">
+                    <label>API: </label>
+                    {{ substance.get('api').toFixed(1) }}
+                </div>
+                <div class="col-sm-6 substance-data">
+                    <label>Categories: </label>
+                    {% for(c in categories){ %}
+                        <div class="label label-warning">{{ categories[c] }}</div>
+                    {% } %}
+                </div>
+            </div>
+        </div>
+    </div>
 	<div class="spill-list">
 	{% for (var i = 0; i < spills.length; i++){ %}
 		<div class="single row" data-id="{{ spills[i].get('id') }}">
 			<div class="col-sm-9">
                 <h5>{{ spills[i].get('name') }}</h5>
                 <span class="label label-default">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</span>
-                {% if (spills[i].get('release').get('start_position')){ %}
+                {% if (spills[i].get('release').get('start_position') && localStorage.getItem('prediction') !== 'fate'){ %}
                     {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
                     {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
                     {% var start = lat + ', ' + lon %}

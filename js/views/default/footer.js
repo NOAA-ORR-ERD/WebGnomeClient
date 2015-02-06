@@ -4,8 +4,9 @@ define([
     'backbone',
     'text!templates/default/footer/footer.html',
     'views/modal/base',
-    'text!templates/default/footer/disclaimer.html'
-], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate){
+    'text!templates/default/footer/disclaimer.html',
+    'text!templates/default/footer/privacy.html'
+], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate, PrivacyTemplate){
     var footerView = Backbone.View.extend({
         className: 'footer',
         rendered: false,
@@ -42,7 +43,7 @@ define([
             e.preventDefault();
             var modal = new BaseModal({
                 title: 'Privacy Policy',
-                body: 'Privacy Policy Here!',
+                body: PrivacyTemplate,
                 buttons: '<a href="" class="btn btn-primary" data-dismiss="modal">Ok</a>'
             });
             modal.render(); 
