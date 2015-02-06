@@ -352,6 +352,7 @@ define([
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
             var date = moment(this.$('.date-pick').val()).format('YYYY-MM-DDTHH:mm:00');
+            var timeseries;
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                 direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
             }
@@ -359,9 +360,13 @@ define([
             _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
                 if (el[0] === entry[0]){
                     array[index] = entry;
+                    timeseries = array;
                 }
             }, this));
             this.renderTimeseries();
+            var windId = this.model.get('id');
+            webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
+            webgnome.model.save();
         },
 
         removeTimeseriesEntry: function(e){
