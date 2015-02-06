@@ -1,4 +1,30 @@
 <div class="col-md-8">
+    <div class="form-group col-sm-4">
+        <a class="btn btn-primary add oil-select">
+            {% if(enabled){ %}
+                Edit Substance
+            {% } else { %}
+                Select Substance
+            {% } %}
+        </a>
+    </div>
+    <div class="form-group {%if(!enabled){%}hide{%}%}">
+        <div class="col-sm-8">
+            <h4>Substance Information:</h4>
+        </div>
+        <div class="form-group">
+            <div><label>Name:</label> {{ name }}</div>
+            <div><label>API:</label> {{ api }}</div>
+            <div><label>Pour Point &deg;F (&deg;C):</label> {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})</div>
+            <div><label>Flash Point &deg;F (&deg;C):</label> {{ temps.flash_point_max_f }} ({{ temps.flash_point_max_c }})</div>
+            <div>
+                <label>Categories: </label>
+                {% for(c in categories){ %}
+                    <div class="label label-warning">{{ categories[c] }}</div>
+                {% } %}
+            </div>
+        </div>
+    </div>
     <div class="panel complete" id="substancepanel">
         <div class="panel-heading">
             <div class="add oil-select" title="{% if(enabled){ %} Edit Substance {% } else { %} Select Substance {% } %}"></div>
