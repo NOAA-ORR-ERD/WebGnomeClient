@@ -23,13 +23,7 @@ define([
             element_type: GnomeElement
         },
 
-        validationContext: [],
-
         validate: function(attrs, options){
-            if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
-                this.validationContext = 'substance';
-            }
-
             if (localStorage.getItem('prediction') !== 'fate'){
                 if(!attrs.release.isValid()){
                     this.validationContext = 'map';
@@ -53,6 +47,11 @@ define([
             } else if (attrs.amount < 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
+            }
+
+            if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                this.validationContext = 'substance';
+                return;
             }
 
             this.validationContext = null;

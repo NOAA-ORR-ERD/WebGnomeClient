@@ -92,7 +92,6 @@ define([
                 this.clearError();
             }
             var valid = this.model.validationContext;
-            console.log(this.model.validationContext);
             this.$('.status').addClass('ok');
             if (!_.isNull(valid)){
                 if (valid === 'info'){
