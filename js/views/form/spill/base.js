@@ -10,7 +10,8 @@ define([
 	'ol',
 	'moment',
     'sweetalert',
-	'jqueryDatetimepicker'
+	'jqueryDatetimepicker',
+    'bootstrap'
 ], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
@@ -85,18 +86,20 @@ define([
 
         renderSubstanceInfo: function(){
             var substance;
-            var enabled = !_.isUndefined(webgnome.model.get('spills').at(0));
+            var enabled = webgnome.model.get('spills').length > 0;
             if (enabled){
                 substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             } else {
                 substance = this.model.get('element_type').get('substance');
             }
+            var nameExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
                 temps: substance.parseTemperatures(),
                 categories: substance.parseCategories(),
                 enabled: enabled,
+                nameExists: nameExists,
                 emuls: substance.get('emulsion_water_fraction_max'),
                 bullwinkle: substance.get('bullwinkle_fraction')
             });
@@ -413,7 +416,7 @@ define([
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.trigger('sync');
-                    this.hide();
+                    this.close();
                 }
             }, this));
         },
