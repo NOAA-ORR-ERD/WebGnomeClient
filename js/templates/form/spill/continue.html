@@ -1,26 +1,26 @@
 <form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="name">Name:</label>
+		<div class="col-sm-4">
+			<input type="text" id="name" class="form-control" value="{{ name }}">
+		</div>
+	</div>
 	<ul class="nav nav-tabs">
 	    <li class="generalinfo active">
-	        <a href="#generalinfo" data-toggle="tab">General Info</a>
+	        <a href="#generalinfo" data-toggle="tab">General Info<span id="info" class="status"></span></a>
 	    </li>
 	    <li class="substanceinfo">
-	        <a href="#substanceinfo" data-toggle="tab">Substance Info</a>
+	        <a href="#substanceinfo" data-toggle="tab">Substance Info<span id="substance" class="status"></span></a>
 	    </li>
 	    {% if (showGeo){ %}
 		    <li class="mapspill">
-		    	<a href="#mapspill" data-toggle="tab">Map Spill</a>
+		    	<a href="#mapspill" data-toggle="tab">Map Spill<span id="map-status" class="status"></span></a>
 		    </li>
 		{% } %}
 	</ul>
 
 	<div class="tab-content">
 		<div class="tab-pane active" id="generalinfo">
-			<div class="form-group">
-				<label class="col-sm-4 control-label" for="name">Name:</label>
-				<div class="col-sm-4">
-					<input type="text" id="name" class="form-control" value="{{ name }}">
-				</div>
-			</div>
 			<div class="form-group">
 				<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
 				<div class="col-sm-5">

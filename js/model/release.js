@@ -57,7 +57,7 @@ define([
             }
 
             if(parseFloat(attrs.end_position[0]) != attrs.end_position[0] || parseFloat(attrs.end_position[1]) != attrs.end_position[1]){
-                return 'Start position must be in decimal degrees.';
+                return 'End position must be in decimal degrees.';
             }
 
             if(isNaN(attrs.num_elements)){

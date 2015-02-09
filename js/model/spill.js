@@ -25,18 +25,22 @@ define([
 
         validate: function(attrs, options){
             if(!attrs.release.isValid()){
+                this.validationContext = 'map';
                 return attrs.release.validationError;
             }
 
             if (!attrs.element_type.isValid()){
+                this.validationContext = 'substance';
                 return attrs.element_type.validationError;
             }
 
             if ($.trim(attrs.name) === ''){
+                this.validationContext = 'spill';
                 return 'A spill name is required!';
             }
 
             if(isNaN(attrs.amount)){
+                this.validationContext = '';
                 return 'Amount must be a number';
             } else if (attrs.amount < 0) {
                 return 'Amount must be a positive number';
