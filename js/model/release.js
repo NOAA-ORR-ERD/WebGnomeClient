@@ -60,6 +60,10 @@ define([
                 return 'End position must be in decimal degrees.';
             }
 
+            if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
+                return 'Give a valid location for the spill!';
+            }
+
             if(isNaN(attrs.num_elements)){
                 return 'Release amount must be a number.';
             }

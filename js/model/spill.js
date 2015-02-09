@@ -23,10 +23,18 @@ define([
             element_type: GnomeElement
         },
 
+        validationContext: [],
+
         validate: function(attrs, options){
-            if(!attrs.release.isValid()){
-                this.validationContext = 'map';
-                return attrs.release.validationError;
+            if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                this.validationContext = 'substance';
+            }
+
+            if (localStorage.getItem('prediction') !== 'fate'){
+                if(!attrs.release.isValid()){
+                    this.validationContext = 'map';
+                    return attrs.release.validationError;
+                }
             }
 
             if (!attrs.element_type.isValid()){
@@ -40,12 +48,14 @@ define([
             }
 
             if(isNaN(attrs.amount)){
-                this.validationContext = '';
+                this.validationContext = 'info';
                 return 'Amount must be a number';
             } else if (attrs.amount < 0) {
+                this.validationContext = 'info';
                 return 'Amount must be a positive number';
             }
 
+            this.validationContext = null;
         },
 
         validateSubstance: function(attrs){

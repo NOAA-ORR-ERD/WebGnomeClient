@@ -82,7 +82,33 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
             this.subtextUpdate();
+            this.tabStatusSetter();
 		},
+
+        tabStatusSetter: function(){
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
+            var valid = this.model.validationContext;
+            console.log(this.model.validationContext);
+            this.$('.status').addClass('ok');
+            if (!_.isNull(valid)){
+                if (valid === 'info'){
+                    this.$('#info').removeClass('ok');
+                    this.$('#info').addClass('error');
+                }
+                if (valid === 'map'){
+                    this.$('#map-status').removeClass('ok');
+                    this.$('#map-status').addClass('error');
+                }
+                if (valid === 'substance'){
+                    this.$('#substance').removeClass('ok');
+                    this.$('#substance').addClass('error');
+                }
+            }
+        },
 
         renderSubstanceInfo: function(){
             var substance;
@@ -155,12 +181,7 @@ define([
             } else {
                 this.$('.manual').prop('disabled', true);
             }
-
-			if(!this.model.isValid()){
-				this.error('Error!', this.model.validationError);
-			} else {
-				this.clearError();
-			}
+            this.tabStatusSetter();
 		},
 
         initOilLib: function(){
@@ -199,6 +220,9 @@ define([
 
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (this.$('.error').length > 0){
+                this.$('.error').first().parent().click();
+            }
             if (!_.isUndefined(validSubstance)){
                 this.error('Error!', validSubstance);
             } else {
