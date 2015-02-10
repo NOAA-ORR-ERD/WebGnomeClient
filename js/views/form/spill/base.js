@@ -25,7 +25,8 @@ define([
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderSubstanceInfo'
+                'show.bs.modal': 'renderSubstanceInfo',
+                'shown.bs.tab': 'updateMapSize'
             }, FormModal.prototype.events);
         },
 
@@ -34,6 +35,11 @@ define([
                 return false;
             }
             return this.model.get('id') !== webgnome.model.get('spills').at(0).get('id');
+        },
+
+        updateMapSize: function(){
+            //setTimeout(_.bind(function(){});
+            this.spillMapView.map.updateSize();
         },
         
         spillEndSet: function(){
