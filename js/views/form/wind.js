@@ -332,6 +332,7 @@ define([
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
             var index = row.dataset.tsindex;
+            console.log(index);
             var entry = this.model.get('timeseries')[index];
             var date = moment(entry[0]).format(webgnome.config.date_format.moment);
             var compiled = _.template(VarInputTemplate);
@@ -351,7 +352,7 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
-            var date = moment(this.$('.date-pick').val()).format('YYYY-MM-DDTHH:mm:00');
+            var date = entry[0];
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                 direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
             }
@@ -363,16 +364,22 @@ define([
                 }
             }, this));
             this.renderTimeseries();
-            if (!this.model.isNew()){
-                this.saveTimeseries();
-            }
+            this.saveTimeseries();
         },
 
         saveTimeseries: function(){
             var windId = this.model.get('id');
             var timeseries = this.timeseries;
-            webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
-            webgnome.model.save();
+            if (webgnome.model.get('environment').findWhere({id: windId})){
+                webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
+            } else {
+                this.model.set('timeseries', timeseries);
+                webgnome.model.get('environment').add(this.model);
+            }
+        },
+
+        addTimeseries: function(){
+            webgnome.model.get('environment').findWhere({id: windId});
         },
 
         removeTimeseriesEntry: function(e){

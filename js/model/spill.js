@@ -38,8 +38,8 @@ define([
 
             if(isNaN(attrs.amount)){
                 return 'Amount must be a number';
-            } else if (attrs.amount < 0) {
-                return 'Amount must be a positive number';
+            } else if (attrs.amount < 1) {
+                return 'Amount must be a positive number greater than zero';
             }
 
         },
