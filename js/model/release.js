@@ -52,6 +52,15 @@ define([
         },
 
         validate: function(attrs, options){
+            if(this.validateAmount(attrs)){
+                return this.validateAmount(attrs);
+            }
+            if(this.validateLocation(attrs)){
+                return this.validateLocation(attrs);
+            }
+        },
+
+        validateLocation: function(attrs){
             if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';
             }
@@ -63,11 +72,9 @@ define([
             if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
                 return 'Give a valid location for the spill!';
             }
+        },
 
-            if(isNaN(attrs.num_elements)){
-                return 'Release amount must be a number.';
-            }
-            
+        validateAmount: function(attrs){
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)){
                 return 'Duration must be a positive value';
             }

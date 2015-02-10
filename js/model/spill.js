@@ -63,6 +63,27 @@ define([
             }
         },
 
+        validateSections: function(){
+            var attrs = this.attributes;
+            this.validateRelease(attrs);
+            this.validateSubstance(attrs);
+            this.validateLocation(attrs);
+        },
+
+        validateRelease: function(attrs){
+            if(isNaN(attrs.amount)){
+                this.validationContext = 'info';
+                return 'Amount must be a number';
+            } else if (attrs.amount < 0) {
+                this.validationContext = 'info';
+                return 'Amount must be a positive number';
+            }
+        },
+
+        validateLocation: function(attrs){
+
+        },
+
         toTree: function(){
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var attrs = [];

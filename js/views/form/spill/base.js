@@ -82,7 +82,8 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
             this.subtextUpdate();
-            this.tabStatusSetter();
+            //this.tabStatusSetter();
+            this.initTabStatus();
 		},
 
         tabStatusSetter: function(){
@@ -106,6 +107,26 @@ define([
                     this.$('#substance').removeClass('ok');
                     this.$('#substance').addClass('error');
                 }
+            }
+        },
+
+        initTabStatus: function(){
+            this.$('.status').removeClass('ok').removeClass('error');
+            var release = this.model.get('release');
+            if (release.validateLocation(release.attributes)){
+                this.$('#map-status').addClass('error');
+            } else {
+                this.$('#map-status').addClass('ok');
+            }
+            if (this.model.validateSubstance(this.model.attributes)){
+                this.$('#substance').addClass('error');
+            } else {
+                this.$('#substance').addClass('ok');
+            }
+            if (this.model.validateRelease(this.model.attributes)){
+                this.$('#info').addClass('error');
+            } else {
+                this.$('#info').addClass('ok');
             }
         },
 
