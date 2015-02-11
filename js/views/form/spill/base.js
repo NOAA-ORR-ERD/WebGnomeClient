@@ -152,9 +152,10 @@ define([
             }
             var cachedOil_string = JSON.stringify(cachedOils);
             localStorage.setItem('cachedOils', cachedOil_string);
+            return cachedOils;
         },
 
-        renderSubstanceInfo: function(){
+        renderSubstanceInfo: function(e, cached){
             var substance;
             var enabled = webgnome.model.get('spills').length > 0;
             if (enabled){
@@ -162,7 +163,8 @@ define([
             } else {
                 substance = this.model.get('element_type').get('substance');
             }
-            this.getCachedOils(substance);
+            console.log(substance);
+            var cachedOilArray = this.getCachedOils(substance);
             var nameExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
@@ -172,7 +174,8 @@ define([
                 enabled: enabled,
                 nameExists: nameExists,
                 emuls: substance.get('emulsion_water_fraction_max'),
-                bullwinkle: substance.get('bullwinkle_fraction')
+                bullwinkle: substance.get('bullwinkle_fraction'),
+                oilCache: cachedOilArray
             });
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
