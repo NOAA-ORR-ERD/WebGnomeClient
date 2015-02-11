@@ -329,19 +329,20 @@ define([
         },
 
         modifyTimeseriesEntry: function(e){
-            e.preventDefault();
-            var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
-            var entry = this.model.get('timeseries')[index];
-            var date = moment(entry[0]).format(webgnome.config.date_format.moment);
-            var compiled = _.template(VarInputTemplate);
-            var template = compiled({
-                'date': date,
-                'speed': entry[1][0],
-                'direction': entry[1][1]
-            });
-            this.$(row).html(template);
-            this.$('.date-pick').datetimepicker({format: webgnome.config.date_format.datetimepicker});
+            if (this.$('.input-speed').length === 0){
+                e.preventDefault();
+                var row = this.$(e.target).parents('tr')[0];
+                var index = row.dataset.tsindex;
+                var entry = this.model.get('timeseries')[index];
+                var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+                var compiled = _.template(VarInputTemplate);
+                var template = compiled({
+                    'date': date,
+                    'speed': entry[1][0],
+                    'direction': entry[1][1]
+                });
+                this.$(row).html(template);
+            }
         },
 
         enterTimeseriesEntry: function(e){
