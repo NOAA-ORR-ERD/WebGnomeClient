@@ -1,11 +1,11 @@
 <div class="col-md-12">
     <div class="form-group col-sm-12">
         <div class="cacheContainer">
-            {% for (var i = 0; i < oilCache.length; i++){ %}
-                <div class="col-sm-3">
+            {% for (var i = 1; i < oilCache.length; i++){ %}
+                <div class="col-sm-4">
                     <a class="btn btn-primary oil-cache">
-                        {% var name2 = oilCache[i].get('name'); %}
-                        {{ name2 }}
+                        {% var name = oilCache[i]['name'].substring(0, 10) %}
+                        {{ name }}
                     </a>
                 </div>
             {% } %}

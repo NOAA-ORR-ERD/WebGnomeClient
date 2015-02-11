@@ -136,19 +136,21 @@ define([
 
         getCachedOils: function(substance){
             var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
-            if (!_.isNull(cachedOils)){
+            if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
-                    if (cachedOils[i]['adios_oil_id'] === substance['adios_oil_id']){
+                    if (cachedOils[i]['adios_oil_id'] === substance['adios_oil_id'] && webgnome.model.get('spills').at(0).get('element_type').get('substance').get('adios_oil_id') !== substance.get('adios_oil_id')){
                         cachedOils.splice(i, 1);
                     }
                 }
-                cachedOils.unshift(substance);
+                cachedOils.unshift(substance.toJSON());
                 if (cachedOils.length > 4){
                     cachedOils.pop();
                 }
             } else {
                 cachedOils = [];
-                cachedOils.push(substance);
+                if (!_.isUndefined(substance.get('name'))){
+                    cachedOils.push(substance.toJSON());
+                }
             }
             var cachedOil_string = JSON.stringify(cachedOils);
             localStorage.setItem('cachedOils', cachedOil_string);
@@ -163,7 +165,6 @@ define([
             } else {
                 substance = this.model.get('element_type').get('substance');
             }
-            console.log(substance);
             var cachedOilArray = this.getCachedOils(substance);
             var nameExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
