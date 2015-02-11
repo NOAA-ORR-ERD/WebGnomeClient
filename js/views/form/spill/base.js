@@ -38,7 +38,6 @@ define([
         },
 
         updateMapSize: function(){
-            //setTimeout(_.bind(function(){});
             this.spillMapView.map.updateSize();
         },
         
@@ -88,7 +87,6 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
             this.subtextUpdate();
-            //this.tabStatusSetter();
             this.initTabStatus();
 		},
 
@@ -136,6 +134,27 @@ define([
             }
         },
 
+        getCachedOils: function(substance){
+            var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+            console.log(cachedOils);
+            if (!_.isNull(cachedOils)){
+                for (var i = 0; i < cachedOils.length; i++){
+                    if (cachedOils[i]['adios_oil_id'] === substance['adios_oil_id']){
+                        cachedOils.splice(i, 1);
+                    }
+                }
+                cachedOils.unshift(substance);
+                if (cachedOils.length > 4){
+                    cachedOils.pop();
+                }
+            } else {
+                cachedOils = [];
+                cachedOils.push(substance);
+            }
+            var cachedOil_string = JSON.stringify(cachedOils);
+            localStorage.setItem('cachedOils', cachedOil_string);
+        },
+
         renderSubstanceInfo: function(){
             var substance;
             var enabled = webgnome.model.get('spills').length > 0;
@@ -144,6 +163,7 @@ define([
             } else {
                 substance = this.model.get('element_type').get('substance');
             }
+            this.getCachedOils(substance);
             var nameExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
@@ -243,6 +263,10 @@ define([
                 }, this));
             }
 		},
+
+        cacheElement: function(){
+
+        },
 
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
