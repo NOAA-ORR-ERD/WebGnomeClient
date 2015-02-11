@@ -136,7 +136,6 @@ define([
 
         getCachedOils: function(substance){
             var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
-            console.log(cachedOils);
             if (!_.isNull(cachedOils)){
                 for (var i = 0; i < cachedOils.length; i++){
                     if (cachedOils[i]['adios_oil_id'] === substance['adios_oil_id']){
