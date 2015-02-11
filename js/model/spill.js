@@ -74,7 +74,7 @@ define([
             if(isNaN(attrs.amount)){
                 this.validationContext = 'info';
                 return 'Amount must be a number';
-            } else if (attrs.amount < 0) {
+            } else if (attrs.amount <= 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
             }
