@@ -342,6 +342,14 @@ define([
                     'direction': entry[1][1]
                 });
                 this.$(row).html(template);
+                this.$('.additional-wind-compass').compassRoseUI({
+                    'arrow-direction': 'in',
+                    'move': console.log("moved!")
+                });
+                this.$('.additional-wind-compass').compassRoseUI('update', {
+                    speed: entry[1][0],
+                    direction: entry[1][1]
+                });
             }
         },
 
@@ -363,6 +371,7 @@ define([
                     this.timeseries = array;
                 }
             }, this));
+            this.$('.additional-wind-compass').html('');
             this.renderTimeseries();
             this.saveTimeseries();
         },
