@@ -6,13 +6,14 @@ define([
 	'views/form/oil/library',
 	'views/default/map',
     'text!templates/form/spill/substance.html',
+    'model/substance',
 	'nucos',
 	'ol',
 	'moment',
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceModel, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -26,7 +27,8 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'shown.bs.tab': 'updateMapSize'
+                'shown.bs.tab': 'updateMapSize',
+                'click .oil-cache': 'clickCachedOil'
             }, FormModal.prototype.events);
         },
 
@@ -134,22 +136,47 @@ define([
             }
         },
 
-        getCachedOils: function(substance){
+        clickCachedOil: function(e){
+            swal({
+                title: "Warning!",
+                text: "Switch selected oil to " + e.target.innerText + "?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirm",
+                closeOnConfirm: true
+            }, _.bind(function(isConfirm){
+                if (isConfirm){
+                    var oilId = e.target.dataset.adiosId;
+                    var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+                    var substanceModel;
+                    for (var i = 0; i < cachedOils.length; i++){
+                        if(cachedOils[i]['adios_oil_id'] === oilId){
+                            substanceModel = new SubstanceModel(cachedOils[i]);
+                            break;
+                        }
+                    }
+                    this.renderSubstanceInfo(null, substanceModel);
+                }
+            }, this));
+        },
+
+        updateCachedOils: function(substanceModel){
             var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+            var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
-                    if (cachedOils[i]['adios_oil_id'] === substance['adios_oil_id'] && webgnome.model.get('spills').at(0).get('element_type').get('substance').get('adios_oil_id') !== substance.get('adios_oil_id')){
+                    if (cachedOils[i]['adios_oil_id'] === substance.get('adios_oil_id')){
                         cachedOils.splice(i, 1);
                     }
                 }
-                cachedOils.unshift(substance.toJSON());
+                cachedOils.unshift(substance);
                 if (cachedOils.length > 4){
                     cachedOils.pop();
                 }
             } else {
                 cachedOils = [];
-                if (!_.isUndefined(substance.get('name'))){
-                    cachedOils.push(substance.toJSON());
+                if (!_.isUndefined(substance['name'])){
+                    cachedOils.push(substance);
                 }
             }
             var cachedOil_string = JSON.stringify(cachedOils);
@@ -162,18 +189,20 @@ define([
             var enabled = webgnome.model.get('spills').length > 0;
             if (enabled){
                 substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            } else {
+            } else if (_.isUndefined(cached)) {
                 substance = this.model.get('element_type').get('substance');
+            } else {
+                substance = cached;
             }
-            var cachedOilArray = this.getCachedOils(substance);
-            var nameExists = !_.isUndefined(substance.get('name'));
+            var cachedOilArray = this.updateCachedOils(substance);
+            var oilExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
                 temps: substance.parseTemperatures(),
                 categories: substance.parseCategories(),
                 enabled: enabled,
-                nameExists: nameExists,
+                oilExists: oilExists,
                 emuls: substance.get('emulsion_water_fraction_max'),
                 bullwinkle: substance.get('bullwinkle_fraction'),
                 oilCache: cachedOilArray

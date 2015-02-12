@@ -1,16 +1,16 @@
 <div class="col-md-12">
     <div class="form-group col-sm-12">
-        <div class="cacheContainer">
+        <div class="cacheContainer col-sm-12">
             {% for (var i = 1; i < oilCache.length; i++){ %}
                 <div class="col-sm-4">
-                    <a class="btn btn-primary oil-cache">
-                        {% var name = oilCache[i]['name'].substring(0, 10) %}
-                        {{ name }}
+                    <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i]['adios_oil_id'] }}">
+                        {% var cachedOilName = oilCache[i]['name'].substring(0, 10) %}
+                        {{ cachedOilName }}
                     </a>
                 </div>
             {% } %}
         </div>
-        <div class="{%if(!nameExists){%}hide{%}%}">
+        <div class="{%if(!oilExists){%}hide{%}%}">
             <div><label>Name:</label> {{ name }}</div>
             <div><label>API:</label> {{ api }}</div>
             <div><label>Pour Point &deg;F (&deg;C):</label> {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})</div>
@@ -22,13 +22,13 @@
                 {% } %}
             </div>
         </div>
-        <div class="{%if(nameExists){%}hide{%}%}">
+        <div class="{%if(oilExists){%}hide{%}%}">
             <p>Spills require a substance, click the button below to select one.</p>
         </div>
         <div>
             <div class="form-group col-sm-12">
                 <a class="btn btn-primary add oil-select">
-                    {% if(nameExists){ %}
+                    {% if(oilExists){ %}
                         Edit Substance
                     {% } else { %}
                         Select Substance
@@ -36,7 +36,7 @@
                 </a>
             </div>
         </div>
-        <div class="{%if(!nameExists){%}hide{%}%}">
+        <div class="{%if(!oilExists){%}hide{%}%}">
             <div>
                 <label>Emulsion Override:</label>
                 <div class="radio">
