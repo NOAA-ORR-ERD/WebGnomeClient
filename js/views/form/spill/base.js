@@ -162,13 +162,15 @@ define([
 
         convertToSubstanceModels: function(array){
             for (var i = 0; i < array.length; i++){
-                array[i] = new SubstanceModel(array[i]);
+                if (_.isUndefined(array[i].attributes)){
+                    array[i] = new SubstanceModel(array[i]);
+                }
             }
             return array;
         },
 
         updateCachedOils: function(substanceModel){
-            var cachedOils = this.convertToSubstanceModels(JSON.parse(localStorage.getItem('cachedOils')));
+            var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
             var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
@@ -182,12 +184,13 @@ define([
                 }
             } else {
                 cachedOils = [];
-                if (!_.isUndefined(substance.get('name')){
+                if (!_.isUndefined(substance.get('name'))){
                     cachedOils.push(substance);
                 }
             }
             var cachedOil_string = JSON.stringify(cachedOils);
             localStorage.setItem('cachedOils', cachedOil_string);
+            cachedOils = this.convertToSubstanceModels(cachedOils);
             return cachedOils;
         },
 
