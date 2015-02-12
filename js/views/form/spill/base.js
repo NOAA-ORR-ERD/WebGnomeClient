@@ -160,8 +160,15 @@ define([
             }, this));
         },
 
+        convertToSubstanceModels: function(array){
+            for (var i = 0; i < array.length; i++){
+                array[i] = new SubstanceModel(array[i]);
+            }
+            return array;
+        },
+
         updateCachedOils: function(substanceModel){
-            var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+            var cachedOils = this.convertToSubstanceModels(JSON.parse(localStorage.getItem('cachedOils')));
             var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
@@ -175,7 +182,7 @@ define([
                 }
             } else {
                 cachedOils = [];
-                if (!_.isUndefined(substance['name'])){
+                if (!_.isUndefined(substance.get('name')){
                     cachedOils.push(substance);
                 }
             }
@@ -187,10 +194,12 @@ define([
         renderSubstanceInfo: function(e, cached){
             var substance;
             var enabled = webgnome.model.get('spills').length > 0;
-            if (enabled){
-                substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            } else if (_.isUndefined(cached)) {
-                substance = this.model.get('element_type').get('substance');
+            if (_.isUndefined(cached)){
+                if (enabled){
+                    substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+                } else {
+                    substance = this.model.get('element_type').get('substance');
+                }
             } else {
                 substance = cached;
             }

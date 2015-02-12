@@ -3,8 +3,8 @@
         <div class="cacheContainer col-sm-12">
             {% for (var i = 1; i < oilCache.length; i++){ %}
                 <div class="col-sm-4">
-                    <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i]['adios_oil_id'] }}">
-                        {% var cachedOilName = oilCache[i]['name'].substring(0, 10) %}
+                    <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i].get('adios_oil_id') }}">
+                        {% var cachedOilName = oilCache[i].get('name').substring(0, 10) %}
                         {{ cachedOilName }}
                     </a>
                 </div>
