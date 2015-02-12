@@ -1,8 +1,8 @@
 <div class="col-md-12">
     <div class="form-group col-sm-12">
         <div class="cacheContainer col-sm-12">
-            {% for (var i = 0; i < oilCache.length; i++){ %}
-                <div class="col-sm-4 {%if(i===0){%}hide{%}%}">
+            {% for (var i = 1; i < oilCache.length; i++){ %}
+                <div class="col-sm-4">
                     <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i].get('name') }}">
                         {% var cachedOilName = oilCache[i].get('name').substring(0, 10) %}
                         {{ cachedOilName }}
