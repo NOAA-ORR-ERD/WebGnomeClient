@@ -150,7 +150,7 @@ define([
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
                     var substanceModel;
                     for (var i = 0; i < cachedOils.length; i++){
-                        if(cachedOils[i]['adios_oil_id'] === oilId){
+                        if(cachedOils[i]['name'] === oilId){
                             substanceModel = new SubstanceModel(cachedOils[i]);
                             break;
                         }
@@ -174,11 +174,12 @@ define([
             var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
-                    if (cachedOils[i]['adios_oil_id'] === substance.get('adios_oil_id')){
+                    if (cachedOils[i]['name'] === substance.get('name')){
                         cachedOils.splice(i, 1);
                     }
                 }
-                cachedOils.unshift(substance);
+                cachedOils.unshift(substance.toJSON());
+                console.log(cachedOils);
                 if (cachedOils.length > 4){
                     cachedOils.pop();
                 }
