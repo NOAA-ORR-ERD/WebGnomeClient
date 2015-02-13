@@ -160,13 +160,13 @@ define([
             }, this));
         },
 
-        convertToSubstanceModels: function(array){
-            for (var i = 0; i < array.length; i++){
-                if (_.isUndefined(array[i].attributes)){
-                    array[i] = new SubstanceModel(array[i]);
+        convertToSubstanceModels: function(cachedObjArray){
+            for (var i = 0; i < cachedObjArray.length; i++){
+                if (_.isUndefined(cachedObjArray[i].attributes)){
+                    cachedObjArray[i] = new SubstanceModel(cachedObjArray[i]);
                 }
             }
-            return array;
+            return cachedObjArray;
         },
 
         updateCachedOils: function(substanceModel){
@@ -179,7 +179,6 @@ define([
                     }
                 }
                 cachedOils.unshift(substance.toJSON());
-                console.log(cachedOils);
                 if (cachedOils.length > 4){
                     cachedOils.pop();
                 }
@@ -249,9 +248,6 @@ define([
                 if (enabled){
                     this.model.get('element_type').set('substance', substance);
                 }
-                this.$('#substancepanel').addClass('complete');
-            } else {
-                this.$('#substancepanel').removeClass('complete');
             }
         },
 
