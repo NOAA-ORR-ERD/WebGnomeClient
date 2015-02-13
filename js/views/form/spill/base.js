@@ -240,6 +240,7 @@ define([
 
             if (enabled){
                 this.model.get('element_type').set('substance', substance);
+                webgnome.model.get('spills').at(0).get('element_type').set('substance', substance);
             }
         },
 
