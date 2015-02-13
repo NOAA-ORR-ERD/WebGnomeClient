@@ -41,7 +41,6 @@ define([
 
         updateMapSize: function(){
             this.spillMapView.map.updateSize();
-            console.log('ran');
         },
         
         spillEndSet: function(){
