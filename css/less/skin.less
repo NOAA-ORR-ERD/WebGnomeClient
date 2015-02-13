@@ -1464,6 +1464,20 @@ nav.navbar{
 
     #oilInfo {
         .clearfix;
+        a {
+            margin-top: 10px;
+        }
+        .radio {
+            div {
+                margin-top: 5px;
+            }
+        }
+        .cacheContainer {
+            margin-bottom: 10px;
+            a {
+                width: 110px;
+            }
+        }
     }
 
     .modal-body{
@@ -1736,6 +1750,10 @@ nav.navbar{
                 margin-top: 15px;
             }
         }
+        .status{
+            .glyphicon;
+            .glyphicon-ok;
+        }
     }
 
     &.wind-form{
@@ -1906,6 +1924,19 @@ nav.navbar{
                 }
                 width: 55px;
             }
+        }
+        .status {
+            .glyphicon;
+            &.error {
+                .glyphicon-remove;
+                color: red;   
+            }     
+            &.ok{
+                .glyphicon-ok;
+                color: rgba(18, 129, 0, 0.57);
+            }
+            margin-left: 5px;
+            margin-top: 5px;
         }
     }
 

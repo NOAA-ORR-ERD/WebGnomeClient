@@ -24,30 +24,64 @@ define([
         },
 
         validate: function(attrs, options){
-            if(!attrs.release.isValid()){
-                return attrs.release.validationError;
-            }
-
-            if (!attrs.element_type.isValid()){
-                return attrs.element_type.validationError;
-            }
-
             if ($.trim(attrs.name) === ''){
+                this.validationContext = 'spill';
                 return 'A spill name is required!';
             }
 
             if(isNaN(attrs.amount)){
+                this.validationContext = 'info';
                 return 'Amount must be a number';
-            } else if (attrs.amount < 1) {
-                return 'Amount must be a positive number greater than zero';
+            } else if (attrs.amount <= 0) {
+                this.validationContext = 'info';
+                return 'Amount must be a positive number';
             }
 
+            if (!attrs.element_type.isValid()){
+                this.validationContext = 'substance';
+                return attrs.element_type.validationError;
+            }
+
+            if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
+                this.validationContext = 'substance';
+                return;
+            }
+
+            if (localStorage.getItem('prediction') !== 'fate'){
+                if(!attrs.release.isValid()){
+                    this.validationContext = 'map';
+                    return attrs.release.validationError;
+                }
+            }
+
+            this.validationContext = null;
         },
 
         validateSubstance: function(attrs){
             if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
                 return 'A substance must be selected!';
             }
+        },
+
+        validateSections: function(){
+            var attrs = this.attributes;
+            this.validateRelease(attrs);
+            this.validateSubstance(attrs);
+            this.validateLocation(attrs);
+        },
+
+        validateRelease: function(attrs){
+            if(isNaN(attrs.amount)){
+                this.validationContext = 'info';
+                return 'Amount must be a number';
+            } else if (attrs.amount <= 0) {
+                this.validationContext = 'info';
+                return 'Amount must be a positive number';
+            }
+        },
+
+        validateLocation: function(attrs){
+
         },
 
         toTree: function(){
