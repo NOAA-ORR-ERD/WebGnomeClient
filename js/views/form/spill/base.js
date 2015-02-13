@@ -27,7 +27,7 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'shown.bs.tab .mapspill': 'updateMapSize',
+                'shown.bs.tab .mapspill': 'locationSelect',
                 'click .oil-cache': 'clickCachedOil'
             }, FormModal.prototype.events);
         },
@@ -37,10 +37,6 @@ define([
                 return false;
             }
             return this.model.get('id') !== webgnome.model.get('spills').at(0).get('id');
-        },
-
-        updateMapSize: function(){
-            this.spillMapView.map.updateSize();
         },
         
         spillEndSet: function(){
@@ -76,10 +72,8 @@ define([
             var map = webgnome.model.get('map').get('obj_type');
 			if (!this.showGeo) {
 				this.$('.map').hide();
-			} else {
-				this.locationSelect();
-			}
-			this.$('#datetime').datetimepicker({
+			} 			
+            this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
             this.$('#datepick').on('click', _.bind(function(){
