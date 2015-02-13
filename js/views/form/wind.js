@@ -31,6 +31,7 @@ define([
                 'click .edit': 'modifyTimeseriesEntry',
                 'click .trash': 'removeTimeseriesEntry',
                 'click .ok': 'enterTimeseriesEntry',
+                'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered'
@@ -374,6 +375,11 @@ define([
             this.$('.additional-wind-compass').html('');
             this.renderTimeseries();
             this.saveTimeseries();
+        },
+
+        cancelTimeseriesEntry: function(e){
+            e.preventDefault();
+            this.renderTimeseries();
         },
 
         saveTimeseries: function(){

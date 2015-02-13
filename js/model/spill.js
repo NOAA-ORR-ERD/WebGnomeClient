@@ -53,7 +53,6 @@ define([
                     return attrs.release.validationError;
                 }
             }
-
             this.validationContext = null;
         },
 
