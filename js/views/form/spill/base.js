@@ -27,7 +27,7 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'shown.bs.tab': 'updateMapSize',
+                'shown.bs.tab .mapspill': 'updateMapSize',
                 'click .oil-cache': 'clickCachedOil'
             }, FormModal.prototype.events);
         },
@@ -41,6 +41,7 @@ define([
 
         updateMapSize: function(){
             this.spillMapView.map.updateSize();
+            console.log('ran');
         },
         
         spillEndSet: function(){
@@ -244,10 +245,8 @@ define([
                     delay: {show: 500, hide: 100}
                 });
 
-            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name')) || enabled){
-                if (enabled){
-                    this.model.get('element_type').set('substance', substance);
-                }
+            if (enabled){
+                this.model.get('element_type').set('substance', substance);
             }
         },
 
@@ -304,10 +303,6 @@ define([
                 }, this));
             }
 		},
-
-        cacheElement: function(){
-
-        },
 
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
@@ -386,13 +381,13 @@ define([
                     this.$('#end-lat').val(endPoint[1]);
                     this.$('#end-lon').val(endPoint[0]);
                     if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
-                        var feature = this.source.forEachFeature(_.bind(function(feature){
+                        feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                         }, this));
                         this.source.removeFeature(feature);
                         var point = startPoint;
                         point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                        var feature = new ol.Feature(new ol.geom.Point(point));
+                        feature = new ol.Feature(new ol.geom.Point(point));
                         feature.setStyle( new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
