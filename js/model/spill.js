@@ -24,18 +24,6 @@ define([
         },
 
         validate: function(attrs, options){
-            if (localStorage.getItem('prediction') !== 'fate'){
-                if(!attrs.release.isValid()){
-                    this.validationContext = 'map';
-                    return attrs.release.validationError;
-                }
-            }
-
-            if (!attrs.element_type.isValid()){
-                this.validationContext = 'substance';
-                return attrs.element_type.validationError;
-            }
-
             if ($.trim(attrs.name) === ''){
                 this.validationContext = 'spill';
                 return 'A spill name is required!';
@@ -44,14 +32,26 @@ define([
             if(isNaN(attrs.amount)){
                 this.validationContext = 'info';
                 return 'Amount must be a number';
-            } else if (attrs.amount < 0) {
+            } else if (attrs.amount <= 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
+            }
+
+            if (!attrs.element_type.isValid()){
+                this.validationContext = 'substance';
+                return attrs.element_type.validationError;
             }
 
             if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
                 this.validationContext = 'substance';
                 return;
+            }
+
+            if (localStorage.getItem('prediction') !== 'fate'){
+                if(!attrs.release.isValid()){
+                    this.validationContext = 'map';
+                    return attrs.release.validationError;
+                }
             }
 
             this.validationContext = null;

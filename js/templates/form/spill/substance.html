@@ -1,18 +1,22 @@
 <div class="col-md-12">
     <div class="form-group col-sm-12">
         {% if (oilCache.length > 1){ %}
-            <div class="cacheContainer col-sm-12">
-                <div class="col-sm-12">
-                    <label>Recently selected oils</label>
-                </div>
-                {% for (var i = 1; i < oilCache.length; i++){ %}
-                    <div class="col-sm-4">
-                        <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i].get('name') }}">
-                            {% var cachedOilName = oilCache[i].get('name').substring(0, 10) %}
-                            {{ cachedOilName }}
-                        </a>
+            <div class="row">
+                <div class="cacheContainer panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Recently selected oils</h4>
                     </div>
-                {% } %}
+                    <div class="panel-body show">
+                        {% for (var i = 1; i < oilCache.length; i++){ %}
+                            <div class="col-sm-4">
+                                <a class="btn btn-primary oil-cache" data-adios-id="{{ oilCache[i].get('name') }}">
+                                    {% var cachedOilName = oilCache[i].get('name').substring(0, 10) %}
+                                    {{ cachedOilName }}
+                                </a>
+                            </div>
+                        {% } %}
+                    </div>
+                </div>
             </div>
         {% } %}
         <div class="{%if(!oilExists){%}hide{%}%}">
@@ -42,40 +46,44 @@
             </div>
         </div>
         <div class="{%if(!oilExists){%}hide{%}%}">
-            <div>
-                <label>Emulsion Override:</label>
-                <div class="radio">
-                    <div>
-                        <label id="default">
-                            <input type="radio" name="bullwinkle" value="default" selected>
-                            Default - computed from oil and weather information
-                        </label>
-                    </div>
-                    <div>
-                        <label id="manual">
-                            <input type="radio" name="bullwinkle" value="manual">
-                                <div class="col-sm-6">
-                                    <input type="number" class="manual form-control col-md-1" min="0" disabled>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select class="form-control col-md-3 manual" id="units-bullwinkle" disabled>
-                                        <option value="time">
-                                            hours
-                                        </option>
-                                        <option value="percent">
-                                            %
-                                        </option>
-                                    </select>
-                                </div>
-                            <div id="percent">
-                                of any part of the spill has evaporated
-                            </div>
-                            <div id="hours">
-                                have elapsed since start of spill
-                            </div>
-                        </label>
-                    </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Emulsion Override</h4>
                 </div>
+                    <div class="panel-body show">
+                        <div class="radio"> 
+                            <div>
+                                <label id="default">
+                                    <input type="radio" name="bullwinkle" value="default" selected>
+                                    Default - computed from oil and weather information
+                                </label>
+                            </div>
+                            <div>
+                                <label id="manual">
+                                    <input type="radio" name="bullwinkle" value="manual">
+                                        <div class="col-sm-6">
+                                            <input type="number" class="manual form-control col-md-1" min="0" disabled>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <select class="form-control col-md-3 manual" id="units-bullwinkle" disabled>
+                                                <option value="time">
+                                                    hours
+                                                </option>
+                                                <option value="percent">
+                                                    %
+                                                </option>
+                                            </select>
+                                        </div>
+                                    <div id="percent">
+                                        of any part of the spill has evaporated
+                                    </div>
+                                    <div id="hours">
+                                        have elapsed since start of spill
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>

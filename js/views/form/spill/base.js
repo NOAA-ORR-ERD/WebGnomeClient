@@ -72,7 +72,7 @@ define([
             var map = webgnome.model.get('map').get('obj_type');
 			if (!this.showGeo) {
 				this.$('.map').hide();
-			} 			
+			}
             this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
