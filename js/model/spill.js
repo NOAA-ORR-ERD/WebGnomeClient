@@ -57,6 +57,9 @@ define([
         },
 
         validateSubstance: function(attrs){
+            if (_.isUndefined(attrs)){
+                attrs = this.attributes;
+            }
             if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
                 return 'A substance must be selected!';
             }
@@ -70,6 +73,9 @@ define([
         },
 
         validateRelease: function(attrs){
+            if (_.isUndefined(attrs)){
+                attrs = this.attributes;
+            }
             if(isNaN(attrs.amount)){
                 this.validationContext = 'info';
                 return 'Amount must be a number';
@@ -80,7 +86,11 @@ define([
         },
 
         validateLocation: function(attrs){
-
+            var release = this.get('release');
+            if (_.isUndefined(attrs)){
+                attrs = this.attributes;
+            }
+            return release.validateLocation(attrs);
         },
 
         toTree: function(){

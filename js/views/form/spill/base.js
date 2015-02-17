@@ -22,7 +22,6 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
-                //'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
@@ -87,27 +86,62 @@ define([
 		},
 
         tabStatusSetter: function(){
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
+            // if(!this.model.isValid()){
+            //     this.error('Error!', this.model.validationError);
+            // } else {
+            //     this.clearError();
+            // }
+            // var valid = this.model.validationContext;
+            // this.$('.status').addClass('ok');
+            // if (!_.isNull(valid)){
+            //     if (valid === 'info'){
+            //         this.$('#info').removeClass('ok');
+            //         this.$('#info').addClass('error');
+            //     }
+            //     if (valid === 'map'){
+            //         this.$('#map-status').removeClass('ok');
+            //         this.$('#map-status').addClass('error');
+            //     }
+            //     if (valid === 'substance'){
+            //         this.$('#substance').removeClass('ok');
+            //         this.$('#substance').addClass('error');
+            //     }
+            // }
+            var activeTab = this.$('li.active');
+            console.log(activeTab.hasClass('generalinfo'));
+            if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
+                this.$('#info').removeClass('ok');
+                this.$('#info').addClass('error');
+            } else if (activeTab.hasClass('generalinfo')){
+                this.$('#info').removeClass('error');
+                this.$('#info').addClass('ok');
             }
-            var valid = this.model.validationContext;
-            this.$('.status').addClass('ok');
-            if (!_.isNull(valid)){
-                if (valid === 'info'){
-                    this.$('#info').removeClass('ok');
-                    this.$('#info').addClass('error');
-                }
-                if (valid === 'map'){
-                    this.$('#map-status').removeClass('ok');
-                    this.$('#map-status').addClass('error');
-                }
-                if (valid === 'substance'){
-                    this.$('#substance').removeClass('ok');
-                    this.$('#substance').addClass('error');
-                }
+            if (activeTab.hasClass('substanceinfo') && this.model.validateSubstance()){
+                this.$('#substance').removeClass('ok');
+                this.$('#substance').addClass('error');
+            } else if (activeTab.hasClass('substanceinfo')){
+                this.$('#substance').removeClass('error');
+                this.$('#substance').addClass('ok');
             }
+            if (activeTab.hasClass('mapspill') && this.model.validateLocation()){
+                this.$('#map-status').removeClass('ok');
+                this.$('#map-status').addClass('error');
+            } else if (activeTab.hasClass('mapspill')){
+                this.$('#map-status').removeClass('error');
+                this.$('#map-status').addClass('ok');
+            }
+            // if (this.model.validateRelease()){
+            //     this.$('#info').removeClass('ok');
+            //     this.$('#info').addClass('error');
+            // }
+            // if (this.model.validateRelease(this.model.attributes)){
+            //     this.$('#map-status').removeClass('ok');
+            //     this.$('#map-status').addClass('error');
+            // }
+            // if (this.model.validateSubstance()){
+            //     this.$('#substance').removeClass('ok');
+            //     this.$('#substance').addClass('error');
+            // }
         },
 
         initTabStatus: function(){

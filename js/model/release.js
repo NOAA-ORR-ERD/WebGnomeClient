@@ -61,6 +61,9 @@ define([
         },
 
         validateLocation: function(attrs){
+            if (_.isUndefined(attrs)){
+                attrs = this.attributes;
+            }
             if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';
             }
