@@ -22,7 +22,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
-                'click #spill-form-map': 'update',
+                //'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
@@ -391,6 +391,7 @@ define([
                         }));
                         this.source.addFeature(feature);
                     }
+                    this.update();
                 }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
