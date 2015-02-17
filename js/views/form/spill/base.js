@@ -108,7 +108,6 @@ define([
             //     }
             // }
             var activeTab = this.$('li.active');
-            console.log(activeTab.hasClass('generalinfo'));
             if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
                 this.$('#info').removeClass('ok');
                 this.$('#info').addClass('error');

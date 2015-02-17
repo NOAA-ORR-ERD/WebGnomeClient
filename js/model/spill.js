@@ -88,7 +88,7 @@ define([
         validateLocation: function(attrs){
             var release = this.get('release');
             if (_.isUndefined(attrs)){
-                attrs = this.attributes;
+                attrs = release.attributes;
             }
             return release.validateLocation(attrs);
         },
