@@ -343,15 +343,29 @@ define([
                     'direction': entry[1][1]
                 });
                 this.$(row).html(template);
-                // this.$('.additional-wind-compass').compassRoseUI({
-                //     'arrow-direction': 'in',
-                //     'move': console.log("moved!")
-                // });
-                // this.$('.additional-wind-compass').compassRoseUI('update', {
-                //     speed: entry[1][0],
-                //     direction: entry[1][1]
-                // });
+                this.attachCompass(e, entry, row);
             }
+        },
+
+        attachCompass: function(e, entry, row){
+            var modal_offset = this.$el.offset();
+            var modal_height = this.$el.height();
+            var modal_width = this.$el.width();
+            var jqRow = this.$(row);
+            var offset = jqRow.offset();
+            var height = jqRow.height();
+            var width = jqRow.width();
+            var top = modal_height - offset.top + modal_offset.top + height + "px";
+            var right = modal_width - offset.left - modal_offset.left - width + "px";
+            this.$('.additional-wind-compass').compassRoseUI({
+                    'arrow-direction': 'in',
+                    'move': console.log("moved!")
+                });
+            this.$('.additional-wind-compass').compassRoseUI('update', {
+                    speed: entry[1][0],
+                    direction: entry[1][1]
+                });
+            this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
         },
 
         enterTimeseriesEntry: function(e){
