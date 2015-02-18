@@ -355,17 +355,27 @@ define([
             var offset = jqRow.offset();
             var height = jqRow.height();
             var width = jqRow.width();
-            var top = modal_height - offset.top + modal_offset.top + height + "px";
-            var right = modal_width - offset.left - modal_offset.left - width + "px";
+            this.entry = entry;
+            var top = modal_height - offset.top + modal_offset.top + height - 10 + "px";
+            var right = modal_width - offset.left - modal_offset.left - width - 400 + "px";
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
-                    'move': console.log("moved!")
-                });
-            this.$('.additional-wind-compass').compassRoseUI('update', {
-                    speed: entry[1][0],
-                    direction: entry[1][1]
+                    'move': _.bind(this.variableRoseUpdate, this)
                 });
             this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
+            this.$el.on('keyup tr input', _.bind(this.writeValues, this));
+        },
+
+        writeValues: function(){
+            this.$('.additional-wind-compass').compassRoseUI('update', {
+                    speed: this.$('.input-speed').val(),
+                    direction: this.$('.input-direction').val()
+                });
+        },
+
+        variableRoseUpdate: function(magnitude, direction){
+            this.$('.input-speed').val(parseInt(magnitude, 10));
+            this.$('.input-direction').val(parseInt(direction, 10));
         },
 
         enterTimeseriesEntry: function(e){
