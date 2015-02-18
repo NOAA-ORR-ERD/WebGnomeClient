@@ -373,8 +373,8 @@ define([
                 }
             }, this));
             this.$('.additional-wind-compass').html('');
-            this.renderTimeseries();
             this.saveTimeseries();
+            this.renderTimeseries();
         },
 
         cancelTimeseriesEntry: function(e){
