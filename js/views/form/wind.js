@@ -357,15 +357,19 @@ define([
             var row_height = jqRow.height();
             var row_width = jqRow.width();
             this.entry = entry;
-            var top = modal_height - row_offset.top + modal_offset.top + row_height - 10 + "px";
-            var right = modal_width - row_offset.left - modal_offset.left - 1100 + row_width + "px";
+            // console.log(modal_offset.top);
+            // console.log(modal_height);
+            // console.log(row_offset.top);
+            // console.log(row_height);
+            var top = row_offset.top - modal_height + row_height + "px";
+            console.log(top);
+            var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
             this.$el.append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
                 });
-            this.$('.additional-wind-compass').css({"z-index": 2000, "position": "absolute", "right": right, "top": top});
-            this.$('.additional-wind-compass canvas').css({"z-index": 2000});
+            this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
             this.$el.on('keyup tr input', _.bind(this.writeValues, this));
             this.writeValues();
         },
