@@ -397,7 +397,7 @@ define([
                     this.timeseries = array;
                 }
             }, this));
-            this.$('.additional-wind-compass canvas').remove();
+            this.$('.additional-wind-compass').html('').hide();
             this.saveTimeseries();
             this.renderTimeseries();
         },
@@ -412,7 +412,7 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
-            this.$('.additional-wind-compass canvas').remove();
+            this.$('.additional-wind-compass').html('').hide();
         },
 
         saveTimeseries: function(){
