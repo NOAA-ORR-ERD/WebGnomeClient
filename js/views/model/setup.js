@@ -101,7 +101,9 @@ define([
 
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
-                this.togglePrediction({target: this.$('.' + pred)}, pred);
+                if(!_.isUndefined(pred) && pred !== 'null'){
+                    this.togglePrediction({target: this.$('.' + pred)}, pred);
+                }
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
@@ -166,9 +168,7 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
-            this.configureTimestep(target);
-            this.configureWeatherers(target);
-            // this.configureRelease(target);
+            this.configure(target);
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 swal({
@@ -205,7 +205,7 @@ define([
                 this.showFateObjects();
             } else if (target == 'trajectory') {
                 this.showTrajectoryObjects();
-            } else{
+            } else if (target == 'both') {
                 this.showAllObjects();
             }
             this.$('.stage-2').show();
@@ -682,7 +682,9 @@ define([
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
                 this.updateObjects();
-                this.configureWeatherers(this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim());
+                var target = this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim();
+                this.configure(target);
+
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this));
             locationForm.render();
@@ -915,6 +917,13 @@ define([
             }, this));
         },
         
+        configure: function(target){
+            this.configureTimestep(target);
+            this.configureWeatherers(target);
+            this.configureModel(target);
+            // this.configureRelease(target);
+        },
+
         configureWeatherers: function(prediction){
             if (prediction == 'fate' || prediction == 'both'){
                 // turn on weatherers
@@ -951,6 +960,14 @@ define([
                 webgnome.model.set('time_step', 900);
             } else {
                 webgnome.model.set('time_step', 3600);
+            }
+        },
+
+        configureModel: function(prediction){
+            if(prediction == 'trajectory'){
+                webgnome.model.set('uncertain', true);
+            } else {
+                webgnome.model.set('uncertain', false);
             }
         },
 
