@@ -364,6 +364,7 @@ define([
                 });
             this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
             this.$el.on('keyup tr input', _.bind(this.writeValues, this));
+            this.writeValues();
         },
 
         writeValues: function(){
@@ -403,7 +404,15 @@ define([
 
         cancelTimeseriesEntry: function(e){
             e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
             this.renderTimeseries();
+            this.$('.additional-wind-compass').compassRoseUI('update', {
+                speed: entry[1][0],
+                direction: entry[1][1]
+            });
+            this.$('.additional-wind-compass').html('');
         },
 
         saveTimeseries: function(){
