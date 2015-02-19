@@ -101,7 +101,9 @@ define([
 
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
-                this.togglePrediction({target: this.$('.' + pred)}, pred);
+                if(!_.isUndefined(pred) && pred !== 'null'){
+                    this.togglePrediction({target: this.$('.' + pred)}, pred);
+                }
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
 
@@ -205,7 +207,7 @@ define([
                 this.showFateObjects();
             } else if (target == 'trajectory') {
                 this.showTrajectoryObjects();
-            } else{
+            } else if (target == 'both') {
                 this.showAllObjects();
             }
             this.$('.stage-2').show();
