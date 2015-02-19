@@ -352,12 +352,12 @@ define([
             var modal_height = this.$el.height();
             var modal_width = this.$el.width();
             var jqRow = this.$(row);
-            var offset = jqRow.offset();
-            var height = jqRow.height();
-            var width = jqRow.width();
+            var row_offset = jqRow.offset();
+            var row_height = jqRow.height();
+            var row_width = jqRow.width();
             this.entry = entry;
-            var top = modal_height - offset.top + modal_offset.top + height - 10 + "px";
-            var right = modal_width - offset.left - modal_offset.left - width - 400 + "px";
+            var top = modal_height - row_offset.top + modal_offset.top + row_height - 10 + "px";
+            var right = modal_width - row_offset.left - modal_offset.left - row_width - 400 + "px";
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
@@ -397,7 +397,7 @@ define([
                     this.timeseries = array;
                 }
             }, this));
-            this.$('.additional-wind-compass').html('');
+            this.$('.additional-wind-compass canvas').remove();
             this.saveTimeseries();
             this.renderTimeseries();
         },
@@ -412,7 +412,7 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
-            this.$('.additional-wind-compass').html('');
+            this.$('.additional-wind-compass canvas').remove();
         },
 
         saveTimeseries: function(){
