@@ -348,6 +348,7 @@ define([
         },
 
         attachCompass: function(e, entry, row){
+            this.$el.off('keyup tr input');
             var modal_offset = this.$el.offset();
             var modal_height = this.$el.height();
             var modal_width = this.$el.width();
@@ -357,12 +358,14 @@ define([
             var row_width = jqRow.width();
             this.entry = entry;
             var top = modal_height - row_offset.top + modal_offset.top + row_height - 10 + "px";
-            var right = modal_width - row_offset.left - modal_offset.left - row_width - 400 + "px";
+            var right = modal_width - row_offset.left - modal_offset.left - 1100 + row_width + "px";
+            this.$el.append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
                 });
-            this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
+            this.$('.additional-wind-compass').css({"z-index": 2000, "position": "absolute", "right": right, "top": top});
+            this.$('.additional-wind-compass canvas').css({"z-index": 2000});
             this.$el.on('keyup tr input', _.bind(this.writeValues, this));
             this.writeValues();
         },
@@ -397,7 +400,7 @@ define([
                     this.timeseries = array;
                 }
             }, this));
-            this.$('.additional-wind-compass').html('').hide();
+            this.$('.additional-wind-compass').remove();
             this.saveTimeseries();
             this.renderTimeseries();
         },
@@ -412,7 +415,7 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
-            this.$('.additional-wind-compass').html('').hide();
+            this.$('.additional-wind-compass').remove();
         },
 
         saveTimeseries: function(){
