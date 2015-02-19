@@ -348,16 +348,23 @@ define([
         },
 
         attachCompass: function(e, entry, row){
+            this.$el.off('keyup tr input');
             var modal_offset = this.$el.offset();
             var modal_height = this.$el.height();
             var modal_width = this.$el.width();
             var jqRow = this.$(row);
-            var offset = jqRow.offset();
-            var height = jqRow.height();
-            var width = jqRow.width();
+            var row_offset = jqRow.offset();
+            var row_height = jqRow.height();
+            var row_width = jqRow.width();
             this.entry = entry;
-            var top = modal_height - offset.top + modal_offset.top + height - 10 + "px";
-            var right = modal_width - offset.left - modal_offset.left - width - 400 + "px";
+            // console.log(modal_offset.top);
+            // console.log(modal_height);
+            // console.log(row_offset.top);
+            // console.log(row_height);
+            var top = row_offset.top - modal_height + row_height + "px";
+            console.log(top);
+            var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
+            this.$el.append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
@@ -397,7 +404,7 @@ define([
                     this.timeseries = array;
                 }
             }, this));
-            this.$('.additional-wind-compass').html('');
+            this.$('.additional-wind-compass').remove();
             this.saveTimeseries();
             this.renderTimeseries();
         },
@@ -412,7 +419,7 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
-            this.$('.additional-wind-compass').html('');
+            this.$('.additional-wind-compass').remove();
         },
 
         saveTimeseries: function(){
