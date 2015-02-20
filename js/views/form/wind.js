@@ -8,25 +8,34 @@ define([
     'nucos',
     'views/modal/form',
     'text!templates/form/wind.html',
+    'text!templates/form/wind/variable-input.html',
+    'text!templates/form/wind/variable-static.html',
     'views/default/map',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, olMapView, nwsWind){
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
         events: function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(tbody input)'] = 'update';
+            formModalHash['keyup input:not(tbody input)'] = 'update';
             return _.defaults({
                 'shown.bs.tab': 'tabRendered',
                 'click .add': 'addTimeseriesEntry',
-                'click tr': 'modifyTimeseriesEntry',
-                'click td span': 'removeTimeseriesEntry',
+                'click .edit': 'modifyTimeseriesEntry',
+                'click .trash': 'removeTimeseriesEntry',
+                'click .ok': 'enterTimeseriesEntry',
+                'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered'
-            }, FormModal.prototype.events);
+            }, formModalHash);
         },
 
         initialize: function(options, GnomeWind){
@@ -321,16 +330,113 @@ define([
         },
 
         modifyTimeseriesEntry: function(e){
+            if (this.$('.input-speed').length === 0){
+                e.preventDefault();
+                var row = this.$(e.target).parents('tr')[0];
+                var index = row.dataset.tsindex;
+                var entry = this.model.get('timeseries')[index];
+                var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+                var compiled = _.template(VarInputTemplate);
+                var template = compiled({
+                    'date': date,
+                    'speed': entry[1][0],
+                    'direction': entry[1][1]
+                });
+                this.$(row).html(template);
+                this.attachCompass(e, entry, row);
+            }
+        },
+
+        attachCompass: function(e, entry, row){
+            this.$el.off('keyup tr input');
+            var modal_offset = this.$el.offset();
+            modal_offset.top += $(window).height();
+            var modal_height = this.$el.height();
+            var modal_width = this.$el.width();
+            var jqRow = this.$(row);
+            var row_offset = jqRow.offset();
+            row_offset.top -= modal_offset.top;
+            var row_height = jqRow.height();
+            var row_width = jqRow.width();
+            this.entry = entry;
+            console.log("modal_top: " + modal_offset.top);
+            console.log("modal_height: " + modal_height);
+            console.log("row_offset_top: " + row_offset.top);
+            console.log("row_height: " + row_height);
+            var top = modal_height + row_offset.top + row_height + modal_offset.top - 40 + "px";
+            console.log(top);
+            var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
+            this.$el.append('<div class="additional-wind-compass"></div>');
+            this.$('.additional-wind-compass').compassRoseUI({
+                    'arrow-direction': 'in',
+                    'move': _.bind(this.variableRoseUpdate, this)
+                });
+            this.$('.additional-wind-compass').css({"position": "absolute", "right": right, "top": top});
+            this.$el.on('keyup tr input', _.bind(this.writeValues, this));
+            this.writeValues();
+        },
+
+        writeValues: function(){
+            this.$('.additional-wind-compass').compassRoseUI('update', {
+                    speed: this.$('.input-speed').val(),
+                    direction: this.$('.input-direction').val()
+                });
+        },
+
+        variableRoseUpdate: function(magnitude, direction){
+            this.$('.input-speed').val(parseInt(magnitude, 10));
+            this.$('.input-direction').val(parseInt(direction, 10));
+        },
+
+        enterTimeseriesEntry: function(e){
             e.preventDefault();
-            var index = e.target.parentElement.dataset.tsindex;
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
             var entry = this.model.get('timeseries')[index];
-            this.form.variable.datetime.val(moment(entry[0]).format(webgnome.config.date_format.moment));
-            this.form.variable.speed.val(entry[1][0]);
-            this.form.variable.direction.val(entry[1][1]);
-            this.$('.variable-compass').compassRoseUI('update', {
+            var speed = this.$('.input-speed').val();
+            var direction = this.$('.input-direction').val();
+            var date = entry[0];
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            }
+            entry = [date, [speed, direction]];
+            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
+                if (el[0] === entry[0]){
+                    array[index] = entry;
+                    this.timeseries = array;
+                }
+            }, this));
+            this.$('.additional-wind-compass').remove();
+            this.saveTimeseries();
+            this.renderTimeseries();
+        },
+
+        cancelTimeseriesEntry: function(e){
+            e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            this.renderTimeseries();
+            this.$('.additional-wind-compass').compassRoseUI('update', {
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
+            this.$('.additional-wind-compass').remove();
+        },
+
+        saveTimeseries: function(){
+            var windId = this.model.get('id');
+            var timeseries = this.timeseries;
+            if (webgnome.model.get('environment').findWhere({id: windId})){
+                webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
+            } else {
+                this.model.set('timeseries', timeseries);
+                webgnome.model.get('environment').add(this.model);
+            }
+        },
+
+        addTimeseries: function(){
+            webgnome.model.get('environment').findWhere({id: windId});
         },
 
         removeTimeseriesEntry: function(e){
@@ -367,7 +473,14 @@ define([
                 }
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
-                html = html + '<tr data-tsindex="' + index + '"><td>' + date + '</td><td>' + velocity + '</td><td>' + direction + '</td><td><span class="glyphicon glyphicon-trash"></span></td></tr>';
+                var compiled = _.template(VarStaticTemplate);
+                var template = compiled({
+                    tsindex: index,
+                    date: date,
+                    speed: velocity,
+                    direction: direction
+                });
+                html = html + template;
             });
             this.$('table tbody').html(html);
         },

@@ -36,7 +36,9 @@ define([
             }
             this.views = [];
             if(callback) callback.apply(this, args);
-            this.views.push(new FooterView());
+            if(window.location.href.indexOf('test.html') === -1){
+                this.views.push(new FooterView());
+            }
         },
 
         index: function(){

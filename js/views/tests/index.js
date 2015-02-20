@@ -8,8 +8,9 @@ define([
     'views/tests/map',
     'views/tests/location',
     'views/tests/environment',
-    'views/tests/weatherer'
-], function($, _, Backbone, TestTemplate, ModelTests, SpillTests, MapTests, LocationTests, EnvironmentTests, WeathererTests){
+    'views/tests/weatherer',
+    'views/tests/help'
+], function($, _, Backbone, TestTemplate, ModelTests, SpillTests, MapTests, LocationTests, EnvironmentTests, WeathererTests, HelpTests){
     testView = Backbone.View.extend({
         className: 'container page',
         initialize: function(){
@@ -19,6 +20,7 @@ define([
             MapTests.run();
             EnvironmentTests.run();
             WeathererTests.run();
+            HelpTests.run();
             LocationTests.run();
             
             QUnit.load();

@@ -43,7 +43,6 @@ define([
             if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
                 this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
                 this.loadingGif.render();
-                this.loadModal = true;
             }
 
             // Passed oilTable's events hash to this view's events
@@ -58,17 +57,16 @@ define([
 
         render: function(options){
             if(this.oilTable.ready){
-                // Removes loading modal just prior to render call of oilLib
-
-                if (_.isNull(this.oilCache) || this.loadModal){
-                    this.loadingGif.hide();
-                }
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
                     oilTable: this.oilTable.$el.html(),
                     results: this.oilTable.oilLib.length
                 });
+
+                if (!_.isUndefined(this.loadingGif)){
+                    this.loadingGif.hide();
+                }
 
                 // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
 
@@ -215,16 +213,20 @@ define([
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
+            if (!_.isUndefined(this.loadingGif)){
+                this.loadingGif.close();
+            }
         },
 
         save: function(){
-            this.oilName = this.$('.select').data('name');
-            this.model.get('substance').set('name', this.oilName);
+            var oilName = this.$('.select').data('name');
+            var oilId = this.$('.select').data('id');
+            this.model.get('substance').set('name', oilName);
+            this.model.get('substance').set('adios_oil_id', oilId);
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
                     this.hide();
-                    this.trigger('save');
                 }, this)
             });
         },

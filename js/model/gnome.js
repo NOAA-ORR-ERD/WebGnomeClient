@@ -9,6 +9,7 @@ define([
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
+    'model/environment/waves',
     'model/environment/risk',
     'model/movers/wind',
     'model/movers/random',
@@ -21,7 +22,7 @@ define([
     'model/weatherers/burn',
     'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, RiskModel,
+    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, RiskModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
@@ -37,6 +38,7 @@ define([
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
                 'gnome.environment.environment.Water': WaterModel,
+                'gnome.environment.waves.Waves': WavesModel
                 'gnome.environment.resources.Risk': RiskModel
             },
             movers: {
@@ -57,32 +59,9 @@ define([
             }
         },
 
-        sync: function(method, model, options){
-            // because of the unique structure of the gnome model, it's relation to other child object
-            // via ids, we need to dehydrate any child objects into just an id before sending it to the
-            // server.
-            if(_.indexOf(['update'], method) != -1){
-                for(var key in model.model){
-                    if(model.get(key)){
-                        if(model.get(key) instanceof Backbone.Collection){
-                            var array = model.get(key).toArray();
-                            model.set(key, [], {silent: true});
-                            if(array.length > 0){
-                                _.each(array, function(element){
-                                    if(!_.isUndefined(element.get('id'))){
-                                        model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
-                                    } else {
-                                        model.get(key).push(element);
-                                    }
-                                });
-                            }
-                        } else {
-                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')}, {silent: true});
-                        }
-                    }
-                }
-            }
-            return BaseModel.prototype.sync.call(this, method, model, options);
+        defaults: {
+            obj_type: 'gnome.model.Model',
+            time_step: 900
         },
 
         parse: function(response){
@@ -323,6 +302,33 @@ define([
                     });
                 }, this)
             });
+        },
+
+        updateWaves: function(){
+            var environment = this.get('environment');
+            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
+
+            if(wind && water){
+
+                var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
+                if(_.isUndefined(waves)){
+                    waves = new WavesModel();
+                    environment.add(waves);
+                }
+                waves.set('wind', wind);
+                waves.set('water', water);
+
+                waves.save(null, {
+                    success: _.bind(function(){
+                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                        emul.set('waves', waves);
+                        emul.save(null, {
+                            succes: this.save
+                        });
+                    }, this)
+                });
+            }
         },
 
         mergeModel: function(model){

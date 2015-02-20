@@ -4,7 +4,6 @@ define([
     'backbone',
     'moment',
     'nucos',
-    'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
@@ -17,11 +16,11 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, StepModel, FateTemplate, ICSTemplate, ExportTemplate, RiskWizardForm){
+], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskWizardForm){
     var fateView = Backbone.View.extend({
-        step: new StepModel(),
         className: 'fate',
         frame: 0,
+        rendered: false,
         colors: [
             'rgb(203,75,75)',
             'rgb(237,194,64)',
@@ -44,9 +43,24 @@ define([
             'click #ics209 .export a.print': 'printTableICS'
         },
 
-        initialize: function(){
+        initialize: function(options){
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
+        },
+
+        load: function(){
+            if(webgnome.cache.models.length > 0){
+
+                webgnome.cache.forEach(_.bind(function(step){
+                    this.frame++;
+                    this.formatDataset(step);
+                }, this));
+
+                if(this.frame < webgnome.model.get('num_time_steps')){
+                    webgnome.cache.step();
+                }
+            }
+            webgnome.cache.on('step:recieved', this.buildDataset, this);
         },
 
         render: function(){
@@ -96,6 +110,7 @@ define([
             });
             
             this.$el.html(compiled);
+            this.rendered = true;
 
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
@@ -114,8 +129,7 @@ define([
                 placement: 'bottom',
                 container: 'body'
             });
-
-            $.get(webgnome.config.api + '/rewind');
+            this.load();
             this.renderLoop();
         },
 
@@ -125,9 +139,7 @@ define([
 
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
-                this.buildDataset(_.bind(function(dataset){
-                    this.renderGraphs();
-                }, this));
+                webgnome.cache.step();
             } else {
                 this.renderGraphs();
             }
@@ -157,7 +169,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
                     grid: {
@@ -212,7 +224,7 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -283,7 +295,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -519,7 +531,7 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['water']);
+            dataset = this.pluckDataset(dataset, ['emulsified']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsificaiton)){
                 this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, {
@@ -537,7 +549,8 @@ define([
                             lineWidth: 1
                         },
                         shadowSize: 0
-                    }
+                    },
+                    colors: [this.colors[3]]
                 });
             } else {
                 this.graphEmulsificaiton.setData(dataset);
@@ -587,7 +600,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'emulsified']);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
@@ -844,18 +857,12 @@ define([
             return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
-        buildDataset: function(cb){
-            if(this.frame <= webgnome.model.get('num_time_steps')){
-                this.step.fetch({
-                    success: _.bind(function(){
-                        if(this.step){
-                            this.frame++;
-                            this.buildDataset(cb);
-                            this.formatDataset(this.step);
-                            cb(this.dataset);
-                        }
-                    }, this)
-                });
+        buildDataset: function(step){
+            if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
+                webgnome.cache.step();
+                this.frame++;
+                this.formatDataset(step);
+                this.renderGraphs();
             }
         },
 
@@ -897,7 +904,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['dispersed', 'evaporated', 'emulsified', 'floating', 'amount_released', 'skimmed', 'burned'].indexOf(this.dataset[set].name) !== -1){
+                if(['dispersed', 'evaporated', 'floating', 'amount_released', 'skimmed', 'burned', 'beached'].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
@@ -1002,8 +1009,10 @@ define([
 
         close: function(){
             $('.xdsoft_datetimepicker').remove();
-            this.step = null;
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.off('step:recieved', this.buildDataset, this);
+
+            this.rendered = false;
             Backbone.View.prototype.close.call(this);
         }
     });

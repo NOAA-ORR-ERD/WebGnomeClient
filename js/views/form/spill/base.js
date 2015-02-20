@@ -6,12 +6,14 @@ define([
 	'views/form/oil/library',
 	'views/default/map',
     'text!templates/form/spill/substance.html',
+    'model/substance',
 	'nucos',
 	'ol',
 	'moment',
     'sweetalert',
-	'jqueryDatetimepicker'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, nucos, ol, moment, swal){
+	'jqueryDatetimepicker',
+    'bootstrap'
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceModel, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -20,11 +22,12 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
-                'click #spill-form-map': 'update',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
-                'show.bs.modal': 'renderSubstanceInfo'
+                'show.bs.modal': 'renderSubstanceInfo',
+                'shown.bs.tab .mapspill': 'locationSelect',
+                'click .oil-cache': 'clickCachedOil'
             }, FormModal.prototype.events);
         },
 
@@ -68,10 +71,8 @@ define([
             var map = webgnome.model.get('map').get('obj_type');
 			if (!this.showGeo) {
 				this.$('.map').hide();
-			} else {
-				this.locationSelect();
 			}
-			this.$('#datetime').datetimepicker({
+            this.$('#datetime').datetimepicker({
 				format: 'Y/n/j G:i',
 			});
             this.$('#datepick').on('click', _.bind(function(){
@@ -81,24 +82,169 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
             this.subtextUpdate();
+            this.initTabStatus();
 		},
 
-        renderSubstanceInfo: function(){
-            var substance;
-            var enabled = !_.isUndefined(webgnome.model.get('spills').at(0));
-            if (enabled){
-                substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            } else {
-                substance = this.model.get('element_type').get('substance');
+        tabStatusSetter: function(){
+            // if(!this.model.isValid()){
+            //     this.error('Error!', this.model.validationError);
+            // } else {
+            //     this.clearError();
+            // }
+            // var valid = this.model.validationContext;
+            // this.$('.status').addClass('ok');
+            // if (!_.isNull(valid)){
+            //     if (valid === 'info'){
+            //         this.$('#info').removeClass('ok');
+            //         this.$('#info').addClass('error');
+            //     }
+            //     if (valid === 'map'){
+            //         this.$('#map-status').removeClass('ok');
+            //         this.$('#map-status').addClass('error');
+            //     }
+            //     if (valid === 'substance'){
+            //         this.$('#substance').removeClass('ok');
+            //         this.$('#substance').addClass('error');
+            //     }
+            // }
+            var activeTab = this.$('li.active');
+            if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
+                this.$('#info').removeClass('ok');
+                this.$('#info').addClass('error');
+            } else if (activeTab.hasClass('generalinfo')){
+                this.$('#info').removeClass('error');
+                this.$('#info').addClass('ok');
             }
+            if (activeTab.hasClass('substanceinfo') && this.model.validateSubstance()){
+                this.$('#substance').removeClass('ok');
+                this.$('#substance').addClass('error');
+            } else if (activeTab.hasClass('substanceinfo')){
+                this.$('#substance').removeClass('error');
+                this.$('#substance').addClass('ok');
+            }
+            if (activeTab.hasClass('mapspill') && this.model.validateLocation()){
+                this.$('#map-status').removeClass('ok');
+                this.$('#map-status').addClass('error');
+            } else if (activeTab.hasClass('mapspill')){
+                this.$('#map-status').removeClass('error');
+                this.$('#map-status').addClass('ok');
+            }
+            // if (this.model.validateRelease()){
+            //     this.$('#info').removeClass('ok');
+            //     this.$('#info').addClass('error');
+            // }
+            // if (this.model.validateRelease(this.model.attributes)){
+            //     this.$('#map-status').removeClass('ok');
+            //     this.$('#map-status').addClass('error');
+            // }
+            // if (this.model.validateSubstance()){
+            //     this.$('#substance').removeClass('ok');
+            //     this.$('#substance').addClass('error');
+            // }
+        },
+
+        initTabStatus: function(){
+            this.$('.status').removeClass('ok').removeClass('error');
+            var release = this.model.get('release');
+            if (release.validateLocation(release.attributes)){
+                this.$('#map-status').addClass('error');
+            } else {
+                this.$('#map-status').addClass('ok');
+            }
+            if (this.model.validateSubstance(this.model.attributes)){
+                this.$('#substance').addClass('error');
+            } else {
+                this.$('#substance').addClass('ok');
+            }
+            if (this.model.validateRelease(this.model.attributes)){
+                this.$('#info').addClass('error');
+            } else {
+                this.$('#info').addClass('ok');
+            }
+        },
+
+        clickCachedOil: function(e){
+            swal({
+                title: "Warning!",
+                text: "Switch selected oil to " + e.target.innerText + "?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Confirm",
+                closeOnConfirm: true
+            }, _.bind(function(isConfirm){
+                if (isConfirm){
+                    var oilId = e.target.dataset.adiosId;
+                    var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+                    var substanceModel;
+                    for (var i = 0; i < cachedOils.length; i++){
+                        if(cachedOils[i]['name'] === oilId){
+                            substanceModel = new SubstanceModel(cachedOils[i]);
+                            break;
+                        }
+                    }
+                    this.renderSubstanceInfo(null, substanceModel);
+                }
+            }, this));
+        },
+
+        convertToSubstanceModels: function(cachedObjArray){
+            for (var i = 0; i < cachedObjArray.length; i++){
+                if (_.isUndefined(cachedObjArray[i].attributes)){
+                    cachedObjArray[i] = new SubstanceModel(cachedObjArray[i]);
+                }
+            }
+            return cachedObjArray;
+        },
+
+        updateCachedOils: function(substanceModel){
+            var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
+            var substance = substanceModel;
+            if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
+                for (var i = 0; i < cachedOils.length; i++){
+                    if (cachedOils[i]['name'] === substance.get('name')){
+                        cachedOils.splice(i, 1);
+                    }
+                }
+                cachedOils.unshift(substance.toJSON());
+                if (cachedOils.length > 4){
+                    cachedOils.pop();
+                }
+            } else {
+                cachedOils = [];
+                if (!_.isUndefined(substance.get('name'))){
+                    cachedOils.push(substance);
+                }
+            }
+            var cachedOil_string = JSON.stringify(cachedOils);
+            localStorage.setItem('cachedOils', cachedOil_string);
+            cachedOils = this.convertToSubstanceModels(cachedOils);
+            return cachedOils;
+        },
+
+        renderSubstanceInfo: function(e, cached){
+            var substance;
+            var enabled = webgnome.model.get('spills').length > 0;
+            if (_.isUndefined(cached)){
+                if (enabled){
+                    substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+                } else {
+                    substance = this.model.get('element_type').get('substance');
+                }
+            } else {
+                substance = cached;
+            }
+            var cachedOilArray = this.updateCachedOils(substance);
+            var oilExists = !_.isUndefined(substance.get('name'));
             var compiled = _.template(SubstanceTemplate, {
                 name: substance.get('name'),
                 api: Math.round(substance.get('api') * 1000) / 1000,
                 temps: substance.parseTemperatures(),
                 categories: substance.parseCategories(),
                 enabled: enabled,
+                oilExists: oilExists,
                 emuls: substance.get('emulsion_water_fraction_max'),
-                bullwinkle: substance.get('bullwinkle_fraction')
+                bullwinkle: substance.get('bullwinkle_fraction'),
+                oilCache: cachedOilArray
             });
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
@@ -125,13 +271,9 @@ define([
                     delay: {show: 500, hide: 100}
                 });
 
-            if (!_.isUndefined(this.model.get('element_type').get('substance').get('name')) || enabled){
-                if (enabled){
-                    this.model.get('element_type').set('substance', substance);
-                }
-                this.$('#substancepanel').addClass('complete');
-            } else {
-                this.$('#substancepanel').removeClass('complete');
+            if (enabled){
+                this.model.get('element_type').set('substance', substance);
+                webgnome.model.get('spills').at(0).get('element_type').set('substance', substance);
             }
         },
 
@@ -152,22 +294,18 @@ define([
             } else {
                 this.$('.manual').prop('disabled', true);
             }
-
-			if(!this.model.isValid()){
-				this.error('Error!', this.model.validationError);
-			} else {
-				this.clearError();
-			}
+            this.tabStatusSetter();
 		},
 
         initOilLib: function(){
+            if(_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+                this.oilLibraryView.render();
+                this.oilLibraryView.on('hidden', _.bind(this.show, this));
+            } else {
+                this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
+            }
             this.hide();
-            var oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
-            oilLibraryView.render();
-            oilLibraryView.on('save', _.bind(this.show, this));
-            oilLibraryView.on('save', _.bind(this.renderSubstanceInfo, this));
-            oilLibraryView.on('hidden', _.bind(this.show, this));
-            oilLibraryView.on('hidden', oilLibraryView.close);
         },
 
 		elementSelect: function(){
@@ -195,6 +333,9 @@ define([
 
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
+            if (this.$('.error').length > 0){
+                this.$('.error').first().parent().click();
+            }
             if (!_.isUndefined(validSubstance)){
                 this.error('Error!', validSubstance);
             } else {
@@ -267,13 +408,13 @@ define([
                     this.$('#end-lat').val(endPoint[1]);
                     this.$('#end-lon').val(endPoint[0]);
                     if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
-                        var feature = this.source.forEachFeature(_.bind(function(feature){
+                        feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                         }, this));
                         this.source.removeFeature(feature);
                         var point = startPoint;
                         point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                        var feature = new ol.Feature(new ol.geom.Point(point));
+                        feature = new ol.Feature(new ol.geom.Point(point));
                         feature.setStyle( new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
@@ -283,6 +424,7 @@ define([
                         }));
                         this.source.addFeature(feature);
                     }
+                    this.update();
                 }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
@@ -412,7 +554,7 @@ define([
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.trigger('sync');
-                    this.hide();
+                    this.close();
                 }
             }, this));
         },
@@ -431,6 +573,10 @@ define([
 			$('.xdsoft_datetimepicker:last').remove();
             if (!_.isUndefined(this.spillMapView)){
                 this.spillMapView.close();
+            }
+            
+            if (!_.isUndefined(this.oilLibraryView)){
+                this.oilLibraryView.close();
             }
 			FormModal.prototype.close.call(this);
 		}

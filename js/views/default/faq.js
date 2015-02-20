@@ -6,17 +6,20 @@ define([
     'text!templates/default/faq.html',
     'text!templates/faq/specific.html',
     'text!templates/faq/default.html',
+    'views/default/help',
     'model/help/help',
     'collection/help',
     'jqueryui/autocomplete'
-], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
-	var faqView = Backbone.View.extend({
+], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpView, HelpModel, HelpCollection){
+	var faqView = HelpView.extend({
         className: 'page faq',
 
-        events: {
-            'keyup input': 'update',
-            'click .back': 'back',
-            'click .topic': 'specificHelp'
+        events: function(){
+            return _.defaults({
+                'keyup input': 'update',
+                'click .back': 'back',
+                'click .topic': 'specificHelp'
+            }, HelpView.prototype.events);
         },
 
         initialize: function(){
@@ -39,15 +42,17 @@ define([
             this.topicArray = this.collection.search(term);
             var obj = this.getData(this.topicArray);
             var titles = [];
-
             for (var i in obj){
                 titles.push(obj[i].title);
             }
-
             var autocompleteConfig = {
-                                        source: titles,
+                                        source: function(req, res){
+                                            res(titles);
+                                        },
                                         select: _.bind(function(e, ui){
-                                            this.update(null, e.toElement.innerHTML);
+                                            if (!_.isUndefined(e)){
+                                                this.update({which: 13}, e.toElement.innerHTML);
+                                            }
                                             $('.chosen-select').autocomplete('close');
                                             $('.chosen-select').val(ui.item.value);
                                         }, this)
@@ -94,8 +99,10 @@ define([
                     helpTopicBody.find('h1:first').remove();
                     var helpContent = helpTopicBody.html();
                     var path = models[i].get('path');
+                    var excerpt = models[i].makeExcerpt();
+                    var keywords = models[i].get('keywords');
                     if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path});
+                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt});
                     }
                 }
             }
@@ -104,7 +111,6 @@ define([
 
         parseHelp: function(){
             this.parsedData = this.getData();
-            window.data2 = this.collection;
             this.render();
         },
 
@@ -123,13 +129,16 @@ define([
             var target;
             var compiled;
             if (_.isNull(e)){
-                target = null;
+                target = title;
+            } else if (_.isUndefined(e.target.dataset.title)){
+                target = this.$(e.target).siblings('h4')[0].dataset.title;
             } else {
                 target = e.target.dataset.title;
             }
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
-                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content });
+                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
+                    this.help = new HelpModel({id: data[i].path});
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;

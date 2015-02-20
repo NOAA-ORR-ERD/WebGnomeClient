@@ -31,51 +31,54 @@ define([
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.config.api + options.url;
                 }
-                this.monitor.requests.push(jqxhr);
 
-                // monitor interation to check the status of active ajax calls.
-                if(_.isUndefined(this.monitor.interval)){
-                    this.monitor.start_time = moment().valueOf();
-                    this.monitor.interval = setInterval(_.bind(function(){
-                        var loading;
-                        if(this.monitor.requests.length > 0){
-                            this.monitor.requests = this.monitor.requests.filter(function(req){
-                                if(req.status !== undefined){
-                                    if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
-                                        if($('.modal').length === 0){
-                                            swal({
-                                                title: 'Application Error!',
-                                                text: 'An error in the application has occured, if this problem persists please contact support.',
-                                                type: 'error',
-                                                confirmButtonText: 'Refresh'
-                                            }, function(isConfirm){
-                                                if(isConfirm){
-                                                    window.location.reload();
-                                                }
-                                            });
+                if(window.location.href.indexOf('test.html') === -1){
+                    // monitor interation to check the status of active ajax calls.
+                    this.monitor.requests.push(jqxhr);
+
+                    if(_.isUndefined(this.monitor.interval)){
+                        this.monitor.start_time = moment().valueOf();
+                        this.monitor.interval = setInterval(_.bind(function(){
+                            var loading;
+                            if(this.monitor.requests.length > 0){
+                                this.monitor.requests = this.monitor.requests.filter(function(req){
+                                    if(req.status !== undefined){
+                                        if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
+                                            if($('.modal').length === 0){
+                                                swal({
+                                                    title: 'Application Error!',
+                                                    text: 'An error in the application has occured, if this problem persists please contact support.',
+                                                    type: 'error',
+                                                    confirmButtonText: 'Refresh'
+                                                }, function(isConfirm){
+                                                    if(isConfirm){
+                                                        window.location.reload();
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
-                                }
-                                return req.status === undefined;
-                            });
-                        } else {
-                            clearInterval(this.monitor);
-                            this.monitor.interval = undefined;
-                            this.monitor.start_time = moment().valueOf();
-                        }
+                                    return req.status === undefined;
+                                });
+                            } else {
+                                clearInterval(this.monitor);
+                                this.monitor.interval = undefined;
+                                this.monitor.start_time = moment().valueOf();
+                            }
 
-                        // check if we need to display a loading message.
-                        if(moment().valueOf() - this.monitor.start_time > 300){
-                            if(_.isUndefined(this.monitor.loading)){
-                                this.monitor.loading = new LoadingView();
+                            // check if we need to display a loading message.
+                            if(moment().valueOf() - this.monitor.start_time > 300){
+                                if(_.isUndefined(this.monitor.loading)){
+                                    this.monitor.loading = new LoadingView();
+                                }
+                            } else {
+                                if(!_.isUndefined(this.monitor.loading)){
+                                    this.monitor.loading.close();
+                                    this.monitor.loading = undefined;
+                                }
                             }
-                        } else {
-                            if(!_.isUndefined(this.monitor.loading)){
-                                this.monitor.loading.close();
-                                this.monitor.loading = undefined;
-                            }
-                        }
-                    }, this), 500);
+                        }, this), 500);
+                    }
                 }
             }, this));
 

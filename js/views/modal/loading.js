@@ -10,7 +10,15 @@ define([
         size: 'sm',
         title: 'Loading...',
         body: _.template(LoadingTemplate),
-        buttons: ''
+        buttons: '',
+
+        events: {
+            'hidden.bs.modal': 'hidden'
+        },
+
+        hidden: function(){
+            $('body').addClass('modal-open');
+        }
     });
 
     return loadingModal;

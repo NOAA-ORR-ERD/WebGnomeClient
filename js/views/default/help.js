@@ -43,7 +43,7 @@ define([
             } else {
                 tabs = this.getTabs(this.help.get('html'));
                 html = $('<div>' + this.help.get('html') + '</div>');
-                html.find('h1').remove();
+                html.find('.title').hide();
                 html.find('.document:first').addClass('active');
                 html.find('.document').addClass('tab-pane');
                 compiled = _.template(HelpTabTemplate, {
@@ -56,7 +56,7 @@ define([
             if(context === 'modal'){
                 this.$el.addClass('alert alert-info alert-dismissable');
             } else if(context === 'view'){
-                this.$('h1:first').hide();
+                this.$('.title').hide();
                 this.$('.close').remove();
             }
         },
@@ -102,7 +102,7 @@ define([
             if(_.isUndefined(html)) return '';
             tabs = '';
             html = $(html);
-            var headers = html.find('h1');
+            var headers = html.find('.title');
             headers.each(function(i, el){
                 if(i === 0){
                     tabs += '<li class="active"><a href="#' + $(el).parent().attr('id') + '" data-toggle="tab">' + $(el).text() + '</a></li>';

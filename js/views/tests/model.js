@@ -63,17 +63,17 @@ define([
                                 ok(spill.get('id') !== '', 'spill was created on the server');
                                 gnomemodel.get('spills').add(spill);
                                 gnomemodel.save(null, {
-                                    success: function(){
+                                    success: function(model){
                                         ok(gnomemodel.get('spills').length === 1, 'Spill was added to model');
                                         ok(model.toTree().length > 0, 'model to tree works');
                                         gnomemodel.get('spills').remove(spill.get('id'));
                                         gnomemodel.save(null, {
-                                            success: function(){
+                                            success: function(model){
                                                 ok(gnomemodel.get('spills').length === 0, 'Spill was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
                                             },
-                                            error: function(){
+                                            error: function(model){
                                                 ok(gnomemodel.get('spills').length === 0, 'Spill was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
@@ -113,17 +113,17 @@ define([
                                 ok(spill.get('id') !== '', 'spill was created on the server');
                                 gnomemodel.get('spills').add(spill);
                                 gnomemodel.save(null, {
-                                    success: function(){
+                                    success: function(model){
                                         ok(gnomemodel.get('spills').length === 1, 'Spill was added to model');
                                         ok(model.toTree().length > 0, 'model to tree works');
                                         gnomemodel.get('spills').remove(spill.get('id'));
                                         gnomemodel.save(null, {
-                                            success: function(){
+                                            success: function(model){
                                                 ok(gnomemodel.get('spills').length === 0, 'Spill was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
                                             },
-                                            error: function(){
+                                            error: function(model){
                                                 ok(gnomemodel.get('spills').length === 0, 'Spill was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
@@ -159,17 +159,17 @@ define([
                                 ok(wind.get('id') !== '', 'Wind was created on the server');
                                 gnomemodel.get('environment').add(wind);
                                 gnomemodel.save(null, {
-                                    success: function(){
+                                    success: function(model){
                                         ok(gnomemodel.get('environment').length === 1, 'Wind was added to model');
                                         ok(model.toTree().length > 0, 'model to tree works');
                                         gnomemodel.get('environment').remove(wind.get('id'));
                                         gnomemodel.save(null, {
-                                            success: function(){
+                                            success: function(model){
                                                 ok(gnomemodel.get('environment').length === 0, 'Wind was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
                                             },
-                                            error: function(){
+                                            error: function(model){
                                                 ok(gnomemodel.get('environment').length === 0, 'Wind was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 start();
@@ -214,20 +214,20 @@ define([
                                         gnomemodel.get('movers').add(windmover);
                                         gnomemodel.save(null, {
                                             validate: false,
-                                            success: function(){
+                                            success: function(model){
                                                 equal(gnomemodel.get('movers').at(0).get('id'), windmover.get('id'), 'Wind mover was added to the model');
                                                 equal(gnomemodel.get('environment').at(0).get('id'), wind.get('id'), 'Wind was added to the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
                                                 gnomemodel.get('movers').remove(windmover.get('id'));
                                                 gnomemodel.save(null, {
                                                     validate: false,
-                                                    success: function(){
+                                                    success: function(model){
                                                         equal(gnomemodel.get('movers').length, 0, 'Wind mover removed from model');
                                                         equal(gnomemodel.get('environment').at(0).get('id'), wind.get('id'), 'Wind is still refereced by the model');
                                                         ok(model.toTree().length > 0, 'model to tree works');
                                                         start();
                                                     },
-                                                    error: function(){
+                                                    error: function(model){
                                                         equal(gnomemodel.get('movers').length, 0, 'Wind mover removed from model');
                                                         equal(gnomemodel.get('environment').at(0).get('id'), wind.get('id'), 'Wind is still refereced by the model');
                                                         ok(model.toTree().length > 0, 'model to tree works');
@@ -235,7 +235,7 @@ define([
                                                     }
                                                 });
                                             },
-                                            error: function(){
+                                            error: function(model){
                                                 equal(gnomemodel.get('movers').at(0).get('id'), windmover.get('id'), 'Wind mover was added to the model');
                                                 equal(gnomemodel.get('environment').at(0).get('id'), wind.get('id'), 'Wind was added to the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
