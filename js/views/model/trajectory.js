@@ -561,7 +561,6 @@ define([
         },
 
         showHelp: function(){
-            console.log('ajsdklfd');
             this.$('.help-button').show();
         },
 
