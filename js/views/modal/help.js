@@ -14,7 +14,7 @@ define([
             if(_.has(options, 'help')){
                 options.help.delegateEvents();
                 this.body = options.help.$el;
-                this.title = this.body.find('h1:first').text() + ' Help';
+                this.title = this.body.find('.title:first').text() + ' Help';
             } else {
                 this.body = 'No help documentation found!';
             }

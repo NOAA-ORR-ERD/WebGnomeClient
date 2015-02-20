@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'module',
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
@@ -12,8 +14,8 @@ define([
     'mousetrap',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
-    var trajectoryView = Backbone.View.extend({
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+    var trajectoryView = BaseView.extend({
         className: 'map',
         id: 'map',
         spillToggle: false,
@@ -25,8 +27,11 @@ define([
         events: {
             'click .spill-button .fixed': 'toggleSpill',
             'click .spill-button .moving': 'toggleSpill',
+            'click .help-button button': 'renderHelp',
             'mouseout .spill-button': 'toggleSpillBlur',
             'focusout .spill-button': 'toggleSpillBlur',
+            'mouseout .help-button': 'helpBlur',
+            'focusout .help-button': 'helpBlur',
             'click .play': 'play',
             'click .pause': 'pause',
             'click .next': 'next',
@@ -37,6 +42,8 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
                 this.modelListeners();
             }
@@ -60,6 +67,8 @@ define([
         },
 
         render: function(){
+            BaseView.prototype.render.call(this);
+
             this.ol = new olMapView({
                 controls: 'full',
                 layers: [
@@ -549,6 +558,15 @@ define([
 
         toggleSpillBlur: function(event){
             event.target.blur();
+        },
+
+        showHelp: function(){
+            console.log('ajsdklfd');
+            this.$('.help-button').show();
+        },
+
+        helpBlur: function(e){
+            e.target.blur();
         },
 
         renderSpills: function(){
