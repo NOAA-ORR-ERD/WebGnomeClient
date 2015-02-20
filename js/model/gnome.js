@@ -60,7 +60,18 @@ define([
 
         defaults: {
             obj_type: 'gnome.model.Model',
-            time_step: 900
+            time_step: 900,
+            start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+            outputters: [
+                new GeojsonOutputter(),
+                new WeatheringOutputter(),
+            ],
+            weatherers: [
+                new EvaporationWeatherer(),
+                new DispersionWeatherer({name: '_natural'}),
+                new EmulsificationWeatherer()
+            ]
+
         },
 
         validate: function(attrs, options) {
@@ -215,55 +226,6 @@ define([
             });
         },
 
-        setup: function(cb){
-            this.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    var gout = new GeojsonOutputter();
-                    gout.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.get('outputters').add(gout);
-                            var wout = new WeatheringOutputter();
-                            wout.save(null, {
-                                validate: false,
-                                success: _.bind(function(){
-                                    this.get('outputters').add(wout);
-                                    var evaporation = new EvaporationWeatherer();
-                                    evaporation.save(null, {
-                                        success: _.bind(function(model, response, options){
-                                            this.get('weatherers').add(evaporation);
-                                            var dispersion = new DispersionWeatherer();
-                                            dispersion.set('name', '_natural');
-                                            dispersion.save(null, {
-                                                success: _.bind(function(model, repsonse, options){
-                                                    this.get('weatherers').add(dispersion);
-                                                    var emulsification = new EmulsificationWeatherer();
-                                                    emulsification.save(null, {
-                                                        success: _.bind(function(model, response, options){
-                                                            this.get('weatherers').add(emulsification);
-                                                            this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
-                                                                validate: false,
-                                                                success: _.bind(function(model, response, options){
-                                                                    if(_.isFunction(cb)){
-                                                                        cb();
-                                                                    }
-                                                                }, this)
-                                                            });
-                                                        }, this)
-                                                    });
-                                                }, this)
-                                            });
-                                        }, this)
-                                    });
-                                }, this)
-                            });
-                        }, this)
-                    });
-                }, this)
-            });
-        },
-
         updateWaves: function(){
             var environment = this.get('environment');
             var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
@@ -278,16 +240,8 @@ define([
                 }
                 waves.set('wind', wind);
                 waves.set('water', water);
-
-                waves.save(null, {
-                    success: _.bind(function(){
-                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
-                        emul.set('waves', waves);
-                        emul.save(null, {
-                            succes: this.save
-                        });
-                    }, this)
-                });
+                var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                emul.set('waves', waves);
             }
         },
 
