@@ -405,7 +405,7 @@ define([
                 }
             }, this));
             this.$('.additional-wind-compass').remove();
-            this.saveTimeseries();
+            // this.saveTimeseries();
             this.renderTimeseries();
         },
 
@@ -422,16 +422,16 @@ define([
             this.$('.additional-wind-compass').remove();
         },
 
-        saveTimeseries: function(){
-            var windId = this.model.get('id');
-            var timeseries = this.timeseries;
-            if (webgnome.model.get('environment').findWhere({id: windId})){
-                webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
-            } else {
-                this.model.set('timeseries', timeseries);
-                webgnome.model.get('environment').add(this.model);
-            }
-        },
+        // saveTimeseries: function(){
+        //     var windId = this.model.get('id');
+        //     var timeseries = this.timeseries;
+        //     if (webgnome.model.get('environment').findWhere({id: windId})){
+        //         webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
+        //     } else {
+        //         this.model.set('timeseries', timeseries);
+        //         webgnome.model.get('environment').add(this.model);
+        //     }
+        // },
 
         addTimeseries: function(){
             webgnome.model.get('environment').findWhere({id: windId});

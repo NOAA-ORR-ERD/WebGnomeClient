@@ -299,7 +299,7 @@ define([
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
             windForm.on('save', function(){
-                webgnome.model.get('environment').add(wind);
+                webgnome.model.get('environment').add(wind, {merge:true});
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('wind', wind);
                 evaporation.save();
@@ -418,7 +418,7 @@ define([
             var waterForm = new WaterForm(null, water);
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', function(){
-                webgnome.model.get('environment').add(water);
+                webgnome.model.get('environment').add(water, {merge:true});
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
                 evaporation.save(null, {
@@ -429,6 +429,7 @@ define([
                 webgnome.model.updateWaves();
             });
             waterForm.render();
+
         },
 
         updateWater: function(){

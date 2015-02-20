@@ -28,6 +28,7 @@ define([
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
+        ref_hash: {},
         model: {
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
@@ -60,45 +61,6 @@ define([
         defaults: {
             obj_type: 'gnome.model.Model',
             time_step: 900
-        },
-
-        parse: function(response){
-            // model needs a special parse function to turn object id's into objects
-            for(var key in this.model){
-                if(response[key]){
-                    var embeddedClass = this.model[key];
-                    var embeddedData = response[key];
-
-                    if(_.isArray(embeddedData)){
-                        response[key] = new Backbone.Collection();
-                        // if the embedded class isn't an object it can only have one type of object in
-                        // the given collection, so set it.
-
-                        if(!_.isObject(embeddedClass)){
-                            for(var obj in embeddedData){
-                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true, silent: true}));
-                            }
-                        } else {
-                            // the embedded class is an object therefore we can assume
-                            // that the collection can have several types of objects
-                            // I.E. environment with wind and tide, figure out which one we have
-                            // by looking at it's obj_type and cast it appropriatly.
-
-                            for(var obj in embeddedData){
-                                // console.log(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                } else {
-                                    response[key].add(new Backbone.Model(embeddedData[obj], {parse: true, silent: true}));
-                                }
-                            }
-                        }
-                    } else {
-                        response[key] = new embeddedClass(embeddedData, {parse: true, silent: true});
-                    }
-                }
-            }
-            return response;
         },
 
         validate: function(attrs, options) {

@@ -13,6 +13,7 @@ define([
 ], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, LoadingView) {
     'use strict';
     var app = {
+        obj_ref: {},
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
