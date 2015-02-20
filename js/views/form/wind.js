@@ -350,18 +350,20 @@ define([
         attachCompass: function(e, entry, row){
             this.$el.off('keyup tr input');
             var modal_offset = this.$el.offset();
+            modal_offset.top += $(window).height();
             var modal_height = this.$el.height();
             var modal_width = this.$el.width();
             var jqRow = this.$(row);
             var row_offset = jqRow.offset();
+            row_offset.top -= modal_offset.top;
             var row_height = jqRow.height();
             var row_width = jqRow.width();
             this.entry = entry;
-            // console.log(modal_offset.top);
-            // console.log(modal_height);
-            // console.log(row_offset.top);
-            // console.log(row_height);
-            var top = row_offset.top - modal_height + row_height + "px";
+            console.log("modal_top: " + modal_offset.top);
+            console.log("modal_height: " + modal_height);
+            console.log("row_offset_top: " + row_offset.top);
+            console.log("row_height: " + row_height);
+            var top = modal_height + row_offset.top + row_height + modal_offset.top - 40 + "px";
             console.log(top);
             var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
             this.$el.append('<div class="additional-wind-compass"></div>');
