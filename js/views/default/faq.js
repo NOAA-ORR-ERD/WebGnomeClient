@@ -6,19 +6,20 @@ define([
     'text!templates/default/faq.html',
     'text!templates/faq/specific.html',
     'text!templates/faq/default.html',
+    'views/default/help',
     'model/help/help',
     'collection/help',
     'jqueryui/autocomplete'
-], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpModel, HelpCollection){
-	var faqView = Backbone.View.extend({
+], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpView, HelpModel, HelpCollection){
+	var faqView = HelpView.extend({
         className: 'page faq',
 
-        events: {
-            'keyup input': 'update',
-            'click .back': 'back',
-            'click .topic': 'specificHelp',
-            'click .helpful a': 'logHelpful',
-            'click .send': 'logResponse'
+        events: function(){
+            return _.defaults({
+                'keyup input': 'update',
+                'click .back': 'back',
+                'click .topic': 'specificHelp'
+            }, HelpView.prototype.events);
         },
 
         initialize: function(){
@@ -137,49 +138,12 @@ define([
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
                     compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
-                    this.helpModel = new HelpModel({id: data[i].path});
+                    this.help = new HelpModel({id: data[i].path});
                     this.$('#support').html('');
                     this.$('#support').append(compiled);
                     break;
                 }
             }
-        },
-
-        logHelpful: function(e){
-            var target;
-            if (e.target.nodeName === 'SPAN'){
-                target = e.target.parentElement;
-            } else {
-                target = e.target;
-            }
-
-            var ishelpful = target.dataset.helpful;
-
-            this.$('.helpful a').removeClass('selected');
-            this.$(target).addClass('selected');
-
-            this.helpModel.set('helpful', ishelpful);
-            this.helpModel.save(null, {
-                success: _.bind(function(){
-                    if(this.helpModel.get('helpful') === 'false'){
-                        this.showResponse();
-                    }
-                }, this)
-            });
-        },
-
-        showResponse: function(){
-            this.$('.response').show();
-        },
-
-        logResponse: function(e){
-            this.helpModel.set('response', this.$('textarea').val());
-            this.helpModel.save(null, {
-                success: _.bind(function(){
-                    this.$('.helpful, .response').hide();
-                    this.$('.thankyou').fadeIn();
-                })
-            });
         },
 
         renderContent: function(){
