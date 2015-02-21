@@ -111,31 +111,7 @@ define([
                     this.onClose();
                 }
             };
-
-            Backbone.Model.prototype.parse = function(response){
-                // special parse that will recursively build an array of data
-                // into it's associated colloction and data object
-                // or just into it's data object if it's not an array.
-                for(var key in this.model){
-                    if(response[key]){
-                        if(_.isArray(response[key])){
-                            // parse a model array into a collection
-                            var embeddedClass = this.model[key];
-                            var embeddedData = response[key];
-                            response[key] = new Backbone.Collection();
-                            for(var i = 0; i > embeddedData.length; i++){
-                                response[key].add(new embeddedClass[i](embeddedData[i], {parse:true}));
-                            }
-                        } else {
-                            // parse a object noted as a child into it's appropriate backbone model
-                            var embeddedClass = this.model[key];
-                            var embeddedData = response[key];
-                            response[key] = new embeddedClass(embeddedData, {parse:true});
-                        }
-                    }
-                }
-                return response;
-            };
+            
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
