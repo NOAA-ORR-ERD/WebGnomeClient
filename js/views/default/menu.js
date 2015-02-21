@@ -182,6 +182,12 @@ define([
                 placement: 'right',
                 container: 'body'
             });
+        },
+
+        close: function(){
+            webgnome.model.off('sync', this.contextualize, this);
+            
+            Backbone.View.prototype.close.call(this);
         }
     });
 
