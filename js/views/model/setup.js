@@ -690,8 +690,7 @@ define([
                 this.updateObjects();
                 var target = this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim();
                 this.configure(target);
-
-                webgnome.model.save();
+                
             }, this));
             locationForm.render();
         },
