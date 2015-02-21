@@ -690,7 +690,7 @@ define([
                 this.updateObjects();
                 var target = this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim();
                 this.configure(target);
-                
+
             }, this));
             locationForm.render();
         },
@@ -979,7 +979,7 @@ define([
                 this.windPlot.shutdown();
             }
             if(webgnome.model){
-                webgnome.model.off('sync');
+                webgnome.model.off('sync', this.updateObjects, this);
             }
             Backbone.View.prototype.close.call(this);
         }
