@@ -9,11 +9,13 @@ define([
 
         initialize: function(){
             this.rewind();
-            webgnome.model.on('sync', _.bind(this.checkState, this));
+            webgnome.model.on('change', _.bind(this.checkState, this));
         },
 
         checkState: function(){
-            this.rewind();
+            if(webgnome.model.hasChanged){
+                this.rewind();
+            }
         },
 
         step: function(){
