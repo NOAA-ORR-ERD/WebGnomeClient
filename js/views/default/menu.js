@@ -185,8 +185,10 @@ define([
         },
 
         close: function(){
-            webgnome.model.off('sync', this.contextualize, this);
-            
+            if(!_.isUndefined(webgnome) && webgnome.model){
+                webgnome.model.off('sync', this.contextualize, this);
+            }
+
             Backbone.View.prototype.close.call(this);
         }
     });
