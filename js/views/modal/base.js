@@ -91,6 +91,7 @@ define([
 
         submitByEnter: function(e){
             e.preventDefault();
+            this.$(':focus').blur();
             this.$('.save').click();
             if (this.$('.next').length > 0){
                 this.$('.next').click();
