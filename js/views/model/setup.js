@@ -476,15 +476,13 @@ define([
             } else {
                 spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('wizardclose', function(){
-                spillView.on('hidden', spillView.close);
+            spillView.on('hidden', function(){
+                spillView.close();
             });
             spillView.on('save', function(){
-                webgnome.model.trigger('sync');
-                setTimeout(_.bind(function(){
-                    spillView.close();},
-                this), 750);
+                webgnome.cache.rewind();
             });
+
             spillView.render();
         },
 
