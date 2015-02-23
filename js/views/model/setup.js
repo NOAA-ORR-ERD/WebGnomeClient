@@ -190,9 +190,8 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation(_.bind(function(){
-                            this.togglePrediction(e, target);
-                        }, this));
+                        webgnome.model.resetLocation();
+                        this.togglePrediction(e, target);
                     }
                 }, this));
             } else {
@@ -439,7 +438,6 @@ define([
                 });
             });
             waterForm.render();
-
         },
 
         updateWater: function(){
