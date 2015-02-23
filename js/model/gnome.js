@@ -4,6 +4,7 @@ define([
     'backbone',
     'moment',
     'model/base',
+    'model/cache',
     'model/map',
     'model/spill',
     'model/environment/tide',
@@ -21,13 +22,14 @@ define([
     'model/weatherers/burn',
     'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
+    BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
+        ref_hash: {},
         model: {
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
@@ -59,46 +61,24 @@ define([
 
         defaults: {
             obj_type: 'gnome.model.Model',
-            time_step: 900
+            time_step: 900,
+            start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+            outputters: [
+                new GeojsonOutputter(),
+                new WeatheringOutputter(),
+            ],
+            weatherers: [
+                new EvaporationWeatherer(),
+                new DispersionWeatherer({name: '_natural'}),
+                new EmulsificationWeatherer()
+            ]
+
         },
 
-        parse: function(response){
-            // model needs a special parse function to turn object id's into objects
-            for(var key in this.model){
-                if(response[key]){
-                    var embeddedClass = this.model[key];
-                    var embeddedData = response[key];
-
-                    if(_.isArray(embeddedData)){
-                        response[key] = new Backbone.Collection();
-                        // if the embedded class isn't an object it can only have one type of object in
-                        // the given collection, so set it.
-
-                        if(!_.isObject(embeddedClass)){
-                            for(var obj in embeddedData){
-                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true, silent: true}));
-                            }
-                        } else {
-                            // the embedded class is an object therefore we can assume
-                            // that the collection can have several types of objects
-                            // I.E. environment with wind and tide, figure out which one we have
-                            // by looking at it's obj_type and cast it appropriatly.
-
-                            for(var obj in embeddedData){
-                                // console.log(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                } else {
-                                    response[key].add(new Backbone.Model(embeddedData[obj], {parse: true, silent: true}));
-                                }
-                            }
-                        }
-                    } else {
-                        response[key] = new embeddedClass(embeddedData, {parse: true, silent: true});
-                    }
-                }
-            }
-            return response;
+        initialize: function(options){
+            BaseModel.prototype.initialize.call(this, options);
+            webgnome.cache = new Cache({gnome_model: this});
+            webgnome.obj_ref = {};
         },
 
         validate: function(attrs, options) {
@@ -239,67 +219,7 @@ define([
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
-            map.save(null, {
-                success: _.bind(function(){
-                    this.set('map', map);
-                    this.save(null, {
-                        success: _.bind(function(){
-                            if(cb){
-                                cb();
-                            }
-                        }, this)
-                    });
-                }, this)
-            });
-        },
-
-        setup: function(cb){
-            this.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    var gout = new GeojsonOutputter();
-                    gout.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.get('outputters').add(gout);
-                            var wout = new WeatheringOutputter();
-                            wout.save(null, {
-                                validate: false,
-                                success: _.bind(function(){
-                                    this.get('outputters').add(wout);
-                                    var evaporation = new EvaporationWeatherer();
-                                    evaporation.save(null, {
-                                        success: _.bind(function(model, response, options){
-                                            this.get('weatherers').add(evaporation);
-                                            var dispersion = new DispersionWeatherer();
-                                            dispersion.set('name', '_natural');
-                                            dispersion.save(null, {
-                                                success: _.bind(function(model, repsonse, options){
-                                                    this.get('weatherers').add(dispersion);
-                                                    var emulsification = new EmulsificationWeatherer();
-                                                    emulsification.save(null, {
-                                                        success: _.bind(function(model, response, options){
-                                                            this.get('weatherers').add(emulsification);
-                                                            this.save({start_time: moment().format('YYYY-MM-DDThh:00:00')}, {
-                                                                validate: false,
-                                                                success: _.bind(function(model, response, options){
-                                                                    if(_.isFunction(cb)){
-                                                                        cb();
-                                                                    }
-                                                                }, this)
-                                                            });
-                                                        }, this)
-                                                    });
-                                                }, this)
-                                            });
-                                        }, this)
-                                    });
-                                }, this)
-                            });
-                        }, this)
-                    });
-                }, this)
-            });
+            this.set('map', map);
         },
 
         updateWaves: function(){
@@ -316,16 +236,8 @@ define([
                 }
                 waves.set('wind', wind);
                 waves.set('water', water);
-
-                waves.save(null, {
-                    success: _.bind(function(){
-                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
-                        emul.set('waves', waves);
-                        emul.save(null, {
-                            succes: this.save
-                        });
-                    }, this)
-                });
+                var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                emul.set('waves', waves);
             }
         },
 

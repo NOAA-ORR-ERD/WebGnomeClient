@@ -20,8 +20,6 @@ define([
     var locationWizardView = BaseWizard.extend({
         steps: [],
         initialize: function(opts){
-            this.loadingGif = new LoadingModal();
-            this.loadingGif.render();
             this.location = new GnomeLocation({id: opts.slug});
             this.name = opts.name;
             this.location.fetch({
@@ -31,7 +29,6 @@ define([
         },
 
         found: function(){
-            webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(this.loaded, this),
                 error: _.bind(this.failed_load, this)
@@ -45,11 +42,12 @@ define([
                 text: 'Something went wrong while loading the location model.',
                 type: 'error',
             });
-            this.loadingGif.hide();
         },
 
         loaded: function(){
-            webgnome.model.setup(_.bind(this.load_location, this));
+            webgnome.model.save(null, {
+                success: _.bind(this.load_location, this)
+            });
         },
 
         load_location: function(){
@@ -58,7 +56,6 @@ define([
                 el.close();
             });
             this.steps = [];
-            this.loadingGif.hide();
 
             // set up each step described in the location file.
             _.each(this.location.get('steps'), _.bind(function(el){
@@ -122,7 +119,6 @@ define([
                 text: 'The requested location wasn\'t found on the server',
                 type: 'error',
             });
-            this.loadingGif.hide();
         }
     });
 

@@ -13,9 +13,6 @@ define([
         className: 'page model',
 
         initialize: function(){
-            if(_.isUndefined(webgnome.cache)){
-                webgnome.cache = new Cache();
-            }
             this.render();
             $(window).on('resize', _.bind(function(){
                 this.updateHeight();
