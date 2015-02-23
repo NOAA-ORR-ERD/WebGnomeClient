@@ -4,6 +4,7 @@ define([
     'backbone',
     'moment',
     'model/base',
+    'model/cache',
     'model/map',
     'model/spill',
     'model/environment/tide',
@@ -21,7 +22,7 @@ define([
     'model/weatherers/burn',
     'model/weatherers/skim'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
+    BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
@@ -72,6 +73,11 @@ define([
                 new EmulsificationWeatherer()
             ]
 
+        },
+
+        initialize: function(options){
+            BaseModel.prototype.initialize.call(this, options);
+            webgnome.cache = new Cache({gnome_model: this});
         },
 
         validate: function(attrs, options) {
