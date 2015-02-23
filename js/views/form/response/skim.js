@@ -14,9 +14,12 @@ define([
         title: 'Skim Response',
         className: 'modal response fade form-modal skim-form',
 
-        events: {
-            'click .constant': 'convertToAmount',
-            'click .amount': 'convertToRate'
+        events: function(){
+            return _.defaults({
+                'click .constant': 'convertToAmount',
+                'click .amount': 'convertToRate',
+                'keyup #duration': 'updateRateAmount'
+            }, ResponseFormModal.prototype.events());
         },
 
         initialize: function(options, skimModel){
@@ -25,13 +28,22 @@ define([
             this.model = skimModel;
         },
 
+        updateRateAmount: function(){
+            this.convertToRate();
+            this.convertToAmount();
+        },
+
         render: function(options){
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
+                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop')),
+                amount: this.model.get('amount'),
+                units: this.model.get('units')
             });
             ResponseFormModal.prototype.render.call(this, options);
+            this.convertToRate();
+            this.$('.slider').slider('value', this.model.get('efficiency') * 100);
         },
 
         convertToAmount: function(){
