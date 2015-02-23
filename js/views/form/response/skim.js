@@ -44,6 +44,7 @@ define([
             ResponseFormModal.prototype.render.call(this, options);
             this.convertToRate();
             this.$('.slider').slider('value', this.model.get('efficiency') * 100);
+            this.updateEfficiency();
         },
 
         convertToAmount: function(){
