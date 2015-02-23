@@ -14,6 +14,11 @@ define([
         title: 'Skim Response',
         className: 'modal response fade form-modal skim-form',
 
+        events: {
+            'click .constant': 'convertToAmount',
+            'click .amount': 'convertToRate'
+        },
+
         initialize: function(options, skimModel){
             this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, skimModel);
@@ -27,6 +32,29 @@ define([
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
             });
             ResponseFormModal.prototype.render.call(this, options);
+        },
+
+        convertToAmount: function(){
+            var recoveryRate = parseFloat(this.$('#recovery-rate').val());
+            var recoveryRateUnits = this.$('#rate-units').val();
+            var amountUnits = recoveryRateUnits.substr(0, recoveryRateUnits.indexOf('/'));
+            var duration = parseFloat(this.$('#duration').val());
+            if (_.isNumber(recoveryRate) && _.isNumber(duration)){
+                var amountRecovered = parseFloat(recoveryRate) * parseFloat(duration);
+                this.$('#recovery-amount').val(amountRecovered);
+                this.$('#amount-units').val(amountUnits);
+            }
+        },
+
+        convertToRate: function(){
+            var amount = parseFloat(this.$('#recovery-amount').val());
+            var duration = parseFloat(this.$('#duration').val());
+            var amountUnits = this.$('#amount-units').val() + '/hr';
+            if (_.isNumber(amount) && _.isNumber(duration)){
+                var recoveryRate = amount / duration;
+                this.$('#recovery-rate').val(recoveryRate);
+                this.$('#rate-units').val(amountUnits);
+            }
         },
 
         update: function(){
