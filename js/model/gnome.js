@@ -214,12 +214,15 @@ define([
             var environment = this.get('environment');
             var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
             var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
+            var waves = environment.where({obj_type: 'gnome.environment.waves.Waves'});
             environment.reset(winds);
             environment.add(water);
+            environment.add(waves);
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             this.set('map', map);
+            this.save({validate: false});
         },
 
         updateWaves: function(){
