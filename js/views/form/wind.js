@@ -343,30 +343,17 @@ define([
                     'direction': entry[1][1]
                 });
                 this.$(row).html(template);
+                this.$(row).addClass('edit');
                 this.attachCompass(e, entry, row);
             }
         },
 
         attachCompass: function(e, entry, row){
             this.$el.off('keyup tr input');
-            var modal_offset = this.$el.offset();
-            modal_offset.top += $(window).height();
-            var modal_height = this.$el.height();
-            var modal_width = this.$el.width();
-            var jqRow = this.$(row);
-            var row_offset = jqRow.offset();
-            row_offset.top -= modal_offset.top;
-            var row_height = jqRow.height();
-            var row_width = jqRow.width();
             this.entry = entry;
-            console.log("modal_top: " + modal_offset.top);
-            console.log("modal_height: " + modal_height);
-            console.log("row_offset_top: " + row_offset.top);
-            console.log("row_height: " + row_height);
-            var top = modal_height + row_offset.top + row_height + modal_offset.top - 40 + "px";
-            console.log(top);
-            var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
-            this.$el.append('<div class="additional-wind-compass"></div>');
+            var top = (this.$('.modal-body')).offset().top * -1 + this.$(row).offset().top + 150;
+            var right = 25 + "px";
+            this.$('.modal-content').append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
@@ -407,7 +394,7 @@ define([
                 }
             }, this));
             this.$('.additional-wind-compass').remove();
-            // this.saveTimeseries();
+            this.$(row).removeClass('edit');
             this.renderTimeseries();
         },
 
@@ -421,19 +408,9 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
+            this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
         },
-
-        // saveTimeseries: function(){
-        //     var windId = this.model.get('id');
-        //     var timeseries = this.timeseries;
-        //     if (webgnome.model.get('environment').findWhere({id: windId})){
-        //         webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
-        //     } else {
-        //         this.model.set('timeseries', timeseries);
-        //         webgnome.model.get('environment').add(this.model);
-        //     }
-        // },
 
         addTimeseries: function(){
             webgnome.model.get('environment').findWhere({id: windId});

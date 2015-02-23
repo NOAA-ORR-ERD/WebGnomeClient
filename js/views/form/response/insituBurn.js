@@ -40,6 +40,17 @@ define([
             }
         },
 
+        convertArea: function(area, units){
+            switch (units){
+                case "ft^2":
+                    return parseFloat(area) / 10.7639;
+                case "yd^2":
+                    return parseFloat(area) / 1.19599;
+                case "m^2":
+                    return parseFloat(area);
+            }
+        },
+
         update: function(){
             ResponseFormModal.prototype.update.call(this);
             var boomedOilArea = this.$('#oilarea').val();
@@ -49,11 +60,14 @@ define([
             var start_time = this.startTime;
 
             var thicknessInMeters = this.convertLength(boomedOilThickness, boomedThicknessUnits);
+            var areaInSquareMeters = this.convertArea(boomedOilArea, boomedAreaUnits);
             var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
             var burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
 
             this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('active_stop', start_time.add(burnDuration, 's').format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('area', areaInSquareMeters);
+            this.model.set('thickness', thicknessInMeters);
         }
     });
 

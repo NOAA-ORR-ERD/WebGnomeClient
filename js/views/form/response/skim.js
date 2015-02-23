@@ -41,6 +41,9 @@ define([
             var amountUnits = this.$('#amount-units').val();
 
             this.model.set('active_stop', endTime);
+            this.model.set('efficiency', this.efficiencyValue);
+            this.model.set('amount', recoveryAmount);
+            this.model.set('units', amountUnits);
         }
     });
 

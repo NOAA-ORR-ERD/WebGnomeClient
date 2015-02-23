@@ -94,6 +94,7 @@ define([
             }
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
+            this.efficiencyValue = parseFloat(value) / 100;
         }
 	});
 
