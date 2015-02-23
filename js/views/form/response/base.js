@@ -43,6 +43,9 @@ define([
                 }, this),
                 slide: _.bind(function(e, ui){
                     this.updateEfficiency(ui);
+                }, this),
+                stop: _.bind(function(e, ui){
+                    this.update();
                 }, this)
             });
             this.updateEfficiency();

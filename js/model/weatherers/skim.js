@@ -6,7 +6,8 @@ define([
     skimWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Skimmer',
-            'name': 'Skimmer'
+            'name': 'Skimmer',
+            'efficiency': 0.20
         },
 
         toTree: function(){
