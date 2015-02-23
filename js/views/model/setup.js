@@ -320,7 +320,7 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
-                webgnome.model.save({
+                webgnome.model.save(null, {
                     success: function(){
                         webgnome.model.updateWaves();
                     }
