@@ -91,7 +91,7 @@ define([
                     success: _.bind(function(){
                         this.render();
                     }, this)
-                })
+                });
             }
         },
 
