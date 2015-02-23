@@ -237,10 +237,16 @@ define([
                     waves = new WavesModel();
                     environment.add(waves);
                 }
+
                 waves.set('wind', wind);
                 waves.set('water', water);
-                var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
-                emul.set('waves', waves);
+                waves.save(null, {
+                    validate: false,
+                    success: function(){
+                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                        emul.set('waves', waves);
+                    }
+                });
             }
         },
 

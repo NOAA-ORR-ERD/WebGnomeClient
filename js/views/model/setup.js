@@ -320,9 +320,11 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
-
-                webgnome.model.updateWaves();
-                webgnome.model.save();
+                webgnome.model.save({
+                    success: function(){
+                        webgnome.model.updateWaves();
+                    }
+                });
             });
             windForm.render();
         },
@@ -428,10 +430,13 @@ define([
                 evaporation.set('water', water);
                 evaporation.save(null, {
                     success: function(){
-                        webgnome.model.save();
+                        webgnome.model.save(null, {
+                            success: function(){
+                                webgnome.model.updateWaves();
+                            }
+                        });
                     }
                 });
-                webgnome.model.updateWaves();
             });
             waterForm.render();
 
