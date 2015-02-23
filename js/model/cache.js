@@ -7,13 +7,14 @@ define([
     var cache = Backbone.Collection.extend({
         models: new Backbone.Collection(),
 
-        initialize: function(){
+        initialize: function(options){
             this.rewind();
-            webgnome.model.on('change', _.bind(this.checkState, this));
+            this.gnome_model = options.gnome_model;
+            this.gnome_model.on('change', _.bind(this.checkState, this));
         },
 
         checkState: function(){
-            if(webgnome.model.hasChanged){
+            if(this.gnome_model.hasChanged){
                 this.rewind();
             }
         },
