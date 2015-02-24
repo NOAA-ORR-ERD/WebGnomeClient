@@ -18,7 +18,8 @@ define([
             return _.defaults({
                 'keyup #recovery-rate': 'convertToAmount',
                 'keyup #recovery-amount': 'convertToRate',
-                'keyup #duration': 'updateRateAmount'
+                'keyup #duration': 'updateRateAmount',
+                'mouseup #duration': 'updateRateAmount'
             }, ResponseFormModal.prototype.events());
         },
 
