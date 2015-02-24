@@ -13,7 +13,7 @@ define([
         },
 
         checkState: function(){
-            if(this.gnome_model.hasChanged){
+            if(this.gnome_model.hasChanged()){
                 this.rewind();
             }
         },
