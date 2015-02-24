@@ -351,7 +351,7 @@ define([
         attachCompass: function(e, entry, row){
             this.$el.off('keyup tr input');
             this.entry = entry;
-            var top = (this.$('.modal-body')).offset().top * -1 + this.$(row).offset().top + 150;
+            var top = (this.$('.modal-body')).offset().top * -1 + this.$(row).offset().top + 140;
             var right = 25 + "px";
             this.$('.modal-content').append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
