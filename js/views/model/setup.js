@@ -470,6 +470,10 @@ define([
             spillView.on('save wizardclose', function(){
                 spillView.on('hidden', spillView.close);
             });
+            // only update the model if the spill saves
+            spillView.on('save', function(){
+                webgnome.model.save();
+            });
 
             spillView.render();
         },
@@ -914,7 +918,7 @@ define([
             this.configureTimestep(target);
             this.configureWeatherers(target);
             this.configureModel(target);
-            // this.configureRelease(target);
+            this.configureRelease(target);
         },
 
         configureWeatherers: function(prediction){
@@ -940,8 +944,8 @@ define([
                 });
             } else {
                 spills.forEach(function(spill, index, list){
-                    spill.get('release').set('num_per_timestep', 10);
-                    spill.get('release').set('num_elements', 0);
+                    spill.get('release').set('num_per_timestep', 0);
+                    spill.get('release').set('num_elements', 1000);
                 });
             }
         },
