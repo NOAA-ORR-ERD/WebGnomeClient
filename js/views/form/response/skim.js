@@ -16,8 +16,8 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .constant': 'convertToAmount',
-                'click .amount': 'convertToRate',
+                'keyup #recovery-rate': 'convertToAmount',
+                'keyup #recovery-amount': 'convertToRate',
                 'keyup #duration': 'updateRateAmount'
             }, ResponseFormModal.prototype.events());
         },
@@ -52,6 +52,7 @@ define([
             var recoveryRateUnits = this.$('#rate-units').val();
             var amountUnits = recoveryRateUnits.substr(0, recoveryRateUnits.indexOf('/'));
             var duration = parseFloat(this.$('#duration').val());
+            console.log(recoveryRate);
             if (_.isNumber(recoveryRate) && _.isNumber(duration)){
                 var amountRecovered = parseFloat(recoveryRate) * parseFloat(duration);
                 this.$('#recovery-amount').val(amountRecovered);
