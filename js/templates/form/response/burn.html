@@ -31,10 +31,10 @@
 	<div class="form-group">
 		<label class="col-sm-4 control-label" for="oilarea">Area of fire-boomed oil:</label>
 		<div class="col-sm-4">
-			<input type="number" id="oilarea" class="form-control" value="">
+			<input type="number" id="oilarea" class="form-control" value="{{ area }}">
 		</div>
 		<div class="col-sm-3">
-			<select class="form-control" id="areaunits">
+			<select class="form-control" id="areaunits" value="{{ areaUnits }}">
 				<option value="ft^2">
 					sq. feet
 				</option>
@@ -51,10 +51,10 @@
 	<div class="form-group">
 		<label class="col-sm-4 control-label" for="oilthickness">Boomed oil thickness:</label>
 		<div class="col-sm-4">
-			<input type="number" id="oilthickness" class="form-control" value="">
+			<input type="number" id="oilthickness" class="form-control" value="{{ thickness }}">
 		</div>
 		<div class="col-sm-3">
-			<select class="form-control" id="thicknessunits">
+			<select class="form-control" id="thicknessunits" value="{{ thicknessUnits }}">
 				<option value="mm">
 					mm
 				</option>

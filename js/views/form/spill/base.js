@@ -86,27 +86,6 @@ define([
 		},
 
         tabStatusSetter: function(){
-            // if(!this.model.isValid()){
-            //     this.error('Error!', this.model.validationError);
-            // } else {
-            //     this.clearError();
-            // }
-            // var valid = this.model.validationContext;
-            // this.$('.status').addClass('ok');
-            // if (!_.isNull(valid)){
-            //     if (valid === 'info'){
-            //         this.$('#info').removeClass('ok');
-            //         this.$('#info').addClass('error');
-            //     }
-            //     if (valid === 'map'){
-            //         this.$('#map-status').removeClass('ok');
-            //         this.$('#map-status').addClass('error');
-            //     }
-            //     if (valid === 'substance'){
-            //         this.$('#substance').removeClass('ok');
-            //         this.$('#substance').addClass('error');
-            //     }
-            // }
             var activeTab = this.$('li.active');
             if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
                 this.$('#info').removeClass('ok');
@@ -129,18 +108,6 @@ define([
                 this.$('#map-status').removeClass('error');
                 this.$('#map-status').addClass('ok');
             }
-            // if (this.model.validateRelease()){
-            //     this.$('#info').removeClass('ok');
-            //     this.$('#info').addClass('error');
-            // }
-            // if (this.model.validateRelease(this.model.attributes)){
-            //     this.$('#map-status').removeClass('ok');
-            //     this.$('#map-status').addClass('error');
-            // }
-            // if (this.model.validateSubstance()){
-            //     this.$('#substance').removeClass('ok');
-            //     this.$('#substance').addClass('error');
-            // }
         },
 
         initTabStatus: function(){
