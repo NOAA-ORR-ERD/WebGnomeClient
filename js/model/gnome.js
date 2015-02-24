@@ -245,6 +245,7 @@ define([
                     success: function(){
                         var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
                         emul.set('waves', waves);
+                        emul.save();
                     }
                 });
             }
