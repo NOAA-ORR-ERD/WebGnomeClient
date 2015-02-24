@@ -6,9 +6,9 @@ define([
 ], function($, _, Backbone, StepModel){
     var cache = Backbone.Collection.extend({
 
-        initialize: function(options){
+        initialize: function(options, model){
             this.rewind();
-            this.gnome_model = options.gnome_model;
+            this.gnome_model = model;
             this.gnome_model.on('change', _.bind(this.checkState, this));
         },
 

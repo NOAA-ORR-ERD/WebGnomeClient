@@ -77,7 +77,7 @@ define([
 
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
-            webgnome.cache = new Cache({gnome_model: this});
+            webgnome.cache = new Cache(null, this);
             webgnome.obj_ref = {};
         },
 
