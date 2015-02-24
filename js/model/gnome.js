@@ -250,21 +250,6 @@ define([
                 });
             }
         },
-
-        mergeModel: function(model){
-            // merge a given model with this model.
-            // merge collections
-            // set map from given model only if this model doesn't have one.
-
-            if (this.get('map')) {
-                this.set('map', model.get('map'));
-            }
-
-            this.get('spills').add(model.get('spills').models);
-            this.get('environment').add(model.get('environment').models);
-            this.get('movers').add(model.get('movers').models);
-            this.get('weatherers').add(model.get('weatherers').models);
-        }
     });
     
     return gnomeModel;
