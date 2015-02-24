@@ -13,6 +13,7 @@ define([
                 if(_.isNull(this.get(key))){
                     this.set(key, this.setChild(embeddedClass));
                 } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
+                    // get the collection from webgnome's default creation
                     var collection = this.get(key);
                     if(!_.isNull(embeddedClass)){
                         collection.add(this.setChild(embeddedClass));
@@ -31,7 +32,8 @@ define([
                     var embeddedData = response[key];
 
                     if(_.isArray(embeddedData)){
-                        // maintain the existing collection
+                        // maintain the existing collection but reset it so it doesn't
+                        // keep objects from the default notation on the model
                         response[key] = this.get(key);
                         response[key].reset([], {silent: true});
 
@@ -56,6 +58,7 @@ define([
                             }
                         }
                     } else {
+                        // this is where the majority of all children are defined ex. spill's releaes and element_type object
                         response[key] = this.setChild(embeddedClass, embeddedData);
                     }
                 }
