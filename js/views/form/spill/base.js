@@ -505,7 +505,6 @@ define([
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
             this.model.get('release').set('end_position', endPosition);
-            console.log(this.model);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(startCoords);
             this.spillMapView.map.getView().setZoom(15);
