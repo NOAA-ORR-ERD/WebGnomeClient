@@ -487,11 +487,25 @@ define([
             startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
             endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
             var coordsArray = [startCoords, endCoords];
-            feature = new ol.Feature(new ol.geom.LineString(coordsArray));
+            if (startCoords[0] === endCoords[0] && startCoords[1] === endCoords[1]){
+                feature = new ol.Feature(new ol.geom.Point(startCoords));
+                feature.setStyle( new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
+            } else {
+                feature = new ol.Feature(new ol.geom.LineString(coordsArray));
+            }
+            startCoords = ol.proj.transform(startCoords, 'EPSG:3857', 'EPSG:4326');
+            endCoords = ol.proj.transform(endCoords, 'EPSG:3857', 'EPSG:4326');
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
             this.model.get('release').set('end_position', endPosition);
+            console.log(this.model);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(startCoords);
             this.spillMapView.map.getView().setZoom(15);
