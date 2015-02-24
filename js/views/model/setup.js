@@ -467,8 +467,8 @@ define([
             } else {
                 spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('hidden', function(){
-                spillView.close();
+            spillView.on('save', function(){
+                spillView.on('hidden', spillView.close);
             });
 
             spillView.render();
