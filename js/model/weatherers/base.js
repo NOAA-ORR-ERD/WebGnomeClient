@@ -3,12 +3,12 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-	baseResponseModel = BaseModel.extend({
+	baseWeathererModel = BaseModel.extend({
 		urlRoot: '/weatherer/',
 
 		initialize: function(){
 			var start_time = '';
-            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 start_time = moment(webgnome.model.get('start_time'));
             } else {
                 start_time = moment();
@@ -18,7 +18,7 @@ define([
                 this.set('active_start', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
-            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 end_time = start_time.add(webgnome.model.get('duration'), 's');
             } else {
                 end_time = start_time.add(1, 'day');
@@ -36,6 +36,6 @@ define([
 
 	});
 
-	return baseResponseModel;
+	return baseWeathererModel;
 
 });
