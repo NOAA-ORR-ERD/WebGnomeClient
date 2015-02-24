@@ -5,7 +5,6 @@ define([
     'model/step'
 ], function($, _, Backbone, StepModel){
     var cache = Backbone.Collection.extend({
-        models: new Backbone.Collection(),
 
         initialize: function(options){
             this.rewind();
@@ -34,8 +33,10 @@ define([
         },
 
         rewind: function(){
-            $.get(webgnome.config.api + '/rewind');
-            this.reset([]);
+            if(this.length > 0){
+                $.get(webgnome.config.api + '/rewind');
+                this.reset([]);
+            }
         }
     });
 
