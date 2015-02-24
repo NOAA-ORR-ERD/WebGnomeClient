@@ -939,13 +939,13 @@ define([
             var spills = webgnome.model.get('spills');
             if (prediction == 'trajectory' || prediction == 'both'){
                 spills.forEach(function(spill, index, list){
-                    spill.get('release').set('num_per_timestep', 0);
+                    spill.get('release').set('num_per_timestep', null);
                     spill.get('release').set('num_elements', 1000);
                 });
             } else {
                 spills.forEach(function(spill, index, list){
-                    spill.get('release').set('num_per_timestep', 0);
-                    spill.get('release').set('num_elements', 1000);
+                    spill.get('release').set('num_per_timestep', 10);
+                    spill.get('release').set('num_elements', null);
                 });
             }
         },
