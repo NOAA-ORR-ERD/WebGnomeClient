@@ -5,7 +5,6 @@ define([
     var baseModel = Backbone.Model.extend({
         initialize: function(options){
             Backbone.Model.prototype.initialize.call(this, options);
-
             for(var key in this.model){
                 // general object hydration 
                 // loads the objects described in the defaults and model spec
@@ -14,12 +13,12 @@ define([
                 if(_.isNull(this.get(key))){
                     this.set(key, this.setChild(embeddedClass));
                 } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
-                    var collection = new Backbone.Collection();
+                    var collection = this.get(key);
                     if(!_.isNull(embeddedClass)){
                         collection.add(this.setChild(embeddedClass));
                     }
                     
-                    this.set(key, collection);
+                    this.set(key, collection, {silent: true});
                 }
             }
         },
@@ -32,13 +31,15 @@ define([
                     var embeddedData = response[key];
 
                     if(_.isArray(embeddedData)){
-                        response[key] = new Backbone.Collection();
+                        // maintain the existing collection
+                        response[key] = this.get(key);
+                        response[key].reset([], {silent: true});
 
                         if(!_.isObject(embeddedClass)){
                             // if the embedded class isn't an object it can only have one type of object in
                             // the given collection, so set it.
                             for(var obj in embeddedData){
-                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]));
+                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true, silent: true});
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
@@ -48,9 +49,9 @@ define([
 
                             for(var obj in embeddedData){
                                 if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj].obj_type], embeddedData[obj]));
+                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj].obj_type], embeddedData[obj]), {merge: true, silent: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj]));
+                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj]), {merge: true, silent: true});
                                 }
                             }
                         }
@@ -72,7 +73,7 @@ define([
             var obj = new cls(data, {parse: true, silent: true});
             webgnome.obj_ref[data.id] = obj;
             return obj;
-        },
+        }
     });
 
     return baseModel;

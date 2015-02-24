@@ -59,26 +59,67 @@ define([
             }
         },
 
-        defaults: {
-            obj_type: 'gnome.model.Model',
-            time_step: 900,
-            start_time: moment().format('YYYY-MM-DDTHH:00:00'),
-            outputters: [
-                new GeojsonOutputter(),
-                new WeatheringOutputter(),
-            ],
-            weatherers: [
-                new EvaporationWeatherer(),
-                new DispersionWeatherer({name: '_natural'}),
-                new EmulsificationWeatherer()
-            ]
-
+        defaults: function(){
+            return {
+                obj_type: 'gnome.model.Model',
+                time_step: 900,
+                start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                outputters: new Backbone.Collection([
+                    new GeojsonOutputter(),
+                    new WeatheringOutputter(),
+                ]),
+                weatherers: new Backbone.Collection([
+                    new EvaporationWeatherer(),
+                    new DispersionWeatherer({name: '_natural'}),
+                    new EmulsificationWeatherer()
+                ]),
+                movers: new Backbone.Collection(),
+                environment: new Backbone.Collection(),
+                spills: new Backbone.Collection()
+            };
         },
 
         initialize: function(options){
-            BaseModel.prototype.initialize.call(this, options);
+            // BaseModel.prototype.initialize.call(this, options);
             webgnome.cache = new Cache(null, this);
             webgnome.obj_ref = {};
+            this.addListeners();
+        },
+
+        addListeners: function(){
+            this.get('environment').on('change add remove', this.environmentChange, this);
+            this.get('movers').on('change add remove', this.moversChange, this);
+            this.get('spills').on('change add remove', this.spillsChange, this);
+            this.get('weatherers').on('change add remove', this.weatherersChange, this);
+            this.get('outputters').on('change add remove', this.outputtersChange, this);
+        },
+
+        environmentChange: function(child){
+            this.childChange('environment', child);
+        },
+
+        moversChange: function(child){
+            this.childChange('movers', child);
+        },
+
+        spillsChange: function(child){
+            this.childChange('spills', child);
+        },
+
+        weatherersChange: function(child){
+            this.childChange('weatherers', child);
+        },
+
+        outputtersChange: function(child){
+            this.childChange('outputters', child);
+        },
+
+        childChange: function(attr, child){
+                if(!_.isArray(this.changed[attr])){
+                    this.changed[attr] = {};
+                }
+                this.changed[attr][child.get('id')] = child.changed;
+                this.trigger('change', this);
         },
 
         validate: function(attrs, options) {
