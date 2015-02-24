@@ -52,7 +52,6 @@ define([
             var recoveryRateUnits = this.$('#rate-units').val();
             var amountUnits = recoveryRateUnits.substr(0, recoveryRateUnits.indexOf('/'));
             var duration = parseFloat(this.$('#duration').val());
-            console.log(recoveryRate);
             if (_.isNumber(recoveryRate) && _.isNumber(duration)){
                 var amountRecovered = parseFloat(recoveryRate) * parseFloat(duration);
                 this.$('#recovery-amount').val(amountRecovered);
