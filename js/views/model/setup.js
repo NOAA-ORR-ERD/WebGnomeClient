@@ -470,9 +470,6 @@ define([
             spillView.on('hidden', function(){
                 spillView.close();
             });
-            spillView.on('save', function(){
-                webgnome.cache.rewind();
-            });
 
             spillView.render();
         },
