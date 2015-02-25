@@ -319,8 +319,7 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
-                webgnome.model.updateWaves();
-                webgnome.model.save();
+                webgnome.model.updateWaves(function(){webgnome.model.save();});
             });
             windForm.render();
         },
@@ -425,8 +424,7 @@ define([
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
                 
-                webgnome.model.updateWaves();
-                webgnome.model.save();
+                webgnome.model.updateWaves(function(){webgnome.model.save();});
             });
             waterForm.render();
         },

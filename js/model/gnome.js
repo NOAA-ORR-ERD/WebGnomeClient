@@ -267,7 +267,7 @@ define([
             this.save(null, {validate: false});
         },
 
-        updateWaves: function(){
+        updateWaves: function(cb){
             var environment = this.get('environment');
             var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
@@ -287,9 +287,11 @@ define([
                     success: _.bind(function(){
                         var emul = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
                         emul.set('waves', waves);
-                        emul.save();
+                        emul.save().always(cb);
                     }, this)
                 });
+            } else {
+                cb();
             }
         },
     });
