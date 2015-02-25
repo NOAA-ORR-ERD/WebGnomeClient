@@ -4,8 +4,9 @@ define([
     'backbone',
     'model/environment/water',
     'model/environment/wind',
-    'model/environment/tide'
-], function($, _, Backbone, WaterModel, WindModel, TideModel){
+    'model/environment/tide',
+    'model/environment/waves'
+], function($, _, Backbone, WaterModel, WindModel, TideModel, WavesModel){
     var environmentTests = {
         run: function(){
             QUnit.module('Environment');
@@ -50,6 +51,29 @@ define([
                     error: function(){
                         ok(!_.isUndefined(wind.get('id')), 'wind has an id');
                         ok(!_.isUndefined(wind.toTree()), 'wind to tree works!');
+                        start();
+                    }
+                });
+            });
+
+            asyncTest('Create a waves object', function(){
+                var waves = new WavesModel();
+                var wind = new WindModel();
+                var water = new WaterModel();
+                waves.set('wind', wind);
+                waves.set('water', water);
+                waves.save(null, {
+                    validate: false,
+                    success: function(){
+                        ok(!_.isUndefined(waves.get('id')), 'waves has an id');
+                        ok(!_.isUndefined(waves.get('water').get('id')), 'water has an id');
+                        ok(!_.isUndefined(waves.get('wind').get('id')), 'wind has an id');
+                        start();
+                    },
+                    error: function(){
+                        ok(!_.isUndefined(waves.get('id')), 'waves has an id');
+                        ok(!_.isUndefined(waves.get('water').get('id')), 'water has an id');
+                        ok(!_.isUndefined(waves.get('wind').get('id')), 'wind has an id');
                         start();
                     }
                 });
