@@ -64,6 +64,7 @@ define([
                 obj_type: 'gnome.model.Model',
                 time_step: 900,
                 start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                duration: 86400,
                 outputters: new Backbone.Collection([
                     new GeojsonOutputter(),
                     new WeatheringOutputter(),
@@ -95,6 +96,7 @@ define([
         },
 
         environmentChange: function(child){
+            console.log(this.get('environment').where({obj_type: 'gnome.environment.waves.Waves'}).length);
             this.childChange('environment', child);
         },
 
@@ -277,6 +279,7 @@ define([
                 if(_.isUndefined(waves)){
                     waves = new WavesModel();
                     environment.add(waves);
+                    console.log('create a new waves object');
                 }
 
                 waves.set('wind', wind);
