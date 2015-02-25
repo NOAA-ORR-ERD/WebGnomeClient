@@ -331,6 +331,8 @@ define([
         },
 
         modifyTimeseriesEntry: function(e){
+            // Create boolean value to confirm that the DOM element clicked was the 
+            // edit pencil and not the check in the table row.
             var editClassExists = this.$(e.target).hasClass('edit');
             if (this.$('.input-speed').length === 0 && editClassExists){
                 e.preventDefault();
