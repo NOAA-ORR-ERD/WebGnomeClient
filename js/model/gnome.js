@@ -284,11 +284,11 @@ define([
                 waves.set('water', water);
                 waves.save(null, {
                     validate: false,
-                    success: function(){
-                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                    success: _.bind(function(){
+                        var emul = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
                         emul.set('waves', waves);
                         emul.save();
-                    }
+                    }, this)
                 });
             }
         },
