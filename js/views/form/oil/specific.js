@@ -80,11 +80,9 @@ define([
                         }
                         oil[attr] = null;
                     }
-                } else if (attr === 'emuls_constant_max' || attr === 'emuls_constant_min'){
-                    if (attr === 'emuls_constant_max'){
-                        if (oil[attr] && oil[attr] === oil['emuls_constant_min']){
-                            oil['emuls_constant_min'] = '';
-                        }
+                } else if (attr === 'bullwinkle_fraction'){
+                    if (oil['estimated'][attr]){
+                        oil[attr] = '<code>' + oil[attr] + '</code>';
                     }
                 } else if (_.isObject(oil[attr]) && !_.isArray(oil[attr])) {
                     for (var key in oil[attr]){

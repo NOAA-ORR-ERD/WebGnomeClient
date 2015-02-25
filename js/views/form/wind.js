@@ -53,7 +53,6 @@ define([
                     })
                 })
             });
-            console.log(this.events());
             this.ol = new olMapView({
                 id: 'wind-form-map',
                 zoom: 2,
