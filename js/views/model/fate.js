@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
+    'views/base',
     'moment',
     'nucos',
     'text!templates/model/fate.html',
@@ -15,8 +17,8 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
-    var fateView = Backbone.View.extend({
+], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
+    var fateView = BaseView.extend({
         className: 'fate',
         frame: 0,
         rendered: false,
@@ -38,10 +40,13 @@ define([
             'change #ics209 input': 'ICSInputSelect',
             'change #ics209 select': 'renderTableICS',
             'click #ics209 .export a.download': 'downloadTableICS',
-            'click #ics209 .export a.print': 'printTableICS'
+            'click #ics209 .export a.print': 'printTableICS',
+            'click .gnome-help': 'renderHelp'
         },
 
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
         },
@@ -62,6 +67,7 @@ define([
         },
 
         render: function(){
+            BaseView.prototype.render.call(this);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             if(_.isUndefined(wind)){
@@ -137,6 +143,11 @@ define([
             } else {
                 this.renderGraphs();
             }
+        },
+
+        showHelp: function(){
+            this.$('.gnome-help').show();
+            this.$('.gnome-help').tooltip();
         },
 
         renderGraphs: function(){

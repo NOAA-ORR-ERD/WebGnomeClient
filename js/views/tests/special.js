@@ -20,22 +20,23 @@ define([
                     var water = new WaterModel();
                     gm.get('environment').add([wind, water]);
                     gm.save().always(function(){
-                        gm.updateWaves();
-                        var environment = gm.get('environment');
-                        var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
-                        equal(environment.length, 3, 'Correct number of environment object exist');
-                        equal(environment.where({obj_type: wind.get('obj_type')}).length, 1, 'Only one wind exists');
-                        equal(environment.where({obj_type: water.get('obj_type')}).length, 1, 'Only one water exists');
-                        equal(environment.where({obj_type: waves.get('obj_type')}).length, 1, 'Only one waves exists');
-                        gm.resetLocation();
-                        var loc = new GnomeLocation({id: 'casco-bay'});
-                        loc.fetch().always(function(){
-                            gm.fetch().always(function(){
-                                equal(environment.where({obj_type: wind.get('obj_type')}).length, 1, 'Only one wind exists');
-                                equal(environment.where({obj_type: water.get('obj_type')}).length, 1, 'Only one water exists');
-                                equal(environment.where({obj_type: waves.get('obj_type')}).length, 1, 'Only one waves exists');
-                                start();
-                            });
+                        gm.updateWaves(function(){
+                            var environment = gm.get('environment');
+                            var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
+                            equal(environment.length, 3, 'Correct number of environment object exist');
+                            equal(environment.where({obj_type: wind.get('obj_type')}).length, 1, 'Only one wind exists');
+                            equal(environment.where({obj_type: water.get('obj_type')}).length, 1, 'Only one water exists');
+                            equal(environment.where({obj_type: waves.get('obj_type')}).length, 1, 'Only one waves exists');
+                            gm.resetLocation();
+                            var loc = new GnomeLocation({id: 'casco-bay'});
+                            loc.fetch().always(function(){
+                                gm.fetch().always(function(){
+                                    equal(environment.where({obj_type: wind.get('obj_type')}).length, 1, 'Only one wind exists');
+                                    equal(environment.where({obj_type: water.get('obj_type')}).length, 1, 'Only one water exists');
+                                    equal(environment.where({obj_type: waves.get('obj_type')}).length, 1, 'Only one waves exists');
+                                    start();
+                                });
+                            });    
                         });
                     });
                 });
