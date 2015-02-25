@@ -53,6 +53,7 @@ define([
                     })
                 })
             });
+            console.log(this.events());
             this.ol = new olMapView({
                 id: 'wind-form-map',
                 zoom: 2,
@@ -330,7 +331,8 @@ define([
         },
 
         modifyTimeseriesEntry: function(e){
-            if (this.$('.input-speed').length === 0){
+            var editClassExists = this.$(e.target).hasClass('edit');
+            if (this.$('.input-speed').length === 0 && editClassExists){
                 e.preventDefault();
                 var row = this.$(e.target).parents('tr')[0];
                 var index = row.dataset.tsindex;
