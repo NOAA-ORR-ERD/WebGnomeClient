@@ -96,7 +96,6 @@ define([
         },
 
         environmentChange: function(child){
-            console.log(this.get('environment').where({obj_type: 'gnome.environment.waves.Waves'}).length);
             this.childChange('environment', child);
         },
 
@@ -279,7 +278,6 @@ define([
                 if(_.isUndefined(waves)){
                     waves = new WavesModel();
                     environment.add(waves);
-                    console.log('create a new waves object');
                 }
 
                 waves.set('wind', wind);
