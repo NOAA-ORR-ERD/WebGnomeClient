@@ -8,8 +8,8 @@ define([
     var locationTests = {
         locId: 0,
         run: function(){
-            QUnit.module('Locations');
             var jqxhr = $.get(webgnome.config.api + '/location', _.bind(function(json){
+                QUnit.module('Locations');
                 this.locations = json;
                 this.test();
             }, this));
