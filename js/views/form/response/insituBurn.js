@@ -34,24 +34,26 @@ define([
         },
 
         convertLength: function(length, units){
+            var len = parseFloat(length);
             switch (units) {
                 case "mm":
-                  return parseFloat(length) / 1000;
+                  return len / 1000;
                 case "in":
-                  return parseFloat(length) / 39.370;
+                  return len / 39.370;
                 case "cm":
-                  return parseFloat(length) / 100;
+                  return len / 100;
             }
         },
 
         convertArea: function(area, units){
+            var numArea = parseFloat(area);
             switch (units){
                 case "ft^2":
-                    return parseFloat(area) / 10.7639;
+                    return numArea / 10.7639;
                 case "yd^2":
-                    return parseFloat(area) / 1.19599;
+                    return numArea / 1.19599;
                 case "m^2":
-                    return parseFloat(area);
+                    return numArea;
             }
         },
 
