@@ -64,6 +64,7 @@ define([
                 obj_type: 'gnome.model.Model',
                 time_step: 900,
                 start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                duration: 86400,
                 outputters: new Backbone.Collection([
                     new GeojsonOutputter(),
                     new WeatheringOutputter(),
@@ -283,11 +284,11 @@ define([
                 waves.set('water', water);
                 waves.save(null, {
                     validate: false,
-                    success: function(){
-                        var emul = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                    success: _.bind(function(){
+                        var emul = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
                         emul.set('waves', waves);
                         emul.save();
-                    }
+                    }, this)
                 });
             }
         },

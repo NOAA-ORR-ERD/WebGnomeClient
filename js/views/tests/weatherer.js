@@ -3,8 +3,10 @@ define([
     'underscore',
     'backbone',
     'model/gnome',
-    'model/weatherers/evaporation'
-], function($, _, Backbone, GnomeModel, EvaporationModel){
+    'model/weatherers/evaporation',
+    'model/weatherers/emulsification',
+    'model/weatherers/dispersion'
+], function($, _, Backbone, GnomeModel, EvaporationModel, EmulsificationModel, DispersionModel){
     var weathererTests = {
         run: function(){
             QUnit.module('Weatherers');
@@ -26,62 +28,28 @@ define([
                     }
                 });
             });
-            asyncTest('Test weatherer on persistance', function(){
-                gmodel = new GnomeModel();
-                gmodel.save(null, {
-                    validate: false,
-                    success: function(){
-                        weatherer = new EvaporationModel();
-                        weatherer.save(null, {
-                            validate: false,
-                            success: function(){
-                                ok(!_.isUndefined(weatherer.get('id')), 'weatherer was created');
-                                equal(weatherer.get('on'), true, 'weatherer is turned on');
-                                weatherer.set('on', false);
-                                weatherer.save(null, {
-                                    success: function(){
-                                        equal(weatherer.get('on'), false, 'weatherer is turned off');
-                                        gmodel.save(null, {
-                                            validate: false,
-                                            success: function(){
-                                                gmodel.get('weatherers').add(weatherer);
-                                                equal(gmodel.get('weatherers').at(0).get('on'), false, 'weatherer is still turned off');
-                                                gmodel.save(null, {
-                                                    success: function(){
-                                                        equal(gmodel.get('weatherers').at(0).get('on'), false, 'weatherer is still off after a model save');
-                                                        start();
-                                                    },
-                                                    error: function(){
-                                                        equal(gmodel.get('weatherers').at(0).get('on'), false, 'weatherer is still off after a model save');
-                                                        start();
-                                                    }
-                                                });
-                                            },
-                                            error: function(){
-                                                gmodel.get('weatherers').add(weatherer);
-                                                equal(gmodel.get('weatherers').length, 1, 'weatherer is still turned off');
-                                                start();
-                                            }
-                                        });
-                                    },
-                                    error: function(){
-                                        equal(weatherer.get('on', false, 'weather is turned off'));
-                                        start();
-                                    }
-                                });
-                            },
-                            error: function(){
-                                ok(!_.isUndefined(weatherer.get('id')), 'weatherer was created');
-                                start();
-                            }
-                        });
-                    },
-                    error: function(){
-                        start();
-                    }
-                });
 
-                
+            asyncTest('Test weatherer on persistance', function(){
+                var gmodel = new GnomeModel();
+                gmodel.save().always(function(){
+                    equal(gmodel.get('weatherers').length, 3, 'expected number of weatherers exist');
+
+                    gmodel.get('weatherers').forEach(function(weatherer){
+                        weatherer.set('on', false);
+                    });
+                    gmodel.save().always(function(){
+                        gmodel.get('weatherers').forEach(function(weatherer){
+                            notEqual(weatherer.get('on'), true, weatherer.get('name') + ' is off');
+                            weatherer.set('on', true);
+                        });
+                        gmodel.save().always(function(){
+                            gmodel.get('weatherers').forEach(function(weatherer){
+                                equal(weatherer.get('on'), true, weatherer.get('name') + ' is on');
+                            });
+                            start();
+                        });
+                    });
+                });
             });
         }
     };
