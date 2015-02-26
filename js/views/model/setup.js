@@ -678,10 +678,6 @@ define([
             var locationForm = new LocationForm();
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
-                this.updateObjects();
-                var target = this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim();
-                this.configure(target);
-
             }, this));
             locationForm.render();
         },

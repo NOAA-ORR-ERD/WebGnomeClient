@@ -21,7 +21,6 @@ define([
                 load: function(options){
                     this.loading = true;
                     this.trigger('load');
-                    webgnome.model.resetLocation();
                     var locationModel = new GnomeLocation({id: options.slug});
                     locationModel.fetch({
                         success: _.bind(function(){
