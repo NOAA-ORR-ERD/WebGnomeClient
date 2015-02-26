@@ -219,10 +219,6 @@ define([
                 this.showAllObjects();
             }
             this.$('.stage-2').show();
-
-            setTimeout(_.bind(function(){
-                this.updateObjects();
-            }, this), 1);
         },
 
         showFateObjects: function(){
