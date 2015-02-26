@@ -11,6 +11,7 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Close</button>',
 
         initialize: function(options){
+            BaseModal.prototype.initialize.call(this, options);
             if(_.has(options, 'help')){
                 options.help.delegateEvents();
                 this.body = options.help.$el;

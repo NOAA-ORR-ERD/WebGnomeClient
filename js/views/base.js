@@ -25,8 +25,12 @@ define([
             }
         },
 
-        renderHelp: function(){
-            var modal = new HelpModal({help: this.help});
+        renderHelp: function(options){
+            options = _.defaults(options, {
+                help: this.help
+            });
+            console.log(options);
+            var modal = new HelpModal(options);
             modal.render();
         },
         

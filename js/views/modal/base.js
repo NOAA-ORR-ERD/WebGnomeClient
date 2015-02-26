@@ -34,6 +34,10 @@ define([
                     this.title = options.title;
                 }
 
+                if(options.size) {
+                    this.size = options.size;
+                }
+
                 if(options.buttons) {
                     this.buttons = options.buttons;
                 }
