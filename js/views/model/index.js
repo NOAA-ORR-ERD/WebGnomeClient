@@ -73,13 +73,6 @@ define([
             }
 
             this.reset();
-            if(view == 'fate'){
-                this.renderFate();
-                this.$el.css('height', 'auto');
-            } else {
-                this.renderTrajectory();
-                this.updateHeight();
-            }
 
             if(view === 'trajectory' && localStorage.getItem('prediction') === 'fate'){
                 swal({
@@ -92,11 +85,37 @@ define([
                 }, function(isConfirm){
                     if(isConfirm){
                         webgnome.router.navigate('setup', true);
+                        localStorage.setItem('prediction', 'both');
                     } else {
                         webgnome.router.navigate('setup', true);
                         webgnome.router.navigate('model', true);
                     }
                 });
+            } else if (view === 'fate' && localStorage.getItem('prediction') === 'trajectory'){
+                swal({
+                    title: 'Unable to run weathering on a trajectory model',
+                    text: 'If you would like to see the weathering prediction for this model please setup the model accordingly.',
+                    type: 'error',
+                    confirmButtonText: 'Add Weathering',
+                    cancelButtonText: 'Back to Trajectory',
+                    showCancelButton: true,
+                }, function(isConfirm){
+                    if(isConfirm){
+                        webgnome.router.navigate('setup', true);
+                        localStorage.setItem('prediction', 'both');
+                    } else {
+                        webgnome.router.navigate('setup', true);
+                        webgnome.router.navigate('model', true);
+                    }
+                });
+            }
+
+            if(view == 'fate'){
+                this.renderFate();
+                this.$el.css('height', 'auto');
+            } else {
+                this.renderTrajectory();
+                this.updateHeight();
             }
         },
 

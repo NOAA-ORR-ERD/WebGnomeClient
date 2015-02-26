@@ -108,7 +108,7 @@ define([
             setTimeout(_.bind(function(){
                 var pred = localStorage.getItem('prediction');
                 if(!_.isUndefined(pred) && pred !== 'null'){
-                    this.togglePrediction({target: this.$('.' + pred)}, pred);
+                    this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
             }, this), 1);
