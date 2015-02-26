@@ -6,6 +6,7 @@ define([
 ], function(_, $, Backbone, BaseModel){
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
+        requesting: false,
 
         validate: function(attrs, options){
             if(_.isNull(attrs.filename)){
@@ -15,7 +16,12 @@ define([
 
         getGeoJSON: function(callback){
             var url = webgnome.config.api + this.urlRoot + this.get('id') + '/geojson';
-            $.get(url, null, callback);
+            if(!this.requesting){
+                this.requesting = true;
+                $.get(url, null, callback).always(_.bind(function(){
+                    this.requesting = false;
+                }, this));
+            }
         },
 
         toTree: function(){
