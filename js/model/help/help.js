@@ -19,7 +19,6 @@ define([
                 html += $('<div>').append(doc).html();
             });
             response.html = html;
-            console.log(response.html);
             return response;
         },
 
