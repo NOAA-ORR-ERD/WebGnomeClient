@@ -156,36 +156,32 @@ define([
             }
 
             if(e.target.hash == '#constant'){
-                setTimeout(_.bind(function(){
-                    if(this.$('.constant-compass canvas').length === 0){
-                        this.$('.constant-compass').compassRoseUI({
-                            'arrow-direction': 'in',
-                            'move': _.bind(this.constantCompassUpdate, this)
-                        });
+                if(this.$('.constant-compass canvas').length === 0){
+                    this.$('.constant-compass').compassRoseUI({
+                        'arrow-direction': 'in',
+                        'move': _.bind(this.constantCompassUpdate, this)
+                    });
 
-                        this.$('.constant-compass').compassRoseUI('update', {
-                            speed: this.form.constant.speed.val(),
-                            direction: this.form.constant.direction.val()
-                        });
-                    }
-                }, this), 1);
+                    this.$('.constant-compass').compassRoseUI('update', {
+                        speed: this.form.constant.speed.val(),
+                        direction: this.form.constant.direction.val()
+                    });
+                }
                 
             } else if (e.target.hash == '#variable') {
-                setTimeout(_.bind(function(){
-                    if(this.$('.variable-compass canvas').length === 0){
-                        this.$('.variable-compass').compassRoseUI({
-                            'arrow-direction': 'in',
-                            'move': _.bind(this.variableCompassUpdate, this)
-                        });
-                    }
+                if(this.$('.variable-compass canvas').length === 0){
+                    this.$('.variable-compass').compassRoseUI({
+                        'arrow-direction': 'in',
+                        'move': _.bind(this.variableCompassUpdate, this)
+                    });
+                }
 
-                    if(!_.isUndefined(this.originalTimeseries)){
-                        this.model.set('timeseries', this.originalTimeseries);
-                    }
+                if(!_.isUndefined(this.originalTimeseries)){
+                    this.model.set('timeseries', this.originalTimeseries);
+                }
 
-                    this.unbindBaseMouseTrap();
-                    this.renderTimeseries();
-                }, this), 1);
+                this.unbindBaseMouseTrap();
+                this.renderTimeseries();
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
@@ -202,6 +198,7 @@ define([
                     }, this));
                 }
             }
+            $(window).trigger('resize');
             this.update();
         },
 
@@ -345,8 +342,8 @@ define([
                     'speed': entry[1][0],
                     'direction': entry[1][1]
                 });
-                this.$(row).html(template);
                 this.$(row).addClass('edit');
+                this.$(row).html(template);
                 this.attachCompass(e, entry, row);
             }
         },
@@ -354,7 +351,7 @@ define([
         attachCompass: function(e, entry, row){
             this.$el.off('keyup tr input');
             this.entry = entry;
-            var top = (this.$('.modal-body')).offset().top * -1 + this.$(row).offset().top + 115;
+            var top = (this.$('.modal-content').offset().top * -1) + this.$(row).offset().top + this.$(row).outerHeight();
             var right = 26 + "px";
             this.$('.modal-content').append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({

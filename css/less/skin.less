@@ -1816,11 +1816,15 @@ nav.navbar{
         }
         
         .additional-wind-compass {
-            width: 150px;
-            height: 150px;
-            background-color: white;
+            width: 175px;
+            height: 175px;
+            background-color: #DDEFFF;
             z-index: 2000;
-            border: 1px solid black;
+            border: 1px solid #ccc;
+            border-top-color: transparent;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 0 0 3px 3px;
         }
 
         table{
@@ -1837,16 +1841,38 @@ nav.navbar{
             th{
                 line-height: 34px;
             }
+            span.edit{
+                margin-right: 10px;
+            }
             .ok, .undo {
+                .glyphicon;
                 margin-top: 7px;
             }
-            .edit {
+            .ok{
+                .glyphicon-ok;
+                margin-right: 10px;
+                color: rgba(18,129,0,0.57);
+            }
+            .undo{
+                .glyphicon-remove;
+                color: rgba(207, 0, 0, 0.65);
+            }
+            tr.edit {
+                background: #DDEFFF;
+                border-bottom: 1px solid #ccc;
+
                 td {
-                    line-height: 25px;
+                    line-height: 34px;
+                }
+                .ok, .undo {
+                    opacity: 1;
                 }
             }
-            .table-inputs {
+            .table-input-spd {
                 width: 100px;
+            }
+            .table-input-dir{
+                width: 50px;
             }
         }
 
