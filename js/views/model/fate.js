@@ -925,6 +925,7 @@ define([
                     nominal_value = nominal[this.dataset[set].name];
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
+                    // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
                     low_value = low[this.dataset[set].name] * 1000000;
                     nominal_value = nominal[this.dataset[set].name] * 1000000;
                     high_value = high[this.dataset[set].name] * 1000000;
