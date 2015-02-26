@@ -957,7 +957,7 @@ define([
         },
 
         configureModel: function(prediction){
-            if(prediction == 'trajectory'){
+            if(prediction == 'trajectory' || prediction == 'both'){
                 webgnome.model.set('uncertain', true);
             } else {
                 webgnome.model.set('uncertain', false);
