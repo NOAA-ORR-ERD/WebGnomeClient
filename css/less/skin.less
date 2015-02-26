@@ -994,77 +994,85 @@ nav.navbar{
     > div{
         display: inline-block;
     }
-    .view-toggle{
+    .menu-overlay{
         position: absolute;
         right: 0px;
         top: -37px;
-        width: 200px;
-
-        label{
-            float:left;
-            font-weight: normal;
-            font-size: 11px;
-            padding-top: 3px;
-            cursor: pointer;
+        width: 310px;
+        .edit{
+            .btn;
+            .btn-success;
+            margin-left: 20px;
+            margin-top: -7px;
         }
-
-        .toggle{
-            margin: -3px 10px 0;
-            padding: 2px;
-            float: left;
-            background: rgba(0, 0, 0, 0.09);
-            border-radius: 4px;
-            border: 1px solid #afafaf;
-            width: 55px;
-            position: relative;
-            color: #979797;
-            box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
-
-            .trajectory{
-                .glyphicon;
-                .glyphicon-map-marker;
-                left: 6px;
-            }
-
-            .fate{
-                .glyphicon;
-                .glyphicon-stats;
-                right: 6px;
-            }
-
-            .trajectory, .fate{
-                position: absolute;
-                top:5px;
-            }
-
-            .switch{
-                width: 22px;
-                height: 22px;
-                border: 1px solid;
-                border-radius: 4px;
-                background: #ccc;
-                position: absolute;
-                .btn-primary;
+        .view-toggle{
+            label{
+                float:left;
+                font-weight: normal;
+                font-size: 11px;
+                padding-top: 3px;
                 cursor: pointer;
-                .glyphicon;
-                .glyphicon-map-marker;
-                top: 0 !important;
-                text-align:center;
-                padding-top:2px;
-                left: 0px;
-                z-index: 2;
-                text-shadow: 0 -1px rgba(0, 0, 0, 0.25);
-                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
-                
-                &.fate{
-                    left: auto;
-                    right: -27px;
+            }
+
+            .toggle{
+                margin: -3px 10px 0;
+                padding: 2px;
+                float: left;
+                background: rgba(0, 0, 0, 0.09);
+                border-radius: 4px;
+                border: 1px solid #afafaf;
+                width: 55px;
+                position: relative;
+                color: #979797;
+                box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
+
+                .trajectory{
+                    .glyphicon;
+                    .glyphicon-map-marker;
+                    left: 6px;
+                }
+
+                .fate{
                     .glyphicon;
                     .glyphicon-stats;
+                    right: 6px;
+                }
+
+                .trajectory, .fate{
+                    position: absolute;
+                    top:5px;
+                }
+
+                .switch{
+                    width: 22px;
+                    height: 22px;
+                    border: 1px solid;
+                    border-radius: 4px;
+                    background: #ccc;
+                    position: absolute;
+                    .btn-primary;
+                    cursor: pointer;
+                    .glyphicon;
+                    .glyphicon-map-marker;
+                    top: 0 !important;
+                    text-align:center;
+                    padding-top:2px;
+                    left: 0px;
+                    z-index: 2;
+                    text-shadow: 0 -1px rgba(0, 0, 0, 0.25);
+                    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+                    
+                    &.fate{
+                        left: auto;
+                        right: -27px;
+                        .glyphicon;
+                        .glyphicon-stats;
+                    }
                 }
             }
         }
     }
+    
     > .tree{
         width: 0;
         position: absolute;
