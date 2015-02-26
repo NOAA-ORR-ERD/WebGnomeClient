@@ -536,9 +536,9 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['emulsified']);
+            dataset = this.pluckDataset(dataset, ['water_content']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphEmulsificaiton)){
+            if(_.isUndefined(this.graphEmulsification)){
                 this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, {
                     grid: {
                         borderWidth: 1,
@@ -555,12 +555,11 @@ define([
                         },
                         shadowSize: 0
                     },
-                    colors: [this.colors[3]]
                 });
             } else {
-                this.graphEmulsificaiton.setData(dataset);
-                this.graphEmulsificaiton.setupGrid();
-                this.graphEmulsificaiton.draw();
+                this.graphEmulsification.setData(dataset);
+                this.graphEmulsification.setupGrid();
+                this.graphEmulsification.draw();
             }
             dataset[0].fillArea = null;
         },
@@ -929,6 +928,13 @@ define([
                     low_value = low[this.dataset[set].name] * 1000000;
                     nominal_value = nominal[this.dataset[set].name] * 1000000;
                     high_value = high[this.dataset[set].name] * 1000000;
+
+                } else if (this.dataset[set].name === 'water_content'){
+                    // Convert water content into a % it's an easier unit to understand
+                    // and graphs better
+                    low_value = low[this.dataset[set].name] * 100;
+                    nominal_value = nominal[this.dataset[set].name] * 100;
+                    high_value = high[this.dataset[set].name] * 100;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
