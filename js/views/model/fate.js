@@ -379,9 +379,9 @@ define([
                                 if(display.other === 'same'){
                                     value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
                                 } else if (display.other === 'percent'){
-                                    value = Math.round(value / dataset[0].data[row][1] * 100);
+                                    value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100);
                                 } else {
-                                    value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
+                                    value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100) / 100;
                                 }
                             }
                             row_html += '<td style="background: ' + color + ';">' + value + '</td>';
