@@ -27,7 +27,10 @@
     </div>
 	<div class="spill-list">
 	{% for (var i = 0; i < spills.length; i++){ %}
-		<div class="single row" data-id="{{ spills[i].get('id') }}">
+        {% var spillValid = spills[i].isValid(); %}
+        {% var rowClass = 'single row'; %}
+        {% if (!spillValid){ rowClass = 'single row error'} %}
+		<div class="{{ rowClass }}" data-id="{{ spills[i].get('id') }}">
 			<div class="col-sm-9">
                 <h5>{{ spills[i].get('name') }}</h5>
                 <span class="label label-default">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</span>

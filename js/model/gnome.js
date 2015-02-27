@@ -3,6 +3,7 @@ define([
     'jquery',
     'backbone',
     'moment',
+    'ol',
     'model/base',
     'model/cache',
     'model/map',
@@ -21,7 +22,7 @@ define([
     'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim'
-], function(_, $, Backbone, moment,
+], function(_, $, Backbone, moment, ol,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
@@ -263,7 +264,7 @@ define([
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
-            this.set('map', map);
+            this.set('map', map, {silent: true});
             this.save(null, {validate: false});
         },
 

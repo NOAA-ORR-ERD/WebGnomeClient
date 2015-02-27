@@ -2,8 +2,9 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'ol',
     'model/base'
-], function(_, $, Backbone, BaseModel){
+], function(_, $, Backbone, ol, BaseModel){
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
 
@@ -33,6 +34,10 @@ define([
             tree = attrs.concat(tree);
 
             return tree;
+        },
+
+        getExtent: function(){
+            return ol.extent.boundingExtent(this.get('map_bounds'));
         }
     });
 
