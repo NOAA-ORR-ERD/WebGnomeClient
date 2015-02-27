@@ -27,7 +27,7 @@
     </div>
 	<div class="spill-list">
 	{% for (var i = 0; i < spills.length; i++){ %}
-        {% var spillValid = spills[i].isValid(); %}
+        {% var spillValid = spills[i].validationError === ''; %}
         {% var rowClass = 'single row'; %}
         {% if (!spillValid){ rowClass = 'single row error'} %}
 		<div class="{{ rowClass }}" data-id="{{ spills[i].get('id') }}">

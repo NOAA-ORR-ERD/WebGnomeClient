@@ -149,14 +149,8 @@ define([
 
         evalModel: function(e){
             e.preventDefault();
-            var spills = webgnome.model.get('spills');
-            var spillNames = '';
-            for (var i = 0; i < spills.length; i++){
-                if (!spills.at(i).isValid()){
-                    spillNames += spills.at(i).get('name') + ' ';
-                }
-            }
-            if (spillNames.length > 0){
+            if (!webgnome.model.isValid()){
+                var spillNames = webgnome.model.validationError;
                 swal({
                     title: "Spills are outside the location selected!",
                     text: "Some or all of the spills' locations are outside the selected location file. You might want to correct this. Spill(s) outside the location: " + spillNames,
@@ -591,15 +585,6 @@ define([
                         },
                         id: spills.models[spill].get('id')
                     });
-                    var spillModel = spills.at(spill);
-                    console.log(spillModel.get('id'));
-                    if (!spillModel.isValid()){
-                        this.$('[data-id=' + spillModel.get('id') + ']').addClass('error');
-                        console.log('add class ran');
-                    } else {
-                        this.$('[data-id=' + spillModel.get('id') + ']').removeClass('error');
-                        console.log('remove class ran');
-                    }
                 }
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);

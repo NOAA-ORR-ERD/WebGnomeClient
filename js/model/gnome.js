@@ -3,7 +3,6 @@ define([
     'jquery',
     'backbone',
     'moment',
-    'ol',
     'model/base',
     'model/cache',
     'model/map',
@@ -22,7 +21,7 @@ define([
     'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim'
-], function(_, $, Backbone, moment, ol,
+], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
@@ -124,6 +123,17 @@ define([
                 this.trigger('change', this);
         },
 
+        validateSpills: function() {
+            var spills = this.get('spills');
+            var spillNames = '';
+            for (var i = 0; i < spills.length; i++){
+                if (!spills.at(i).isValid()){
+                    spillNames += spills.at(i).get('name') + ' ';
+                }
+            }
+            return spillNames;
+        },
+
         validate: function(attrs, options) {
             // if(attrs.duration <= 0 || isNaN(attrs.duration)){
             //     return 'Duration values should be numbers only and greater than 0.';
@@ -149,6 +159,10 @@ define([
             }
             else {
                 return 'Time step values should be numbers only.';
+            }
+
+            if (this.validateSpills() !== ''){
+                return this.validateSpills();
             }
 
             // if (attrs.map_id === null) {
