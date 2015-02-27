@@ -116,11 +116,11 @@ define([
         },
 
         childChange: function(attr, child){
-                if(!_.isArray(this.changed[attr])){
+                if(!_.isObject(this.changed[attr])){
                     this.changed[attr] = {};
                 }
                 this.changed[attr][child.get('id')] = child.changed;
-                this.trigger('change', this);
+                this.trigger('change');
         },
 
         validate: function(attrs, options) {
