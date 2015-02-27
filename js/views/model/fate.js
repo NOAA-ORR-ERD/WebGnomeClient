@@ -16,7 +16,8 @@ define([
     'flotcrosshair',
     'flotpie',
     'flotfillarea',
-    'flotselect'
+    'flotselect',
+    'flottooltip'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -183,6 +184,7 @@ define([
                         hoverable: true,
                         autoHighlight: false
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -450,7 +452,9 @@ define([
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
+                        hoverable: true,
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -480,7 +484,9 @@ define([
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
+                        hoverable: true,
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -510,7 +516,9 @@ define([
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
+                        hoverable: true,
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -543,7 +551,9 @@ define([
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
+                        hoverable: true,
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -572,7 +582,9 @@ define([
                     grid: {
                         borderWidth: 1,
                         borderColor: '#ddd',
+                        hoverable: true,
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
