@@ -184,6 +184,7 @@ define([
                         hoverable: true,
                         autoHighlight: false
                     },
+                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
