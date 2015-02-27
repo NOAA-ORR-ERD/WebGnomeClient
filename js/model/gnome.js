@@ -120,7 +120,7 @@ define([
                     this.changed[attr] = {};
                 }
                 this.changed[attr][child.get('id')] = child.changed;
-                this.trigger('change');
+                this.trigger('change', this);
         },
 
         validate: function(attrs, options) {
