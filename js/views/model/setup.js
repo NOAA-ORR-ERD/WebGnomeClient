@@ -241,10 +241,6 @@ define([
                 this.showAllObjects();
             }
             this.$('.stage-2').show();
-
-            setTimeout(_.bind(function(){
-                this.updateObjects();
-            }, this), 1);
         },
 
         showFateObjects: function(){
@@ -709,10 +705,6 @@ define([
             var locationForm = new LocationForm();
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
-                this.updateObjects();
-                var target = this.$('.icon.selected').attr('class').replace('icon', '').replace('selected', '').trim();
-                this.configure(target);
-
             }, this));
             locationForm.render();
         },
@@ -989,7 +981,7 @@ define([
         },
 
         configureModel: function(prediction){
-            if(prediction == 'trajectory'){
+            if(prediction == 'trajectory' || prediction == 'both'){
                 webgnome.model.set('uncertain', true);
             } else {
                 webgnome.model.set('uncertain', false);

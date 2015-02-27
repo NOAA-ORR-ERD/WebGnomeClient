@@ -29,7 +29,6 @@ define([
             options = _.defaults(options, {
                 help: this.help
             });
-            console.log(options);
             var modal = new HelpModal(options);
             modal.render();
         },

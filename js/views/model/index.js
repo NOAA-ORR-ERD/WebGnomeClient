@@ -29,16 +29,24 @@ define([
             $('body').append(this.$el);
             var view = localStorage.getItem('view');
             var prediction = localStorage.getItem('prediction');
-            
-            if(!_.isNull(prediction) && prediction == 'both'){
-                this.$('.switch').addClass('trajectory');
-                localStorage.setItem('view', 'trajectory');
-                view = 'trajectory';
+
+            if(_.isNull(view)){
+                // if the view is undefined, set it to requested prediction
+                if(prediction === 'both'){
+                    view = 'trajectory';
+                } else {
+                    view = prediction;
+                }
             } else {
-                this.$('.switch').addClass(prediction);
-                localStorage.setItem('view', prediction);
-                view = prediction;
+                // the view is defined make sure it's a viewable view based on the requested prediction
+                // ex. if the view is fate but pred is traj don't render the fate view.
+                if(prediction != 'both'){
+                    view = prediction;
+                }
             }
+            
+            this.$('.switch').addClass(view);
+            localStorage.setItem('view', view);
 
             if (view == 'fate') {
                 this.renderFate();
@@ -152,6 +160,10 @@ define([
             if(this.FateView){
                 this.FateView.close();
             }
+
+            $(window).off('resize', _.bind(function(){
+                this.updateHeight();
+            }, this));
 
             this.remove();
             if (this.onClose){
