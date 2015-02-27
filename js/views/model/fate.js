@@ -184,7 +184,6 @@ define([
                         hoverable: true,
                         autoHighlight: false
                     },
-                    tooltip: true,
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
@@ -585,6 +584,12 @@ define([
                         hoverable: true,
                     },
                     tooltip: true,
+                    tooltipOpts: {
+                        content: function(label, xval, yval, flotItem){
+                            var content = "%s %x " + yval;
+                            return content;
+                        }
+                    },
                     xaxis: {
                         mode: 'time',
                         timezone: 'browser'
