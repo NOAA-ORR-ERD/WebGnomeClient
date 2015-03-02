@@ -185,7 +185,7 @@ define([
                 weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
             });
 
-            webgnome.model.save();
+            webgnome.model.save(null, {validate: false});
         },
 
         selectPrediction: function(e){
@@ -214,7 +214,7 @@ define([
             } else {
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                 } else {
                     this.updateObjects();
                 }
@@ -335,7 +335,7 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
-                webgnome.model.updateWaves(function(){webgnome.model.save();});
+                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
             });
             windForm.render();
         },
@@ -440,7 +440,7 @@ define([
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
                 
-                webgnome.model.updateWaves(function(){webgnome.model.save();});
+                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
             });
             waterForm.render();
         },
@@ -486,7 +486,7 @@ define([
             });
             // only update the model if the spill saves
             spillView.on('save', function(){
-                webgnome.model.save();
+                webgnome.model.save(null, {validate: false});
             });
 
             spillView.render();
@@ -684,7 +684,8 @@ define([
                     webgnome.model.save({
                         success: _.bind(function(){
                             this.updateSpill();
-                        }, this)
+                        }, this),
+                        validate: false
                     });
                 }
             }, this));
@@ -918,7 +919,8 @@ define([
                     webgnome.model.save({
                         success: _.bind(function(){
                             this.updateResponse();
-                        }, this)
+                        }, this),
+                        validate: false
                     });
                 }
             }, this));
