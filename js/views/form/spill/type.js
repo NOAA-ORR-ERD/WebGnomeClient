@@ -44,7 +44,7 @@ define([
                 spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
@@ -60,7 +60,7 @@ define([
                 spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });

@@ -123,6 +123,17 @@ define([
                 this.trigger('change', this);
         },
 
+        validateSpills: function() {
+            var spills = this.get('spills');
+            var spillNames = '';
+            for (var i = 0; i < spills.length; i++){
+                if (!spills.at(i).isValid()){
+                    spillNames += spills.at(i).get('name') + ' ';
+                }
+            }
+            return spillNames;
+        },
+
         validate: function(attrs, options) {
             // if(attrs.duration <= 0 || isNaN(attrs.duration)){
             //     return 'Duration values should be numbers only and greater than 0.';
@@ -149,6 +160,11 @@ define([
             else {
                 return 'Time step values should be numbers only.';
             }
+
+            if (this.validateSpills() !== ''){
+                return this.validateSpills();
+            }
+
 
             // if (attrs.map_id === null) {
             //     return 'Model requires a map.';
@@ -263,7 +279,7 @@ define([
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
-            this.set('map', map);
+            this.set('map', map, {silent: true});
             this.save(null, {validate: false});
         },
 

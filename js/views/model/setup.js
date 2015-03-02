@@ -149,7 +149,24 @@ define([
 
         evalModel: function(e){
             e.preventDefault();
-            webgnome.router.navigate('model', true);
+            if (!webgnome.model.isValid()){
+                var spillNames = webgnome.model.validationError;
+                swal({
+                    html: true,
+                    title: "Spill(s) are outside map bounds!",
+                    text: "These spill(s) will not be applied to your model: " + spillNames,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Continue anyway',
+                    closeOnConfirm: true
+                }, _.bind(function(isConfirmed){
+                    if (isConfirmed){
+                        webgnome.router.navigate('model', true);
+                    }
+                }, this));
+            } else {
+                webgnome.router.navigate('model', true);
+            }
         },
 
         updateModel: function(){
@@ -168,7 +185,7 @@ define([
                 weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
             });
 
-            webgnome.model.save();
+            webgnome.model.save(null, {validate: false});
         },
 
         selectPrediction: function(e){
@@ -197,7 +214,7 @@ define([
             } else {
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                 } else {
                     this.updateObjects();
                 }
@@ -250,7 +267,6 @@ define([
                 this.updateWater();
                 this.updateSpill();
                 
-
                 var delay = {
                     show: 500,
                     hide: 100
@@ -319,7 +335,7 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
-                webgnome.model.updateWaves(function(){webgnome.model.save();});
+                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
             });
             windForm.render();
         },
@@ -424,7 +440,7 @@ define([
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
                 
-                webgnome.model.updateWaves(function(){webgnome.model.save();});
+                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
             });
             waterForm.render();
         },
@@ -470,7 +486,7 @@ define([
             });
             // only update the model if the spill saves
             spillView.on('save', function(){
-                webgnome.model.save();
+                webgnome.model.save(null, {validate: false});
             });
 
             spillView.render();
@@ -553,6 +569,8 @@ define([
 
                 var dataset = [];
                 for (var spill in spills.models){
+                    console.log(spills.models[spill].validationError);
+                    if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
                     for (var i = 0; i < timeSeries.length; i++){
                         var date = timeSeries[i];
@@ -668,7 +686,8 @@ define([
                     webgnome.model.save({
                         success: _.bind(function(){
                             this.updateSpill();
-                        }, this)
+                        }, this),
+                        validate: false
                     });
                 }
             }, this));
@@ -902,7 +921,8 @@ define([
                     webgnome.model.save({
                         success: _.bind(function(){
                             this.updateResponse();
-                        }, this)
+                        }, this),
+                        validate: false
                     });
                 }
             }, this));

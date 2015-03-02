@@ -90,6 +90,7 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = release.attributes;
             }
+
             return release.validateLocation(attrs);
         },
 
