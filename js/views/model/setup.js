@@ -153,8 +153,8 @@ define([
                 var spillNames = webgnome.model.validationError;
                 swal({
                     html: true,
-                    title: "Spills are outside the location selected!",
-                    text: "Some or all of the spills' locations are outside the selected location file. You might want to correct this.<br /><br />Spill(s) outside the location: " + spillNames,
+                    title: "Spill(s) are outside map bounds!",
+                    text: "These spill(s) will not be applied to your model: " + spillNames,
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Continue anyway',
