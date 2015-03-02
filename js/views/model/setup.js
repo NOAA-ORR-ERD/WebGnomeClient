@@ -262,7 +262,6 @@ define([
                 this.updateWater();
                 this.updateSpill();
                 
-
                 var delay = {
                     show: 500,
                     hide: 100
@@ -735,7 +734,6 @@ define([
                     locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
                     this.mason.layout();
                 }, this));
-                this.updateSpill();
             } else {
                 this.$('.location .panel').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
