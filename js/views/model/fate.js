@@ -465,7 +465,11 @@ define([
                         },
                         shadowSize: 0
                     },
-                    colors: [this.colors[1]]
+                    colors: [this.colors[1]],
+                    crosshair: {
+                        mode: 'x',
+                        color: '#999'
+                    }
                 });
             } else {
                 this.graphEvaporation.setData(dataset);
