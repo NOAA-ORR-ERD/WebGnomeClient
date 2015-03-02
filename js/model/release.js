@@ -89,7 +89,7 @@ define([
             var extentCoords = [start, end];
             var releaseExtent = ol.extent.boundingExtent(extentCoords);
             if(!ol.extent.containsExtent(locationExtent, releaseExtent)){
-                return 'Spill is not within the selected location!';
+                return 'Spill is not within the map bounds!';
             }
         },
 
