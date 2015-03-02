@@ -46,7 +46,10 @@
                     {% } else{ %}
                         {% pos = start + ' - ' + end %}
                     {% } %}
-                    <span class="label label-info"><span class="glyphicon glyphicon-map-marker"></span> {{ pos }}</span>
+                    {% if (!spillValid){ %}
+                        {% pos += ' (out of map bounds)' %}
+                    {% } %}
+                    <span class="coords"><span class="glyphicon glyphicon-map-marker"></span> {{ pos }}</span>
                 {% } %}
             </div>
 			<div class="col-sm-3">
