@@ -392,7 +392,7 @@ define([
                     if(row === 0){
                         row_html += '</tr></thead>';
                     } else {
-                        row_html += '</tr>';                        
+                        row_html += '</tr>';
                     }
                     table += row_html;
                 }
