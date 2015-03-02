@@ -38,7 +38,7 @@ define([
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
                 'gnome.environment.environment.Water': WaterModel,
-                'gnome.environment.waves.Waves': WavesModel
+                'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.resources.Risk': RiskModel
             },
             movers: {
