@@ -161,6 +161,11 @@ define([
                 return 'Time step values should be numbers only.';
             }
 
+            if (this.validateSpills() !== ''){
+                return this.validateSpills();
+            }
+
+
             // if (attrs.map_id === null) {
             //     return 'Model requires a map.';
             // }
