@@ -212,7 +212,11 @@ define([
                 }, this));
             } else {
                 this.togglePrediction(e, target);
-                webgnome.model.save();
+                if(webgnome.model.hasChanged()){
+                    webgnome.model.save();
+                } else {
+                    this.updateObjects();
+                }
             }
         },
 
@@ -920,9 +924,8 @@ define([
         },
         
         configure: function(target){
-            this.configureTimestep(target);
-            this.configureWeatherers(target);
             this.configureModel(target);
+            this.configureWeatherers(target);
             this.configureRelease(target);
         },
 
@@ -955,20 +958,20 @@ define([
             }
         },
 
-        configureTimestep: function(prediction){
-            if(prediction == 'trajectory' || prediction == 'both'){
-                webgnome.model.set('time_step', 900);
-            } else {
-                webgnome.model.set('time_step', 3600);
-            }
-        },
-
         configureModel: function(prediction){
+            var changes = {
+                time_step: null,
+                uncertain: null
+            };
             if(prediction == 'trajectory' || prediction == 'both'){
-                webgnome.model.set('uncertain', true);
+                changes.time_step = 900;
+                changes.uncertain = true;
             } else {
-                webgnome.model.set('uncertain', false);
+                changes.time_step = 3600;
+                changes.uncertain = false;
             }
+
+            webgnome.model.set(changes);
         },
 
         close: function(){

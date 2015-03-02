@@ -116,7 +116,7 @@ define([
         },
 
         childChange: function(attr, child){
-                if(!_.isArray(this.changed[attr])){
+                if(!_.isObject(this.changed[attr])){
                     this.changed[attr] = {};
                 }
                 this.changed[attr][child.get('id')] = child.changed;
