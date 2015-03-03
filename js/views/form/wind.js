@@ -414,6 +414,7 @@ define([
 
         addTimeseries: function(){
             webgnome.model.get('environment').findWhere({id: windId});
+            $(window).trigger('resize');
         },
 
         removeTimeseriesEntry: function(e){
