@@ -112,7 +112,7 @@ define([
                     }, this)
                 });
                 if (this.model.validationError){
-                    this.error('Error', this.model.validationError);
+                    this.error('Error!', this.model.validationError);
                 }
             } else {
                 this.hide();
