@@ -21,6 +21,9 @@ define([
                     if(el[1][0] < 0){
                         msg = 'Speed must be greater than or equal to 0';
                     }
+                    if(el[1][0] > 40){
+                        msg = 'Speed must be less than or equal to 40';
+                    }
 
                     if(el[1][1] < 0 || el[1][1] > 360){
                         msg = 'Direction must be between 0 and 360 degrees';

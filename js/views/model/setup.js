@@ -154,16 +154,9 @@ define([
                 swal({
                     html: true,
                     title: "Spill(s) are outside map bounds!",
-                    text: "These spill(s) will not be applied to your model: " + spillNames,
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Continue anyway',
-                    closeOnConfirm: true
-                }, _.bind(function(isConfirmed){
-                    if (isConfirmed){
-                        webgnome.router.navigate('model', true);
-                    }
-                }, this));
+                    text: "These spill(s) originate outside of the map bounds: <br />" + spillNames,
+                    type: 'error',
+                });
             } else {
                 webgnome.router.navigate('model', true);
             }
