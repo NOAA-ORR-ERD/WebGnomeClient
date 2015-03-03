@@ -569,7 +569,6 @@ define([
 
                 var dataset = [];
                 for (var spill in spills.models){
-                    console.log(spills.models[spill].validationError);
                     if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
                     for (var i = 0; i < timeSeries.length; i++){

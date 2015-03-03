@@ -17,7 +17,8 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flottooltip'
+    'flottooltip',
+    'flotcrosshairtooltip'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -451,6 +452,7 @@ define([
             if(_.isUndefined(this.graphEvaporation)){
                 var options = this.defaultChartOptions;
                 options.colors = [this.colors[1]];
+                options.crosshair.showToolTip = true;
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
