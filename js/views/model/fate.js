@@ -485,7 +485,7 @@ define([
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
-                options.yaxis.tickDecimals = 3;
+                options.yaxis.tickDecimals = 2;
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);

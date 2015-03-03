@@ -19,7 +19,7 @@ define([
 		},
 
         cToF: function(c){
-            return (((c * (9/5)) + 32).toFixed(3));
+            return (((c * (9/5)) + 32).toFixed(2));
         },
 
 		dataParse: function(oil){
@@ -57,11 +57,12 @@ define([
                                 oil[str] = '';
                             }
                         }
+                        var celsius = (oil[attr] - 273.15).toFixed(2);
                         if (oil['estimated'][attr]){
-                            oil[attr] = '<code>' + this.cToF((oil[attr] - 273.15).toFixed(3)) + '</code> &deg;F';
+                            oil[attr] = '<code>' + this.cToF(celsius) + ' (' + celsius + ')</code> &deg;F (&deg;C)';
                         } else {
-                            oil[attr] = this.cToF((oil[attr] - 273.15).toFixed(3)) + ' &deg;F';
-                        }  
+                            oil[attr] = this.cToF(celsius) + ' (' + celsius + ') &deg;F (&deg;C)';
+                        }
                     } else {
                         for (var i = 0; i < tempAttrs.length; i++){
                             if (attr === tempAttrs[i]){
