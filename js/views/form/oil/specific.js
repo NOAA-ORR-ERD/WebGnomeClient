@@ -132,7 +132,7 @@ define([
     								oil[attr][i][k] = "--";
     							} else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                     if (oil['estimated'][attr]){
-                                        oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(3);
+                                        oil[attr][i][k] = (oil[attr][i][k] - 273.15).toFixed(2);
                                         var k2 = k.substring(0, k.length - 2) + '_f';
                                         oil[attr][i][k2] = '<code>' + this.cToF(oil[attr][i][k]).toString() + '</code>';
                                         oil[attr][i][k] = '<code>(' + oil[attr][i][k] + ')</code>';
