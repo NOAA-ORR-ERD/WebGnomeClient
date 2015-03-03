@@ -45,6 +45,29 @@ define([
             'click .gnome-help': 'renderHelp'
         },
 
+        defaultChartOptions: {
+            grid: {
+                borderWidth: 1,
+                borderColor: '#ddd',
+                hoverable: true,
+            },
+            xaxis: {
+                mode: 'time',
+                timezone: 'browser'
+            },
+            series: {
+                lines: {
+                    show: true,
+                    lineWidth: 1
+                },
+                shadowSize: 0
+            },
+            crosshair: {
+                mode: 'x',
+                color: '#999'
+            }
+        },
+
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
@@ -177,35 +200,13 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                        autoHighlight: false
-                    },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        stack: true,
-                        group: true,
-                        groupInterval: 1,
-                        lines: {
-                            show: true,
-                            fill: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: this.colors,
-                    crosshair: {
-                        mode: 'x',
-                        color: '#999'
-                    }
-                });
+                var options = this.defaultChartOptions;
+                options.grid.autoHighlight = false;
+                options.series.stack = true;
+                options.series.group = true;
+                options.series.lines.fill = true;
+                options.colors = this.colors;
+                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
@@ -448,26 +449,9 @@ define([
             dataset = this.pluckDataset(dataset, ['evaporated']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
-                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                    },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: [this.colors[1]]
-                });
+                var options = this.defaultChartOptions;
+                options.colors = [this.colors[1]];
+                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
                 this.graphEvaporation.setupGrid();
@@ -480,26 +464,9 @@ define([
             dataset = this.pluckDataset(dataset, ['dispersed']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
-                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                    },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: [this.colors[2]]
-                });
+                var options = this.defaultChartOptions;
+                options.colors = [this.colors[2]];
+                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
                 this.graphDispersion.setupGrid();
@@ -512,29 +479,10 @@ define([
             var dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
-                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                    },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    yaxis: {
-                        ticks: 4,
-                        tickDecimals: 3
-                    }
-                });
+                var options = this.defaultChartOptions;
+                options.yaxis.ticks = 4;
+                options.yaxis.tickDecimals = 3;
+                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);
                 this.graphDensity.setupGrid();
@@ -547,25 +495,8 @@ define([
             dataset = this.pluckDataset(dataset, ['water_content']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsification)){
-                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                    },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                });
+                var options = this.defaultChartOptions;
+                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEmulsification.setData(dataset);
                 this.graphEmulsification.setupGrid();
@@ -578,32 +509,15 @@ define([
             dataset = this.pluckDataset(dataset, ['avg_viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
-                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
+                var options = this.defaultChartOptions;
+                options.yaxis = {
+                    ticks: [0, 10, 100, 1000, 10000, 100000],
+                    transform: function(v){
+                        return Math.log(v+10);
                     },
-                    tooltip: true,
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    yaxis: {
-                        ticks: [0, 10, 100, 1000, 10000, 100000],
-                        transform: function(v){
-                            return Math.log(v+10);
-                        },
-                        tickDecimals: 0
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    }
-                });
+                    tickDecimals: 0
+                };
+                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphViscosity.setData(dataset);
                 this.graphViscosity.setupGrid();
@@ -625,35 +539,17 @@ define([
                 this.$('#ics209 .timeline .chart .canvas').on('plotunselected', _.bind(function(e, ranges){
                     this.graphICS.setSelection(this.ICSSelection);
                 }, this));
+
+                var options = this.defaultChartOptions;
+                options.grid.autoHighlight = false;
+                options.series.stack = true;
+                options.series.group = true;
+                options.series.lines.fill = true;
+                options.colors = this.colors;
+                options.selection = {mode: 'x', color: '#428bca'};
+                options.crosshair = undefined;
                 
-                this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                        autoHighlight: false
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        stack: true,
-                        group: true,
-                        groupInterval: 1,
-                        lines: {
-                            show: true,
-                            fill: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: this.colors,
-                    selection: {
-                        mode: 'x',
-                        color: '#428bca'
-                    }
-                });
+                this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
             } else {
                 this.graphICS.setData(dataset);
