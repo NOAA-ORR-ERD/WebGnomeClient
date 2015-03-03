@@ -63,10 +63,12 @@ define([
                 },
                 shadowSize: 0
             },
-            crosshair: {
+            crosshairtooltip: {
                 mode: 'x',
-                color: '#999'
-            }
+                color: '#999',
+                showToolTip: true
+            },
+            yaxis: {}
         },
 
         initialize: function(options){
@@ -201,7 +203,7 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                var options = this.defaultChartOptions;
+                var options = _.clone(this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
@@ -450,9 +452,9 @@ define([
             dataset = this.pluckDataset(dataset, ['evaporated']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[1]];
-                options.crosshair.showToolTip = true;
+                options.crosshairtooltip.showToolTip = true;
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -466,7 +468,7 @@ define([
             dataset = this.pluckDataset(dataset, ['dispersed']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[2]];
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
@@ -481,7 +483,7 @@ define([
             var dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
                 options.yaxis.tickDecimals = 3;
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
@@ -497,7 +499,7 @@ define([
             dataset = this.pluckDataset(dataset, ['water_content']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsification)){
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEmulsification.setData(dataset);
@@ -511,7 +513,7 @@ define([
             dataset = this.pluckDataset(dataset, ['avg_viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis = {
                     ticks: [0, 10, 100, 1000, 10000, 100000],
                     transform: function(v){
@@ -542,7 +544,7 @@ define([
                     this.graphICS.setSelection(this.ICSSelection);
                 }, this));
 
-                var options = this.defaultChartOptions;
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
