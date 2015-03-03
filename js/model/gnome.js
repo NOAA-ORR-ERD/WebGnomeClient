@@ -93,6 +93,7 @@ define([
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
+            this.on('change:map', this.validateSpills(), this);
         },
 
         environmentChange: function(child){
@@ -116,11 +117,11 @@ define([
         },
 
         childChange: function(attr, child){
-                if(!_.isObject(this.changed[attr])){
-                    this.changed[attr] = {};
-                }
-                this.changed[attr][child.get('id')] = child.changed;
-                this.trigger('change', this);
+            if(!_.isObject(this.changed[attr])){
+                this.changed[attr] = {};
+            }
+            this.changed[attr][child.get('id')] = child.changed;
+            this.trigger('change', this);
         },
 
         validateSpills: function() {
