@@ -95,8 +95,6 @@ define([
             this.model.set('efficiency', this.efficiencyValue);
             this.model.set('amount', recoveryAmount);
             this.model.set('units', amountUnits);
-
-            console.log(this.model.get('units'));
         }
     });
 
