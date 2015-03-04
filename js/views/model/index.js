@@ -95,8 +95,7 @@ define([
                         webgnome.router.navigate('setup', true);
                         localStorage.setItem('prediction', 'both');
                     } else {
-                        webgnome.router.navigate('setup', true);
-                        webgnome.router.navigate('model', true);
+                        webgnome.router.views[1].switchView();
                     }
                 });
             } else if (view === 'fate' && localStorage.getItem('prediction') === 'trajectory'){
@@ -112,8 +111,7 @@ define([
                         webgnome.router.navigate('setup', true);
                         localStorage.setItem('prediction', 'both');
                     } else {
-                        webgnome.router.navigate('setup', true);
-                        webgnome.router.navigate('model', true);
+                        webgnome.router.views[1].switchView();
                     }
                 });
             }
