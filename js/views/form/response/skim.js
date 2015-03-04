@@ -19,6 +19,8 @@ define([
                 'keyup #recovery-rate': 'convertToAmount',
                 'keyup #recovery-amount': 'convertToRate',
                 'keyup #duration': 'updateRateAmount',
+                'change #rate-units': 'convertToAmount',
+                'change #amount-units': 'convertToRate',
                 'mouseup #duration': 'updateRateAmount'
             }, ResponseFormModal.prototype.events());
         },
@@ -39,13 +41,20 @@ define([
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop')),
-                amount: this.model.get('amount'),
-                units: this.model.get('units')
+                amount: this.model.get('amount')
             });
             ResponseFormModal.prototype.render.call(this, options);
             this.convertToRate();
             this.$('.slider').slider('value', this.model.get('efficiency') * 100);
+            this.setUnitSelects();
             this.updateEfficiency();
+        },
+
+        setUnitSelects: function(){
+            var units = this.model.get('units');
+
+            this.$('#rate-units').val(units + '/hr');
+            this.$('#amount-units').val(units);
         },
 
         convertToAmount: function(){
@@ -86,6 +95,8 @@ define([
             this.model.set('efficiency', this.efficiencyValue);
             this.model.set('amount', recoveryAmount);
             this.model.set('units', amountUnits);
+
+            console.log(this.model.get('units'));
         }
     });
 
