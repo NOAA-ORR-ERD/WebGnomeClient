@@ -16,9 +16,9 @@ define([
 
         events: function(){
             return _.defaults({
-                'keyup #recovery-rate': 'convertToAmount',
-                'keyup #recovery-amount': 'convertToRate',
-                'keyup #duration': 'updateRateAmount',
+                'change #recovery-rate': 'convertToAmount',
+                'change #recovery-amount': 'convertToRate',
+                'change #duration': 'updateRateAmount',
                 'change #rate-units': 'convertToAmount',
                 'change #amount-units': 'convertToRate',
                 'mouseup #duration': 'updateRateAmount'
