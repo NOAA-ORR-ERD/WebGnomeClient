@@ -63,11 +63,13 @@ define([
                                 ok(spill.get('id') !== '', 'spill was created on the server');
                                 gnomemodel.get('spills').add(spill);
                                 gnomemodel.save(null, {
+                                    validate: false,
                                     success: function(model){
                                         ok(gnomemodel.get('spills').length === 1, 'Spill was added to model');
                                         ok(model.toTree().length > 0, 'model to tree works');
                                         gnomemodel.get('spills').remove(spill.get('id'));
                                         gnomemodel.save(null, {
+                                            validate: false,
                                             success: function(model){
                                                 ok(gnomemodel.get('spills').length === 0, 'Spill was removed from the model');
                                                 ok(model.toTree().length > 0, 'model to tree works');
