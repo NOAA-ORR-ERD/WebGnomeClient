@@ -93,7 +93,7 @@ define([
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.on('change:map', this.validateSpills(), this);
+            this.on('change:map', this.validateSpills, this);
         },
 
         environmentChange: function(child){
