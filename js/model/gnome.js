@@ -281,7 +281,7 @@ define([
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             this.set('map', map, {silent: true});
-            this.save(null, {validate: false});
+            this.save(null, {validate: false, success: cb});
         },
 
         updateWaves: function(cb){
