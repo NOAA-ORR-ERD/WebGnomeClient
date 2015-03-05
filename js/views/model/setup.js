@@ -743,6 +743,7 @@ define([
         clickResponse: function(){
             var typeForm = new ResponseTypeForm();
             typeForm.render();
+            spillTypeForm.on('hidden', spillTypeForm.close);
         },
 
         updateResponse: function(weatherers){
