@@ -13,12 +13,11 @@ define([
     'flottime',
     'flotresize',
     'flotstack',
-    'flotcrosshair',
     'flotpie',
     'flotfillarea',
     'flotselect',
     'flottooltip',
-    'flotcrosshairtooltip'
+    'flotcrosshair'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -63,10 +62,17 @@ define([
                 },
                 shadowSize: 0
             },
-            crosshairtooltip: {
+            crosshair: {
                 mode: 'x',
                 color: '#999',
                 showToolTip: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                lines: {
+                    track: true,
+                    threshold: 10000000
+                }
             },
             yaxis: {}
         },
@@ -180,6 +186,8 @@ define([
         renderGraphs: function(){
             // find active tab and render it's graph.
             var active = this.$('.active a').attr('href');
+
+            $('#flotTip').remove();
 
             if(active == '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
@@ -454,7 +462,6 @@ define([
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[1]];
-                options.crosshairtooltip.showToolTip = true;
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
