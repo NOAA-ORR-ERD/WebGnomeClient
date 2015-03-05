@@ -27,7 +27,7 @@ define([
             }
 
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
             if (!_.isUndefined(webgnome.model)){
@@ -47,7 +47,7 @@ define([
             }
             
             if(_.isUndefined(this.get('end_release_time'))){
-                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
             BaseModel.prototype.initialize.call(this, options);
         },

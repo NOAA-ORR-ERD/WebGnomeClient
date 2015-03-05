@@ -85,7 +85,8 @@ define([
         },
 
         load: function(){
-            if(webgnome.cache.models.length > 0){
+            if(webgnome.cache.models.length > 0 &&
+            _.has(webgnome.cache.models[0].get('WeatheringOutput'), 'nominal')){
 
                 webgnome.cache.forEach(_.bind(function(step){
                     this.frame++;
@@ -781,11 +782,13 @@ define([
         },
 
         buildDataset: function(step){
-            if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
-                webgnome.cache.step();
-                this.frame++;
-                this.formatDataset(step);
-                this.renderGraphs();
+            if(_.has(step.get('WeatheringOutput'), 'nominal')){
+                if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
+                    webgnome.cache.step();
+                    this.frame++;
+                    this.formatDataset(step);
+                    this.renderGraphs();
+                }
             }
         },
 

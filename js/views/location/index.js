@@ -77,9 +77,10 @@ define([
                         this.$('.load').on('click', _.bind(function(){
                             var slug = this.$('.load').data('slug');
                             var name = this.$('.load').data('name');
-                            webgnome.model.resetLocation();
-                            this.load({slug: slug, name: name});
-                            this.$('.popup').popover('destroy');
+                            webgnome.model.resetLocation(_.bind(function(){
+                                this.load({slug: slug, name: name});
+                                this.$('.popup').popover('destroy');
+                            }, this));
                         }, this));
                     }, this));
 
