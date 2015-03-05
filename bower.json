@@ -25,7 +25,6 @@
     "flotspline": "git://github.com/alexbardas/flot.git",
     "flot.tooltip": "~0.8.4",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
-    "flotcrosshairtooltip": "https://gitlab.orr.noaa.gov/alex.miranda/flotcrosshairtooltip.git",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "1.0.0",
