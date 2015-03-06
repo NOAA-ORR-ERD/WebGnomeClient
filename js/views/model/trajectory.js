@@ -699,7 +699,9 @@ define([
             }
             webgnome.cache.off('step:recieved', this.renderStep, this);
             webgnome.cache.off('step:failed', this.pause, this);
-            this.disableUI();
+            Mousetrap.unbind('space');
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
             this.remove();
             this.unbind();
             this.ol.close();
