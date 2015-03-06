@@ -22,7 +22,7 @@
     <div class="tab-content">
         <div class="tab-pane active" id="generalinfo">
         	<div class="form-group">
-        		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
+        		<label class="col-sm-5 control-label" for="datetime">Time of Release:</label>
         		<div class="col-sm-5">
                     <div class="input-group date">
                         <input type="text" id="datetime" class="form-control" value="{{ time }}">
@@ -33,8 +33,8 @@
                 </div>
             </div>
             <div class="form-group">
-            	<label class="col-sm-4 control-label" for="spill-amount">Amount Released:</label>
-            	<div class="col-sm-2">
+            	<label class="col-sm-5 control-label" for="spill-amount">Amount Released:</label>
+            	<div class="col-sm-3">
             		<input type="text" id="spill-amount" class="form-control" value="{{ amount }}">
             	</div>
             	<div class="col-sm-3">
@@ -56,14 +56,14 @@
             			</option>
             		</select>
             	</div>
-                <div class="form-group">
-                    <label class="control-label col-sm-4">Confidence in Data:</label>
-                    <div class="col-sm-8 col-sm-offset-1">
-                        <div class="slider"></div>
-                    </div>
-                    <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
-                    <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
+                <div class="col-sm-6">
+                    <div class="slider"></div>
                 </div>
+                <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
+                <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div>
             </div>
         </div>
 
