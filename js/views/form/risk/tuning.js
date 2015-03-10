@@ -7,16 +7,19 @@ define([
     'gauge',
     'views/modal/form',
     'text!templates/risk/tuning.html',
+'relimpui',
 ], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
         benefitGauge: null,
+        self: null,
 
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
+            self = this;
         },
 
         render: function(options){
@@ -37,7 +40,7 @@ define([
             this.createSlider('.slider-dispersant', this.model.get('efficiency').dispersant);
             this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
 
-            this.createRelativeImportanceInput('importance', 1);
+            $('#importance').relativeImportanceUI({callback: this.calculateRI});
 
             this.updateBenefit();
         },
@@ -61,98 +64,6 @@ define([
             };
             var target = document.getElementById('benefit'); // your canvas element
             this.benefitGauge = new Gauge(target).setOptions(opts);
-        },
-
-        createRelativeImportanceInput: function(selector, value){
-            var canvas = this.__canvas = new fabric.Canvas(selector, { selection: false });
-            fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
-
-            function makeCircle(left, top, s, l1, l2, l3, l) {
-                var radius = 1;
-                if (l === null) radius = 5;
-                var c = new fabric.Circle({
-                              strokeWidth: 5,
-                              radius: radius,
-                              fill: '#fff',
-                              stroke: '#666',
-                              selectable: false
-                });
-                c.hasControls = c.hasBorders = false;
-
-                var g = null;
-
-                if (l !== null) {
-                    var t = new fabric.Text(l, {
-                                  fontSize: 14,
-                                  evented: false
-                    });
-                    g = new fabric.Group([c,t], {
-                              left: left,
-                              top: top,
-                              selectable: s
-                    });
-                } else {
-                    g = new fabric.Group([c], {
-                              left: left,
-                              top: top,
-                              selectable: s
-                    });
-                }
-
-                g.hasControls = c.hasBorders = false;
-                g.l1 = l1;
-                g.l2 = l2;
-                g.l3 = l3;
-
-                return g;
-            }
-
-            function makeLine(coords, n) {
-                var l = new fabric.Line(coords, {
-                              fill: 'red',
-                              stroke: 'red',
-                              strokeWidth: 5,
-                              selectable: false
-                });
-                l.linename = n;
-
-               return l;
-            }
-
-            var centerx = 150,
-                centery = 150,
-                radius = 100;
-
-            var pt1x = centerx + radius * Math.cos(0),
-                pt1y = centery + radius * Math.sin(0);
-            var pt2x = centerx + radius * Math.cos(4*Math.PI/3),
-                pt2y = centery + radius * Math.sin(4*Math.PI/3);
-            var pt3x = centerx + radius * Math.cos(-4*Math.PI/3),
-                pt3y = centery + radius * Math.sin(-4*Math.PI/3);
-
-            var line1 = makeLine([pt1x,  pt1y, centerx, centery], 'surface'),
-                line2 = makeLine([centerx, centery, pt2x, pt2y], 'column'),
-                line3 = makeLine([centerx, centery,  pt3x, pt3y], 'shoreline');
-
-            canvas.add(line1, line2, line3);
-
-            canvas.add(
-                makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
-                makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
-                makeCircle(line2.get('x2'), line2.get('y2'), true, line2, null,  null, 'column'),
-                makeCircle(line3.get('x2'), line3.get('y2'), true, line3, null,  null, 'shoreline')
-            );
-
-            canvas.on('object:moving', _.bind(function(e) {
-                var p = e.target;
-                p.l1 && p.l1.set({ 'x2': p.left, 'y2': p.top });
-                p.l2 && p.l2.set({ 'x1': p.left, 'y1': p.top });
-                p.l3 && p.l3.set({ 'x1': p.left, 'y1': p.top });
-                canvas.renderAll();
-                this.calculateRI();
-            }, this));
-
-            canvas.renderAll();
         },
 
         createSlider: function(selector, value){
@@ -189,28 +100,26 @@ define([
             this.updateBenefit();
         },
 
-        calculateRI: function(){
-            var canvas = this.__canvas;
-            var s = canvas._objects[0];
-            var surfaceRI = Math.sqrt(((s.x1-s.x2)*(s.x1-s.x2)) + ((s.y1-s.y2)*(s.y1-s.y2)))
-            var c = canvas._objects[1];
-            var columnRI = Math.sqrt(((c.x1-c.x2)*(c.x1-c.x2)) + ((c.y1-c.y2)*(c.y1-c.y2)))
-            var l = canvas._objects[2];
-            var shorelineRI = Math.sqrt(((l.x1-l.x2)*(l.x1-l.x2)) + ((l.y1-l.y2)*(l.y1-l.y2)))
+        // callback from relative importance ui when values change.
+        // to update the UI values and set model values.
+        calculateRI: function(objects){
+            var surfaceRI = objects['surface'];
+            var columnRI = objects['column'];
+            var shorelineRI = objects['shoreline'];
             var t = surfaceRI+columnRI+shorelineRI;
 
             // set model
-            var ri = this.model.get('relativeImportance');
+            var ri = self.model.get('relativeImportance');
             ri.surface = surfaceRI / t;
             ri.column = columnRI / t;
             ri.shoreline = shorelineRI / t;
 
             // update ui
-            this.$('#surfaceRI').html((ri.surface*100).toFixed(3));
-            this.$('#columnRI').html((ri.column*100).toFixed(3));
-            this.$('#shorelineRI').html((ri.shoreline*100).toFixed(3));
+            self.$('#surfaceRI').html((ri.surface*100).toFixed(3));
+            self.$('#columnRI').html((ri.column*100).toFixed(3));
+            self.$('#shorelineRI').html((ri.shoreline*100).toFixed(3));
 
-            this.updateBenefit();
+            self.updateBenefit();
         },
 
         updateBenefit: function(){

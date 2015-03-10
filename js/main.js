@@ -17,6 +17,7 @@ require.config({
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
+        relimpui: 'views/form/risk/relative-importance-ui',
         fancytree: 'lib/fancytree/dist/jquery.fancytree',
         chosen: 'lib/chosen/chosen.jquery',
         fuse: 'lib/fuse/src/fuse',
@@ -72,6 +73,10 @@ require.config({
             exports: 'ol'
         },
         compassui: {
+            exports: '$',
+            deps: ['jquery']
+        },
+        relimpui: {
             exports: '$',
             deps: ['jquery']
         },
