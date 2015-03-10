@@ -980,6 +980,8 @@ define([
             if(webgnome.model){
                 webgnome.model.off('sync', this.updateObjects, this);
             }
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
             Backbone.View.prototype.close.call(this);
         }
     });

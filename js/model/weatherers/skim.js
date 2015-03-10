@@ -8,7 +8,8 @@ define([
             'obj_type': 'gnome.weatherers.Skimmer',
             'name': 'Skimmer',
             'efficiency': 0.20,
-            'amount': 0
+            'amount': 0,
+            'units': 'bbl'
         },
 
         toTree: function(){

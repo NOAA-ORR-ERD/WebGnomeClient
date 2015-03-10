@@ -6,7 +6,11 @@ define([
     burnWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Burn',
-            'name': 'Burn'
+            'name': 'Burn',
+            'area': 0,
+            'thickness': 0,
+            'area_units': 'm^2',
+            'thickness_units': 'cm'
         },
 
         toTree: function(){
