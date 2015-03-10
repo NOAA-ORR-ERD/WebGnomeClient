@@ -890,7 +890,7 @@ define([
                 responseView.on('hidden', responseView.close);
             });
             responseView.on('save', function(){
-                webgnome.model.trigger('sync');
+                webgnome.model.save(null, {validate: false});
                 setTimeout(_.bind(function(){
                     responseView.close();},
                 this), 750);
