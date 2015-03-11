@@ -22,7 +22,7 @@ define([
         className: 'modal fade form-modal risk-form',
         events: function(){
             return _.defaults({
-                'click a.disabled': function(event) { return false; }
+                'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
         benefitGauge: null,
@@ -157,14 +157,6 @@ define([
             units.diameter = this.form.units.diameter.val();
             units.distance = this.form.units.distance.val();
             units.depth = this.form.units.depth.val();
-
-            if(!model.isValid()){
-                this.error('Error!', model.validationError);
-                this.$('#era-tuning-link').addClass('disabled');
-            } else {
-                this.clearError();
-                this.$('#era-tuning-link').removeClass('disabled');
-            }
         },
 
         createBenefitGauge: function(selector, value){
@@ -275,6 +267,18 @@ define([
             this.$('#shoreline').html((shoreline).toFixed(3));
 
             this.benefitGauge.set(benefit);
+        },
+
+        inputValid: function(){
+            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
+            if (!model.isValid()) {
+                this.error('Error!', model.validationError);
+                this.$('#era-tuning-link').addClass('disabled');
+                return false;
+            } else {
+                this.clearError();
+                this.$('#era-tuning-link').removeClass('disabled');
+            }
         },
 
         close: function() {
