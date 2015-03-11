@@ -7,7 +7,7 @@ define([
     'gauge',
     'views/modal/form',
     'text!templates/risk/tuning.html',
-'relimpui',
+    'relimpui',
 ], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',

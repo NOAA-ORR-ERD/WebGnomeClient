@@ -184,7 +184,7 @@ define([
             var et = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
             var at = moment(attrs.assessment_time);
             if (at < st || at > et) {
-                return 'Assessment time must be occur during the model time range!';
+                return 'Assessment time must occur during the model time range!';
             }
         }
 

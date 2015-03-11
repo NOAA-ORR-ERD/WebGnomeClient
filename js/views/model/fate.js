@@ -7,7 +7,9 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
-    'views/wizard/risk',
+    'model/environment/risk',
+    'views/form/risk/risk',
+    'text!templates/risk/risk.html',
     'flot',
     'flottime',
     'flotresize',
@@ -16,7 +18,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect'
-], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskWizardForm){
+], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
     var fateView = Backbone.View.extend({
         className: 'fate',
         frame: 0,
@@ -134,7 +136,16 @@ define([
         },
 
         clickRisk: function(){
-            new RiskWizardForm();
+            var risk = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
+            if(_.isUndefined(risk) || risk.length === 0){
+                risk = new RiskModel();
+                webgnome.model.get('environment').add(risk);
+                webgnome.model.save();
+            }
+
+            var riskForm = new RiskForm();
+            riskForm.on('hidden', riskForm.close);
+            riskForm.render();
         },
 
         renderLoop: function(){

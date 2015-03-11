@@ -1,4 +1,5 @@
 <form class="form-horizontal" role="form">
+    <div class="form-group">
 	<div class="col-md-4">
 		<label class="control-label" for="benefit">Benefit:</label>
                                      <div class="small col-md-offset-1">
@@ -13,6 +14,8 @@
 			<canvas id="benefit">
 		</div>
 	</div>
+    </div>
+    <div class="form-group">
 	<div class="col-sm-4">
 		<label class="control-label" for="importance">Relative Importance:</label>
 		<div class="small col-md-offset-1">
@@ -25,25 +28,34 @@
 	<div class="col-sm-8">
 		<canvas id="importance" height="300" width="300" style="border:1px solid #000000;">
 	</div>
-	<label class="control-label">Efficiencies</label>
-	<div class="form-group">
-		<div class="col-sm-3 col-md-offset-1">
-			<label class="control-label" for="slider-skimming">Skimming:</label>
-			<div id="slider-skimming" class="slider-skimming"></div>
-			<div class="pull-left"><sup>0%</sup></div>
-			<div class="pull-right"><sup>100%</sup></div>
-		</div>
-		<div class="col-sm-3">
-			<label class="control-label" for="slider-dispersant">Dispersant:</label>
-			<div id="slider-dispersant" class="slider-dispersant"></div>
-			<div class="pull-left"><sup>0%</sup></div>
-			<div class="pull-right"><sup>100%</sup></div>
-		</div>
-		<div class="col-sm-3">
-			<label class="control-label" for="slider-in-situ-burn">In-situ Burn:</label>
-			<div id="slider-in-situ-burn" class="slider-in-situ-burn"></div>
-			<div class="pull-left"><sup>0%</sup></div>
-			<div class="pull-right"><sup>100%</sup></div>
-		</div>
-	</div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+	    <label class="control-label">Efficiencies:</label>
+        </div>
+                    <div id="skimming" class="col-sm-offset-1 col-sm-11">
+                        <div class="col-sm-3">
+                            <label class="control-label" id="skimminglabel">Skimming:</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="slider"></div>
+                        </div>
+                    </div>
+                    <div id="dispersant" class="col-sm-offset-1 col-sm-11">
+                        <div class="col-sm-3">
+                            <label class="control-label" id="dispersantlabel">Dispersant:</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="slider"></div>
+                        </div>
+                    </div>
+                    <div id="insituburn" class="col-sm-offset-1 col-sm-11">
+                        <div class="col-sm-3">
+                            <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="slider"></div>
+                        </div>
+                    </div>
+    </div>
 </form>
