@@ -238,11 +238,6 @@ define([
 
         createSliders: function(minNum, maxNum, selector){
             //Converting viscosity from m^2/s to cSt before appending the values to the slider
-            if (selector === 'viscosity'){
-                console.log(minNum);
-                console.log(maxNum);
-            }
-
             this.$(selector).slider({
                         range: true,
                         min: minNum,
