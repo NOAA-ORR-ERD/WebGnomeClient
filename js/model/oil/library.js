@@ -60,7 +60,6 @@ define([
                 // Converting the viscosity values from m^2/s to cSt
                 results = this.filter(function(model){
                     var viscosityInCst = model.attributes[options.type] * 1000000;
-                    console.log(viscosityInCst);
                     if (viscosityInCst >= arr[0] && viscosityInCst <= arr[1]){
                         return true;
                     } else {
