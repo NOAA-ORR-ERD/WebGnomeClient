@@ -120,11 +120,16 @@ define([
                 var quantity = arr[i];
                 var min = quantity + '_min';
                 var max = quantity + '_max';
-                if (!this[min] && !this[max] && quantity !== 'pour_point'){
+                if (!this[min] && !this[max] && (quantity !== 'pour_point' && quantity !== 'viscosity')){
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
                     this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                } else if (quantity === 'viscosity') {
+                    var visMin = _.min(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
+                    var visMax = _.max(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
+                    this[min] = visMin;
+                    this[max] = visMax;
                 } else {
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity][0]; }).attributes[quantity][0]);
@@ -232,10 +237,10 @@ define([
         },
 
         createSliders: function(minNum, maxNum, selector){
-            // Converting viscosity from m^2/s to cSt before appending the values to the slider
+            //Converting viscosity from m^2/s to cSt before appending the values to the slider
             if (selector === 'viscosity'){
-                minNum *= 1000000;
-                maxNum *= 1000000;
+                console.log(minNum);
+                console.log(maxNum);
             }
 
             this.$(selector).slider({
