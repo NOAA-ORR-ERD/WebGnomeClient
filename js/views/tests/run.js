@@ -51,11 +51,11 @@ define([
                                 }).always(function(){
                                     var prev_step;
                                     webgnome.cache.on('step:recieved', function(step){
-                                        var fate = step.get('WeatheringOutput')[0];
+                                        var fate = step.get('WeatheringOutput').nominal;
                                         
                                         if(prev_step){
                                             // test any step after the first against the previous one
-                                            var prev_fate = prev_step.get('WeatheringOutput')[0];
+                                            var prev_fate = prev_step.get('WeatheringOutput').nominal;
                                             ok(fate.amount_released >= prev_fate.amount_released, 'amount released did not reduce');
                                             ok(fate.evaporated >= prev_fate.evaporated, 'continued to evaporate');
                                             ok(fate.dispersed >= prev_fate.dispersed, 'continued to disperse');
