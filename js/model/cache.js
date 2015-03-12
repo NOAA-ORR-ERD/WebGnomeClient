@@ -8,7 +8,9 @@ define([
         fetching: false,
 
         initialize: function(options, model){
-            this.rewind();
+            if(!model.isNew()){
+                this.rewind();
+            }
             this.gnome_model = model;
             this.gnome_model.on('sync', _.bind(this.checkState, this));
             $.get(webgnome.config.api + '/rewind');
