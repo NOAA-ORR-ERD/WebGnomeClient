@@ -46,6 +46,10 @@ define([
             });
         },
 
+        convertValuesToLogScale: function(arr){
+            return [Math.pow(10, arr[0]), Math.pow(10, arr[1])];
+        },
+
         filterCollection : function(arr, options){
             var results;
             if (options.type === 'api'){
@@ -57,10 +61,14 @@ define([
                     }
                 });
             } else if (options.type === 'viscosity'){
+                var logArray = this.convertValuesToLogScale(arr);
                 // Converting the viscosity values from m^2/s to cSt
                 results = this.filter(function(model){
                     var viscosityInCst = model.attributes[options.type] * 1000000;
-                    if (viscosityInCst >= arr[0] && viscosityInCst <= arr[1]){
+                    if (logArray[0] === 1){
+                        logArray[0] = 0;
+                    }
+                    if (viscosityInCst >= logArray[0] && viscosityInCst <= logArray[1]){
                         return true;
                     } else {
                         return false;
