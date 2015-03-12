@@ -73,6 +73,22 @@ define([
 
         renderTuning: function(options){
             var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
+            var showDispersant = false;
+            var showBurn = false;
+            var showSkimming = false;
+            _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                console.log("el " + idx + " is " + el.attributes.obj_type);
+                if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                    if (el.attributes.name != "_natural") {
+                        showDispersant = true;
+                    }
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+                    showBurn = true;
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+                    showSkimming = true;
+                }
+            });
+
             compiled = _.template(TuningTemplate);
             template = compiled({
                 surface: model.get('surface').toFixed(3),
@@ -81,6 +97,9 @@ define([
                 surfaceRI: (model.get('relativeImportance').surface * 100).toFixed(3),
                 columnRI: (model.get('relativeImportance').column * 100).toFixed(3),
                 shorelineRI: (model.get('relativeImportance').shoreline * 100).toFixed(3),
+                showDispersant: showDispersant,
+                showBurn: showBurn,
+                showSkimming: showSkimming,
             });
 
             this.$('#era-tuning').html(template);

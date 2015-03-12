@@ -33,29 +33,35 @@
         <div class="col-sm-12">
 	    <label class="control-label">Efficiencies:</label>
         </div>
-                    <div id="skimming" class="col-sm-offset-1 col-sm-11">
-                        <div class="col-sm-3">
-                            <label class="control-label" id="skimminglabel">Skimming:</label>
-                        </div>
-                        <div class="col-sm-7">
-                            <div class="slider"></div>
-                        </div>
-                    </div>
-                    <div id="dispersant" class="col-sm-offset-1 col-sm-11">
-                        <div class="col-sm-3">
-                            <label class="control-label" id="dispersantlabel">Dispersant:</label>
-                        </div>
-                        <div class="col-sm-7">
-                            <div class="slider"></div>
-                        </div>
-                    </div>
-                    <div id="insituburn" class="col-sm-offset-1 col-sm-11">
-                        <div class="col-sm-3">
-                            <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
-                        </div>
-                        <div class="col-sm-7">
-                            <div class="slider"></div>
-                        </div>
-                    </div>
+        <div class="{%if(!showSkimming){%}hide{%}%}">
+            <div id="skimming" class="col-sm-offset-1 col-sm-11">
+                <div class="col-sm-3">
+                    <label class="control-label" id="skimminglabel">Skimming:</label>
+                </div>
+                <div class="col-sm-7">
+                    <div class="slider"></div>
+                </div>
+            </div>
+        </div>
+        <div class="{%if(!showDispersant){%}hide{%}%}">
+            <div id="dispersant" class="col-sm-offset-1 col-sm-11">
+                <div class="col-sm-3">
+                    <label class="control-label" id="dispersantlabel">Dispersant:</label>
+                </div>
+                <div class="col-sm-7">
+                    <div class="slider"></div>
+                </div>
+            </div>
+        </div>
+        <div class="{%if(!showBurn){%}hide{%}%}">
+            <div id="insituburn" class="col-sm-offset-1 col-sm-11">
+                <div class="col-sm-3">
+                    <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
+                </div>
+                <div class="col-sm-7">
+                    <div class="slider"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
