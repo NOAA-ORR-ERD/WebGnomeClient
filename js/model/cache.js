@@ -5,6 +5,7 @@ define([
     'model/step'
 ], function($, _, Backbone, StepModel){
     var cache = Backbone.Collection.extend({
+        fetching: false,
 
         initialize: function(options, model){
             this.rewind();
@@ -20,15 +21,20 @@ define([
         step: function(){
             var step = new StepModel();
             this.trigger('step:sent');
-            step.fetch({
-                success: _.bind(function(step){
-                    this.add(step);
-                    this.trigger('step:recieved', step);
-                }, this),
-                error: _.bind(function(){
-                    this.trigger('step:failed');
-                }, this)
-            });
+            if (!this.fetching) {
+                this.fetching = true;
+                step.fetch({
+                    success: _.bind(function(step){
+                        this.add(step);
+                        this.fetching = false;
+                        this.trigger('step:recieved', step);
+                    }, this),
+                    error: _.bind(function(){
+                        this.fetching = false;
+                        this.trigger('step:failed');
+                    }, this)
+                });
+            }
         },
 
         rewind: function(){
