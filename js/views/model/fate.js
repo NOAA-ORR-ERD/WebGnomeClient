@@ -560,6 +560,7 @@ define([
                 options.colors = this.colors;
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
+                options.tooltip = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 

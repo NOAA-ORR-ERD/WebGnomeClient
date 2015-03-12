@@ -41,7 +41,8 @@ define([
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop')),
-                amount: this.model.get('amount')
+                amount: this.model.get('amount'),
+                units: this.model.get('units')
             });
             ResponseFormModal.prototype.render.call(this, options);
             this.convertToRate();

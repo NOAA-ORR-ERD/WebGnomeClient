@@ -26,7 +26,9 @@ define([
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 area: this.model.get('area'),
-                thickness: this.model.get('thickness')
+                thickness: this.model.get('thickness'),
+                areaUnits: this.model.get('area_units'),
+                thicknessUnits: this.model.get('thickness_units')
             });
             ResponseFormModal.prototype.render.call(this, options);
 

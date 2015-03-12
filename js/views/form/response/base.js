@@ -98,6 +98,11 @@ define([
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
             this.efficiencyValue = parseFloat(value) / 100;
+        },
+
+        close: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.close.call(this);
         }
 	});
 

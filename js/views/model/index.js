@@ -163,6 +163,9 @@ define([
                 this.updateHeight();
             }, this));
 
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
+
             this.remove();
             if (this.onClose){
                 this.onClose();

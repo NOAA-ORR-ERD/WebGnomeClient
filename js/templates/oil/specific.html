@@ -74,7 +74,7 @@
     					       Kinematic Viscosity
                             </div>
                             <div class="panel-body">
-            					{% if (!data.imported.kvis){ %}
+            					{% if (!data.kvis){ %}
             						<div>No Viscosity Data on Record.</div>
             					{% } else { %}
             						<table class="table">
@@ -83,16 +83,16 @@
             								<th>Reference Temperature &deg;F (&deg;C)</th>
             								<th>Weathering (%)</th>
             							</tr>
-            						{% for (var i = 0; i < data.imported.kvis.length; i++){ %}
-            							{% var centiStokes = (data.imported.kvis[i].m_2_s * 1000000).toFixed(3); %}
-                                        {% if (_.isNumber(data.imported.kvis[i].weathering)) { %}
-                                            {% var viscosityWeather = (data.imported.kvis[i].weathering * 100).toFixed(3); %}
+            						{% for (var i = 0; i < data.kvis.length; i++){ %}
+            							{% var centiStokes = (data.kvis[i].m_2_s * 1000000).toFixed(3); %}
+                                        {% if (_.isNumber(data.kvis[i].weathering)) { %}
+                                            {% var viscosityWeather = (data.kvis[i].weathering * 100).toFixed(3); %}
                                         {% } else { %}
                                             {% var viscosityWeather = '--' %}
                                         {% } %}
             							<tr>
             								<td>{{ centiStokes }}</td>
-            								<td>{{ data.imported.kvis[i].ref_temp_f }} {{ data.imported.kvis[i].ref_temp_k }}</td>
+            								<td>{{ data.kvis[i].ref_temp_f }} {{ data.kvis[i].ref_temp_k }}</td>
             								<td>{{ viscosityWeather }}</td>
             							</tr>
             						{% } %}
