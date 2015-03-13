@@ -10,7 +10,6 @@ define([
         initialize: function(options, model){
             this.gnome_model = model;
             this.gnome_model.on('sync', _.bind(this.checkState, this));
-            this.rewind();
         },
 
         checkState: function(){
@@ -36,8 +35,8 @@ define([
             }
         },
 
-        rewind: function(){
-            if(this.length > 0 || !this.gnome_model.isNew()){
+        rewind: function(override){
+            if(this.length > 0 || override){
                 $.get(webgnome.config.api + '/rewind');
                 this.reset([]);
             }

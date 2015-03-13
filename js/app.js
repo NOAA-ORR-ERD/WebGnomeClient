@@ -245,6 +245,7 @@ define([
                         success: function(model){
                             if(model.id){
                                 window.webgnome.model = model;
+                                webgnome.cache.rewind(true);
                             }
                             Backbone.history.start();
                         },
