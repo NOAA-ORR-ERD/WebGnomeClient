@@ -5,36 +5,41 @@ define([
     'model/step'
 ], function($, _, Backbone, StepModel){
     var cache = Backbone.Collection.extend({
-        models: new Backbone.Collection(),
+        fetching: false,
 
-        initialize: function(){
-            this.rewind();
-            webgnome.model.on('change', _.bind(this.checkState, this));
+        initialize: function(options, model){
+            this.gnome_model = model;
+            this.gnome_model.on('sync', _.bind(this.checkState, this));
         },
 
         checkState: function(){
-            if(webgnome.model.hasChanged){
-                this.rewind();
-            }
+            this.rewind();
         },
 
         step: function(){
             var step = new StepModel();
             this.trigger('step:sent');
-            step.fetch({
-                success: _.bind(function(step){
-                    this.add(step);
-                    this.trigger('step:recieved', step);
-                }, this),
-                error: _.bind(function(){
-                    this.trigger('step:failed');
-                }, this)
-            });
+            if (!this.fetching) {
+                this.fetching = true;
+                step.fetch({
+                    success: _.bind(function(step){
+                        this.add(step);
+                        this.fetching = false;
+                        this.trigger('step:recieved', step);
+                    }, this),
+                    error: _.bind(function(){
+                        this.fetching = false;
+                        this.trigger('step:failed');
+                    }, this)
+                });
+            }
         },
 
-        rewind: function(){
-            $.get(webgnome.config.api + '/rewind');
-            this.reset([]);
+        rewind: function(override){
+            if(this.length > 0 || override){
+                $.get(webgnome.config.api + '/rewind');
+                this.reset([]);
+            }
         }
     });
 

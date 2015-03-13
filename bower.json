@@ -5,7 +5,7 @@
   "dependencies": {
     "underscore": "1.6.0",
     "backbone": "1.1.2",
-    "jquery": "1.*.*",
+    "jquery": "2.*.*",
     "moment": "2.8.1",
     "jquery-ui": "1.11",
     "mousetrap": "1.4.6",
@@ -17,7 +17,7 @@
     "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git",
     "respond": "1.4.2",
     "compass-rose-ui": "1.0.*",
-    "fancytree": "2.2.0",
+    "fancytree": "2.*.*",
     "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip",
     "fuse": "~1.1.7",
     "flot": "0.8.3",
@@ -28,8 +28,8 @@
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "1.0.0",
-    "sweetalert": "0.2.1",
-    "fabric": "1.4.12",
+    "sweetalert": "0.4.*"
+    ,"fabric": "1.4.12",
     "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js"
   },
   "devDependencies": {

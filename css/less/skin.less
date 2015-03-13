@@ -83,6 +83,14 @@ img{
 }
 .sweet-alert{
     border-radius: 0;
+    code{
+        font-size: 10px;
+        text-align: left;
+        float: left;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .app-state{
@@ -548,10 +556,13 @@ nav.navbar{
         background-color: #F0F2F5;
     }
 
-    #helpquery:focus {
-        border-color: #66AFE9;
-        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
-        outline: 0 none;
+    #helpquery {
+        border-radius: 5px;
+        &:focus {
+            border-color: #66AFE9;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);
+            outline: 0 none;
+        }
     }
 
     .querycontainer a {
@@ -907,6 +918,16 @@ nav.navbar{
                         cursor: pointer;
                         display: none;
                     }
+                    .coords{
+                        .label;
+                        .label-info;
+                    }
+                }
+
+                .error {
+                    .coords{
+                        .label-danger;
+                    }
                 }
 
                 .panel-body{
@@ -986,77 +1007,85 @@ nav.navbar{
     > div{
         display: inline-block;
     }
-    .view-toggle{
+    .menu-overlay{
         position: absolute;
         right: 0px;
         top: -37px;
-        width: 200px;
-
-        label{
-            float:left;
-            font-weight: normal;
-            font-size: 11px;
-            padding-top: 3px;
-            cursor: pointer;
+        width: 310px;
+        .edit{
+            .btn;
+            .btn-success;
+            margin-left: 20px;
+            margin-top: -7px;
         }
-
-        .toggle{
-            margin: -3px 10px 0;
-            padding: 2px;
-            float: left;
-            background: rgba(0, 0, 0, 0.09);
-            border-radius: 4px;
-            border: 1px solid #afafaf;
-            width: 55px;
-            position: relative;
-            color: #979797;
-            box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
-
-            .trajectory{
-                .glyphicon;
-                .glyphicon-map-marker;
-                left: 6px;
-            }
-
-            .fate{
-                .glyphicon;
-                .glyphicon-stats;
-                right: 6px;
-            }
-
-            .trajectory, .fate{
-                position: absolute;
-                top:5px;
-            }
-
-            .switch{
-                width: 22px;
-                height: 22px;
-                border: 1px solid;
-                border-radius: 4px;
-                background: #ccc;
-                position: absolute;
-                .btn-primary;
+        .view-toggle{
+            label{
+                float:left;
+                font-weight: normal;
+                font-size: 11px;
+                padding-top: 3px;
                 cursor: pointer;
-                .glyphicon;
-                .glyphicon-map-marker;
-                top: 0 !important;
-                text-align:center;
-                padding-top:2px;
-                left: 0px;
-                z-index: 2;
-                text-shadow: 0 -1px rgba(0, 0, 0, 0.25);
-                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
-                
-                &.fate{
-                    left: auto;
-                    right: -27px;
+            }
+
+            .toggle{
+                margin: -3px 10px 0;
+                padding: 2px;
+                float: left;
+                background: rgba(0, 0, 0, 0.09);
+                border-radius: 4px;
+                border: 1px solid #afafaf;
+                width: 55px;
+                position: relative;
+                color: #979797;
+                box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
+
+                .trajectory{
+                    .glyphicon;
+                    .glyphicon-map-marker;
+                    left: 6px;
+                }
+
+                .fate{
                     .glyphicon;
                     .glyphicon-stats;
+                    right: 6px;
+                }
+
+                .trajectory, .fate{
+                    position: absolute;
+                    top:5px;
+                }
+
+                .switch{
+                    width: 22px;
+                    height: 22px;
+                    border: 1px solid;
+                    border-radius: 4px;
+                    background: #ccc;
+                    position: absolute;
+                    .btn-primary;
+                    cursor: pointer;
+                    .glyphicon;
+                    .glyphicon-map-marker;
+                    top: 0 !important;
+                    text-align:center;
+                    padding-top:2px;
+                    left: 0px;
+                    z-index: 2;
+                    text-shadow: 0 -1px rgba(0, 0, 0, 0.25);
+                    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+                    
+                    &.fate{
+                        left: auto;
+                        right: -27px;
+                        .glyphicon;
+                        .glyphicon-stats;
+                    }
                 }
             }
         }
     }
+    
     > .tree{
         width: 0;
         position: absolute;
@@ -1334,9 +1363,18 @@ nav.navbar{
     }
 
     > .fate{
-        padding-top: 30px;
+        margin-top: 20px;
         width: 100%;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
+            
+        .gnome-help{
+            display: none;
+            font-size: 30px;
+        }
+
+        .heading {
+            margin-bottom: 20px;
+        }
         
         .nav-tabs{
             margin-bottom: 30px;
@@ -1791,11 +1829,15 @@ nav.navbar{
         }
         
         .additional-wind-compass {
-            width: 150px;
-            height: 150px;
-            background-color: white;
+            width: 175px;
+            height: 175px;
+            background-color: #DDEFFF;
             z-index: 2000;
-            border: 1px solid black;
+            border: 1px solid #ccc;
+            border-top-color: transparent;
+            padding: 15px;
+            cursor: pointer;
+            border-radius: 0 0 3px 3px;
         }
 
         table{
@@ -1812,8 +1854,38 @@ nav.navbar{
             th{
                 line-height: 34px;
             }
+            span.edit{
+                margin-right: 10px;
+            }
             .ok, .undo {
+                .glyphicon;
                 margin-top: 7px;
+            }
+            .ok{
+                .glyphicon-ok;
+                margin-right: 10px;
+                color: rgba(18,129,0,0.57);
+            }
+            .undo{
+                .glyphicon-remove;
+                color: rgba(207, 0, 0, 0.65);
+            }
+            tr.edit {
+                background: #DDEFFF;
+                border-bottom: 1px solid #ccc;
+
+                td {
+                    line-height: 34px;
+                }
+                .ok, .undo {
+                    opacity: 1;
+                }
+            }
+            .table-input-spd {
+                width: 100px;
+            }
+            .table-input-dir{
+                width: 50px;
             }
         }
 
@@ -2013,7 +2085,6 @@ nav.navbar{
     .slider-tip {
         opacity:1;
         top: 100%;
-        margin-left: -7px;
     }
 
     #sliders {
@@ -2041,18 +2112,9 @@ nav.navbar{
         margin-top: 40px;
     }
 
-    .tooltip-inner {
-            width: 40px;
-            margin-left: -5px;
-    }
-
     label i {
         font-weight: normal;
         text-decoration: none;
-    }
-
-    .tooltip.bottom .tooltip-arrow {
-        left: 40%;
     }
 
     .oilTable {

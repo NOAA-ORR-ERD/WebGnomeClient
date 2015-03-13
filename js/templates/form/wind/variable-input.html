@@ -1,25 +1,17 @@
 <td>
-	<div class="row">
-		<div class="col-md-12">
-			{{ date }}
-		</div>
+	{{ date }}
+</td>
+<td>
+	<div class="table-input-spd">
+		<input class="form-control input-speed" value="{{ speed }}">
+	</div>
+</td>
+<td>	
+	<div class="table-input-dir">
+		<input class="form-control input-direction" value="{{ direction }}">
 	</div>
 </td>
 <td>
-	<div class="row">
-		<div class="col-md-5">
-			<input class="form-control input-speed" value="{{ speed }}">
-		</div>
-	</div>
-</td>
-<td>
-	<div class="row">
-		<div class="col-md-5">
-			<input class="form-control input-direction" value="{{ direction }}">
-		</div>
-	</div>
-</td>
-<td>
-	<span class="glyphicon glyphicon-ok ok"></span>
-	<span class="glyphicon glyphicon-remove undo"></span>
+	<span class="ok"></span>
+	<span class="undo"></span>
 </td>

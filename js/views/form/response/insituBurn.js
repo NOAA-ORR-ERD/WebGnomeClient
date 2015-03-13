@@ -24,19 +24,46 @@ define([
         render: function(options){
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
-                time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm')
+                time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
+                area: this.model.get('area'),
+                thickness: this.model.get('thickness'),
+                areaUnits: this.model.get('area_units'),
+                thicknessUnits: this.model.get('thickness_units')
             });
             ResponseFormModal.prototype.render.call(this, options);
+
+            this.setUnitSelects();
+        },
+
+        setUnitSelects: function(){
+            var areaUnits = this.model.get('area_units');
+            var thicknessUnits = this.model.get('thickness_units');
+
+            this.$('#areaunits').val(areaUnits);
+            this.$('#thicknessunits').val(thicknessUnits);
         },
 
         convertLength: function(length, units){
+            var len = parseFloat(length);
             switch (units) {
                 case "mm":
-                  return parseFloat(length) / 1000;
+                  return len / 1000;
                 case "in":
-                  return parseFloat(length) / 39.370;
+                  return len / 39.370;
                 case "cm":
-                  return parseFloat(length) / 100;
+                  return len / 100;
+            }
+        },
+
+        convertArea: function(area, units){
+            var numArea = parseFloat(area);
+            switch (units){
+                case "ft^2":
+                    return numArea / 10.7639;
+                case "yd^2":
+                    return numArea / 1.19599;
+                case "m^2":
+                    return numArea;
             }
         },
 
@@ -54,6 +81,10 @@ define([
 
             this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('active_stop', start_time.add(burnDuration, 's').format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('area', boomedOilArea);
+            this.model.set('thickness', boomedOilThickness);
+            this.model.set('area_units', boomedAreaUnits);
+            this.model.set('thickness_units', boomedThicknessUnits);
         }
     });
 

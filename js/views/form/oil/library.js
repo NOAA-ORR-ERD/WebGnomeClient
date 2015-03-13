@@ -120,11 +120,16 @@ define([
                 var quantity = arr[i];
                 var min = quantity + '_min';
                 var max = quantity + '_max';
-                if (!this[min] && !this[max] && quantity !== 'pour_point'){
+                if (!this[min] && !this[max] && (quantity !== 'pour_point' && quantity !== 'viscosity')){
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
                     this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                } else if (quantity === 'viscosity') {
+                    var visMin = _.min(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
+                    var visMax = _.max(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
+                    this[min] = visMin;
+                    this[max] = visMax;
                 } else {
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
                         function(model){ return model.attributes[quantity][0]; }).attributes[quantity][0]);
@@ -232,27 +237,55 @@ define([
         },
 
         createSliders: function(minNum, maxNum, selector){
-            this.$(selector).slider({
-                        range: true,
-                        min: minNum,
-                        max: maxNum,
-                        values: [minNum, maxNum],
-                        create: _.bind(function(){
+            //Converting viscosity from m^2/s to cSt before appending the values to the slider
+            if (selector !== '.slider-viscosity'){
+                this.$(selector).slider({
+                            range: true,
+                            min: minNum,
+                            max: maxNum,
+                            values: [minNum, maxNum],
+                            create: _.bind(function(){
+                               this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 minNum + '</div></div>');
+                               this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 maxNum + '</div></div>');
+                            }, this),
+                            slide: _.bind(function(e, ui){
+                               this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 ui.values[0] + '</div></div>');
+                               this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 ui.values[1] + '</div></div>');
+                               this.updateTooltipWidth();
+                            }, this),
+                            stop: _.bind(function(){
+                                this.update();
+                            }, this)
+                        });
+            } else {
+                // Overriding the original slide callback to follow log scale for the viscosity slider
+                this.$(selector).slider({
+                    range: true,
+                    min: 0,
+                    max: 8,
+                    values: [0, 8],
+                    create: _.bind(function(e, ui){
                            this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             minNum + '</div></div>');
+                                                             Math.pow(10, 0) + '</div></div>');
                            this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             maxNum + '</div></div>');
+                                                             Math.pow(10, 8) + '</div></div>');
                         }, this),
-                        slide: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             ui.values[0] + '</div></div>');
-                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             ui.values[1] + '</div></div>');
-                        }, this),
-                        stop: _.bind(function(){
-                            this.update();
-                        }, this)
-                    });
+                    slide: _.bind(function(e, ui){
+                            this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                Math.pow(10, ui.values[0]) + '</div></div>');
+                            this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                Math.pow(10, ui.values[1]) + '</div></div>');
+                            this.updateTooltipWidth();
+                    }, this),
+                    stop: _.bind(function(){
+                        this.update();
+                    }, this)
+                });
+            }
         },
 
         goBack: function(e){

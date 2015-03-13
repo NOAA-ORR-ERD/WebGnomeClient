@@ -46,17 +46,36 @@ define([
             });
         },
 
+        convertValuesToLogScale: function(arr){
+            return [Math.pow(10, arr[0]), Math.pow(10, arr[1])];
+        },
+
         filterCollection : function(arr, options){
-            if (options.type === 'api' || options.type === 'viscosity'){
-                var results = this.filter(function(model){
+            var results;
+            if (options.type === 'api'){
+                results = this.filter(function(model){
                     if (model.attributes[options.type] >= arr[0] && model.attributes[options.type] <= arr[1]){
                         return true;
                     } else {
                         return false;
                     }
                 });
+            } else if (options.type === 'viscosity'){
+                var logArray = this.convertValuesToLogScale(arr);
+                // Converting the viscosity values from m^2/s to cSt
+                results = this.filter(function(model){
+                    var viscosityInCst = model.attributes[options.type] * 1000000;
+                    if (logArray[0] === 1){
+                        logArray[0] = 0;
+                    }
+                    if (viscosityInCst >= logArray[0] && viscosityInCst <= logArray[1]){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
             } else if (options.type === 'pour_point'){
-                var results = this.filter(function(model){
+                results = this.filter(function(model){
                     if (model.attributes[options.type][0] > arr[1] || model.attributes[options.type][1] < arr[0]){
                         return false;
                     } else {
@@ -65,7 +84,7 @@ define([
                 });
             } else if (options.type === 'categories'){
                 var str = arr.parent + '-' + arr.child;
-                var results = this.filter(function(model){
+                results = this.filter(function(model){
                     return _.indexOf(model.attributes.categories, str) !== -1;
                 });
             }

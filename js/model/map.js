@@ -2,10 +2,12 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'ol',
     'model/base'
-], function(_, $, Backbone, BaseModel){
+], function(_, $, Backbone, ol, BaseModel){
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
+        requesting: false,
 
         validate: function(attrs, options){
             if(_.isNull(attrs.filename)){
@@ -15,7 +17,12 @@ define([
 
         getGeoJSON: function(callback){
             var url = webgnome.config.api + this.urlRoot + this.get('id') + '/geojson';
-            $.get(url, null, callback);
+            if(!this.requesting){
+                this.requesting = true;
+                $.get(url, null, callback).always(_.bind(function(){
+                    this.requesting = false;
+                }, this));
+            }
         },
 
         toTree: function(){
@@ -33,6 +40,10 @@ define([
             tree = attrs.concat(tree);
 
             return tree;
+        },
+
+        getExtent: function(){
+            return ol.extent.boundingExtent(this.get('map_bounds'));
         }
     });
 

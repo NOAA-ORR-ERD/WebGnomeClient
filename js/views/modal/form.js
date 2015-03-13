@@ -112,7 +112,8 @@ define([
                     }, this)
                 });
                 if (this.model.validationError){
-                    this.error('Error', this.model.validationError);
+                    this.error('Error!', this.model.validationError);
+                    this.$el.scrollTop(0);
                 }
             } else {
                 this.hide();

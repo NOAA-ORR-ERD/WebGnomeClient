@@ -156,36 +156,32 @@ define([
             }
 
             if(e.target.hash == '#constant'){
-                setTimeout(_.bind(function(){
-                    if(this.$('.constant-compass canvas').length === 0){
-                        this.$('.constant-compass').compassRoseUI({
-                            'arrow-direction': 'in',
-                            'move': _.bind(this.constantCompassUpdate, this)
-                        });
+                if(this.$('.constant-compass canvas').length === 0){
+                    this.$('.constant-compass').compassRoseUI({
+                        'arrow-direction': 'in',
+                        'move': _.bind(this.constantCompassUpdate, this)
+                    });
 
-                        this.$('.constant-compass').compassRoseUI('update', {
-                            speed: this.form.constant.speed.val(),
-                            direction: this.form.constant.direction.val()
-                        });
-                    }
-                }, this), 1);
+                    this.$('.constant-compass').compassRoseUI('update', {
+                        speed: this.form.constant.speed.val(),
+                        direction: this.form.constant.direction.val()
+                    });
+                }
                 
             } else if (e.target.hash == '#variable') {
-                setTimeout(_.bind(function(){
-                    if(this.$('.variable-compass canvas').length === 0){
-                        this.$('.variable-compass').compassRoseUI({
-                            'arrow-direction': 'in',
-                            'move': _.bind(this.variableCompassUpdate, this)
-                        });
-                    }
+                if(this.$('.variable-compass canvas').length === 0){
+                    this.$('.variable-compass').compassRoseUI({
+                        'arrow-direction': 'in',
+                        'move': _.bind(this.variableCompassUpdate, this)
+                    });
+                }
 
-                    if(!_.isUndefined(this.originalTimeseries)){
-                        this.model.set('timeseries', this.originalTimeseries);
-                    }
+                if(!_.isUndefined(this.originalTimeseries)){
+                    this.model.set('timeseries', this.originalTimeseries);
+                }
 
-                    this.unbindBaseMouseTrap();
-                    this.renderTimeseries();
-                }, this), 1);
+                this.unbindBaseMouseTrap();
+                this.renderTimeseries();
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
@@ -202,6 +198,7 @@ define([
                     }, this));
                 }
             }
+            $(window).trigger('resize');
             this.update();
         },
 
@@ -330,7 +327,10 @@ define([
         },
 
         modifyTimeseriesEntry: function(e){
-            if (this.$('.input-speed').length === 0){
+            // Create boolean value to confirm that the DOM element clicked was the 
+            // edit pencil and not the check in the table row.
+            var editClassExists = this.$(e.target).hasClass('edit');
+            if (this.$('.input-speed').length === 0 && editClassExists){
                 e.preventDefault();
                 var row = this.$(e.target).parents('tr')[0];
                 var index = row.dataset.tsindex;
@@ -342,6 +342,7 @@ define([
                     'speed': entry[1][0],
                     'direction': entry[1][1]
                 });
+                this.$(row).addClass('edit');
                 this.$(row).html(template);
                 this.attachCompass(e, entry, row);
             }
@@ -349,24 +350,10 @@ define([
 
         attachCompass: function(e, entry, row){
             this.$el.off('keyup tr input');
-            var modal_offset = this.$el.offset();
-            modal_offset.top += $(window).height();
-            var modal_height = this.$el.height();
-            var modal_width = this.$el.width();
-            var jqRow = this.$(row);
-            var row_offset = jqRow.offset();
-            row_offset.top -= modal_offset.top;
-            var row_height = jqRow.height();
-            var row_width = jqRow.width();
             this.entry = entry;
-            console.log("modal_top: " + modal_offset.top);
-            console.log("modal_height: " + modal_height);
-            console.log("row_offset_top: " + row_offset.top);
-            console.log("row_height: " + row_height);
-            var top = modal_height + row_offset.top + row_height + modal_offset.top - 40 + "px";
-            console.log(top);
-            var right = modal_width - row_offset.left - modal_offset.left - 1150 + row_width + "px";
-            this.$el.append('<div class="additional-wind-compass"></div>');
+            var top = (this.$('.modal-content').offset().top * -1) + this.$(row).offset().top + this.$(row).outerHeight();
+            var right = 26 + "px";
+            this.$('.modal-content').append('<div class="additional-wind-compass"></div>');
             this.$('.additional-wind-compass').compassRoseUI({
                     'arrow-direction': 'in',
                     'move': _.bind(this.variableRoseUpdate, this)
@@ -407,7 +394,7 @@ define([
                 }
             }, this));
             this.$('.additional-wind-compass').remove();
-            this.saveTimeseries();
+            this.$(row).removeClass('edit');
             this.renderTimeseries();
         },
 
@@ -421,22 +408,13 @@ define([
                 speed: entry[1][0],
                 direction: entry[1][1]
             });
+            this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
-        },
-
-        saveTimeseries: function(){
-            var windId = this.model.get('id');
-            var timeseries = this.timeseries;
-            if (webgnome.model.get('environment').findWhere({id: windId})){
-                webgnome.model.get('environment').findWhere({id: windId}).set('timeseries', timeseries);
-            } else {
-                this.model.set('timeseries', timeseries);
-                webgnome.model.get('environment').add(this.model);
-            }
         },
 
         addTimeseries: function(){
             webgnome.model.get('environment').findWhere({id: windId});
+            $(window).trigger('resize');
         },
 
         removeTimeseriesEntry: function(e){

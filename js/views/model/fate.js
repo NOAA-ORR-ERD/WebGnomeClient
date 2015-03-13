@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
+    'views/base',
     'moment',
     'nucos',
     'text!templates/model/fate.html',
@@ -14,12 +16,13 @@ define([
     'flottime',
     'flotresize',
     'flotstack',
-    'flotcrosshair',
     'flotpie',
     'flotfillarea',
-    'flotselect'
-], function($, _, Backbone, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
-    var fateView = Backbone.View.extend({
+    'flotselect',
+    'flottooltip',
+    'flotcrosshair'
+], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
+    var fateView = BaseView.extend({
         className: 'fate',
         frame: 0,
         rendered: false,
@@ -42,16 +45,52 @@ define([
             'change #ics209 input': 'ICSInputSelect',
             'change #ics209 select': 'renderTableICS',
             'click #ics209 .export a.download': 'downloadTableICS',
-            'click #ics209 .export a.print': 'printTableICS'
+            'click #ics209 .export a.print': 'printTableICS',
+            'click .gnome-help': 'renderHelp'
+        },
+
+        defaultChartOptions: {
+            grid: {
+                borderWidth: 1,
+                borderColor: '#ddd',
+                hoverable: true,
+            },
+            xaxis: {
+                mode: 'time',
+                timezone: 'browser'
+            },
+            series: {
+                lines: {
+                    show: true,
+                    lineWidth: 1
+                },
+                shadowSize: 0
+            },
+            crosshair: {
+                mode: 'x',
+                color: '#999',
+                showToolTip: true
+            },
+            tooltip: true,
+            tooltipOpts: {
+                lines: {
+                    track: true,
+                    threshold: 10000000
+                }
+            },
+            yaxis: {}
         },
 
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
         },
 
         load: function(){
-            if(webgnome.cache.models.length > 0){
+            if(webgnome.cache.models.length > 0 &&
+            _.has(webgnome.cache.models[0].get('WeatheringOutput'), 'nominal')){
 
                 webgnome.cache.forEach(_.bind(function(step){
                     this.frame++;
@@ -66,6 +105,7 @@ define([
         },
 
         render: function(){
+            BaseView.prototype.render.call(this);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             if(_.isUndefined(wind)){
@@ -156,9 +196,16 @@ define([
             }
         },
 
+        showHelp: function(){
+            this.$('.gnome-help').show();
+            this.$('.gnome-help').tooltip();
+        },
+
         renderGraphs: function(){
             // find active tab and render it's graph.
             var active = this.$('.active a').attr('href');
+
+            $('#flotTip').remove();
 
             if(active == '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
@@ -182,34 +229,13 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                        autoHighlight: false
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        stack: true,
-                        group: true,
-                        groupInterval: 1,
-                        lines: {
-                            show: true,
-                            fill: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: this.colors,
-                    crosshair: {
-                        mode: 'x',
-                        color: '#999'
-                    }
-                });
+                var options = _.clone(this.defaultChartOptions);
+                options.grid.autoHighlight = false;
+                options.series.stack = true;
+                options.series.group = true;
+                options.series.lines.fill = true;
+                options.colors = this.colors;
+                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
@@ -385,9 +411,9 @@ define([
                                 if(display.other === 'same'){
                                     value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
                                 } else if (display.other === 'percent'){
-                                    value = Math.round(value / dataset[0].data[row][1] * 100);
+                                    value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100);
                                 } else {
-                                    value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
+                                    value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100) / 100;
                                 }
                             }
                             row_html += '<td style="background: ' + color + ';">' + value + '</td>';
@@ -396,7 +422,7 @@ define([
                     if(row === 0){
                         row_html += '</tr></thead>';
                     } else {
-                        row_html += '</tr>';                        
+                        row_html += '</tr>';
                     }
                     table += row_html;
                 }
@@ -452,24 +478,9 @@ define([
             dataset = this.pluckDataset(dataset, ['evaporated']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
-                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: [this.colors[1]]
-                });
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[1]];
+                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
                 this.graphEvaporation.setupGrid();
@@ -482,24 +493,9 @@ define([
             dataset = this.pluckDataset(dataset, ['dispersed']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
-                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: [this.colors[2]]
-                });
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
+                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
                 this.graphDispersion.setupGrid();
@@ -512,27 +508,10 @@ define([
             var dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
-                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    yaxis: {
-                        ticks: 4,
-                        tickDecimals: 3
-                    }
-                });
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.yaxis.ticks = 4;
+                options.yaxis.tickDecimals = 2;
+                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);
                 this.graphDensity.setupGrid();
@@ -542,31 +521,15 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['emulsified']);
+            dataset = this.pluckDataset(dataset, ['water_content']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphEmulsificaiton)){
-                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: [this.colors[3]]
-                });
+            if(_.isUndefined(this.graphEmulsification)){
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
             } else {
-                this.graphEmulsificaiton.setData(dataset);
-                this.graphEmulsificaiton.setupGrid();
-                this.graphEmulsificaiton.draw();
+                this.graphEmulsification.setData(dataset);
+                this.graphEmulsification.setupGrid();
+                this.graphEmulsification.draw();
             }
             dataset[0].fillArea = null;
         },
@@ -575,30 +538,15 @@ define([
             dataset = this.pluckDataset(dataset, ['avg_viscosity']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
-                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.yaxis = {
+                    ticks: [0, 10, 100, 1000, 10000, 100000],
+                    transform: function(v){
+                        return Math.log(v+10);
                     },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    yaxis: {
-                        ticks: [0, 10, 100, 1000, 10000, 100000],
-                        transform: function(v){
-                            return Math.log(v+10);
-                        },
-                        tickDecimals: 0
-                    },
-                    series: {
-                        lines: {
-                            show: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    }
-                });
+                    tickDecimals: 0
+                };
+                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphViscosity.setData(dataset);
                 this.graphViscosity.setupGrid();
@@ -611,7 +559,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'emulsified']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
@@ -620,35 +568,18 @@ define([
                 this.$('#ics209 .timeline .chart .canvas').on('plotunselected', _.bind(function(e, ranges){
                     this.graphICS.setSelection(this.ICSSelection);
                 }, this));
+
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.grid.autoHighlight = false;
+                options.series.stack = true;
+                options.series.group = true;
+                options.series.lines.fill = true;
+                options.colors = this.colors;
+                options.selection = {mode: 'x', color: '#428bca'};
+                options.crosshair = undefined;
+                options.tooltip = false;
                 
-                this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, {
-                    grid: {
-                        borderWidth: 1,
-                        borderColor: '#ddd',
-                        hoverable: true,
-                        autoHighlight: false
-                    },
-                    xaxis: {
-                        mode: 'time',
-                        timezone: 'browser'
-                    },
-                    series: {
-                        stack: true,
-                        group: true,
-                        groupInterval: 1,
-                        lines: {
-                            show: true,
-                            fill: true,
-                            lineWidth: 1
-                        },
-                        shadowSize: 0
-                    },
-                    colors: this.colors,
-                    selection: {
-                        mode: 'x',
-                        color: '#428bca'
-                    }
-                });
+                this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
             } else {
                 this.graphICS.setData(dataset);
@@ -869,11 +800,13 @@ define([
         },
 
         buildDataset: function(step){
-            if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
-                webgnome.cache.step();
-                this.frame++;
-                this.formatDataset(step);
-                this.renderGraphs();
+            if(_.has(step.get('WeatheringOutput'), 'nominal')){
+                if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
+                    webgnome.cache.step();
+                    this.frame++;
+                    this.formatDataset(step);
+                    this.renderGraphs();
+                }
             }
         },
 
@@ -930,6 +863,18 @@ define([
 
                     nominal_value = nominal[this.dataset[set].name];
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+                }  else if (this.dataset[set].name === 'avg_viscosity') {
+                    // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
+                    low_value = low[this.dataset[set].name] * 1000000;
+                    nominal_value = nominal[this.dataset[set].name] * 1000000;
+                    high_value = high[this.dataset[set].name] * 1000000;
+
+                } else if (this.dataset[set].name === 'water_content'){
+                    // Convert water content into a % it's an easier unit to understand
+                    // and graphs better
+                    low_value = low[this.dataset[set].name] * 100;
+                    nominal_value = nominal[this.dataset[set].name] * 100;
+                    high_value = high[this.dataset[set].name] * 100;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
@@ -937,7 +882,6 @@ define([
                 }
 
                 
-
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);

@@ -21,19 +21,17 @@ define([
                 load: function(options){
                     this.loading = true;
                     this.trigger('load');
-                    webgnome.model.resetLocation(_.bind(function(){
-                        var locationModel = new GnomeLocation({id: options.slug});
-                        locationModel.fetch({
-                            success: _.bind(function(){
-                                webgnome.model.fetch({
-                                    success: _.bind(function(){
-                                        this.trigger('loaded');
-                                        this.loading = false;
-                                    }, this)
-                                });
-                            }, this)
-                        });    
-                    }, this));
+                    var locationModel = new GnomeLocation({id: options.slug});
+                    locationModel.fetch({
+                        success: _.bind(function(){
+                            webgnome.model.fetch({
+                                success: _.bind(function(){
+                                    this.trigger('loaded');
+                                    this.loading = false;
+                                }, this)
+                            });
+                        }, this)
+                    });    
                 }
             });
 

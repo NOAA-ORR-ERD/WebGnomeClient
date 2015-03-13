@@ -13,9 +13,6 @@ define([
         className: 'page model',
 
         initialize: function(){
-            if(_.isUndefined(webgnome.cache)){
-                webgnome.cache = new Cache();
-            }
             this.render();
             $(window).on('resize', _.bind(function(){
                 this.updateHeight();
@@ -32,16 +29,24 @@ define([
             $('body').append(this.$el);
             var view = localStorage.getItem('view');
             var prediction = localStorage.getItem('prediction');
-            
-            if(!_.isNull(prediction) && prediction == 'both'){
-                this.$('.switch').addClass('trajectory');
-                localStorage.setItem('view', 'trajectory');
-                view = 'trajectory';
+
+            if(_.isNull(view)){
+                // if the view is undefined, set it to requested prediction
+                if(prediction === 'both'){
+                    view = 'trajectory';
+                } else {
+                    view = prediction;
+                }
             } else {
-                this.$('.switch').addClass(prediction);
-                localStorage.setItem('view', prediction);
-                view = prediction;
+                // the view is defined make sure it's a viewable view based on the requested prediction
+                // ex. if the view is fate but pred is traj don't render the fate view.
+                if(prediction != 'both'){
+                    view = prediction;
+                }
             }
+            
+            this.$('.switch').addClass(view);
+            localStorage.setItem('view', view);
 
             if (view == 'fate') {
                 this.renderFate();
@@ -76,13 +81,6 @@ define([
             }
 
             this.reset();
-            if(view == 'fate'){
-                this.renderFate();
-                this.$el.css('height', 'auto');
-            } else {
-                this.renderTrajectory();
-                this.updateHeight();
-            }
 
             if(view === 'trajectory' && localStorage.getItem('prediction') === 'fate'){
                 swal({
@@ -95,11 +93,35 @@ define([
                 }, function(isConfirm){
                     if(isConfirm){
                         webgnome.router.navigate('setup', true);
+                        localStorage.setItem('prediction', 'both');
                     } else {
-                        webgnome.router.navigate('setup', true);
-                        webgnome.router.navigate('model', true);
+                        webgnome.router.views[1].switchView();
                     }
                 });
+            } else if (view === 'fate' && localStorage.getItem('prediction') === 'trajectory'){
+                swal({
+                    title: 'Unable to run weathering on a trajectory model',
+                    text: 'If you would like to see the weathering prediction for this model please setup the model accordingly.',
+                    type: 'error',
+                    confirmButtonText: 'Add Weathering',
+                    cancelButtonText: 'Back to Trajectory',
+                    showCancelButton: true,
+                }, function(isConfirm){
+                    if(isConfirm){
+                        webgnome.router.navigate('setup', true);
+                        localStorage.setItem('prediction', 'both');
+                    } else {
+                        webgnome.router.views[1].switchView();
+                    }
+                });
+            }
+
+            if(view == 'fate'){
+                this.renderFate();
+                this.$el.css('height', 'auto');
+            } else {
+                this.renderTrajectory();
+                this.updateHeight();
             }
         },
 
@@ -136,6 +158,13 @@ define([
             if(this.FateView){
                 this.FateView.close();
             }
+
+            $(window).off('resize', _.bind(function(){
+                this.updateHeight();
+            }, this));
+
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
 
             this.remove();
             if (this.onClose){

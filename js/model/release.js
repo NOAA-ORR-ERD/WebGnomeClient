@@ -1,9 +1,10 @@
 define([
     'underscore',
     'backbone',
+    'ol',
     'model/base',
     'moment'
-], function(_, Backbone, BaseModel, moment){
+], function(_, Backbone, ol, BaseModel, moment){
     var gnomeRelease = BaseModel.extend({
         url: '/release',
 
@@ -26,7 +27,7 @@ define([
             }
 
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
             if (!_.isUndefined(webgnome.model)){
@@ -46,7 +47,7 @@ define([
             }
             
             if(_.isUndefined(this.get('end_release_time'))){
-                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
             BaseModel.prototype.initialize.call(this, options);
         },
@@ -62,8 +63,9 @@ define([
 
         validateLocation: function(attrs){
             if (_.isUndefined(attrs)){
-                attrs = this.get('release').attributes;
+                attrs = this.attributes;
             }
+            
             if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';
             }
@@ -74,6 +76,20 @@ define([
 
             if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
                 return 'Give a valid location for the spill!';
+            }
+
+            if (!_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
+                return this.isReleaseInExtent(webgnome.model.get('map').getExtent());
+            }
+        },
+
+        isReleaseInExtent: function(locationExtent){
+            var start = [this.get('start_position')[0], this.get('start_position')[1]];
+            var end = [this.get('end_position')[0], this.get('end_position')[1]];
+            var extentCoords = [start, end];
+            var releaseExtent = ol.extent.boundingExtent(extentCoords);
+            if(!ol.extent.containsExtent(locationExtent, releaseExtent)){
+                return 'Spill is not within the map bounds!';
             }
         },
 

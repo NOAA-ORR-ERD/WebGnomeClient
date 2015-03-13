@@ -34,6 +34,10 @@ define([
                     this.title = options.title;
                 }
 
+                if(options.size) {
+                    this.size = options.size;
+                }
+
                 if(options.buttons) {
                     this.buttons = options.buttons;
                 }
@@ -91,6 +95,7 @@ define([
 
         submitByEnter: function(e){
             e.preventDefault();
+            this.$(':focus').blur();
             this.$('.save').click();
             if (this.$('.next').length > 0){
                 this.$('.next').click();

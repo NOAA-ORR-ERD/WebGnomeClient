@@ -48,22 +48,17 @@ define([
                 this.modelListeners();
             }
 
-            webgnome.model.trigger('sync');
             this.render();
         },
 
         modelListeners: function(){
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.on('change', this.contextualize, this);
-            // because when the model syncs it creates a new collection object for the spills
-            // the original listeners get reset and have to be re-applied.
-            webgnome.model.on('sync', this.spillListeners, this);
+            this.spillListeners();
         },
 
         spillListeners: function(){
-            webgnome.model.get('spills').on('add', this.resetSpills, this);
-            webgnome.model.get('spills').on('change', this.resetSpills, this);
-            webgnome.model.get('spills').on('remove', this.resetSpills, this);
+            webgnome.model.get('spills').on('add change remove', this.resetSpills, this);
         },
 
         render: function(){
@@ -700,9 +695,13 @@ define([
             if(webgnome.model){
                 webgnome.model.off('change', this.contextualize, this);
                 webgnome.model.off('sync', this.spillListeners, this);
+                webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
             }
             webgnome.cache.off('step:recieved', this.renderStep, this);
             webgnome.cache.off('step:failed', this.pause, this);
+            Mousetrap.unbind('space');
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
             this.remove();
             this.unbind();
             this.ol.close();

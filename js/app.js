@@ -13,6 +13,7 @@ define([
 ], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, LoadingView) {
     'use strict';
     var app = {
+        obj_ref: {},
         initialize: function(){
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
@@ -46,8 +47,9 @@ define([
                                         if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
                                             if($('.modal').length === 0){
                                                 swal({
+                                                    html: true,
                                                     title: 'Application Error!',
-                                                    text: 'An error in the application has occured, if this problem persists please contact support.',
+                                                    text: 'An error in the application has occured, if this problem persists please contact support.<br /><br /><code>' + req.responseText + '</code>',
                                                     type: 'error',
                                                     confirmButtonText: 'Refresh'
                                                 }, function(isConfirm){
@@ -110,31 +112,7 @@ define([
                     this.onClose();
                 }
             };
-
-            Backbone.Model.prototype.parse = function(response){
-                // special parse that will recursively build an array of data
-                // into it's associated colloction and data object
-                // or just into it's data object if it's not an array.
-                for(var key in this.model){
-                    if(response[key]){
-                        if(_.isArray(response[key])){
-                            // parse a model array into a collection
-                            var embeddedClass = this.model[key];
-                            var embeddedData = response[key];
-                            response[key] = new Backbone.Collection();
-                            for(var i = 0; i > embeddedData.length; i++){
-                                response[key].add(new embeddedClass[i](embeddedData[i], {parse:true}));
-                            }
-                        } else {
-                            // parse a object noted as a child into it's appropriate backbone model
-                            var embeddedClass = this.model[key];
-                            var embeddedData = response[key];
-                            response[key] = new embeddedClass(embeddedData, {parse:true});
-                        }
-                    }
-                }
-                return response;
-            };
+            
             /**
              * Convert the model's or collection's attributes into the format needed by
              * fancy tree for rendering in a view
@@ -267,13 +245,15 @@ define([
                         success: function(model){
                             if(model.id){
                                 window.webgnome.model = model;
+                                webgnome.cache.rewind(true);
                             }
                             Backbone.history.start();
                         },
                         error: function(){
                             Backbone.history.start();
                             webgnome.router.navigate('', true);
-                        }
+                        },
+                        silent: true
                     });
                 } else {
                     Backbone.history.start();

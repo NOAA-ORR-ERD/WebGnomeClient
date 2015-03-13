@@ -86,27 +86,6 @@ define([
 		},
 
         tabStatusSetter: function(){
-            // if(!this.model.isValid()){
-            //     this.error('Error!', this.model.validationError);
-            // } else {
-            //     this.clearError();
-            // }
-            // var valid = this.model.validationContext;
-            // this.$('.status').addClass('ok');
-            // if (!_.isNull(valid)){
-            //     if (valid === 'info'){
-            //         this.$('#info').removeClass('ok');
-            //         this.$('#info').addClass('error');
-            //     }
-            //     if (valid === 'map'){
-            //         this.$('#map-status').removeClass('ok');
-            //         this.$('#map-status').addClass('error');
-            //     }
-            //     if (valid === 'substance'){
-            //         this.$('#substance').removeClass('ok');
-            //         this.$('#substance').addClass('error');
-            //     }
-            // }
             var activeTab = this.$('li.active');
             if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
                 this.$('#info').removeClass('ok');
@@ -129,18 +108,6 @@ define([
                 this.$('#map-status').removeClass('error');
                 this.$('#map-status').addClass('ok');
             }
-            // if (this.model.validateRelease()){
-            //     this.$('#info').removeClass('ok');
-            //     this.$('#info').addClass('error');
-            // }
-            // if (this.model.validateRelease(this.model.attributes)){
-            //     this.$('#map-status').removeClass('ok');
-            //     this.$('#map-status').addClass('error');
-            // }
-            // if (this.model.validateSubstance()){
-            //     this.$('#substance').removeClass('ok');
-            //     this.$('#substance').addClass('error');
-            // }
         },
 
         initTabStatus: function(){
@@ -520,7 +487,20 @@ define([
             startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
             endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
             var coordsArray = [startCoords, endCoords];
-            feature = new ol.Feature(new ol.geom.LineString(coordsArray));
+            if (startCoords[0] === endCoords[0] && startCoords[1] === endCoords[1]){
+                feature = new ol.Feature(new ol.geom.Point(startCoords));
+                feature.setStyle( new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        }));
+            } else {
+                feature = new ol.Feature(new ol.geom.LineString(coordsArray));
+            }
+            startCoords = ol.proj.transform(startCoords, 'EPSG:3857', 'EPSG:4326');
+            endCoords = ol.proj.transform(endCoords, 'EPSG:3857', 'EPSG:4326');
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);

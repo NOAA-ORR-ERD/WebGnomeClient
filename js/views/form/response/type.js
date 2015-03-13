@@ -40,7 +40,7 @@ define([
                 inSituBurnForm.on('wizardclose', inSituBurnForm.close);
                 inSituBurnForm.on('save', function(){
                     webgnome.model.get('weatherers').add(insituBurn);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     inSituBurnForm.on('hidden', function(){
                         inSituBurnForm.trigger('wizardclose');
                     });
@@ -56,7 +56,7 @@ define([
                 disperseForm.on('wizardclose', disperseForm.close);
                 disperseForm.on('save', function(){
                     webgnome.model.get('weatherers').add(disperse);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     disperseForm.on('hidden', function(){
                         disperseForm.trigger('wizardclose');
                     });
@@ -72,7 +72,7 @@ define([
                 skimForm.on('wizardclose', skimForm.close);
                 skimForm.on('save', function(){
                     webgnome.model.get('weatherers').add(skim);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     skimForm.on('hidden', function(){
                         skimForm.trigger('wizardclose');
                     });
