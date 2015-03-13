@@ -22,6 +22,7 @@ define([
         className: 'modal fade form-modal risk-form',
         events: function(){
             return _.defaults({
+                'shown.bs.tab': 'showTab',
                 'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
@@ -43,23 +44,7 @@ define([
 
         render: function(options) {
             var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            this.body = _.template(FormTemplate, {
-                area: model.get('area'),
-                diameter: model.get('diameter'),
-                distance: model.get('distance'),
-                depth: model.get('depth'),
-                assessment_time: model.get('assessment_time'),
-                surface: model.get('surface'),
-                column: model.get('column'),
-                shoreline: model.get('shoreline'),
-
-                surface: model.get('surface').toFixed(3),
-                column: model.get('column').toFixed(3),
-                shoreline: model.get('shoreline').toFixed(3),
-                surfaceRI: (model.get('relativeImportance').surface * 100).toFixed(3),
-                columnRI: (model.get('relativeImportance').column * 100).toFixed(3),
-                shorelineRI: (model.get('relativeImportance').shoreline * 100).toFixed(3),
-            });
+            this.body = _.template(FormTemplate, { });
             FormModal.prototype.render.call(this, options);
 
             this.form = {};
@@ -77,7 +62,6 @@ define([
             var showBurn = false;
             var showSkimming = false;
             _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                console.log("el " + idx + " is " + el.attributes.obj_type);
                 if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
                     if (el.attributes.name != "_natural") {
                         showDispersant = true;
@@ -160,7 +144,9 @@ define([
             this.$('.nav-tabs a[href="#era-input"]').tab('show');
         },
 
-        tabRendered: function(e) {
+        showTab: function(e) {
+            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
+            model.assessment();
         },
 
         update: function() {
@@ -233,9 +219,9 @@ define([
 
         reassessRisk: function(){
             var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            var skimming = this.$('#slider-skimming').slider('value');
-            var dispersant = this.$('#slider-dispersant').slider('value');
-            var insitu_burn = this.$('#slider-in-situ-burn').slider('value');
+            var skimming = this.$('#skimming .slider').slider('value');
+            var dispersant = this.$('#dispersant .slider').slider('value');
+            var insitu_burn = this.$('#insituburn .slider').slider('value');
 
             // set model
             var e = model.get('efficiency');
