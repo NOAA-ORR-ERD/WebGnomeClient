@@ -12,7 +12,7 @@ define([
     'text!templates/risk/risk.html',
     'text!templates/risk/input.html',
     'text!templates/risk/tuning.html',
-    'model/environment/risk',
+    'model/risk/risk',
     'jqueryui/slider',
     'jqueryDatetimepicker',
     'relimpui',
@@ -32,6 +32,7 @@ define([
         initialize: function(options) {
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
+            this.model = new RiskModel();
 //            this.model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
 //            if(_.isUndefined(this.model) || this.model.length === 0){
 //                this.model = new RiskModel();
@@ -43,7 +44,6 @@ define([
         },
 
         render: function(options) {
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             this.body = _.template(FormTemplate, { });
             FormModal.prototype.render.call(this, options);
 
@@ -57,7 +57,6 @@ define([
         },
 
         renderTuning: function(options){
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             var showDispersant = false;
             var showBurn = false;
             var showSkimming = false;
@@ -75,12 +74,12 @@ define([
 
             compiled = _.template(TuningTemplate);
             template = compiled({
-                surface: model.get('surface').toFixed(3),
-                column: model.get('column').toFixed(3),
-                shoreline: model.get('shoreline').toFixed(3),
-                surfaceRI: (model.get('relativeImportance').surface * 100).toFixed(3),
-                columnRI: (model.get('relativeImportance').column * 100).toFixed(3),
-                shorelineRI: (model.get('relativeImportance').shoreline * 100).toFixed(3),
+                surface: this.model.get('surface').toFixed(3),
+                column: this.model.get('column').toFixed(3),
+                shoreline: this.model.get('shoreline').toFixed(3),
+                surfaceRI: (this.model.get('relativeImportance').surface * 100).toFixed(3),
+                columnRI: (this.model.get('relativeImportance').column * 100).toFixed(3),
+                shorelineRI: (this.model.get('relativeImportance').shoreline * 100).toFixed(3),
                 showDispersant: showDispersant,
                 showBurn: showBurn,
                 showSkimming: showSkimming,
@@ -90,9 +89,9 @@ define([
 
             this.createBenefitGauge('benefit', 50);
 
-            this.createSlider('#skimming', model.get('efficiency').skimming);
-            this.createSlider('#dispersant', model.get('efficiency').dispersant);
-            this.createSlider('#insituburn', model.get('efficiency').insitu_burn);
+            this.createSlider('#skimming', this.model.get('efficiency').skimming);
+            this.createSlider('#dispersant', this.model.get('efficiency').dispersant);
+            this.createSlider('#insituburn', this.model.get('efficiency').insitu_burn);
 
             $('#importance').relativeImportanceUI({callback: this.calculateRI});
 
@@ -100,31 +99,30 @@ define([
         },
 
         renderInput: function(options){
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             var compiled = _.template(InputTemplate);
             var template = compiled({
-                area: model.get('area'),
-                diameter: model.get('diameter'),
-                distance: model.get('distance'),
-                depth: model.get('depth'),
-                assessment_time: model.get('assessment_time'),
-                surface: model.get('surface'),
-                column: model.get('column'),
-                shoreline: model.get('shoreline')
+                area: this.model.get('area'),
+                diameter: this.model.get('diameter'),
+                distance: this.model.get('distance'),
+                depth: this.model.get('depth'),
+                assessment_time: this.model.get('assessment_time'),
+                surface: this.model.get('surface'),
+                column: this.model.get('column'),
+                shoreline: this.model.get('shoreline')
             });
 
             this.$('#era-input').html(template);
 
-            this.$('#area-units option[value="' + model.get('units').area + '"]').attr('selected', 'selected');
-            this.$('#diameter-units option[value="' + model.get('units').diameter + '"]').attr('selected', 'selected');
-            this.$('#distance-units option[value="' + model.get('units').distance + '"]').attr('selected', 'selected');
-            this.$('#depth-units option[value="' + model.get('units').depth + '"]').attr('selected', 'selected');
+            this.$('#area-units option[value="' + this.model.get('units').area + '"]').attr('selected', 'selected');
+            this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
+            this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
+            this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
 
             this.$('.date').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
 
-            if (!model.isValid()) {
+            if (!this.model.isValid()) {
                 this.$('#era-tuning-link').addClass('disabled');
             }
 
@@ -145,19 +143,17 @@ define([
         },
 
         showTab: function(e) {
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            model.assessment();
+            this.model.assessment();
         },
 
         update: function() {
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            model.set('area', this.form.area.val());
-            model.set('diameter', this.form.diameter.val());
-            model.set('distance', this.form.distance.val());
-            model.set('depth', this.form.depth.val());
-            model.set('assessment_time', moment(this.form.assessment_time.val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
+            this.model.set('area', this.form.area.val());
+            this.model.set('diameter', this.form.diameter.val());
+            this.model.set('distance', this.form.distance.val());
+            this.model.set('depth', this.form.depth.val());
+            this.model.set('assessment_time', moment(this.form.assessment_time.val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
             
-            var units = model.get('units');
+            var units = this.model.get('units');
             units.area = this.form.units.area.val();
             units.diameter = this.form.units.diameter.val();
             units.distance = this.form.units.distance.val();
@@ -218,19 +214,18 @@ define([
         },
 
         reassessRisk: function(){
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             var skimming = this.$('#skimming .slider').slider('value');
             var dispersant = this.$('#dispersant .slider').slider('value');
             var insitu_burn = this.$('#insituburn .slider').slider('value');
 
             // set model
-            var e = model.get('efficiency');
+            var e = this.model.get('efficiency');
             e.skimming = skimming;
             e.dispersant = dispersant;
             e.insitu_burn = insitu_burn;
 
             // assess model
-            model.assessment();
+            this.model.assessment();
 
             this.updateBenefit();
         },
@@ -244,8 +239,7 @@ define([
             var t = surfaceRI+columnRI+shorelineRI;
 
             // set model
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            var ri = model.get('relativeImportance');
+            var ri = this.model.get('relativeImportance');
             ri.surface = surfaceRI / t;
             ri.column = columnRI / t;
             ri.shoreline = shorelineRI / t;
@@ -259,11 +253,10 @@ define([
         },
 
         updateBenefit: function(){
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            var ri = model.get('relativeImportance');
-            var surface = model.get('surface');
-            var column = model.get('column');
-            var shoreline = model.get('shoreline');
+            var ri = this.model.get('relativeImportance');
+            var surface = this.model.get('surface');
+            var column = this.model.get('column');
+            var shoreline = this.model.get('shoreline');
             var benefit = (1 - (ri.surface * surface + ri.column * column + ri.shoreline * shoreline)) * this.benefitGauge.maxValue;
 
             // update ui
@@ -275,9 +268,8 @@ define([
         },
 
         inputValid: function(){
-            var model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            if (!model.isValid()) {
-                this.error('Error!', model.validationError);
+            if (!this.model.isValid()) {
+                this.error('Error!', this.model.validationError);
                 this.$('#era-tuning-link').addClass('disabled');
                 return false;
             } else {

@@ -5,10 +5,8 @@ define([
     'model/base',
 ], function(_, Backbone, moment, BaseModel){
     var risk = BaseModel.extend({
-        urlRoot: '/environment/',
 
         defaults: {
-            'obj_type': 'gnome.environment.resources.Risk',
             'area': 0,
             'diameter': 0,
             'distance': 0,

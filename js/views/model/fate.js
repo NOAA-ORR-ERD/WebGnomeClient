@@ -9,7 +9,7 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
-    'model/environment/risk',
+    'model/risk/risk',
     'views/form/risk/risk',
     'text!templates/risk/risk.html',
     'flot',
@@ -179,8 +179,7 @@ define([
             var risk = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             if(_.isUndefined(risk) || risk.length === 0){
                 risk = new RiskModel();
-                webgnome.model.get('environment').add(risk);
-                webgnome.model.save();
+                // save new model
             }
 
             var riskForm = new RiskForm();

@@ -5,7 +5,7 @@ define([
     'views/wizard/base',
     'views/form/risk/input',
     'views/form/risk/tuning',
-    'model/environment/risk',
+    'model/risk/risk',
     'model/gnome',
 ], function($, _, Backbone, BaseWizard, InputForm, TuningForm, RiskModel, GnomeModel){
     var riskWizardView = BaseWizard.extend({
@@ -13,7 +13,6 @@ define([
             risk_model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
             if(_.isUndefined(risk_model) || risk_model.length === 0){
                 risk_model = new RiskModel();
-                webgnome.model.get('environment').add(risk_model);
             }
             this.setup();
         },
