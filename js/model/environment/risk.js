@@ -42,6 +42,27 @@ define([
         initialize: function(options){
             if (!_.isUndefined(webgnome.model)){
                 this.attributes.assessment_time = webgnome.model.get('start_time');
+
+
+                // initialize efficiency to response values
+                _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                        if (el.attributes.name != "_natural") {
+console.log("setting dispersant efficiency to  " + el.attributes.efficiency);
+                            this.get("efficiency").dispersant = el.attributes.efficiency;
+                        }
+                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+console.log("setting burn efficiency to  " + el.attributes.efficiency);
+                        this.get("efficiency").insitu_burn = el.attributes.efficiency;
+                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+console.log("setting skimming efficiency to  " + el.attributes.efficiency);
+                        this.get("efficiency").skimming = el.attributes.efficiency;
+                    }
+                });
+
+
+
+
             } else {
                 this.attributes.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
             }
