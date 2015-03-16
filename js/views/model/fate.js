@@ -218,6 +218,7 @@ define([
                 options.series.group = true;
                 options.series.lines.fill = true;
                 options.colors = this.colors;
+                options.needle = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
@@ -561,6 +562,7 @@ define([
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
+                options.needle = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
