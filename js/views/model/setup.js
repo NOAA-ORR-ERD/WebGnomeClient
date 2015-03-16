@@ -183,6 +183,7 @@ define([
 
         selectPrediction: function(e){
             var target;
+            if(e.target.length === 0) return false;
             if(this.$(e.target).hasClass('icon')){
                 target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
