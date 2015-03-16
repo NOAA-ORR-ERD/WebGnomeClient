@@ -40,21 +40,31 @@ define([
         initialize: function(options){
             this.fetch();
             this.on('change', this.save, this);
+            var a = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
-                this.attributes.assessment_time = webgnome.model.get('start_time');
-
+                a.assessment_time = webgnome.model.get('start_time');
 
                 // initialize efficiency to response values
+                var e = a.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
                     if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
                         if (el.attributes.name != "_natural") {
 console.log("setting dispersant efficiency to  " + el.attributes.efficiency);
+                            if (!_.isUndefined(el.attributes.efficiency)){
+                                e.disperant = el.attributes.efficiency * 100;
+                            }
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
 console.log("setting burn efficiency to  " + el.attributes.efficiency);
+                        if (!_.isUndefined(el.attributes.efficiency)){
+                            e.insitu_burn = el.attributes.efficiency * 100;
+                        }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
 console.log("setting skimming efficiency to  " + el.attributes.efficiency);
+                        if (!_.isUndefined(el.attributes.efficiency)){
+                            e.skimming = el.attributes.efficiency * 100;
+                        }
                     }
                 });
 
@@ -62,7 +72,7 @@ console.log("setting skimming efficiency to  " + el.attributes.efficiency);
 
 
             } else {
-                this.attributes.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
+                a.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
             }
         },
 
