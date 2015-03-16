@@ -23,21 +23,19 @@ define([
         events: function(){
             return _.defaults({
                 'shown.bs.tab': 'showTab',
+                'click .store': 'store',
                 'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="store btn btn-primary">Save</button>',
+
         benefitGauge: null,
         self: null,
 
         initialize: function(options) {
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
-            this.model = new RiskModel();
-//            this.model = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-//            if(_.isUndefined(this.model) || this.model.length === 0){
-//                this.model = new RiskModel();
-//                webgnome.model.get('environment').add(this.model);
-//            }
+            this.model = new RiskModel({id: 1234567890});
             this.on('ready', this.rendered, this);
 
             self = this;
@@ -239,7 +237,7 @@ define([
             var t = surfaceRI+columnRI+shorelineRI;
 
             // set model
-            var ri = this.model.get('relativeImportance');
+            var ri = self.model.get('relativeImportance');
             ri.surface = surfaceRI / t;
             ri.column = columnRI / t;
             ri.shoreline = shorelineRI / t;
@@ -276,6 +274,12 @@ define([
                 this.clearError();
                 this.$('#era-tuning-link').removeClass('disabled');
             }
+        },
+
+        store: function() {
+            console.log("in the store method");
+            this.model.save();
+            this.close();
         },
 
         close: function() {

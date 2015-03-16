@@ -2,9 +2,9 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'model/base',
-], function(_, Backbone, moment, BaseModel){
-    var risk = BaseModel.extend({
+], function(_, Backbone, moment){
+    var risk = Backbone.Model.extend({
+        url: '/',
 
         defaults: {
             'area': 0,
@@ -38,6 +38,9 @@ define([
         },
 
         initialize: function(options){
+            this.fetch();
+            this.on('change', this.save, this);
+
             if (!_.isUndefined(webgnome.model)){
                 this.attributes.assessment_time = webgnome.model.get('start_time');
 
@@ -47,14 +50,11 @@ define([
                     if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
                         if (el.attributes.name != "_natural") {
 console.log("setting dispersant efficiency to  " + el.attributes.efficiency);
-                            this.get("efficiency").dispersant = el.attributes.efficiency;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
 console.log("setting burn efficiency to  " + el.attributes.efficiency);
-                        this.get("efficiency").insitu_burn = el.attributes.efficiency;
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
 console.log("setting skimming efficiency to  " + el.attributes.efficiency);
-                        this.get("efficiency").skimming = el.attributes.efficiency;
                     }
                 });
 
@@ -205,6 +205,19 @@ console.log("setting skimming efficiency to  " + el.attributes.efficiency);
             if (at < st || at > et) {
                 return 'Assessment time must occur during the model time range!';
             }
+        },
+
+        // OVERRIDES for local storage of model
+        fetch: function() {
+            this.set(JSON.parse(localStorage.getItem(this.id)));
+        },
+
+        save: function(attributes) {
+            localStorage.setItem(this.id, JSON.stringify(this.toJSON()));
+        },
+
+        destroy: function(options) {
+            localStorage.removeItem(this.id);
         }
 
     });
