@@ -40,7 +40,6 @@ define([
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
             'click .layers label': 'toggleLayers'
-
         },
 
         initialize: function(options){
@@ -71,7 +70,7 @@ define([
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'basemap',
+                        name: 'mapquest',
                         type: 'base',
                         visible: false
                     }),
@@ -90,7 +89,7 @@ define([
                             url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                             params: {'LAYERS': '1', 'TILED': true}
                         }),
-                        opacity: 0.7,
+                        opacity: 0.5,
                         visible: false
                     })
                 ]
@@ -149,7 +148,6 @@ define([
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
                 }, this));
-                this.delegateEvents();
                 
                 this.controls = {
                     'play': this.$('.controls .play'),
@@ -485,7 +483,6 @@ define([
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
             });
-            console.log(checked_layers);
 
             this.ol.map.getLayers().forEach(function(layer){
                 if (layer.get('type') === 'base'){
