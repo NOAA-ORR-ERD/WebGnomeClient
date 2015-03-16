@@ -41,7 +41,6 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'flottooltip',
     'flotstack',
     'flotgantt'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,

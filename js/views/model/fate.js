@@ -16,7 +16,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flottooltip',
+    'flotneedle',
     'flotcrosshair'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
@@ -64,17 +64,17 @@ define([
             },
             crosshair: {
                 mode: 'x',
-                color: '#999',
-                showToolTip: true
+                color: '#999'
             },
-            tooltip: true,
-            tooltipOpts: {
-                lines: {
-                    track: true,
-                    threshold: 10000000
+            yaxis: {},
+            needle: {
+                on: true,
+                label: function(text){
+                    var num = parseFloat(text);
+                    var units = this.$('')
+                    return num.toFixed(2) + '';
                 }
-            },
-            yaxis: {}
+            }
         },
 
         initialize: function(options){
@@ -821,6 +821,13 @@ define([
                         direction: {
                             show: false
                         },
+                        needle: {
+                            label: function(text){
+                                var num = parseFloat(text).toFixed(2);
+                                var units = $('.tab-pane:visible .yaxisLabel').text();
+                                return num + ' ' + units;
+                            }
+                        }
                     });
                 }
             }
