@@ -99,6 +99,7 @@ define([
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
                 this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
                 this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
+                this.updateTooltipWidth();
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
