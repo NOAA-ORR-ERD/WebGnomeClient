@@ -633,7 +633,8 @@ define([
                         lineWidth: 2
                     },
                     shadowSize: 0
-                }
+                },
+                needle: false
             });
         },
 
