@@ -102,7 +102,7 @@ define([
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                assessment_time: this.model.get('assessment_time')
+                assessment_time: moment(this.model.get('assessment_time')).format('YYYY/M/D H:mm')
             });
 
             this.$('#era-input').html(template);
