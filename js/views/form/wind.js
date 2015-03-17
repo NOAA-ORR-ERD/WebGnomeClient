@@ -418,11 +418,13 @@ define([
         },
 
         removeTimeseriesEntry: function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            var index = e.target.parentElement.parentElement.dataset.tsindex;
-            this.model.get('timeseries').splice(index, 1);
-            this.renderTimeseries();
+            if (this.$('.input-speed').length === 0){
+                e.preventDefault();
+                e.stopPropagation();
+                var index = e.target.parentElement.parentElement.dataset.tsindex;
+                this.model.get('timeseries').splice(index, 1);
+                this.renderTimeseries();
+            }
         },
 
         renderTimeseries: function(uncertainty){
