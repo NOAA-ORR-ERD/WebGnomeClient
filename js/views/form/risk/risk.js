@@ -4,8 +4,6 @@ define([
     'backbone',
     'module',
     'moment',
-    'ol',
-    'nucos',
     'fabric',
     'gauge',
     'views/modal/form',
@@ -16,7 +14,7 @@ define([
     'jqueryui/slider',
     'jqueryDatetimepicker',
     'relimpui',
-], function($, _, Backbone, module, moment, ol, nucos, fabric, Gauge, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
+], function($, _, Backbone, module, moment, fabric, Gauge, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
     var riskForm = FormModal.extend({
         title: 'Environmental Risk Assessment',
         className: 'modal fade form-modal risk-form',
@@ -24,6 +22,7 @@ define([
             return _.defaults({
                 'shown.bs.tab': 'showTab',
                 'click .store': 'store',
+                'click .remodel': 'remodel',
                 'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
@@ -103,10 +102,7 @@ define([
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                assessment_time: this.model.get('assessment_time'),
-                surface: this.model.get('surface'),
-                column: this.model.get('column'),
-                shoreline: this.model.get('shoreline')
+                assessment_time: this.model.get('assessment_time')
             });
 
             this.$('#era-input').html(template);
@@ -196,7 +192,6 @@ define([
                     }, this)
                 });
 
-                this.$(selector + ' .slider').slider("option", "value", 100);
             }, this), 1);
         },
 
@@ -209,19 +204,42 @@ define([
             }
             this.$(selector + ' .tooltip-inner').text(value);
             this.updateTooltipWidth();
+
+            // set model
+            var e = self.model.get('efficiency');
+            if (selector === "#skimming") {
+                e.skimming = value;
+            } else if (selector === "#dispersant") {
+                e.dispersant = value;
+            } else if (selector === "#insituburn") {
+                e.insitu_burn = value;
+            }
+        },
+
+        remodel: function(){
+            var e = this.model.get('efficiency');
+                _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                        if (el.attributes.name != "_natural") {
+                            if (!_.isUndefined(el.attributes.efficiency)){
+                                el.attributes.efficiency = e.dispersant / 100;
+                            }
+                        }
+                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+                        if (!_.isUndefined(el.attributes.efficiency)){
+                            el.attributes.efficiency = e.insitu_burn / 100;
+                        }
+                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+                        if (!_.isUndefined(el.attributes.efficiency)){
+                            el.attributes.efficiency = e.skimming / 100;
+                        }
+                    }
+                });
+
+            webgnome.model.save(null, {validate: false});
         },
 
         reassessRisk: function(){
-            var skimming = this.$('#skimming .slider').slider('value');
-            var dispersant = this.$('#dispersant .slider').slider('value');
-            var insitu_burn = this.$('#insituburn .slider').slider('value');
-
-            // set model
-            var e = this.model.get('efficiency');
-            e.skimming = skimming;
-            e.dispersant = dispersant;
-            e.insitu_burn = insitu_burn;
-
             // assess model
             this.model.assessment();
 
@@ -255,7 +273,8 @@ define([
             var surface = this.model.get('surface');
             var column = this.model.get('column');
             var shoreline = this.model.get('shoreline');
-            var benefit = (1 - (ri.surface * surface + ri.column * column + ri.shoreline * shoreline)) * this.benefitGauge.maxValue;
+            var tc = ri.surface * surface + ri.column * column + ri.shoreline * shoreline;
+            var benefit = (1 - (tc*tc*tc)) * this.benefitGauge.maxValue;
 
             // update ui
             this.$('#surface').html((surface).toFixed(3));
@@ -277,7 +296,6 @@ define([
         },
 
         store: function() {
-            console.log("in the store method");
             this.model.save();
             this.close();
         },
