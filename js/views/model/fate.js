@@ -16,7 +16,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flottooltip',
+    'flotneedle',
     'flotcrosshair'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
@@ -64,17 +64,17 @@ define([
             },
             crosshair: {
                 mode: 'x',
-                color: '#999',
-                showToolTip: true
+                color: '#999'
             },
-            tooltip: true,
-            tooltipOpts: {
-                lines: {
-                    track: true,
-                    threshold: 10000000
+            yaxis: {},
+            needle: {
+                on: true,
+                label: function(text){
+                    var num = parseFloat(text);
+                    var units = this.$('')
+                    return num.toFixed(2) + '';
                 }
-            },
-            yaxis: {}
+            }
         },
 
         initialize: function(options){
@@ -218,6 +218,7 @@ define([
                 options.series.group = true;
                 options.series.lines.fill = true;
                 options.colors = this.colors;
+                options.needle = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
@@ -561,6 +562,7 @@ define([
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
+                options.needle = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
@@ -821,6 +823,13 @@ define([
                         direction: {
                             show: false
                         },
+                        needle: {
+                            label: function(text){
+                                var num = parseFloat(text).toFixed(2);
+                                var units = $('.tab-pane:visible .yaxisLabel').text();
+                                return num + ' ' + units;
+                            }
+                        }
                     });
                 }
             }
