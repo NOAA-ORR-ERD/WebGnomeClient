@@ -71,7 +71,7 @@ define([
                 on: true,
                 label: function(text){
                     var num = parseFloat(text);
-                    var units = this.$('')
+                    var units = this.$('');
                     return num.toFixed(2) + '';
                 }
             }
@@ -218,7 +218,6 @@ define([
                 options.series.group = true;
                 options.series.lines.fill = true;
                 options.colors = this.colors;
-                options.needle = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
