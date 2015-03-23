@@ -16,8 +16,8 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flotneedle',
-    'flotcrosshair'
+    'flotcrosshair',
+    'flotneedle'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -212,7 +212,7 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                var options = _.clone(this.defaultChartOptions);
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
@@ -462,6 +462,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                options.series.stack = false;
                 options.colors = [this.colors[1]];
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
@@ -831,7 +832,6 @@ define([
                         }
                     });
                 }
-                console.log(this.dataset);
             }
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
