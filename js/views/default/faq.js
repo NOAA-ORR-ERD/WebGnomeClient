@@ -144,6 +144,7 @@ define([
                     break;
                 }
             }
+            webgnome.router.navigate(target);
         },
 
         renderContent: function(){
@@ -155,6 +156,7 @@ define([
         back: function(){
             this.restoreDefault();
             this.$('.chosen-select').val('');
+            webgnome.router.navigate('faq');
         },
 
         restoreDefault: function(clear){
