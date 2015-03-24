@@ -22,16 +22,23 @@ define([
             }, HelpView.prototype.events);
         },
 
-        initialize: function(){
+        initialize: function(options){
             this.seed();
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
+            if (!_.isUndefined(options.title)){
+                this.title = options.title;
+            }
         },
 
         render: function(){
             var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
             var compiled = _.template(FAQTemplate, {content: subtemplate});
             $('.faqspace').append(this.$el.append(compiled));
+            if (this.title){
+                var title = this.title;
+                this.specificHelp({}, title);
+            }
         },
 
         update: function(e, str){
@@ -144,6 +151,7 @@ define([
                     break;
                 }
             }
+            webgnome.router.navigate('faq/' + target);
         },
 
         renderContent: function(){
@@ -155,6 +163,7 @@ define([
         back: function(){
             this.restoreDefault();
             this.$('.chosen-select').val('');
+            webgnome.router.navigate('faq');
         },
 
         restoreDefault: function(clear){

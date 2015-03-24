@@ -19,8 +19,8 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flottooltip',
-    'flotcrosshair'
+    'flotcrosshair',
+    'flotneedle'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -68,17 +68,18 @@ define([
             },
             crosshair: {
                 mode: 'x',
-                color: '#999',
-                showToolTip: true
+                color: '#999'
             },
-            tooltip: true,
-            tooltipOpts: {
-                lines: {
-                    track: true,
-                    threshold: 10000000
+            yaxis: {},
+            needle: {
+                on: true,
+                label: function(text){
+                    var num = parseFloat(text);
+                    var units = this.$('');
+                    return num.toFixed(2) + '';
                 }
-            },
-            yaxis: {}
+            }
+            //needle: false
         },
 
         initialize: function(options){
@@ -228,7 +229,7 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                var options = _.clone(this.defaultChartOptions);
+                var options = _.clone(this.defaultChartOptions); //$.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
@@ -478,7 +479,9 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                options.series.stack = false;
                 options.colors = [this.colors[1]];
+                console.log(options);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -494,6 +497,7 @@ define([
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[2]];
+                console.log(options);
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -510,6 +514,7 @@ define([
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
                 options.yaxis.tickDecimals = 2;
+                console.log(options);
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);
@@ -577,6 +582,7 @@ define([
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
+                options.needle = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
@@ -837,6 +843,13 @@ define([
                         direction: {
                             show: false
                         },
+                        needle: {
+                            label: function(text){
+                                var num = parseFloat(text).toFixed(2);
+                                var units = $('.tab-pane:visible .yaxisLabel').text();
+                                return num + ' ' + units;
+                            }
+                        }
                     });
                 }
             }
@@ -864,9 +877,9 @@ define([
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
                     // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
-                    low_value = low[this.dataset[set].name] * 1000000;
-                    nominal_value = nominal[this.dataset[set].name] * 1000000;
-                    high_value = high[this.dataset[set].name] * 1000000;
+                    low_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', low[this.dataset[set].name]);
+                    nominal_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', nominal[this.dataset[set].name]);
+                    high_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', high[this.dataset[set].name]);
 
                 } else if (this.dataset[set].name === 'water_content'){
                     // Convert water content into a % it's an easier unit to understand

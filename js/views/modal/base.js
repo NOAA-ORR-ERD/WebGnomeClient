@@ -91,6 +91,14 @@ define([
 
             this.$('input').addClass('mousetrap');
             this.$('select').addClass('mousetrap');
+
+            if (_.isUndefined(this.resizeEvent)){
+                this.resizeEvent = this.$('.modal-body').on('resize', _.bind(this.windowResize, this));
+            }
+        },
+
+        windowResize: function(e){
+            $(window).trigger('resize');
         },
 
         submitByEnter: function(e){
