@@ -75,6 +75,7 @@ define([
                     return num.toFixed(2) + '';
                 }
             }
+            //needle: false
         },
 
         initialize: function(options){
@@ -212,7 +213,7 @@ define([
         renderGraphOilBudget: function(dataset){
             dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
             if(_.isUndefined(this.graphOilBudget)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
+                var options = _.clone(this.defaultChartOptions); //$.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
@@ -464,6 +465,7 @@ define([
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.series.stack = false;
                 options.colors = [this.colors[1]];
+                console.log(options);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -479,6 +481,7 @@ define([
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[2]];
+                console.log(options);
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -495,6 +498,7 @@ define([
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
                 options.yaxis.tickDecimals = 2;
+                console.log(options);
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);

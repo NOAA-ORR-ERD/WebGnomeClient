@@ -25,6 +25,7 @@ define([
             'model': 'model',
             'overview': 'overview',
             'faq': 'faq',
+            'faq/:title': 'faq',
 
             '*actions': 'notfound'
         },
@@ -73,9 +74,13 @@ define([
             this.views.push(new OverviewView());
         },
 
-        faq: function(){
+        faq: function(title){
             this.views.push(new MenuView());
-            this.views.push(new FAQView());
+            if (!_.isUndefined(title)){
+                this.views.push(new FAQView({topic: title}));
+            } else {
+                this.views.push(new FAQView());
+            }
         },
 
         notfound: function(actions){
