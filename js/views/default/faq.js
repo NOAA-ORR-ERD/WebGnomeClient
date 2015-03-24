@@ -40,7 +40,6 @@ define([
                 var compiled = _.template(FAQTemplate, {content: subtemplate});
                 $('.faqspace').append(this.$el.append(compiled));
             }
-            console.log(this.events());
         },
 
         update: function(e, str){
