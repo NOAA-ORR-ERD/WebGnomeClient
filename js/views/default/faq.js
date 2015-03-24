@@ -26,19 +26,21 @@ define([
             this.seed();
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
-            if (!_.isUndefined(options.title)){
-                this.title = options.title;
+            if (!_.isUndefined(options.topic)){
+                this.title = options.topic;
             }
         },
 
         render: function(){
-            var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
-            var compiled = _.template(FAQTemplate, {content: subtemplate});
-            $('.faqspace').append(this.$el.append(compiled));
             if (this.title){
                 var title = this.title;
                 this.specificHelp({}, title);
+            } else {
+                var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
+                var compiled = _.template(FAQTemplate, {content: subtemplate});
+                $('.faqspace').append(this.$el.append(compiled));
             }
+            console.log(this.events());
         },
 
         update: function(e, str){
@@ -135,7 +137,8 @@ define([
             var data = this.parsedData;
             var target;
             var compiled;
-            if (_.isNull(e)){
+            var subtemplate;
+            if (_.isNull(e) || _.isEmpty(e)){
                 target = title;
             } else if (_.isUndefined(e.target.dataset.title)){
                 target = this.$(e.target).siblings('h4')[0].dataset.title;
@@ -144,14 +147,15 @@ define([
             }
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
-                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
+                    subtemplate = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
                     this.help = new HelpModel({id: data[i].path});
-                    this.$('#support').html('');
-                    this.$('#support').append(compiled);
+                    compiled = _.template(FAQTemplate, {content: subtemplate});
+                    $('.faqspace').html('');
+                    $('.faqspace').append(this.$el.append(compiled));
                     break;
                 }
             }
-            webgnome.router.navigate('faq/' + target);
+            webgnome.router.navigate('faq/' + target, {trigger: true});
         },
 
         renderContent: function(){
@@ -163,7 +167,7 @@ define([
         back: function(){
             this.restoreDefault();
             this.$('.chosen-select').val('');
-            webgnome.router.navigate('faq');
+            webgnome.router.navigate('faq', {trigger: true});
         },
 
         restoreDefault: function(clear){
