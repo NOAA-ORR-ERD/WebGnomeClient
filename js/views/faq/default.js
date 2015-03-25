@@ -7,6 +7,7 @@ define([
 ], function($, _, Backbone, chosen, DefaultTemplate){
 	var faqDefaultView = Backbone.View.extend({
 		className: 'helpcontent',
+		id: 'support',
 
 		events: function(){
 			return _.defaults({
@@ -20,8 +21,9 @@ define([
 		},
 
 		render: function(){
+			$('#support').html('');
 			var compiled = _.template(DefaultTemplate, {topics: this.topics});
-			this.$el.append(compiled);
+			$('#support').append(this.$el.append(compiled));
 		}
 
 	});

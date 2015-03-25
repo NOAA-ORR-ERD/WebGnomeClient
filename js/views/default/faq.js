@@ -146,15 +146,11 @@ define([
             }
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
-                    subtemplate = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
-                    this.help = new HelpModel({id: data[i].path});
-                    compiled = _.template(FAQTemplate, {content: subtemplate});
-                    $('.faqspace').html('');
-                    $('.faqspace').append(this.$el.append(compiled));
+                    this.singleHelp = new SingleView({topic: data[i]});
                     break;
                 }
             }
-            webgnome.router.navigate('faq/' + target, {trigger: true});
+            webgnome.router.navigate('faq/' + target);
         },
 
         renderContent: function(){
@@ -166,13 +162,16 @@ define([
         back: function(){
             this.restoreDefault();
             this.$('.chosen-select').val('');
-            webgnome.router.navigate('faq', {trigger: true});
+            //webgnome.router.navigate('faq', {trigger: true});
         },
 
         restoreDefault: function(clear){
-            var subtemplate = _.template(DefaultTemplate, { topics: this.parsedData });
-            this.$('#support').html('');
-            this.$('#support').append(subtemplate);
+            if (_.isUndefined(this.defaultView)){
+                this.defaultView = new DefaultView({topics: this.parsedData});
+            } else {
+                this.defaultView.render();
+            }
+            webgnome.router.navigate('faq');
         }
     });
 
