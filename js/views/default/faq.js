@@ -34,7 +34,7 @@ define([
             var compiled = _.template(FAQTemplate, {});
             $('.faqspace').append(this.$el.append(compiled));
             if (this.title){
-                var title = this.title;
+                var title = decodeURI(this.title);
                 this.specificHelp({}, title);
             } else {
                 this.defaultView = new DefaultView({topics: this.parsedData});
@@ -149,7 +149,8 @@ define([
                     break;
                 }
             }
-            webgnome.router.navigate('faq/' + target);
+            var encodedUrl = encodeURI(target);
+            webgnome.router.navigate('faq/' + encodedUrl);
         },
 
         renderContent: function(){
