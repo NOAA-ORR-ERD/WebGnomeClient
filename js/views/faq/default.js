@@ -23,7 +23,7 @@ define([
 		render: function(){
 			$('#support').html('');
 			var compiled = _.template(DefaultTemplate, {topics: this.topics});
-			$('#support').append(this.$el.append(compiled));
+			$('#support').html(this.$el.append(compiled));
 		}
 
 	});

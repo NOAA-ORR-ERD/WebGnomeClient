@@ -3,17 +3,18 @@ define([
     'underscore',
     'backbone',
     'chosen',
+    'views/default/help',
     'text!templates/faq/specific.html',
     'model/help/help'
-], function($, _, Backbone, chosen, SpecificTemplate, HelpModel){
-	var singleFAQView = Backbone.View.extend({
+], function($, _, Backbone, chosen, HelpView, SpecificTemplate, HelpModel){
+	var singleFAQView = HelpView.extend({
 		className: 'helpcontent',
 		id: 'support',
 
 		events: function(){
 			return _.defaults({
 
-			});
+			}, HelpView.prototype.events);
 		},
 
 		initialize: function(options){
@@ -26,7 +27,7 @@ define([
 			var data = this.topic;
 			$('#support').html('');
 			var compiled = _.template(SpecificTemplate, {title: data.title, content: data.content, keywords: data.keywords });
-			$('#support').append(this.$el.append(compiled));
+			$('#support').append(this.$el.html(compiled));
 		}
 	});
 	return singleFAQView;

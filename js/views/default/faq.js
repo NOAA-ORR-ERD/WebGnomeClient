@@ -4,14 +4,13 @@ define([
     'backbone',
     'chosen',
     'text!templates/default/faq.html',
-    'views/default/help',
     'views/faq/default',
     'views/faq/single',
     'model/help/help',
     'collection/help',
     'jqueryui/autocomplete'
-], function($, _, Backbone, chosen, FAQTemplate, HelpView, DefaultView, SingleView, HelpModel, HelpCollection){
-	var faqView = HelpView.extend({
+], function($, _, Backbone, chosen, FAQTemplate, DefaultView, SingleView, HelpModel, HelpCollection){
+	var faqView = Backbone.View.extend({
         className: 'page faq',
 
         events: function(){
@@ -19,7 +18,7 @@ define([
                 'keyup input': 'update',
                 'click .back': 'back',
                 'click .topic': 'specificHelp'
-            }, HelpView.prototype.events);
+            });
         },
 
         initialize: function(options){
@@ -166,11 +165,7 @@ define([
         },
 
         restoreDefault: function(clear){
-            if (_.isUndefined(this.defaultView)){
-                this.defaultView = new DefaultView({topics: this.parsedData});
-            } else {
-                this.defaultView.render();
-            }
+            this.defaultView = new DefaultView({topics: this.parsedData});
             webgnome.router.navigate('faq');
         }
     });
