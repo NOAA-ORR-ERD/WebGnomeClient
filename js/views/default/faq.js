@@ -33,7 +33,7 @@ define([
 
         render: function(){
             var compiled = _.template(FAQTemplate, {});
-            $('.faqspace').append(compiled);
+            $('.faqspace').append(this.$el.append(compiled));
             if (this.title){
                 var title = this.title;
                 this.specificHelp({}, title);
