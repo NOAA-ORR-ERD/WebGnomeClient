@@ -4,13 +4,13 @@ define([
     'backbone',
     'chosen',
     'text!templates/default/faq.html',
-    'text!templates/faq/specific.html',
-    'text!templates/faq/default.html',
     'views/default/help',
+    'views/faq/default',
+    'views/faq/single',
     'model/help/help',
     'collection/help',
     'jqueryui/autocomplete'
-], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpView, HelpModel, HelpCollection){
+], function($, _, Backbone, chosen, FAQTemplate, HelpView, DefaultView, SingleView, HelpModel, HelpCollection){
 	var faqView = HelpView.extend({
         className: 'page faq',
 
@@ -32,13 +32,13 @@ define([
         },
 
         render: function(){
+            var compiled = _.template(FAQTemplate, {});
+            $('.faqspace').append(compiled);
             if (this.title){
                 var title = this.title;
                 this.specificHelp({}, title);
             } else {
-                var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
-                var compiled = _.template(FAQTemplate, {content: subtemplate});
-                $('.faqspace').append(this.$el.append(compiled));
+                this.defaultView = new DefaultView({topics: this.parsedData});
             }
         },
 
