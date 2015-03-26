@@ -16,7 +16,6 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flotcrosshair',
     'flotneedle'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
@@ -62,10 +61,6 @@ define([
                 },
                 shadowSize: 0
             },
-            crosshair: {
-                mode: 'x',
-                color: '#999'
-            },
             yaxis: {},
             needle: {
                 on: true,
@@ -75,7 +70,6 @@ define([
                     return num.toFixed(2) + '';
                 }
             }
-            //needle: false
         },
 
         initialize: function(options){
