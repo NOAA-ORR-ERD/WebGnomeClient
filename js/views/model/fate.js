@@ -68,7 +68,8 @@ define([
                     var num = parseFloat(text);
                     var units = this.$('');
                     return num.toFixed(2) + '';
-                }
+                },
+                stack: false
             }
         },
 
@@ -457,7 +458,6 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.series.stack = false;
                 options.colors = [this.colors[1]];
                 console.log(options);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
@@ -521,6 +521,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                console.log(options);
                 options.yaxis = {
                     ticks: [0, 10, 100, 1000, 10000, 100000],
                     transform: function(v){
