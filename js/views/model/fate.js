@@ -459,7 +459,6 @@ define([
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[1]];
-                console.log(options);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -475,7 +474,6 @@ define([
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.colors = [this.colors[2]];
-                console.log(options);
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -492,7 +490,6 @@ define([
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
                 options.yaxis.tickDecimals = 2;
-                console.log(options);
                 this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDensity.setData(dataset);
@@ -521,7 +518,6 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                console.log(options);
                 options.yaxis = {
                     ticks: [0, 10, 100, 1000, 10000, 100000],
                     transform: function(v){
