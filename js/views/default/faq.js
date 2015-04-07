@@ -4,14 +4,13 @@ define([
     'backbone',
     'chosen',
     'text!templates/default/faq.html',
-    'text!templates/faq/specific.html',
-    'text!templates/faq/default.html',
-    'views/default/help',
+    'views/faq/default',
+    'views/faq/single',
     'model/help/help',
     'collection/help',
     'jqueryui/autocomplete'
-], function($, _, Backbone, chosen, FAQTemplate, SpecificTemplate, DefaultTemplate, HelpView, HelpModel, HelpCollection){
-	var faqView = HelpView.extend({
+], function($, _, Backbone, chosen, FAQTemplate, DefaultView, SingleView, HelpModel, HelpCollection){
+	var faqView = Backbone.View.extend({
         className: 'page faq',
 
         events: function(){
@@ -19,25 +18,26 @@ define([
                 'keyup input': 'update',
                 'click .back': 'back',
                 'click .topic': 'specificHelp'
-            }, HelpView.prototype.events);
+            });
         },
 
         initialize: function(options){
             this.seed();
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
-            if (!_.isUndefined(options.title)){
-                this.title = options.title;
+            if (!_.isUndefined(options.topic)){
+                this.title = options.topic;
             }
         },
 
         render: function(){
-            var subtemplate = _.template(DefaultTemplate, {topics: this.parsedData});
-            var compiled = _.template(FAQTemplate, {content: subtemplate});
+            var compiled = _.template(FAQTemplate, {});
             $('.faqspace').append(this.$el.append(compiled));
             if (this.title){
-                var title = this.title;
+                var title = decodeURI(this.title);
                 this.specificHelp({}, title);
+            } else {
+                this.defaultView = new DefaultView({topics: this.parsedData});
             }
         },
 
@@ -135,7 +135,8 @@ define([
             var data = this.parsedData;
             var target;
             var compiled;
-            if (_.isNull(e)){
+            var subtemplate;
+            if (_.isNull(e) || _.isEmpty(e)){
                 target = title;
             } else if (_.isUndefined(e.target.dataset.title)){
                 target = this.$(e.target).siblings('h4')[0].dataset.title;
@@ -144,14 +145,12 @@ define([
             }
             for (var i in data){
                 if (title === data[i].title || data[i].title === target){
-                    compiled = _.template(SpecificTemplate, {title: data[i].title, content: data[i].content, keywords: data[i].keywords });
-                    this.help = new HelpModel({id: data[i].path});
-                    this.$('#support').html('');
-                    this.$('#support').append(compiled);
+                    this.singleHelp = new SingleView({topic: data[i]});
                     break;
                 }
             }
-            webgnome.router.navigate('faq/' + target);
+            var encodedUrl = encodeURI(target);
+            webgnome.router.navigate('faq/' + encodedUrl);
         },
 
         renderContent: function(){
@@ -163,13 +162,12 @@ define([
         back: function(){
             this.restoreDefault();
             this.$('.chosen-select').val('');
-            webgnome.router.navigate('faq');
+            //webgnome.router.navigate('faq', {trigger: true});
         },
 
         restoreDefault: function(clear){
-            var subtemplate = _.template(DefaultTemplate, { topics: this.parsedData });
-            this.$('#support').html('');
-            this.$('#support').append(subtemplate);
+            this.defaultView = new DefaultView({topics: this.parsedData});
+            webgnome.router.navigate('faq');
         }
     });
 
