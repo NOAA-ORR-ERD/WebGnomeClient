@@ -81,6 +81,9 @@ define([
             if (this.model.isNew()){
                 this.$('.delete').prop('disabled', true);
             }
+
+            this.$('.radio input[value="default"]').prop('checked', true);
+
             this.subtextUpdate();
             this.initTabStatus();
 		},
