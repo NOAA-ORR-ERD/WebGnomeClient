@@ -82,6 +82,9 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
 
+            // Need to add a model if check to see if the user
+            // persisted a different bullwinkle_fraction value
+            // other than the default
             this.$('.radio input[value="default"]').prop('checked', true);
 
             this.subtextUpdate();
