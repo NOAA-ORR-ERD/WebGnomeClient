@@ -81,6 +81,19 @@ define([
             if (this.model.isNew()){
                 this.$('.delete').prop('disabled', true);
             }
+
+            // Need to add a model if check to see if the user
+            // persisted a different bullwinkle_fraction value
+            // other than the default
+            var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
+
+            if (_.isNull(bullwinkle_time)){
+                this.$('.radio input[value="default"]').prop('checked', true);
+            } else {
+                this.$('.radio input[value="manual"]').prop('checked', true);
+                this.$('.manual').val(bullwinkle_time);
+            }
+
             this.subtextUpdate();
             this.initTabStatus();
 		},

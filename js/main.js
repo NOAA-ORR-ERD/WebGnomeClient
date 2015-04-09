@@ -33,6 +33,7 @@ require.config({
         flotselect: 'lib/flot/jquery.flot.selection',
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
         flotneedle: 'lib/flotneedle/flotNeedle',
+        'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
@@ -45,7 +46,8 @@ require.config({
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
-        nucos: 'lib/nucos/nucos'
+        nucos: 'lib/nucos/nucos',
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module'
     },
     shim: {
         jquery: {
