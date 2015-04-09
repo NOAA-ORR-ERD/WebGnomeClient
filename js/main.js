@@ -42,7 +42,8 @@ require.config({
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
-        nucos: 'lib/nucos/nucos'
+        nucos: 'lib/nucos/nucos',
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module'
     },
     shim: {
         jquery: {

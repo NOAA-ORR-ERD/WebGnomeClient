@@ -450,6 +450,7 @@ nav.navbar{
 .page {
     .clearfix;
     background: white;
+    min-height: 400px;
 }
 
 .page.home{
@@ -1469,6 +1470,12 @@ nav.navbar{
     }
 }
 
+.page.load{
+    .dropzone{
+        margin-top: 40px;
+    }
+}
+
 .footer{
     padding: 15px 0;
     background: #2c2c2e;
@@ -2139,6 +2146,72 @@ nav.navbar{
         #dataTable {
             overflow-y: auto;
             height: 300px;
+        }
+    }
+}
+
+.dropzone{
+    display: block;
+    border: 4px dashed #D2D2D2;
+    border-radius: 4px;
+    overflow: hidden;
+    .transition(all .2s);
+
+    &.dz-started{
+        border-color: transparent;
+
+
+        .dz-message{
+            display: none;
+        }
+    }
+
+    .dz-message{
+        padding: 100px 0;
+        text-align: center;
+        cursor: pointer;
+        color: #ABABAB;
+    }
+
+    .dz-preview{
+        position: relative;
+        text-align: center;
+        padding: 100px 0;
+        border-radius: 4px;
+
+        .dz-filename{
+            position: relative;
+            z-index: 1;
+        }
+        .dz-progress{
+            .dz-upload{
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 4px;
+                background: #7DD5EF;
+                z-index: 0;
+            }
+        }
+        .dz-error-message{
+            span{
+                padding: 100px 0;
+                display: block;
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background: rgba(255, 82, 82, 0.92);
+                border-radius: 4px;
+                z-index: 2;
+            }
+        }
+        .dz-size{
+            display: inline-block;
         }
     }
 }
