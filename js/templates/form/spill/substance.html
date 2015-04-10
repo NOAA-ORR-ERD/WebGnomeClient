@@ -27,7 +27,7 @@
     </div>
 </div>
 <div class="{%if(!oilExists){%}hide{%}%} col-sm-12">
-    <div class="panel panel-default">
+    <div class="panel panel-default emulsion-override">
         <div class="panel-heading">
             <h4 class="panel-title">Emulsion Override</h4>
         </div>
@@ -41,7 +41,7 @@
                 </div>
                 <div>
                     <label id="manual" class="radio inline">
-                        <input type="radio" name="bullwinkle" value="manual">
+                        <input type="radio" name="bullwinkle" value="manual" class="override-input">
                             <div class="col-md-3">
                                 <input type="number" class="manual form-control col-md-1" min="0" disabled>
                             </div>
@@ -55,10 +55,10 @@
                                     </option>
                                 </select>
                             </div>
-                        <div id="percent">
+                        <div id="percent" class="override-text">
                             of any part of the spill has evaporated
                         </div>
-                        <div id="hours">
+                        <div id="hours" class="override-text">
                             have elapsed since start of spill
                         </div>
                     </label>
