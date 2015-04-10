@@ -256,6 +256,7 @@ define([
                 });
 
             this.setEmulsificationOverride();
+            this.subtextUpdate();
 
             if (enabled){
                 this.model.get('element_type').set('substance', substance);
