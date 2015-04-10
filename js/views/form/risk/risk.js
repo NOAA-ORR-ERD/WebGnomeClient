@@ -35,6 +35,10 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = new RiskModel({id: 1234567890});
+            var ri = this.model.get('relativeImportance');
+            ri.surface = 1/3;
+            ri.column = 1/3;
+            ri.shoreline = 1/3;
             this.on('ready', this.rendered, this);
 
             self = this;
@@ -274,7 +278,7 @@ define([
             var column = this.model.get('column');
             var shoreline = this.model.get('shoreline');
             var tc = ri.surface * surface + ri.column * column + ri.shoreline * shoreline;
-            var benefit = (1 - (tc*tc*tc)) * this.benefitGauge.maxValue;
+            var benefit = (1 - tc) * this.benefitGauge.maxValue;
 
             // update ui
             this.$('#surface').html((surface).toFixed(3));
