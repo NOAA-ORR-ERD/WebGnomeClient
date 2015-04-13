@@ -11,8 +11,8 @@ define([
         defaults: {
             'on': true,
             'obj_type': 'gnome.spill.spill.Spill',
-            'release': null,
-            'element_type': null,
+            'release': new GnomeRelease(),
+            'element_type': new GnomeElement(),
             'name': 'Spill',
             'amount': 0,
             'units': 'bbl'
@@ -42,7 +42,7 @@ define([
                 return attrs.element_type.validationError;
             }
 
-            if (_.isUndefined(attrs.element_type.get('substance').get('name'))){
+            if (attrs.element_type.get('substance') && _.isUndefined(attrs.element_type.get('substance').get('name'))){
                 this.validationContext = 'substance';
                 return;
             }
@@ -60,7 +60,7 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
-            if(_.isUndefined(attrs.element_type.get('substance').get('name'))){
+            if(_.isNull(attrs.element_type.get('substance')) || _.isUndefined(attrs.element_type.get('substance').get('name'))){
                 return 'A substance must be selected!';
             }
         },

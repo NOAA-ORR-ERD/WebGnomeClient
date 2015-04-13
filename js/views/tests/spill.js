@@ -1,7 +1,7 @@
 define([
     'underscore',
     'model/spill',
-], function(_, GnomeSpill, SessionModel){
+], function(_, GnomeSpill){
     var spillTest = {
         run: function() {
             QUnit.module('Spill');
@@ -20,9 +20,9 @@ define([
             asyncTest('Persist spill to server', function(){
                 var persist_spill = new GnomeSpill();
                 var persist_test = function(model, response, options){
-                    ok(response.id, "Spill has py_gnome given id.");
-                    ok(response.release.id, "Spill's release object has a py_gnome given id.");
-                    ok(response.release.id, "Spill's element_type object has a py_gnome given id.");
+                    ok(response.id, "Spill has py_gnome given id");
+                    ok(response.release, "Spill has a release");
+                    ok(response.element_type, "Spill has an element_type");
                     ok(model.toTree().length > 0, 'spill to tree works');
                     start();
                 };
