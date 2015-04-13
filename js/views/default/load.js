@@ -32,6 +32,11 @@ define([
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
+            this.dropzone.on('sending', _.bind(this.sending, this));
+        },
+
+        sending: function(e, xhr, formData){
+            formData.append('session', localStorage.getItem('session'));
         },
 
         reset: function(file){
@@ -60,7 +65,7 @@ define([
 
         close: function(){
             this.dropzone.disable();
-            $('input[type="file"]').remove();
+            $('input.dz-hidden-input').remove();
             Backbone.View.prototype.close.call(this);
         }
     });
