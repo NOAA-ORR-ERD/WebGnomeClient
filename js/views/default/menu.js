@@ -5,8 +5,9 @@ define([
     'text!templates/default/menu.html',
     'views/modal/about',
     'sweetalert',
+    'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, swal) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, swal, GnomeModel) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -23,9 +24,6 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
-            if(webgnome.hasModel()){
-                webgnome.model.on('sync', this.contextualize, this);
-            }
         },
 
         events: {
@@ -91,15 +89,24 @@ define([
                 text:'Creating a new model will delete all data related to any current model.',
                 type: 'warning',
                 showCancelButton: true,
-            }, function(isConfirm){
+            }, _.bind(function(isConfirm){
                 if(isConfirm){
-                    webgnome.model = null;
-                    webgnome.router.navigate('', true);
                     localStorage.setItem('prediction', null);
-                    webgnome.router.navigate('setup', true);        
+                    webgnome.model = new GnomeModel();
+
+                    if(_.has(webgnome, 'cache')){
+                        webgnome.cache.rewind();
+                    }
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.contextualize();
+                            webgnome.router.navigate('', true);
+                            webgnome.router.navigate('setup', true);
+                        }, this)
+                    });
                 }
-            });
-            
+            }, this));
         },
 
         editModel: function(event){
@@ -158,8 +165,11 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel() || !webgnome.validModel()){
+            console.log('contextualize');
+            if(!webgnome.hasModel()){
                 this.disableMenuItem('save');
+            } else {
+                this.enableMenuItem('save');
             }
             
             if(webgnome.hasModel()){
