@@ -194,9 +194,8 @@ define([
         },
 
         close: function(){
-            if(!_.isUndefined(webgnome) && webgnome.model){
-                webgnome.model.off('sync', this.contextualize, this);
-            }
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
 
             Backbone.View.prototype.close.call(this);
         }
