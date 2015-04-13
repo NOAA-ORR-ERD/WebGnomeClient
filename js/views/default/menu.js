@@ -165,7 +165,6 @@ define([
         },
 
         contextualize: function(){
-            console.log('contextualize');
             if(!webgnome.hasModel()){
                 this.disableMenuItem('save');
             } else {
