@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'dropzone',
+    'model/gnome',
     'text!templates/default/load.html',
     'text!templates/default/dropzone.html'
-], function($, _, Backbone, Dropzone, LoadTemplate, DropzoneTemplate){
+], function($, _, Backbone, Dropzone, GnomeModel, LoadTemplate, DropzoneTemplate){
     var loadView = Backbone.View.extend({
         className: 'page load',
         initialize: function(){
@@ -29,6 +30,8 @@ define([
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
+            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
+            this.dropzone.on('success', _.bind(this.loaded, this));
         },
 
         reset: function(file){
@@ -36,6 +39,29 @@ define([
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
             }, this), 1500);
+        },
+
+        progress: function(e, percent){
+            if(percent == 100){
+                this.$('.dz-preview').addClass('dz-uploaded');
+                this.$('.dz-loading').fadeIn();
+            }
+        },
+
+        loaded: function(){
+            webgnome.model = new GnomeModel();
+            webgnome.model.fetch({
+                success: function(){
+                    localStorage.setItem('prediction', 'both');
+                    webgnome.router.navigate('setup', true);
+                }
+            });
+        },
+
+        close: function(){
+            this.dropzone.disable();
+            $('input[type="file"]').remove();
+            Backbone.View.prototype.close.call(this);
         }
     });
 
