@@ -82,9 +82,26 @@ define([
             if (this.model.isNew()){
                 this.$('.delete').prop('disabled', true);
             }
+
+            // Need to add a model if check to see if the user
+            // persisted a different bullwinkle_fraction value
+            // other than the default
+            this.setEmulsificationOverride();
+
             this.subtextUpdate();
             this.initTabStatus();
 		},
+
+        setEmulsificationOverride: function(){
+            var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
+
+            if (_.isNull(bullwinkle_time)){
+                this.$('.radio input[value="default"]').prop('checked', true);
+            } else {
+                this.$('.radio input[value="manual"]').prop('checked', true);
+                this.$('.manual').val(bullwinkle_time);
+            }
+        },
 
         tabStatusSetter: function(){
             var activeTab = this.$('li.active');
@@ -243,6 +260,9 @@ define([
                     container: '.modal-body',
                     delay: {show: 500, hide: 100}
                 });
+
+            this.setEmulsificationOverride();
+            this.subtextUpdate();
 
             if (enabled){
                 this.model.get('element_type').set('substance', substance);
