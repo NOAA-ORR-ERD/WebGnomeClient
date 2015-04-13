@@ -119,7 +119,7 @@ define([
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('save', true);
+            window.location.href = webgnome.config.api + '/download';
         },
 
         debugView: function(event){
