@@ -292,38 +292,42 @@ define([
         },
 
         addTimeseriesEntry: function(e){
-            e.preventDefault();
-            var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-            var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-            var speed = this.form.variable.speed.val();
-            var direction = this.form.variable.direction.val();
-            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
-            }
-            var entry = [date, [speed, direction]];
-            var incrementer = parseInt(this.form.variable.increment.val(), 10);
-
-            if(this.variableFormValidation(entry)){
-                var not_replaced = true;
-                _.each(this.model.get('timeseries'), function(el, index, array){
-                    if(el[0] === entry[0]){
-                        not_replaced = false;
-                        array[index] = entry;
-                    }
-                });
-
-                if(not_replaced){
-                    this.model.get('timeseries').push(entry);
+            if (this.$('.additional-wind-compass').length === 0){
+                e.preventDefault();
+                var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
+                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                var speed = this.form.variable.speed.val();
+                var direction = this.form.variable.direction.val();
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
                 }
+                var entry = [date, [speed, direction]];
+                var incrementer = parseInt(this.form.variable.increment.val(), 10);
 
-                // Code for time incrementer updates assuming values in form are in hours
-                dateObj.add('h', incrementer);
-                this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
+                if(this.variableFormValidation(entry)){
+                    var not_replaced = true;
+                    _.each(this.model.get('timeseries'), function(el, index, array){
+                        if(el[0] === entry[0]){
+                            not_replaced = false;
+                            array[index] = entry;
+                        }
+                    });
 
-                this.renderTimeseries();
+                    if(not_replaced){
+                        this.model.get('timeseries').push(entry);
+                    }
+
+                    // Code for time incrementer updates assuming values in form are in hours
+                    dateObj.add('h', incrementer);
+                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
+
+                    this.renderTimeseries();
+                }
+                this.update();
+                this.$('#variable-speed').focus().select();
+            } else {
+                
             }
-            this.update();
-            this.$('#variable-speed').focus().select();
         },
 
         modifyTimeseriesEntry: function(e){
