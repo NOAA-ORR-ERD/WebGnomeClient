@@ -90,9 +90,10 @@ define([
 
             this.createBenefitGauge('benefit', 50);
 
-            this.createSlider('#skimming', this.model.get('efficiency').skimming);
-            this.createSlider('#dispersant', this.model.get('efficiency').dispersant);
-            this.createSlider('#insituburn', this.model.get('efficiency').insitu_burn);
+            var e = this.model.get('efficiency');
+            this.createSlider('#skimming', e.skimming);
+            this.createSlider('#dispersant', e.dispersant);
+            this.createSlider('#insituburn', e.insitu_burn);
 
             $('#importance').relativeImportanceUI({callback: this.calculateRI});
 
