@@ -70,7 +70,7 @@ define([
                     return num.toFixed(2) + '';
                 },
                 stack: false,
-                nodupes: true
+                noduplicates: true
             }
         },
 
@@ -214,7 +214,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = true;
-                options.needle.nodupes = false;
+                options.needle.noduplicates = false;
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
