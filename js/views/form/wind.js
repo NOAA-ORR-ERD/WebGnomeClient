@@ -203,7 +203,6 @@ define([
         },
 
         update: function(compass){
-            console.trace();
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
