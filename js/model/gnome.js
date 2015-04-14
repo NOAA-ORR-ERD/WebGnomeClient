@@ -303,6 +303,10 @@ define([
                     validate: false,
                     success: _.bind(function(){
                         var emul = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                        if(!emul){
+                            emul = new EmulsificationWeatherer();
+                            this.get('weatherers').add(emul);
+                        }
                         emul.set('waves', waves);
                         emul.save().always(cb);
                     }, this)

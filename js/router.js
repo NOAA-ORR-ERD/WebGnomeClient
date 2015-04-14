@@ -22,7 +22,7 @@ define([
         routes: {
             '': 'index',
             'locations': 'locations',
-            'setup': 'setup',
+            'config': 'config',
             'model': 'model',
             'overview': 'overview',
             'faq': 'faq',
@@ -52,7 +52,7 @@ define([
             }
         },
 
-        setup: function(){
+        config: function(){
             this.views.push(new MenuView());
             this.views.push(new SetupView());
         },

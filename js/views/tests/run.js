@@ -6,8 +6,9 @@ define([
     'model/environment/wind',
     'model/environment/water',
     'model/environment/waves',
-    'model/spill'
-], function($, _, Backbone, GnomeModel, WindModel, WaterModel, WavesModel, SpillModel){
+    'model/spill',
+    'model/substance'
+], function($, _, Backbone, GnomeModel, WindModel, WaterModel, WavesModel, SpillModel, SubstanceModel){
     var mapTests = {
         run: function(){
             QUnit.module('Automated Runs');
@@ -31,60 +32,63 @@ define([
                     water = environment.findWhere({obj_type: water.get('obj_type')});
                     wind = environment.findWhere({obj_type: wind.get('obj_type')});
                     var waves = new WavesModel({water: water, wind: wind});
-                    model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('wind', wind);
-                    model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('water', water);
-                    model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('waves', waves);
-                    environment.add(waves);
+                    waves.save().always(function(){
+                        model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('wind', wind);
+                        model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('water', water);
+                        model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('waves', waves);
+                        environment.add(waves);
 
-                    model.save().always(function(){
-                        equal(model.get('environment').length, 3, 'Model has correct number of environment objects');
-                        var spill = new SpillModel();
-                        var substance = spill.get('element_type').get('substance');
-                        substance.set('adios_oil_id', 'AD00020');
-                        substance.fetch().always(function(){
-                            spill.set('amount', 900);
-                            spill.get('release').set({num_elements: null, num_per_timestep: 10});
-                            spill.save(null, {validate: false}).always(function(){
-                                model.get('spills').add(spill);
-                                model.save(null, {
-                                    validate: false
-                                }).always(function(){
-                                    var prev_step;
-                                    webgnome.cache.on('step:recieved', function(step){
-                                        var fate = step.get('WeatheringOutput').nominal;
-                                        
-                                        if(prev_step){
-                                            // test any step after the first against the previous one
-                                            var prev_fate = prev_step.get('WeatheringOutput').nominal;
-                                            ok(fate.amount_released >= prev_fate.amount_released, 'amount released did not reduce');
-                                            ok(fate.evaporated >= prev_fate.evaporated, 'continued to evaporate');
-                                            ok(fate.dispersed >= prev_fate.dispersed, 'continued to disperse');
-                                        } else {
-                                            // test the first step
-                                            ok(_.has(fate, 'amount_released'), 'amount_released defined');
-                                            ok(fate.amount_released > 0, 'something has been released');
-                                            ok(_.has(fate, 'avg_density'), 'avg_density defined');
-                                            ok(_.has(fate, 'avg_viscosity'), 'avg_viscosity defined');
-                                            ok(_.has(fate, 'beached'), 'beached defined');
-                                            ok(_.has(fate, 'dispersed'), 'dispersed defined');
-                                            ok(_.has(fate, 'evaporated'), 'evaporated defined');
-                                            ok(_.has(fate, 'floating'), 'floating defined');
-                                            equal(fate.floating, fate.amount_released, 'all les are floating');
-                                            ok(_.has(fate, 'water_content'), 'water_content defined');
-                                        }
+                        model.save().always(function(){
+                            equal(model.get('environment').length, 3, 'Model has correct number of environment objects');
+                            var spill = new SpillModel();
+                            var substance = new SubstanceModel({adios_oil_id: 'AD01759'});
+                            substance.fetch().always(function(){
+                                spill.set('amount', 900);
+                                spill.get('release').set({num_elements: null, num_per_timestep: 10});
+                                spill.get('element_type').set('substance', substance);
+                                spill.save(null, {validate: false}).always(function(){
+                                    model.get('spills').add(spill);
+                                    model.save(null, {
+                                        validate: false
+                                    }).always(function(){
+                                        var prev_step;
+                                        webgnome.cache.on('step:recieved', function(step){
+                                            var fate = step.get('WeatheringOutput').nominal;
+                                            
+                                            if(prev_step){
+                                                // test any step after the first against the previous one
+                                                var prev_fate = prev_step.get('WeatheringOutput').nominal;
+                                                ok(fate.amount_released >= prev_fate.amount_released, 'amount released did not reduce');
+                                                ok(fate.evaporated >= prev_fate.evaporated, 'continued to evaporate');
+                                                ok(fate.dispersed >= prev_fate.dispersed, 'continued to disperse');
+                                            } else {
+                                                // test the first step
+                                                ok(_.has(fate, 'amount_released'), 'amount_released defined');
+                                                ok(fate.amount_released > 0, 'something has been released');
+                                                ok(_.has(fate, 'avg_density'), 'avg_density defined');
+                                                ok(_.has(fate, 'avg_viscosity'), 'avg_viscosity defined');
+                                                ok(_.has(fate, 'beached'), 'beached defined');
+                                                ok(_.has(fate, 'dispersed'), 'dispersed defined');
+                                                ok(_.has(fate, 'evaporated'), 'evaporated defined');
+                                                ok(_.has(fate, 'floating'), 'floating defined');
+                                                equal(fate.floating, fate.amount_released, 'all les are floating');
+                                                ok(_.has(fate, 'water_content'), 'water_content defined');
+                                            }
 
-                                        prev_step = step;
+                                            prev_step = step;
+                                            webgnome.cache.step();
+                                        });
+                                        webgnome.cache.on('step:failed', function(){
+                                            equal(model.get('num_time_steps') - 1, prev_step.get('WeatheringOutput').step_num, 'Model fully ran');
+                                            start();
+                                        });
                                         webgnome.cache.step();
                                     });
-                                    webgnome.cache.on('step:failed', function(){
-                                        equal(model.get('num_time_steps') - 1, prev_step.get('WeatheringOutput').step_num, 'Model fully ran');
-                                        start();
-                                    });
-                                    webgnome.cache.step();
-                                });
-                            });    
+                                });    
+                            });
                         });
                     });
+                    
                 });
             });
         }

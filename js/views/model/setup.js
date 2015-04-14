@@ -854,8 +854,8 @@ define([
                     min: 0.5,
                     max: yticks.length + 0.5,
                     ticks: yticks
-                }
-
+                },
+                needle: false
             });
         },
 

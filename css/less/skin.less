@@ -88,8 +88,7 @@ img{
         text-align: left;
         float: left;
         width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        overflow: scroll;
     }
 }
 
@@ -2186,6 +2185,17 @@ nav.navbar{
         padding: 100px 0;
         border-radius: 4px;
 
+        &.dz-uploaded{
+            .dz-progress{
+                .dz-upload{
+                    box-shadow: none;
+                }
+            }
+            .dz-filename{
+                color: transparent;
+            }
+        }
+
         .dz-filename{
             position: relative;
             z-index: 1;
@@ -2199,11 +2209,20 @@ nav.navbar{
                 right: 0;
                 bottom: 0;
                 border-radius: 4px;
-                background: #7DD5EF;
+                background: #9BD4E5;
                 z-index: 0;
+                box-shadow: inset 0 0px 23px rgba(0,0,0,0.25);
+                .transition(all .2s);
+            }
+        }
+        &.dz-error{
+            .dz-error-message{
+                display: block;
             }
         }
         .dz-error-message{
+            display: none;
+
             span{
                 padding: 100px 0;
                 display: block;
@@ -2217,9 +2236,70 @@ nav.navbar{
                 z-index: 2;
             }
         }
+        .dz-loading{
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
         .dz-size{
             display: inline-block;
         }
+    }
+}
+
+.spinner {
+    margin: 100px auto;
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    font-size: 10px;
+}
+
+.spinner > div {
+    background-color: #333;
+    height: 100%;
+    width: 6px;
+    display: inline-block;
+
+    -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+    animation: stretchdelay 1.2s infinite ease-in-out;
+}
+
+.spinner .rect2 {
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+
+.spinner .rect3 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+.spinner .rect4 {
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+
+.spinner .rect5 {
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+
+@-webkit-keyframes stretchdelay {
+    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+    20% { -webkit-transform: scaleY(1.0) }
+}
+
+@keyframes stretchdelay {
+    0%, 40%, 100% { 
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+    }  20% { 
+        transform: scaleY(1.0);
+        -webkit-transform: scaleY(1.0);
     }
 }
 

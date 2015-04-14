@@ -5,23 +5,23 @@ define([
     var baseModel = Backbone.Model.extend({
         initialize: function(options){
             Backbone.Model.prototype.initialize.call(this, options);
-            for(var key in this.model){
-                // general object hydration 
-                // loads the objects described in the defaults and model spec
-                var embeddedClass = this.model[key];
+            // for(var key in this.model){
+            //     // general object hydration 
+            //     // loads the objects described in the defaults and model spec
+            //     var embeddedClass = this.model[key];
 
-                if(_.isNull(this.get(key))){
-                    this.set(key, this.setChild(embeddedClass));
-                } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
-                    // get the collection from webgnome's default creation
-                    var collection = this.get(key);
-                    if(!_.isNull(embeddedClass)){
-                        collection.add(this.setChild(embeddedClass));
-                    }
+            //     if(_.isNull(this.get(key))){
+            //         this.set(key, this.setChild(embeddedClass));
+            //     } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
+            //         // get the collection from webgnome's default creation
+            //         var collection = this.get(key);
+            //         if(!_.isNull(embeddedClass)){
+            //             collection.add(this.setChild(embeddedClass));
+            //         }
                     
-                    this.set(key, collection, {silent: true});
-                }
-            }
+            //         this.set(key, collection, {silent: true});
+            //     }
+            // }
         },
 
         parse: function(response){
