@@ -203,6 +203,7 @@ define([
         },
 
         update: function(compass){
+            console.trace();
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
             var speed = this.form[active].speed.val();
             var direction = this.form[active].direction.val();
@@ -234,6 +235,8 @@ define([
             
             this.updateConstantSlide();
             this.updateVariableSlide();
+
+            this.$('.additional-wind-compass').remove();
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -292,8 +295,8 @@ define([
         },
 
         addTimeseriesEntry: function(e){
+            e.preventDefault();
             if (this.$('.additional-wind-compass').length === 0){
-                e.preventDefault();
                 var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
                 var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
                 var speed = this.form.variable.speed.val();
@@ -326,7 +329,7 @@ define([
                 this.update();
                 this.$('#variable-speed').focus().select();
             } else {
-                
+
             }
         },
 
