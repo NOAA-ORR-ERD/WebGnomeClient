@@ -58,7 +58,7 @@ define([
             webgnome.model.fetch({
                 success: function(){
                     localStorage.setItem('prediction', 'both');
-                    webgnome.router.navigate('setup', true);
+                    webgnome.router.navigate('config', true);
                 }
             });
         },
