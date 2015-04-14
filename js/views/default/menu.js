@@ -111,7 +111,7 @@ define([
 
         editModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate('setup', true);
+            webgnome.router.navigate('config', true);
         },
 
         load: function(event){
