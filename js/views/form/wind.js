@@ -55,8 +55,8 @@ define([
             });
             this.ol = new olMapView({
                 id: 'wind-form-map',
-                zoom: 2,
-                center: [-128.6, 42.7],
+                zoom: 7,
+                center: ol.proj.transform([-137.49, 47.97], 'EPSG:4326', 'EPSG:3857'),
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
@@ -167,7 +167,7 @@ define([
                         direction: this.form.constant.direction.val()
                     });
                 }
-                
+                this.update();
             } else if (e.target.hash == '#variable') {
                 if(this.$('.variable-compass canvas').length === 0){
                     this.$('.variable-compass').compassRoseUI({
@@ -182,6 +182,7 @@ define([
 
                 this.unbindBaseMouseTrap();
                 this.renderTimeseries();
+                this.update();
             } else if (e.target.hash == '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
@@ -199,7 +200,6 @@ define([
                 }
             }
             $(window).trigger('resize');
-            this.update();
         },
 
         update: function(compass){
