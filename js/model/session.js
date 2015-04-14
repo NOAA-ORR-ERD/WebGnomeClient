@@ -11,9 +11,13 @@ define([
 
         initialize: function(callback){
             this.save(null, {
-                success: callback,
+                success: function(model){
+                    localStorage.setItem('session', model.id);
+                    callback();
+                },
                 error: this.error
             });
+
         },
 
         error: function(){
