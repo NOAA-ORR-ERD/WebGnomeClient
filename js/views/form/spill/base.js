@@ -86,7 +86,9 @@ define([
             // Need to add a model if check to see if the user
             // persisted a different bullwinkle_fraction value
             // other than the default
-            this.setEmulsificationOverride();
+            if (!_.isNull(this.model.get('element_type').get('substance'))){
+                this.setEmulsificationOverride();
+            }
 
             this.subtextUpdate();
             this.initTabStatus();
@@ -261,8 +263,10 @@ define([
                     delay: {show: 500, hide: 100}
                 });
 
-            this.setEmulsificationOverride();
-            this.subtextUpdate();
+            if (!_.isNull(this.model.get('element_type').get('substance'))){
+                this.setEmulsificationOverride();
+                this.subtextUpdate();
+            }
 
             if (enabled){
                 this.model.get('element_type').set('substance', substance);
