@@ -67,7 +67,7 @@ define([
                 this.views.push(new MenuView());
                 this.views.push(new ModelView());
             } else {
-                this.navigate('setup', true);
+                this.navigate('config', true);
             }
         },
 
