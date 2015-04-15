@@ -69,7 +69,8 @@ define([
                     var units = this.$('');
                     return num.toFixed(2) + '';
                 },
-                stack: false
+                stack: false,
+                noduplicates: true
             }
         },
 
@@ -213,6 +214,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = true;
+                options.needle.noduplicates = false;
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
