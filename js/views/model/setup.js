@@ -676,7 +676,7 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.save({
+                    webgnome.model.save(null, {
                         success: _.bind(function(){
                             this.updateSpill();
                         }, this),
