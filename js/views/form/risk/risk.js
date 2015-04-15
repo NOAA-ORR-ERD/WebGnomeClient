@@ -222,25 +222,23 @@ define([
 
         remodel: function(){
             var e = this.model.get('efficiency');
-                _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
-                        if (el.attributes.name != "_natural") {
-                            if (!_.isUndefined(el.attributes.efficiency)){
-                                el.attributes.efficiency = e.dispersant / 100;
-                            }
-                        }
-                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
-                        if (!_.isUndefined(el.attributes.efficiency)){
-                            el.attributes.efficiency = e.insitu_burn / 100;
-                        }
-                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
-                        if (!_.isUndefined(el.attributes.efficiency)){
-                            el.attributes.efficiency = e.skimming / 100;
-                        }
+            _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                    if (el.attributes.name != "_natural") {
+                        el.attributes.efficiency = e.dispersant / 100;
                     }
-                });
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+                    el.attributes.efficiency = e.insitu_burn / 100;
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+                    el.attributes.efficiency = e.skimming / 100;
+                }
+            });
 
-            webgnome.model.save(null, {validate: false});
+            webgnome.model.save(null, {validate: true});
+            if (webgnome.model.isValid()){
+                // the fate.js has a listener to rerun the model on a rewind
+                webgnome.cache.rewind();
+            }
         },
 
         reassessRisk: function(){
