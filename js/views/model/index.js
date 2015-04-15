@@ -85,7 +85,7 @@ define([
             if(view === 'trajectory' && localStorage.getItem('prediction') === 'fate'){
                 swal({
                     title: 'Unable to run trajectory on a weathering model',
-                    text: 'If you would like to see the trajectory prediction for this model please setup the model accordingly.',
+                    text: 'If you would like to see the trajectory prediction for this model please set-up the model accordingly.',
                     type: 'error',
                     confirmButtonText: 'Add Trajectory',
                     cancelButtonText: 'Back to Weathering',
@@ -101,7 +101,7 @@ define([
             } else if (view === 'fate' && localStorage.getItem('prediction') === 'trajectory'){
                 swal({
                     title: 'Unable to run weathering on a trajectory model',
-                    text: 'If you would like to see the weathering prediction for this model please setup the model accordingly.',
+                    text: 'If you would like to see the weathering prediction for this model please set-up the model accordingly.',
                     type: 'error',
                     confirmButtonText: 'Add Weathering',
                     cancelButtonText: 'Back to Trajectory',
