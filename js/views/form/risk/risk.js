@@ -21,12 +21,11 @@ define([
         events: function(){
             return _.defaults({
                 'shown.bs.tab': 'showTab',
-                'click .store': 'store',
                 'click .remodel': 'remodel',
                 'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="store btn btn-primary">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Close</button>',
 
         benefitGauge: null,
         self: null,
@@ -300,12 +299,8 @@ define([
             }
         },
 
-        store: function() {
-            this.model.save();
-            this.close();
-        },
-
         close: function() {
+            this.model.save();
             FormModal.prototype.close.call(this);
         }
 
