@@ -92,7 +92,7 @@ define([
                     showCancelButton: true,
                 }, function(isConfirm){
                     if(isConfirm){
-                        webgnome.router.navigate('setup', true);
+                        webgnome.router.navigate('config', true);
                         localStorage.setItem('prediction', 'both');
                     } else {
                         webgnome.router.views[1].switchView();
@@ -108,7 +108,7 @@ define([
                     showCancelButton: true,
                 }, function(isConfirm){
                     if(isConfirm){
-                        webgnome.router.navigate('setup', true);
+                        webgnome.router.navigate('config', true);
                         localStorage.setItem('prediction', 'both');
                     } else {
                         webgnome.router.views[1].switchView();
