@@ -79,6 +79,7 @@ define([
             BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.on('rewind', this.reset, this);
         },
 
         load: function(){
@@ -95,6 +96,18 @@ define([
                 }
             }
             webgnome.cache.on('step:recieved', this.buildDataset, this);
+        },
+
+        reset: function(){
+            webgnome.cache.off('step:recieved', this.buildDataset, this);
+            if(webgnome.cache.fetching){
+                webgnome.cache.once('step:recieved', this.reset, this);
+            } else {
+                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                this.dataset = undefined;
+                this.frame = 0;
+                this.renderLoop();
+            }
         },
 
         render: function(){
@@ -207,7 +220,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
@@ -242,7 +255,7 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -313,7 +326,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -335,12 +348,12 @@ define([
             for (var row = 0; row < dataset[0].data.length; row++){
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
+
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
                     duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
-
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {
@@ -348,7 +361,7 @@ define([
                     }
 
                     var row_html = '';
-                    if(row === 0){
+                    if(parseInt(row) === 0){
                         row_html += '<thead><tr>';
                     } else {
                         row_html += '<tr>';
@@ -540,7 +553,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
@@ -955,6 +968,7 @@ define([
             $('.xdsoft_datetimepicker').remove();
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.off('step:recieved', this.buildDataset, this);
+            webgnome.cache.off('rewind', this.reset, this);
 
             this.rendered = false;
             Backbone.View.prototype.close.call(this);
