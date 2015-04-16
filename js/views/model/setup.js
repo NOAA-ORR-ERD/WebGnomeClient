@@ -362,7 +362,7 @@ define([
                     });
                     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 } else {
-                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Timeline (24 hrs)</div><div class="canvas"></div></div>';
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
                     var rate = Math.round(ts.length / 24);
@@ -676,7 +676,7 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.save({
+                    webgnome.model.save(null, {
                         success: _.bind(function(){
                             this.updateSpill();
                         }, this),
