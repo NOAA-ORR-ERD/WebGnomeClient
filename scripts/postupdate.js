@@ -8,7 +8,7 @@ bower.commands.install().on('end', function(installed){
     bower.commands.update().on('end', function(updated){
         fs.readFile(styles, 'utf8', function(err, data){
             if (err) throw err;
-            lessc.render(data, {filename: styles})
+            lessc.render(data, {filename: styles, compress: true})
                 .then(function(output){
                 fs.writeFile(dest, output.css, function(err){
                     if (err) throw err;
