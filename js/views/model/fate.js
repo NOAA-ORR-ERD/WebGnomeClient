@@ -99,8 +99,8 @@ define([
         },
 
         reset: function(){
+            webgnome.cache.off('step:recieved', this.buildDataset, this);
             if(webgnome.cache.fetching){
-                webgnome.cache.off('step:recieved', this.buildDataset, this);
                 webgnome.cache.once('step:recieved', this.reset, this);
             } else {
                 webgnome.cache.on('step:recieved', this.buildDataset, this);
