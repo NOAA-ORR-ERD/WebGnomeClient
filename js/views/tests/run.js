@@ -36,6 +36,7 @@ define([
                         model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('wind', wind);
                         model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).set('water', water);
                         model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'}).set('waves', waves);
+                        model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'}).set('waves', waves);
                         environment.add(waves);
 
                         model.save().always(function(){
@@ -60,7 +61,7 @@ define([
                                                 var prev_fate = prev_step.get('WeatheringOutput').nominal;
                                                 ok(fate.amount_released >= prev_fate.amount_released, 'amount released did not reduce');
                                                 ok(fate.evaporated >= prev_fate.evaporated, 'continued to evaporate');
-                                                ok(fate.dispersed >= prev_fate.dispersed, 'continued to disperse');
+                                                ok(fate.natural_dispersion >= prev_fate.natural_dispersion, 'continued to disperse');
                                             } else {
                                                 // test the first step
                                                 ok(_.has(fate, 'amount_released'), 'amount_released defined');
@@ -68,7 +69,7 @@ define([
                                                 ok(_.has(fate, 'avg_density'), 'avg_density defined');
                                                 ok(_.has(fate, 'avg_viscosity'), 'avg_viscosity defined');
                                                 ok(_.has(fate, 'beached'), 'beached defined');
-                                                ok(_.has(fate, 'dispersed'), 'dispersed defined');
+                                                ok(_.has(fate, 'natural_dispersion'), 'natural dispersion defined');
                                                 ok(_.has(fate, 'evaporated'), 'evaporated defined');
                                                 ok(_.has(fate, 'floating'), 'floating defined');
                                                 equal(fate.floating, fate.amount_released, 'all les are floating');
