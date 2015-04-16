@@ -12,7 +12,7 @@ bower.commands.install().on('end', function(installed){
                 .then(function(output){
                 fs.writeFile(dest, output.css, function(err){
                     if (err) throw err;
-                    console.log('successful write!');
+                    console.log('less files compiled successfully to style.css!');
                 });
             },
             function(error){
