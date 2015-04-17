@@ -31,6 +31,10 @@ body{
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Droid Sans';
     background: #2c2c2e;
+
+    &.logger-open{
+        padding-bottom: 200px;
+    }
 }
 
 img{
@@ -1503,6 +1507,66 @@ nav.navbar{
                     background: #282828;
                 }
             }
+        }
+    }
+}
+
+.logger{
+    position: fixed;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 0;
+    z-index: 20;
+    background: #eee;
+    border-top: 1px solid #d8d8d8;
+    .transition(all .2s);
+
+    &.open{
+        height: 200px;
+
+        .toggle{
+            .close{
+                visibility: visible;
+            }
+        }
+    }
+
+    .toggle{
+        cursor: pointer;
+        padding: 8px 10px;
+        margin-top: -34px;
+        margin-right: 40px;
+        height: 34px;
+        font-size: 12px;
+        background: #eee;
+        border: 1px solid #D8D8D8;
+        border-bottom-color: #eee;
+        width: 200px;
+        float: right;
+
+        .info{
+            float: right;
+            margin-right: 10px;
+            font-size: 15px;
+
+            .warning{
+                color: rgba(229, 187, 79, 1);
+                .glyphicon;
+                .glyphicon-exclamation-sign;
+                display: none;
+            }
+            .error{
+                color: rgba(208, 62, 51, 1);
+                .glyphicon;
+                .glyphicon-remove-sign;
+                display: none;
+            }
+        }
+        .close{
+            float: right;
+            font-size: 18px;
+            visibility: hidden;
         }
     }
 }
