@@ -68,12 +68,25 @@ define([
         log: function(message){
             if(_.isString(message)){
                 this.$('.window .logs').append('<li>' + message + '</li>');
-                return;
             }
 
             if(_.isObject(message)){
                 this.$('.window .logs').append('<li class="' + message.type + '">' + message.message + '</li>');
-                return;
+            }
+            this.evalLogs();
+        },
+
+        evalLogs: function(){
+            if(!this.$el.hasClass('error')){
+                if(this.$('.logs .error').length > 0){
+                    this.$el.addClass('error');
+                }
+            }
+
+            if(!this.$el.hasClass('warning')){
+                if(this.$('.logs .warning').length > 0){
+                    this.$el.addClass('warning');
+                }
             }
         }
     });
