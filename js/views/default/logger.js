@@ -55,6 +55,7 @@ define([
 
         socketError: function(error){
             this.log({type: 'error', message: 'Failed to connect!'});
+            this.log({type: 'warning', message: 'Interactve logging has been disabled'});
         },
 
         socketConnect: function(){
@@ -74,19 +75,24 @@ define([
                 this.$('.window .logs').append('<li class="' + message.type + '">' + message.message + '</li>');
             }
             this.evalLogs();
+            var win = this.$('.window')[0];
+            if((win.scrollHeight - win.scrollTop) - win.clientHeight < 25){
+                win.scrollTop = win.scrollHeight;
+            }
         },
 
         evalLogs: function(){
-            if(!this.$el.hasClass('error')){
-                if(this.$('.logs .error').length > 0){
-                    this.$el.addClass('error');
-                }
+            var errors = this.$('.logs .error').length;
+            var warnings = this.$('.logs .warning').length;
+
+            if(errors > 0){
+                this.$el.addClass('error');
+                this.$('.info .error .count').text(errors);
             }
 
-            if(!this.$el.hasClass('warning')){
-                if(this.$('.logs .warning').length > 0){
-                    this.$el.addClass('warning');
-                }
+            if(warnings > 0){
+                this.$el.addClass('warning');
+                this.$('.info .warning .count').text(warnings);
             }
         }
     });

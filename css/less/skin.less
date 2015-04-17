@@ -1529,16 +1529,13 @@ nav.navbar{
             .close{
                 visibility: visible;
             }
-            .info{
-                display: none;
-            }
         }
     }
     &.error{
         .toggle{
             .info{
                 .error{
-                    display: inline;
+                    display: block;
                 }
             }
         }
@@ -1547,7 +1544,7 @@ nav.navbar{
         .toggle{
             .info{
                 .warning{
-                    display: inline;
+                    display: block;
                 }
             }
         }
@@ -1569,19 +1566,38 @@ nav.navbar{
         .info{
             float: right;
             margin-right: 10px;
-            font-size: 15px;
+            font-size: 13px;
+
+            span{
+                padding-top: 1px;
+            }
 
             .warning{
-                color: rgba(229, 187, 79, 1);
-                .glyphicon;
-                .glyphicon-exclamation-sign;
                 display: none;
+                float: left;
+                span{
+                    color: rgba(229, 187, 79, 1);
+                    .glyphicon;
+                    .glyphicon-exclamation-sign;
+                }
             }
             .error{
-                color: rgba(208, 62, 51, 1);
-                .glyphicon;
-                .glyphicon-remove-sign;
+                margin-right: 4px;
                 display: none;
+                float: left;
+                span{
+                    color: rgba(208, 62, 51, 1);
+                    .glyphicon;
+                    .glyphicon-remove-sign;
+                }
+            }
+
+            .count{
+                font-size: 12px;
+                display: block;
+                float: right;
+                margin-top: 1px;
+                margin-left: 2px;
             }
         }
         .close{
@@ -1603,6 +1619,7 @@ nav.navbar{
             padding-left: 0;
             font-size: 11px;
             font-family: "PT Mono";
+            margin-bottom: 0;
 
             li{
                 padding: 2px 4px;
