@@ -6,6 +6,8 @@ define([
 ], function($, _, Backbone, LoggerTemplate){
     var loggerView = Backbone.View.extend({
         className: 'logger',
+        socketRoute: '/logger',
+        socket: null,
 
         events: {
             'click .toggle': 'toggle'
@@ -13,6 +15,12 @@ define([
 
         initialize: function(){
             this.render();
+
+            var url = webgnome.config.api.split(':');
+            url.shift();
+            this.socketUrl = 'ws:' + url.join(':') + this.socketRoute;
+
+            this.startSocket();
         },
 
         render: function(){
@@ -24,6 +32,10 @@ define([
         toggle: function(){
             $('body').toggleClass('logger-open');
             this.$el.toggleClass('open');
+        },
+
+        startSocket: function(){
+            this.socket = new WebSocket(this.socketUrl);
         }
     });
 
