@@ -20,12 +20,13 @@ define([
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
     'model/weatherers/burn',
-    'model/weatherers/skim'
+    'model/weatherers/skim',
+    'model/weatherers/natural_dispersion'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
     GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -55,7 +56,8 @@ define([
                 'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
                 'gnome.weatherers.emulsification.Emulsification': EmulsificationWeatherer,
                 'gnome.weatherers.cleanup.Burn': BurnWeatherer,
-                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer
+                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer,
+                'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer
             }
         },
 
@@ -71,7 +73,7 @@ define([
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),
-                    new DispersionWeatherer({name: '_natural'}),
+                    new NaturalDispersionWeatherer({name: '_natural'}),
                     new EmulsificationWeatherer()
                 ]),
                 movers: new Backbone.Collection(),
@@ -308,7 +310,15 @@ define([
                             this.get('weatherers').add(emul);
                         }
                         emul.set('waves', waves);
-                        emul.save().always(cb);
+
+                        var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
+                        if(!natural_dispersion){
+                            natural_dispersion = new NaturalDispersionWeatherer();
+                            this.get('weatherers').add(natural_dispersion);
+                        }
+                        natural_dispersion.set('waves', waves);
+
+                        this.save().always(cb);
                     }, this)
                 });
             } else {

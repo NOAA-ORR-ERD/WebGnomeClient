@@ -500,7 +500,7 @@ define([
         },
 
         renderGraphDispersion: function(dataset){
-            dataset = this.pluckDataset(dataset, ['dispersed']);
+            dataset = this.pluckDataset(dataset, ['natural_dispersion']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -832,11 +832,11 @@ define([
                 delete titles.step_num;
                 delete titles.time_stamp;
                 delete titles.floating;
-                delete titles.dispersed;
+                delete titles.natural_dispersion;
                 delete titles.evaporated;
                 delete titles.amount_released;
                 var keys = Object.keys(titles);
-                keys.unshift('floating', 'evaporated', 'dispersed');
+                keys.unshift('floating', 'evaporated', 'natural_dispersion');
                 keys.push('amount_released');
 
                 for(var type in keys){
