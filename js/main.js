@@ -31,7 +31,7 @@ require.config({
         flotfillarea: 'lib/flotfillarea/jquery.flot.fillarea',
         flotselect: 'lib/flot/jquery.flot.selection',
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
-        flotneedle: 'lib/flotneedle/src/flotNeedle',
+        flotneedle: 'lib/flotneedle/flotNeedle',
         'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',

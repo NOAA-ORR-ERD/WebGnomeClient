@@ -23,7 +23,7 @@
     "flot": "0.8.3",
     "flotdirection": "https://jquery-flot-direction.googlecode.com/files/jquery.flot.direction.js",
     "flotspline": "git://github.com/alexbardas/flot.git",
-    "flotneedle": "1.0.*",
+    "flotneedle": "https://srccontrol.orr.noaa.gov/alex.miranda/flotNeedle.git",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
