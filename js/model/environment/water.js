@@ -10,8 +10,8 @@ define([
             temperature: 46,
             salinity: 32,
             sediment: 5,
-            wave_height: 0,
-            fetch: 0,
+            wave_height: null,
+            fetch: null,
             units: {
                 'temperature': 'F',
                 'salinity': 'psu',

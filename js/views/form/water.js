@@ -92,8 +92,8 @@ define([
         update: function(){
             var units = this.model.get('units');
             units.temperature = this.$('#tempunits').val();
-            this.model.set('fetch', 0);
-            this.model.set('wave_height', 0);
+            this.model.set('fetch', null);
+            this.model.set('wave_height', null);
             if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
                 units.fetch = this.$('#fetch-units').val();
