@@ -44,15 +44,12 @@ define([
         },
 
         startSocket: function(){
-            this.log('Connecting to ' + this.socketUrl + ' ...');
+            this.log('Connecting...');
             this.socket = io.connect(this.socketUrl);
-            this.socket.socket.on('error', function(){
-                console.log('socket error');
-            });
-            this.socket.socket.on('connect', function(){
-                console.log('socket connection');
-
-            });
+            this.socket.on('connect', _.bind(this.socketConnect, this));
+            this.socket.on('error', _.bind(this.socketError, this));
+            this.socket.on('you_just_connected', _.bind(this.socketLog, this));
+            this.socket.on('log', _.bind(this.socketLog, this));
         },
 
         socketError: function(error){
@@ -62,6 +59,10 @@ define([
 
         socketConnect: function(){
             this.log('Connected!');
+        },
+
+        socketLog: function(event, something){
+            this.log(event.log);
         },
 
         /**
