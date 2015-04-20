@@ -45,7 +45,7 @@ require.config({
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         nucos: 'lib/nucos/nucos',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
-        socketio: 'lib/socket.io-client/socket.io'
+        socketio: 'lib/socket.io-client/dist/socket.io'
     },
     shim: {
         jquery: {

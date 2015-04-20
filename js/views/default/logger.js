@@ -45,9 +45,14 @@ define([
 
         startSocket: function(){
             this.log('Connecting to ' + this.socketUrl + ' ...');
-            this.socket = io(webgnome.config.api);
-            this.socket.on('error', _.bind(this.socketError, this));
-            this.socket.on('connect', _.bind(this.socketConnect, this));
+            this.socket = io.connect(this.socketUrl);
+            this.socket.socket.on('error', function(){
+                console.log('socket error');
+            });
+            this.socket.socket.on('connect', function(){
+                console.log('socket connection');
+
+            });
         },
 
         socketError: function(error){
