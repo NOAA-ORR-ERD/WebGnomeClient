@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'socketio',
     'text!templates/default/logger/index.html'
-], function($, _, Backbone, LoggerTemplate){
+], function($, _, Backbone, io, LoggerTemplate){
     var loggerView = Backbone.View.extend({
         className: 'logger',
         socketRoute: '/logger',
@@ -15,11 +16,7 @@ define([
 
         initialize: function(){
             this.render();
-
-            var url = webgnome.config.api.split(':');
-            url.shift();
-            this.socketUrl = 'ws:' + url.join(':') + this.socketRoute;
-
+            this.socketUrl = webgnome.config.api + this.socketRoute;
             this.startSocket();
         },
 
@@ -47,10 +44,10 @@ define([
         },
 
         startSocket: function(){
-            this.log('Connecting...');
-            this.socket = new WebSocket(this.socketUrl);
-            this.socket.onerror = _.bind(this.socketError, this);
-            this.socket.onconnect = _.bind(this.socketConnect, this);
+            this.log('Connecting to ' + this.socketUrl + ' ...');
+            this.socket = io(webgnome.config.api);
+            this.socket.on('error', _.bind(this.socketError, this));
+            this.socket.on('connect', _.bind(this.socketConnect, this));
         },
 
         socketError: function(error){
