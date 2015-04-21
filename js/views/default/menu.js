@@ -4,10 +4,11 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
+    'views/modal/hotkeys',
     'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, swal, GnomeModel) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -42,6 +43,7 @@ define([
             'click .about': 'about',
             'click .overview': 'overview',
             'click .faq': 'faq',
+            'click .hotkeys': 'hotkeys',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
@@ -154,6 +156,11 @@ define([
         faq: function(event){
             event.preventDefault();
             webgnome.router.navigate('faq', true);
+        },
+
+        hotkeys: function(event){
+            event.preventDefault();
+            new HotkeysModal().render();
         },
 
         enableMenuItem: function(item){

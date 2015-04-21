@@ -107,9 +107,10 @@ define([
             this.$('.save').click();
             if (this.$('.next').length > 0){
                 this.$('.next').click();
-            }
-            if (this.$('.finish').length > 0){
+            } else if (this.$('.finish').length > 0){
                 this.$('.finish').click();
+            } else if (this.$('.cancel').length > 0){
+                this.$('.cancel').click();
             }
         },
 
