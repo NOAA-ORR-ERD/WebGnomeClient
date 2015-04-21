@@ -62,7 +62,7 @@ define([
         },
 
         socketLog: function(event, something){
-            this.log(event.log);
+            this.log(event.message);
         },
 
         /**
