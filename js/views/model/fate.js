@@ -850,7 +850,18 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['natural_dispersion', 'dispersed', 'evaporated', 'floating', 'amount_released', 'skimmed', 'burned', 'beached'].indexOf(this.dataset[set].name) !== -1){
+                if([
+                        'natural_dispersion', 
+                        'dispersed', 
+                        'evaporated', 
+                        'floating', 
+                        'amount_released', 
+                        'skimmed', 
+                        'burned', 
+                        'beached',
+                        'sedimentation',
+                        'dissolution'
+                    ].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
