@@ -55,6 +55,10 @@ define([
                 return 'Fetch must be a number greater than or equal to zero!';
             }
 
+            if (attrs.sediment > 1000){
+                return 'Sediment cannot exceed 1000 milligrams per liter!';
+            }
+
         }
 
     });
