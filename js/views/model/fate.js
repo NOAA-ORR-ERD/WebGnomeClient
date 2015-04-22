@@ -208,6 +208,8 @@ define([
                 this.renderGraphEvaporation(this.dataset);
             } else if(active == '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
+            } else if(active == '#sedimentation') {
+                this.renderGraphSedimentation(this.dataset);
             } else if(active == '#density') {
                 this.renderGraphDensity(this.dataset);
             } else if(active == '#emulsification') {
@@ -494,6 +496,21 @@ define([
                 this.graphDispersion.setData(dataset);
                 this.graphDispersion.setupGrid();
                 this.graphDispersion.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphSedimentation: function(dataset){
+            dataset = this.pluckDataset(dataset, ['sedimentation']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphSedimentation)){
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
+                this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
+            } else {
+                this.graphSedimentation.setData(dataset);
+                this.graphSedimentation.setupGrid();
+                this.graphSedimentation.draw();
             }
             dataset[0].fillArea = null;
         },
