@@ -11,7 +11,8 @@ define([
         socket: null,
 
         events: {
-            'click .toggle': 'toggle'
+            'click .toggle': 'toggle',
+            'mousewheel': 'scroll',
         },
 
         initialize: function(){
@@ -96,6 +97,14 @@ define([
             if(warnings > 0){
                 this.$el.addClass('warning');
                 this.$('.info .warning .count').text(warnings);
+            }
+        },
+
+        scroll: function(e, d){
+            var win = this.$('.window')[0];
+            
+            if((win.scrollTop === (win.scrollHeight - win.clientHeight) && d < 0) || (win.scrollTop === 0 && d > 0)) {
+                e.preventDefault();
             }
         }
     });
