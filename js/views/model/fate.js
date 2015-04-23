@@ -683,7 +683,7 @@ define([
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
             var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
