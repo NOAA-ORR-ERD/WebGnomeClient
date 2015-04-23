@@ -29,6 +29,7 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'views/form/beached',
     'text!templates/panel/response.html',
     'views/form/response/disperse',
     'views/form/response/insituBurn',
@@ -48,7 +49,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    LocationForm, olMapView, ResponseTypeForm, BeachedForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -71,6 +72,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
+                'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
 
@@ -240,10 +242,12 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.water').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
+            this.$('.beached').show().removeClass('disabled');
         },
 
         showAllObjects: function(){
             this.$('.object').show().removeClass('disabled');
+            this.$('.beached').hide().addClass('disabled');
         },
 
         showTrajectoryObjects: function(){
@@ -286,7 +290,7 @@ define([
                         if($(this).parents('.panel').hasClass('complete')){
                             return object + ' requirement met';
                         } else if($(this).parents('.panel').hasClass('optional')){
-                            return object + ' optional';                            
+                            return object + ' optional';
                         } else {
                             return object + ' required';
                         }
@@ -920,6 +924,10 @@ define([
                     });
                 }
             }, this));
+        },
+
+        clickBeached: function(){
+            new BeachedForm().render();
         },
         
         configure: function(target){
