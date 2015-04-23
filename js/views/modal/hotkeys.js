@@ -11,14 +11,6 @@ define([
         title: 'Trajectory Hotkeys',
         body: _.template(HotkeysTemplate),
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Ok</button>'
-
-        // events: {
-        //     'shown.bs.modal': 'postRender'
-        // },
-
-        // postRender: function(){
-        //     this.$('.modal-body').css('height', '175px');
-        // }
     });
 
     return hotkeysModal;
