@@ -351,7 +351,7 @@ define([
                 this.$(row).addClass('edit');
                 this.$(row).html(template);
                 this.attachCompass(e, entry, row);
-            } 
+            }
         },
 
         attachCompass: function(e, entry, row){

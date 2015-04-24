@@ -74,6 +74,7 @@ define([
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
             var start_time = this.startTime;
+            var efficiencyVal = this.efficiencyValue;
 
             var thicknessInMeters = this.convertLength(boomedOilThickness, boomedThicknessUnits);
             var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
@@ -85,6 +86,7 @@ define([
             this.model.set('thickness', boomedOilThickness);
             this.model.set('area_units', boomedAreaUnits);
             this.model.set('thickness_units', boomedThicknessUnits);
+            this.model.set('efficiency', efficiencyVal);
         }
     });
 
