@@ -26,20 +26,31 @@ bower.commands.install().on('end', function(installed){
                 console.log(substr);
             }
         }
-        fs.readFile(styles, 'utf8', function(err, data){
-            if (err) throw err;
-            lessc.render(data, {filename: styles, compress: true})
-                .then(function(output){
-                fs.writeFile(dest, output.css, function(err){
-                    if (err) throw err;
-                    console.log('\nless files compiled successfully to style.css!');
+        bower.commands.prune().on('end', function(pruned){
+            var prunedDeps = Object.keys(pruned);
+            if (prunedDeps.length === 0){
+                console.log('No bower packages were pruned');
+            } else {
+                console.log('The following bower packages were pruned:\n');
+                for (var i = 0; i < prunedDeps.length; i++){
+                    var substr = prunedDeps[i];
+                    console.log(substr);
+                }
+            }
+            fs.readFile(styles, 'utf8', function(err, data){
+                if (err) throw err;
+                lessc.render(data, {filename: styles, compress: true})
+                    .then(function(output){
+                    fs.writeFile(dest, output.css, function(err){
+                        if (err) throw err;
+                        console.log('\nLess files compiled successfully to style.css!');
+                    });
+                },
+                function(error){
+                    throw error;
                 });
-            },
-            function(error){
-                throw error;
             });
         });
-           
     });
 });
 

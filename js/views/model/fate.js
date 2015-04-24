@@ -224,6 +224,8 @@ define([
                 this.renderGraphEvaporation(this.dataset);
             } else if(active == '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
+            } else if(active == '#sedimentation') {
+                this.renderGraphSedimentation(this.dataset);
             } else if(active == '#density') {
                 this.renderGraphDensity(this.dataset);
             } else if(active == '#emulsification') {
@@ -377,7 +379,7 @@ define([
                     }
 
                     var row_html = '';
-                    if(parseInt(row) === 0){
+                    if(parseInt(row, 10) === 0){
                         row_html += '<thead><tr>';
                     } else {
                         row_html += '<tr>';
@@ -510,6 +512,21 @@ define([
                 this.graphDispersion.setData(dataset);
                 this.graphDispersion.setupGrid();
                 this.graphDispersion.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphSedimentation: function(dataset){
+            dataset = this.pluckDataset(dataset, ['sedimentation']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphSedimentation)){
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
+                this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
+            } else {
+                this.graphSedimentation.setData(dataset);
+                this.graphSedimentation.setupGrid();
+                this.graphSedimentation.draw();
             }
             dataset[0].fillArea = null;
         },
@@ -682,7 +699,7 @@ define([
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
             var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -866,7 +883,18 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['dispersed', 'evaporated', 'floating', 'amount_released', 'skimmed', 'burned', 'beached'].indexOf(this.dataset[set].name) !== -1){
+                if([
+                        'natural_dispersion', 
+                        'dispersed', 
+                        'evaporated', 
+                        'floating', 
+                        'amount_released', 
+                        'skimmed', 
+                        'burned', 
+                        'beached',
+                        'sedimentation',
+                        'dissolution'
+                    ].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
