@@ -18,7 +18,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .slidertoggle': 'toggleEfficiencySlider'
-            }, ResponseFormModal.prototype.events);
+            }, ResponseFormModal.prototype.events());
         },
 
         initialize: function(options, burnModel){
@@ -46,12 +46,11 @@ define([
         toggleEfficiencySlider: function(){
             if (this.$('.slidertoggle').is(':checked')){
                 this.$('.slider').slider({disabled: true});
-                this.efficiencyValue = null;
+                this.model.set('efficiency', null);
             } else {
                 this.$('.slider').slider({disabled: false});
-                this.efficiencyValue = this.$('.slider').slider('value') / 100;
+                this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
             }
-            this.update();
         },
 
         setEfficiencySlider: function(){
@@ -59,8 +58,10 @@ define([
                 var val = this.model.get('efficiency') * 100;
                 this.$('.slider').slider('value', val);
                 this.$('#rate-tooltip').text(val);
+            } else {
+                this.$('.slidertoggle').prop('checked', true);
+                this.toggleEfficiencySlider();
             }
-
         },
 
         setUnitSelects: function(){
