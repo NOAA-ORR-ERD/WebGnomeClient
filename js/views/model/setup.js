@@ -370,7 +370,7 @@ define([
                     for (var entry in ts){
                         if(rate === 0 ||  entry % rate === 0){
                             var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                            data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10), parseInt(ts[entry][1][1], 10) - 180]);
+                            data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                         }
                     }
 

@@ -325,6 +325,10 @@ define([
                 cb();
             }
         },
+
+        updateBurn: function(){
+            
+        }
     });
     
     return gnomeModel;

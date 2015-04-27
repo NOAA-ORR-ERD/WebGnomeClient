@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
-    'model/weatherers/base'
-], function(_, Backbone, BaseModel){
+    'model/weatherers/base',
+    'model/environment/wind'
+], function(_, Backbone, BaseModel, WindModel){
     burnWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Burn',
@@ -10,7 +11,13 @@ define([
             'area': 0,
             'thickness': 0,
             'area_units': 'm^2',
-            'thickness_units': 'cm'
+            'thickness_units': 'cm',
+            'wind': null,
+            'efficiency': null
+        },
+
+        model: {
+            wind: WindModel
         },
 
         toTree: function(){
