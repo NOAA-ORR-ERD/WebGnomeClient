@@ -43,7 +43,9 @@ define([
             var a = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
-                a.assessment_time = webgnome.model.get('start_time');
+                if (a.assessment_time == 0) {
+                    a.assessment_time = webgnome.model.get('start_time');
+                }
 
                 // initialize efficiency to response values
                 var e = a.efficiency;
