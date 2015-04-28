@@ -29,6 +29,7 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'model/weatherers/manual_beaching',
     'views/form/beached',
     'text!templates/panel/response.html',
     'views/form/response/disperse',
@@ -49,7 +50,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, BeachedForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -927,7 +928,8 @@ define([
         },
 
         clickBeached: function(){
-            new BeachedForm().render();
+            var beachedModel = new BeachedModel();
+            new BeachedForm({}, beachedModel).render();
         },
         
         configure: function(target){
