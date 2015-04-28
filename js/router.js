@@ -13,9 +13,10 @@ define([
     'views/default/overview',
     'views/default/faq',
     'views/default/load',
-    'views/default/footer'
+    'views/default/footer',
+    'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, LoadView, FooterView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
@@ -41,6 +42,9 @@ define([
             if(callback) callback.apply(this, args);
             if(window.location.href.indexOf('test.html') === -1){
                 this.views.push(new FooterView());
+            }
+            if(_.isUndefined(this.logger)){
+                this.logger = new LoggerView();
             }
         },
 
