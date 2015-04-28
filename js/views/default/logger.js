@@ -13,6 +13,7 @@ define([
         events: {
             'click .toggle': 'toggle',
             'mousewheel': 'scroll',
+            'click .view a': 'toggleViewable'
         },
 
         initialize: function(){
@@ -72,17 +73,24 @@ define([
          */
         log: function(message){
             if(_.isString(message)){
-                this.$('.window .logs').append('<li>' + message + '</li>');
+                this.$('.window .logs').append('<li class="misc">' + message + '</li>');
             }
 
             if(_.isObject(message)){
                 var source = message.name.replace('[', '').split('.')[0];
+                console.log(source);
+                if(source !== 'gnome' && source !== 'webgnome_api'){
+                    source = 'misc';
+                }
                 var ts = message.time + ' ' + message.date;
                 this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong>' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right">' + ts + '</div></li>');
             }
 
             this.evalLogs();
+            this.windowScrollCheck();
+        },
 
+        windowScrollCheck: function(){
             var win = this.$('.window')[0];
             if((win.scrollHeight - win.scrollTop) - win.clientHeight < 25){
                 win.scrollTop = win.scrollHeight;
@@ -110,6 +118,18 @@ define([
             if((win.scrollTop === (win.scrollHeight - win.clientHeight) && d < 0) || (win.scrollTop === 0 && d > 0)) {
                 e.preventDefault();
             }
+        },
+
+        toggleViewable: function(e){
+            e.preventDefault();
+
+            var a = this.$(e.target);
+            var win = this.$('.window');
+            
+            a.toggleClass('active');
+            win.toggleClass(a.attr('href').replace('#', ''));
+
+            this.windowScrollCheck();
         }
     });
 
