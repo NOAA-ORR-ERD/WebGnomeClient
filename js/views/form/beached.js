@@ -15,9 +15,18 @@ define([
         title: 'Beached Oil',
 
         events : function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(tbody input)'] = 'update';
+            formModalHash['keyup input:not(tbody input)'] = 'update';
             return _.defaults({
-                'click .add': 'addBeachedAmount'
-            }, FormModal.prototype.events);
+                'click .add': 'addBeachedAmount',
+                'click .trash': 'removeTimeseriesEntry',
+                'click .edit': 'editTimeseriesEntry',
+                'click .ok': 'enterTimeseriesEntry',
+                'click .undo': 'cancelTimeseriesEntry'
+            }, formModalHash);
         },
 
         initialize: function(options, model){
@@ -93,6 +102,30 @@ define([
                 html += template;
             });
             this.$('table tbody').html(html);
+        },
+
+        editTimeseriesEntry: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+            var compiled = _.template(EditRowTemplate);
+            var template = compiled({
+                date: date,
+                amount: entry[1][0]
+            });
+            this.$(row).addClass('edit');
+            this.$(row).html(template);
+        },
+
+        removeTimeseriesEntry: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var index = e.target.parentElement.parentElement.dataset.tsindex;
+            this.model.get('timeseries').splice(index, 1);
+            this.renderTimeseries();
         }
 
     });
