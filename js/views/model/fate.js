@@ -683,7 +683,7 @@ define([
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
             var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -691,7 +691,10 @@ define([
                 burned: 0,
                 skimmed: 0,
                 floating: 0,
-                amount_released: 0
+                amount_released: 0,
+                natural_dispersion: 0,
+                sedimentation: 0,
+                dissolution: 0
             };
             var cumulative = _.clone(report);
             var low = _.clone(report);
@@ -703,28 +706,32 @@ define([
                         report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].data){
                     if(dataset[set].data[step][0] <= end){
                         cumulative[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].low){
                     if(dataset[set].low[step][0] <= end){
                         low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].high){
                     if(dataset[set].high[step][0] <= end){
                         high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
                     }
                 }
+                
             }
+
+            cumulative.natural_dispersion += cumulative.sedimentation;
+            cumulative.natural_dispersion += cumulative.dissolution;
+            low.natural_dispersion += low.sedimentation;
+            low.natural_dispersion += low.dissolution;
+            high.natural_dispersion += high.sedimentation;
+            high.natural_dispersion += high.dissolution;
+            report.natural_dispersion += report.sedimentation;
+            report.natural_dispersion += report.dissolution;
 
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
