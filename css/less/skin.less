@@ -31,6 +31,10 @@ body{
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Droid Sans';
     background: #2c2c2e;
+
+    &.logger-open{
+        padding-bottom: 200px;
+    }
 }
 
 img{
@@ -1522,6 +1526,189 @@ nav.navbar{
 
                 &:hover{
                     background: #282828;
+                }
+            }
+        }
+    }
+}
+
+.logger{
+    position: fixed;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 0;
+    z-index: 20;
+    background: #eee;
+    border-top: 1px solid #d8d8d8;
+    .transition(all .2s);
+
+    &.open{
+        height: 221px;
+
+        .toggle{
+            .close{
+                visibility: visible;
+            }
+        }
+    }
+    &.error{
+        .toggle{
+            .info{
+                .error{
+                    display: block;
+                }
+            }
+        }
+    }
+    &.warning{
+        .toggle{
+            .info{
+                .warning{
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .toggle{
+        cursor: pointer;
+        padding: 8px 10px;
+        margin-top: -34px;
+        margin-right: 40px;
+        height: 34px;
+        font-size: 12px;
+        background: #eee;
+        border: 1px solid #D8D8D8;
+        border-bottom-color: #eee;
+        width: 200px;
+        float: right;
+
+        .info{
+            float: right;
+            margin-right: 10px;
+            font-size: 13px;
+
+            span{
+                padding-top: 1px;
+            }
+
+            .warning{
+                display: none;
+                float: left;
+                span{
+                    color: rgba(229, 187, 79, 1);
+                    .glyphicon;
+                    .glyphicon-exclamation-sign;
+                }
+            }
+            .error{
+                margin-right: 4px;
+                display: none;
+                float: left;
+                span{
+                    color: rgba(208, 62, 51, 1);
+                    .glyphicon;
+                    .glyphicon-remove-sign;
+                }
+            }
+
+            .count{
+                font-size: 12px;
+                display: block;
+                float: right;
+                margin-top: 1px;
+                margin-left: 2px;
+            }
+        }
+        .close{
+            float: right;
+            font-size: 18px;
+            visibility: hidden;
+        }
+    }
+
+    .window{
+        height: 215px;
+        margin-top: 4px;
+        border-top: 1px solid #d8d8d8;
+        padding-top: 25px;
+        width: 100%;
+        background: white;
+        overflow-y: scroll;
+
+        .view{
+            position: absolute;
+            padding: 2px 5px;
+            background: #eee;
+            top: 5px;
+            border-bottom: 1px solid #d8d8d8;
+            left: 0px;
+            right: 0px;
+
+            a{
+                color: #656565;
+                border-radius: 50px;
+                padding: 0 5px;
+                margin-right: 5px;
+
+                &:hover{
+                    text-decoration: none;
+                    background: #D0D0D0;
+                }
+
+                &:focus{
+                    text-decoration: none;
+                }
+
+                &.active{
+                    background: #ADADAD;
+                    box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+                    color: white;
+                    text-shadow: 0px 1px 0px rgba(0,0,0,0.5);
+                }
+            }
+        }
+
+        .logs{
+            padding-left: 0;
+            font-size: 11px;
+            font-family: "PT Mono";
+            margin-bottom: 0;
+
+            li{
+                padding: 2px 4px;
+                border-bottom: 1px solid #F1F1F1;
+                display: none;
+
+                &.error, .criti{
+                    background: #FFB3B3;
+                }
+
+                &.warni{
+                    background: #FFF2B3;;
+                }
+            }
+        }
+
+        &.gnome{
+            .logs{
+                .gnome{
+                    display: block;
+                }
+            }
+        }
+        &.misc{
+            .logs{
+                .misc{
+                    display: block;
+                }
+            }
+        }
+        &.webgnome_api{
+            .logs{
+                .webgnome_api{
+                    display: block;
                 }
             }
         }

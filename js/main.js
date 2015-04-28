@@ -44,7 +44,8 @@ require.config({
         outlayer: 'lib/outlayer/',
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         nucos: 'lib/nucos/nucos',
-        dropzone: 'lib/dropzone/dist/dropzone-amd-module'
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module',
+        socketio: 'lib/socket.io-client/dist/socket.io'
     },
     shim: {
         jquery: {
@@ -82,6 +83,9 @@ require.config({
         },
         sweetalert: {
             exports: 'swal'
+        },
+        socketio: {
+            exports: 'io'
         }
     },
 });
