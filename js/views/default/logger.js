@@ -62,8 +62,8 @@ define([
             this.log('Connected!');
         },
 
-        socketLog: function(event, something){
-            this.log(event.message);
+        socketLog: function(event){
+            this.log(event);
         },
 
         /**
@@ -76,9 +76,13 @@ define([
             }
 
             if(_.isObject(message)){
-                this.$('.window .logs').append('<li class="' + message.type + '">' + message.message + '</li>');
+                var source = message.name.replace('[', '').split('.')[0];
+                var ts = message.time + ' ' + message.date;
+                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong>' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right">' + ts + '</div></li>');
             }
+
             this.evalLogs();
+
             var win = this.$('.window')[0];
             if((win.scrollHeight - win.scrollTop) - win.clientHeight < 25){
                 win.scrollTop = win.scrollHeight;
@@ -86,8 +90,8 @@ define([
         },
 
         evalLogs: function(){
-            var errors = this.$('.logs .error').length;
-            var warnings = this.$('.logs .warning').length;
+            var errors = this.$('.logs .error, .logs .criti').length;
+            var warnings = this.$('.logs .warni').length;
 
             if(errors > 0){
                 this.$el.addClass('error');
