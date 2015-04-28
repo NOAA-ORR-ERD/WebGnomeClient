@@ -78,7 +78,6 @@ define([
 
             if(_.isObject(message)){
                 var source = message.name.replace('[', '').split('.')[0];
-                console.log(source);
                 if(source !== 'gnome' && source !== 'webgnome_api'){
                     source = 'misc';
                 }
