@@ -27,6 +27,12 @@ define([
         },
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Close</button>',
 
+        efficiency: {
+            'skimming': 100,
+            'dispersant': 100,
+            'insitu_burn': 100
+        },
+
         benefitGauge: null,
         self: null,
 
@@ -38,6 +44,10 @@ define([
             ri.surface = 1/3;
             ri.column = 1/3;
             ri.shoreline = 1/3;
+            var e = this.model.get('efficiency');
+            this.efficiency.skimming =  e.skimming;
+            this.efficiency.dispersant =  e.dispersant;
+            this.efficiency.insitu_burn =  e.insitu_burn;
             this.on('ready', this.rendered, this);
 
             self = this;
@@ -89,10 +99,9 @@ define([
 
             this.createBenefitGauge('benefit', 50);
 
-            var e = this.model.get('efficiency');
-            this.createSlider('#skimming', e.skimming);
-            this.createSlider('#dispersant', e.dispersant);
-            this.createSlider('#insituburn', e.insitu_burn);
+            this.createSlider('#skimming', self.efficiency.skimming);
+            this.createSlider('#dispersant', self.efficiency.dispersant);
+            this.createSlider('#insituburn', self.efficiency.insitu_burn);
 
             $('#importance').relativeImportanceUI({callback: this.calculateRI});
 
@@ -192,7 +201,7 @@ define([
                         this.updateSlide(selector, ui);
                     }, this),
                     stop: _.bind(function(e, ui){
-                        this.reassessRisk();
+                        this.updateBenefit();
                     }, this)
                 });
 
@@ -210,13 +219,13 @@ define([
             this.updateTooltipWidth();
 
             // set model
-            var e = self.model.get('efficiency');
+//            var e = self.model.get('efficiency');
             if (selector === "#skimming") {
-                e.skimming = value;
+                self.efficiency.skimming = value;
             } else if (selector === "#dispersant") {
-                e.dispersant = value;
+                self.efficiency.dispersant = value;
             } else if (selector === "#insituburn") {
-                e.insitu_burn = value;
+                self.efficiency.insitu_burn = value;
             }
         },
 
@@ -239,13 +248,8 @@ define([
                 // the fate.js has a listener to rerun the model on a rewind
                 webgnome.cache.rewind();
             }
-        },
 
-        reassessRisk: function(){
-            // assess model
-            this.model.assessment();
-
-            this.updateBenefit();
+            this.close();
         },
 
         // callback from relative importance ui when values change.
@@ -271,9 +275,21 @@ define([
         },
 
         updateBenefit: function(){
+            var newSkimming = self.efficiency.skimming;
+            var newDispersant = self.efficiency.dispersant;
+            var newBurn = self.efficiency.insitu_burn;
+
+            // in the info I have, only the water column uses the 
+            // mass of dispersed oil in it calculations,
+            // so only water column is effected by adjusting the efficiencies.
+            var e = this.model.get('efficiency');
+            var modelSkimming = e.skimming;
+            var modelDispersant = e.dispersant;
+            var modelBurn = e.insitu_burn;
+
             var ri = this.model.get('relativeImportance');
             var surface = this.model.get('surface');
-            var column = this.model.get('column');
+            var column = this.model.get('column') * newDispersant / modelDispersant;
             var shoreline = this.model.get('shoreline');
             var tc = ri.surface * surface + ri.column * column + ri.shoreline * shoreline;
             var benefit = (1 - tc) * this.benefitGauge.maxValue;
