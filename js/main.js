@@ -47,7 +47,8 @@ require.config({
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
-        dropzone: 'lib/dropzone/dist/dropzone-amd-module'
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module',
+        socketio: 'lib/socket.io-client/dist/socket.io'
     },
     shim: {
         jquery: {
@@ -95,6 +96,9 @@ require.config({
         },
         gauge: {
             exports: 'Gauge'
+        },
+        socketio: {
+            exports: 'io'
         }
     },
 });

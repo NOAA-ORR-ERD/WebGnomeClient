@@ -52,10 +52,13 @@ define([
                 this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').attr('selected', 'selected');
             }
 
-            if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1){
+            var unitsAreMgPerLiter = this.model.get('units').sediment === 'mg/l';
+
+            if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1 || !unitsAreMgPerLiter){
                 this.$('.sediment-select').parent().hide();
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));
+                this.$('.sediment-units option[value="' + this.model.get('units').sediment + '"]').attr('selected', 'selected');
             } else {
                 this.$('.sediment-select option[value="' + this.model.get('sediment') + '"]').attr('selected', 'selected');
             }
@@ -92,6 +95,7 @@ define([
         update: function(){
             var units = this.model.get('units');
             units.temperature = this.$('#tempunits').val();
+            units.sediment = this.$('.sediment-units').val();
             this.model.set('fetch', null);
             this.model.set('wave_height', null);
             if (this.$('#data-source').val() === 'fetch'){
