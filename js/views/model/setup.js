@@ -31,6 +31,7 @@ define([
     'views/form/response/type',
     'model/weatherers/manual_beaching',
     'views/form/beached',
+    'text!templates/panel/beached.html',
     'text!templates/panel/response.html',
     'views/form/response/disperse',
     'views/form/response/insituBurn',
@@ -50,7 +51,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -264,6 +265,7 @@ define([
                 this.updateLocation();
                 this.updateWater();
                 this.updateSpill();
+                this.updateBeached();
                 
                 var delay = {
                     show: 500,
@@ -936,8 +938,39 @@ define([
             beachedForm.on('hidden', beachedForm.close);
             beachedForm.on('save', function(){
                 webgnome.model.get('weatherers').add(beached, {merge: true});
+                webgnome.model.save({
+                    success: _.bind(function(){
+                        this.updateBeached();
+                    }, this)
+                });
             });
             beachedForm.render();
+        },
+
+        updateBeached: function(){
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (!_.isUndefined(beached)){
+                var compiled;
+                this.$('.beached .panel').addClass('complete');
+                if (beached.get('timeseries').length === 1){
+                    var amountBeached = beached.get('timeseries')[0][1][0];
+                    var date = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
+                    compiled = _.template( BeachedPanelTemplate, {
+                        amount: amountBeached,
+                        units: beached.get('units'),
+                        date: date
+                    });
+                    this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                } else {
+                    
+                }
+                this.$('.beached .panel-body').html(compiled);
+                this.$('.beached .panel-body').show();
+            } else {
+                this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                this.$('.beached .panel').removeClass('complete');
+                this.$('.beached .panel-body').hide().html('');
+            }
         },
         
         configure: function(target){

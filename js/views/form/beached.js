@@ -32,7 +32,6 @@ define([
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
-            console.log(this.events());
         },
 
         render: function(options){
