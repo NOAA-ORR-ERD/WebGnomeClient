@@ -928,8 +928,16 @@ define([
         },
 
         clickBeached: function(){
-            var beachedModel = new BeachedModel();
-            new BeachedForm({}, beachedModel).render();
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (_.isUndefined(beached) || beached.length === 0){
+                beached = new BeachedModel();
+            }
+            var beachedForm = new BeachedForm({}, beached);
+            beachedForm.on('hidden', beachedForm.close);
+            beachedForm.on('save', function(){
+                webgnome.model.get('weatherers').add(beached, {merge: true});
+            });
+            beachedForm.render();
         },
         
         configure: function(target){

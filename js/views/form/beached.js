@@ -65,7 +65,6 @@ define([
             } else {
                 this.clearError();
             }
-            console.log('update ran');
         },
 
         addBeachedAmount: function(e){
