@@ -32,11 +32,15 @@ define([
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
-            console.log(this.model);
         },
 
         render: function(options){
-            this.body = _.template(BeachedTemplate, {});
+            var date = moment(this.model.get('active_start')).format(webgnome.config.date_format.moment);
+
+            this.body = _.template(BeachedTemplate, {
+                unit: this.model.get('units'),
+                date: date
+            });
 
             FormModal.prototype.render.call(this, options);
 
@@ -49,8 +53,9 @@ define([
         },
 
         update: function(){
-            var dateTime = this.$('#datetime').val();
-            var amount = this.$('#beached-amount').val();
+            var units = this.$('#units').val();
+
+            this.model.set('units', units);
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
@@ -70,7 +75,8 @@ define([
             var not_replaced = true;
 
             _.each(this.model.get('timeseries'), function(el, index, array){
-                if(el[0] === entry[0]){
+                console.log(el);
+                if(el[0] === entry[0] || el[0] === '2014-07-07T12:00:00'){
                     not_replaced = false;
                     array[index] = entry;
                 }
@@ -81,8 +87,10 @@ define([
             }
 
             dateObj.add('h', incrementer);
+            this.$('#datetime').val(dateObj.format(webgnome.config.date_format.moment));
 
             this.renderTimeseries();
+            this.update();
         },
 
         renderTimeseries: function(){
@@ -90,7 +98,6 @@ define([
 
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
-                console.log(el);
                 var beached = el[1][0];
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(StaticRowTemplate);
@@ -118,6 +125,33 @@ define([
             });
             this.$(row).addClass('edit');
             this.$(row).html(template);
+        },
+
+        enterTimeseriesEntry: function(e){
+            e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            var amount = this.$('.input-amount').val();
+            var date = entry[0];
+            entry = [date, [amount]];
+            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
+                if (el[0] === entry[0]){
+                    array[index] = entry;
+                    this.timeseries = array;
+                }
+            }, this));
+            this.$(row).removeClass('edit');
+            this.renderTimeseries();
+        },
+
+        cancelTimeseriesEntry: function(e){
+            e.preventDefault();
+            var row = this.$(e.target).parents('tr')[0];
+            var index = row.dataset.tsindex;
+            var entry = this.model.get('timeseries')[index];
+            this.renderTimeseries();
+            this.$(row).removeClass('edit');
         },
 
         removeTimeseriesEntry: function(e){

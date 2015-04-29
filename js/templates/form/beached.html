@@ -9,7 +9,7 @@
                             <th>
                                 <div class="pull-left">Amount</div>
                                 <div class="col-xs-7">
-                                    <select name="units" class="form-control" id="units">
+                                    <select name="units" class="form-control" id="units" value="{{ unit }}">
                                         <option value="m^3">m^3</option>
                                         <option value="gal">gal</option>
                                         <option value="kg">kilograms</option>
@@ -36,7 +36,7 @@
                             </div>
                             <div class="col-sm-7">
                                 <div class="input-group date">
-                                    <input type="text" id="datetime" class="form-control" value="">
+                                    <input type="text" id="datetime" class="form-control" value="{{ date }}">
                                     <span class="input-group-addon" id="datepick">
                                         <i></i>
                                     </span>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-sm-5"><label class="control-label pull-right" for="beached-amount">Amount:</label></div>
-                            <div class="col-sm-4"><input type="number" min="1" id="beached-amount" class="form-control col-xs-3" value=""></div>
+                            <div class="col-sm-4"><input type="number" min="1" id="beached-amount" class="form-control col-xs-3" value="0"></div>
                         </div>
                         <div class="row"><div class="col-sm-12"><hr></div></div>
                         <div class="form-group">
