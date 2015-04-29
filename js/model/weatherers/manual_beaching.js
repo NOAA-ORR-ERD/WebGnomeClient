@@ -9,19 +9,11 @@ define([
 			'obj_type': 'gnome.weatherers.manual_beaching.Beaching',
 			'name': 'Beaching',
 			'units': 'bbl',
-			'timeseries': [['2014-07-07T12:00:00', [0]]]
+			'timeseries': []
 		},
 
 		toTree: function(){
 			return '';
-		},
-
-		initialize: function(){
-			BaseModel.prototype.initialize.call(this);
-			if (this.get('timeseries')[0][0] === '2014-07-07T12:00:00'){
-				var ts = [[this.get('active_start'), [0]]];
-				this.set('timeseries', ts);
-			}
 		},
 
 		validate: function(attrs, options){

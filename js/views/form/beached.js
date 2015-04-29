@@ -32,6 +32,7 @@ define([
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
+            console.log(this.events());
         },
 
         render: function(options){
@@ -43,6 +44,8 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
+
+            this.renderTimeseries();
 
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
@@ -62,6 +65,7 @@ define([
             } else {
                 this.clearError();
             }
+            console.log('update ran');
         },
 
         addBeachedAmount: function(e){
@@ -75,7 +79,6 @@ define([
             var not_replaced = true;
 
             _.each(this.model.get('timeseries'), function(el, index, array){
-                console.log(el);
                 if(el[0] === entry[0] || el[0] === '2014-07-07T12:00:00'){
                     not_replaced = false;
                     array[index] = entry;
@@ -112,19 +115,21 @@ define([
         },
 
         editTimeseriesEntry: function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
-            var entry = this.model.get('timeseries')[index];
-            var date = moment(entry[0]).format(webgnome.config.date_format.moment);
-            var compiled = _.template(EditRowTemplate);
-            var template = compiled({
-                date: date,
-                amount: entry[1][0]
-            });
-            this.$(row).addClass('edit');
-            this.$(row).html(template);
+            if (this.$('.input-amount').length <= 0){
+                e.preventDefault();
+                e.stopPropagation();
+                var row = this.$(e.target).parents('tr')[0];
+                var index = row.dataset.tsindex;
+                var entry = this.model.get('timeseries')[index];
+                var date = moment(entry[0]).format(webgnome.config.date_format.moment);
+                var compiled = _.template(EditRowTemplate);
+                var template = compiled({
+                    date: date,
+                    amount: entry[1][0]
+                });
+                this.$(row).addClass('edit');
+                this.$(row).html(template);
+            }
         },
 
         enterTimeseriesEntry: function(e){
