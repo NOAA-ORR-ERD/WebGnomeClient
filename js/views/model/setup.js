@@ -706,19 +706,22 @@ define([
                         object: geojson
                     });
 
-                    var shorelineLayer = new ol.layer.Vector({
+                    var shorelineLayer = new ol.layer.Image({
                         name: 'modelmap',
-                        source: shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
+                        source: new ol.source.ImageVector({
+                            source: shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
                             })
-                        })
+                        }),
                     });
+                    
                     var locationMap = new olMapView({
                         id: 'mini-locmap',
                         controls: [],
