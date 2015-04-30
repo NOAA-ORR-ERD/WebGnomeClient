@@ -96,20 +96,22 @@ define([
             });
 
             this.SpillIndexSource = new ol.source.Vector();
-            this.SpillIndexLayer = new ol.layer.Vector({
-                source: this.SpillIndexSource,
+            this.SpillIndexLayer = new ol.layer.Image({
                 name: 'spills',
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1.0],
-                        src: '/img/spill-pin.png',
-                        size: [32, 40]
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#3399CC',
-                        width: 1.25
+                source: new ol.source.ImageVector({
+                    source: this.SpillIndexSource,
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#3399CC',
+                            width: 1.25
+                        })
                     })
-                })
+                }),
             });
 
             this.SpillGroupLayers = new ol.Collection();
@@ -448,18 +450,21 @@ define([
                             object: geojson,
                             projection: 'EPSG:3857'
                         });
-                        this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource,
+
+                        this.shorelineLayer = new ol.layer.Image({
                             name: 'modelmap',
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
+                            source: new ol.source.ImageVector({
+                                source: this.shorelineSource,
+                                style: new ol.style.Style({
+                                    fill: new ol.style.Fill({
+                                        color: [228, 195, 140, 0.6]
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: [228, 195, 140, 0.75],
+                                        width: 1
+                                    })
                                 })
-                            })
+                            }),
                         });
 
                         var extent = this.shorelineSource.getExtent();
