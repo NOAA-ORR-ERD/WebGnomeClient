@@ -977,7 +977,7 @@ define([
                         color: '#9CD1FF',
                         hoverable: true,
                         lines: {
-                            show: false,
+                            show: true,
                             fill: true
                         },
                         points: {
