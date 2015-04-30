@@ -954,18 +954,59 @@ define([
                 this.$('.beached .panel').addClass('complete');
                 if (beached.get('timeseries').length === 1){
                     var amountBeached = beached.get('timeseries')[0][1][0];
-                    var date = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
+                    var singleDate = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
                     compiled = _.template( BeachedPanelTemplate, {
                         amount: amountBeached,
                         units: beached.get('units'),
-                        date: date
+                        date: singleDate
                     });
                     this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
                 } else {
-                    
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
+
+                    var ts = beached.get('timeseries');
+                    var data = [];
+
+                    for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                        data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10)]);
+                    }
+
+                    var dataset = [{
+                        data: data,
+                        color: '#9CD1FF',
+                        hoverable: true,
+                        lines: {
+                            show: false,
+                            fill: true
+                        },
+                        points: {
+                            show: false
+                        },
+                        direction: {
+                            show: false
+                        }
+                    }];
+
+                    this.$('.beached').removeClass('col-md-3').addClass('col-md-6');
                 }
                 this.$('.beached .panel-body').html(compiled);
                 this.$('.beached .panel-body').show();
+
+                if (!_.isUndefined(dataset)) {
+                    this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#ddd'
+                        },
+                        xaxis: {
+                            mode: 'time',
+                            timezone: 'browser',
+                            tickColor: '#ddd'
+                        },
+
+                    });
+                }
             } else {
                 this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.beached .panel').removeClass('complete');
