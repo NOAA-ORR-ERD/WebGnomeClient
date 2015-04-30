@@ -1026,6 +1026,10 @@ define([
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', true);
                 });
+                var beaching = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+                if (!_.isUndefined(beaching) && prediction == 'both'){
+                    beaching.set('on', false);
+                }
             } else if (prediction == 'trajectory') {
                 // turn off weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
