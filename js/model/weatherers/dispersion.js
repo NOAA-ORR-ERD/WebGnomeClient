@@ -1,12 +1,17 @@
 define([
     'underscore',
     'backbone',
-    'model/weatherers/base'
-], function(_, Backbone, BaseModel){
+    'model/weatherers/base',
+    'model/environment/waves'
+], function(_, Backbone, BaseModel, WavesModel){
     dispersionWeatherer = BaseModel.extend({
         defaults: {
-            'obj_type': 'gnome.weatherers.Dispersion',
+            'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion'
+        },
+
+        model: {
+            waves: WavesModel
         },
 
         toTree: function(){

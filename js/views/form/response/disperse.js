@@ -40,6 +40,7 @@ define([
             var dispersedOilPercent = this.$('#oildispersed').val();
 
             this.model.set('active_stop', endTime);
+            this.model.set('fraction_sprayed', sprayedOilPercent / 100);
         }
     });
 

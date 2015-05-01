@@ -58,6 +58,8 @@ define([
                 disperseForm.on('wizardclose', disperseForm.close);
                 disperseForm.on('save', function(){
                     webgnome.model.get('weatherers').add(disperse);
+                    var waves = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
+                    disperse.set('waves', waves);
                     webgnome.model.save(null, {validate: false});
                     disperseForm.on('hidden', function(){
                         disperseForm.trigger('wizardclose');

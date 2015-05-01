@@ -15,12 +15,6 @@ define([
         title: 'In-Situ Burn Response',
         className: 'modal response fade form-modal insituburn-form',
 
-        events: function(){
-            return _.defaults({
-                'click .slidertoggle': 'toggleEfficiencySlider'
-            }, ResponseFormModal.prototype.events());
-        },
-
         initialize: function(options, burnModel){
             this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, burnModel);
@@ -41,27 +35,6 @@ define([
             this.setEfficiencySlider();
 
             this.setUnitSelects();
-        },
-
-        toggleEfficiencySlider: function(){
-            if (this.$('.slidertoggle').is(':checked')){
-                this.$('.slider').slider({disabled: true});
-                this.model.set('efficiency', null);
-            } else {
-                this.$('.slider').slider({disabled: false});
-                this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
-            }
-        },
-
-        setEfficiencySlider: function(){
-            if (!_.isNull(this.model.get('efficiency'))){
-                var val = this.model.get('efficiency') * 100;
-                this.$('.slider').slider('value', val);
-                this.$('#rate-tooltip').text(val);
-            } else {
-                this.$('.slidertoggle').prop('checked', true);
-                this.toggleEfficiencySlider();
-            }
         },
 
         setUnitSelects: function(){

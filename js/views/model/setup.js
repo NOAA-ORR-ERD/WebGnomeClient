@@ -755,7 +755,7 @@ define([
                 var weatherers = webgnome.model.get('weatherers').models;
             }
             var timeSeries = this.timeSeries;
-            var filteredNames = ["Dispersion", "Skimmer", "Burn"];
+            var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
@@ -792,7 +792,7 @@ define([
                     case "Skimmer":
                         skimData.push([startTime, 1, endTime, responses[i].get('id')]);
                         break;
-                    case "Dispersion":
+                    case "ChemicalDispersion":
                         disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
                         break;
                     case "Burn":
@@ -880,7 +880,7 @@ define([
             var responseView;
             var nameArray = response.get('obj_type').split('.');
             switch (nameArray[nameArray.length - 1]){
-                case "Dispersion":
+                case "ChemicalDispersion":
                     responseView = new ResponseDisperseView(null, response);
                     break;
                 case "Burn":
