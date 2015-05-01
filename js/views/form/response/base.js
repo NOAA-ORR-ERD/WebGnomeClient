@@ -93,12 +93,14 @@ define([
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;
+            } else if (!_.isNull(this.model.get('efficiency'))){
+                value = this.model.get('efficiency') * 100;
             } else {
                 value = this.$('.slider').slider('value');
             }
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
-            this.efficiencyValue = parseFloat(value) / 100;
+            this.model.set('efficiency', parseFloat(value) / 100);
         },
 
         toggleEfficiencySlider: function(){

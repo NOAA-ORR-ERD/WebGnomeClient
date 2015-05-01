@@ -40,11 +40,9 @@ define([
             var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var sprayedOilPercent = this.$('#oilsprayed').val();
             var dispersedOilPercent = this.$('#oildispersed').val();
-            var efficiency = this.efficiencyValue;
 
             this.model.set('active_stop', endTime);
             this.model.set('fraction_sprayed', sprayedOilPercent / 100);
-            this.model.set('efficiency', efficiency);
         }
     });
 
