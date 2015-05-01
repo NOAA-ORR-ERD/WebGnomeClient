@@ -32,8 +32,6 @@ define([
             });
             ResponseFormModal.prototype.render.call(this, options);
 
-            this.setEfficiencySlider();
-
             this.setUnitSelects();
         },
 

@@ -49,6 +49,7 @@ define([
                 }, this)
             });
             this.updateEfficiency();
+            this.setEfficiencySlider();
         },
 
         update: function(){

@@ -7,7 +7,8 @@ define([
     dispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
-            'name': 'Dispersion'
+            'name': 'Dispersion',
+            'efficiency': null
         },
 
         model: {

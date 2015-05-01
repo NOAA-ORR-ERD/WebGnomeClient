@@ -21,10 +21,12 @@ define([
         },
 
         render: function(options){
+            var fractSprayed = this.model.get('fraction_sprayed');
             this.body = _.template(FormTemplate,{
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'))
+                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop')),
+                percentSprayed: !_.isUndefined(fractSprayed) ? fractSprayed * 100 : 0
             });
             ResponseFormModal.prototype.render.call(this, options);
         },
@@ -38,9 +40,11 @@ define([
             var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var sprayedOilPercent = this.$('#oilsprayed').val();
             var dispersedOilPercent = this.$('#oildispersed').val();
+            var efficiency = this.efficiencyValue;
 
             this.model.set('active_stop', endTime);
             this.model.set('fraction_sprayed', sprayedOilPercent / 100);
+            this.model.set('efficiency', efficiency);
         }
     });
 
