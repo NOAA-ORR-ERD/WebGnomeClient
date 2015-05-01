@@ -6,11 +6,12 @@ define([
     'views/modal/form',
     'text!templates/form/spill/type.html',
     'model/spill',
+    'model/release',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel,
+], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel, GnomeRelease,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
@@ -37,7 +38,7 @@ define([
         },
 
         instant: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillInstantForm(null, spill);
                 spillForm.render();
@@ -53,7 +54,7 @@ define([
         },
 
         continue: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillContinueForm(null, spill);
                 spillForm.render();

@@ -18,6 +18,12 @@ define([
             'units': 'bbl'
         },
 
+        // initialize: function(){
+        //     this.set('release', new GnomeRelease());
+        //     this.set('element_type', new GnomeElement());
+        //     BaseModel.prototype.initialize.call(this);
+        // },
+
         model: {
             release: GnomeRelease,
             element_type: GnomeElement
