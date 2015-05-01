@@ -96,20 +96,22 @@ define([
             });
 
             this.SpillIndexSource = new ol.source.Vector();
-            this.SpillIndexLayer = new ol.layer.Vector({
-                source: this.SpillIndexSource,
+            this.SpillIndexLayer = new ol.layer.Image({
                 name: 'spills',
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1.0],
-                        src: '/img/spill-pin.png',
-                        size: [32, 40]
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#3399CC',
-                        width: 1.25
+                source: new ol.source.ImageVector({
+                    source: this.SpillIndexSource,
+                    style: new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/spill-pin.png',
+                            size: [32, 40]
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: '#3399CC',
+                            width: 1.25
+                        })
                     })
-                })
+                }),
             });
 
             this.SpillGroupLayers = new ol.Collection();
@@ -354,64 +356,64 @@ define([
                 visible = true;
             }
             
-            var layer = new ol.layer.Vector({
-                step_num: step.get('GeoJson').step_num,
-                ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
-                style: function(feature, resolution){
-                    var color = 'rgba(0, 0, 0, 1)';
-                    if(feature.get('sc_type') == 'uncertain'){
-                        color = 'rgba(255, 54, 54, 1)';
-                    }
-                    return [new ol.style.Style({
-                        image: new ol.style.Circle({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(0, 0, 0, .75)'
-                            }),
-                            radius: 1,
-                            stroke: new ol.style.Stroke({
-                                color: color
-                            })
-                        })
-                    })];
-                },
-                visible: visible,
-                source: new ol.source.GeoJSON({
-                    // url: ''
-                    projection: 'EPSG:3857',
-                    object: step.get('GeoJson').feature_collection
-                })
-            });
-            
-            // var layer = new ol.layer.Image({
+            // var layer = new ol.layer.Vector({
             //     step_num: step.get('GeoJson').step_num,
             //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
-                
-            //     visible: visible,
-            //     source: new ol.source.ImageVector({
-            //         source: new ol.source.GeoJSON({
-            //             // url: ''
-            //             projection: 'EPSG:3857',
-            //             object: step.get('GeoJson').feature_collection
-            //         }),
-            //         style: function(feature, resolution){
-            //             var color = 'rgba(0, 0, 0, 1)';
-            //             if(feature.get('sc_type') == 'uncertain'){
-            //                 color = 'rgba(255, 54, 54, 1)';
-            //             }
-            //             return [new ol.style.Style({
-            //                 image: new ol.style.Circle({
-            //                     fill: new ol.style.Fill({
-            //                         color: 'rgba(0, 0, 0, .75)'
-            //                     }),
-            //                     radius: 1,
-            //                     stroke: new ol.style.Stroke({
-            //                         color: color
-            //                     })
-            //                 })
-            //             })];
+            //     style: function(feature, resolution){
+            //         var color = 'rgba(0, 0, 0, 1)';
+            //         if(feature.get('sc_type') == 'uncertain'){
+            //             color = 'rgba(255, 54, 54, 1)';
             //         }
-            //     }),
+            //         return [new ol.style.Style({
+            //             image: new ol.style.Circle({
+            //                 fill: new ol.style.Fill({
+            //                     color: 'rgba(0, 0, 0, .75)'
+            //                 }),
+            //                 radius: 1,
+            //                 stroke: new ol.style.Stroke({
+            //                     color: color
+            //                 })
+            //             })
+            //         })];
+            //     },
+            //     visible: visible,
+            //     source: new ol.source.GeoJSON({
+            //         // url: ''
+            //         projection: 'EPSG:3857',
+            //         object: step.get('GeoJson').feature_collection
+            //     })
             // });
+            
+            var layer = new ol.layer.Image({
+                step_num: step.get('GeoJson').step_num,
+                ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+                
+                visible: visible,
+                source: new ol.source.ImageVector({
+                    source: new ol.source.GeoJSON({
+                        // url: ''
+                        projection: 'EPSG:3857',
+                        object: step.get('GeoJson').feature_collection
+                    }),
+                    style: function(feature, resolution){
+                        var color = 'rgba(0, 0, 0, 1)';
+                        if(feature.get('sc_type') == 'uncertain'){
+                            color = 'rgba(255, 54, 54, 1)';
+                        }
+                        return [new ol.style.Style({
+                            image: new ol.style.Circle({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(0, 0, 0, .75)'
+                                }),
+                                radius: 1,
+                                stroke: new ol.style.Stroke({
+                                    color: color
+                                })
+                            })
+                        })];
+                    }
+                }),
+            });
 
             return layer;
         },
@@ -448,18 +450,21 @@ define([
                             object: geojson,
                             projection: 'EPSG:3857'
                         });
-                        this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource,
+
+                        this.shorelineLayer = new ol.layer.Image({
                             name: 'modelmap',
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
+                            source: new ol.source.ImageVector({
+                                source: this.shorelineSource,
+                                style: new ol.style.Style({
+                                    fill: new ol.style.Fill({
+                                        color: [228, 195, 140, 0.6]
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: [228, 195, 140, 0.75],
+                                        width: 1
+                                    })
                                 })
-                            })
+                            }),
                         });
 
                         var extent = this.shorelineSource.getExtent();
