@@ -48,6 +48,12 @@ define([
                     this.update();
                 }, this)
             });
+
+            if (!this.model.get('efficiency')){
+                this.$('.slidertoggle')[0].checked = true;
+                this.toggleEfficiencySlider();
+            }
+
             this.updateEfficiency();
             this.setEfficiencySlider();
         },
@@ -111,6 +117,7 @@ define([
                 this.$('.slider').slider({disabled: false});
                 this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
             }
+            console.log(this.model.get('efficiency'));
         },
 
         setEfficiencySlider: function(){
