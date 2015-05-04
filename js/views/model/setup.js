@@ -29,6 +29,9 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'model/weatherers/manual_beaching',
+    'views/form/beached',
+    'text!templates/panel/beached.html',
     'text!templates/panel/response.html',
     'views/form/response/disperse',
     'views/form/response/insituBurn',
@@ -48,7 +51,7 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     GeojsonOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -71,6 +74,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
+                'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
 
@@ -240,10 +244,12 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.water').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
+            this.$('.beached').show().removeClass('disabled');
         },
 
         showAllObjects: function(){
             this.$('.object').show().removeClass('disabled');
+            this.$('.beached').hide().addClass('disabled');
         },
 
         showTrajectoryObjects: function(){
@@ -259,6 +265,7 @@ define([
                 this.updateLocation();
                 this.updateWater();
                 this.updateSpill();
+                this.updateBeached();
                 
                 var delay = {
                     show: 500,
@@ -286,7 +293,7 @@ define([
                         if($(this).parents('.panel').hasClass('complete')){
                             return object + ' requirement met';
                         } else if($(this).parents('.panel').hasClass('optional')){
-                            return object + ' optional';                            
+                            return object + ' optional';
                         } else {
                             return object + ' required';
                         }
@@ -924,6 +931,91 @@ define([
                 }
             }, this));
         },
+
+        clickBeached: function(){
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (_.isUndefined(beached) || beached.length === 0){
+                beached = new BeachedModel();
+            }
+            var beachedForm = new BeachedForm({}, beached);
+            beachedForm.on('hidden', beachedForm.close);
+            beachedForm.on('save', function(){
+                webgnome.model.get('weatherers').add(beached, {merge: true});
+                webgnome.model.save({
+                    success: _.bind(function(){
+                        this.updateBeached();
+                    }, this)
+                });
+            });
+            beachedForm.render();
+        },
+
+        updateBeached: function(){
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (!_.isUndefined(beached)){
+                var compiled;
+                this.$('.beached .panel').addClass('complete');
+                if (beached.get('timeseries').length === 1){
+                    var amountBeached = beached.get('timeseries')[0][1];
+                    var singleDate = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
+                    compiled = _.template( BeachedPanelTemplate, {
+                        amount: amountBeached,
+                        units: beached.get('units'),
+                        date: singleDate
+                    });
+                    this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                } else {
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
+
+                    var ts = beached.get('timeseries');
+                    var data = [];
+
+                    for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                        data.push([parseInt(date, 10), parseInt(ts[entry][1], 10)]);
+                    }
+
+                    var dataset = [{
+                        data: data,
+                        color: '#9CD1FF',
+                        hoverable: true,
+                        lines: {
+                            show: true,
+                            fill: true
+                        },
+                        points: {
+                            show: false
+                        },
+                        direction: {
+                            show: false
+                        }
+                    }];
+
+                    this.$('.beached').removeClass('col-md-3').addClass('col-md-6');
+                }
+                this.$('.beached .panel-body').html(compiled);
+                this.$('.beached .panel-body').show();
+
+                if (!_.isUndefined(dataset)) {
+                    this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
+                        grid: {
+                            borderWidth: 1,
+                            borderColor: '#ddd'
+                        },
+                        xaxis: {
+                            mode: 'time',
+                            timezone: 'browser',
+                            tickColor: '#ddd'
+                        },
+
+                    });
+                }
+            } else {
+                this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                this.$('.beached .panel').removeClass('complete');
+                this.$('.beached .panel-body').hide().html('');
+            }
+        },
         
         configure: function(target){
             this.configureModel(target);
@@ -937,6 +1029,10 @@ define([
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', true);
                 });
+                var beaching = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+                if (!_.isUndefined(beaching) && prediction == 'both'){
+                    beaching.set('on', false);
+                }
             } else if (prediction == 'trajectory') {
                 // turn off weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
