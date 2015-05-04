@@ -36,13 +36,22 @@ define([
 
         render: function(options){
             var date = moment(this.model.get('active_start')).format(webgnome.config.date_format.moment);
+            var units = this.model.get('units');
+
+            // Check to see if spills exist and if beached time series is empty if so set the units
+            // of the beached amount to matched that of spilled oil
+            if (this.model.get('timeseries').length === 0 && webgnome.model.get('spills').length !== 0){
+                var spillUnits = webgnome.model.get('spills').at(0).get('units');
+                this.model.set('units', spillUnits);
+            }
 
             this.body = _.template(BeachedTemplate, {
-                unit: this.model.get('units'),
                 date: date
             });
 
             FormModal.prototype.render.call(this, options);
+
+            this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
 
             this.renderTimeseries();
 
