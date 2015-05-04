@@ -953,7 +953,7 @@ define([
                 var compiled;
                 this.$('.beached .panel').addClass('complete');
                 if (beached.get('timeseries').length === 1){
-                    var amountBeached = beached.get('timeseries')[0][1][0];
+                    var amountBeached = beached.get('timeseries')[0][1];
                     var singleDate = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
                     compiled = _.template( BeachedPanelTemplate, {
                         amount: amountBeached,
@@ -969,7 +969,7 @@ define([
 
                     for (var entry in ts){
                         var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                        data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10)]);
+                        data.push([parseInt(date, 10), parseInt(ts[entry][1], 10)]);
                     }
 
                     var dataset = [{

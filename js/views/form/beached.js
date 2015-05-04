@@ -72,7 +72,7 @@ define([
             var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
             var amount = this.$('#beached-amount').val();
 
-            var entry = [date, [amount]];
+            var entry = [date, amount];
             var incrementer = parseInt(this.$('#incrementCount').val(), 10);
             var not_replaced = true;
 
@@ -99,7 +99,7 @@ define([
 
             var html = '';
             _.each(this.model.get('timeseries'), function(el, index){
-                var beached = el[1][0];
+                var beached = el[1];
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(StaticRowTemplate);
                 var template = compiled({
@@ -137,7 +137,7 @@ define([
             var entry = this.model.get('timeseries')[index];
             var amount = this.$('.input-amount').val();
             var date = entry[0];
-            entry = [date, [amount]];
+            entry = [date, amount];
             _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
                 if (el[0] === entry[0]){
                     array[index] = entry;
