@@ -299,7 +299,7 @@ define([
                     container: 'body',
                     delay: delay
                 });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null' && localStorage.getItem('prediction') !== 'trajectory'){
                     this.$('.stage-3').show();
                     this.updateResponse();
                 } else {
