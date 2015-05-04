@@ -117,7 +117,6 @@ define([
                 this.$('.slider').slider({disabled: false});
                 this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
             }
-            console.log(this.model.get('efficiency'));
         },
 
         setEfficiencySlider: function(){
