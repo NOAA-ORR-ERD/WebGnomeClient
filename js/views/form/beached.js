@@ -132,7 +132,7 @@ define([
                 var compiled = _.template(EditRowTemplate);
                 var template = compiled({
                     date: date,
-                    amount: entry[1][0]
+                    amount: entry[1]
                 });
                 this.$(row).addClass('edit');
                 this.$(row).html(template);
