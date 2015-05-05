@@ -52,14 +52,14 @@
         </tr>
         <tr>
             <td>Beached/Contained</td>
-            {% if (report.manual_beached !== 0){ %}
+            {% if (report.beached === 0){ %}
                 <td>{{ report.manual_beached }}</td>
-                <td> </td>
-                <td> </td>
+                <td>{{ cumulative.manual_beached }} </td>
+                <td>{{ low.manual_beached }} - {{ high.manual_beached }}</td>
             {% } else { %}
                 <td>{{ report.beached }}</td>
-                <td> </td>
-                <td> </td>
+                <td>{{ cumulative.beached }} </td>
+                <td>{{ low.beached }} - {{ high.beached }}</td>
             {% } %}
         </tr>
         <tr>
