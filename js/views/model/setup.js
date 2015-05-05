@@ -257,6 +257,7 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
             this.$('.location').show().removeClass('disabled');
+            this.$('.beached').hide().addClass('disabled');
         },
 
         updateObjects: function(){
@@ -308,9 +309,6 @@ define([
                 });
                 if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                     this.$('.stage-3').show();
-                    if (localStorage.getItem('prediction') === 'trajectory'){
-                        this.$('.response-objects').hide();
-                    }
                     this.updateResponse();
                 } else {
                     this.$('.stage-3').hide();
