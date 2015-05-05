@@ -306,8 +306,11 @@ define([
                     container: 'body',
                     delay: delay
                 });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null' && localStorage.getItem('prediction') !== 'trajectory'){
+                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                     this.$('.stage-3').show();
+                    if (localStorage.getItem('prediction') === 'trajectory'){
+                        this.$('.response-objects').hide();
+                    }
                     this.updateResponse();
                 } else {
                     this.$('.stage-3').hide();
