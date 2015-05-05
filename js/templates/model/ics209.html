@@ -52,9 +52,15 @@
         </tr>
         <tr>
             <td>Beached/Contained</td>
-            <td> </td>
-            <td> </td>
-            <td> </td>
+            {% if (report.manual_beached !== 0){ %}
+                <td>{{ report.manual_beached }}</td>
+                <td> </td>
+                <td> </td>
+            {% } else { %}
+                <td>{{ report.beached }}</td>
+                <td> </td>
+                <td> </td>
+            {% } %}
         </tr>
         <tr>
             <td>Remaining</td>

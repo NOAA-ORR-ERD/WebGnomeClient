@@ -1007,7 +1007,17 @@ define([
                             timezone: 'browser',
                             tickColor: '#ddd'
                         },
-
+                        series: {
+                            stack: true,
+                            group: true,
+                            groupInterval: 1,
+                            lines: {
+                                show: true,
+                                fill: true,
+                                lineWidth: 2
+                            },
+                            shadowSize: 0
+                        }
                     });
                 }
             } else {

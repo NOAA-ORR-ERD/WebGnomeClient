@@ -736,7 +736,6 @@ define([
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
                 report[value] = Math.round(converter.Convert(report[value], 'kg', api, 'API degree', units));
-                
             }
             for(var value in cumulative){
                 cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
