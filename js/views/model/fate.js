@@ -516,7 +516,7 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            var dataset = this.pluckDataset(dataset, ['avg_density']);
+            dataset = this.pluckDataset(dataset, ['avg_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);

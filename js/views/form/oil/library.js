@@ -197,7 +197,6 @@ define([
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
-            this.model.set('substance', new SubstanceModel({adios_oil_id: this.$('.select').data('id')}));
         },
 
         viewSpecificOil: function(){
@@ -227,8 +226,7 @@ define([
         save: function(){
             var oilName = this.$('.select').data('name');
             var oilId = this.$('.select').data('id');
-            this.model.get('substance').set('name', oilName);
-            this.model.get('substance').set('adios_oil_id', oilId);
+            this.model.set('substance', new SubstanceModel({adios_oil_id: oilId, name: oilName}));
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
