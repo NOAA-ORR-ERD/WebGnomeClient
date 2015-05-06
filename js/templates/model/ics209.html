@@ -52,15 +52,9 @@
         </tr>
         <tr>
             <td>Beached/Contained</td>
-            {% if (report.beached === 0){ %}
-                <td>{{ report.manual_beached }}</td>
-                <td>{{ cumulative.manual_beached }} </td>
-                <td>{{ low.manual_beached }} - {{ high.manual_beached }}</td>
-            {% } else { %}
-                <td>{{ report.beached }}</td>
-                <td>{{ cumulative.beached }} </td>
-                <td>{{ low.beached }} - {{ high.beached }}</td>
-            {% } %}
+            <td>{{ report.beached }}</td>
+            <td>{{ cumulative.beached }} </td>
+            <td>{{ low.beached }} - {{ high.beached }}</td>
         </tr>
         <tr>
             <td>Remaining</td>

@@ -683,7 +683,7 @@ define([
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
             var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached', 'manual_beached']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -695,8 +695,7 @@ define([
                 natural_dispersion: 0,
                 sedimentation: 0,
                 dissolution: 0,
-                beached: 0,
-                manual_beached: 0
+                beached: 0
             };
             var cumulative = _.clone(report);
             var low = _.clone(report);
