@@ -759,7 +759,7 @@ define([
                 return mover.get('obj_type').indexOf('current_movers') !== -1;
             });
             if(current){
-                current.getGrid(_.bind(function(){
+                current.getGrid(_.bind(function(geojson){
                     this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
 
                     var gridSource = new ol.source.GeoJSON({
@@ -771,6 +771,12 @@ define([
                         name: 'modelcurrent',
                         source: new ol.source.ImageVector({
                             source: gridSource,
+                            style: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
+                            })
                         })
                     });
 
