@@ -187,6 +187,7 @@ define([
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
                     this.ol.map.on('click', _.bind(function(e){
+                        this.clearError();
                         this.source.forEachFeature(function(feature){
                             this.source.removeFeature(feature);
                         }, this);
@@ -195,11 +196,24 @@ define([
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
                         this.nws = new nwsWind({lat: coords[1], lon: coords[0]});
-                        this.nws.fetch();
+                        this.nws.fetch({
+                            success: _.bind(this.nwsLoad, this),
+                            error: _.bind(this.nwsError, this)
+                        });
                     }, this));
                 }
             }
             $(window).trigger('resize');
+        },
+
+        nwsLoad: function(model){
+            this.model.set('timeseries', model.get('timeseries'));
+            this.model.set('units', model.get('units'));
+            this.$('.variable a').tab('show');
+        },
+
+        nwsError: function(){
+            this.error('Error!', 'No NWS forecast data found');
         },
 
         update: function(compass){
