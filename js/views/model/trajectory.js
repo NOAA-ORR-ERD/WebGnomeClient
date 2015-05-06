@@ -244,7 +244,8 @@ define([
             this.controls.progress.css('width', percent + '%');
         },
 
-        togglePlay: function(){
+        togglePlay: function(e){
+            e.preventDefault();
             if (this.state == 'play') {
                 this.pause();
             } else {
