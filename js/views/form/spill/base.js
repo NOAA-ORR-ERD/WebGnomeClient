@@ -60,7 +60,6 @@ define([
             if(this.model.get('name') == 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
-            console.log(this.model);
 		},
 
 		render: function(options){
