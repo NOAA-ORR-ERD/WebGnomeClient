@@ -43,14 +43,16 @@ define([
                 return 'Amount must be a positive number';
             }
 
-            if (!attrs.element_type.isValid()){
-                this.validationContext = 'substance';
-                return attrs.element_type.validationError;
-            }
+            if (localStorage.getItem('prediction') !== 'trajectory'){
+                if (!attrs.element_type.isValid()){
+                    this.validationContext = 'substance';
+                    return attrs.element_type.validationError;
+                }
 
-            if (attrs.element_type.get('substance') && _.isUndefined(attrs.element_type.get('substance').get('name'))){
-                this.validationContext = 'substance';
-                return;
+                if (attrs.element_type.get('substance') && _.isUndefined(attrs.element_type.get('substance').get('name'))){
+                    this.validationContext = 'substance';
+                    return;
+                }
             }
 
             if (localStorage.getItem('prediction') !== 'fate'){
@@ -66,8 +68,10 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
-            if(_.isNull(attrs.element_type.get('substance')) || _.isUndefined(attrs.element_type.get('substance').get('name'))){
-                return 'A substance must be selected!';
+            if (localStorage.getItem('prediction') !== 'trajectory'){
+                if(_.isNull(attrs.element_type.get('substance')) || _.isUndefined(attrs.element_type.get('substance').get('name'))){
+                    return 'A substance must be selected!';
+                }
             }
         },
 

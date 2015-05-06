@@ -760,7 +760,7 @@ define([
 
         updateResponse: function(weatherers){
             if (_.isUndefined(weatherers)){
-                var weatherers = webgnome.model.get('weatherers').models;
+                weatherers = webgnome.model.get('weatherers').models;
             }
             var timeSeries = this.timeSeries;
             var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
