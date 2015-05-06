@@ -257,6 +257,7 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
             this.$('.location').show().removeClass('disabled');
+            this.$('.current').show().removeClass('disabled');
             this.$('.beached').hide().addClass('disabled');
         },
 
@@ -267,6 +268,7 @@ define([
                 this.updateWater();
                 this.updateSpill();
                 this.updateBeached();
+                this.updateCurrent();
                 
                 var delay = {
                     show: 500,
@@ -749,6 +751,45 @@ define([
             } else {
                 this.$('.location .panel').removeClass('complete');
                 this.$('.location .panel-body').hide().html('');
+            }
+        },
+
+        updateCurrent: function(){
+            var current = webgnome.model.get('movers').find(function(mover){
+                return mover.get('obj_type').indexOf('current_movers') !== -1;
+            });
+            if(current){
+                current.getGrid(_.bind(function(){
+                    this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
+
+                    var gridSource = new ol.source.GeoJSON({
+                        projection: 'EPSG:3857',
+                        object: geojson
+                    });
+
+                    var gridLayer = new ol.layer.Image({
+                        name: 'modelcurrent',
+                        source: new ol.source.ImageVector({
+                            source: gridSource,
+                        })
+                    });
+
+                    var currentMap = new olMapView({
+                        id: 'mini-currentmap',
+                        controls: [],
+                        layers: [
+                            new ol.layer.Tile({
+                                source: new ol.source.MapQuest({layer: 'osm'})
+                            }),
+                            gridLayer
+                        ]
+                    });
+
+                    currentMap.render();
+                    var extent = gridSource.getExtent();
+                    currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
+                    this.mason.layout();
+                }, this));
             }
         },
 
