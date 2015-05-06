@@ -12,7 +12,7 @@ define([
 ], function($, _, Backbone, moment, nucos, FormModal, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     var beachedForm = FormModal.extend({
         className: 'modal fade form-modal model-form beached-form',
-        title: 'Beached Oil',
+        title: 'Observed Beached Oil',
 
         events : function(){
             var formModalHash = FormModal.prototype.events;
