@@ -755,47 +755,59 @@ define([
         },
 
         updateCurrent: function(){
-            var current = webgnome.model.get('movers').find(function(mover){
-                return mover.get('obj_type').indexOf('current_movers') !== -1;
+            // for right now only visualize cats mover grids
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            if(current){
-                current.getGrid(_.bind(function(geojson){
-                    this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
 
-                    var gridSource = new ol.source.GeoJSON({
-                        projection: 'EPSG:3857',
-                        object: geojson
-                    });
-
-                    var gridLayer = new ol.layer.Image({
-                        name: 'modelcurrent',
-                        source: new ol.source.ImageVector({
-                            source: gridSource,
-                            style: new ol.style.Style({
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
+            if(currents){
+                this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
+                var currentMap = new olMapView({
+                    id: 'mini-currentmap',
+                    controls: [],
+                    layers: [
+                        new ol.layer.Tile({
+                            source: new ol.source.MapQuest({layer: 'osm'})
                         })
-                    });
+                    ]
+                });
+                currentMap.render();
 
-                    var currentMap = new olMapView({
-                        id: 'mini-currentmap',
-                        controls: [],
-                        layers: [
-                            new ol.layer.Tile({
-                                source: new ol.source.MapQuest({layer: 'osm'})
-                            }),
-                            gridLayer
-                        ]
-                    });
+                var extents = [];
+                for(var c = 0; c < currents.length; c++){
+                    currents[c].getGrid(_.bind(function(geojson){
+                        if(geojson){
+                            var gridSource = new ol.source.GeoJSON({
+                                projection: 'EPSG:3857',
+                                object: geojson
+                            });
+                            var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
 
-                    currentMap.render();
-                    var extent = gridSource.getExtent();
+                            var gridLayer = new ol.layer.Image({
+                                name: 'modelcurrent',
+                                source: new ol.source.ImageVector({
+                                    source: gridSource,
+                                    style: new ol.style.Style({
+                                        stroke: new ol.style.Stroke({
+                                            color: [228, 195, 140, 0.75],
+                                            width: 1
+                                        })
+                                    })
+                                })
+                            });
+
+                            if(!_.contains(extents, extentSum)){
+                                currentMap.map.addLayer(gridLayer);
+                                extents.push(extentSum);
+                            }
+                        }
+                    }, this));
+                }
+                if(webgnome.model.get('map')){
+                    var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
                     currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
-                    this.mason.layout();
-                }, this));
+                }
+                this.mason.layout();
             }
         },
 
