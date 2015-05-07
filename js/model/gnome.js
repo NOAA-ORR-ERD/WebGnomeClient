@@ -69,6 +69,7 @@ define([
                 time_step: 900,
                 start_time: moment().format('YYYY-MM-DDTHH:00:00'),
                 duration: 86400,
+                map: new MapModel(),
                 outputters: new Backbone.Collection([
                     new GeojsonOutputter(),
                     new WeatheringOutputter(),
@@ -98,6 +99,16 @@ define([
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.on('change:map', this.validateSpills, this);
+            this.on('change:map', this.addMapListeners, this);
+        },
+
+        addMapListeners: function(){
+            this.get('map').on('change', this.mapChange, this);
+        },
+
+        mapChange: function(child){
+            this.validateSpills(child);
+            this.childChange('map', child);
         },
 
         environmentChange: function(child){

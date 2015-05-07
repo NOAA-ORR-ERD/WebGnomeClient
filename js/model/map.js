@@ -8,6 +8,18 @@ define([
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
+        requested: false,
+        geo_json: '',
+
+        defaults: {
+            obj_type: 'gnome.map.GnomeMap',
+            filename: '',
+        },
+
+        initialize: function(options){
+            BaseModel.prototype.initialize.call(options, this);
+            this.on('change', this.resetRequest, this);
+        },
 
         validate: function(attrs, options){
             if(_.isNull(attrs.filename)){
