@@ -9,9 +9,11 @@
 	    <li class="generalinfo active">
 	        <a href="#generalinfo-spill" data-toggle="tab">General<span id="info" class="status"></span></a>
 	    </li>
-	    <li class="substanceinfo">
-	        <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status"></span></a>
-	    </li>
+	    {% if (showSubstance){ %}
+		    <li class="substanceinfo">
+		        <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status"></span></a>
+		    </li>
+		{% } %}
 	    {% if (showGeo){ %}
 		    <li class="mapspill">
 		    	<a href="#mapspill" data-toggle="tab">Location<span id="map-status" class="status"></span></a>
