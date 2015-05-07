@@ -330,7 +330,6 @@ define([
 		},
 
         save: function(){
-            console.log(this.model);
             var validSubstance = this.model.validateSubstance(this.model.attributes);
             if (this.$('.error').length > 0){
                 this.$('.error').first().parent().click();
@@ -350,7 +349,6 @@ define([
                             }
                         });
                     }
-                    console.log(this.model);
                 }, this)
                 );
             }
