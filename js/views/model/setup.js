@@ -796,7 +796,7 @@ define([
                                     source: gridSource,
                                     style: new ol.style.Style({
                                         stroke: new ol.style.Stroke({
-                                            color: [228, 195, 140, 0.75],
+                                            color: [171, 37, 184, 0.75],
                                             width: 1
                                         })
                                     })
