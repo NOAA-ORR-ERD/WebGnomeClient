@@ -516,12 +516,13 @@ define([
         },
 
         calculateSpillAmount: function(timeseries){
+            var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
             var spills = webgnome.model.get('spills');
-            if (spills.length > 0){
-                var oilAPI = spills.at(0).get('element_type').get('substance').api;
-                oilAPI = oilAPI ? oilAPI : 10;
+            if (spills.length > 0 && spills.at(0).get('element_type').get('substance')){
+                oilAPI = spills.at(0).get('element_type').get('substance').api;
             }
+            oilAPI = oilAPI ? oilAPI : 10;
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
             var data = {};
@@ -563,10 +564,16 @@ define([
             var spills = webgnome.model.get('spills');
             var timeSeries = this.timeSeries;
             var spillArray = this.calculateSpillAmount(timeSeries);
+            var compiled;
+            var mode = localStorage.getItem('prediction');
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
                 var substance = spills.at(0).get('element_type').get('substance');
-                var compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories()});
+                if (!_.isNull(substance)){
+                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories(), mode: mode});
+                } else {
+                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: false, categories: [], mode: mode});
+                }
 
                 var dataset = [];
                 for (var spill in spills.models){

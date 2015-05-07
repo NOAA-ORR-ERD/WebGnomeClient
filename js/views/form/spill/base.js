@@ -57,6 +57,7 @@ define([
 			}
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
+            this.showSubstance = localStorage.getItem('prediction') === 'trajectory' ? false : true;
             if(this.model.get('name') == 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
@@ -329,6 +330,7 @@ define([
 		},
 
         save: function(){
+            console.log(this.model);
             var validSubstance = this.model.validateSubstance(this.model.attributes);
             if (this.$('.error').length > 0){
                 this.$('.error').first().parent().click();
@@ -348,6 +350,7 @@ define([
                             }
                         });
                     }
+                    console.log(this.model);
                 }, this)
                 );
             }
