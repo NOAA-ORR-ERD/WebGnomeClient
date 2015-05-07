@@ -8,6 +8,18 @@ define([
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
+        requested: false,
+        geo_json: '',
+
+        defaults: {
+            obj_type: 'gnome.map.GnomeMap',
+            filename: '',
+        },
+
+        initialize: function(options){
+            BaseModel.prototype.initialize.call(options, this);
+            this.on('change', this.resetRequest, this);
+        },
 
         validate: function(attrs, options){
             if(_.isNull(attrs.filename)){
@@ -15,13 +27,22 @@ define([
             }
         },
 
+        resetRequest: function(){
+            this.requested = false;
+        },
+
         getGeoJSON: function(callback){
             var url = webgnome.config.api + this.urlRoot + this.get('id') + '/geojson';
-            if(!this.requesting){
+            if(!this.requesting && !this.requested){
                 this.requesting = true;
-                $.get(url, null, callback).always(_.bind(function(){
+                $.get(url, null, _.bind(function(geo_json){
                     this.requesting = false;
+                    this.requested = true;
+                    this.geo_json = geo_json;
+                    callback(geo_json);
                 }, this));
+            } else {
+                callback(this.geo_json);
             }
         },
 

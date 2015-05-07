@@ -31,6 +31,9 @@ define([
                 // Filter json requestions to redirect them to the api server
                 if(options.url.indexOf('http://') === -1){
                     options.url = webgnome.config.api + options.url;
+                } else {
+                    // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
+                    delete options.xhrFields.withCredentials;
                 }
 
                 if(window.location.href.indexOf('test.html') === -1){
@@ -245,6 +248,7 @@ define([
                         success: function(model){
                             if(model.id){
                                 window.webgnome.model = model;
+                                webgnome.model.addMapListeners();
                                 webgnome.cache.rewind(true);
                                 webgnome.model.isValid();
                             }
