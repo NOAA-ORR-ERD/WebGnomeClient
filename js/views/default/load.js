@@ -43,7 +43,7 @@ define([
             setTimeout(_.bind(function(){
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 1500);
+            }, this), 2000);
         },
 
         progress: function(e, percent){
