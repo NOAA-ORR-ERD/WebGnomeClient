@@ -152,6 +152,7 @@ define([
             webgnome.model.get('weatherers').off('change add remove', this.updateBeached, this);
             webgnome.model.get('movers').off('change add remove', this.updateCurrent, this);
             webgnome.model.off('change:map', this.updateLocation, this);
+            webgnome.model.off('change:map', this.updateSpill, this);
         },
 
         showHelp: function(){
