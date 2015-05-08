@@ -143,6 +143,16 @@ define([
             webgnome.model.on('change:map', this.updateLocation, this);
         },
 
+        removeListeners: function(){
+            webgnome.model.get('spills').off('change add remove', this.updateSpill, this);
+            webgnome.model.get('environment').off('change add remove', this.updateWind, this);
+            webgnome.model.get('environment').off('change add remove', this.updateWater, this);
+            webgnome.model.get('weatherers').off('change add remove', this.updateResponse, this);
+            webgnome.model.get('weatherers').off('change add remove', this.updateBeached, this);
+            webgnome.model.get('movers').off('change add remove', this.updateCurrent, this);
+            webgnome.model.off('change:map', this.updateLocation, this);
+        },
+
         showHelp: function(){
             var compiled = '<div class="gnome-help" title="Click for help"></div>';
             this.$('h2:first').append(compiled);
@@ -281,55 +291,53 @@ define([
         },
 
         updateObjects: function(){
-            this.constructModelTimeSeries(_.bind(function(){
                 
-                var delay = {
-                    show: 500,
-                    hide: 100
-                };
+            var delay = {
+                show: 500,
+                hide: 100
+            };
 
-                $('.panel-heading .add').tooltip({
-                    title: function(){
-                        var object = $(this).parents('.panel-heading').text().trim();
+            $('.panel-heading .add').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
 
-                        if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
-                            return 'Edit ' + object;
-                        } else {
-                            return 'Create ' + object;
-                        }
-                    },
-                    delay: delay,
-                    container: 'body'
-                });
+                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                        return 'Edit ' + object;
+                    } else {
+                        return 'Create ' + object;
+                    }
+                },
+                delay: delay,
+                container: 'body'
+            });
 
-                $('.panel-heading .state').tooltip({
-                    title: function(){
-                        var object = $(this).parents('.panel-heading').text().trim();
+            $('.panel-heading .state').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
 
-                        if($(this).parents('.panel').hasClass('complete')){
-                            return object + ' requirement met';
-                        } else if($(this).parents('.panel').hasClass('optional')){
-                            return object + ' optional';
-                        } else {
-                            return object + ' required';
-                        }
-                    },
-                    container: 'body',
-                    delay: delay
-                });
+                    if($(this).parents('.panel').hasClass('complete')){
+                        return object + ' requirement met';
+                    } else if($(this).parents('.panel').hasClass('optional')){
+                        return object + ' optional';
+                    } else {
+                        return object + ' required';
+                    }
+                },
+                container: 'body',
+                delay: delay
+            });
 
-                $('.spill .trash, .spill .edit').tooltip({
-                    container: 'body',
-                    delay: delay
-                });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
-                    this.$('.stage-3').show();
-                    this.updateResponse();
-                } else {
-                    this.$('.stage-3').hide();
-                }
-                this.mason.layout();
-            }, this));
+            $('.spill .trash, .spill .edit').tooltip({
+                container: 'body',
+                delay: delay
+            });
+            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
+                this.$('.stage-3').show();
+                this.updateResponse();
+            } else {
+                this.$('.stage-3').hide();
+            }
+            this.mason.layout();
         },
 
         clickWind: function(){
@@ -507,29 +515,7 @@ define([
 
             spillView.render();
         },
-
-        constructModelTimeSeries: function(cb){
-            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var numOfTimeSteps = webgnome.model.get('num_time_steps');
-            var timeStep = webgnome.model.get('time_step');
-            var timeSeries = [];
-
-            for (var i = 0; i < numOfTimeSteps; i++){
-                if (i === 0){
-                    timeSeries.push(start_time * 1000);
-                } else {
-                    var answer = moment(timeSeries[i - 1]).add(timeStep, 's').unix() * 1000;
-                    timeSeries.push(answer);
-                }
-            }
-
-            this.timeSeries = timeSeries;
-            
-            if (cb){
-                cb();
-            }
-        },
-
+        
         calculateSpillAmount: function(){
             var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
@@ -1180,6 +1166,7 @@ define([
             }
             $('.sweet-overlay').remove();
             $('.sweet-alert').remove();
+            this.removeListeners();
             Backbone.View.prototype.close.call(this);
         }
     });
