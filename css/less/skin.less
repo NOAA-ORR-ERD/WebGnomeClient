@@ -2376,8 +2376,11 @@ nav.navbar{
     .transition(all .2s);
 
     &.dz-started{
-        border-color: transparent;
-
+        border-color: white;
+        border-style: solid;
+        background: #E0E0E0;
+        box-shadow: inset 0 0px 10px rgba(0,0,0,0.25);
+        border: 0;
 
         .dz-message{
             display: none;
@@ -2398,11 +2401,6 @@ nav.navbar{
         border-radius: 4px;
 
         &.dz-uploaded{
-            .dz-progress{
-                .dz-upload{
-                    box-shadow: none;
-                }
-            }
             .dz-filename{
                 color: transparent;
             }
@@ -2423,7 +2421,6 @@ nav.navbar{
                 border-radius: 4px;
                 background: #9BD4E5;
                 z-index: 0;
-                box-shadow: inset 0 0px 23px rgba(0,0,0,0.25);
                 .transition(all .2s);
             }
         }
@@ -2449,7 +2446,7 @@ nav.navbar{
             }
         }
         .dz-loading{
-            display: block;
+            display: none;
             position: absolute;
             top: 0;
             left: 0;

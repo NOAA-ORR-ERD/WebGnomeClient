@@ -19,7 +19,7 @@ define([
         },
 
         getGrid: function(callback){
-            var url = webgnome.config.api + this.urlRoot + 'current/grid';
+            var url = webgnome.config.api + this.urlRoot + this.id + '/grid';
             if(!this.requesting && !this.requested || this.requested && this.hasChanged()){
                 this.requesting = true;
                 $.get(url, null, _.bind(function(geo_json){
