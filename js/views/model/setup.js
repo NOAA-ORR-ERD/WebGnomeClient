@@ -430,20 +430,22 @@ define([
 
                 if(!_.isUndefined(dataset)){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                        grid: {
-                            borderWidth: 1,
-                            borderColor: '#ddd'
-                        },
-                        xaxis: {
-                            mode: 'time',
-                            timezone: 'browser',
-                            tickColor: '#ddd'
-                        },
-                        yaxis: {
-                            tickColor: '#ddd'
-                        }
-                    });
+                    setTimeout(_.bind(function(){
+                        this.windPlot = $.plot('.wind .chart .canvas', dataset, {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#ddd'
+                            },
+                            xaxis: {
+                                mode: 'time',
+                                timezone: 'browser',
+                                tickColor: '#ddd'
+                            },
+                            yaxis: {
+                                tickColor: '#ddd'
+                            }
+                        });
+                    }, this), 2);
                 }
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
@@ -515,7 +517,7 @@ define([
 
             spillView.render();
         },
-        
+
         calculateSpillAmount: function(){
             var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
