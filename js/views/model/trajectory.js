@@ -114,21 +114,25 @@ define([
                 }),
             });
 
-            this.SpillGroupLayers = new ol.Collection();
-            this.SpillGroupLayer = new ol.layer.Group({
+            this.SpillLayer = new ol.layer.Vector({
                 name:'spills',
-                style: new ol.style.Style({
-                    image: new ol.style.Circle({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(0, 0, 0, .75)'
-                        }),
-                        radius: 1,
-                        stroke: new ol.style.Stroke({
-                            color: 'rgba(0, 0, 0, 1)'
+                style: function(feature, resolution){
+                    var color = 'rgba(0, 0, 0, 1)';
+                    if(feature.get('sc_type') == 'uncertain'){
+                        color = 'rgba(255, 54, 54, 1)';
+                    }
+                    return [new ol.style.Style({
+                        image: new ol.style.Circle({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(0, 0, 0, .75)'
+                            }),
+                            radius: 1,
+                            stroke: new ol.style.Stroke({
+                                color: color
+                            })
                         })
-                    })
-                }),
-                layers: this.SpillGroupLayers
+                    })];
+                }
             });
             
             this.graticule = new ol.Graticule({
@@ -201,15 +205,7 @@ define([
         },
 
         load: function(){
-            webgnome.cache.forEach(_.bind(function(step){
-                var layer = this.makeLayer(step, false);
-                this.SpillGroupLayers.push(layer);
-                this.updateProgress();
-            }, this));
-            if(webgnome.cache.length > 0){
-                this.frame = webgnome.cache.length - 1;
-                this.seek(null, {value: this.frame});
-            }
+            this.updateProgress();
             this.play();
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
@@ -217,21 +213,12 @@ define([
 
         loop: function(){
             if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
-                if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
-                    // the step already exists in the index, make it visible.
-                    setTimeout(_.bind(function(){
-                        this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                    }, this), 60);
-                    this.renderStep({step: this.controls.seek.slider('value')});
-
-                } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
-                    // the step doesn't already exist on the map and it's with in the number of 
-                    // time steps this model should have so load
-
+                if (webgnome.cache.at(this.controls.seek.slider('value'))){
+                    // the cache has the step, just render it
+                    this.renderStep(webgnome.cache.at(this.controls.seek.slider('value')));
+                } else  {
                     this.updateProgress();
                     webgnome.cache.step();
-                } else {
-                    this.pause();
                 }
             } else {
                 this.pause();
@@ -240,7 +227,7 @@ define([
 
         updateProgress: function(){
             this.controls.progress.addClass('progress-bar-stripes active');
-            var percent = Math.round(((this.SpillGroupLayers.getLength()) / (webgnome.model.get('num_time_steps') - 1)) * 100);
+            var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);
             this.controls.progress.css('width', percent + '%');
         },
 
@@ -275,9 +262,6 @@ define([
             this.controls.progress.css('width', 0);
             this.frame = 0;
             webgnome.cache.rewind();
-
-            // clean up the spill ... ha
-            this.SpillGroupLayers.clear();
         },
 
         prev: function(){
@@ -291,7 +275,7 @@ define([
         next: function(){
             if($('.modal').length === 0){
                 this.pause();
-                if(this.SpillGroupLayers.item(this.frame + 1)){
+                if(webgnome.cache.at(this.frame + 1)){
                     this.controls.seek.slider('value', this.frame + 1);
                     this.renderStep({step: this.frame + 1});
                 }
@@ -310,60 +294,89 @@ define([
             this.state = 'pause';
         },
 
+        renderStep: function(source){
+            var step;
+            if(_.has(source, 'step')){
+                step = webgnome.cache.at(source.step);
+            } else {
+                step = source;
+            }
+
+            if(step){
+                var geo_source = new ol.source.GeoJSON({
+                    object: step.get('GeoJson').feature_collection,
+                    projection: 'EPSG:3857'
+                });
+                this.SpillLayer.setSource(geo_source);
+
+                this.controls.date.text(step.get('ts'));
+                this.frame = step.get('GeoJson').step_num;
+                if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+                    setTimeout(_.bind(function(){
+                        this.controls.seek.slider('value', this.frame + 1);
+                    }, this), 60);
+                } else {
+                    this.pause();
+                } 
+            } else if (this.state == 'seek') {
+                this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+            }
+        },
+
         /**
          * Acts as the map layer director, if the provided options param has a step targeted it will try to 
          * make the defined step visible otherwise if geojson is proviced it will create the layer
          * @param  {Object} options Object describing either the step number to get or the geojson to display
          */
-        renderStep: function(options){
-            if(!_.isUndefined(options.step)) {
-                // if the map has the requested frame render it while seeking
-                if(this.SpillGroupLayers.item(options.step)){
-                    this.SpillGroupLayers.item(this.frame).setVisible(false);
-                    this.SpillGroupLayers.item(options.step).setVisible(true);
-                    this.frame = options.step;
-                    this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-                } else {
-                    if(this.state == 'seek'){
-                        // map doesn't have the requested frame layer
-                        // if the user drops it outside the loaded range reset it.
-                        this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
-                    }
-                }
-            } else if(options.get('GeoJson')){
-                this.getStepLayer(options);
-            }
-        },
+        // renderStep: function(options){
+        //     if(!_.isUndefined(options.step)) {
+        //         // if the map has the requested frame render it while seeking
+        //         if(this.SpillGroupLayers.item(options.step)){
+        //             this.SpillGroupLayers.item(this.frame).setVisible(false);
+        //             this.SpillGroupLayers.item(options.step).setVisible(true);
+        //             this.frame = options.step;
+        //             this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
+        //         } else {
+        //             if(this.state == 'seek'){
+        //                 // map doesn't have the requested frame layer
+        //                 // if the user drops it outside the loaded range reset it.
+        //                 this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+        //             }
+        //         }
+        //     } else if(options.get('GeoJson')){
+        //         this.getStepLayer(options);
+        //     }
+        // },
 
         /**
          * Calls for the creation of a layer, adds it to the spill layer collection and calls for it to be displayed
          * @param  {Object GnomeStep} step
          */
-        getStepLayer: function(step){
-            var layer = this.makeLayer(step);
+        // getStepLayer: function(step){
+        //     var layer = this.makeLayer(step);
 
-            setTimeout(_.bind(function(){
-                this.SpillGroupLayers.push(layer);
-                this.getStepLayerRendered(step);
-            }, this), 60);
-        },
+        //     setTimeout(_.bind(function(){
+        //         this.SpillGroupLayers.push(layer);
+        //         this.getStepLayerRendered(step);
+        //     }, this), 60);
+        // },
 
         /**
          * Makes the provided step visible if appropriate and hides the previous step's layer
          * @param  {Object GnomeStep} step
          */
-        getStepLayerRendered: function(step){
-            if(step.get('GeoJson').step_num > 0){
-                this.SpillGroupLayers.item(step.get('GeoJson').step_num - 1).setVisible(false);
-                this.frame = step.get('GeoJson').step_num;
-                this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-            }
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
-                this.controls.seek.slider('value', this.frame + 1);
-            } else {
-                this.pause();
-            }
-        },
+        // getStepLayerRendered: function(step){
+        //     if(step.get('GeoJson').step_num > 0){
+        //         this.SpillGroupLayers.item(step.get('GeoJson').step_num - 1).setVisible(false);
+        //         this.frame = step.get('GeoJson').step_num;
+        //         this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
+        //     }
+        //     if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+        //         this.controls.seek.slider('value', this.frame + 1);
+        //     } else {
+        //         this.pause();
+        //     }
+        // },
 
         /**
          * Creates the Openlayer layer representation of the given step
@@ -371,72 +384,72 @@ define([
          * @param  {Boolean} visible Should this layer be visible or not upon creation defaults to true
          * @return {Object ol.layer.Vector or ol.layer.Image}
          */
-        makeLayer: function(step, visible){
-            if(_.isUndefined(visible)){
-                visible = true;
-            }
+        // makeLayer: function(step, visible){
+        //     if(_.isUndefined(visible)){
+        //         visible = true;
+        //     }
             
-            // var layer = new ol.layer.Vector({
-            //     step_num: step.get('GeoJson').step_num,
-            //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
-            //     style: function(feature, resolution){
-            //         var color = 'rgba(0, 0, 0, 1)';
-            //         if(feature.get('sc_type') == 'uncertain'){
-            //             color = 'rgba(255, 54, 54, 1)';
-            //         }
-            //         return [new ol.style.Style({
-            //             image: new ol.style.Circle({
-            //                 fill: new ol.style.Fill({
-            //                     color: 'rgba(0, 0, 0, .75)'
-            //                 }),
-            //                 radius: 1,
-            //                 stroke: new ol.style.Stroke({
-            //                     color: color
-            //                 })
-            //             })
-            //         })];
-            //     },
-            //     visible: visible,
-            //     source: new ol.source.GeoJSON({
-            //         // url: ''
-            //         projection: 'EPSG:3857',
-            //         object: step.get('GeoJson').feature_collection
-            //     })
-            // });
+        //     // var layer = new ol.layer.Vector({
+        //     //     step_num: step.get('GeoJson').step_num,
+        //     //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+        //     //     style: function(feature, resolution){
+        //     //         var color = 'rgba(0, 0, 0, 1)';
+        //     //         if(feature.get('sc_type') == 'uncertain'){
+        //     //             color = 'rgba(255, 54, 54, 1)';
+        //     //         }
+        //     //         return [new ol.style.Style({
+        //     //             image: new ol.style.Circle({
+        //     //                 fill: new ol.style.Fill({
+        //     //                     color: 'rgba(0, 0, 0, .75)'
+        //     //                 }),
+        //     //                 radius: 1,
+        //     //                 stroke: new ol.style.Stroke({
+        //     //                     color: color
+        //     //                 })
+        //     //             })
+        //     //         })];
+        //     //     },
+        //     //     visible: visible,
+        //     //     source: new ol.source.GeoJSON({
+        //     //         // url: ''
+        //     //         projection: 'EPSG:3857',
+        //     //         object: step.get('GeoJson').feature_collection
+        //     //     })
+        //     // });
             
-            var layer = new ol.layer.Image({
-                step_num: step.get('GeoJson').step_num,
-                ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+        //     var layer = new ol.layer.Image({
+        //         step_num: step.get('GeoJson').step_num,
+        //         ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
                 
-                visible: visible,
-                source: new ol.source.ImageVector({
-                    source: new ol.source.GeoJSON({
-                        // url: ''
-                        projection: 'EPSG:3857',
-                        object: step.get('GeoJson').feature_collection
-                    }),
-                    style: function(feature, resolution){
-                        var color = 'rgba(0, 0, 0, 1)';
-                        if(feature.get('sc_type') == 'uncertain'){
-                            color = 'rgba(255, 54, 54, 1)';
-                        }
-                        return [new ol.style.Style({
-                            image: new ol.style.Circle({
-                                fill: new ol.style.Fill({
-                                    color: 'rgba(0, 0, 0, .75)'
-                                }),
-                                radius: 1,
-                                stroke: new ol.style.Stroke({
-                                    color: color
-                                })
-                            })
-                        })];
-                    }
-                }),
-            });
+        //         visible: visible,
+        //         source: new ol.source.ImageVector({
+        //             source: new ol.source.GeoJSON({
+        //                 // url: ''
+        //                 projection: 'EPSG:3857',
+        //                 object: step.get('GeoJson').feature_collection
+        //             }),
+        //             style: function(feature, resolution){
+        //                 var color = 'rgba(0, 0, 0, 1)';
+        //                 if(feature.get('sc_type') == 'uncertain'){
+        //                     color = 'rgba(255, 54, 54, 1)';
+        //                 }
+        //                 return [new ol.style.Style({
+        //                     image: new ol.style.Circle({
+        //                         fill: new ol.style.Fill({
+        //                             color: 'rgba(0, 0, 0, .75)'
+        //                         }),
+        //                         radius: 1,
+        //                         stroke: new ol.style.Stroke({
+        //                             color: color
+        //                         })
+        //                     })
+        //                 })];
+        //             }
+        //         }),
+        //     });
 
-            return layer;
-        },
+        //     return layer;
+        // },
 
         disableUI: function(){
             // visually disable the interface and remove listeners
@@ -494,8 +507,8 @@ define([
                         }
 
                         this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillGroupLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
 
                         this.ol.map.on('pointermove', this.spillHover, this);
                         this.ol.map.on('click', this.spillClick, this);
@@ -511,7 +524,7 @@ define([
                         this.ol.render();
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillGroupLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
                         this.ol.map.on('pointermove', this.spillHover, this);
                         this.ol.map.on('click', this.spillClick, this);
                     }
