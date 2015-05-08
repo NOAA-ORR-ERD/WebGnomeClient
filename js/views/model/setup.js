@@ -574,14 +574,12 @@ define([
                 }
                 data[j] = amountArray;
             }
-            console.log(data);
             return data;
         },
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
-            var timeSeries = this.timeSeries;
-            var spillArray = this.calculateSpillAmount(timeSeries);
+            var spillArray = this.calculateSpillAmount();
             var compiled;
             var mode = localStorage.getItem('prediction');
 
@@ -628,7 +626,9 @@ define([
 
                 if(!_.isUndefined(dataset)){
                     this.spillDataset = dataset;
-                    this.renderSpillRelease(dataset);
+                    setTimeout(_.bind(function(){
+                        this.renderSpillRelease(dataset);
+                    }, this), 2);
                 }
                 
             } else {
