@@ -767,7 +767,7 @@ define([
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
 
-            if(currents){
+            if(currents.length > 0){
                 this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
                 var currentMap = new olMapView({
                     id: 'mini-currentmap',
