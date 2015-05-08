@@ -909,12 +909,18 @@ define([
 
             if(!_.isUndefined(dataset)){
                 this.responseDataset = dataset;
-                this.renderResponseGraph(dataset, yticks);
+                setTimeout(_.bind(function(){
+                    this.renderResponseGraph(dataset, yticks);
+                }, this), 2);
             }
 
         },
 
         renderResponseGraph: function(dataset, yticks){
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+            var numOfTimeSteps = webgnome.model.get('num_time_steps') - 1;
+            var timeStep = webgnome.model.get('time_step');
+            var end_time = moment.unix(start_time / 1000).add(numOfTimeSteps * timeStep, 's').unix() * 1000;
             this.responsePlot = $.plot('.response .chart .canvas', dataset, {
                 series: {
                     editMode: 'v',
@@ -933,8 +939,8 @@ define([
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',
-                    min: this.timeSeries[0],
-                    max: this.timeSeries[this.timeSeries.length - 1]
+                    min: start_time,
+                    max: end_time
                 },
                 yaxis: {
                     min: 0.5,
