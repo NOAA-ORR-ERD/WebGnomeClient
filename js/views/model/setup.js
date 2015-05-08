@@ -122,6 +122,25 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
             }, this));
+
+            this.addListeners();
+            
+            this.updateWind();
+            this.updateLocation();
+            this.updateWater();
+            this.updateSpill();
+            this.updateBeached();
+            this.updateCurrent();
+        },
+
+        addListeners: function(){
+            webgnome.model.get('spills').on('change add remove', this.updateSpill, this);
+            webgnome.model.get('environment').on('change add remove', this.updateWind, this);
+            webgnome.model.get('environment').on('change add remove', this.updateWater, this);
+            webgnome.model.get('weatherers').on('change add remove', this.updateResponse, this);
+            webgnome.model.get('weatherers').on('change add remove', this.updateBeached, this);
+            webgnome.model.get('movers').on('change add remove', this.updateCurrent, this);
+            webgnome.model.on('change:map', this.updateLocation, this);
         },
 
         showHelp: function(){
@@ -263,12 +282,6 @@ define([
 
         updateObjects: function(){
             this.constructModelTimeSeries(_.bind(function(){
-                this.updateWind();
-                this.updateLocation();
-                this.updateWater();
-                this.updateSpill();
-                this.updateBeached();
-                this.updateCurrent();
                 
                 var delay = {
                     show: 500,
@@ -517,7 +530,7 @@ define([
             }
         },
 
-        calculateSpillAmount: function(timeseries){
+        calculateSpillAmount: function(){
             var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
             var spills = webgnome.model.get('spills');
@@ -527,6 +540,8 @@ define([
             oilAPI = oilAPI ? oilAPI : 10;
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
             var data = {};
             for (var j = 0; j < spills.models.length; j++){
                 var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
@@ -535,10 +550,10 @@ define([
                 var spillUnits = spills.models[j].get('units');
                 var amount = 0;
                 var amountArray = [];
-                for (var i = 0; i < timeseries.length; i++){
-                    var upperBound = moment(timeseries[i]).unix();
+                for (var i = 0; i < numOfTimeSteps; i++){
+                    var upperBound = moment(start_time).add(i * timeStep, 's').unix();
                     var lowerBound = upperBound - timeStep;
-                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i !== timeseries.length){
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i !== numOfTimeSteps){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
@@ -559,6 +574,7 @@ define([
                 }
                 data[j] = amountArray;
             }
+            console.log(data);
             return data;
         },
 
@@ -568,6 +584,11 @@ define([
             var spillArray = this.calculateSpillAmount(timeSeries);
             var compiled;
             var mode = localStorage.getItem('prediction');
+
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var timeStep = webgnome.model.get('time_step');
+
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
                 var substance = spills.at(0).get('element_type').get('substance');
@@ -581,8 +602,8 @@ define([
                 for (var spill in spills.models){
                     if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
-                    for (var i = 0; i < timeSeries.length; i++){
-                        var date = timeSeries[i];
+                    for (var i = 0; i < numOfTimeSteps; i++){
+                        var date = moment(start_time).add(i * timeStep, 's').unix() * 1000;
                         var amount = spillArray[spill][i];
                         data.push([parseInt(date, 10), parseInt(amount, 10)]);
                     }
