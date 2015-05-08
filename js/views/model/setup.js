@@ -1079,28 +1079,30 @@ define([
                 this.$('.beached .panel-body').show();
 
                 if (!_.isUndefined(dataset)) {
-                    this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
-                        grid: {
-                            borderWidth: 1,
-                            borderColor: '#ddd'
-                        },
-                        xaxis: {
-                            mode: 'time',
-                            timezone: 'browser',
-                            tickColor: '#ddd'
-                        },
-                        series: {
-                            stack: true,
-                            group: true,
-                            groupInterval: 1,
-                            lines: {
-                                show: true,
-                                fill: true,
-                                lineWidth: 2
+                    setTimeout(_.bind(function(){
+                        this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#ddd'
                             },
-                            shadowSize: 0
-                        }
-                    });
+                            xaxis: {
+                                mode: 'time',
+                                timezone: 'browser',
+                                tickColor: '#ddd'
+                            },
+                            series: {
+                                stack: true,
+                                group: true,
+                                groupInterval: 1,
+                                lines: {
+                                    show: true,
+                                    fill: true,
+                                    lineWidth: 2
+                                },
+                                shadowSize: 0
+                            }
+                        });
+                    }, this), 2);
                 }
             } else {
                 this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
