@@ -310,6 +310,11 @@ define([
             this.state = 'pause';
         },
 
+        /**
+         * Acts as the map layer director, if the provided options param has a step targeted it will try to 
+         * make the defined step visible otherwise if geojson is proviced it will create the layer
+         * @param  {Object} options Object describing either the step number to get or the geojson to display
+         */
         renderStep: function(options){
             if(!_.isUndefined(options.step)) {
                 // if the map has the requested frame render it while seeking
@@ -330,6 +335,10 @@ define([
             }
         },
 
+        /**
+         * Calls for the creation of a layer, adds it to the spill layer collection and calls for it to be displayed
+         * @param  {Object GnomeStep} step
+         */
         getStepLayer: function(step){
             var layer = this.makeLayer(step);
 
@@ -339,6 +348,10 @@ define([
             }, this), 60);
         },
 
+        /**
+         * Makes the provided step visible if appropriate and hides the previous step's layer
+         * @param  {Object GnomeStep} step
+         */
         getStepLayerRendered: function(step){
             if(step.get('GeoJson').step_num > 0){
                 this.SpillGroupLayers.item(step.get('GeoJson').step_num - 1).setVisible(false);
@@ -352,6 +365,12 @@ define([
             }
         },
 
+        /**
+         * Creates the Openlayer layer representation of the given step
+         * @param  {Object GnomeStep} step    
+         * @param  {Boolean} visible Should this layer be visible or not upon creation defaults to true
+         * @return {Object ol.layer.Vector or ol.layer.Image}
+         */
         makeLayer: function(step, visible){
             if(_.isUndefined(visible)){
                 visible = true;
