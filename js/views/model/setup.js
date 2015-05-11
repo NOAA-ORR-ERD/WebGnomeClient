@@ -575,7 +575,7 @@ define([
             var compiled;
             var mode = localStorage.getItem('prediction');
 
-            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
 
@@ -592,8 +592,8 @@ define([
                 for (var spill in spills.models){
                     if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
-                    for (var i = 0; i < numOfTimeSteps; i++){
-                        var date = moment(start_time).add(i * timeStep, 's').unix() * 1000;
+                    for (var i = 1; i < numOfTimeSteps; i++){
+                        var date = start_time.add(timeStep, 's').unix() * 1000;
                         var amount = spillArray[spill][i];
                         data.push([parseInt(date, 10), parseInt(amount, 10)]);
                     }
