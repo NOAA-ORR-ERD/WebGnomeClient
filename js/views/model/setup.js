@@ -142,6 +142,7 @@ define([
             webgnome.model.get('movers').on('change add remove', this.updateCurrent, this);
             webgnome.model.on('change:map', this.updateLocation, this);
             webgnome.model.on('change:map', this.updateSpill, this);
+            webgnome.model.on('change:num_time_steps', this.updateSpill, this);
         },
 
         removeListeners: function(){
@@ -153,6 +154,7 @@ define([
             webgnome.model.get('movers').off('change add remove', this.updateCurrent, this);
             webgnome.model.off('change:map', this.updateLocation, this);
             webgnome.model.off('change:map', this.updateSpill, this);
+            webgnome.model.off('change:num_time_steps', this.updateSpill, this);
         },
 
         showHelp: function(){
@@ -543,7 +545,7 @@ define([
                 for (var i = 0; i < numOfTimeSteps; i++){
                     var upperBound = moment(start_time).add(i * timeStep, 's').unix();
                     var lowerBound = upperBound - timeStep;
-                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i !== numOfTimeSteps){
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i < numOfTimeSteps){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
