@@ -717,8 +717,12 @@ define([
 
         clickLocation: function(){
             var locationForm = new LocationForm();
+            this.removeListeners();
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
+                this.updateLocation();
+                this.updateCurrent();
+                this.addListeners();
             }, this));
             locationForm.render();
         },
@@ -781,20 +785,23 @@ define([
 
             if(currents.length > 0){
                 this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
+                var layers = new ol.Collection([
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'})
+                    })
+                ]);
+
                 var currentMap = new olMapView({
                     id: 'mini-currentmap',
                     controls: [],
-                    layers: [
-                        new ol.layer.Tile({
-                            source: new ol.source.MapQuest({layer: 'osm'})
-                        })
-                    ]
+                    layers: layers
                 });
                 currentMap.render();
 
                 var extents = [];
                 for(var c = 0; c < currents.length; c++){
                     currents[c].getGrid(_.bind(function(geojson){
+
                         if(geojson){
                             var gridSource = new ol.source.GeoJSON({
                                 projection: 'EPSG:3857',
@@ -816,7 +823,7 @@ define([
                             });
 
                             if(!_.contains(extents, extentSum)){
-                                currentMap.map.addLayer(gridLayer);
+                                layers.push(gridLayer);
                                 extents.push(extentSum);
                             }
                         }
