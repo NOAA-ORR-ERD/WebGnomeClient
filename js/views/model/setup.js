@@ -129,31 +129,6 @@ define([
                 this.$('.datetime').datetimepicker('show');
             }, this));
 
-            this.addListeners();
-        },
-
-        addListeners: function(){
-            webgnome.model.get('spills').on('change add remove', this.updateSpill, this);
-            webgnome.model.get('environment').on('change add remove', this.updateWind, this);
-            webgnome.model.get('environment').on('change add remove', this.updateWater, this);
-            webgnome.model.get('weatherers').on('change add remove', this.updateResponse, this);
-            webgnome.model.get('weatherers').on('change add remove', this.updateBeached, this);
-            webgnome.model.get('movers').on('change add remove', this.updateCurrent, this);
-            webgnome.model.on('change:map', this.updateLocation, this);
-            webgnome.model.on('change:map', this.updateSpill, this);
-            webgnome.model.on('change:num_time_steps', this.updateSpill, this);
-        },
-
-        removeListeners: function(){
-            webgnome.model.get('spills').off('change add remove', this.updateSpill, this);
-            webgnome.model.get('environment').off('change add remove', this.updateWind, this);
-            webgnome.model.get('environment').off('change add remove', this.updateWater, this);
-            webgnome.model.get('weatherers').off('change add remove', this.updateResponse, this);
-            webgnome.model.get('weatherers').off('change add remove', this.updateBeached, this);
-            webgnome.model.get('movers').off('change add remove', this.updateCurrent, this);
-            webgnome.model.off('change:map', this.updateLocation, this);
-            webgnome.model.off('change:map', this.updateSpill, this);
-            webgnome.model.off('change:num_time_steps', this.updateSpill, this);
         },
 
         showHelp: function(){
@@ -294,6 +269,8 @@ define([
         },
 
         updateObjects: function(){
+
+            this.updateBeached();
                 
             var delay = {
                 show: 500,
@@ -351,7 +328,7 @@ define([
 
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
-            windForm.on('save', function(){
+            windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
 
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
@@ -362,8 +339,9 @@ define([
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
+                this.updateWind();
                 webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
-            });
+            }, this));
             windForm.render();
         },
 
@@ -464,13 +442,13 @@ define([
             }
             var waterForm = new WaterForm(null, water);
             waterForm.on('hidden', waterForm.close);
-            waterForm.on('save', function(){
+            waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
-                
+                this.updateWater();
                 webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
-            });
+            }, this));
             waterForm.render();
         },
 
@@ -514,9 +492,10 @@ define([
                 spillView.on('hidden', spillView.close);
             });
             // only update the model if the spill saves
-            spillView.on('save', function(){
+            spillView.on('save', _.bind(function(){
                 webgnome.model.save(null, {validate: false});
-            });
+                this.updateSpill();
+            }, this));
 
             spillView.render();
         },
@@ -591,7 +570,7 @@ define([
                 for (var spill in spills.models){
                     if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
-                    for (var i = 1; i < numOfTimeSteps; i++){
+                    for (var i = 0; i < numOfTimeSteps; i++){
                         var date = start_time.add(timeStep, 's').unix() * 1000;
                         var amount = spillArray[spill][i];
                         data.push([parseInt(date, 10), parseInt(amount, 10)]);
@@ -611,6 +590,7 @@ define([
                         id: spills.models[spill].get('id')
                     });
                 }
+
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
                 this.$('.spill .panel-body').show();
@@ -619,7 +599,7 @@ define([
                     this.spillDataset = dataset;
                     setTimeout(_.bind(function(){
                         this.renderSpillRelease(dataset);
-                    }, this), 2);
+                    }, this), 1);
                 }
                 
             } else {
@@ -717,12 +697,11 @@ define([
 
         clickLocation: function(){
             var locationForm = new LocationForm();
-            this.removeListeners();
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
                 this.updateLocation();
                 this.updateCurrent();
-                this.addListeners();
+                this.updateSpill();
             }, this));
             locationForm.render();
         },
@@ -992,12 +971,13 @@ define([
             responseView.on('wizardclose', function(){
                 responseView.on('hidden', responseView.close);
             });
-            responseView.on('save', function(){
+            responseView.on('save', _.bind(function(){
                 webgnome.model.save(null, {validate: false});
                 setTimeout(_.bind(function(){
-                    responseView.close();},
-                this), 750);
-            });
+                    responseView.close();
+                    this.updateResponse();
+                }, this), 750);
+            }, this));
             responseView.render();
         },
 
@@ -1031,14 +1011,14 @@ define([
             }
             var beachedForm = new BeachedForm({}, beached);
             beachedForm.on('hidden', beachedForm.close);
-            beachedForm.on('save', function(){
+            beachedForm.on('save', _.bind(function(){
                 webgnome.model.get('weatherers').add(beached, {merge: true});
                 webgnome.model.save({
                     success: _.bind(function(){
                         this.updateBeached();
                     }, this)
                 });
-            });
+            }, this));
             beachedForm.render();
         },
 
@@ -1112,7 +1092,7 @@ define([
                                 shadowSize: 0
                             }
                         });
-                    }, this), 2);
+                    }, this), 1);
                 }
             } else {
                 this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
@@ -1186,7 +1166,6 @@ define([
             }
             $('.sweet-overlay').remove();
             $('.sweet-alert').remove();
-            this.removeListeners();
             Backbone.View.prototype.close.call(this);
         }
     });

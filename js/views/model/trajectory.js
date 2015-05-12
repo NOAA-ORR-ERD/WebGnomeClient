@@ -459,7 +459,7 @@ define([
         renderMap: function(){
             // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
             // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
-            // named modelmap     
+            // named modelmap
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                     // the map isn't rendered yet, so draw it before adding the layer.
