@@ -23,6 +23,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
+                'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
@@ -328,6 +329,29 @@ define([
                 }, this));
             }
 		},
+
+        setSubstanceNull: function(){
+            var element_type = this.model.get('element_type');
+            if (!_.isNull(element_type.get('substance'))) {
+                swal({
+                    title: "Warning!",
+                    text: "Setting the substance to non-weathering will delete the currently entered substance!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Set Substance to Non-weathering",
+                    cancelButtonText: "Keep Weathering Substance",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        element_type.set('substance', null);
+                        
+                    }
+                }, this));
+                
+            }
+        },
 
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
