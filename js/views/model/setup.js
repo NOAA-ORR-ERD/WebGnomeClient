@@ -114,6 +114,12 @@ define([
                     this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
+                this.updateWind();
+                this.updateLocation();
+                this.updateWater();
+                this.updateSpill();
+                this.updateBeached();
+                this.updateCurrent();
             }, this), 1);
 
             this.$('.datetime').datetimepicker({
@@ -124,13 +130,6 @@ define([
             }, this));
 
             this.addListeners();
-            
-            this.updateWind();
-            this.updateLocation();
-            this.updateWater();
-            this.updateSpill();
-            this.updateBeached();
-            this.updateCurrent();
         },
 
         addListeners: function(){
