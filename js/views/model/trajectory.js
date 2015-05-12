@@ -312,8 +312,8 @@ define([
 
         /**
          * Acts as the map layer director, if the provided options param has a step targeted it will try to 
-         * make the defined step visible otherwise if geojson is proviced it will create the layer
-         * @param  {Object} options Object describing either the step number to get or the geojson to display
+         * make the defined step visible otherwise if TrajectorygeojsonOutput is proviced it will create the layer
+         * @param  {Object} options Object describing either the step number to get or the TrajectorygeojsonOutput to display
          */
         renderStep: function(options){
             if(!_.isUndefined(options.step)) {
@@ -330,7 +330,7 @@ define([
                         this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
                     }
                 }
-            } else if(options.get('GeoJson')){
+            } else if(options.get('TrajectoryGeoJsonOutput')){
                 this.getStepLayer(options);
             }
         },
@@ -353,9 +353,9 @@ define([
          * @param  {Object GnomeStep} step
          */
         getStepLayerRendered: function(step){
-            if(step.get('GeoJson').step_num > 0){
-                this.SpillGroupLayers.item(step.get('GeoJson').step_num - 1).setVisible(false);
-                this.frame = step.get('GeoJson').step_num;
+            if(step.get('TrajectoryGeoJsonOutput').step_num > 0){
+                this.SpillGroupLayers.item(step.get('TrajectoryGeoJsonOutput').step_num - 1).setVisible(false);
+                this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
                 this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
             }
             if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
@@ -377,8 +377,8 @@ define([
             }
             
             // var layer = new ol.layer.Vector({
-            //     step_num: step.get('GeoJson').step_num,
-            //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+            //     step_num: step.get('TrajectoryGeoJsonOutput').step_num,
+            //     ts: moment(step.get('TrajectoryGeoJsonOutput').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
             //     style: function(feature, resolution){
             //         var color = 'rgba(0, 0, 0, 1)';
             //         if(feature.get('sc_type') == 'uncertain'){
@@ -397,23 +397,23 @@ define([
             //         })];
             //     },
             //     visible: visible,
-            //     source: new ol.source.GeoJSON({
+            //     source: new ol.source.TrajectoryGeoJSONOutput({
             //         // url: ''
             //         projection: 'EPSG:3857',
-            //         object: step.get('GeoJson').feature_collection
+            //         object: step.get('TrajectoryGeoJsonOutput').feature_collection
             //     })
             // });
             
             var layer = new ol.layer.Image({
-                step_num: step.get('GeoJson').step_num,
-                ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+                step_num: step.get('TrajectoryGeoJsonOutput').step_num,
+                ts: moment(step.get('TrajectoryGeoJsonOutput').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
                 
                 visible: visible,
                 source: new ol.source.ImageVector({
                     source: new ol.source.GeoJSON({
                         // url: ''
                         projection: 'EPSG:3857',
-                        object: step.get('GeoJson').feature_collection
+                        object: step.get('TrajectoryGeoJsonOutput').feature_collection
                     }),
                     style: function(feature, resolution){
                         var color = 'rgba(0, 0, 0, 1)';
@@ -457,8 +457,8 @@ define([
         },
 
         renderMap: function(){
-            // check if the model has a map, specifically a bna map that has a geojson output
-            // if it does load it's geojson and put it in a layer on the map
+            // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
+            // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
             // named modelmap     
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
