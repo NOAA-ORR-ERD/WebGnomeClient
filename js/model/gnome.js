@@ -49,7 +49,7 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
             outputters: {
-                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter,
+                'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': GeojsonOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
             },
             weatherers: {
