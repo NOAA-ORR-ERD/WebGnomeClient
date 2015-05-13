@@ -230,6 +230,10 @@ define([
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
+                    var spills = webgnome.model.get('spills');
+                    for (var i = 0; i < spills.length; i++){
+                        spills.at(i).get('element_type').set('substance', model);
+                    }
                     this.hide();
                 }, this)
             });
