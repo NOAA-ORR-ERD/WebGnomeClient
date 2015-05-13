@@ -343,9 +343,12 @@ define([
                     var spills = webgnome.model.get('spills');
                     if (spills.length > 1){
                         spills.forEach(function(spill){
-                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
-                                spill.get('element_type').set('substance', oilSubstance);
-                                spill.save();
+                            var spillSubstance = spill.get('element_type').get('substance');
+                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) || 
+                                !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
+
+                                    spill.get('element_type').set('substance', oilSubstance);
+                                    spill.save();
                             }
                         });
                     }
