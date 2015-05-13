@@ -118,7 +118,6 @@ define([
                 this.updateLocation();
                 this.updateWater();
                 this.updateSpill();
-                this.updateBeached();
                 this.updateCurrent();
             }, this), 1);
 
@@ -274,9 +273,6 @@ define([
         },
 
         updateObjects: function(){
-
-            this.updateBeached();
-                
             var delay = {
                 show: 500,
                 hide: 100
@@ -319,6 +315,7 @@ define([
             if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
+                this.updateBeached();
             } else {
                 this.$('.stage-3').hide();
             }
@@ -612,6 +609,7 @@ define([
                 this.$('.spill .panel-body').hide().html('');
                 this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
+            this.mason.layout();
         },
 
         renderSpillRelease: function(dataset){
