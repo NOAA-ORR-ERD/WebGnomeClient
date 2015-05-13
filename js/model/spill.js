@@ -30,6 +30,7 @@ define([
         },
 
         validate: function(attrs, options){
+            var massUnits = ['kg', 'ton', 'metric ton'];
             if ($.trim(attrs.name) === ''){
                 this.validationContext = 'spill';
                 return 'A spill name is required!';
@@ -41,6 +42,14 @@ define([
             } else if (attrs.amount <= 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
+            }
+
+            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1){
+                return 'Amount released must use units of mass when in trajectory only mode!';
+            }
+
+            if (localStorage.getItem('prediction') !== 'trajectory' && massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
+                return 'You must either select a weathering substance or use mass units for amount!';
             }
 
             // if (localStorage.getItem('prediction') !== 'trajectory'){
