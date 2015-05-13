@@ -338,18 +338,21 @@ define([
                     text: "Setting the substance to non-weathering will delete the currently entered substance!",
                     type: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Set Substance to Non-weathering",
-                    cancelButtonText: "Keep Weathering Substance",
+                    confirmButtonText: "Set to Non-weathering",
+                    cancelButtonText: "Cancel",
                     closeOnConfirm: true,
                     closeOnCancel: true
                 },
                 _.bind(function(isConfirm){
                     if (isConfirm){
-                        element_type.set('substance', null);
-                        
+                        if (webgnome.model.get('spills').length > 0){
+                            webgnome.model.get('spills').at(0).get('element_type').set('substance', null);
+                        } else {
+                            element_type.set('substance', null);
+                        }
+                        this.renderSubstanceInfo();
                     }
                 }, this));
-                
             }
         },
 
