@@ -140,11 +140,11 @@ define([
             } else {
                 this.$('#map-status').addClass('ok');
             }
-            if (this.model.validateSubstance(this.model.attributes)){
-                this.$('#substance').addClass('error');
-            } else {
-                this.$('#substance').addClass('ok');
-            }
+            // if (this.model.validateSubstance(this.model.attributes)){
+            //     this.$('#substance').addClass('error');
+            // } else {
+            //     this.$('#substance').addClass('ok');
+            // }
             if (this.model.validateRelease(this.model.attributes)){
                 this.$('#info').addClass('error');
             } else {
