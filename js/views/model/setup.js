@@ -219,9 +219,9 @@ define([
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
                     webgnome.model.save(null, {validate: false});
-                } else {
-                    this.updateObjects();
                 }
+                this.updateObjects();
+                this.updateSpill();
             }
         },
 
