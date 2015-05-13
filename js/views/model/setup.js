@@ -821,6 +821,8 @@ define([
                     currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
                 }
                 this.mason.layout();
+            } else {
+                this.$('.current .panel-body').hide().html('');
             }
         },
 
