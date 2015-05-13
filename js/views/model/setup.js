@@ -188,7 +188,13 @@ define([
                 weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
             });
 
-            webgnome.model.save(null, {validate: false});
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    this.updateSpill();
+                    this.updateResponse();
+                }, this)
+            });
         },
 
         selectPrediction: function(e){
