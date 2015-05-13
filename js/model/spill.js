@@ -31,6 +31,7 @@ define([
 
         validate: function(attrs, options){
             var massUnits = ['kg', 'ton', 'metric ton'];
+            
             if ($.trim(attrs.name) === ''){
                 this.validationContext = 'spill';
                 return 'A spill name is required!';
