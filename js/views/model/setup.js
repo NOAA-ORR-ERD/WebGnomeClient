@@ -568,7 +568,6 @@ define([
             var compiled;
             var mode = localStorage.getItem('prediction');
 
-            //var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
 
@@ -627,7 +626,6 @@ define([
         },
 
         renderSpillRelease: function(dataset){
-            console.log(dataset[0], dataset[1]);
             this.spillPlot = $.plot('.spill .chart .canvas', dataset, {
                 grid: {
                     borderWidth: 1,
