@@ -210,7 +210,12 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation();
+                        webgnome.model.resetLocation(_.bind(function(){
+                            this.updateLocation();
+                            this.updateCurrent();
+                            this.updateSpill();
+                        }, this));
+
                         this.togglePrediction(e, target);
                     }
                 }, this));
