@@ -218,10 +218,15 @@ define([
             } else {
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
-                    webgnome.model.save(null, {validate: false});
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.updateObjects();
+                            this.updateSpill();
+                        }, this)
+                    });
                 }
-                this.updateObjects();
-                this.updateSpill();
+                
             }
         },
 
