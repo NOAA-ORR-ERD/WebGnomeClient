@@ -119,6 +119,7 @@ define([
                 this.updateWater();
                 this.updateSpill();
                 this.updateCurrent();
+                this.updateObjects();
             }, this), 1);
 
             this.$('.datetime').datetimepicker({
