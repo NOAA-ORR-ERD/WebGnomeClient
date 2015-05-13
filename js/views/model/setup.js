@@ -320,7 +320,9 @@ define([
             if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
-                this.updateBeached();
+                if(this.$('.beached.object:visible').length > 0){
+                    this.updateBeached();
+                }
             } else {
                 this.$('.stage-3').hide();
             }
@@ -769,7 +771,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            
+
             if(currents.length > 0){
                 this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
                 var layers = new ol.Collection([
