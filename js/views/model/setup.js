@@ -118,7 +118,6 @@ define([
                 this.updateLocation();
                 this.updateWater();
                 this.updateSpill();
-                this.updateBeached();
                 this.updateCurrent();
             }, this), 1);
 
@@ -188,7 +187,13 @@ define([
                 weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
             });
 
-            webgnome.model.save(null, {validate: false});
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    this.updateSpill();
+                    this.updateResponse();
+                }, this)
+            });
         },
 
         selectPrediction: function(e){
@@ -211,17 +216,27 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation();
+                        webgnome.model.resetLocation(_.bind(function(){
+                            this.updateLocation();
+                            this.updateCurrent();
+                            this.updateSpill();
+                        }, this));
+
                         this.togglePrediction(e, target);
                     }
                 }, this));
             } else {
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
-                    webgnome.model.save(null, {validate: false});
-                } else {
-                    this.updateObjects();
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.updateObjects();
+                            this.updateSpill();
+                        }, this)
+                    });
                 }
+                
             }
         },
 
@@ -269,9 +284,6 @@ define([
         },
 
         updateObjects: function(){
-
-            this.updateBeached();
-                
             var delay = {
                 show: 500,
                 hide: 100
@@ -314,6 +326,9 @@ define([
             if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
+                if(this.$('.beached.object:visible').length > 0){
+                    this.updateBeached();
+                }
             } else {
                 this.$('.stage-3').hide();
             }
@@ -553,7 +568,6 @@ define([
             var compiled;
             var mode = localStorage.getItem('prediction');
 
-            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
 
@@ -570,6 +584,7 @@ define([
                 for (var spill in spills.models){
                     if (!_.isNull(spills.models[spill].validationError)) continue;
                     var data = [];
+                    var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
                     for (var i = 0; i < numOfTimeSteps; i++){
                         var date = start_time.add(timeStep, 's').unix() * 1000;
                         var amount = spillArray[spill][i];
@@ -607,6 +622,7 @@ define([
                 this.$('.spill .panel-body').hide().html('');
                 this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
+            this.mason.layout();
         },
 
         renderSpillRelease: function(dataset){
@@ -761,7 +777,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            
+
             if(currents.length > 0){
                 this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
                 var layers = new ol.Collection([
@@ -813,6 +829,8 @@ define([
                     currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
                 }
                 this.mason.layout();
+            } else {
+                this.$('.current .panel-body').hide().html('');
             }
         },
 
