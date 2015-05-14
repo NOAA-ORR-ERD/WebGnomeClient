@@ -304,13 +304,13 @@ define([
 
             if(step){
                 var geo_source = new ol.source.GeoJSON({
-                    object: step.get('GeoJson').feature_collection,
+                    object: step.get('TrajectoryGeoJsonOutput').feature_collection,
                     projection: 'EPSG:3857'
                 });
                 this.SpillLayer.setSource(geo_source);
 
                 this.controls.date.text(step.get('ts'));
-                this.frame = step.get('GeoJson').step_num;
+                this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
                 if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
                     setTimeout(_.bind(function(){
                         this.controls.seek.slider('value', this.frame + 1);
