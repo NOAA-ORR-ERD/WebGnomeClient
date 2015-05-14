@@ -296,6 +296,9 @@ define([
             environment.add(water);
             environment.add(waves);
 
+            // drop all of the currents from current outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).get('current_movers').reset();
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             this.set('map', map, {silent: true});
