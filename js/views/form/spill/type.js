@@ -49,6 +49,7 @@ define([
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },
@@ -65,6 +66,7 @@ define([
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },

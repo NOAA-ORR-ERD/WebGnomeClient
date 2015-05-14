@@ -325,8 +325,8 @@ define([
 
         /**
          * Acts as the map layer director, if the provided options param has a step targeted it will try to 
-         * make the defined step visible otherwise if geojson is proviced it will create the layer
-         * @param  {Object} options Object describing either the step number to get or the geojson to display
+         * make the defined step visible otherwise if TrajectorygeojsonOutput is proviced it will create the layer
+         * @param  {Object} options Object describing either the step number to get or the TrajectorygeojsonOutput to display
          */
         // renderStep: function(options){
         //     if(!_.isUndefined(options.step)) {
@@ -388,7 +388,7 @@ define([
         //     if(_.isUndefined(visible)){
         //         visible = true;
         //     }
-            
+
         //     // var layer = new ol.layer.Vector({
         //     //     step_num: step.get('GeoJson').step_num,
         //     //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
@@ -470,9 +470,9 @@ define([
         },
 
         renderMap: function(){
-            // check if the model has a map, specifically a bna map that has a geojson output
-            // if it does load it's geojson and put it in a layer on the map
-            // named modelmap     
+            // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
+            // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
+            // named modelmap
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                     // the map isn't rendered yet, so draw it before adding the layer.

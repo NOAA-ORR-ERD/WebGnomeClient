@@ -21,13 +21,16 @@
                     {% for(c in categories){ %}
                         <div class="label label-warning">{{ categories[c] }}</div>
                     {% } %}
+                    {% if (categories.length === 0){ %}
+                        <div class="label label-warning">None</div>
+                    {% } %}
                 </div>
             </div>
         </div>
     </div>
 {% } else if (mode !== 'trajectory') { %}
     <div class="row">
-        <div class="substance-info col-sm-12">
+        <div class="substance-info error col-sm-12">
             <div class="row">
                 <div class="col-sm-12"><label>Substance</label></div>
                 <div class="col-sm-6 substance-data">

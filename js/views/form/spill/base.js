@@ -23,6 +23,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
+                'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
@@ -139,11 +140,11 @@ define([
             } else {
                 this.$('#map-status').addClass('ok');
             }
-            if (this.model.validateSubstance(this.model.attributes)){
-                this.$('#substance').addClass('error');
-            } else {
-                this.$('#substance').addClass('ok');
-            }
+            // if (this.model.validateSubstance(this.model.attributes)){
+            //     this.$('#substance').addClass('error');
+            // } else {
+            //     this.$('#substance').addClass('ok');
+            // }
             if (this.model.validateRelease(this.model.attributes)){
                 this.$('#info').addClass('error');
             } else {
@@ -329,6 +330,32 @@ define([
             }
 		},
 
+        setSubstanceNull: function(){
+            var element_type = this.model.get('element_type');
+            if (!_.isNull(element_type.get('substance'))) {
+                swal({
+                    title: "Warning!",
+                    text: "Setting the substance to non-weathering will delete the currently entered substance!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Set to Non-weathering",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        if (webgnome.model.get('spills').length > 0){
+                            webgnome.model.get('spills').at(0).get('element_type').set('substance', null);
+                        } else {
+                            element_type.set('substance', null);
+                        }
+                        this.renderSubstanceInfo();
+                    }
+                }, this));
+            }
+        },
+
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
             if (this.$('.error').length > 0){
@@ -343,9 +370,12 @@ define([
                     var spills = webgnome.model.get('spills');
                     if (spills.length > 1){
                         spills.forEach(function(spill){
-                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
-                                spill.get('element_type').set('substance', oilSubstance);
-                                spill.save();
+                            var spillSubstance = spill.get('element_type').get('substance');
+                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) || 
+                                !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
+
+                                    spill.get('element_type').set('substance', oilSubstance);
+                                    spill.save();
                             }
                         });
                     }
