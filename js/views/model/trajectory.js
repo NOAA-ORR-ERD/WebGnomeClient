@@ -67,6 +67,7 @@ define([
 
             this.ol = new olMapView({
                 controls: 'full',
+                renderer: 'webgl',
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
