@@ -18,19 +18,24 @@
             <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer">USGS Base Map</label>
         </div>
     </form>
-    <form role="form" class="form-horizontal">
+    <form role="form" class="form-horizontal checkboxes">
         <div class="checkbox">
-            <label for="basemap"><input type="checkbox" id="basemap"> Base Map</label>
+            <label for="basemap"><input type="checkbox" id="basemap">Base Map</label>
         </div>
         <div class="checkbox">
             <label for="noaanavcharts"><input type="checkbox" id="noaanavcharts">NOAA Nav. Charts</label>
         </div>
         <div class="checkbox">
-            <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap"> Model Map</label>
+            <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap">Model Map</label>
         </div>
         <div class="checkbox">
-            <label for="spills"><input type="checkbox" checked="checked" id="spills"> Spills</label>
+            <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
         </div>
+        {% for (var i = 0; i < currents.length; i++){ %}
+            <div class="checkbox">
+                <label for="currents"><input type="checkbox" checked="checked" id="{{ i + 1 }}">Current #{{ i + 1 }}</label>
+            </div>
+        {% } %}
     </form>
 </div>
 

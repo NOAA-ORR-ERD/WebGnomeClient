@@ -147,10 +147,14 @@ define([
                 date = moment().format('M/DD/YYYY HH:mm');
             }
 
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+            });
+
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
-                var compiled = _.template(ControlsTemplate, {date: date});
+                var compiled = _.template(ControlsTemplate, {date: date, currents: currents});
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
