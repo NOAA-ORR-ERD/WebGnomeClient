@@ -21,6 +21,9 @@
                     {% for(c in categories){ %}
                         <div class="label label-warning">{{ categories[c] }}</div>
                     {% } %}
+                    {% if (categories.length === 0){ %}
+                        <div class="label label-warning">None</div>
+                    {% } %}
                 </div>
             </div>
         </div>
