@@ -14,8 +14,9 @@ define([
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
-    'model/outputters/geojson',
+    'model/outputters/trajectory',
     'model/outputters/weathering',
+    'model/outputters/current',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -26,7 +27,7 @@ define([
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover,
-    GeojsonOutputter, WeatheringOutputter,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -49,8 +50,9 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover
             },
             outputters: {
-                'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': GeojsonOutputter,
-                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
+                'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
+                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
+                'gnome.outputters.geo_json.CurrentGridGeoJsonOutput': CurrentOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -71,8 +73,9 @@ define([
                 duration: 86400,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
-                    new GeojsonOutputter(),
+                    new TrajectoryOutputter(),
                     new WeatheringOutputter(),
+                    new CurrentOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),
@@ -336,6 +339,27 @@ define([
                 });
             } else {
                 cb();
+            }
+        },
+
+        updateOutputters: function(cb){
+            // temp add first cats current to the current outputter
+            var current = this.get('movers').findWhere({
+                obj_type: 'gnome.movers.current_movers.CatsMover'
+            });
+
+            if(current){
+                var outputter = this.get('outputters').findWhere({
+                    obj_type: 'gnome.outputters.geo_json.CurrentGridGeoJsonOutput'
+                });
+                if(outputter){
+                    outputter.set('current_mover', current);
+                } else {
+                    outputter = new CurrentOutputter({current_mover: current});
+                    this.get('outputters').add(outputter);
+                }
+
+                this.save(null, {validate: false}).always(cb);
             }
         },
 

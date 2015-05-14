@@ -7,8 +7,7 @@ define([
     'views/modal/loading',
     'model/location',
     'model/gnome',
-    'model/outputters/geojson'
-], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel, GeojsonOutputter){
+], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
     var locationModal = FormModal.extend({
         className: 'modal fade form-modal location-form',
         size: 'lg',
@@ -26,8 +25,10 @@ define([
                         success: _.bind(function(){
                             webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    this.trigger('loaded');
-                                    this.loading = false;
+                                    webgnome.model.updateOutputters(_.bind(function(){
+                                        this.trigger('loaded');
+                                        this.loading = false;
+                                    }, this));
                                 }, this)
                             });
                         }, this)
