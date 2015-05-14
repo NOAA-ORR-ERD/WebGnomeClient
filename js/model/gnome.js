@@ -52,7 +52,7 @@ define([
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
-                'gnome.outputters.geo_json.CurrentGridGeoJsonOutput': CurrentOutputter
+                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -344,18 +344,18 @@ define([
 
         updateOutputters: function(cb){
             // temp add first cats current to the current outputter
-            var current = this.get('movers').findWhere({
+            var currents = this.get('movers').where({
                 obj_type: 'gnome.movers.current_movers.CatsMover'
             });
 
-            if(current){
+            if(currents.length > 0){
                 var outputter = this.get('outputters').findWhere({
-                    obj_type: 'gnome.outputters.geo_json.CurrentGridGeoJsonOutput'
+                    obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'
                 });
                 if(outputter){
-                    outputter.set('current_mover', current);
+                    outputter.get('current_movers').add(currents, {merge: true});
                 } else {
-                    outputter = new CurrentOutputter({current_mover: current});
+                    outputter = new CurrentOutputter({current_movers: currents});
                     this.get('outputters').add(outputter);
                 }
 

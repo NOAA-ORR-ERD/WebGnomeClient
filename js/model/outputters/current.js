@@ -8,17 +8,17 @@ define([
         urlRoot: '/outputter/',
 
         model: {
-            current_mover: CatsMover
-            // current_mover: {
-            //     'gnome.movers.current_movers.CatsMover': CatsMover
-            // }
+            current_mover: {
+                'gnome.movers.current_movers.CatsMover': CatsMover
+            }
         },
 
         defaults: {
-            'obj_type': 'gnome.outputters.geo_json.CurrentGridGeoJsonOutput',
+            'obj_type': 'gnome.outputters.geo_json.CurrentGeoJsonOutput',
             'name': 'Outputter',
             'output_last_step': 'true',
             'output_zero_step': 'true',
+            'current_movers' : new Backbone.Collection()
         },
 
         toTree: function(){
