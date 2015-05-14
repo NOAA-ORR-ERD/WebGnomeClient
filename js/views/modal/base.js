@@ -117,6 +117,9 @@ define([
         cancelByEsc: function(e){
             e.preventDefault();
             this.$('.cancel').click();
+            if (this.$('.cancel').length === 0){
+                this.$('.close').click();
+            }
         },
 
         updateTooltipWidth: function(){
