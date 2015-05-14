@@ -39,7 +39,8 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            'click .layers label': 'toggleLayers'
+            'click .layers label': 'toggleLayers',
+            'click .currents': 'toggleCurrents'
         },
 
         initialize: function(options){
@@ -435,6 +436,44 @@ define([
                     layer.setVisible(false);
                 }
             });
+        },
+
+        toggleCurrents: function(e){
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+            });
+            var currentId = this.$(e.currentTarget)[0].id;
+            var checked = this.$(e.currentTarget).is(':checked');
+            
+            if (checked){
+                currents[currentId - 1].getGrid(_.bind(function(geojson){
+                    if (geojson){
+                        var gridSource = new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            object: geojson
+                        });
+                        var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur; });
+
+                        var gridLayer = new ol.layer.Image({
+                            name: 'current' + currentId,
+                            id: currentId,
+                            source: new ol.source.ImageVector({
+                                source: gridSource,
+                                style: new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [171, 37, 184, 0.75],
+                                        width: 1
+                                    })
+                                })
+                            })
+                        });
+
+                        this.ol.map.addLayer(gridLayer);
+                    }
+                }, this));
+            } else {
+                console.log(this.ol.map.getLayers());
+            }
         },
 
         toggleSpill: function(e){
