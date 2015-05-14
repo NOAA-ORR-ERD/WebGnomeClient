@@ -8,14 +8,14 @@ define([
     'model/location',
     'model/environment/wind',
     'model/movers/wind',
-    'model/outputters/geojson',
+    'model/outputters/trajectory',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
     'views/modal/loading'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    GeojsonOutputter,
+    TrajectoryOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
     var locationWizardView = BaseWizard.extend({
         steps: [],

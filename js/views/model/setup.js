@@ -36,7 +36,7 @@ define([
     'views/form/response/disperse',
     'views/form/response/insituBurn',
     'views/form/response/skim',
-    'model/outputters/geojson',
+    'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
     'jqueryDatetimepicker',
@@ -52,7 +52,7 @@ define([
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-    GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
 
