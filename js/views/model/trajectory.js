@@ -135,6 +135,38 @@ define([
                     })];
                 }
             });
+
+            this.CurrentLayer = new ol.layer.Vector({
+                name: 'currents',
+                style: function(feature, resolution){
+                    var features = feature.get('features');
+
+                    var v_x = 0;
+                    var v_y = 0;
+                    for(var i = 0; i < features.length; i++){
+                        var f = features[i];
+                        var velocity = f.get('velocity');
+
+                        v_x += velocity[0];
+                        v_y += velocity[1];
+                    }
+
+                    v_x = v_x / features.length;
+                    v_y = v_y / features.length;
+
+                    var scale_factor = 2000;
+                    var coords = feature.getGeometry().getCoordinates();
+                    var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
+
+                    return [new ol.style.Style({
+                        geometry: new ol.geom.LineString([coords, shifted]),
+                        stroke: new ol.style.Stroke({
+                            color: [171, 37, 184, 0.75],
+                            width: 2
+                        })
+                    })];
+                }
+            });
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -182,6 +214,73 @@ define([
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
+        },
+
+        renderMap: function(){
+            // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
+            // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
+            // named modelmap
+            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
+                webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                    // the map isn't rendered yet, so draw it before adding the layer.
+                    // but don't draw it agian for a normal render if the map is undefined redraw it.
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
+                        this.ol.render();
+                        this.shorelineSource = new ol.source.GeoJSON({
+                            object: geojson,
+                            projection: 'EPSG:3857'
+                        });
+
+                        this.shorelineLayer = new ol.layer.Image({
+                            name: 'modelmap',
+                            source: new ol.source.ImageVector({
+                                source: this.shorelineSource,
+                                style: new ol.style.Style({
+                                    fill: new ol.style.Fill({
+                                        color: [228, 195, 140, 0.6]
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: [228, 195, 140, 0.75],
+                                        width: 1
+                                    })
+                                })
+                            }),
+                        });
+
+                        var extent = this.shorelineSource.getExtent();
+                        if(this.ol.map){
+                            this.ol.map.addLayer(this.shorelineLayer);
+                            this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
+                        }
+
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
+                        this.ol.map.addLayer(this.CurrentLayer);
+
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
+                }, this));
+            } else {
+                // if the model doens't have a renderable map yet just render the base layer
+                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
+                        this.ol.render();
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
+                }
+            }
         },
 
         toggle: function(){
@@ -308,13 +407,28 @@ define([
             }
 
             if(step){
-                var geo_source = new ol.source.GeoJSON({
+                var traj_source = new ol.source.GeoJSON({
                     object: step.get('TrajectoryGeoJsonOutput').feature_collection,
                     projection: 'EPSG:3857'
                 });
-                this.SpillLayer.setSource(geo_source);
 
-                this.controls.date.text(step.get('ts'));
+                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
+                var current = currents[_.keys(currents)[0]];
+
+                // var cur_source = new ol.source.GeoJSON({
+                //     object: current,
+                //     projection: 'EPSG:3857'
+                // });
+
+                // var cur_cluster = new ol.source.Cluster({
+                //     source: cur_source,
+                //     distance: 50
+                // });
+
+                // this.CurrentLayer.setSource(cur_cluster);
+                this.SpillLayer.setSource(traj_source);
+
+                this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
                 this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
                 if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
                     setTimeout(_.bind(function(){
@@ -344,72 +458,6 @@ define([
             Mousetrap.bind('space', _.bind(this.togglePlay, this));
             Mousetrap.bind('right', _.bind(this.next, this));
             Mousetrap.bind('left', _.bind(this.prev, this));
-        },
-
-        renderMap: function(){
-            // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
-            // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
-            // named modelmap
-            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
-                webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                    // the map isn't rendered yet, so draw it before adding the layer.
-                    // but don't draw it agian for a normal render if the map is undefined redraw it.
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
-                        this.ol.render();
-                        this.shorelineSource = new ol.source.GeoJSON({
-                            object: geojson,
-                            projection: 'EPSG:3857'
-                        });
-
-                        this.shorelineLayer = new ol.layer.Image({
-                            name: 'modelmap',
-                            source: new ol.source.ImageVector({
-                                source: this.shorelineSource,
-                                style: new ol.style.Style({
-                                    fill: new ol.style.Fill({
-                                        color: [228, 195, 140, 0.6]
-                                    }),
-                                    stroke: new ol.style.Stroke({
-                                        color: [228, 195, 140, 0.75],
-                                        width: 1
-                                    })
-                                })
-                            }),
-                        });
-
-                        var extent = this.shorelineSource.getExtent();
-                        if(this.ol.map){
-                            this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
-                        }
-
-                        this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillLayer);
-
-                        this.ol.map.on('pointermove', this.spillHover, this);
-                        this.ol.map.on('click', this.spillClick, this);
-                    }
-                    if(this.ol.redraw === false){
-                        this.renderSpills();
-                    }
-                }, this));
-            } else {
-                // if the model doens't have a renderable map yet just render the base layer
-                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
-                        this.ol.render();
-                        this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillLayer);
-                        this.ol.map.on('pointermove', this.spillHover, this);
-                        this.ol.map.on('click', this.spillClick, this);
-                    }
-                    if(this.ol.redraw === false){
-                        this.renderSpills();
-                    }
-                }
-            }
         },
 
         toggleLayers: function(event){
