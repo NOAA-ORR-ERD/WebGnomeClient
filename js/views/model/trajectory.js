@@ -444,17 +444,19 @@ define([
             });
             var currentId = this.$(e.currentTarget)[0].id;
             var checked = this.$(e.currentTarget).is(':checked');
+            var gridLayer;
             
             if (checked){
                 currents[currentId - 1].getGrid(_.bind(function(geojson){
                     if (geojson){
+                        console.log(geojson);
                         var gridSource = new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
                             object: geojson
                         });
                         var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur; });
 
-                        var gridLayer = new ol.layer.Image({
+                        gridLayer = new ol.layer.Image({
                             name: 'current' + currentId,
                             id: currentId,
                             source: new ol.source.ImageVector({
@@ -472,7 +474,7 @@ define([
                     }
                 }, this));
             } else {
-                console.log(this.ol.map.getLayers());
+                this.ol.map.removeLayer(gridLayer);
             }
         },
 
