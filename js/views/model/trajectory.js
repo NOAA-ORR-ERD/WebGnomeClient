@@ -39,7 +39,7 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            'click .layers label': 'toggleLayers',
+            'click .layers label:not(.curLabel)': 'toggleLayers',
             'click .currents': 'toggleCurrents'
         },
 
@@ -445,7 +445,6 @@ define([
             var currentId = this.$(e.currentTarget)[0].id;
             var checked = this.$(e.currentTarget).is(':checked');
             var gridLayer;
-            var deletedLayer;
 
             this.ol.map.getLayers().forEach(function(layer){
                 if (layer.get('id') === currentId){
@@ -475,14 +474,14 @@ define([
                                 })
                             })
                         });
-
-                        this.ol.map.addLayer(gridLayer);
+                        //this.ol.map.addLayer(gridLayer);
+                        var index = this.ol.map.getLayers().getArray().length - 1;
+                        this.ol.map.getLayers().insertAt(1, gridLayer);
                     }
                 }, this));
             } else if (!checked && !_.isUndefined(gridLayer)) {
                 this.ol.map.getLayers().forEach(_.bind(function(layer){
                     if (layer.get('id') === currentId){
-                        console.log('hide');
                         layer.setVisible(false);
                     }
                 }, this));
