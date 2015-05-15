@@ -445,11 +445,17 @@ define([
             var currentId = this.$(e.currentTarget)[0].id;
             var checked = this.$(e.currentTarget).is(':checked');
             var gridLayer;
+            var deletedLayer;
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === currentId){
+                    gridLayer = layer;
+                }
+            });
             
-            if (checked){
+            if (_.isUndefined(gridLayer)){
                 currents[currentId - 1].getGrid(_.bind(function(geojson){
                     if (geojson){
-                        console.log(geojson);
                         var gridSource = new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
                             object: geojson
@@ -473,8 +479,19 @@ define([
                         this.ol.map.addLayer(gridLayer);
                     }
                 }, this));
+            } else if (!checked && !_.isUndefined(gridLayer)) {
+                this.ol.map.getLayers().forEach(_.bind(function(layer){
+                    if (layer.get('id') === currentId){
+                        console.log('hide');
+                        layer.setVisible(false);
+                    }
+                }, this));
             } else {
-                this.ol.map.removeLayer(gridLayer);
+                this.ol.map.getLayers().forEach(function(layer){
+                    if (layer.get('id') === currentId){
+                        layer.setVisible(true);
+                    }
+                });
             }
         },
 
