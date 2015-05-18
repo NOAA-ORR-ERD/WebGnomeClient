@@ -39,7 +39,8 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            'click .layers label': 'toggleLayers'
+            'click .layers label:not(.curLabel)': 'toggleLayers',
+            'click .currents': 'toggleCurrents'
         },
 
         initialize: function(options){
@@ -436,7 +437,7 @@ define([
                     }, this), 60);
                 } else {
                     this.pause();
-                } 
+                }
             } else if (this.state == 'seek') {
                 this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
             }
@@ -479,10 +480,66 @@ define([
                     }
                 } else if (checked_layers.indexOf(layer.get('name')) !== -1){
                     layer.setVisible(true);
-                } else {
+                } else if (_.isUndefined(layer.get('id'))){
                     layer.setVisible(false);
                 }
             });
+        },
+
+        toggleCurrents: function(e){
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+            });
+            var id = this.$(e.currentTarget)[0].id;
+            var currentId = 'current' + id;
+            var checked = this.$(e.currentTarget).is(':checked');
+            var gridLayer;
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === currentId){
+                    gridLayer = layer;
+                }
+            });
+            
+            if (_.isUndefined(gridLayer)){
+                currents[id - 1].getGrid(_.bind(function(geojson){
+                    if (geojson){
+                        var gridSource = new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            object: geojson
+                        });
+                        var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur; });
+
+                        gridLayer = new ol.layer.Image({
+                            name: currentId,
+                            id: currentId,
+                            source: new ol.source.ImageVector({
+                                source: gridSource,
+                                style: new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [171, 37, 184, 0.75],
+                                        width: 1
+                                    })
+                                })
+                            })
+                        });
+                        var index = this.ol.map.getLayers().getArray().length - 1;
+                        this.ol.map.getLayers().insertAt(id, gridLayer);
+                    }
+                }, this));
+            } else if (!checked && !_.isUndefined(gridLayer)) {
+                this.ol.map.getLayers().forEach(_.bind(function(layer){
+                    if (layer.get('id') === currentId){
+                        layer.setVisible(false);
+                    }
+                }, this));
+            } else {
+                this.ol.map.getLayers().forEach(function(layer){
+                    if (layer.get('id') === currentId){
+                        layer.setVisible(true);
+                    }
+                });
+            }
         },
 
         toggleSpill: function(e){
