@@ -8,7 +8,7 @@ define([
         urlRoot: '/outputter/',
 
         model: {
-            current_mover: {
+            current_movers: {
                 'gnome.movers.current_movers.CatsMover': CatsMover
             }
         },
