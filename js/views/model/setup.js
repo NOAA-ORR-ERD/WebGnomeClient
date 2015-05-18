@@ -420,7 +420,7 @@ define([
                         }
                     }];
 
-                    if (ts.length > 50){
+                    if (ts.length > 24){
                         dataset[0].lines.show = true;
                     }
 
