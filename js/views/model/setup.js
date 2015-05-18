@@ -393,13 +393,15 @@ define([
                     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
+                    var raw_data = [];
                     var rate = Math.round(ts.length / 24);
                     
                     for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                         if(rate === 0 ||  entry % rate === 0){
-                            var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                             data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                         }
+                        raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                     }
 
                     var dataset = [{
@@ -421,7 +423,19 @@ define([
                     }];
 
                     if (ts.length > 24){
-                        dataset[0].lines.show = true;
+                        dataset.push({
+                            data: raw_data,
+                            color: 'rgba(151,187,205,1)',
+                            hoverable: true,
+                            shadowSize: 0,
+                            lines: {
+                                show: true,
+                                lineWidth: 2
+                            },
+                            direction: {
+                                show: false
+                            }
+                        });
                     }
 
                     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
