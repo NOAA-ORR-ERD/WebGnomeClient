@@ -39,8 +39,9 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            'click .layers label:not(.curLabel)': 'toggleLayers',
-            'click .currents': 'toggleCurrents'
+            'click .base input': 'toggleLayers',
+            'click .current-grid input': 'toggleCurrentGrid',
+            'click .current-uv input': 'toggleCurrentUV'
         },
 
         initialize: function(options){
@@ -486,33 +487,31 @@ define([
             });
         },
 
-        toggleCurrents: function(e){
+        toggleCurrentGrid: function(e){
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            var id = this.$(e.currentTarget).attr('data-id');
-            var currentId = 'current' + id;
+            var id = this.$(e.currentTarget).attr('id');
             var checked = this.$(e.currentTarget).is(':checked');
             var gridLayer;
 
             this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === currentId){
+                if (layer.get('id') === id){
                     gridLayer = layer;
                 }
             });
             
             if (_.isUndefined(gridLayer)){
-                currents[id - 1].getGrid(_.bind(function(geojson){
+                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+                current.getGrid(_.bind(function(geojson){
                     if (geojson){
                         var gridSource = new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
                             object: geojson
                         });
-                        var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur; });
 
                         gridLayer = new ol.layer.Image({
-                            name: currentId,
-                            id: currentId,
+                            id: id,
                             source: new ol.source.ImageVector({
                                 source: gridSource,
                                 style: new ol.style.Style({
@@ -528,17 +527,21 @@ define([
                 }, this));
             } else if (!checked && !_.isUndefined(gridLayer)) {
                 this.ol.map.getLayers().forEach(_.bind(function(layer){
-                    if (layer.get('id') === currentId){
+                    if (layer.get('id') === id){
                         layer.setVisible(false);
                     }
                 }, this));
             } else {
                 this.ol.map.getLayers().forEach(function(layer){
-                    if (layer.get('id') === currentId){
+                    if (layer.get('id') === id){
                         layer.setVisible(true);
                     }
                 });
             }
+        },
+
+        toggleCurrentUV: function(e){
+            
         },
 
         toggleSpill: function(e){

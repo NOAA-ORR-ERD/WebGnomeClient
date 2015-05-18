@@ -18,7 +18,8 @@ define([
             'name': 'Outputter',
             'output_last_step': 'true',
             'output_zero_step': 'true',
-            'current_movers' : new Backbone.Collection()
+            'current_movers' : new Backbone.Collection(),
+            'on': false
         },
 
         toTree: function(){
