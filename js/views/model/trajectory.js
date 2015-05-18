@@ -490,7 +490,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            var id = this.$(e.currentTarget)[0].id;
+            var id = this.$(e.currentTarget).attr('data-id');
             var currentId = 'current' + id;
             var checked = this.$(e.currentTarget).is(':checked');
             var gridLayer;
@@ -523,7 +523,6 @@ define([
                                 })
                             })
                         });
-                        var index = this.ol.map.getLayers().getArray().length - 1;
                         this.ol.map.getLayers().insertAt(id, gridLayer);
                     }
                 }, this));
