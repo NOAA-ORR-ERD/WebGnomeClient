@@ -523,7 +523,7 @@ define([
                                 })
                             })
                         });
-                        this.ol.map.getLayers().insertAt(id, gridLayer);
+                        this.ol.map.getLayers().insertAt(3, gridLayer);
                     }
                 }, this));
             } else if (!checked && !_.isUndefined(gridLayer)) {
