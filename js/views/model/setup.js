@@ -420,6 +420,10 @@ define([
                         }
                     }];
 
+                    if (ts.length > 50){
+                        dataset[0].lines.show = true;
+                    }
+
                     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
                 }
                 this.$('.wind .panel-body').html(compiled);
