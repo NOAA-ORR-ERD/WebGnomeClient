@@ -73,7 +73,8 @@ define([
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new cls(data, {parse: true, silent: true});
+            var obj = new cls();
+            obj.set(obj.parse(data), {silent: true});
             webgnome.obj_ref[data.id] = obj;
             return obj;
         }
