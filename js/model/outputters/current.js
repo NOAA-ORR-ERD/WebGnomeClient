@@ -13,13 +13,15 @@ define([
             }
         },
 
-        defaults: {
-            'obj_type': 'gnome.outputters.geo_json.CurrentGeoJsonOutput',
-            'name': 'Outputter',
-            'output_last_step': 'true',
-            'output_zero_step': 'true',
-            'current_movers' : new Backbone.Collection(),
-            'on': false
+        defaults: function(){
+            return {
+                obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput',
+                name: 'Outputter',
+                output_last_step: 'true',
+                output_zero_step: 'true',
+                current_movers : new Backbone.Collection(),
+                on: false
+            };
         },
 
         toTree: function(){
