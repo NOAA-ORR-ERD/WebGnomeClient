@@ -181,14 +181,22 @@ define([
                 date = moment().format('M/DD/YYYY HH:mm');
             }
 
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
-            });
-
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
-                var compiled = _.template(ControlsTemplate, {date: date, currents: currents});
+                var currents = webgnome.model.get('movers').filter(function(mover){
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                });
+                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+                var active_currents = [];
+                if(current_outputter.get('on')){
+                    current_outputter.get('current_movers').forEach(function(mover){
+                        active_currents.push(mover.get('id'));
+                    });
+                }
+                this.checked_currents = active_currents;
+
+                var compiled = _.template(ControlsTemplate, {date: date, currents: currents, active_currents: active_currents});
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
@@ -413,22 +421,39 @@ define([
                     object: step.get('TrajectoryGeoJsonOutput').feature_collection,
                     projection: 'EPSG:3857'
                 });
-
-                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
-                var current = currents[_.keys(currents)[0]];
-
-                // var cur_source = new ol.source.GeoJSON({
-                //     object: current,
-                //     projection: 'EPSG:3857'
-                // });
-
-                // var cur_cluster = new ol.source.Cluster({
-                //     source: cur_source,
-                //     distance: 50
-                // });
-
-                // this.CurrentLayer.setSource(cur_cluster);
                 this.SpillLayer.setSource(traj_source);
+
+                var features = [];
+                if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
+                    var currents = step.get('CurrentGeoJsonOutput').feature_collections;
+                    for(var i = 0; i < this.checked_currents.length; i++){
+                        var id = this.checked_currents[i];
+                        if(_.has(currents, id)){
+                            for (var c = 0; c < currents[id].features.length; c++){
+                                var coords = currents[id].features[c].geometry.coordinates;
+                                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                                var velocity = currents[id].features[c].properties.velocity;
+                                var f = new ol.Feature({
+                                    geometry: new ol.geom.Point(coords)
+                                });
+                                f.set('velocity', velocity);
+
+                                features.push(f);
+                            }
+                        }
+                    }
+                }
+
+                var cur_source = new ol.source.Vector({
+                    features: features,
+                });
+
+                var cur_cluster = new ol.source.Cluster({
+                    source: cur_source,
+                });
+
+                this.CurrentLayer.setSource(cur_cluster);
+
 
                 this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
                 this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
@@ -479,7 +504,7 @@ define([
                     } else {
                         layer.setVisible(false);
                     }
-                } else if (checked_layers.indexOf(layer.get('name')) !== -1){
+                } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
                     layer.setVisible(true);
                 } else if (_.isUndefined(layer.get('id'))){
                     layer.setVisible(false);
@@ -541,7 +566,17 @@ define([
         },
 
         toggleCurrentUV: function(e){
-            
+            var checked = this.$('.current-uv input:checked');
+            if (checked.length > 0){
+                webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).set('on', true).save();
+                this.checked_currents = [];
+                this.$('.current-uv input:checked').each(_.bind(function(i, input){
+                    this.checked_currents.push(input.id.replace('uv-', ''));
+                }, this));
+            } else {
+                this.checked_currents = [];
+                webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).set('on', false).save();
+            }
         },
 
         toggleSpill: function(e){
