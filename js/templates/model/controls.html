@@ -10,7 +10,7 @@
 
 <div class="layers">
     <div class="title">Layers</div>
-    <form role="form" class="form-horizontal">
+    <form role="form" class="form-horizontal base">
         <div class="radio">
             <label for="mapquest"><input type="radio" id="mapquest" name="maplayer" checked="checked">Mapquest Map</label>
         </div>
@@ -18,7 +18,8 @@
             <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer">USGS Base Map</label>
         </div>
     </form>
-    <form role="form" class="form-horizontal checkboxes">
+
+    <form role="form" class="form-horizontal checkboxes base">
         <div class="checkbox">
             <label for="basemap"><input type="checkbox" id="basemap">Base Map</label>
         </div>
@@ -31,11 +32,34 @@
         <div class="checkbox">
             <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
         </div>
-        {% for (var i = 0; i < currents.length; i++){ %}
-            <div class="checkbox">
-                <label for="{{ 'currents' + i }}" class="curLabel"><input type="checkbox" class="currents" id="{{ 'currents' + i }}" data-id="{{ i + 1 }}">Current #{{ i + 1 }}</label>
-            </div>
-        {% } %}
+    </form>
+
+    <form role="form" class="form-horizontal checkboxes current-grid">
+        <strong>Current Grid</strong>
+        <div class="inner">
+            {% for (var i = 0; i < currents.length; i++){ %}
+                <div class="checkbox">
+                    <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
+                        <input type="checkbox" class="currents" id="grid-{{ currents[i].get('id') }}">
+                        {{ currents[i].get('name') }}
+                    </label>
+                </div>
+            {% } %}
+        </div>
+    </form>
+
+    <form role="form" class="form-horizontal checkboxes current-uv">
+        <strong>Current Speed &amp; Direction</strong>
+        <div class="inner">
+            {% for (var i = 0; i < currents.length; i++){ %}
+                <div class="checkbox">
+                    <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
+                        <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
+                        {{ currents[i].get('name') }}
+                    </label>
+                </div>
+            {% } %}
+        </div>
     </form>
 </div>
 

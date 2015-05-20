@@ -39,8 +39,9 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            'click .layers label:not(.curLabel)': 'toggleLayers',
-            'click .currents': 'toggleCurrents'
+            'click .base input': 'toggleLayers',
+            'click .current-grid input': 'toggleCurrentGrid',
+            'click .current-uv input': 'toggleCurrentUV'
         },
 
         initialize: function(options){
@@ -180,14 +181,22 @@ define([
                 date = moment().format('M/DD/YYYY HH:mm');
             }
 
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
-            });
-
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
-                var compiled = _.template(ControlsTemplate, {date: date, currents: currents});
+                var currents = webgnome.model.get('movers').filter(function(mover){
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                });
+                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+                var active_currents = [];
+                if(current_outputter.get('on')){
+                    current_outputter.get('current_movers').forEach(function(mover){
+                        active_currents.push(mover.get('id'));
+                    });
+                }
+
+                this.checked_currents = active_currents;
+                var compiled = _.template(ControlsTemplate, {date: date, currents: currents, active_currents: active_currents});
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
@@ -208,6 +217,7 @@ define([
             }
 
             this.contextualize();
+
             if(localStorage.getItem('advanced') === 'true'){
                 this.toggle();
             }
@@ -412,22 +422,39 @@ define([
                     object: step.get('TrajectoryGeoJsonOutput').feature_collection,
                     projection: 'EPSG:3857'
                 });
-
-                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
-                var current = currents[_.keys(currents)[0]];
-
-                // var cur_source = new ol.source.GeoJSON({
-                //     object: current,
-                //     projection: 'EPSG:3857'
-                // });
-
-                // var cur_cluster = new ol.source.Cluster({
-                //     source: cur_source,
-                //     distance: 50
-                // });
-
-                // this.CurrentLayer.setSource(cur_cluster);
                 this.SpillLayer.setSource(traj_source);
+
+                var features = [];
+                if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
+                    var currents = step.get('CurrentGeoJsonOutput').feature_collections;
+                    for(var i = 0; i < this.checked_currents.length; i++){
+                        var id = this.checked_currents[i];
+                        if(_.has(currents, id)){
+                            for (var c = 0; c < currents[id].features.length; c++){
+                                var coords = currents[id].features[c].geometry.coordinates;
+                                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                                var velocity = currents[id].features[c].properties.velocity;
+                                var f = new ol.Feature({
+                                    geometry: new ol.geom.Point(coords)
+                                });
+                                f.set('velocity', velocity);
+
+                                features.push(f);
+                            }
+                        }
+                    }
+                }
+
+                var cur_source = new ol.source.Vector({
+                    features: features,
+                });
+
+                var cur_cluster = new ol.source.Cluster({
+                    source: cur_source,
+                });
+
+                this.CurrentLayer.setSource(cur_cluster);
+
 
                 this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
                 this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
@@ -478,7 +505,7 @@ define([
                     } else {
                         layer.setVisible(false);
                     }
-                } else if (checked_layers.indexOf(layer.get('name')) !== -1){
+                } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
                     layer.setVisible(true);
                 } else if (_.isUndefined(layer.get('id'))){
                     layer.setVisible(false);
@@ -486,33 +513,31 @@ define([
             });
         },
 
-        toggleCurrents: function(e){
+        toggleCurrentGrid: function(e){
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
             });
-            var id = this.$(e.currentTarget).attr('data-id');
-            var currentId = 'current' + id;
+            var id = this.$(e.currentTarget).attr('id');
             var checked = this.$(e.currentTarget).is(':checked');
             var gridLayer;
 
             this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === currentId){
+                if (layer.get('id') === id){
                     gridLayer = layer;
                 }
             });
             
             if (_.isUndefined(gridLayer)){
-                currents[id - 1].getGrid(_.bind(function(geojson){
+                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+                current.getGrid(_.bind(function(geojson){
                     if (geojson){
                         var gridSource = new ol.source.GeoJSON({
                             projection: 'EPSG:3857',
                             object: geojson
                         });
-                        var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur; });
 
                         gridLayer = new ol.layer.Image({
-                            name: currentId,
-                            id: currentId,
+                            id: id,
                             source: new ol.source.ImageVector({
                                 source: gridSource,
                                 style: new ol.style.Style({
@@ -528,17 +553,39 @@ define([
                 }, this));
             } else if (!checked && !_.isUndefined(gridLayer)) {
                 this.ol.map.getLayers().forEach(_.bind(function(layer){
-                    if (layer.get('id') === currentId){
+                    if (layer.get('id') === id){
                         layer.setVisible(false);
                     }
                 }, this));
             } else {
                 this.ol.map.getLayers().forEach(function(layer){
-                    if (layer.get('id') === currentId){
+                    if (layer.get('id') === id){
                         layer.setVisible(true);
                     }
                 });
             }
+        },
+
+        toggleCurrentUV: function(e){
+            var checked = this.$('.current-uv input:checked');
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+
+            if (checked.length > 0){
+                current_outputter.get('current_movers').reset();
+                this.checked_currents = [];
+
+                this.$('.current-uv input:checked').each(_.bind(function(i, input){
+                    var id = input.id.replace('uv-', '');
+                    var current = webgnome.model.get('movers').get(id);
+                    this.checked_currents.push(id);
+                    current_outputter.get('current_movers').add(current);
+                }, this));
+            } else {
+                current_outputter.get('current_movers').reset();
+                this.checked_currents = [];
+            }
+            
+            current_outputter.save();
         },
 
         toggleSpill: function(e){
