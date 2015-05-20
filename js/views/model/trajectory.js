@@ -187,16 +187,8 @@ define([
                 var currents = webgnome.model.get('movers').filter(function(mover){
                     return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
                 });
-                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
-                var active_currents = [];
-                if(current_outputter.get('on')){
-                    current_outputter.get('current_movers').forEach(function(mover){
-                        active_currents.push(mover.get('id'));
-                    });
-                }
-                this.checked_currents = active_currents;
 
-                var compiled = _.template(ControlsTemplate, {date: date, currents: currents, active_currents: active_currents});
+                var compiled = _.template(ControlsTemplate, {date: date, currents: currents});
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
@@ -217,6 +209,8 @@ define([
             }
 
             this.contextualize();
+            this.toggleCurrentUV();
+
             if(localStorage.getItem('advanced') === 'true'){
                 this.toggle();
             }
