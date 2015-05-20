@@ -425,8 +425,6 @@ define([
                     if (hit){
                         var selection = map.getTarget();
                         this.$(selection).css('cursor', 'not-allowed');
-                        console.log('hit');
-                        //map.getTarget().style.cursor = 'not-allowed';
                     }
                 }, this));
                 draw.on('drawstart', _.bind(function(e){
