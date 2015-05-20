@@ -25,10 +25,8 @@ define([
                         success: _.bind(function(){
                             webgnome.model.fetch({
                                 success: _.bind(function(){
-                                    webgnome.model.updateOutputters(_.bind(function(){
-                                        this.trigger('loaded');
-                                        this.loading = false;
-                                    }, this));
+                                    this.trigger('loaded');
+                                    this.loading = false;
                                 }, this)
                             });
                         }, this)

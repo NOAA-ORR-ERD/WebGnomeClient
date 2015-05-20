@@ -20,7 +20,7 @@ define([
                 output_last_step: 'true',
                 output_zero_step: 'true',
                 current_movers : new Backbone.Collection(),
-                on: false
+                on: true
             };
         },
 

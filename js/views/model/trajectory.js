@@ -187,8 +187,16 @@ define([
                 var currents = webgnome.model.get('movers').filter(function(mover){
                     return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
                 });
+                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+                var active_currents = [];
+                if(current_outputter.get('on')){
+                    current_outputter.get('current_movers').forEach(function(mover){
+                        active_currents.push(mover.get('id'));
+                    });
+                }
 
-                var compiled = _.template(ControlsTemplate, {date: date, currents: currents});
+                this.checked_currents = active_currents;
+                var compiled = _.template(ControlsTemplate, {date: date, currents: currents, active_currents: active_currents});
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
@@ -209,7 +217,6 @@ define([
             }
 
             this.contextualize();
-            this.toggleCurrentUV();
 
             if(localStorage.getItem('advanced') === 'true'){
                 this.toggle();
@@ -561,16 +568,24 @@ define([
 
         toggleCurrentUV: function(e){
             var checked = this.$('.current-uv input:checked');
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+
             if (checked.length > 0){
-                webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).set('on', true).save();
+                current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
+
                 this.$('.current-uv input:checked').each(_.bind(function(i, input){
-                    this.checked_currents.push(input.id.replace('uv-', ''));
+                    var id = input.id.replace('uv-', '');
+                    var current = webgnome.model.get('movers').get(id);
+                    this.checked_currents.push(id);
+                    current_outputter.get('current_movers').add(current);
                 }, this));
             } else {
+                current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
-                webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).set('on', false).save();
             }
+            
+            current_outputter.save();
         },
 
         toggleSpill: function(e){

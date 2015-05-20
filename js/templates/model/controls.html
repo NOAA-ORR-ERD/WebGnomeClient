@@ -54,7 +54,7 @@
             {% for (var i = 0; i < currents.length; i++){ %}
                 <div class="checkbox">
                     <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
-                        <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}">
+                        <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
                         {{ currents[i].get('name') }}
                     </label>
                 </div>
