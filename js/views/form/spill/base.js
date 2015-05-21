@@ -422,11 +422,12 @@ define([
                             return feature;
                         }
                     });
-                    console.log(this.spillMapView.$el);
                     if (!_.isUndefined(feature)){
                         this.$el.css('cursor', 'not-allowed');
+                        draw.setActive(false);
                     } else {
                         this.$el.css('cursor', '');
+                        draw.setActive(true);
                     }
                 }, this));
                 draw.on('drawstart', _.bind(function(e){
