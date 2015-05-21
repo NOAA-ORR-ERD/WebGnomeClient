@@ -160,8 +160,36 @@ define([
                     var coords = feature.getGeometry().getCoordinates();
                     var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
 
+                    // find the angle between the two points
+                    var x = shifted[0] - coords[0];
+                    var y = shifted[1] - coords[1];
+
+                    var rad;
+                    if(x === 0 ){
+                        rad = Math.PI / 2;
+                    } else {
+                        rad = Math.atan(Math.abs(y/x));
+                    }
+
+                    if(x < 0 && y > 0){
+                        rad = Math.PI - rad;
+                    } else if(x < 0 && y < 0){
+                        rad = Math.PI + rad;
+                    } else if(x > 0 && y < 0){
+                        rad = (2 * Math.PI) - rad;
+                    }
+
+                    var len = -250;
+                    var rad_right = 0.785398163; //3.92699082;
+                    var rad_left = 0.785398163;
+
+                    var arr_left = rad - rad_left;
+                    arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
+                    var arr_right = rad + rad_right;
+                    arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
+
                     return [new ol.style.Style({
-                        geometry: new ol.geom.LineString([coords, shifted]),
+                        geometry: new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]),
                         stroke: new ol.style.Stroke({
                             color: [171, 37, 184, 0.75],
                             width: 2
@@ -584,7 +612,7 @@ define([
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
             }
-            
+
             current_outputter.save();
         },
 
