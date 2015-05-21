@@ -417,14 +417,16 @@ define([
                 var map = this.spillMapView.map;
                 this.$(map.getViewport()).on('mousemove', _.bind(function(e){
                     var pixel = map.getEventPixel(e.originalEvent);
-                    var hit = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                        if (!_.isNull(layer.get('name')) && layer.get('name') === 'shoreline'){
-                            return true;
+                    var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                        if (feature.get('name') === 'Shoreline'){
+                            return feature;
                         }
                     });
-                    if (hit){
-                        var selection = map.getTarget();
-                        this.$(selection).css('cursor', 'not-allowed');
+                    console.log(this.spillMapView.$el);
+                    if (!_.isUndefined(feature)){
+                        this.$el.css('cursor', 'not-allowed');
+                    } else {
+                        this.$el.css('cursor', '');
                     }
                 }, this));
                 draw.on('drawstart', _.bind(function(e){
