@@ -414,6 +414,22 @@ define([
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
+                var map = this.spillMapView.map;
+                this.$(map.getViewport()).on('mousemove', _.bind(function(e){
+                    var pixel = map.getEventPixel(e.originalEvent);
+                    var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                        if (feature.get('name') === 'Shoreline'){
+                            return feature;
+                        }
+                    });
+                    if (!_.isUndefined(feature)){
+                        this.$el.css('cursor', 'not-allowed');
+                        draw.setActive(false);
+                    } else {
+                        this.$el.css('cursor', '');
+                        draw.setActive(true);
+                    }
+                }, this));
                 draw.on('drawend', _.bind(function(e){
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (this.source.getFeatures().length > 1){
@@ -507,6 +523,7 @@ define([
                         });
                         var extent = this.shorelineSource.getExtent();
                         this.shorelineLayer = new ol.layer.Vector({
+                            name: 'shoreline',
                             source: this.shorelineSource,
                             style: new ol.style.Style({
                                 fill: new ol.style.Fill({
@@ -523,6 +540,7 @@ define([
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
                             this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
                         }
+                        
 
                     }, this));
                 }
