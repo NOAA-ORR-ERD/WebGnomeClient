@@ -430,9 +430,6 @@ define([
                         draw.setActive(true);
                     }
                 }, this));
-                draw.on('drawstart', _.bind(function(e){
-
-                }, this));
                 draw.on('drawend', _.bind(function(e){
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (this.source.getFeatures().length > 1){
