@@ -14,9 +14,11 @@ define([
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
+    'model/movers/ice',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
+    'model/outputters/ice',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -26,8 +28,8 @@ define([
     'model/weatherers/manual_beaching'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter,
+    WindMover, RandomMover, CatsMover, IceMover,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer){
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -47,12 +49,14 @@ define([
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
-                'gnome.movers.current_movers.CatsMover': CatsMover
+                'gnome.movers.current_movers.CatsMover': CatsMover,
+                'gnome.movers.current_movers.IceMover': IceMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
-                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter
+                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
+                'gnome.outputters.geo_json.IceGeoJsonOutput': IceOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -75,7 +79,8 @@ define([
                 outputters: new Backbone.Collection([
                     new TrajectoryOutputter(),
                     new WeatheringOutputter(),
-                    new CurrentOutputter()
+                    new CurrentOutputter(),
+                    new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),

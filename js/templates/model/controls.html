@@ -61,6 +61,36 @@
             {% } %}
         </div>
     </form>
+    
+    {% if(ice.length > 0){ %}
+        <form role="form" class="form-horizontal checkboxes ice-grid">
+            <strong>Ice Grid</strong>
+            <div class="inner">
+                {% for (var i = 0; i < ice.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="grid-{{ ice[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="ice" id="grid-{{ ice[i].get('id') }}">
+                            {{ ice[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+
+        <form role="form" class="form-horizontal checkboxes ice-uv">
+            <strong>Ice Data</strong>
+            <div class="inner">
+                {% for (var i = 0; i < ice.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="uv-{{ ice[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="ice" id="uv-{{ ice[i].get('id') }}" {{ active_currents.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
+                            {{ ice[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+    {% } %}
 </div>
 
 <div class="spill-button ol-control">
