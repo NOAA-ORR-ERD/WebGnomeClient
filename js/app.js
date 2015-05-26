@@ -141,7 +141,9 @@ define([
                         
                     } else if (_.isObject(el) && !_.isArray(el) && !_.isUndefined(el.obj_type)) {
                         // child collection/array of children or single child object
-                        children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                        if(_.has(el, 'toTree')){
+                            children.push({title: key + ':', children: el.toTree(), expanded: true, obj_type: el.get('obj_type'), action: 'new'});
+                        }
                     } else if (_.isArray(el)){
                         var arrayOfStrings = [];
                         for (var i = 0; i < el.length; i++){
