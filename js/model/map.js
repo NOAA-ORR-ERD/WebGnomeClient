@@ -64,7 +64,13 @@ define([
         },
 
         getExtent: function(){
-            return ol.extent.boundingExtent(this.get('map_bounds'));
+            var boundingExtent;
+            if (!_.isUndefined(this.get('spillable_area'))){
+                boundingExtent = ol.extent.boundingExtent(this.get('spillable_area'));
+            } else {
+                boundingExtent = ol.extent.boundingExtent(this.get('map_bounds'));
+            }
+            return boundingExtent;
         }
     });
 
