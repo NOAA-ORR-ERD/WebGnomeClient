@@ -3,10 +3,11 @@ define([
     'underscore',
     'backbone',
     'dropzone',
+    'sweetalert',
     'model/gnome',
     'text!templates/default/load.html',
     'text!templates/default/dropzone.html'
-], function($, _, Backbone, Dropzone, GnomeModel, LoadTemplate, DropzoneTemplate){
+], function($, _, Backbone, Dropzone, swal, GnomeModel, LoadTemplate, DropzoneTemplate){
     var loadView = Backbone.View.extend({
         className: 'page load',
         initialize: function(){
@@ -53,14 +54,91 @@ define([
             }
         },
 
+        modelHasWeatherers: function(model){
+            var weatherers = model.get('weatherers');
+            var weathererKeys = Object.keys(webgnome.model.model.weatherers);
+            var invalidWeatherers = [];
+
+            for (var i = weathererKeys.length - 1; i >= 0; i--){
+                if (weathererKeys[i].indexOf('cleanup') !== -1 || weathererKeys[i].indexOf('beaching') !== -1){
+                    weathererKeys.splice(i, 1);
+                }
+            }
+
+            for (var j = 0; j < weathererKeys.length; j++){
+                var weathererExists = weatherers.findWhere({'obj_type': weathererKeys[j]});
+                if (!weathererExists){
+                    invalidWeatherers.push(weathererKeys[j]);
+                }
+            }
+            return invalidWeatherers;
+        },
+
+        modelHasOutputters: function(model){
+            var outputters = model.get('outputters');
+            var outputterKeys = Object.keys(webgnome.model.model.outputters);
+            var invalidOutputters = [];
+
+            for (var i = 0; i < outputterKeys.length; i++){
+                var outputterExists = outputters.findWhere({'obj_type': outputterKeys[i]});
+                if (!outputterExists){
+                    invalidOutputters.push(outputterKeys[i]);
+                }
+            }
+            return invalidOutputters;
+        },
+
         loaded: function(){
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
-                success: function(model, response, options){
-                    console.log(model);
-                    localStorage.setItem('prediction', 'both');
-                    webgnome.router.navigate('config', true);
-                }
+                success: _.bind(function(model, response, options){
+                    var map = model.get('map');
+                    var spills = model.get('spills').models;
+                    var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+
+                    var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
+                    var spillGeo = true;
+                    for (var i = 0; i < spills.length; i++){
+                        if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0){
+                            spillGeo = false;
+                            break;
+                        }
+                    }
+                    if (!locationExists && !spillGeo){
+                        localStorage.setItem('prediction', 'fate');
+                    } else if (_.isUndefined(water) && locationExists){
+                        localStorage.setItem('prediction', 'trajectory');
+                    } else {
+                        localStorage.setItem('prediction', 'both');
+                    }
+
+                    var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
+
+                    var neededModelsStr = '';
+
+                    for (var i = 0; i < neededModels.length; i++){
+                        neededModelsStr += neededModels[i] + '\n';
+                    }
+
+                    console.log(neededModels.length);
+
+                    if (neededModels.length > 0){
+                        swal({
+                            html: true,
+                            title: 'Model Compliance',
+                            text: 'The model you loaded is not compliant with the web environment. The models listed below need to be added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
+                            type: 'warning',
+                            closeOnConfirm: true,
+                            confirmButtonText: 'Ok'
+                        }, function(isConfirm){
+                            if (isConfirm){
+                                webgnome.router.navigate('config', true);
+                            }
+                        });
+                    } else {
+                        webgnome.router.navigate('config', true);
+                    }
+                }, this)
             });
         },
 
