@@ -56,7 +56,8 @@ define([
         loaded: function(){
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
-                success: function(){
+                success: function(model, response, options){
+                    //console.log(model);
                     localStorage.setItem('prediction', 'both');
                     webgnome.router.navigate('config', true);
                 }

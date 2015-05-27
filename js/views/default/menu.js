@@ -25,6 +25,7 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
+            webgnome.model.on('change', this.contextualize, this);
         },
 
         events: {
