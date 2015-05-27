@@ -200,7 +200,7 @@ define([
                 }
             });
 
-            this.IceLayer = new ol.layer.Heatmap();
+            this.IceLayer = new ol.layer.Image();
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -319,6 +319,7 @@ define([
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
                         this.ol.map.addLayer(this.CurrentLayer);
+                        this.ol.map.addLayer(this.IceLayer);
 
                         this.ol.map.on('pointermove', this.spillHover, this);
                         this.ol.map.on('click', this.spillClick, this);
@@ -528,21 +529,48 @@ define([
             this.CurrentLayer.setSource(cur_cluster);
         },
 
-        renderIce: function(){
+        renderIce: function(step){
             var ice_features = [];
             if(step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
-                var ice = step.geT('IceGeoJsonOutput').feature_collections;
+                var ice = step.get('IceGeoJsonOutput').feature_collections;
                 for(var t = 0; t < this.checked_ice.length; t++){
                     var id = this.checked_ice[t];
                     if(_.has(ice, id)){
-                        for(var r = 0; r < currents[id].features.length; r++){
-                            var coords = currents[id].features[r].geometry.coordinates;
-                            coords = ol.proj.tranform(coords, 'EPSG:4326', 'EPSG:3857');
-                            var properties = currents[id].features[r].properties;
+                        for(var r = 0; r < ice[id].features.length; r++){
+                            var coords = ice[id].features[r].geometry.coordinates;
+                            var poly = new ol.geom.Polygon(coords);
+                            poly.transform('EPSG:4326', 'EPSG:3857');
+                            var properties = {
+                                coverage: ice[id].features[r].properties.coverage,
+                                weight: ice[id].features[r].properties.coverage / 100,
+                                concentration: ice[id].features[r].properties.thickness,
+                                geometry: poly
+                            };
+                            
+                            var f = new ol.Feature(properties);
+                            ice_features.push(f);
                         }
                     }
                 }
             }
+            var ice_source = new ol.source.Vector({
+                features: ice_features
+            });
+
+            var ice_image = new ol.source.ImageVector({
+                source: ice_source,
+                style: function(feature, resolution){
+                    var cov = feature.get('coverage');
+                    var alpha = parseFloat(cov) / 10;
+                    return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(36, 36, 227,' + alpha + ')'
+                        })
+                    })];
+                }
+            });
+
+            this.IceLayer.setSource(ice_image);
         },
 
         disableUI: function(){
@@ -721,7 +749,7 @@ define([
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
 
             if (checked.length > 0){
-                current_outputter.get('current_movers').reset();
+                current_outputter.get('ice_movers').reset();
                 this.checked_ice = [];
 
                 this.$('.ice-uv input:checked').each(_.bind(function(i, input){
