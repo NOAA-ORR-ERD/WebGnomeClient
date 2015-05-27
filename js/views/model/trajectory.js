@@ -41,7 +41,9 @@ define([
             'slidestop .seek > div': 'blur',
             'click .base input': 'toggleLayers',
             'click .current-grid input': 'toggleCurrentGrid',
-            'click .current-uv input': 'toggleCurrentUV'
+            'click .current-uv input': 'toggleCurrentUV',
+            'click .ice-grid input': 'toggleIceGrid',
+            'click .ice-uv input': 'toggleIceUV'
         },
 
         initialize: function(options){
@@ -197,6 +199,8 @@ define([
                     })];
                 }
             });
+
+            this.IceLayer = new ol.layer.Heatmap();
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -222,9 +226,28 @@ define([
                         active_currents.push(mover.get('id'));
                     });
                 }
-
                 this.checked_currents = active_currents;
-                var compiled = _.template(ControlsTemplate, {date: date, currents: currents, active_currents: active_currents});
+
+
+                var ice = webgnome.model.get('movers').filter(function(mover){
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+                });
+                var ice_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+                var active_ice = [];
+                if(ice_outputter.get('on')){
+                    ice_outputter.get('ice_movers').forEach(function(mover){
+                        active_ice.push(mover.get('id'));
+                    });
+                }
+                this.checked_ice = active_ice;
+
+                var compiled = _.template(ControlsTemplate, {
+                    date: date,
+                    currents: currents,
+                    active_currents: active_currents,
+                    ice: ice,
+                    active_ice: active_ice
+                });
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
@@ -446,43 +469,9 @@ define([
             }
 
             if(step){
-                var traj_source = new ol.source.GeoJSON({
-                    object: step.get('TrajectoryGeoJsonOutput').feature_collection,
-                    projection: 'EPSG:3857'
-                });
-                this.SpillLayer.setSource(traj_source);
-
-                var features = [];
-                if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
-                    var currents = step.get('CurrentGeoJsonOutput').feature_collections;
-                    for(var i = 0; i < this.checked_currents.length; i++){
-                        var id = this.checked_currents[i];
-                        if(_.has(currents, id)){
-                            for (var c = 0; c < currents[id].features.length; c++){
-                                var coords = currents[id].features[c].geometry.coordinates;
-                                coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-                                var velocity = currents[id].features[c].properties.velocity;
-                                var f = new ol.Feature({
-                                    geometry: new ol.geom.Point(coords)
-                                });
-                                f.set('velocity', velocity);
-
-                                features.push(f);
-                            }
-                        }
-                    }
-                }
-
-                var cur_source = new ol.source.Vector({
-                    features: features,
-                });
-
-                var cur_cluster = new ol.source.Cluster({
-                    source: cur_source,
-                });
-
-                this.CurrentLayer.setSource(cur_cluster);
-
+                this.renderSpill(step);
+                this.renderCurrent(step);
+                this.renderIce(step);
 
                 this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
                 this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
@@ -495,6 +484,64 @@ define([
                 }
             } else if (this.state == 'seek') {
                 this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+            }
+        },
+
+        renderSpill: function(step){
+            var traj_source = new ol.source.GeoJSON({
+                object: step.get('TrajectoryGeoJsonOutput').feature_collection,
+                projection: 'EPSG:3857'
+            });
+            this.SpillLayer.setSource(traj_source);
+        },
+
+        renderCurrent: function(step){
+            var current_features = [];
+            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
+                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
+                for(var i = 0; i < this.checked_currents.length; i++){
+                    var id = this.checked_currents[i];
+                    if(_.has(currents, id)){
+                        for (var c = 0; c < currents[id].features.length; c++){
+                            var coords = currents[id].features[c].geometry.coordinates;
+                            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                            var velocity = currents[id].features[c].properties.velocity;
+                            var f = new ol.Feature({
+                                geometry: new ol.geom.Point(coords)
+                            });
+                            f.set('velocity', velocity);
+
+                            current_features.push(f);
+                        }
+                    }
+                }
+            }
+
+            var cur_source = new ol.source.Vector({
+                features: current_features,
+            });
+
+            var cur_cluster = new ol.source.Cluster({
+                source: cur_source,
+            });
+
+            this.CurrentLayer.setSource(cur_cluster);
+        },
+
+        renderIce: function(){
+            var ice_features = [];
+            if(step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
+                var ice = step.geT('IceGeoJsonOutput').feature_collections;
+                for(var t = 0; t < this.checked_ice.length; t++){
+                    var id = this.checked_ice[t];
+                    if(_.has(ice, id)){
+                        for(var r = 0; r < currents[id].features.length; r++){
+                            var coords = currents[id].features[r].geometry.coordinates;
+                            coords = ol.proj.tranform(coords, 'EPSG:4326', 'EPSG:3857');
+                            var properties = currents[id].features[r].properties;
+                        }
+                    }
+                }
             }
         },
 
@@ -611,6 +658,81 @@ define([
             } else {
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
+            }
+
+            current_outputter.save();
+        },
+
+        toggleIceGrid: function(e){
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+            });
+            var id = this.$(e.currentTarget).attr('id');
+            var checked = this.$(e.currentTarget).is(':checked');
+            var gridLayer;
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === id){
+                    gridLayer = layer;
+                }
+            });
+            
+            if (_.isUndefined(gridLayer)){
+                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+                current.getGrid(_.bind(function(geojson){
+                    if (geojson){
+                        var gridSource = new ol.source.GeoJSON({
+                            projection: 'EPSG:3857',
+                            object: geojson
+                        });
+
+                        gridLayer = new ol.layer.Image({
+                            id: id,
+                            source: new ol.source.ImageVector({
+                                source: gridSource,
+                                style: new ol.style.Style({
+                                    stroke: new ol.style.Stroke({
+                                        color: [36, 36, 227, 0.75],
+                                        width: 1
+                                    })
+                                })
+                            })
+                        });
+                        this.ol.map.getLayers().insertAt(3, gridLayer);
+                    }
+                }, this));
+            } else if (!checked && !_.isUndefined(gridLayer)) {
+                this.ol.map.getLayers().forEach(_.bind(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(false);
+                    }
+                }, this));
+            } else {
+                this.ol.map.getLayers().forEach(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(true);
+                    }
+                });
+            }
+        },
+
+        toggleIceUV: function(e){
+            var checked = this.$('.ice-uv input:checked');
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+
+            if (checked.length > 0){
+                current_outputter.get('current_movers').reset();
+                this.checked_ice = [];
+
+                this.$('.ice-uv input:checked').each(_.bind(function(i, input){
+                    var id = input.id.replace('uv-', '');
+                    var current = webgnome.model.get('movers').get(id);
+                    this.checked_ice.push(id);
+                    current_outputter.get('ice_movers').add(current);
+                }, this));
+            } else {
+                current_outputter.get('ice_movers').reset();
+                this.checked_ice = [];
             }
 
             current_outputter.save();
