@@ -33,35 +33,38 @@
             <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
         </div>
     </form>
-
-    <form role="form" class="form-horizontal checkboxes current-grid">
-        <strong>Current Grid</strong>
-        <div class="inner">
-            {% for (var i = 0; i < currents.length; i++){ %}
-                <div class="checkbox">
-                    <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
-                        <input type="checkbox" class="currents" id="grid-{{ currents[i].get('id') }}">
-                        {{ currents[i].get('name') }}
-                    </label>
-                </div>
-            {% } %}
-        </div>
-    </form>
-
-    <form role="form" class="form-horizontal checkboxes current-uv">
-        <strong>Current Speed &amp; Direction</strong>
-        <div class="inner">
-            {% for (var i = 0; i < currents.length; i++){ %}
-                <div class="checkbox">
-                    <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
-                        <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
-                        {{ currents[i].get('name') }}
-                    </label>
-                </div>
-            {% } %}
-        </div>
-    </form>
     
+
+    {% if(currents.length > 0){ %}
+        <form role="form" class="form-horizontal checkboxes current-grid">
+            <strong>Current Grid</strong>
+            <div class="inner">
+                {% for (var i = 0; i < currents.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="currents" id="grid-{{ currents[i].get('id') }}">
+                            {{ currents[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+
+        <form role="form" class="form-horizontal checkboxes current-uv">
+            <strong>Current Speed &amp; Direction</strong>
+            <div class="inner">
+                {% for (var i = 0; i < currents.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
+                            {{ currents[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+    {% } %}    
+
     {% if(ice.length > 0){ %}
         <form role="form" class="form-horizontal checkboxes ice-grid">
             <strong>Ice Grid</strong>
@@ -83,7 +86,7 @@
                 {% for (var i = 0; i < ice.length; i++){ %}
                     <div class="checkbox">
                         <label for="uv-{{ ice[i].get('id') }}" class="curLabel">
-                            <input type="checkbox" class="ice" id="uv-{{ ice[i].get('id') }}" {{ active_currents.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
+                            <input type="checkbox" class="ice" id="uv-{{ ice[i].get('id') }}" {{ active_ice.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
                             {{ ice[i].get('name') }}
                         </label>
                     </div>
