@@ -316,10 +316,10 @@ define([
                         }
 
                         this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillLayer);
                         this.ol.map.addLayer(this.CurrentLayer);
                         this.ol.map.addLayer(this.IceLayer);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
 
                         this.ol.map.on('pointermove', this.spillHover, this);
                         this.ol.map.on('click', this.spillClick, this);
@@ -536,13 +536,13 @@ define([
                 for(var t = 0; t < this.checked_ice.length; t++){
                     var id = this.checked_ice[t];
                     if(_.has(ice, id)){
-                        for(var r = 0; r < ice[id].features.length; r++){
+                        for(var r = 0; r < ice[id].features.length; r += 2){
                             var coords = ice[id].features[r].geometry.coordinates;
-                            var poly = new ol.geom.Polygon(coords);
+                            var coords2 = ice[id].features[r+1].geometry.coordinates;
+                            var poly = new ol.geom.MultiPolygon([coords, coords2]);
                             poly.transform('EPSG:4326', 'EPSG:3857');
                             var properties = {
                                 coverage: ice[id].features[r].properties.coverage,
-                                weight: ice[id].features[r].properties.coverage / 100,
                                 concentration: ice[id].features[r].properties.thickness,
                                 geometry: poly
                             };
