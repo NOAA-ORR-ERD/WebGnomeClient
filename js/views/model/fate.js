@@ -876,7 +876,7 @@ define([
             for(var set in this.dataset){
                 if([
                         'natural_dispersion', 
-                        'dispersed', 
+                        'chem_dispersed', 
                         'evaporated', 
                         'floating', 
                         'amount_released', 
