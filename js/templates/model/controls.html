@@ -82,6 +82,18 @@
 
         <form role="form" class="form-horizontal checkboxes ice-uv">
             <strong>Ice Data</strong>
+            <div class="radio">
+                <label for="thick">
+                    <input type="radio" id="thick" name="ice_data" value="thickness" checked>
+                    Thickness
+                </label>
+            </div>
+            <div class="radio">
+                <label for="con">
+                    <input type="radio" id="con" name="ice_data" value="coverage">
+                    Coverage
+                </label>
+            </div>
             <div class="inner">
                 {% for (var i = 0; i < ice.length; i++){ %}
                     <div class="checkbox">
