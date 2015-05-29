@@ -675,7 +675,7 @@ define([
                             id: id,
                             source: new ol.source.ImageVector({
                                 source: gridSource,
-                                style: this.style.currents_grid
+                                style: this.styles.currents_grid
                             })
                         });
                         this.ol.map.getLayers().insertAt(3, gridLayer);
@@ -714,6 +714,7 @@ define([
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
             }
+            this.renderCurrent(webgnome.cache.at(this.frame));
 
             current_outputter.save();
         },
