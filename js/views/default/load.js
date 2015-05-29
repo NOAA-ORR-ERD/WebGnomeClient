@@ -71,6 +71,7 @@ define([
                     invalidWeatherers.push(weathererKeys[j]);
                 }
             }
+
             return invalidWeatherers;
         },
 
@@ -85,6 +86,7 @@ define([
                     invalidOutputters.push(outputterKeys[i]);
                 }
             }
+            
             return invalidOutputters;
         },
 
@@ -120,18 +122,26 @@ define([
                         neededModelsStr += neededModels[i] + '\n';
                     }
 
-                    console.log(neededModels.length);
-
                     if (neededModels.length > 0){
                         swal({
                             html: true,
                             title: 'Model Compliance',
-                            text: 'The model you loaded is not compliant with the web environment. The models listed below need to be added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
+                            text: 'The model you loaded is not compliant with the web environment. The models listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
                             type: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
                         }, function(isConfirm){
                             if (isConfirm){
+                                for (var i = 0; i < neededModels.length; i++){
+                                    if (neededModels[i].indexOf('outputters') !== -1){
+                                        var outputterModel = new webgnome.model.model['outputters'][neededModels[i]]();
+                                        webgnome.model.get('outputters').add(outputterModel);
+                                    } else if (neededModels[i].indexOf('weatherers') !== -1){
+                                        var weathererModel = new webgnome.model.model['weatherers'][neededModels[i]]();
+                                        webgnome.model.get('weatherers').add(weathererModel);
+                                    }
+                                }
+                                webgnome.model.save();
                                 webgnome.router.navigate('config', true);
                             }
                         });

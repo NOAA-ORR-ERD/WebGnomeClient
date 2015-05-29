@@ -112,6 +112,8 @@ define([
 
         render: function(){
             BaseView.prototype.render.call(this);
+            var compiled;
+            var spills = webgnome.model.get('spills');
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             if(_.isUndefined(wind)){
@@ -122,40 +124,54 @@ define([
                 wind_speed = 'Variable Speed';
             }
 
-            var pour_point;
-            var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
-            var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
-            if(pp_min === pp_max){
-                pour_point = pp_min;
-            } else if (pp_min && pp_max) {
-                pour_point = pp_min + ' - ' + pp_max;
-            } else {
-                pour_point = pp_min + pp_max;
-            }
-
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
             var wave_height = 'Computed from wind';
+            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
+
             if(water.get('wave_height')){
                 wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
             } else if (water.get('fetch')) {
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
-            var spills = webgnome.model.get('spills');
             var init_release = this.findInitialRelease(spills);
-            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
 
-            var compiled = _.template(FateTemplate, {
-                name: substance.get('name'),
-                api: substance.get('api'),
-                wind_speed: wind_speed,
-                pour_point: pour_point + ' &deg;C',
-                wave_height: wave_height,
-                water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
-                release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
-                total_released: total_released,
-                units: spills.at(0).get('units')
-            });
+            if (!_.isNull(substance)){
+                var pour_point;
+                var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+                var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
+                if(pp_min === pp_max){
+                    pour_point = pp_min;
+                } else if (pp_min && pp_max) {
+                    pour_point = pp_min + ' - ' + pp_max;
+                } else {
+                    pour_point = pp_min + pp_max;
+                }
+
+                compiled = _.template(FateTemplate, {
+                    name: substance.get('name'),
+                    api: substance.get('api'),
+                    wind_speed: wind_speed,
+                    pour_point: pour_point + ' &deg;C',
+                    wave_height: wave_height,
+                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
+                    total_released: total_released,
+                    units: spills.at(0).get('units')
+                });
+            } else {
+                compiled = _.template(FateTemplate, {
+                    name: 'Non-weathering substance',
+                    api: 'N/A',
+                    wind_speed: wind_speed,
+                    pour_point: 'N/A',
+                    wave_height: wave_height,
+                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
+                    total_released: total_released,
+                    units: spills.at(0).get('units')
+                });
+            }
             
             this.$el.html(compiled);
             this.rendered = true;
@@ -843,9 +859,10 @@ define([
                 delete titles.natural_dispersion;
                 delete titles.evaporated;
                 delete titles.amount_released;
+                delete titles.beached;
                 var keys = Object.keys(titles);
-                keys.unshift('floating', 'evaporated', 'natural_dispersion');
-                keys.push('amount_released');
+                keys.unshift('evaporated', 'natural_dispersion');
+                keys.push('amount_released', 'beached', 'floating');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -875,13 +892,13 @@ define([
 
             for(var set in this.dataset){
                 if([
-                        'natural_dispersion', 
-                        'dispersed', 
-                        'evaporated', 
-                        'floating', 
-                        'amount_released', 
-                        'skimmed', 
-                        'burned', 
+                        'natural_dispersion',
+                        'chem_dispersed',
+                        'evaporated',
+                        'floating',
+                        'amount_released',
+                        'skimmed',
+                        'burned',
                         'beached',
                         'sedimentation',
                         'dissolution'

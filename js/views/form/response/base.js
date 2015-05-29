@@ -49,7 +49,7 @@ define([
                 }, this)
             });
 
-            if (!this.model.get('efficiency')){
+            if (_.isNull(this.model.get('efficiency'))){
                 this.$('.slidertoggle')[0].checked = true;
                 this.toggleEfficiencySlider();
             }
