@@ -843,9 +843,10 @@ define([
                 delete titles.natural_dispersion;
                 delete titles.evaporated;
                 delete titles.amount_released;
+                delete titles.beached;
                 var keys = Object.keys(titles);
-                keys.unshift('floating', 'evaporated', 'natural_dispersion');
-                keys.push('amount_released');
+                keys.unshift('evaporated', 'natural_dispersion');
+                keys.push('amount_released', 'beached', 'floating');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -875,13 +876,13 @@ define([
 
             for(var set in this.dataset){
                 if([
-                        'natural_dispersion', 
-                        'chem_dispersed', 
-                        'evaporated', 
-                        'floating', 
-                        'amount_released', 
-                        'skimmed', 
-                        'burned', 
+                        'natural_dispersion',
+                        'chem_dispersed',
+                        'evaporated',
+                        'floating',
+                        'amount_released',
+                        'skimmed',
+                        'burned',
                         'beached',
                         'sedimentation',
                         'dissolution'
