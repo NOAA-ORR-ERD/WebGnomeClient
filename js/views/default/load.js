@@ -126,7 +126,7 @@ define([
                         swal({
                             html: true,
                             title: 'Model Compliance',
-                            text: 'The model you loaded is not compliant with the web environment. The models listed below were added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
+                            text: 'The model you loaded is not compliant with the web environment. The models listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
                             type: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
