@@ -577,15 +577,20 @@ define([
                 for(var t = 0; t < this.checked_ice.length; t++){
                     var id = this.checked_ice[t];
                     if(_.has(ice, id)){
-                        for(var r = 0; r < ice[id].features.length; r++){
-                            var coords = ice[id].features[r].geometry.coordinates;
+                        var features;
+                        if(ice_data === 'thickness'){
+                            features = ice[id][1].features;
+                        } else {
+                            features = ice[id][0].features;
+                        }
+                        for(var r = 0; r < features.length; r++){
+                            var coords = features[r].geometry.coordinates;
                             var poly = new ol.geom.MultiPolygon([coords]);
                             poly.transform('EPSG:4326', 'EPSG:3857');
                             var properties = {
-                                coverage: ice[id].features[r].properties.coverage,
-                                thickness: ice[id].features[r].properties.thickness,
                                 geometry: poly
                             };
+                            properties[ice_data] = features[r].properties[ice_data];
                             
                             var f = new ol.Feature(properties);
                             ice_features.push(f);
