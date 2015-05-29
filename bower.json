@@ -30,7 +30,8 @@
     "nucos": "1.0.0",
     "sweetalert": "0.4.*",
     "dropzone": "4.0.*",
-    "socket.io-client": "0.9.*"
+    "socket.io-client": "0.9.*",
+    "localforage": "~1.2.3"
   },
   "devDependencies": {
     "qunit": "1.14.0"
