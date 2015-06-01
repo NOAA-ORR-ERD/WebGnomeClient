@@ -324,15 +324,16 @@ define([
                 container: 'body',
                 delay: delay
             });
-            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction'))){
+
+            this.$('.stage-3').hide();
+
+            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
                     this.updateBeached();
                 }
-            } else {
-                this.$('.stage-3').hide();
-            }
+            } 
             this.mason.layout();
         },
 
