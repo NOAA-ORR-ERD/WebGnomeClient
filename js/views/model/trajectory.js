@@ -23,6 +23,133 @@ define([
         state: 'pause',
         frame: 0,
         contracted: false,
+        styles: {
+            ice: {
+                coverage: function(feature, resolution){
+                    var cov = feature.get('coverage');
+                    var alpha = parseFloat(cov);
+                    return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(36, 36, 227,' + alpha + ')'
+                        })
+                    })];
+                },
+                thickness: function(feature, resolution){
+                    var thick = feature.get('thickness');
+                    var alpha = thick / 5;
+                    return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(36, 36, 227,' + alpha + ')'
+                        })
+                    })];
+                }
+            },
+            ice_grid: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [36, 36, 227, 0.75],
+                    width: 1
+                })
+            }),
+            elements: function(feature, resolution){
+                var color = 'rgba(0, 0, 0, 1)';
+                if(feature.get('sc_type') == 'uncertain'){
+                    color = 'rgba(255, 54, 54, 1)';
+                }
+                return [new ol.style.Style({
+                    image: new ol.style.Circle({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(0, 0, 0, .75)'
+                        }),
+                        radius: 1,
+                        stroke: new ol.style.Stroke({
+                            color: color
+                        })
+                    })
+                })];
+            },
+            spill: new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#3399CC',
+                    width: 1.25
+                })
+            }),
+            shoreline: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: [228, 195, 140, 0.6]
+                }),
+                stroke: new ol.style.Stroke({
+                    color: [228, 195, 140, 0.75],
+                    width: 1
+                })
+            }),
+            currents: function(feature, resolution){
+                var features = feature.get('features');
+
+                var v_x = 0;
+                var v_y = 0;
+                for(var i = 0; i < features.length; i++){
+                    var f = features[i];
+                    var velocity = f.get('velocity');
+
+                    v_x += velocity[0];
+                    v_y += velocity[1];
+                }
+
+                v_x = v_x / features.length;
+                v_y = v_y / features.length;
+
+                var scale_factor = 2000;
+                var coords = feature.getGeometry().getCoordinates();
+                var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
+
+                // find the angle between the two points
+                var x = shifted[0] - coords[0];
+                var y = shifted[1] - coords[1];
+
+                var rad;
+                if(x === 0 ){
+                    rad = Math.PI / 2;
+                } else {
+                    rad = Math.atan(Math.abs(y/x));
+                }
+
+                if(x < 0 && y > 0){
+                    rad = Math.PI - rad;
+                } else if(x < 0 && y < 0){
+                    rad = Math.PI + rad;
+                } else if(x > 0 && y < 0){
+                    rad = (2 * Math.PI) - rad;
+                }
+
+                var len = -250;
+                var rad_right = 0.785398163; //3.92699082;
+                var rad_left = 0.785398163;
+
+                var arr_left = rad - rad_left;
+                arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
+                var arr_right = rad + rad_right;
+                arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
+
+                return [new ol.style.Style({
+                    geometry: new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]),
+                    stroke: new ol.style.Stroke({
+                        color: [171, 37, 184, 0.75],
+                        width: 2
+                    })
+                })];
+            },
+            currents_grid: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [171, 37, 184, 0.75],
+                    width: 1
+                })
+            })
+        },
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -42,8 +169,9 @@ define([
             'click .base input': 'toggleLayers',
             'click .current-grid input': 'toggleCurrentGrid',
             'click .current-uv input': 'toggleCurrentUV',
-            'click .ice-grid input': 'toggleIceGrid',
-            'click .ice-uv input': 'toggleIceUV'
+            'click .ice-grid input[type="checkbox"]': 'toggleIceGrid',
+            'click .ice-uv input[type="checkbox"]': 'toggleIceUV',
+            'click .ice-uv input[type="radio"]': 'toggleIceData'
         },
 
         initialize: function(options){
@@ -105,99 +233,18 @@ define([
                 name: 'spills',
                 source: new ol.source.ImageVector({
                     source: this.SpillIndexSource,
-                    style: new ol.style.Style({
-                        image: new ol.style.Icon({
-                            anchor: [0.5, 1.0],
-                            src: '/img/spill-pin.png',
-                            size: [32, 40]
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: '#3399CC',
-                            width: 1.25
-                        })
-                    })
+                    style: this.styles.spill
                 }),
             });
 
             this.SpillLayer = new ol.layer.Vector({
                 name:'spills',
-                style: function(feature, resolution){
-                    var color = 'rgba(0, 0, 0, 1)';
-                    if(feature.get('sc_type') == 'uncertain'){
-                        color = 'rgba(255, 54, 54, 1)';
-                    }
-                    return [new ol.style.Style({
-                        image: new ol.style.Circle({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(0, 0, 0, .75)'
-                            }),
-                            radius: 1,
-                            stroke: new ol.style.Stroke({
-                                color: color
-                            })
-                        })
-                    })];
-                }
+                style: this.styles.elements
             });
 
             this.CurrentLayer = new ol.layer.Vector({
                 name: 'currents',
-                style: function(feature, resolution){
-                    var features = feature.get('features');
-
-                    var v_x = 0;
-                    var v_y = 0;
-                    for(var i = 0; i < features.length; i++){
-                        var f = features[i];
-                        var velocity = f.get('velocity');
-
-                        v_x += velocity[0];
-                        v_y += velocity[1];
-                    }
-
-                    v_x = v_x / features.length;
-                    v_y = v_y / features.length;
-
-                    var scale_factor = 2000;
-                    var coords = feature.getGeometry().getCoordinates();
-                    var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
-
-                    // find the angle between the two points
-                    var x = shifted[0] - coords[0];
-                    var y = shifted[1] - coords[1];
-
-                    var rad;
-                    if(x === 0 ){
-                        rad = Math.PI / 2;
-                    } else {
-                        rad = Math.atan(Math.abs(y/x));
-                    }
-
-                    if(x < 0 && y > 0){
-                        rad = Math.PI - rad;
-                    } else if(x < 0 && y < 0){
-                        rad = Math.PI + rad;
-                    } else if(x > 0 && y < 0){
-                        rad = (2 * Math.PI) - rad;
-                    }
-
-                    var len = -250;
-                    var rad_right = 0.785398163; //3.92699082;
-                    var rad_left = 0.785398163;
-
-                    var arr_left = rad - rad_left;
-                    arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
-                    var arr_right = rad + rad_right;
-                    arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
-
-                    return [new ol.style.Style({
-                        geometry: new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]),
-                        stroke: new ol.style.Stroke({
-                            color: [171, 37, 184, 0.75],
-                            width: 2
-                        })
-                    })];
-                }
+                style: this.styles.currents
             });
 
             this.IceLayer = new ol.layer.Image();
@@ -297,15 +344,7 @@ define([
                             name: 'modelmap',
                             source: new ol.source.ImageVector({
                                 source: this.shorelineSource,
-                                style: new ol.style.Style({
-                                    fill: new ol.style.Fill({
-                                        color: [228, 195, 140, 0.6]
-                                    }),
-                                    stroke: new ol.style.Stroke({
-                                        color: [228, 195, 140, 0.75],
-                                        width: 1
-                                    })
-                                })
+                                style: this.styles.shoreline
                             }),
                         });
 
@@ -531,21 +570,27 @@ define([
 
         renderIce: function(step){
             var ice_features = [];
-            if(step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
+            var ice_data = this.$('input[name=ice_data]:checked').val();
+
+            if(step && step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
                 var ice = step.get('IceGeoJsonOutput').feature_collections;
                 for(var t = 0; t < this.checked_ice.length; t++){
                     var id = this.checked_ice[t];
                     if(_.has(ice, id)){
-                        for(var r = 0; r < ice[id].features.length; r += 2){
-                            var coords = ice[id].features[r].geometry.coordinates;
-                            var coords2 = ice[id].features[r+1].geometry.coordinates;
-                            var poly = new ol.geom.MultiPolygon([coords, coords2]);
+                        var features;
+                        if(ice_data === 'thickness'){
+                            features = ice[id][1].features;
+                        } else {
+                            features = ice[id][0].features;
+                        }
+                        for(var r = 0; r < features.length; r++){
+                            var coords = features[r].geometry.coordinates;
+                            var poly = new ol.geom.MultiPolygon([coords]);
                             poly.transform('EPSG:4326', 'EPSG:3857');
                             var properties = {
-                                coverage: ice[id].features[r].properties.coverage,
-                                concentration: ice[id].features[r].properties.thickness,
                                 geometry: poly
                             };
+                            properties[ice_data] = features[r].properties[ice_data];
                             
                             var f = new ol.Feature(properties);
                             ice_features.push(f);
@@ -559,15 +604,7 @@ define([
 
             var ice_image = new ol.source.ImageVector({
                 source: ice_source,
-                style: function(feature, resolution){
-                    var cov = feature.get('coverage');
-                    var alpha = parseFloat(cov) / 10;
-                    return [new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(36, 36, 227,' + alpha + ')'
-                        })
-                    })];
-                }
+                style: this.styles.ice[ice_data]
             });
 
             this.IceLayer.setSource(ice_image);
@@ -643,12 +680,7 @@ define([
                             id: id,
                             source: new ol.source.ImageVector({
                                 source: gridSource,
-                                style: new ol.style.Style({
-                                    stroke: new ol.style.Stroke({
-                                        color: [171, 37, 184, 0.75],
-                                        width: 1
-                                    })
-                                })
+                                style: this.styles.currents_grid
                             })
                         });
                         this.ol.map.getLayers().insertAt(3, gridLayer);
@@ -687,6 +719,7 @@ define([
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
             }
+            this.renderCurrent(webgnome.cache.at(this.frame));
 
             current_outputter.save();
         },
@@ -718,12 +751,7 @@ define([
                             id: id,
                             source: new ol.source.ImageVector({
                                 source: gridSource,
-                                style: new ol.style.Style({
-                                    stroke: new ol.style.Stroke({
-                                        color: [36, 36, 227, 0.75],
-                                        width: 1
-                                    })
-                                })
+                                style: this.styles.ice_grid
                             })
                         });
                         this.ol.map.getLayers().insertAt(3, gridLayer);
@@ -763,7 +791,13 @@ define([
                 this.checked_ice = [];
             }
 
+            this.renderIce(webgnome.cache.at(this.frame));
+
             current_outputter.save();
+        },
+
+        toggleIceData: function(e){
+            this.renderIce(webgnome.cache.at(this.frame));
         },
 
         toggleSpill: function(e){
