@@ -354,10 +354,16 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('element_type').get('substance');
+            var substanceAPI;
+            if (_.isNull(substance)){
+                substanceAPI = 10;
+            } else {
+                substanceAPI = substance.get('api');
+            }
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
-            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substance.get('api'), 'API degree', to_unit)) + ' ' + to_unit);
+            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit)) + ' ' + to_unit);
 
             table.html('');
             table = '';
@@ -417,11 +423,11 @@ define([
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                 value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                  to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                    value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                 } else if (display.other === 'percent'){
                                     value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100);
                                 } else {
@@ -887,7 +893,12 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
-            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var api;
+            if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+                api = 10;
+            } else {
+                api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            }
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
