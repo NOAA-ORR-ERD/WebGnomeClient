@@ -954,7 +954,13 @@ nav.navbar{
                     }
                 }
 
-                .error {
+                .error-gen {
+                    .amount {
+                        .label-danger;
+                    }
+                }
+
+                .error-map {
                     .coords{
                         .label-danger;
                     }
@@ -1738,6 +1744,20 @@ nav.navbar{
         &.webgnome_api{
             .logs{
                 .webgnome_api{
+                    display: block;
+                }
+            }
+        }
+        &.error {
+            .logs{
+                .error{
+                    display: block;
+                }
+            }
+        }
+        &.warni {
+            .logs {
+                .warni {
                     display: block;
                 }
             }
