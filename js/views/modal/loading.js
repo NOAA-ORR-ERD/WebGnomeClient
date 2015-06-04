@@ -16,6 +16,12 @@ define([
             'hidden.bs.modal': 'hidden'
         },
 
+        render: function(){
+            BaseModal.prototype.render.call(this);
+            this.$('.close').hide();
+            this.$('.modal-footer').hide();
+        },
+
         hidden: function(){
             $('body').addClass('modal-open');
         }
