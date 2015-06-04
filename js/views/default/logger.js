@@ -158,7 +158,11 @@ define([
                     }
                 }
             } else if (win.hasClass('warni')){
-
+                for (var i = 0; i < messages.length; i++){
+                    if (!this.$(messages[i]).hasClass('warni')){
+                        this.$(messages[i]).hide();
+                    }
+                }
             } else {
                 for (var i = 0; i < messages.length; i++){
                     this.$(messages[i]).show();
