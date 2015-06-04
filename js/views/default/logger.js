@@ -14,7 +14,9 @@ define([
         events: {
             'click .toggle': 'toggle',
             'mousewheel': 'scroll',
-            'click .view a': 'toggleViewable'
+            'click .view a:not(.pull-right)': 'toggleViewable',
+            'click .view .pull-right': 'filterMessages',
+            'click .clear': 'clearMessages'
         },
 
         initialize: function(){
@@ -137,6 +139,35 @@ define([
             win.toggleClass(a.attr('href').replace('#', ''));
 
             this.windowScrollCheck();
+        },
+
+        filterMessages: function(e){
+            e.preventDefault();
+
+            var win = this.$('.window');
+            var a = this.$(e.target);
+            var messages = this.$('.window .logs li');
+
+            a.toggleClass('active');
+            win.toggleClass(a.attr('href').replace('#', ''));
+
+            if (win.hasClass('error')){
+                for (var i = 0; i < messages.length; i++){
+                    if (!this.$(messages[i]).hasClass('error')){
+                        this.$(messages[i]).hide();
+                    }
+                }
+            } else if (win.hasClass('warni')){
+
+            } else {
+                for (var i = 0; i < messages.length; i++){
+                    this.$(messages[i]).show();
+                }
+            }
+        },
+
+        clearMessages: function(e){
+            this.$('.window .logs').html('');
         }
     });
 
