@@ -113,11 +113,17 @@ define([
             if(errors > 0){
                 this.$el.addClass('error');
                 this.$('.info .error .count').text(errors);
+            } else {
+                this.$el.removeClass('error');
+                this.$('.info .error .count').text('');
             }
 
             if(warnings > 0){
                 this.$el.addClass('warning');
                 this.$('.info .warning .count').text(warnings);
+            } else {
+                this.$el.removeClass('warning');
+                this.$('.info .warning .count').text('');
             }
         },
 
@@ -172,6 +178,7 @@ define([
 
         clearMessages: function(e){
             this.$('.window .logs').html('');
+            this.evalLogs();
         }
     });
 
