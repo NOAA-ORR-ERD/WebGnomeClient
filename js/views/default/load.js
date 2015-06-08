@@ -112,6 +112,11 @@ define([
                             spills[i].get('release').set('end_position', start_position);
                             invalidSpills.push(spills[i].get('name'));
                         }
+
+                        if (_.isNull(spills[i].get('release').get('end_release_time'))){
+                            var start_time = spills[i].get('release').get('release_time');
+                            spills[i].get('release').set('end_release_time', start_time);
+                        }
                     }
                     if (!locationExists && !spillGeo){
                         localStorage.setItem('prediction', 'fate');
