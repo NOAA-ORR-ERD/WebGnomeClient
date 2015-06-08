@@ -86,7 +86,7 @@ define([
                     source = 'misc';
                 }
                 var ts = message.time + ' ' + message.date;
-                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong>' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right">' + ts + '</div></li>');
+                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
                 this.count++;
             }
 
