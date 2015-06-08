@@ -1755,15 +1755,15 @@ nav.navbar{
         }
         &.error {
             .logs{
-                .error{
-                    display: block;
+                :not(.error){
+                    display: none;
                 }
             }
         }
         &.warni {
             .logs {
-                .warni {
-                    display: block;
+                :not(.warni) {
+                    display: none;
                 }
             }
         }
