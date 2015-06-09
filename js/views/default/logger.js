@@ -14,7 +14,7 @@ define([
         events: {
             'click .toggle': 'toggle',
             'mousewheel': 'scroll',
-            'click .view a': 'toggleViewable',
+            'click .view a:not(.clear)': 'toggleViewable',
             'click .clear': 'clearMessages'
         },
 
@@ -147,6 +147,8 @@ define([
         },
 
         clearMessages: function(e){
+            e.preventDefault();
+            
             this.$('.window .logs').html('');
             this.evalLogs();
             this.windowScrollCheck();
