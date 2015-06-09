@@ -868,7 +868,7 @@ define([
                 delete titles.beached;
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
-                keys.push('amount_released', 'beached', 'floating');
+                keys.push('beached', 'floating', 'amount_released');
 
                 for(var type in keys){
                     this.dataset.push({
