@@ -303,9 +303,14 @@ define([
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
-                this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
                 this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
-                this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+
+                if (this.uncertainityExists){
+                    this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
+                    this.$('.chart-holder-uncert').addClass('invisible');
+                }
             }
         },
 
@@ -853,8 +858,11 @@ define([
 
         formatDataset: function(step){
             var nominal = step.get('WeatheringOutput').nominal;
-            var high = step.get('WeatheringOutput').high;
-            var low = step.get('WeatheringOutput').low;
+
+            this.uncertainityExists = !_.isNull(step.get('WeatheringOutput').high);
+
+            var high = _.isNull(step.get('WeatheringOutput').high) ? nominal : step.get('WeatheringOutput').high;
+            var low = _.isNull(step.get('WeatheringOutput').low) ? nominal : step.get('WeatheringOutput').low;
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
@@ -915,13 +923,17 @@ define([
                         'dissolution'
                     ].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
+                        if (!_.isNull(run)){
+                            return run[this.dataset[set].name];
+                        }
                     }, this);
                     low_value = min[this.dataset[set].name];
                     low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
                     max = _.max(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
+                        if (!_.isNull(run)){
+                            return run[this.dataset[set].name];
+                        }
                     }, this);
                     high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
