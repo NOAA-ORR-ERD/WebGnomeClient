@@ -584,7 +584,6 @@ define([
             }
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(startCoords);
-            console.log(startCoords);
             this.spillMapView.map.getView().setZoom(15);
         },
 
