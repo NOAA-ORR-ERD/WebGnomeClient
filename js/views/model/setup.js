@@ -759,6 +759,7 @@ define([
                 this.updateLocation();
                 this.updateCurrent();
                 this.updateSpill();
+                this.updateModelValues();
             }, this));
             locationForm.render();
         },
