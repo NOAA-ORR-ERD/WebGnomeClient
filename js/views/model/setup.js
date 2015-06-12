@@ -281,7 +281,7 @@ define([
 
             }
             this.$('.stage-2').show();
-            this.mason.layout();
+            this.updateSpill();
         },
 
         showFateObjects: function(){
