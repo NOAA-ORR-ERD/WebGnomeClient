@@ -278,8 +278,10 @@ define([
                 this.showTrajectoryObjects();
             } else if (target == 'both') {
                 this.showAllObjects();
+
             }
             this.$('.stage-2').show();
+            this.mason.layout();
         },
 
         showFateObjects: function(){
