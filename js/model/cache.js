@@ -52,22 +52,25 @@ define([
             var key;
             if(_.isArray(models)){
                 for(var m = 0; m < models.length; m++){
-                    key = this.length + 1;
-                    localforage.setItem(key.toString(), models[m]);
+                    key = this.length;
+                    localforage.setItem(key.toString(), models[m].toJSON());
                     this.length++;
                 }
             } else {
-                key = this.length + 1;
-                localforage.setItem(key.toString(), models);
+                key = this.length;
+                localforage.setItem(key.toString(), models.toJSON());
                 this.length++;
             }
         },
 
-        at: function(index){
-            return localforage.getItem(index);
+        at: function(index, cb){
+            if(this.length > index && index >= 0){
+                return localforage.getItem(index.toString(), cb);
+            }
         },
 
         reset: function(){
+            this.length = 0;
             localforage.clear();
         }
     });
