@@ -66,7 +66,9 @@ define([
         getExtent: function(){
             var boundingExtent;
             if (!_.isUndefined(this.get('spillable_area'))){
-                boundingExtent = ol.extent.boundingExtent(this.get('spillable_area'));
+                if (this.get('spillable_area').length === 1){
+                    boundingExtent = ol.extent.boundingExtent(this.get('spillable_area')[0]);
+                }
             } else {
                 boundingExtent = ol.extent.boundingExtent(this.get('map_bounds'));
             }
