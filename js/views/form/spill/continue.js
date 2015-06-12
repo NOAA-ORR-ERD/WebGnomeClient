@@ -54,7 +54,7 @@ define([
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                    duration: duration,
+                    'duration': duration,
                     showGeo: this.showGeo,
                     showSubstance: this.showSubstance,
                     start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
@@ -66,6 +66,8 @@ define([
                 var rate = parseFloat(amount) / durationInMins;
 
                 this.$('#spill-rate').val(rate);
+
+                this.$('#hours').show();
 
                 if (!_.isUndefined(units)){
                     this.$('#rate-units').val(units + '/hr');
