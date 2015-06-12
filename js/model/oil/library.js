@@ -144,7 +144,7 @@ define([
         sync: function(method, model, options){
             var oilCache = localStorage.getItem('oil_cache');
             var success = options.success;
-            if (!_.isNull(oilCache)){
+            if (!_.isNull(oilCache) && oilCache !== 'null'){
                 oilCache = JSON.parse(oilCache);
                 var ts = oilCache['ts'];
                 var now = moment().unix();

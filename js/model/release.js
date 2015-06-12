@@ -49,6 +49,7 @@ define([
             if(_.isUndefined(this.get('end_release_time'))){
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
+
             BaseModel.prototype.initialize.call(this, options);
         },
 

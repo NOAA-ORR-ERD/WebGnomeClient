@@ -80,6 +80,9 @@ img{
     .btn {
         display: none;
     }
+    .logger {
+        display: none;
+    }
 }
 
 .sweet-overlay{
@@ -954,7 +957,13 @@ nav.navbar{
                     }
                 }
 
-                .error {
+                .error-gen {
+                    .amount {
+                        .label-danger;
+                    }
+                }
+
+                .error-map {
                     .coords{
                         .label-danger;
                     }
@@ -1698,6 +1707,11 @@ nav.navbar{
                     text-shadow: 0px 1px 0px rgba(0,0,0,0.5);
                 }
             }
+
+            .clear-icon {
+                .glyphicon;
+                .glyphicon-ban-circle;
+            }
         }
 
         .logs{
@@ -1739,6 +1753,20 @@ nav.navbar{
             .logs{
                 .webgnome_api{
                     display: block;
+                }
+            }
+        }
+        &.error {
+            .logs{
+                :not(.error){
+                    display: none;
+                }
+            }
+        }
+        &.warni {
+            .logs {
+                :not(.warni) {
+                    display: none;
                 }
             }
         }
@@ -2490,56 +2518,56 @@ nav.navbar{
 }
 
 .spinner {
-    margin: 100px auto;
-    width: 50px;
-    height: 30px;
-    text-align: center;
-    font-size: 10px;
-}
+  margin: 100px auto;
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  font-size: 10px;
 
-.spinner > div {
-    background-color: #333;
+  > div {
+    background-color: #67A2D5;
     height: 100%;
     width: 6px;
     display: inline-block;
-
+  
     -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
     animation: stretchdelay 1.2s infinite ease-in-out;
-}
+  }
 
-.spinner .rect2 {
+  .rect2 {
     -webkit-animation-delay: -1.1s;
     animation-delay: -1.1s;
-}
+  }
 
-.spinner .rect3 {
+  .rect3 {
     -webkit-animation-delay: -1.0s;
     animation-delay: -1.0s;
-}
+  }
 
-.spinner .rect4 {
+  .rect4 {
     -webkit-animation-delay: -0.9s;
     animation-delay: -0.9s;
-}
+  }
 
-.spinner .rect5 {
+  .rect5 {
     -webkit-animation-delay: -0.8s;
     animation-delay: -0.8s;
+  }
 }
 
 @-webkit-keyframes stretchdelay {
-    0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
-    20% { -webkit-transform: scaleY(1.0) }
+  0%, 40%, 100% { -webkit-transform: scaleY(0.4) }  
+  20% { -webkit-transform: scaleY(1.0) }
 }
 
 @keyframes stretchdelay {
-    0%, 40%, 100% { 
-        transform: scaleY(0.4);
-        -webkit-transform: scaleY(0.4);
-    }  20% { 
-        transform: scaleY(1.0);
-        -webkit-transform: scaleY(1.0);
-    }
+  0%, 40%, 100% { 
+    transform: scaleY(0.4);
+    -webkit-transform: scaleY(0.4);
+  }  20% { 
+    transform: scaleY(1.0);
+    -webkit-transform: scaleY(1.0);
+  }
 }
 
 

@@ -303,9 +303,14 @@ define([
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
-                this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
                 this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
-                this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+
+                if (this.uncertainityExists){
+                    this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
+                    this.$('.chart-holder-uncert').addClass('invisible');
+                }
             }
         },
 
@@ -354,10 +359,16 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('element_type').get('substance');
+            var substanceAPI;
+            if (_.isNull(substance)){
+                substanceAPI = 10;
+            } else {
+                substanceAPI = substance.get('api');
+            }
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
-            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substance.get('api'), 'API degree', to_unit)) + ' ' + to_unit);
+            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit)) + ' ' + to_unit);
 
             table.html('');
             table = '';
@@ -367,11 +378,11 @@ define([
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
 
-                if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
-                    duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
+                if(ts_date.minutes() === 0 && (duration.asHours() < 7 ||
+                    duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
+                    duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
+                    duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
+                    duration.asHours() > 121 && duration.asHours() % 24 === 0)){
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {
@@ -417,11 +428,11 @@ define([
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                 value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                  to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                    value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                 } else if (display.other === 'percent'){
                                     value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100);
                                 } else {
@@ -847,8 +858,11 @@ define([
 
         formatDataset: function(step){
             var nominal = step.get('WeatheringOutput').nominal;
-            var high = step.get('WeatheringOutput').high;
-            var low = step.get('WeatheringOutput').low;
+
+            this.uncertainityExists = !_.isNull(step.get('WeatheringOutput').high);
+
+            var high = _.isNull(step.get('WeatheringOutput').high) ? nominal : step.get('WeatheringOutput').high;
+            var low = _.isNull(step.get('WeatheringOutput').low) ? nominal : step.get('WeatheringOutput').low;
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
@@ -862,7 +876,7 @@ define([
                 delete titles.beached;
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
-                keys.push('amount_released', 'beached', 'floating');
+                keys.push('beached', 'floating', 'amount_released');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -887,7 +901,12 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
-            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var api;
+            if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+                api = 10;
+            } else {
+                api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            }
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
@@ -904,13 +923,17 @@ define([
                         'dissolution'
                     ].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
+                        if (!_.isNull(run)){
+                            return run[this.dataset[set].name];
+                        }
                     }, this);
                     low_value = min[this.dataset[set].name];
                     low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
                     max = _.max(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
+                        if (!_.isNull(run)){
+                            return run[this.dataset[set].name];
+                        }
                     }, this);
                     high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);

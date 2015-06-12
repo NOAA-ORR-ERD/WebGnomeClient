@@ -100,10 +100,22 @@ define([
 
                     var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
                     var spillGeo = true;
+                    var invalidSpills = [];
                     for (var i = 0; i < spills.length; i++){
                         if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0){
                             spillGeo = false;
                             break;
+                        }
+
+                        if (spills[i].get('release').get('end_position')[0] === 0 && spills[i].get('release').get('end_position')[1] === 0){
+                            var start_position = spills[i].get('release').get('start_position');
+                            spills[i].get('release').set('end_position', start_position);
+                            invalidSpills.push(spills[i].get('name'));
+                        }
+
+                        if (_.isNull(spills[i].get('release').get('end_release_time'))){
+                            var start_time = spills[i].get('release').get('release_time');
+                            spills[i].get('release').set('end_release_time', start_time);
                         }
                     }
                     if (!locationExists && !spillGeo){
@@ -117,16 +129,29 @@ define([
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
 
                     var neededModelsStr = '';
+                    var invalidSpillsStr = '';
 
                     for (var i = 0; i < neededModels.length; i++){
                         neededModelsStr += neededModels[i] + '\n';
                     }
 
-                    if (neededModels.length > 0){
+                    for (var j = 0; j < invalidSpills.length; j++){
+                        invalidSpillsStr += invalidSpills[j] + '\n';
+                    }
+
+                    var msg = '';
+
+                    if (neededModels.length > 0 || invalidSpills.length > 0){
+                        if (neededModels.length > 0){
+                            msg += 'The models listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code><br />';
+                        }
+                        if (invalidSpills.length > 0){
+                            msg += 'The following spill models were altered to be compatible.<br /><br /><code>' + invalidSpillsStr + '</code><br />';
+                        }
                         swal({
                             html: true,
                             title: 'Model Compliance',
-                            text: 'The model you loaded is not compliant with the web environment. The models listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code>',
+                            text: 'The model you loaded is not compliant with the web environment.' + msg,
                             type: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'

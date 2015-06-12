@@ -304,6 +304,9 @@ define([
             // drop all of the currents from current outputter
             this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).get('current_movers').reset();
 
+            // drop all of the ice movers from the ice mover outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'}).get('ice_movers').reset();
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             this.set('map', map, {silent: true});

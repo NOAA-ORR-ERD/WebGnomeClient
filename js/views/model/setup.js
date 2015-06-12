@@ -197,6 +197,17 @@ define([
             });
         },
 
+        updateModelValues: function(e){
+            var name = webgnome.model.get('name');
+            var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
+            var durationAttrs = webgnome.model.formatDuration();
+
+            this.$('#name').val(name);
+            this.$('#start_time').val(start_time);
+            this.$('#days').val(durationAttrs.days);
+            this.$('#hours').val(durationAttrs.hours);
+        },
+
         selectPrediction: function(e){
             var target;
             if(e.target.length === 0) return false;
@@ -207,6 +218,15 @@ define([
             }
 
             this.configure(target);
+
+            if (target === 'fate'){
+                var fiveDays = 86400 * 5;
+                webgnome.model.set('duration', fiveDays);
+                this.updateModelValues();
+            } else {
+                webgnome.model.set('duration', 86400);
+                this.updateModelValues();
+            }
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 swal({
@@ -258,8 +278,10 @@ define([
                 this.showTrajectoryObjects();
             } else if (target == 'both') {
                 this.showAllObjects();
+
             }
             this.$('.stage-2').show();
+            this.mason.layout();
         },
 
         showFateObjects: function(){
@@ -324,7 +346,9 @@ define([
                 container: 'body',
                 delay: delay
             });
-            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
+
+
+            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
@@ -737,6 +761,7 @@ define([
                 this.updateLocation();
                 this.updateCurrent();
                 this.updateSpill();
+                this.updateModelValues();
             }, this));
             locationForm.render();
         },

@@ -563,6 +563,10 @@ define([
             }
             var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
             var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
+            var startPosition = [startCoords[0], startCoords[1], 0];
+            var endPosition = [endCoords[0], endCoords[1], 0];
+            this.model.get('release').set('start_position', startPosition);
+            this.model.get('release').set('end_position', endPosition);
             startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
             endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
             var coordsArray = [startCoords, endCoords];
@@ -578,12 +582,6 @@ define([
             } else {
                 feature = new ol.Feature(new ol.geom.LineString(coordsArray));
             }
-            startCoords = ol.proj.transform(startCoords, 'EPSG:3857', 'EPSG:4326');
-            endCoords = ol.proj.transform(endCoords, 'EPSG:3857', 'EPSG:4326');
-            var startPosition = [startCoords[0], startCoords[1], 0];
-            var endPosition = [endCoords[0], endCoords[1], 0];
-            this.model.get('release').set('start_position', startPosition);
-            this.model.get('release').set('end_position', endPosition);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(startCoords);
             this.spillMapView.map.getView().setZoom(15);
