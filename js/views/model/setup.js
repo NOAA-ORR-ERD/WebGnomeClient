@@ -222,8 +222,9 @@ define([
             if (target === 'fate'){
                 var fiveDays = 86400 * 5;
                 webgnome.model.set('duration', fiveDays);
-                webgnome.model.save();
-
+                this.updateModelValues();
+            } else {
+                webgnome.model.set('duration', 86400);
                 this.updateModelValues();
             }
 
@@ -258,7 +259,6 @@ define([
                 }
                 
             }
-
         },
 
         togglePrediction: function(e, target){
