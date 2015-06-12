@@ -64,15 +64,21 @@ define([
         },
 
         getExtent: function(){
-            var boundingExtent;
+            var boundingPolygon;
             if (!_.isUndefined(this.get('spillable_area'))){
                 if (this.get('spillable_area').length === 1){
-                    boundingExtent = ol.extent.boundingExtent(this.get('spillable_area')[0]);
+                    boundingPolygon = new ol.geom.Polygon(this.get('spillable_area'));
+                } else {
+                    boundingPolygon = new ol.geom.MultiPolygon([], null);
+                    for (var i = 0; i < this.get('spillable_area').length; i++){
+                        var polygon = new ol.geom.Polygon(this.get('spillable_area'));
+                        boundingPolygon.appendPolygon(polygon);
+                    }
                 }
             } else {
-                boundingExtent = ol.extent.boundingExtent(this.get('map_bounds'));
+                boundingPolygon = new ol.geom.Polygon(this.get('map_bounds'));
             }
-            return boundingExtent;
+            return boundingPolygon;
         }
     });
 
