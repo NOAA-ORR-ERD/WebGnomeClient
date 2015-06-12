@@ -67,8 +67,6 @@ define([
 
                 this.$('#spill-rate').val(rate);
 
-                this.$('#hours').show();
-
                 if (!_.isUndefined(units)){
                     this.$('#rate-units').val(units + '/hr');
                 } else {
