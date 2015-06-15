@@ -79,8 +79,8 @@ define([
                 return 'Give a valid location for the spill!';
             }
 
-            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
-                return this.isReleaseInExtent(webgnome.model.get('map').getExtent());
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea()))){
+                return this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea());
             }
         },
 
