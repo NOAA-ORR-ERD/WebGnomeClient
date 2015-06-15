@@ -6,6 +6,7 @@ define([
     'views/base',
     'moment',
     'nucos',
+    'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
@@ -17,7 +18,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
         frame: 0,
@@ -83,19 +84,25 @@ define([
         },
 
         load: function(){
-            if(webgnome.cache.models.length > 0 &&
-            _.has(webgnome.cache.models[0].get('WeatheringOutput'), 'nominal')){
+            if(webgnome.cache.length > 0){
+                while(this.frame < webgnome.cache.length){
+                    webgnome.cache.at(this.frame, _.bind(function(err, step){
+                        this.formatDataset(new GnomeStep(step));
 
-                webgnome.cache.forEach(_.bind(function(step){
+                        if(step.WeatheringOutput.step_num == webgnome.cache.length - 1){
+                            this.renderGraphs();
+                            if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
+                                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                                webgnome.cache.step();
+                            }
+                        }
+                    }, this));
                     this.frame++;
-                    this.formatDataset(step);
-                }, this));
-
-                if(this.frame < webgnome.model.get('num_time_steps')){
-                    webgnome.cache.step();
                 }
+            } else {
+                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                webgnome.cache.step();
             }
-            webgnome.cache.on('step:recieved', this.buildDataset, this);
         },
 
         reset: function(){
@@ -194,7 +201,6 @@ define([
                 container: 'body'
             });
             this.load();
-            this.renderLoop();
         },
 
         renderLoop: function(){
