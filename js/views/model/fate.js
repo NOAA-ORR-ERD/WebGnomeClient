@@ -29,7 +29,10 @@ define([
             'rgb(77,167,77)',
             'rgb(148,64,237)',
             'rgb(189,155,51)',
-            'rgb(140,172,198)'
+            'rgb(140,172,198)',
+            'rgb(255,99,71)',
+            'rgb(124,252,0)',
+            'rgb(46,139,87)'
         ],
 
         events: {
@@ -238,7 +241,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
@@ -273,7 +276,7 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -349,7 +352,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -543,8 +546,9 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_density']);
+            dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            console.log(dataset);
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
@@ -878,6 +882,7 @@ define([
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
                 keys.push('beached', 'floating', 'amount_released');
+                keys.push('water_density');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -909,6 +914,8 @@ define([
                 api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
             }
             var converter = new nucos.OilQuantityConverter();
+            var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var waterDensity = water.getDensity();
 
             for(var set in this.dataset){
                 if([
@@ -953,6 +960,10 @@ define([
                     low_value = low[this.dataset[set].name] * 100;
                     nominal_value = nominal[this.dataset[set].name] * 100;
                     high_value = high[this.dataset[set].name] * 100;
+                } else if (this.dataset[set].name === 'water_density'){
+                    low_value = waterDensity;
+                    nominal_value = waterDensity;
+                    high_value = waterDensity;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
