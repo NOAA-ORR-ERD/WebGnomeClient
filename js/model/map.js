@@ -69,11 +69,8 @@ define([
                 if (this.get('spillable_area').length === 1){
                     boundingPolygon = new ol.geom.Polygon(this.get('spillable_area'));
                 } else {
-                    boundingPolygon = new ol.geom.MultiPolygon([], null);
-                    for (var i = 0; i < this.get('spillable_area').length; i++){
-                        var polygon = new ol.geom.Polygon(this.get('spillable_area'));
-                        boundingPolygon.appendPolygon(polygon);
-                    }
+                    var area = [this.get('spillable_area')];
+                    boundingPolygon = new ol.geom.MultiPolygon(area);
                 }
             } else {
                 boundingPolygon = new ol.geom.Polygon(this.get('map_bounds'));
