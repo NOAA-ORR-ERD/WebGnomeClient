@@ -79,17 +79,17 @@ define([
                 return 'Give a valid location for the spill!';
             }
 
-            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
-                return this.isReleaseInExtent(webgnome.model.get('map').getExtent());
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea()))){
+                return this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea());
             }
         },
 
-        isReleaseInExtent: function(locationExtent){
+        isReleaseInExtent: function(locationPolygon){
             var start = [this.get('start_position')[0], this.get('start_position')[1]];
             var end = [this.get('end_position')[0], this.get('end_position')[1]];
             var extentCoords = [start, end];
             var releaseExtent = ol.extent.boundingExtent(extentCoords);
-            if(!ol.extent.containsExtent(locationExtent, releaseExtent)){
+            if(!locationPolygon.intersectsExtent(releaseExtent)){
                 return 'Spill is not within the map bounds!';
             }
         },
