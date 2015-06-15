@@ -53,6 +53,7 @@ define([
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
+    'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
 

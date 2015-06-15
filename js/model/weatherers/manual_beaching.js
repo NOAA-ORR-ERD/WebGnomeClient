@@ -4,7 +4,8 @@ define([
     'moment',
     'model/weatherers/base'
 ], function(_, Backbone, moment, BaseModel){
-	beachingWeatherer = BaseModel.extend({
+    'use strict';
+	var beachingWeatherer = BaseModel.extend({
 		defaults: {
 			'obj_type': 'gnome.weatherers.manual_beaching.Beaching',
 			'name': 'Beaching',

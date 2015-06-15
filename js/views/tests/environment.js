@@ -7,6 +7,7 @@ define([
     'model/environment/tide',
     'model/environment/waves'
 ], function($, _, Backbone, WaterModel, WindModel, TideModel, WavesModel){
+    'use strict';
     var environmentTests = {
         run: function(){
             QUnit.module('Environment');

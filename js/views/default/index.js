@@ -4,6 +4,7 @@ define([
     'backbone',
     'text!templates/default/index.html'
 ], function($, _, Backbone, IndexTemplate){
+    'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
 

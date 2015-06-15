@@ -14,6 +14,7 @@ define([
     'views/form/oil/specific',
     'text!templates/form/oil.html'
 ], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+    'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',

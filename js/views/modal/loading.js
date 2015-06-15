@@ -5,6 +5,7 @@ define([
     'views/modal/base',
     'text!templates/modal/loading.html'
 ], function($, _, Backbone, BaseModal, LoadingTemplate){
+    'use strict';
     var loadingModal = BaseModal.extend({
         name: 'loading',
         size: 'sm',

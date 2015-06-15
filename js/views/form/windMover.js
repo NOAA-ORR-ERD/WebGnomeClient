@@ -6,6 +6,7 @@ define([
     'text!templates/form/windMover.html',
     'views/form/wind'
 ], function(_, $, Backbone, FormModal, FormTemplate, WindForm){
+    'use strict';
 	var windMoverForm = FormModal.extend({
 		title: 'Wind Mover Settings',
 		className: 'modal fade form-modal wind-form',

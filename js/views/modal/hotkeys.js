@@ -5,6 +5,7 @@ define([
     'views/modal/base',
     'text!templates/modal/hotkeys.html'
 ], function($, _, Backbone, BaseModal, HotkeysTemplate){
+    'use strict';
     var hotkeysModal = BaseModal.extend({
         name: 'hotkeys',
         size: 'sm',

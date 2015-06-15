@@ -17,6 +17,7 @@ define([
     'views/default/logger',
 ], function($, _, Backbone,
     IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    'use strict';
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',

@@ -4,6 +4,7 @@ define([
     'moment',
     'model/base'
 ], function(_, Backbone, moment, BaseModel){
+    'use strict';
     var windModel = BaseModel.extend({
         urlRoot: '/environment/',
 

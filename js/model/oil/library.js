@@ -5,6 +5,7 @@ define([
     'fuse',
     'moment'
 ], function(_, $, Backbone, Fuse, moment){
+    'use strict';
     var oilLib = Backbone.Collection.extend({
 
         ready: false,

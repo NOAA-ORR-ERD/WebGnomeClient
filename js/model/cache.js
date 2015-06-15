@@ -5,6 +5,7 @@ define([
     'localforage',
     'model/step'
 ], function($, _, Backbone, localforage, StepModel){
+    'use strict';
     var cache = Backbone.Collection.extend({
         fetching: false,
 

@@ -5,6 +5,7 @@ define([
     'views/default/help',
     'views/modal/help'
 ], function($, _, Backbone, HelpView, HelpModal) {
+    'use strict';
     var baseView = Backbone.View.extend({
 
         events: {

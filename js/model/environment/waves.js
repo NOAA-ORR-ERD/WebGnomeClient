@@ -6,6 +6,7 @@ define([
     'model/environment/wind',
     'model/environment/water'
 ], function(_, $, Backbone, BaseModel, WindModel, WaterModel){
+    'use strict';
     var WavesModel = BaseModel.extend({
         urlRoot: '/environment',
         defaults: {

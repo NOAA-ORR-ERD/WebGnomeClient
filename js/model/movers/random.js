@@ -3,6 +3,7 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
+    'use strict';
     var randomMover = BaseModel.extend({
         urlRoot: '/mover/',
 

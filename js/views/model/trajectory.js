@@ -15,6 +15,7 @@ define([
     'jqueryui/slider',
     'jqueryFileupload'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: 'map',
         id: 'map',
@@ -848,7 +849,7 @@ define([
 
         renderSpills: function(){
             // foreach spill add at feature to the source
-            spills = webgnome.model.get('spills');
+            var spills = webgnome.model.get('spills');
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
                 var end_position = spill.get('release').get('end_position');

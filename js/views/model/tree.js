@@ -5,6 +5,7 @@ define([
     'views/modal/base',
     'fancytree'
 ], function($, _, Backbone, ModalView){
+    'use strict';
     var gnomeTreeView = Backbone.View.extend({
         className: 'tree closed',
         open: false,

@@ -3,6 +3,7 @@ define([
     'backbone',
     'model/base',
 ], function(_, Backbone, BaseModel){
+    'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
         requesting: false,

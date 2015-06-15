@@ -2,6 +2,7 @@ define([
     'underscore',
     'model/spill',
 ], function(_, GnomeSpill){
+    'use strict';
     var spillTest = {
         run: function() {
             QUnit.module('Spill');

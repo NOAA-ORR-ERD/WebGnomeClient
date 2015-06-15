@@ -5,7 +5,8 @@ define([
     'model/environment/water',
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, WaterModel, WindModel){
-    evaporationWeatherer = BaseModel.extend({
+    'use strict';
+    var evaporationWeatherer = BaseModel.extend({
         urlRoot: '/weatherer/',
 
         model: {

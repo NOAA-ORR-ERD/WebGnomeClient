@@ -11,6 +11,7 @@ define([
     'jqueryDatetimepicker',
     'moment'
 ], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+    'use strict';
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',

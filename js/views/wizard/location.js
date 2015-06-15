@@ -17,6 +17,7 @@ define([
     GnomeLocation, GnomeWind, GnomeWindMover,
     TrajectoryOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
+    'use strict';
     var locationWizardView = BaseWizard.extend({
         steps: [],
         initialize: function(opts){

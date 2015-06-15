@@ -10,6 +10,7 @@ define([
     'collection/help',
     'jqueryui/autocomplete'
 ], function($, _, Backbone, chosen, FAQTemplate, DefaultView, SingleView, HelpModel, HelpCollection){
+    'use strict';
 	var faqView = Backbone.View.extend({
         className: 'page faq',
 

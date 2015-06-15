@@ -7,6 +7,7 @@ define([
     'model/environment/water',
     'model/location'
 ], function($, _, Backbone, GnomeModel, WindModel, WaterModel, GnomeLocation){
+    'use strict';
         var specialTests = {
             run: function(){
                 QUnit.module('Special');

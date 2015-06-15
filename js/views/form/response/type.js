@@ -13,6 +13,7 @@ define([
     'views/form/response/skim'
 ], function($, _, Backbone, module, FormModal, FormTemplate, InSituBurnModel, DisperseModel, SkimModel, 
     InSituBurnForm, DisperseForm, SkimForm){
+    'use strict';
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
         className: 'modal fade form-modal responsetype-form',

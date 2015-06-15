@@ -5,6 +5,7 @@ define([
     'model/environment/wind',
     'model/movers/wind'
 ], function(_, GnomeModel, GnomeSpill, GnomeWind, GnomeWindMover){
+    'use strict';
     var modelTests = {
         run: function(){
             QUnit.module('Model');

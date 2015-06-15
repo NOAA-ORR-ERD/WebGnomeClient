@@ -10,6 +10,7 @@ define([
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, nucos, FormModal, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+    'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal fade form-modal model-form beached-form',
         title: 'Observed Beached Oil',

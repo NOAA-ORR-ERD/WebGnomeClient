@@ -4,7 +4,8 @@ define([
     'model/weatherers/base',
     'model/environment/waves'
 ], function(_, Backbone, BaseModel, WavesModel){
-    emulsificationWeatherer = BaseModel.extend({
+    'use strict';
+    var emulsificationWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Emulsification',
             'name': 'Emulsion'

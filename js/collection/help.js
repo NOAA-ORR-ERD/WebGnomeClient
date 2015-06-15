@@ -4,6 +4,7 @@ define([
     'model/help/help',
     'fuse'
 ], function(_, Backbone, HelpModel, Fuse){
+    'use strict';
     var gnomeHelpCollection = Backbone.Collection.extend({
         model: HelpModel,
         url: '/help',

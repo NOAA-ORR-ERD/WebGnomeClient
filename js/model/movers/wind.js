@@ -4,6 +4,7 @@ define([
     'model/base',
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, GnomeWind){
+    'use strict';
     var windMover = BaseModel.extend({
         urlRoot: '/mover/',
 

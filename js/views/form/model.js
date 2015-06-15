@@ -6,6 +6,7 @@ define([
     'text!templates/form/model.html',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, FormModal, FormTemplate){
+    'use strict';
     var modelForm = FormModal.extend({
         className: 'modal fade form-modal model-form',
         title: 'Model Settings',

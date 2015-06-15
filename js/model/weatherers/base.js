@@ -3,7 +3,8 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-	baseWeathererModel = BaseModel.extend({
+    'use strict';
+	var baseWeathererModel = BaseModel.extend({
 		urlRoot: '/weatherer/',
 
 		initialize: function(){

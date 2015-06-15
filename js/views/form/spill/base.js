@@ -15,6 +15,7 @@ define([
 	'jqueryDatetimepicker',
     'bootstrap'
 ], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
+    'use strict';
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',

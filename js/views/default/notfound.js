@@ -4,6 +4,7 @@ define([
     'backbone',
     'text!templates/default/notfound.html'
 ], function($, _, Backbone, NotFoundTemplate){
+    'use strict';
     var notFoundView = Backbone.View.extend({
         className: 'page notfound',
 

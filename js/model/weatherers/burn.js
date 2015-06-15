@@ -4,7 +4,8 @@ define([
     'model/weatherers/base',
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, WindModel){
-    burnWeatherer = BaseModel.extend({
+    'use strict';
+    var burnWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Burn',
             'name': 'Burn',

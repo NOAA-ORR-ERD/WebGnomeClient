@@ -5,6 +5,7 @@ define([
     'views/modal/form',
     'text!templates/form/cats.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
+    'use strict';
 	var catsForm = FormModal.extend({
 		title: 'Current Mover Settings',
 		className: 'modal fade form-modal',

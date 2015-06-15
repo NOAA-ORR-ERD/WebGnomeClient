@@ -10,6 +10,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, DisperseModel, moment){
+    'use strict';
     var disperseForm = ResponseFormModal.extend({
         title: 'Disperse Response',
         className: 'modal response fade form-modal disperse-form',

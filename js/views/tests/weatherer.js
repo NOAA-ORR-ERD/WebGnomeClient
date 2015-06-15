@@ -7,6 +7,7 @@ define([
     'model/weatherers/emulsification',
     'model/weatherers/dispersion'
 ], function($, _, Backbone, GnomeModel, EvaporationModel, EmulsificationModel, DispersionModel){
+    'use strict';
     var weathererTests = {
         run: function(){
             QUnit.module('Weatherers');

@@ -3,7 +3,8 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-    trajectoryOutputter = BaseModel.extend({
+    'use strict';
+    var trajectoryOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
 
         defaults: {

@@ -7,6 +7,7 @@ define([
 	'jqueryDatetimepicker',
     'jqueryui/slider'
 ], function($, _, Backbone, FormModal, moment){
+    'use strict';
 	var baseResponseForm = FormModal.extend({
 
         events: function(){

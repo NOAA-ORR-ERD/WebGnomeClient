@@ -5,6 +5,7 @@ define([
     'model/oil/library',
     'text!templates/oil/table.html'
 ], function($, _, Backbone, OilLib, OilTableTemplate){
+    'use strict';
     var oilTableView = Backbone.View.extend({
         id: 'tableContainer',
         ready: false,
