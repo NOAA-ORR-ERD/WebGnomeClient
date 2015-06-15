@@ -134,6 +134,8 @@ define([
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
+            console.log(water.getDensity());
+
             var init_release = this.findInitialRelease(spills);
 
             if (!_.isNull(substance)){
