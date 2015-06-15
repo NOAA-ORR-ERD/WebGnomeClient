@@ -134,8 +134,6 @@ define([
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
-            console.log(water.getDensity());
-
             var init_release = this.findInitialRelease(spills);
 
             if (!_.isNull(substance)){
@@ -711,7 +709,8 @@ define([
             var start = selection.xaxis.from;
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
-            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var api = (!_.isNull(substance)) ? substance.get('api') : 10;
             var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
             var report = {
                 spilled: 0,

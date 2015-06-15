@@ -66,8 +66,6 @@ define([
             var temp = this.get('temperature');
             var salinity = this.get('salinity');
 
-            console.log(nucos.waterDensity().calcDensity(temp, salinity));
-
             return nucos.waterDensity().calcDensity(temp, salinity);
         }
 
