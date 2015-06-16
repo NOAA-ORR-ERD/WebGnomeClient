@@ -12,7 +12,7 @@ require.config({
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
-        ol: 'lib/openlayers/build/ol-debug',
+        ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
