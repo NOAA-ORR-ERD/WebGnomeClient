@@ -104,7 +104,7 @@ define([
                 v_x = v_x / features.length;
                 v_y = v_y / features.length;
 
-                var scale_factor = 2000;
+                var scale_factor = 50 * resolution;
                 var coords = feature.getGeometry().getCoordinates();
                 var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
 
@@ -127,7 +127,7 @@ define([
                     rad = (2 * Math.PI) - rad;
                 }
 
-                var len = -250;
+                var len = -5 * resolution;
                 var rad_right = 0.785398163; //3.92699082;
                 var rad_left = 0.785398163;
 
