@@ -10,6 +10,7 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
+    'text!templates/model/fate/buttons.html',
     'flot',
     'flottime',
     'flotresize',
@@ -18,7 +19,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -148,6 +149,8 @@ define([
 
             var init_release = this.findInitialRelease(spills);
 
+            var buttonsTemplate = _.template(ButtonsTemplate, {});
+
             if (!_.isNull(substance)){
                 var pour_point;
                 var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
@@ -169,7 +172,8 @@ define([
                     water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
-                    units: spills.at(0).get('units')
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
                 });
             } else {
                 compiled = _.template(FateTemplate, {
@@ -181,7 +185,8 @@ define([
                     water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
-                    units: spills.at(0).get('units')
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
                 });
             }
             
@@ -326,7 +331,7 @@ define([
         },
 
         getPieData: function(pos, dataset, key){
-            d = [];
+            var d = [];
             for (var i = 0; i < dataset.length; ++i) {
 
                 var series = dataset[i];
