@@ -556,7 +556,6 @@ define([
         renderGraphDensity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            console.log(dataset);
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
