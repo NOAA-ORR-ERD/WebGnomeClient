@@ -3,7 +3,7 @@ define([
     'backbone',
     'nucos',
     'model/base'
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, nucos, BaseModel){
     'use strict';
     var waterModel = BaseModel.extend({
         urlRoot: '/environment/',
