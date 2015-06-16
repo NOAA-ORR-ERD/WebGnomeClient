@@ -47,7 +47,9 @@ define([
             'change #ics209 select': 'renderTableICS',
             'click #ics209 .export a.download': 'downloadTableICS',
             'click #ics209 .export a.print': 'printTableICS',
-            'click .gnome-help': 'renderHelp'
+            'click .gnome-help': 'renderHelp',
+            'click .saveas': 'saveGraphImage',
+            'click .print-graph': 'printGraphImage'
         },
 
         defaultChartOptions: {
@@ -1061,6 +1063,14 @@ define([
             });
 
             return release_init;
+        },
+
+        saveGraphImage: function(e){
+            
+        },
+
+        printGraphImage: function(e){
+            
         },
 
         close: function(){
