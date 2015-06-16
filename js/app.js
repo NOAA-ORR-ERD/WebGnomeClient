@@ -6,7 +6,7 @@ define([
     'router',
     'moment',
     'sweetalert',
-    'text!/package.json',
+    'text!../package.json',
     'model/session',
     'model/gnome',
     'views/default/loading'
