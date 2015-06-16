@@ -12,6 +12,7 @@ define([
     'jqueryui/slider',
     'moment'
 ], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+    'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',

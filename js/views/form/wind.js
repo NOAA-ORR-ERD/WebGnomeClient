@@ -16,6 +16,7 @@ define([
     'jqueryui/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, olMapView, nwsWind){
+    'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',

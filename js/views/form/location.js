@@ -8,6 +8,7 @@ define([
     'model/location',
     'model/gnome',
 ], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
+    'use strict';
     var locationModal = FormModal.extend({
         className: 'modal fade form-modal location-form',
         size: 'lg',

@@ -4,7 +4,8 @@ define([
     'model/base',
     'model/movers/cats'
 ], function(_, Backbone, BaseModel, CatsMover){
-    currentOutputter = BaseModel.extend({
+    'use strict';
+    var currentOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
 
         model: {

@@ -16,7 +16,8 @@ define([
     SpillTests, MapTests, LocationTests, EnvironmentTests,
     WeathererTests, HelpTests, SpecialTests,
     RunTests){
-    testView = Backbone.View.extend({
+    'use strict';
+    var testView = Backbone.View.extend({
         className: 'container page',
         initialize: function(){
             this.render();

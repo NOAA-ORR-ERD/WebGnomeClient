@@ -8,6 +8,7 @@ define([
     'text!templates/form/water.html',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, nucos, FormModal, WaterTemplate){
+    'use strict';
     var waterForm = FormModal.extend({
         className: 'modal fade form-modal model-form',
         title: 'Water Properties',

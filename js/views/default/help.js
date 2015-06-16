@@ -7,6 +7,7 @@ define([
     'text!templates/default/help.html',
     'text!templates/default/help-tab.html'
 ], function($, _, Backbone, HelpModel, FeedbackModel, HelpTemplate, HelpTabTemplate){
+    'use strict';
     var helpView = Backbone.View.extend({
         className: 'help-content',
         ready: false,
@@ -41,8 +42,8 @@ define([
                     html: this.help.get('html')
                 });
             } else {
-                tabs = this.getTabs(this.help.get('html'));
-                html = $('<div>' + this.help.get('html') + '</div>');
+                var tabs = this.getTabs(this.help.get('html'));
+                var html = $('<div>' + this.help.get('html') + '</div>');
                 html.find('.title').hide();
                 html.find('.document:first').addClass('active');
                 html.find('.document').addClass('tab-pane');
@@ -100,7 +101,7 @@ define([
 
         getTabs: function(html){
             if(_.isUndefined(html)) return '';
-            tabs = '';
+            var tabs = '';
             html = $(html);
             var headers = html.find('.title');
             headers.each(function(i, el){

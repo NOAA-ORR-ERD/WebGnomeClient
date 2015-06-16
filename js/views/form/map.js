@@ -5,6 +5,7 @@ define([
     'views/modal/form',
     'text!templates/form/map.html'
 ], function(_, $, Backbone, FormModal, FormTemplate){
+    'use strict';
     var mapForm = FormModal.extend({
         className: 'modal fade form-modal map-form',
         name: 'map',

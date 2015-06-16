@@ -5,6 +5,7 @@ define([
     'model/initializers/windages',
     'model/substance'
 ], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
+    'use strict';
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
 

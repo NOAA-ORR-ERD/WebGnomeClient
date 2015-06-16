@@ -4,7 +4,8 @@ define([
     'model/base',
     'model/movers/ice'
 ], function(_, Backbone, BaseModel, IceMover){
-    iceOutputter = BaseModel.extend({
+    'use strict';
+    var iceOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
 
         model: {

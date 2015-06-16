@@ -1790,6 +1790,16 @@ nav.navbar{
     }
 }
 
+.modal{
+    .loading-modal{
+        .spinner{
+            > div{
+                background: #67A2D5;
+            }
+        }
+    }
+}
+
 .modal.form-modal{
     .sub-title{
         color: #ccc;
@@ -2432,6 +2442,12 @@ nav.navbar{
     border-radius: 4px;
     overflow: hidden;
     .transition(all .2s);
+
+    .spinner{
+        > div{
+            background: black;
+        }
+    }
 
     &.dz-started{
         border-color: white;

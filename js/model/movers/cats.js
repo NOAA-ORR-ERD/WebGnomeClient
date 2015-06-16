@@ -4,6 +4,7 @@ define([
     'model/movers/base',
     'model/environment/tide'
 ], function(_, Backbone, BaseMover, GnomeTide){
+    'use strict';
     var catsMover = BaseMover.extend({
         urlRoot: '/mover/',
 

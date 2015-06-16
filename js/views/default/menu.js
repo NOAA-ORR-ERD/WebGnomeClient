@@ -9,6 +9,7 @@ define([
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
+    'use strict';
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like

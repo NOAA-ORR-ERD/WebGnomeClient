@@ -4,7 +4,8 @@ define([
     'model/weatherers/base',
     'model/environment/waves'
 ], function(_, Backbone, BaseModel, WavesModel){
-    dispersionWeatherer = BaseModel.extend({
+    'use strict';
+    var dispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',

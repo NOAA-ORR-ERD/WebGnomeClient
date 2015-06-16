@@ -5,6 +5,7 @@ define([
     'model/location',
     'model/gnome'
 ], function($, _, Backbone, LocationModel, GnomeModel){
+    'use strict';
     var locationTests = {
         locId: 0,
         run: function(){

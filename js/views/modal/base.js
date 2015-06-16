@@ -6,6 +6,7 @@ define([
     'text!templates/modal/base.html',
     'mousetrap'
 ], function($, _, Backbone, bs, ModalTemplate, Mousetrap){
+    'use strict';
     var baseModal = Backbone.View.extend({
         className: 'modal fade',
         name: 'default',

@@ -4,6 +4,7 @@ define([
     'backbone',
     'ol'
 ], function($, _, Backbone, ol){
+    'use strict';
     var olMapView = Backbone.View.extend({
         className: 'map',
         id:'map',

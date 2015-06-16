@@ -5,6 +5,7 @@ define([
     'collection/help',
     'model/help/help'
 ], function($, _, Backbone, HelpCollection, HelpModel){
+    'use strict';
 		var helpTests = {
 			run: function(){
 				QUnit.module('Help');

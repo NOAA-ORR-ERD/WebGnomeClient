@@ -4,6 +4,7 @@ define([
     'backbone',
     'model/map'
 ], function($, _, Backbone, GnomeMap){
+    'use strict';
     var mapTests = {
         run: function(){
             QUnit.module('Map');

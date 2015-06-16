@@ -3,6 +3,7 @@ define([
     'jquery',
     'backbone'
 ], function(_, $, Backbone){
+    'use strict';
     var nwsWind = Backbone.Model.extend({
         url: function(){
             // http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?latitude=47&longitude=-125.5&format=JSON

@@ -5,6 +5,7 @@ define([
     'ol',
     'model/base'
 ], function(_, $, Backbone, ol, BaseModel){
+    'use strict';
     var gnomeMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,

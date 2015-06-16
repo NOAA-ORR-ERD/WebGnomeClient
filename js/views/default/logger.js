@@ -5,6 +5,7 @@ define([
     'socketio',
     'text!templates/default/logger/index.html'
 ], function($, _, Backbone, io, LoggerTemplate){
+    'use strict';
     var loggerView = Backbone.View.extend({
         className: 'logger',
         socketRoute: '/logger',

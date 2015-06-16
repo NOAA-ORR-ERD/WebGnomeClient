@@ -2,14 +2,20 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'localforage',
     'model/step'
-], function($, _, Backbone, StepModel){
+], function($, _, Backbone, localforage, StepModel){
+    'use strict';
     var cache = Backbone.Collection.extend({
         fetching: false,
 
         initialize: function(options, model){
             this.gnome_model = model;
             this.gnome_model.on('sync', _.bind(this.checkState, this));
+            localforage.config({
+                name: 'WebGNOME Cache',
+                storeName: 'webgnome_cache'
+            });
         },
 
         checkState: function(){
@@ -39,8 +45,34 @@ define([
             if(this.length > 0 || override){
                 $.get(webgnome.config.api + '/rewind');
                 this.trigger('rewind');
-                this.reset([]);
+                this.reset();
             }
+        },
+
+        add: function(models, options){
+            var key;
+            if(_.isArray(models)){
+                for(var m = 0; m < models.length; m++){
+                    key = this.length;
+                    localforage.setItem(key.toString(), models[m].toJSON());
+                    this.length++;
+                }
+            } else {
+                key = this.length;
+                localforage.setItem(key.toString(), models.toJSON());
+                this.length++;
+            }
+        },
+
+        at: function(index, cb){
+            if(this.length > index && index >= 0){
+                return localforage.getItem(index.toString(), cb);
+            }
+        },
+
+        reset: function(){
+            this.length = 0;
+            localforage.clear();
         }
     });
 

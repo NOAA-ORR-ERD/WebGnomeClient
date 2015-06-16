@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone'
 ], function($, _, Backbone){
+    'use strict';
     var baseCollection = Backbone.Collection.extend({
         initialize: function (objs, opts) {
             BaseCollection.__super__.initialize.apply(this, arguments);

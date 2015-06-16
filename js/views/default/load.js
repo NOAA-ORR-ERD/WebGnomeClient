@@ -8,6 +8,7 @@ define([
     'text!templates/default/load.html',
     'text!templates/default/dropzone.html'
 ], function($, _, Backbone, Dropzone, swal, GnomeModel, LoadTemplate, DropzoneTemplate){
+    'use strict';
     var loadView = Backbone.View.extend({
         className: 'page load',
         initialize: function(){

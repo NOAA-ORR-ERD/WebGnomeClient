@@ -53,6 +53,7 @@ define([
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
+    'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
 
@@ -217,16 +218,9 @@ define([
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
+            // anything that change the model's values or objects values should go in
+            // the configure method.
             this.configure(target);
-
-            if (target === 'fate'){
-                var fiveDays = 86400 * 5;
-                webgnome.model.set('duration', fiveDays);
-                this.updateModelValues();
-            } else {
-                webgnome.model.set('duration', 86400);
-                this.updateModelValues();
-            }
 
             if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
                 swal({
@@ -241,6 +235,7 @@ define([
                             this.updateLocation();
                             this.updateCurrent();
                             this.updateSpill();
+                            this.updateModelValues();
                         }, this));
 
                         this.togglePrediction(e, target);
@@ -253,6 +248,7 @@ define([
                         validate: false,
                         success: _.bind(function(){
                             this.updateObjects();
+                            this.updateModelValues();
                             this.updateSpill();
                         }, this)
                     });
@@ -281,7 +277,7 @@ define([
 
             }
             this.$('.stage-2').show();
-            this.mason.layout();
+            this.updateSpill();
         },
 
         showFateObjects: function(){
@@ -1164,6 +1160,7 @@ define([
         },
         
         configure: function(target){
+            // model change need to take place before changing any child objects
             this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
@@ -1205,14 +1202,17 @@ define([
         configureModel: function(prediction){
             var changes = {
                 time_step: null,
-                uncertain: null
+                uncertain: null,
+                duration: null
             };
             if(prediction == 'trajectory' || prediction == 'both'){
                 changes.time_step = 900;
                 changes.uncertain = true;
+                changes.duration = 86400;
             } else {
                 changes.time_step = 3600;
                 changes.uncertain = false;
+                changes.duration = 86400 * 5;
             }
 
             webgnome.model.set(changes);

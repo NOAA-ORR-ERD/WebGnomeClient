@@ -10,6 +10,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
+    'use strict';
     var skimForm = ResponseFormModal.extend({
         title: 'Skim Response',
         className: 'modal response fade form-modal skim-form',

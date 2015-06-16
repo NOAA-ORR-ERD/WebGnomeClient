@@ -5,6 +5,7 @@ define([
     'views/modal/form',
     'text!templates/form/environment.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
+    'use strict';
     var environmentForm = FormModal.extend({
         initialize: function(options, modal){
             FormModal.prototype.initialize.call(this, options);

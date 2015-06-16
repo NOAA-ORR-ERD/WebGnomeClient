@@ -3,6 +3,7 @@ define([
     'jquery',
     'backbone'
 ], function(_, $, Backbone){
+    'use strict';
     var oilDistinct = Backbone.Collection.extend({
         initialize: function(cb){
             this.fetch({

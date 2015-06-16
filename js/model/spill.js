@@ -5,6 +5,7 @@ define([
     'model/release',
     'model/element'
 ], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
+    'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
 

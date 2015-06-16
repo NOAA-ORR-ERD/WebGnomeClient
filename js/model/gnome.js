@@ -31,6 +31,7 @@ define([
     WindMover, RandomMover, CatsMover, IceMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer){
+    'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],

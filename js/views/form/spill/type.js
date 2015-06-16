@@ -13,6 +13,7 @@ define([
     'views/form/spill/pipeline'
 ], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel, GnomeRelease,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
+    'use strict';
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
         className: 'modal fade form-modal spilltype-form',

@@ -9,6 +9,7 @@ define([
     'model/spill',
     'model/substance'
 ], function($, _, Backbone, GnomeModel, WindModel, WaterModel, WavesModel, SpillModel, SubstanceModel){
+    'use strict';
     var mapTests = {
         run: function(){
             QUnit.module('Automated Runs');

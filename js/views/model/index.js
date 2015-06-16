@@ -9,6 +9,7 @@ define([
     'text!templates/model/index.html',
     'sweetalert'
 ], function($, _, Backbone, Cache, TreeView, TrajectoryView, FateView, IndexTemplate, swal){
+    'use strict';
     var modelView = Backbone.View.extend({
         className: 'page model',
 

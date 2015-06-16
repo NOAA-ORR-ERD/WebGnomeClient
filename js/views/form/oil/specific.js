@@ -5,6 +5,7 @@ define([
     'model/oil/library',
     'text!templates/oil/specific.html'
 ], function($, _, Backbone, OilLib, SpecificOilTemplate){
+    'use strict';
 	var specificOil = Backbone.View.extend({
 		id: 'specificOilContainer',
 

@@ -11,6 +11,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment, nucos){
+    'use strict';
     var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
         className: 'modal response fade form-modal insituburn-form',

@@ -15,6 +15,7 @@ define([
     'jqueryui/slider',
     'jqueryFileupload'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: 'map',
         id: 'map',
@@ -421,7 +422,7 @@ define([
             if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if (webgnome.cache.at(this.controls.seek.slider('value'))){
                     // the cache has the step, just render it
-                    this.renderStep(webgnome.cache.at(this.controls.seek.slider('value')));
+                    this.renderStep({step: this.controls.seek.slider('value')});
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();
@@ -481,10 +482,8 @@ define([
         next: function(){
             if($('.modal').length === 0){
                 this.pause();
-                if(webgnome.cache.at(this.frame + 1)){
-                    this.controls.seek.slider('value', this.frame + 1);
-                    this.renderStep({step: this.frame + 1});
-                }
+                this.controls.seek.slider('value', this.frame + 1);
+                this.renderStep({step: this.frame + 1});
             }
         },
 
@@ -492,7 +491,12 @@ define([
             this.pause();
             this.state = 'seek';
             this.controls.seek.slider('value', ui.value);
-            this.renderStep({step: ui.value});
+
+            if(ui.value <= webgnome.cache.length){
+                this.renderStep({step: ui.value});
+            } else {
+                this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+            }
         },
 
         resetSeek: function(){
@@ -503,27 +507,31 @@ define([
         renderStep: function(source){
             var step;
             if(_.has(source, 'step')){
-                step = webgnome.cache.at(source.step);
+                webgnome.cache.at(source.step, _.bind(function(err, step){
+                    if(!err){
+                        this.drawStep(new GnomeStep(step));
+                    }
+                }, this));
             } else {
                 step = source;
+                this.drawStep(step);
             }
+        },
 
-            if(step){
-                this.renderSpill(step);
-                this.renderCurrent(step);
-                this.renderIce(step);
+        drawStep: function(step){
+            if(!step) return;
+            this.renderSpill(step);
+            this.renderCurrent(step);
+            this.renderIce(step);
 
-                this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
-                this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
-                if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
-                    setTimeout(_.bind(function(){
-                        this.controls.seek.slider('value', this.frame + 1);
-                    }, this), 60);
-                } else {
-                    this.pause();
-                }
-            } else if (this.state == 'seek') {
-                this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+            this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
+            this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+                setTimeout(_.bind(function(){
+                    this.controls.seek.slider('value', this.frame + 1);
+                }, this), 60);
+            } else {
+                this.pause();
             }
         },
 
@@ -719,7 +727,7 @@ define([
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
             }
-            this.renderCurrent(webgnome.cache.at(this.frame));
+            this.renderStep({step: this.frame});
 
             current_outputter.save();
         },
@@ -791,13 +799,13 @@ define([
                 this.checked_ice = [];
             }
 
-            this.renderIce(webgnome.cache.at(this.frame));
+            this.renderStep({step: this.frame});
 
             current_outputter.save();
         },
 
         toggleIceData: function(e){
-            this.renderIce(webgnome.cache.at(this.frame));
+            this.renderStep({step: this.frame});
         },
 
         toggleSpill: function(e){
@@ -841,7 +849,7 @@ define([
 
         renderSpills: function(){
             // foreach spill add at feature to the source
-            spills = webgnome.model.get('spills');
+            var spills = webgnome.model.get('spills');
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
                 var end_position = spill.get('release').get('end_position');

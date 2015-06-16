@@ -6,7 +6,8 @@ define([
     'text!templates/default/alert-danger.html',
     'views/default/help'
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
-    formModal = BaseModal.extend({
+    'use strict';
+    var formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],

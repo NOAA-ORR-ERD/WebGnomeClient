@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone'
 ], function($, _, Backbone){
+    'use strict';
     var loadingView = Backbone.View.extend({
         className: 'app-state loading',
         initialize: function(){

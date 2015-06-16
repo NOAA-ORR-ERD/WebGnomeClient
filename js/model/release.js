@@ -5,6 +5,7 @@ define([
     'model/base',
     'moment'
 ], function(_, Backbone, ol, BaseModel, moment){
+    'use strict';
     var gnomeRelease = BaseModel.extend({
         url: '/release',
 

@@ -6,6 +6,7 @@ define([
     'views/base',
     'moment',
     'nucos',
+    'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
@@ -17,7 +18,8 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate){
+    'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
         frame: 0,
@@ -86,19 +88,25 @@ define([
         },
 
         load: function(){
-            if(webgnome.cache.models.length > 0 &&
-            _.has(webgnome.cache.models[0].get('WeatheringOutput'), 'nominal')){
+            if(webgnome.cache.length > 0){
+                while(this.frame < webgnome.cache.length){
+                    webgnome.cache.at(this.frame, _.bind(function(err, step){
+                        this.formatDataset(new GnomeStep(step));
 
-                webgnome.cache.forEach(_.bind(function(step){
+                        if(step.WeatheringOutput.step_num == webgnome.cache.length - 1){
+                            this.renderGraphs();
+                            if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
+                                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                                webgnome.cache.step();
+                            }
+                        }
+                    }, this));
                     this.frame++;
-                    this.formatDataset(step);
-                }, this));
-
-                if(this.frame < webgnome.model.get('num_time_steps')){
-                    webgnome.cache.step();
                 }
+            } else {
+                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                webgnome.cache.step();
             }
-            webgnome.cache.on('step:recieved', this.buildDataset, this);
         },
 
         reset: function(){
@@ -119,6 +127,7 @@ define([
             var spills = webgnome.model.get('spills');
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
+            var wind_speed;
             if(_.isUndefined(wind)){
                 wind_speed = '';
             } else if (wind.get('timeseries').length === 1) {
@@ -197,7 +206,6 @@ define([
                 container: 'body'
             });
             this.load();
-            this.renderLoop();
         },
 
         renderLoop: function(){
@@ -375,7 +383,7 @@ define([
 
             table.html('');
             table = '';
-            m_date = moment(webgnome.model.get('start_time'));
+            var m_date = moment(webgnome.model.get('start_time'));
             var opacity;
             for (var row = 0; row < dataset[0].data.length; row++){
                 var ts_date = moment(dataset[0].data[row][0]);
@@ -930,23 +938,23 @@ define([
                         'sedimentation',
                         'dissolution'
                     ].indexOf(this.dataset[set].name) !== -1){
-                    min = _.min(step.get('WeatheringOutput'), function(run){
+                    var min = _.min(step.get('WeatheringOutput'), function(run){
                         if (!_.isNull(run)){
                             return run[this.dataset[set].name];
                         }
                     }, this);
-                    low_value = min[this.dataset[set].name];
+                    var low_value = min[this.dataset[set].name];
                     low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
-                    max = _.max(step.get('WeatheringOutput'), function(run){
+                    var max = _.max(step.get('WeatheringOutput'), function(run){
                         if (!_.isNull(run)){
                             return run[this.dataset[set].name];
                         }
                     }, this);
-                    high_value = max[this.dataset[set].name];
+                    var high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
 
-                    nominal_value = nominal[this.dataset[set].name];
+                    var nominal_value = nominal[this.dataset[set].name];
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
                     // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
@@ -1042,7 +1050,7 @@ define([
         findInitialRelease: function(spills){
             var release_init = moment(spills.at(0).get('release').get('release_time')).unix();
             spills.forEach(function(spill){
-                release_start = moment(spill.get('release').get('release_time')).unix();
+                var release_start = moment(spill.get('release').get('release_time')).unix();
                 if(release_start < release_init){
                     release_init = release_start;
                 }

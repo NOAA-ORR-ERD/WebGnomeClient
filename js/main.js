@@ -12,7 +12,7 @@ require.config({
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
-        ol: 'lib/openlayers/build/ol',
+        ol: 'lib/openlayers/build/ol-debug',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
@@ -45,7 +45,8 @@ require.config({
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         nucos: 'lib/nucos/nucos',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
-        socketio: 'lib/socket.io-client/dist/socket.io'
+        socketio: 'lib/socket.io-client/dist/socket.io',
+        localforage: 'lib/localforage/dist/localforage'
     },
     shim: {
         jquery: {
@@ -86,6 +87,9 @@ require.config({
         },
         socketio: {
             exports: 'io'
+        },
+        localforage: {
+            exports: 'localforage'
         }
     },
 });
@@ -94,6 +98,7 @@ require.config({
 require([
     'app',
 ], function(App){
+    'use strict';
     window.webgnome = App;
     webgnome.initialize();
 });
