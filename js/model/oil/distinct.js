@@ -1,8 +1,9 @@
 define([
     'underscore',
     'jquery',
-    'backbone'
-], function(_, $, Backbone){
+    'backbone',
+    'moment'
+], function(_, $, Backbone, moment){
     'use strict';
     var oilDistinct = Backbone.Collection.extend({
         initialize: function(cb){
