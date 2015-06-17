@@ -29,8 +29,6 @@
     "colors": "0.6.2",
     "http-server": "*",
     "less": "*",
-    "node-qunit-phantomjs": "0.2.2",
-    "phantomjs": "1.9.9",
     "requirejs": "*",
     "grunt": "*",
     "grunt-contrib-requirejs": "*",
