@@ -108,7 +108,7 @@ define([
                     success: _.bind(function(){
                         this.hide();
                         this.trigger('save', [this.model]);
-                        if(_.isFunction(callback)) callback();
+                        if(_.isFunction(callback)) { callback(); }
                     }, this),
                     error: _.bind(function(model, response){
                         this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
@@ -121,7 +121,7 @@ define([
             } else {
                 this.hide();
                 this.trigger('save', [this.model]);
-                if(_.isFunction(callback)) callback();
+                if(_.isFunction(callback)){ callback(); }
             }
         },
 
