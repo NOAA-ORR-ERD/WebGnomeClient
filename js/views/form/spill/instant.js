@@ -11,7 +11,7 @@ define([
     'views/default/map',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, moment, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     'use strict';
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
