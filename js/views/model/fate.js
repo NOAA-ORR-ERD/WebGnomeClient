@@ -249,7 +249,19 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
@@ -284,7 +296,19 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -360,7 +384,18 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -584,7 +619,7 @@ define([
         },
 
         renderGraphViscosity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_viscosity']);
+            dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -889,7 +924,7 @@ define([
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
                 keys.push('beached', 'floating', 'amount_released');
-                keys.push('water_density');
+                keys.push('water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -971,6 +1006,18 @@ define([
                     low_value = waterDensity;
                     nominal_value = waterDensity;
                     high_value = waterDensity;
+                } else if (this.dataset[set].name === 'water_viscosity'){
+                    low_value = 1;
+                    nominal_value = 1;
+                    high_value = 1;
+                } else if (this.dataset[set].name === 'dispersibility_difficult'){
+                    low_value = 2000;
+                    nominal_value = 2000;
+                    high_value = 2000;
+                } else if (this.dataset[set].name === 'dispersibility_unlikely'){
+                    low_value = 10000;
+                    nominal_value = 10000;
+                    high_value = 10000;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
