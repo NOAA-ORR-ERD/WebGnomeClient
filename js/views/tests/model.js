@@ -15,7 +15,7 @@ define([
         test: function(){
 
             asyncTest('Create a model from an empty payload', function(){
-                model = new GnomeModel();
+                var model = new GnomeModel();
                 model.save(null, {
                     validate: false,
                     success: function(){
@@ -32,7 +32,7 @@ define([
             });
 
             asyncTest('Create a model from a partial payload', function(){
-                model = new GnomeModel();
+                var model = new GnomeModel();
                 model.set('duration', 8000);
                 model.save(null, {
                     validate: false,
