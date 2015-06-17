@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
+    'moment',
     'model/base'
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, moment, BaseModel){
     'use strict';
 	var baseWeathererModel = BaseModel.extend({
 		urlRoot: '/weatherer/',
