@@ -186,7 +186,7 @@ define([
                 this.disableMenuItem('edit');
             }
 
-            if(window.location.href.indexOf('model') != -1){
+            if(window.location.href.indexOf('model') !== -1){
                 this.enableMenuItem('debugView');
             } else {
                 this.disableMenuItem('debugView');
