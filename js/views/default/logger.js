@@ -107,8 +107,8 @@ define([
         },
 
         evalLogs: function(){
-            var errors = this.$('.logs .error, .logs .criti').length;
-            var warnings = this.$('.logs .warni').length;
+            var errors = this.$('.logs .error, .logs .criti').length / 3;
+            var warnings = this.$('.logs .warni').length / 3;
 
             if(errors > 0){
                 this.$el.addClass('error');

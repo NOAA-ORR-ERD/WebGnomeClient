@@ -350,7 +350,7 @@ define([
         },
 
         getPieData: function(pos, dataset, key){
-            d = [];
+            var d = [];
             for (var i = 0; i < dataset.length; ++i) {
 
                 var series = dataset[i];
@@ -643,7 +643,18 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering', 'water_density']);
+            dataset = this.pruneDataset(dataset, ['avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
