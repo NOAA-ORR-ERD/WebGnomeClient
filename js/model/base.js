@@ -50,11 +50,11 @@ define([
                             // I.E. environment with wind and tide, figure out which one we have
                             // by looking at it's obj_type and cast it appropriatly.
 
-                            for(var obj in embeddedData){
-                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj].obj_type], embeddedData[obj]), {merge: true});
+                            for(var obj2 in embeddedData){
+                                if(_.isFunction(embeddedClass[embeddedData[obj2].obj_type])){
+                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj]), {merge: true});
+                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
                                 }
                             }
                         }
@@ -67,14 +67,14 @@ define([
             return response;
         },
 
-        setChild: function(cls, data){
+        setChild: function(Cls, data){
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
                 return webgnome.obj_ref[data.id];
             }
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new cls();
+            var obj = new Cls();
             obj.set(obj.parse(data), {silent: true});
             webgnome.obj_ref[data.id] = obj;
             return obj;
