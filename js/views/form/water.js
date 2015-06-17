@@ -44,7 +44,7 @@ define([
                 this.$('#height').val(this.model.get('wave_height'));
             }
             
-            if ([0, 15, 32].indexOf(this.model.get('salinity')) == -1){
+            if ([0, 15, 32].indexOf(this.model.get('salinity')) === -1){
                 // one of the drop down options was not selected.
                 this.$('.salinity-select').parent().hide();
                 this.$('.salinity-input').removeClass('hide');
@@ -55,7 +55,7 @@ define([
 
             var unitsAreMgPerLiter = this.model.get('units').sediment === 'mg/l';
 
-            if ([5, 50, 500].indexOf(this.model.get('sediment')) == -1 || !unitsAreMgPerLiter){
+            if ([5, 50, 500].indexOf(this.model.get('sediment')) === -1 || !unitsAreMgPerLiter){
                 this.$('.sediment-select').parent().hide();
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));

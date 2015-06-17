@@ -56,6 +56,7 @@ define([
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
+        current_extents: [],
 
         events: function(){
             return _.defaults({

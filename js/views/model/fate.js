@@ -90,23 +90,26 @@ define([
         load: function(){
             if(webgnome.cache.length > 0){
                 while(this.frame < webgnome.cache.length){
-                    webgnome.cache.at(this.frame, _.bind(function(err, step){
-                        this.formatDataset(new GnomeStep(step));
-
-                        if(step.WeatheringOutput.step_num == webgnome.cache.length - 1){
-                            this.renderGraphs();
-                            if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
-                                webgnome.cache.on('step:recieved', this.buildDataset, this);
-                                webgnome.cache.step();
-                            }
-                        }
-                    }, this));
+                    webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
                     this.frame++;
                 }
             } else {
                 webgnome.cache.on('step:recieved', this.buildDataset, this);
                 webgnome.cache.step();
             }
+        },
+
+        loadStep: function(err, step){
+           this.formatDataset(new GnomeStep(step));
+
+            // on the last step render the graph and if there are more steps start the steping.
+            if(step.WeatheringOutput.step_num === webgnome.cache.length - 1){
+                this.renderGraphs();
+                if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
+                    webgnome.cache.on('step:recieved', this.buildDataset, this);
+                    webgnome.cache.step();
+                }
+            }     
         },
 
         reset: function(){
@@ -227,23 +230,23 @@ define([
 
             $('#flotTip').remove();
 
-            if(active == '#budget-graph') {
+            if(active === '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
-            } else if(active == '#budget-table') {
+            } else if(active === '#budget-table') {
                 this.renderTableOilBudget(this.dataset);
-            } else if(active == '#evaporation') {
+            } else if(active === '#evaporation') {
                 this.renderGraphEvaporation(this.dataset);
-            } else if(active == '#dispersion') {
+            } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
-            } else if(active == '#sedimentation') {
+            } else if(active === '#sedimentation') {
                 this.renderGraphSedimentation(this.dataset);
-            } else if(active == '#density') {
+            } else if(active === '#density') {
                 this.renderGraphDensity(this.dataset);
-            } else if(active == '#emulsification') {
+            } else if(active === '#emulsification') {
                 this.renderGraphEmulsification(this.dataset);
-            } else if(active == '#viscosity') {
+            } else if(active === '#viscosity') {
                 this.renderGraphViscosity(this.dataset);
-            } else if(active == '#ics209') {
+            } else if(active === '#ics209') {
                 this.renderGraphICS(this.dataset);
             }
         },
@@ -291,7 +294,7 @@ define([
 
         renderPies: function(dataset, pos){
             this.renderPiesTimeout = null;
-            if(this.$('#budget-graph:visible .timeline .chart').length != 1){
+            if(this.$('#budget-graph:visible .timeline .chart').length !== 1){
                 return;
             }
             
@@ -792,19 +795,19 @@ define([
                         report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-                for(var step in dataset[set].data){
-                    if(dataset[set].data[step][0] <= end){
-                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
+                for(var step2 in dataset[set].data){
+                    if(dataset[set].data[step2][0] <= end){
+                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step2][1], 10);
                     }
                 }
-                for(var step in dataset[set].low){
-                    if(dataset[set].low[step][0] <= end){
-                        low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
+                for(var step3 in dataset[set].low){
+                    if(dataset[set].low[step3][0] <= end){
+                        low[dataset[set].name] += parseInt(dataset[set].low[step3][1], 10);
                     }
                 }
-                for(var step in dataset[set].high){
-                    if(dataset[set].high[step][0] <= end){
-                        high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
+                for(var step4 in dataset[set].high){
+                    if(dataset[set].high[step4][0] <= end){
+                        high[dataset[set].name] += parseInt(dataset[set].high[step4][1], 10);
                     }
                 }
                 
@@ -823,10 +826,10 @@ define([
             for(var value in report){
                 report[value] = Math.round(converter.Convert(report[value], 'kg', api, 'API degree', units));
             }
-            for(var value in cumulative){
-                cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
-                low[value] = Math.round(converter.Convert(low[value], 'kg', api, 'API degree', units));
-                high[value] = Math.round(converter.Convert(high[value], 'kg', api, 'API degree', units));
+            for(var value2 in cumulative){
+                cumulative[value2] = Math.round(converter.Convert(cumulative[value2], 'kg', api, 'API degree', units));
+                low[value2] = Math.round(converter.Convert(low[value2], 'kg', api, 'API degree', units));
+                high[value2] = Math.round(converter.Convert(high[value2], 'kg', api, 'API degree', units));
             }
             
             var compiled = _.template(ICSTemplate, {
@@ -884,10 +887,10 @@ define([
             if(!_.isUndefined(header)){
                 var cols = csv[0].split(',').length;
                 header.each(function(row){
-                    cells = $(header[row]).text().split(':');
-                    csv_row = [cells[0] + ':', cells[1]];
+                    var cells = $(header[row]).text().split(':');
+                    var csv_row = [cells[0] + ':', cells[1]];
 
-                    for(i = 0; i < cols.length - cells.length; i++){
+                    for(var i = 0; i < cols.length - cells.length; i++){
                         csv_row.push(' ');
                     }
                     csv.unshift(csv_row.join(','));
@@ -948,11 +951,7 @@ define([
                             show: false
                         },
                         needle: {
-                            label: function(text){
-                                var num = parseFloat(text).toFixed(2);
-                                var units = $('.tab-pane:visible .yaxisLabel').text();
-                                return num + ' ' + units;
-                            }
+                            label: this.formatNeedleLabel
                         }
                     });
                 }
@@ -971,6 +970,7 @@ define([
             var waterDensity = water.getDensity();
 
             for(var set in this.dataset){
+                var low_value, nominal_value, high_value;
                 if([
                         'natural_dispersion',
                         'chem_dispersed',
@@ -983,23 +983,15 @@ define([
                         'sedimentation',
                         'dissolution'
                     ].indexOf(this.dataset[set].name) !== -1){
-                    var min = _.min(step.get('WeatheringOutput'), function(run){
-                        if (!_.isNull(run)){
-                            return run[this.dataset[set].name];
-                        }
-                    }, this);
-                    var low_value = min[this.dataset[set].name];
+                    var min = _.min(step.get('WeatheringOutput'), this.runIterator(set), this);
+                    low_value = min[this.dataset[set].name];
                     low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
-                    var max = _.max(step.get('WeatheringOutput'), function(run){
-                        if (!_.isNull(run)){
-                            return run[this.dataset[set].name];
-                        }
-                    }, this);
-                    var high_value = max[this.dataset[set].name];
+                    var max = _.max(step.get('WeatheringOutput'), this.runIterator(set), this);
+                    high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
 
-                    var nominal_value = nominal[this.dataset[set].name];
+                    nominal_value = nominal[this.dataset[set].name];
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
                     // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
@@ -1041,6 +1033,20 @@ define([
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
                 webgnome.mass_balance = this.dataset;
             }
+        },
+
+        runIterator: function(set){
+            return (function(run){
+                if (!_.isNull(run)){
+                    return run[this.dataset[set].name];
+                }
+            });
+        },
+
+        formatNeedleLabel: function(text){
+            var num = parseFloat(text).toFixed(2);
+            var units = $('.tab-pane:visible .yaxisLabel').text();
+            return num + ' ' + units;
         },
 
         pruneDataset: function(dataset, leaves){

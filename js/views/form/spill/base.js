@@ -60,7 +60,7 @@ define([
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
             this.showSubstance = localStorage.getItem('prediction') === 'trajectory' ? false : true;
-            if(this.model.get('name') == 'Spill'){
+            if(this.model.get('name') === 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
 		},
@@ -167,7 +167,7 @@ define([
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
                     var substanceModel;
                     for (var i = 0; i < cachedOils.length; i++){
-                        if(cachedOils[i]['name'] === oilId){
+                        if(cachedOils[i].name === oilId){
                             substanceModel = new SubstanceModel(cachedOils[i]);
                             break;
                         }
@@ -191,7 +191,7 @@ define([
             var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isNull(substanceModel) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
-                    if (cachedOils[i]['name'] === substance.get('name')){
+                    if (cachedOils[i].name === substance.get('name')){
                         cachedOils.splice(i, 1);
                     }
                 }
@@ -212,7 +212,7 @@ define([
         },
 
         renderSubstanceInfo: function(e, cached){
-            var substance;
+            var substance, compiled;
             var enabled = webgnome.model.get('spills').length > 0;
             if (_.isUndefined(cached)){
                 if (enabled){
@@ -226,7 +226,7 @@ define([
             var cachedOilArray = this.updateCachedOils(substance);
             var oilExists = !_.isNull(substance);
             if (oilExists){
-                var compiled = _.template(SubstanceTemplate, {
+                compiled = _.template(SubstanceTemplate, {
                     name: substance.get('name'),
                     api: Math.round(substance.get('api') * 1000) / 1000,
                     temps: substance.parseTemperatures(),
@@ -237,7 +237,7 @@ define([
                     oilCache: cachedOilArray
                 });
             } else {
-                var compiled = _.template(SubstanceNullTemplate, {
+                compiled = _.template(SubstanceNullTemplate, {
                     oilCache: cachedOilArray
                 });
             }
@@ -474,6 +474,7 @@ define([
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
+                var feature;
                 var startPosition = _.initial(this.model.get('release').get('start_position'));
                 if (startPosition[0] !== 0 && startPosition[1] !== 0){
                     var startPoint = this.convertCoords(this.model.get('release').get('start_position'));
@@ -481,7 +482,7 @@ define([
                     startPoint = ol.proj.transform(startPoint, 'EPSG:4326', 'EPSG:3857');
                     endPoint = ol.proj.transform(endPoint, 'EPSG:4326', 'EPSG:3857');
                     var pointsArray = [startPoint, endPoint];
-                    var feature = new ol.Feature(new ol.geom.LineString(pointsArray));
+                    feature = new ol.Feature(new ol.geom.LineString(pointsArray));
                     feature.set('name', 'start');
                     this.source.addFeature(feature);
                     
@@ -491,7 +492,7 @@ define([
                 var start = this.model.get('release').get('start_position');
                 var end = this.model.get('release').get('end_position');
                 if ((start[0] === end[0]) && (start[1] === end[1])){
-                    var feature = this.source.forEachFeature(_.bind(function(feature){
+                    feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                     }, this));
                     if (!_.isUndefined(feature)){
@@ -499,7 +500,7 @@ define([
                     }
                     var point = _.initial(start);
                     point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                    var feature = new ol.Feature(new ol.geom.Point(point));
+                    feature = new ol.Feature(new ol.geom.Point(point));
                     feature.setStyle( new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
