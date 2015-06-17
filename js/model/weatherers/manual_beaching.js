@@ -17,12 +17,6 @@ define([
 			return '';
 		},
 
-		initialize: function(){
-			var active_start = webgnome.model.get('start_time');
-			BaseModel.prototype.initialize.call(this);
-			this.set('active_start', active_start);
-		},
-
 		validate: function(attrs, options){
 			var modelStartTime = moment(webgnome.model.get('start_time')).unix();
 			if(!_.isUndefined(attrs.timeseries)){

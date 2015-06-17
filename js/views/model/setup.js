@@ -1083,7 +1083,7 @@ define([
 
         updateBeached: function(){
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            if (!_.isUndefined(beached)){
+            if (!_.isUndefined(beached) && beached.get('timeseries').length > 0){
                 var compiled, dataset;
                 this.$('.beached .panel').addClass('complete');
                 if (beached.get('timeseries').length === 1){
@@ -1095,7 +1095,7 @@ define([
                         date: singleDate
                     });
                     this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
-                } else {
+                } else if (beached.get('timeseries').length > 1) {
                     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
 
                     var ts = beached.get('timeseries');
