@@ -19,7 +19,7 @@ define([
             webgnome.router.views[0].on('debugTreeToggle', _.bind(function(){this.renderModel({attrs: true});}, this), this);
             this.render();
 
-            if (localStorage.getItem('advanced') == 'true'){
+            if (localStorage.getItem('advanced') === 'true'){
                 this.toggle();
             }
         },
@@ -50,10 +50,11 @@ define([
                 if (!_.isUndefined(opts) && _.has(opts, 'attrs')){
                     this.debugOn = !this.debugOn;
                 }
+                var model_tree;
                 if (this.debugOn){
-                    var model_tree = webgnome.model.toDebugTree();
+                    model_tree = webgnome.model.toDebugTree();
                 } else {
-                    var model_tree = webgnome.model.toTree();
+                    model_tree = webgnome.model.toTree();
                 }
                 if(this.$('.model-tree .ui-fancytree').length === 0){
                     this.$('.model-tree').fancytree({
