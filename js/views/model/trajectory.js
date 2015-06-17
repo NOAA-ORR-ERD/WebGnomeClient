@@ -14,7 +14,7 @@ define([
     'mousetrap',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: 'map',
@@ -53,7 +53,7 @@ define([
             }),
             elements: function(feature, resolution){
                 var color = 'rgba(0, 0, 0, 1)';
-                if(feature.get('sc_type') == 'uncertain'){
+                if(feature.get('sc_type') === 'uncertain'){
                     color = 'rgba(255, 54, 54, 1)';
                 }
                 return [new ol.style.Style({
@@ -104,7 +104,7 @@ define([
                 v_x = v_x / features.length;
                 v_y = v_y / features.length;
 
-                var scale_factor = 2000;
+                var scale_factor = 50 * resolution;
                 var coords = feature.getGeometry().getCoordinates();
                 var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
 
@@ -127,7 +127,7 @@ define([
                     rad = (2 * Math.PI) - rad;
                 }
 
-                var len = -250;
+                var len = -5 * resolution;
                 var rad_right = 0.785398163; //3.92699082;
                 var rad_left = 0.785398163;
 
@@ -198,7 +198,7 @@ define([
         render: function(){
             BaseView.prototype.render.call(this);
 
-            this.ol = new olMapView({
+            this.ol = new OlMapView({
                 controls: 'full',
                 renderer: 'canvas',
                 layers: [
@@ -419,7 +419,7 @@ define([
         },
 
         loop: function(){
-            if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
+            if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if (webgnome.cache.at(this.controls.seek.slider('value'))){
                     // the cache has the step, just render it
                     this.renderStep({step: this.controls.seek.slider('value')});
@@ -440,7 +440,7 @@ define([
 
         togglePlay: function(e){
             e.preventDefault();
-            if (this.state == 'play') {
+            if (this.state === 'play') {
                 this.pause();
             } else {
                 this.play();
@@ -519,14 +519,14 @@ define([
         },
 
         drawStep: function(step){
-            if(!step) return;
+            if(!step){ return; }
             this.renderSpill(step);
             this.renderCurrent(step);
             this.renderIce(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
             this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
                 setTimeout(_.bind(function(){
                     this.controls.seek.slider('value', this.frame + 1);
                 }, this), 60);
@@ -854,7 +854,7 @@ define([
                 var start_position = spill.get('release').get('start_position');
                 var end_position = spill.get('release').get('end_position');
                 var geom;
-                if(start_position.length > 2 && start_position[0] == end_position[0] && start_position[1] == end_position[1]){
+                if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                     start_position = [start_position[0], start_position[1]];
                     geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 } else {
@@ -932,14 +932,14 @@ define([
                 var pointer = this.ol.map.forEachFeatureAtPixel(e.pixel, function(){
                     return true;
                 }, null, function(layer){
-                    if(layer.get('name') == 'spills'){
+                    if(layer.get('name') === 'spills'){
                         return layer;
                     }
                     return false;
                 });
                 if (pointer) {
                     this.ol.map.getViewport().style.cursor = 'pointer';
-                } else if(this.ol.map.getViewport().style.cursor == 'pointer') {
+                } else if(this.ol.map.getViewport().style.cursor === 'pointer') {
                     this.ol.map.getViewport().style.cursor = '';
                 }
             }
@@ -949,7 +949,7 @@ define([
             var spill = this.ol.map.forEachFeatureAtPixel(e.pixel, function(feature){
                 return feature.get('spill');
             }, null, function(layer){
-                if(layer.get('name') == 'spills'){
+                if(layer.get('name') === 'spills'){
                     return layer;
                 }
                 return false;
