@@ -60,7 +60,7 @@ define([
             var ns = e.target.className,
                 cs = this.oilLib.sortAttr;
 
-            if (ns == cs){
+            if (ns === cs){
                 this.oilLib.sortDir *= -1;
             } else {
                 this.oilLib.sortDir = 1;
