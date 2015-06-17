@@ -937,8 +937,8 @@ define([
                 delete titles.beached;
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
-                keys.push('beached', 'floating', 'amount_released');
-                keys.push('water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
+                keys.push('beached', 'floating');
+                keys.push('water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'amount_released');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -981,7 +981,8 @@ define([
                         'burned',
                         'beached',
                         'sedimentation',
-                        'dissolution'
+                        'dissolution',
+                        'off_maps'
                     ].indexOf(this.dataset[set].name) !== -1){
                     var min = _.min(step.get('WeatheringOutput'), this.runIterator(set), this);
                     low_value = min[this.dataset[set].name];
