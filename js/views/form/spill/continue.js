@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill',
@@ -11,7 +12,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
@@ -260,7 +261,7 @@ define([
         },
 
         close: function(){
-            this.model.off('ready', this.render, this)
+            this.model.off('ready', this.render, this);
             BaseSpillForm.prototype.close.call(this);
         }
 
