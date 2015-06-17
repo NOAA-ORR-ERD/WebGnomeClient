@@ -63,7 +63,7 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-jsdoc');
 
     grunt.registerTask('build', ['jshint:all', 'requirejs:build']);
-    grunt.registerTask('docs', ['jshint:all', 'jsdoc:docs']);
-    grunt.registerTask('test', ['jshint:all']);
+    grunt.registerTask('docs', ['jsdoc:docs']);
+    grunt.registerTask('lint', ['jshint:all']);
 
 };
