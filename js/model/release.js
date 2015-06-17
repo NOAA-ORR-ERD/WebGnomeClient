@@ -39,7 +39,7 @@ define([
 
             var prediction = localStorage.getItem('prediction');
 
-            if (prediction == 'trajectory' || prediction == 'both'){
+            if (prediction === 'trajectory' || prediction === 'both'){
                 this.set('num_per_timestep', null);
                 this.set('num_elements', 1000);
             } else {
@@ -68,11 +68,11 @@ define([
                 attrs = this.attributes;
             }
             
-            if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
+            if(parseFloat(attrs.start_position[0]) !== attrs.start_position[0] || parseFloat(attrs.start_position[1]) !== attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';
             }
 
-            if(parseFloat(attrs.end_position[0]) != attrs.end_position[0] || parseFloat(attrs.end_position[1]) != attrs.end_position[1]){
+            if(parseFloat(attrs.end_position[0]) !== attrs.end_position[0] || parseFloat(attrs.end_position[1]) !== attrs.end_position[1]){
                 return 'End position must be in decimal degrees.';
             }
 
