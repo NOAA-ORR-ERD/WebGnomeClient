@@ -1065,12 +1065,25 @@ define([
             return release_init;
         },
 
+        canvasToImg: function(e){
+            var tab = this.$(e.target).parents('.tab-pane');
+            var base = tab.find('.flot-base')[0].toDataURL();
+            var overlay = tab.find('.flot-overlay')[0].toDataURL();
+            var img = new Image();
+            img.src = base;
+            return img;
+        },
+
         saveGraphImage: function(e){
             
         },
 
         printGraphImage: function(e){
-            
+            var img = this.canvasToImg(e);
+            var tab = this.$(e.target).parents('.tab-pane');
+            this.$(tab[0]).append('<div class="container-img"><img src="' + img.src + '"/></div>');
+            this.$('.container-img img').printElement();
+            setTimeout(_.bind(function(){this.$el.remove('.container-img');}, this), 20);
         },
 
         close: function(){
