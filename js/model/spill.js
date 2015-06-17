@@ -1,10 +1,11 @@
 define([
     'underscore',
+    'jquery',
     'backbone',
     'model/base',
     'model/release',
     'model/element'
-], function(_, Backbone, BaseModel, GnomeRelease, GnomeElement){
+], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',

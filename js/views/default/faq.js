@@ -54,17 +54,17 @@ define([
                 titles.push(obj[i].title);
             }
             var autocompleteConfig = {
-                                        source: function(req, res){
-                                            res(titles);
-                                        },
-                                        select: _.bind(function(e, ui){
-                                            if (!_.isUndefined(e)){
-                                                this.update({which: 13}, e.toElement.innerHTML);
-                                            }
-                                            $('.chosen-select').autocomplete('close');
-                                            $('.chosen-select').val(ui.item.value);
-                                        }, this)
-                                     };
+                source: function(req, res){
+                    res(titles);
+                },
+                select: _.bind(function(e, ui){
+                    if (!_.isUndefined(e)){
+                        this.update({which: 13}, e.toElement.innerHTML);
+                    }
+                    $('.chosen-select').autocomplete('close');
+                    $('.chosen-select').val(ui.item.value);
+                }, this)
+             };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
@@ -152,12 +152,6 @@ define([
             }
             var encodedUrl = encodeURI(target);
             webgnome.router.navigate('faq/' + encodedUrl);
-        },
-
-        renderContent: function(){
-            var subtemplate = _.template(SpecificTemplate, {});
-            this.$('.helpcontent').html('');
-            this.$('.helpcontent').append(subtemplate);
         },
 
         back: function(){

@@ -15,7 +15,7 @@ define([
         test: function(){
 
             asyncTest('Create a model from an empty payload', function(){
-                model = new GnomeModel();
+                var model = new GnomeModel();
                 model.save(null, {
                     validate: false,
                     success: function(){
@@ -32,7 +32,7 @@ define([
             });
 
             asyncTest('Create a model from a partial payload', function(){
-                model = new GnomeModel();
+                var model = new GnomeModel();
                 model.set('duration', 8000);
                 model.save(null, {
                     validate: false,
@@ -57,7 +57,7 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(gnomemodel.get('id')), 'model was created');
-                        spill = new GnomeSpill();
+                        var spill = new GnomeSpill();
                         spill.save(null, {
                             validate: false,
                             success: function(){
@@ -105,7 +105,7 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(gnomemodel.get('id')), 'model was created');
-                        spill = new GnomeSpill();
+                        var spill = new GnomeSpill();
                         spill.set('amount', '200');
                         spill.set('units', 'm^3');
                         spill.get('release').set('release_time', '2014-09-24T08:00:00');
@@ -157,7 +157,7 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(gnomemodel.get('id')), 'model was created');
-                        wind = new GnomeWind();
+                        var wind = new GnomeWind();
                         wind.save(null, {
                             validate: false,
                             success: function(){
@@ -203,12 +203,12 @@ define([
                     validate: false,
                     success: function(){
                         ok(!_.isUndefined(gnomemodel.get('id')), 'model was created');
-                        wind = new GnomeWind();
+                        var wind = new GnomeWind();
                         wind.save(null, {
                             validate: false,
                             success: function(){
                                 ok(wind.get('id') !== '', 'Wind was created');
-                                windmover = new GnomeWindMover();
+                                var windmover = new GnomeWindMover();
                                 windmover.set('wind', wind);
                                 windmover.save(null, {
                                     validate: false,

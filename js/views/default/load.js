@@ -49,7 +49,7 @@ define([
         },
 
         progress: function(e, percent){
-            if(percent == 100){
+            if(percent === 100){
                 this.$('.dz-preview').addClass('dz-uploaded');
                 this.$('.dz-loading').fadeIn();
             }
@@ -132,8 +132,8 @@ define([
                     var neededModelsStr = '';
                     var invalidSpillsStr = '';
 
-                    for (var i = 0; i < neededModels.length; i++){
-                        neededModelsStr += neededModels[i] + '\n';
+                    for (var s = 0; s < neededModels.length; s++){
+                        neededModelsStr += neededModels[s] + '\n';
                     }
 
                     for (var j = 0; j < invalidSpills.length; j++){
@@ -160,10 +160,10 @@ define([
                             if (isConfirm){
                                 for (var i = 0; i < neededModels.length; i++){
                                     if (neededModels[i].indexOf('outputters') !== -1){
-                                        var outputterModel = new webgnome.model.model['outputters'][neededModels[i]]();
+                                        var outputterModel = new webgnome.model.model.outputters[neededModels[i]]();
                                         webgnome.model.get('outputters').add(outputterModel);
                                     } else if (neededModels[i].indexOf('weatherers') !== -1){
-                                        var weathererModel = new webgnome.model.model['weatherers'][neededModels[i]]();
+                                        var weathererModel = new webgnome.model.model.weatherers[neededModels[i]]();
                                         webgnome.model.get('weatherers').add(weathererModel);
                                     }
                                 }

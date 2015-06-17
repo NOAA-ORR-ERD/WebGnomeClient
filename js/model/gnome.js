@@ -218,7 +218,7 @@ define([
             var hours = duration / 3600;
             var days = hours / 24;
 
-            if (Math.round(days) != days) {
+            if (Math.round(days) !== days) {
                 if (days < 1){
                     days = 0;
                 } else {

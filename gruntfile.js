@@ -40,6 +40,8 @@ module.exports = function(grunt){
                     "define": true,
                     "localStorage": true,
                     "setTimeout": true,
+                    "setInterval": true,
+                    "clearInterval": true,
                     "window" : true,
                     "document": true,
                     "module": true,

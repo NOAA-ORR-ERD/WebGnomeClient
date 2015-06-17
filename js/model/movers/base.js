@@ -1,8 +1,9 @@
 define([
     'underscore',
+    'jquery',
     'backbone',
     'model/base',
-], function(_, Backbone, BaseModel){
+], function(_, $, Backbone, BaseModel){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',

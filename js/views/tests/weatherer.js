@@ -16,7 +16,7 @@ define([
 
         test: function(){
             asyncTest('Create an evaporation Weatherer', function(){
-                weatherer = new EvaporationModel();
+                var weatherer = new EvaporationModel();
                 weatherer.save(null, {
                     validate: false,
                     success: function(){
