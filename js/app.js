@@ -24,6 +24,7 @@ define([
             });
 
             this.config = this.getConfig();
+            this.configure();
             this.monitor = {};
             this.monitor.requests = [];
 
@@ -36,57 +37,84 @@ define([
                     delete options.xhrFields.withCredentials;
                 }
 
-                if(window.location.href.indexOf('test.html') === -1){
-                    // monitor interation to check the status of active ajax calls.
-                    this.monitor.requests.push(jqxhr);
+                // monitor interation to check the status of active ajax calls.
+                this.monitor.requests.push(jqxhr);
 
-                    if(_.isUndefined(this.monitor.interval)){
-                        this.monitor.start_time = moment().valueOf();
-                        this.monitor.interval = setInterval(_.bind(function(){
-                            var loading;
-                            if(this.monitor.requests.length > 0){
-                                this.monitor.requests = this.monitor.requests.filter(function(req){
-                                    if(req.status !== undefined){
-                                        if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
-                                            if($('.modal').length === 0){
-                                                swal({
-                                                    html: true,
-                                                    title: 'Application Error!',
-                                                    text: 'An error in the application has occured, if this problem persists please contact support.<br /><br /><code>' + req.responseText + '</code>',
-                                                    type: 'error',
-                                                    confirmButtonText: 'Refresh'
-                                                }, function(isConfirm){
-                                                    if(isConfirm){
-                                                        window.location.reload();
-                                                    }
-                                                });
-                                            }
+                if(_.isUndefined(this.monitor.interval)){
+                    this.monitor.start_time = moment().valueOf();
+                    this.monitor.interval = setInterval(_.bind(function(){
+                        var loading;
+                        if(this.monitor.requests.length > 0){
+                            this.monitor.requests = this.monitor.requests.filter(function(req){
+                                if(req.status !== undefined){
+                                    if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
+                                        if($('.modal').length === 0){
+                                            swal({
+                                                html: true,
+                                                title: 'Application Error!',
+                                                text: 'An error in the application has occured, if this problem persists please contact support.<br /><br /><code>' + req.responseText + '</code>',
+                                                type: 'error',
+                                                confirmButtonText: 'Refresh'
+                                            }, function(isConfirm){
+                                                if(isConfirm){
+                                                    window.location.reload();
+                                                }
+                                            });
                                         }
                                     }
-                                    return req.status === undefined;
-                                });
-                            } else {
-                                clearInterval(this.monitor);
-                                this.monitor.interval = undefined;
-                                this.monitor.start_time = moment().valueOf();
-                            }
+                                }
+                                return req.status === undefined;
+                            });
+                        } else {
+                            clearInterval(this.monitor);
+                            this.monitor.interval = undefined;
+                            this.monitor.start_time = moment().valueOf();
+                        }
 
-                            // check if we need to display a loading message.
-                            if(moment().valueOf() - this.monitor.start_time > 300){
-                                if(_.isUndefined(this.monitor.loading)){
-                                    this.monitor.loading = new LoadingView();
-                                }
-                            } else {
-                                if(!_.isUndefined(this.monitor.loading)){
-                                    this.monitor.loading.close();
-                                    this.monitor.loading = undefined;
-                                }
+                        // check if we need to display a loading message.
+                        if(moment().valueOf() - this.monitor.start_time > 300){
+                            if(_.isUndefined(this.monitor.loading)){
+                                this.monitor.loading = new LoadingView();
                             }
-                        }, this), 500);
-                    }
+                        } else {
+                            if(!_.isUndefined(this.monitor.loading)){
+                                this.monitor.loading.close();
+                                this.monitor.loading = undefined;
+                            }
+                        }
+                    }, this), 500);
                 }
             }, this));
 
+            this.router = new Router();
+
+            new SessionModel(function(){
+                // check if there's an active model on the server
+                // if there is attempt to load it and route to the map view.
+                
+                var gnomeModel = new GnomeModel();
+                gnomeModel.fetch({
+                    success: function(model){
+                        if(model.id){
+                            window.webgnome.model = model;
+                            webgnome.model.addMapListeners();
+                            webgnome.cache.rewind(true);
+                            webgnome.model.isValid();
+                        }
+                        Backbone.history.start();
+                    },
+                    error: function(){
+                        Backbone.history.start();
+                        webgnome.router.navigate('', true);
+                    },
+                    silent: true
+                });
+            });
+        },
+
+        // is it possible to move this config step out of the app?
+        // maybe using inheritance w/ base view?
+        configure: function(){
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user
@@ -222,50 +250,21 @@ define([
 
                 return tree;
             };
+        },
 
-            webgnome.getForm = function(obj_type){
-                var map = {
-                    'gnome.model.Model': 'views/form/model',
-                    'gnome.map.GnomeMap': 'views/form/map',
-                    'gnome.spill.spill.Spill': 'views/form/spill',
-                    'gnome.spill.release.PointLineRelease': 'views/form/spill',
-                    'gnome.environment.wind.Wind': 'views/form/wind',
-                    'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
-                    'gnome.movers.current_movers.CatsMover': 'views/form/cats'
-                };
-
-                return map[obj_type];
+        getForm: function(obj_type){
+            var map = {
+                'gnome.model.Model': 'views/form/model',
+                'gnome.map.GnomeMap': 'views/form/map',
+                'gnome.spill.spill.Spill': 'views/form/spill',
+                'gnome.spill.release.PointLineRelease': 'views/form/spill',
+                'gnome.environment.wind.Wind': 'views/form/wind',
+                'gnome.movers.random_movers.RandomMover': 'views/form/random',
+                'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                'gnome.movers.current_movers.CatsMover': 'views/form/cats'
             };
 
-            this.router = new Router();
-
-            new SessionModel(function(){
-                // check if there's an active model on the server
-                // if there is attempt to load it and route to the map view.
-                
-                if(window.location.href.indexOf('test.html') === -1){
-                    var gnomeModel = new GnomeModel();
-                    gnomeModel.fetch({
-                        success: function(model){
-                            if(model.id){
-                                window.webgnome.model = model;
-                                webgnome.model.addMapListeners();
-                                webgnome.cache.rewind(true);
-                                webgnome.model.isValid();
-                            }
-                            Backbone.history.start();
-                        },
-                        error: function(){
-                            Backbone.history.start();
-                            webgnome.router.navigate('', true);
-                        },
-                        silent: true
-                    });
-                } else {
-                    Backbone.history.start();
-                }
-            });
+            return map[obj_type];
         },
 
         hasModel: function(){
