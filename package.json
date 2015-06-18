@@ -36,6 +36,6 @@
   },
   "devDependencies": {
     "grunt-jsdoc": "^0.6.7",
-    "grunt-webdriver": "^0.5.2",
+    "grunt-webdriver": "^0.5.2"
   }
 }
