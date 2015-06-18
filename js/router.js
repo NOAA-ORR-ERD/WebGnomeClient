@@ -8,7 +8,6 @@ define([
     'views/location/index',
     'views/model/setup',
     'views/model/index',
-    'views/tests/index',
     'views/default/adios',
     'views/default/overview',
     'views/default/faq',
@@ -16,7 +15,7 @@ define([
     'views/default/footer',
     'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
         views: [],
