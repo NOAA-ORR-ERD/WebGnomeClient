@@ -1,7 +1,7 @@
 
 // Configure RequireJS
 require.config({
-    baseUrl: 'js',
+    baseUrl: '/js',
     priority: ['underscore', 'jqueryui', 'bootstrap'],
     paths: {
         jquery: 'lib/jquery/dist/jquery',
@@ -92,13 +92,4 @@ require.config({
             exports: 'localforage'
         }
     },
-});
-
-// set up the app
-require([
-    'app',
-], function(App){
-    'use strict';
-    window.webgnome = App;
-    webgnome.initialize();
 });

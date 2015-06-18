@@ -18,9 +18,10 @@ module.exports = function(grunt){
                     baseUrl: 'js',
                     mainConfigFile: 'js/main.js',
                     paths: {
-                        requireLib: 'lib/requirejs/require'
+                        requireLib: 'lib/requirejs/require',
+                        boot: 'boot'
                     },
-                    include: ['requireLib'],
+                    include: ['requireLib', 'boot'],
                     name: 'main',
                     out: 'dist/build/build.js',
                     optimize: 'uglify2'
@@ -57,15 +58,27 @@ module.exports = function(grunt){
                     destination: 'dist/docs'
                 }
             }
+        },
+        webdriver:{
+            options: {
+                desiredCapabilities: {
+                    browserName: 'chrome'
+                }
+            },
+            all: {
+                tests: ['tests/**/*.js']
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-webdriver');
 
     grunt.registerTask('build', ['jshint:all', 'requirejs:build']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
+    grunt.registerTask('test', ['jshint:all', 'webdriver:all']);
 
 };
