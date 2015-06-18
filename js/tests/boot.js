@@ -1,6 +1,6 @@
 // set up the app
 require([
-    '../app',
+    '/../app',
 ], function(App){
     'use strict';
     window.webgnome = App;
