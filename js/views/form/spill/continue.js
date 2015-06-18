@@ -22,9 +22,9 @@ define([
         events: function(){
             return _.defaults({
                 'blur #spill-amount': 'updateRate',
+                'blur #units': 'updateRate',
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
-                'blur #units': 'updateRate',
                 'click #amount': 'updateAmountTooltip',
                 'click #constant': 'updateRateTooltip'
             }, BaseSpillForm.prototype.events());
