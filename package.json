@@ -35,6 +35,7 @@
     "grunt-contrib-jshint": "*"
   },
   "devDependencies": {
-    "grunt-jsdoc": "^0.6.7"
+    "grunt-jsdoc": "^0.6.7",
+    "jasmine": "*"
   }
 }

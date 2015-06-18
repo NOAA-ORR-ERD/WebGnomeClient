@@ -46,7 +46,10 @@ require.config({
         nucos: 'lib/nucos/nucos',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
-        localforage: 'lib/localforage/dist/localforage'
+        localforage: 'lib/localforage/dist/localforage',
+        jasmine: 'lib/jasmine/lib/jasmine-core/jasmine',
+        'jasmine-html': 'lib/jasmine/lib/jasmine-core/jasmine-html',
+        'jasmine-boot': 'lib/jasmine/lib/jasmine-core/boot' 
     },
     shim: {
         jquery: {
@@ -90,6 +93,12 @@ require.config({
         },
         localforage: {
             exports: 'localforage'
+        },
+        'jasmine-html': {
+            deps : ['jasmine']
+        },
+        'jasmine-boot': {
+            deps : ['jasmine', 'jasmine-html']
         }
     },
 });

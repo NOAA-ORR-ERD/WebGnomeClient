@@ -32,5 +32,8 @@
     "dropzone": "4.0.*",
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3"
+  },
+  "devDependencies": {
+    "jasmine": "*"
   }
 }
