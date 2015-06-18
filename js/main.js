@@ -1,7 +1,7 @@
 
 // Configure RequireJS
 require.config({
-    baseUrl: 'js',
+    baseUrl: '/js',
     priority: ['underscore', 'jqueryui', 'bootstrap'],
     paths: {
         jquery: 'lib/jquery/dist/jquery',
