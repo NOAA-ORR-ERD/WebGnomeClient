@@ -18,9 +18,10 @@ module.exports = function(grunt){
                     baseUrl: 'js',
                     mainConfigFile: 'js/main.js',
                     paths: {
-                        requireLib: 'lib/requirejs/require'
+                        requireLib: 'lib/requirejs/require',
+                        boot: 'boot'
                     },
-                    include: ['requireLib'],
+                    include: ['requireLib', 'boot'],
                     name: 'main',
                     out: 'dist/build/build.js',
                     optimize: 'uglify2'
