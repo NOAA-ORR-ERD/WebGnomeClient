@@ -1144,11 +1144,12 @@ define([
         },
 
         printGraphImage: function(e){
-            var img = this.canvasToImg(e);
-            var tab = this.$(e.target).parents('.tab-pane');
-            this.$(tab[0]).append('<div class="container-img"><img src="' + img.src + '"/></div>');
-            this.$('.container-img img').printElement();
-            setTimeout(_.bind(function(){this.$el.remove('.container-img');}, this), 20);
+            // var img = this.canvasToImg(e);
+            // var tab = this.$(e.target).parents('.tab-pane');
+            // this.$(tab[0]).append('<div class="container-img"><img src="' + img.src + '"/></div>');
+            // this.$('.container-img img').printElement();
+            // setTimeout(_.bind(function(){this.$el.remove('.container-img');}, this), 20);
+            window.print();
         },
 
         close: function(){
