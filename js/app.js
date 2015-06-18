@@ -259,7 +259,6 @@ define([
                     },
                     silent: true
                 });
-                Backbone.history.start();
             });
         },
 
