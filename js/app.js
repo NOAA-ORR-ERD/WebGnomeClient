@@ -24,6 +24,7 @@ define([
             });
 
             this.config = this.getConfig();
+            this.configure();
             this.monitor = {};
             this.monitor.requests = [];
 
@@ -113,7 +114,7 @@ define([
 
         // is it possible to move this config step out of the app?
         // maybe using inheritance w/ base view?
-        config: function(){
+        configure: function(){
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user

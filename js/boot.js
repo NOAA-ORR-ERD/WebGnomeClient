@@ -4,6 +4,5 @@ require([
 ], function(App){
     'use strict';
     window.webgnome = App;
-    webgnome.config();
     webgnome.initialize();
 });
