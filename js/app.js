@@ -85,6 +85,35 @@ define([
                 }
             }, this));
 
+            this.router = new Router();
+
+            new SessionModel(function(){
+                // check if there's an active model on the server
+                // if there is attempt to load it and route to the map view.
+                
+                var gnomeModel = new GnomeModel();
+                gnomeModel.fetch({
+                    success: function(model){
+                        if(model.id){
+                            window.webgnome.model = model;
+                            webgnome.model.addMapListeners();
+                            webgnome.cache.rewind(true);
+                            webgnome.model.isValid();
+                        }
+                        Backbone.history.start();
+                    },
+                    error: function(){
+                        Backbone.history.start();
+                        webgnome.router.navigate('', true);
+                    },
+                    silent: true
+                });
+            });
+        },
+
+        // is it possible to move this config step out of the app?
+        // maybe using inheritance w/ base view?
+        config: function(){
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user
@@ -220,46 +249,21 @@ define([
 
                 return tree;
             };
+        },
 
-            webgnome.getForm = function(obj_type){
-                var map = {
-                    'gnome.model.Model': 'views/form/model',
-                    'gnome.map.GnomeMap': 'views/form/map',
-                    'gnome.spill.spill.Spill': 'views/form/spill',
-                    'gnome.spill.release.PointLineRelease': 'views/form/spill',
-                    'gnome.environment.wind.Wind': 'views/form/wind',
-                    'gnome.movers.random_movers.RandomMover': 'views/form/random',
-                    'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
-                    'gnome.movers.current_movers.CatsMover': 'views/form/cats'
-                };
-
-                return map[obj_type];
+        getForm: function(obj_type){
+            var map = {
+                'gnome.model.Model': 'views/form/model',
+                'gnome.map.GnomeMap': 'views/form/map',
+                'gnome.spill.spill.Spill': 'views/form/spill',
+                'gnome.spill.release.PointLineRelease': 'views/form/spill',
+                'gnome.environment.wind.Wind': 'views/form/wind',
+                'gnome.movers.random_movers.RandomMover': 'views/form/random',
+                'gnome.movers.wind_movers.WindMover': 'views/form/windMover',
+                'gnome.movers.current_movers.CatsMover': 'views/form/cats'
             };
 
-            this.router = new Router();
-
-            new SessionModel(function(){
-                // check if there's an active model on the server
-                // if there is attempt to load it and route to the map view.
-                
-                var gnomeModel = new GnomeModel();
-                gnomeModel.fetch({
-                    success: function(model){
-                        if(model.id){
-                            window.webgnome.model = model;
-                            webgnome.model.addMapListeners();
-                            webgnome.cache.rewind(true);
-                            webgnome.model.isValid();
-                        }
-                        Backbone.history.start();
-                    },
-                    error: function(){
-                        Backbone.history.start();
-                        webgnome.router.navigate('', true);
-                    },
-                    silent: true
-                });
-            });
+            return map[obj_type];
         },
 
         hasModel: function(){
