@@ -68,7 +68,6 @@ define([
         },
 
         setChild: function(Cls, data){
-            console.log(data);
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
                 return webgnome.obj_ref[data.id];
             }
