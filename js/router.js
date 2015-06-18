@@ -40,7 +40,7 @@ define([
                 this.views[view].close();
             }
             this.views = [];
-            if(callback) callback.apply(this, args);
+            if(callback){ callback.apply(this, args); }
             if(window.location.href.indexOf('test.html') === -1){
                 this.views.push(new FooterView());
             }
@@ -50,7 +50,7 @@ define([
         },
 
         index: function(){
-            if (window.location.href.indexOf('test.html') != -1){
+            if (window.location.href.indexOf('test.html') !== -1){
                 this.views.push(new TestView());
             } else {
                 this.views.push(new IndexView());

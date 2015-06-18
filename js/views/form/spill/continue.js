@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill',
@@ -11,7 +12,7 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
@@ -21,9 +22,9 @@ define([
         events: function(){
             return _.defaults({
                 'blur #spill-amount': 'updateRate',
+                'blur #units': 'updateRate',
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
-                'blur #units': 'updateRate',
                 'click #amount': 'updateAmountTooltip',
                 'click #constant': 'updateRateTooltip'
             }, BaseSpillForm.prototype.events());
@@ -63,8 +64,15 @@ define([
                     disabled: disabled
                 });
                 BaseSpillForm.prototype.render.call(this, options);
-                var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
-                var rate = parseFloat(amount) / durationInMins;
+
+                var durationObj = moment.duration((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10), 'h');
+
+                var rate;
+                if ((this.$('#rate-units').val()).indexOf('hr') === -1){
+                    rate = parseFloat(amount) / durationObj.asMinutes();
+                } else {
+                    rate = parseFloat(amount) / durationObj.asHours();
+                }
 
                 this.$('#spill-rate').val(rate);
 
@@ -260,7 +268,7 @@ define([
         },
 
         close: function(){
-            this.model.off('ready', this.render, this)
+            this.model.off('ready', this.render, this);
             BaseSpillForm.prototype.close.call(this);
         }
 

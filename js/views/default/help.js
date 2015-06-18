@@ -100,7 +100,7 @@ define([
         },
 
         getTabs: function(html){
-            if(_.isUndefined(html)) return '';
+            if(_.isUndefined(html)){ return '';}
             var tabs = '';
             html = $(html);
             var headers = html.find('.title');

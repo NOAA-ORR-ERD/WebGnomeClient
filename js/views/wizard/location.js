@@ -64,7 +64,7 @@ define([
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
                 
-                if(el.type == 'text' || el.type == 'welcome'){
+                if(el.type === 'text' || el.type === 'welcome'){
                     if(!el.title){
                         title[0] = 'Welcome';
                     }
@@ -74,14 +74,14 @@ define([
                         body: el.body,
                         buttons: el.buttons
                     }));
-                } else if (el.type == 'model') {
+                } else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons
                     }, webgnome.model));
-                } else if (el.type == 'wind') {
+                } else if (el.type === 'wind') {
                     if(!el.title){
                         title[0] = 'Wind';
                     }

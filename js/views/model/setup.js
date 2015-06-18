@@ -51,11 +51,12 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
+        current_extents: [],
 
         events: function(){
             return _.defaults({
@@ -211,7 +212,7 @@ define([
 
         selectPrediction: function(e){
             var target;
-            if(e.target.length === 0) return false;
+            if(e.target.length === 0){ return false; }
             if(this.$(e.target).hasClass('icon')){
                 target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
@@ -222,7 +223,7 @@ define([
             // the configure method.
             this.configure(target);
 
-            if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
+            if (target === 'fate' && webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
                 swal({
                     title: 'Warning!',
                     type: 'warning',
@@ -268,11 +269,11 @@ define([
 
             localStorage.setItem('prediction', target);
 
-            if (target == 'fate') {
+            if (target === 'fate') {
                 this.showFateObjects();
-            } else if (target == 'trajectory') {
+            } else if (target === 'trajectory') {
                 this.showTrajectoryObjects();
-            } else if (target == 'both') {
+            } else if (target === 'both') {
                 this.showAllObjects();
 
             }
@@ -344,7 +345,7 @@ define([
             });
 
 
-            if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
+            if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
@@ -371,7 +372,7 @@ define([
                 evaporation.set('wind', wind);
 
                 var mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
-                if(_.isUndefined(mover) || mover.get('wind').get('id') != wind.get('id')){
+                if(_.isUndefined(mover) || mover.get('wind').get('id') !== wind.get('id')){
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
@@ -394,9 +395,9 @@ define([
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
-                var compiled;
+                var compiled, dataset;
                 this.$('.wind .panel').addClass('complete');
-                if(wind.get('timeseries').length == 1){
+                if(wind.get('timeseries').length === 1){
                     var windSpeed;
                     if (wind.get('speed_uncertainty_scale') === 0) {
                         windSpeed = wind.get('timeseries')[0][1][0];
@@ -424,7 +425,7 @@ define([
                         raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                     }
 
-                    var dataset = [{
+                    dataset = [{
                         data: data,
                         color: 'rgba(151,187,205,1)',
                         hoverable: true,
@@ -463,7 +464,7 @@ define([
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
 
-                if(!_.isUndefined(dataset)){
+                if(dataset){
                     // set a time out to wait for the box to finish expanding or animating before drawing
                     setTimeout(_.bind(function(){
                         this.windPlot = $.plot('.wind .chart .canvas', dataset, {
@@ -593,8 +594,8 @@ define([
                     }
                     amountArray.push(amount);
                 }
-                for (var i = 0; i < amountArray.length; i++){
-                    amountArray[i] = oilconvert.Convert(amountArray[i], spillUnits, oilAPI, "API degree", units);
+                for (var o = 0; o < amountArray.length; o++){
+                    amountArray[o] = oilconvert.Convert(amountArray[o], spillUnits, oilAPI, "API degree", units);
                 }
                 data[j] = amountArray;
             }
@@ -621,7 +622,7 @@ define([
 
                 var dataset = [];
                 for (var spill in spills.models){
-                    if (!_.isNull(spills.models[spill].validationError)) continue;
+                    if (!_.isNull(spills.models[spill].validationError)){ continue; }
                     var data = [];
                     var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
                     for (var i = 0; i < numOfTimeSteps; i++){
@@ -711,7 +712,7 @@ define([
                 var coloredSet = [];
                 for(var dataset in this.spillDataset){
                     var ds = _.clone(this.spillDataset[dataset]);
-                    if (this.spillDataset[dataset].id != id){
+                    if (this.spillDataset[dataset].id !== id){
                         ds.color = '#ddd';
                     }
 
@@ -764,7 +765,7 @@ define([
 
         updateLocation: function(){
             var map = webgnome.model.get('map');
-            if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
+            if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
                 this.$('.location .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
                     this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
@@ -790,7 +791,7 @@ define([
                         }),
                     });
                     
-                    var locationMap = new olMapView({
+                    var locationMap = new OlMapView({
                         id: 'mini-locmap',
                         controls: [],
                         layers: [
@@ -820,49 +821,21 @@ define([
 
             if(currents.length > 0){
                 this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
-                var layers = new ol.Collection([
+                this.current_layers = new ol.Collection([
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
                     })
                 ]);
 
-                var currentMap = new olMapView({
+                var currentMap = new OlMapView({
                     id: 'mini-currentmap',
                     controls: [],
-                    layers: layers
+                    layers: this.current_layers
                 });
                 currentMap.render();
 
-                var extents = [];
                 for(var c = 0; c < currents.length; c++){
-                    currents[c].getGrid(_.bind(function(geojson){
-
-                        if(geojson){
-                            var gridSource = new ol.source.GeoJSON({
-                                projection: 'EPSG:3857',
-                                object: geojson
-                            });
-                            var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
-
-                            var gridLayer = new ol.layer.Image({
-                                name: 'modelcurrent',
-                                source: new ol.source.ImageVector({
-                                    source: gridSource,
-                                    style: new ol.style.Style({
-                                        stroke: new ol.style.Stroke({
-                                            color: [171, 37, 184, 0.75],
-                                            width: 1
-                                        })
-                                    })
-                                })
-                            });
-
-                            if(!_.contains(extents, extentSum)){
-                                layers.push(gridLayer);
-                                extents.push(extentSum);
-                            }
-                        }
-                    }, this));
+                    currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
                 if(webgnome.model.get('map')){
                     var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
@@ -871,6 +844,34 @@ define([
                 this.mason.layout();
             } else {
                 this.$('.current .panel-body').hide().html('');
+            }
+        },
+
+        addCurrentToPanel: function(geojson){
+            if(geojson){
+                var gridSource = new ol.source.GeoJSON({
+                    projection: 'EPSG:3857',
+                    object: geojson
+                });
+                var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
+
+                var gridLayer = new ol.layer.Image({
+                    name: 'modelcurrent',
+                    source: new ol.source.ImageVector({
+                        source: gridSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: [171, 37, 184, 0.75],
+                                width: 1
+                            })
+                        })
+                    })
+                });
+
+                if(!_.contains(this.current_extents, extentSum)){
+                    this.current_layers.push(gridLayer);
+                    this.current_extents.push(extentSum);
+                }
             }
         },
 
@@ -1082,8 +1083,8 @@ define([
 
         updateBeached: function(){
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            if (!_.isUndefined(beached)){
-                var compiled;
+            if (!_.isUndefined(beached) && beached.get('timeseries').length > 0){
+                var compiled, dataset;
                 this.$('.beached .panel').addClass('complete');
                 if (beached.get('timeseries').length === 1){
                     var amountBeached = beached.get('timeseries')[0][1];
@@ -1094,7 +1095,7 @@ define([
                         date: singleDate
                     });
                     this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
-                } else {
+                } else if (beached.get('timeseries').length > 1) {
                     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
 
                     var ts = beached.get('timeseries');
@@ -1105,7 +1106,7 @@ define([
                         data.push([parseInt(date, 10), parseInt(ts[entry][1], 10)]);
                     }
 
-                    var dataset = [{
+                    dataset = [{
                         data: data,
                         color: '#9CD1FF',
                         hoverable: true,
@@ -1126,7 +1127,7 @@ define([
                 this.$('.beached .panel-body').html(compiled);
                 this.$('.beached .panel-body').show();
 
-                if (!_.isUndefined(dataset)) {
+                if (dataset) {
                     setTimeout(_.bind(function(){
                         this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
                             grid: {
@@ -1167,16 +1168,16 @@ define([
         },
 
         configureWeatherers: function(prediction){
-            if (prediction == 'fate' || prediction == 'both'){
+            if (prediction === 'fate' || prediction === 'both'){
                 // turn on weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', true);
                 });
                 var beaching = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-                if (!_.isUndefined(beaching) && prediction == 'both'){
+                if (!_.isUndefined(beaching) && prediction === 'both'){
                     beaching.set('on', false);
                 }
-            } else if (prediction == 'trajectory') {
+            } else if (prediction === 'trajectory') {
                 // turn off weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', false);
@@ -1186,7 +1187,7 @@ define([
 
         configureRelease: function(prediction){
             var spills = webgnome.model.get('spills');
-            if (prediction == 'trajectory' || prediction == 'both'){
+            if (prediction === 'trajectory' || prediction === 'both'){
                 spills.forEach(function(spill, index, list){
                     spill.get('release').set('num_per_timestep', null);
                     spill.get('release').set('num_elements', 1000);
@@ -1205,7 +1206,7 @@ define([
                 uncertain: null,
                 duration: null
             };
-            if(prediction == 'trajectory' || prediction == 'both'){
+            if(prediction === 'trajectory' || prediction === 'both'){
                 changes.time_step = 900;
                 changes.uncertain = true;
                 changes.duration = 86400;

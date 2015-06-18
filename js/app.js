@@ -6,7 +6,7 @@ define([
     'router',
     'moment',
     'sweetalert',
-    'text!/package.json',
+    'text!../package.json',
     'model/session',
     'model/gnome',
     'views/default/loading'
@@ -244,7 +244,7 @@ define([
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
                 
-                if(window.location.href.indexOf('test.html') == -1){
+                if(window.location.href.indexOf('test.html') === -1){
                     var gnomeModel = new GnomeModel();
                     gnomeModel.fetch({
                         success: function(model){
@@ -282,7 +282,7 @@ define([
             var loc = window.location.href.split('/')[2].replace(/:.*/, '');
             for(var set in domains){
                 var dset = domains[set].split(',');
-                if(dset.indexOf(loc) != -1){
+                if(dset.indexOf(loc) !== -1){
                     var keys = _.keys(sets[domains[set]]);
                     for(var attr in keys){
                         config[keys[attr]] = sets[domains[set]][keys[attr]];
@@ -291,8 +291,8 @@ define([
             }
 
             var defaults = _.keys(sets['*']);
-            for(var attr in defaults){
-                config[defaults[attr]] = sets['*'][defaults[attr]];
+            for(var attr2 in defaults){
+                config[defaults[attr2]] = sets['*'][defaults[attr2]];
             }
 
             return config;

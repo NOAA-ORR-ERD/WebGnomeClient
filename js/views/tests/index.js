@@ -28,7 +28,6 @@ define([
             WeathererTests.run();
             HelpTests.run();
             LocationTests.run();
-            SpecialTests.run();
             RunTests.run();
             
 
