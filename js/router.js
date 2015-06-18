@@ -40,20 +40,13 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('test.html') === -1){
-                this.views.push(new FooterView());
-            }
             if(_.isUndefined(this.logger)){
                 this.logger = new LoggerView();
             }
         },
 
         index: function(){
-            if (window.location.href.indexOf('test.html') !== -1){
-                this.views.push(new TestView());
-            } else {
-                this.views.push(new IndexView());
-            }
+            this.views.push(new IndexView());
         },
 
         config: function(){
