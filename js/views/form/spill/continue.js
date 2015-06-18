@@ -64,14 +64,14 @@ define([
                     disabled: disabled
                 });
                 BaseSpillForm.prototype.render.call(this, options);
-                var durationInHrs = (parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10);
-                var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
+
+                var durationObj = moment.duration((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10), 'h');
 
                 var rate;
                 if ((this.$('#rate-units').val()).indexOf('hr') === -1){
-                    rate = parseFloat(amount) / durationInMins;
+                    rate = parseFloat(amount) / durationObj.asMinutes();
                 } else {
-                    rate = parseFloat(amount) / durationInHrs;
+                    rate = parseFloat(amount) / durationObj.asHours();
                 }
 
                 this.$('#spill-rate').val(rate);
