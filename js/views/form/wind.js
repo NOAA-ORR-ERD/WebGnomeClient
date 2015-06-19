@@ -242,6 +242,7 @@ define([
             if (active === 'variable' && this.model.get('timeseries')[0][0] === '2013-02-13T09:00:00' && this.model.get('timeseries').length <= 1){
                 speed = this.form.constant.speed.val();
                 direction = this.form.constant.direction.val();
+                this.form.variable.datetime.val(moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment));
                 this.model.set('timeseries', [[gnomeStart, [speed, direction]]]);
                 this.renderTimeseries();
             }
