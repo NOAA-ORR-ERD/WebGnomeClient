@@ -484,13 +484,13 @@ define([
         },
 
         variableFormValidation: function(entry){
+            // need to add a error presentation if something doesn't pass validation here.
             var valid = true;
             if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
                 valid = false;
             }
             var incrementVal = this.form.variable.increment.val();
-
-            if(incrementVal !== parseInt(incrementVal, 10)) {
+            if(!incrementVal) {
                 valid = false;
             }
 
