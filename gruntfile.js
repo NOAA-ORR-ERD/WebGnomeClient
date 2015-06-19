@@ -67,6 +67,9 @@ module.exports = function(grunt){
             },
             all: {
                 tests: ['tests/**/*.js']
+            },
+            demos: {
+                tests: ['tests/demos.js']
             }
         }
     });
@@ -80,5 +83,6 @@ module.exports = function(grunt){
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
     grunt.registerTask('test', ['jshint:all', 'webdriver:all']);
+    grunt.registerTask('test:demos', ['webdriver:demos']);
 
 };
