@@ -8,6 +8,10 @@ define([
 	var baseWeathererModel = BaseModel.extend({
 		urlRoot: '/weatherer/',
 
+        defaults: {
+            'obj_type': 'gnome.weatherers.Weathering'
+        },
+
 		initialize: function(){
             if (this.get('obj_type').indexOf('cleanup') !== -1){
                 var start_time = '';

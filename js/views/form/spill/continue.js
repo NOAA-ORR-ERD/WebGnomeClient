@@ -110,6 +110,8 @@ define([
                 if (!this.model.isNew()){
                     this.$('#amount .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
                     this.$('#constant .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.updateAmount();
+                    this.updateRate();
                     this.updateAmountSlide();
                     this.updateRateSlide();
                 }

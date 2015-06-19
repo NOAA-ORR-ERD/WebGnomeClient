@@ -25,12 +25,13 @@ define([
     'model/weatherers/burn',
     'model/weatherers/skim',
     'model/weatherers/natural_dispersion',
-    'model/weatherers/manual_beaching'
+    'model/weatherers/manual_beaching',
+    'model/weatherers/base'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, BaseWeatherer){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -66,7 +67,9 @@ define([
                 'gnome.weatherers.cleanup.Burn': BurnWeatherer,
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer,
                 'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
-                'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer
+                'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
+                'gnome.weatherers.spreading.FayGravityViscous': BaseWeatherer,
+                'gnome.weatherers.weathering_data.WeatheringData': BaseWeatherer
             }
         },
 
