@@ -29,63 +29,66 @@ describe('SSC Demo', function(){
             .isExisting('.icon.selected', function(err, existing){
                 assert(existing === false, 'no mode is selected');
             })
+            .setValue('#days', 7)
             .click('.icon.fate')
             .call(done);
     });
 
-    describe('The spill', function(){
-        before(function(done){
-            browser
-                .setValue('#days', 7)
-
-                // setup the spill
-                .waitForVisible('.spill.object', async_timeout)
-                .pause(animation_pause + animation_pause)
-                .click('.spill.object .add')
-                .pause(animation_pause)
-                .click('.option.continue')
-                .waitForExist('.modal .constant')
-                .pause(animation_pause)
-                .setValue('.modal #days', 7)
-                .click('.modal .constant')
-                .setValue('#spill-rate', 1240)
-                .click('.modal #constant .slider')
-                .click('.substanceinfo')
-                .pause(animation_pause)
-                .click('.oil-select')
-                .waitForExist('.oil-form.modal', async_timeout)
-                .pause(animation_pause)
-                .setValue('#search', 'louisianna sweet')
-                .pause(animation_pause)
-                .moveToObject('.oil-form.modal th.location', 0, 40)
-                .leftClick()
-                .leftClick()
-                .click('.oil-form.modal .save')
-                .waitForVisible('.continuespill-form .save', async_timeout)
-                .pause(animation_pause)
-                .click('.continuespill-form .save')
-                .pause(animation_pause)
-
-                // setup wind
-                .click('.wind.object .add')
-                .pause(animation_pause)
-                .click('.variable a')
-                .waitForVisible('#incrementCount', async_timeout)
-                .setValue('#incrementCount', 24)
-
-                .call(done);
-
-        });
-
-        it('should have a spill', function(done){
-            browser
-                .isExisting('.spill.object .single', function(err, exisiting){
-                    assert(exisiting, 'spill exists');
-                })
-                .call(done);
-        });        
-        
+    it('should have a spill', function(done){
+        browser
+            .waitForVisible('.spill.object', async_timeout)
+            .pause(animation_pause + animation_pause)
+            .click('.spill.object .add')
+            .pause(animation_pause)
+            .click('.option.continue')
+            .waitForExist('.modal .constant')
+            .pause(animation_pause)
+            .setValue('.modal #days', 7)
+            .click('.modal .constant')
+            .setValue('#spill-rate', 1240)
+            .click('.modal #constant .slider')
+            .click('.substanceinfo')
+            .pause(animation_pause)
+            .click('.oil-select')
+            .waitForExist('.oil-form.modal', async_timeout)
+            .pause(animation_pause)
+            .setValue('#search', 'louisianna sweet')
+            .pause(animation_pause)
+            .moveToObject('.oil-form.modal th.location', 0, 40)
+            .leftClick()
+            .leftClick()
+            .click('.oil-form.modal .save')
+            .waitForVisible('.continuespill-form .save', async_timeout)
+            .pause(animation_pause)
+            .click('.continuespill-form .save')
+            .pause(animation_pause)
+            .isExisting('.spill.object .single', function(err, exisiting){
+                assert(exisiting, 'spill exists');
+            })
+            .call(done);
+    });        
+    it('should have a wind', function(done){
+        browser
+            .click('.wind.object .add')
+            .pause(animation_pause)
+            .click('.variable a')
+            .waitForVisible('#incrementCount', async_timeout)
+            .setValue('#incrementCount', 24)
+            .setValue('#variable-speed', 7.5)
+            .setValue('#variable-direction', 0)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 12.5)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 17.5)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 7.5)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 7.5)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 12.5)
+            .click('.wind-form .add')
+            .setValue('#variable-speed', 17.5)
+            .click('.wind-form .add')
+            .click('.wind-form #variable .slider');
     });
-
-
 });
