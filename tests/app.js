@@ -13,7 +13,7 @@ describe('Application', function () {
     it('should start', function (done) {
         browser
             .getTitle(function(err, title){
-                assert(title === 'WebGNOME', 'Title is WebGNOME');
+                assert(title === 'WebGNOME', 'Title is not WebGNOME');
             })
             .call(done);
     });
@@ -21,7 +21,7 @@ describe('Application', function () {
     it('should have a button on the main page to get started', function(done){
         browser
             .isExisting('.setup.btn', function(err, exists){
-                assert(exists, 'Get started button is present');
+                assert(exists, 'Get started button is not present');
             })
             .call(done);
     });
@@ -30,7 +30,7 @@ describe('Application', function () {
         browser
             .click('.setup.btn')
             .isExisting('.page.setup', function(err, exists){
-                assert(exists, 'the correct page was rendered');
+                assert(exists, 'the incorrect page was rendered');
             })
             .call(done);
     });
