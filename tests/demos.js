@@ -13,6 +13,7 @@ describe('SSC Demo', function(){
             .url(url)
             .waitForExist('.setup.btn', async_timeout)
             .click('.setup.btn')
+            .click('.logger .toggle')
             .call(done);
     });
 
@@ -29,8 +30,8 @@ describe('SSC Demo', function(){
             .isExisting('.icon.selected', function(err, existing){
                 assert(existing === false, 'no mode is selected');
             })
-            .setValue('#days', 7)
             .click('.icon.fate')
+            .setValue('#days', 7)
             .call(done);
     });
 
@@ -100,5 +101,16 @@ describe('SSC Demo', function(){
             .call(done);
     });
 
-    
+    it('should have a water', function(done){
+        browser
+            .click('.water.object .add')
+            .pause(animation_pause)
+            .setValue('.modal #temp', 70)
+            .click('.modal .save')
+            .pause(animation_pause)
+            .isExisting('.water.object .complete', function(err, existing){
+                assert(existing, 'water object exists');
+            })
+            .call(done);
+    });
 });
