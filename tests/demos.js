@@ -8,7 +8,7 @@ describe('SSC Demo', function(){
         browser
             .setViewportSize({
                 width: 1177,
-                height: 900
+                height: 1050
             })
             .url(url)
             .waitForExist('.setup.btn', async_timeout)
@@ -66,7 +66,8 @@ describe('SSC Demo', function(){
                 assert(exisiting, 'spill exists');
             })
             .call(done);
-    });        
+    });
+
     it('should have a wind', function(done){
         browser
             .click('.wind.object .add')
@@ -89,6 +90,15 @@ describe('SSC Demo', function(){
             .click('.wind-form .add')
             .setValue('#variable-speed', 17.5)
             .click('.wind-form .add')
-            .click('.wind-form #variable .slider');
+            .click('.wind-form #variable .slider')
+            .pause(animation_pause)
+            .click('.wind-form .save')
+            .pause(animation_pause)
+            .isExisting('.wind.object .complete', function(err, existing){
+                assert(existing, 'wind object exists');
+            })
+            .call(done);
     });
+
+    
 });
