@@ -25,10 +25,10 @@ describe('SSC Demo', function(){
             .waitForExist('.sweet-alert button.confirm', async_timeout)
             .click('.sweet-alert button.confirm')
             .isVisible('.stage-2', function(err, visible){
-                assert(visible[0] === false && visible[1] === false, 'stage 2 is not visible');
+                assert(visible[0] === false && visible[1] === false, 'stage 2 is still visible');
             })
             .isExisting('.icon.selected', function(err, existing){
-                assert(existing === false, 'no mode is selected');
+                assert(existing === false, 'a mode is still selected');
             })
             .click('.icon.fate')
             .setValue('#days', 7)
@@ -64,7 +64,7 @@ describe('SSC Demo', function(){
             .click('.continuespill-form .save')
             .pause(animation_pause)
             .isExisting('.spill.object .single', function(err, exisiting){
-                assert(exisiting, 'spill exists');
+                assert(exisiting, 'spill doesn\'t exist');
             })
             .call(done);
     });
@@ -96,7 +96,7 @@ describe('SSC Demo', function(){
             .click('.wind-form .save')
             .pause(animation_pause)
             .isExisting('.wind.object .complete', function(err, existing){
-                assert(existing, 'wind object exists');
+                assert(existing, 'wind object doesn\'t exist');
             })
             .call(done);
     });
@@ -109,7 +109,7 @@ describe('SSC Demo', function(){
             .click('.modal .save')
             .pause(animation_pause)
             .isExisting('.water.object .complete', function(err, existing){
-                assert(existing, 'water object exists');
+                assert(existing, 'water object doesn\'t exist');
             })
             .call(done);
     });
@@ -126,7 +126,7 @@ describe('SSC Demo', function(){
             .click('.modal .save')
             .pause(animation_pause)
             .getHTML('.response .response-list', function(err, html){
-                assert(html.indexOf('Skimmer') !== -1, 'skimming response exists');
+                assert(html.indexOf('Skimmer') !== -1, 'skimming response doesn\'t exist');
             })
             .call(done);
     });
@@ -142,8 +142,9 @@ describe('SSC Demo', function(){
             .click('.modal .slidertoggle')
             .click('.modal .slider')
             .click('.modal .save')
+            .pause(animation_pause)
             .getHTML('.response .response-list', function(err, html){
-                assert(html.indexOf('Dispersion') !== -1, 'dispersion response exists');
+                assert(html.indexOf('Dispersion') !== -1, 'dispersion response doesn\'t exist');
             })
             .call(done);
     });
