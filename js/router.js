@@ -40,6 +40,7 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
+            this.views.push(new FooterView());
             if(_.isUndefined(this.logger)){
                 this.logger = new LoggerView();
             }
