@@ -10,7 +10,16 @@ define([
 			'obj_type': 'gnome.weatherers.manual_beaching.Beaching',
 			'name': 'Beaching',
 			'units': 'bbl',
-			'timeseries': []
+			'timeseries': [],
+			'active_start': '2014-07-07T12:00:00'
+		},
+
+		initialize: function(){
+			BaseModel.prototype.initialize.call(this);
+			if (!_.isUndefined(webgnome.model)){
+				webgnome.model.get('start_time');
+				this.set('active_start', model_start);
+			}
 		},
 
 		toTree: function(){

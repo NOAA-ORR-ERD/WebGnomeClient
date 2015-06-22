@@ -127,7 +127,7 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 var row = this.$(e.target).parents('tr')[0];
-                var index = row.dataset.tsindex;
+                var index = this.$(row).data('tsindex');
                 var entry = this.model.get('timeseries')[index];
                 var date = moment(entry[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(EditRowTemplate);
@@ -142,8 +142,9 @@ define([
 
         enterTimeseriesEntry: function(e){
             e.preventDefault();
+            e.stopPropagation();
             var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
+            var index = this.$(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             var amount = this.$('.input-amount').val();
             var date = entry[0];
