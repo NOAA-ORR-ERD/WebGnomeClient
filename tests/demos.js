@@ -1,6 +1,6 @@
 var assert = require("assert");
 var url = 'http://0.0.0.0:8080';
-var async_timeout = 300000;
+var async_timeout = 1000 * 60;
 var animation_pause = 1000;
 
 describe('SSC Demo', function(){
@@ -110,6 +110,23 @@ describe('SSC Demo', function(){
             .pause(animation_pause)
             .isExisting('.water.object .complete', function(err, existing){
                 assert(existing, 'water object exists');
+            })
+            .call(done);
+    });
+
+    it('should have skimming response', function(done){
+        browser
+            .click('.response .add')
+            .pause(animation_pause)
+            .click('.modal .option.skim')
+            .pause(animation_pause)
+            .setValue('.modal #duration', 168)
+            .setValue('.modal #recovery-rate', 100)
+            .click('.modal .save')
+            .click('.modal .save')
+            .pause(animation_pause)
+            .isExisting('.response .row', function(err, existing){
+                assert(existing, 'skimming response exists');
             })
             .call(done);
     });
