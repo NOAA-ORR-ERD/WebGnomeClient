@@ -442,7 +442,7 @@ define([
                     if(parseInt(row, 10) === 0){
                         row_html += '<thead><tr>';
                     } else {
-                        row_html += '<tr>';
+                        row_html += '<tr class="' + row + '">';
                     }
                     if(display.time === 'date'){
                         if(row === 0){
