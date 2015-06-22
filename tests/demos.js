@@ -148,4 +148,22 @@ describe('SSC Demo', function(){
             })
             .call(done);
     });
+
+    it('should run', function(done){
+        browser
+            .click('.eval')
+            .waitForExist('#budget-table table tr', 10000, function(err, exists){
+                assert(exists, 'run didn\'t start');
+            })
+            .call(done);
+    });
+
+    it('should finish', function(done){
+        browser
+            .pause(async_timeout)
+            .getHTML('#budget-table table', function(err, html){
+                assert(html.indexOf('208320') !== -1, 'run didn\'t finish');
+            })
+            .call(done);
+    });
 });
