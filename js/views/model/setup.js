@@ -911,49 +911,35 @@ define([
         },
 
         graphReponses: function(responses){
-            var burnData = [];
-            var skimData = [];
-            var disperseData = [];
-            var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
+            var yticks = [];
+            var dataset = [];
+            var colors = {
+                'gnome.weatherers.cleanup.Burn': '#CB4B4B',
+                'gnome.weatherers.cleanup.ChemicalDispersion': '#AFD8F8',
+                'gnome.weatherers.cleanup.Skimmer': '#EDC240'
+            };
+            var t = responses.length;
             for (var i in responses){
                 var responseObjType = responses[i].get('obj_type').split(".");
                 var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                 var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
-                switch (responseObjType[responseObjType.length - 1]){
-                    case "Skimmer":
-                        skimData.push([startTime, 1, endTime, responses[i].get('id')]);
-                        break;
-                    case "ChemicalDispersion":
-                        disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
-                        break;
-                    case "Burn":
-                        burnData.push([startTime, 3, endTime, responses[i].get('id')]);
-                }
-            }
 
-            var dataset = [
-                {
-                    //label: "Burns",
-                    data: burnData,
+                yticks.push([t, responses[i].get('name')]);
+                dataset.push({
+                    data: [[startTime, t, endTime, responses[i].get('id')]],
+                    color: colors[responses[i].get('obj_type')],
+                    lines: {
+                        show: false,
+                        fill: false
+                    },
                     direction: {
                         show: false
-                    }
-                },
-                {
-                    //label: "Skim",
-                    data: skimData,
-                    direction: {
-                        show: false
-                    }
-                },
-                {
-                    //label: "Dispersion",
-                    data: disperseData,
-                    direction: {
-                        show: false
-                    }
-                }
-            ];
+                    },
+                    id: responses[i].get('id')
+                });
+                t--;
+
+            }
 
             if(!_.isUndefined(dataset)){
                 this.responseDataset = dataset;
@@ -1004,11 +990,22 @@ define([
             if (_.isUndefined(id)){
                 id = $(e.target).parents('.single').data('id');
             }
-            this.graphReponses([webgnome.model.get('weatherers').get(id)]);
+            var coloredSet = [];
+            for(var dataset in this.responseDataset){
+                var ds = _.clone(this.responseDataset[dataset]);
+                if (this.responseDataset[dataset].id !== id){
+                    ds.color = '#ddd';
+                }
+
+                coloredSet.push(ds);
+            }
+            this.responsePlot.setData(coloredSet);
+            this.responsePlot.draw();
         },
 
         unhoverResponse: function(){
-            this.graphReponses(this.responses);
+            this.responsePlot.setData(this.responseDataset);
+            this.responsePlot.draw();
         },
 
         loadResponse: function(e){
