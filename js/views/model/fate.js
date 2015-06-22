@@ -1131,16 +1131,36 @@ define([
         },
 
         canvasToImg: function(e){
-            var tab = this.$(e.target).parents('.tab-pane');
-            var base = tab.find('.flot-base')[0].toDataURL();
-            var overlay = tab.find('.flot-overlay')[0].toDataURL();
+            var chart = this.$('.tab-pane.active .chart');
+            var data = '<svg width="1120" height="430"><foreignObject width="100%" height="100%">' + chart.html() + '</foreignObject></svg>';
+            var canvas = document.createElement('canvas');
+            this.$(canvas).css({'height': 430, 'width': 1120});
+            var ctx = canvas.getContext('2d');
+            // var base = tab.find('.flot-base')[0].toDataURL();
+            // var overlay = tab.find('.flot-overlay')[0].toDataURL();
+
+            var DOMURL = window.URL || window.webkitURL || window;
+
             var img = new Image();
-            img.src = base;
+            var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            var url = DOMURL.createObjectURL(svg);
+            img.onload = function(){
+                ctx.drawImage(img, 0, 0);
+                DOMURL.revokeObjectURL(url);
+            };
+            img.src = url;
             return img;
         },
 
         saveGraphImage: function(e){
-            
+            var img = this.canvasToImg(e);
+            this.$el.append(img);
+            var currentTab = this.$('.tab-pane.active').attr('id');
+            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
+            var pom = document.createElement('a');
+            pom.setAttribute('href', img.src);
+            pom.setAttribute('download', name);
+            pom.click();
         },
 
         printGraphImage: function(e){
