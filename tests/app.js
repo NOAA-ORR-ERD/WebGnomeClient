@@ -6,7 +6,7 @@ describe('Application', function () {
     before(function(done){
         browser
             .url(url)
-            .waitForExist('.setup.btn', 5000)
+            .waitForExist('.setup.btn', 10000)
             .call(done);
     });
 

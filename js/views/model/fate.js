@@ -32,9 +32,9 @@ define([
             'rgb(148,64,237)',
             'rgb(189,155,51)',
             'rgb(140,172,198)',
-            'rgb(255,99,71)',
-            'rgb(124,252,0)',
-            'rgb(46,139,87)'
+            'rgb(207,124,30)',
+            'rgb(119,169,252)',
+            'rgb(63,40,87)'
         ],
 
         events: {
@@ -442,7 +442,7 @@ define([
                     if(parseInt(row, 10) === 0){
                         row_html += '<thead><tr>';
                     } else {
-                        row_html += '<tr>';
+                        row_html += '<tr class="' + row + '">';
                     }
                     if(display.time === 'date'){
                         if(row === 0){
