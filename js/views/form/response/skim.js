@@ -33,7 +33,6 @@ define([
         },
 
         updateRateAmount: function(){
-            this.convertToRate();
             this.convertToAmount();
         },
 
