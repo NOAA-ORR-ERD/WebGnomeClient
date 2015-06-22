@@ -114,7 +114,7 @@ describe('SSC Demo', function(){
             .call(done);
     });
 
-    it('should have skimming response', function(done){
+    it('should have a skimming response', function(done){
         browser
             .click('.response .add')
             .pause(animation_pause)
@@ -125,8 +125,25 @@ describe('SSC Demo', function(){
             .click('.modal .save')
             .click('.modal .save')
             .pause(animation_pause)
-            .isExisting('.response .row', function(err, existing){
-                assert(existing, 'skimming response exists');
+            .getHTML('.response .response-list', function(err, html){
+                assert(html.indexOf('Skimmer') !== -1, 'skimming response exists');
+            })
+            .call(done);
+    });
+
+    it('should have a dispersant response', function(done){
+        browser
+            .click('.response .add')
+            .pause(animation_pause)
+            .click('.modal .option.disperse')
+            .pause(animation_pause)
+            .setValue('.modal #duration', 168)
+            .setValue('.modal #oilsprayed', 10)
+            .click('.modal .slidertoggle')
+            .click('.modal .slider')
+            .click('.modal .save')
+            .getHTML('.response .response-list', function(err, html){
+                assert(html.indexOf('Dispersion') !== -1, 'dispersion response exists');
             })
             .call(done);
     });
