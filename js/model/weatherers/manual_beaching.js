@@ -17,8 +17,7 @@ define([
 		initialize: function(){
 			BaseModel.prototype.initialize.call(this);
 			if (!_.isUndefined(webgnome.model)){
-				webgnome.model.get('start_time');
-				this.set('active_start', model_start);
+				this.set('active_start', webgnome.model.get('start_time'));
 			}
 		},
 
