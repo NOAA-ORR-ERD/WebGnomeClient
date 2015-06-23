@@ -1131,52 +1131,22 @@ define([
             return release_init;
         },
 
-        canvasToImg: function(e){
-            // var chart = this.$('.tab-pane.active .chart');
-            // var data = '<svg width="1120" height="430"><foreignObject width="100%" height="100%">' + chart.html() + '</foreignObject></svg>';
-            // var canvas = document.createElement('canvas');
-            // this.$(canvas).css({'height': 430, 'width': 1120});
-            // var ctx = canvas.getContext('2d');
-            // // var base = tab.find('.flot-base')[0].toDataURL();
-            // // var overlay = tab.find('.flot-overlay')[0].toDataURL();
-
-            // var DOMURL = window.URL || window.webkitURL || window;
-
-            // var img = new Image();
-            // var svg = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-            // var url = DOMURL.createObjectURL(svg);
-            // img.onload = function(){
-            //     ctx.drawImage(img, 0, 0);
-            //     DOMURL.revokeObjectURL(url);
-            // };
-            // img.src = url;
+        saveGraphImage: function(e){
             var element = this.$('.tab-pane.active .chart').get();
-            var img;
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
-                    img = canvas;
-                    this.$el.append(canvas);
+                    var img = canvas.toDataURL('image/png');
+                    var currentTab = this.$('.tab-pane.active').attr('id');
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
+                    var pom = document.createElement('a');
+                    pom.setAttribute('href', img);
+                    pom.setAttribute('download', name);
+                    pom.click();
                 }, this)
             });
-            return img;
-        },
-
-        saveGraphImage: function(e){
-            var img = this.canvasToImg(e);
-            var currentTab = this.$('.tab-pane.active').attr('id');
-            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
-            var pom = document.createElement('a');
-            pom.setAttribute('href', img.src);
-            pom.setAttribute('download', name);
-            pom.click();
         },
 
         printGraphImage: function(e){
-            // var img = this.canvasToImg(e);
-            // var tab = this.$(e.target).parents('.tab-pane');
-            // this.$(tab[0]).append('<div class="container-img"><img src="' + img.src + '"/></div>');
-            // this.$('.container-img img').printElement();
-            // setTimeout(_.bind(function(){this.$el.remove('.container-img');}, this), 20);
             window.print();
         },
 
