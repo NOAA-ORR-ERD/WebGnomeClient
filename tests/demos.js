@@ -31,6 +31,7 @@ describe('SSC Demo', function(){
                 assert(existing === false, 'a mode is still selected');
             })
             .click('.icon.fate')
+            .pause(animation_pause)
             .setValue('#days', 7)
             .call(done);
     });
@@ -160,7 +161,7 @@ describe('SSC Demo', function(){
 
     it('should finish', function(done){
         browser
-            .pause(async_timeout)
+            .pause(async_timeout + async_timeout)
             .getHTML('#budget-table table', function(err, html){
                 assert(html.indexOf('208320') !== -1, 'run didn\'t finish');
             })
