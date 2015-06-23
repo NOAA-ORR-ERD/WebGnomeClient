@@ -1138,7 +1138,7 @@ define([
         },
 
         saveGraphImage: function(e){
-            var element = this.$('.tab-pane.active .chart').get();
+            var element = this.$('.tab-pane.active .timeline').get();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
                     var ctx = canvas.getContext('2d');
