@@ -1135,7 +1135,19 @@ define([
             var element = this.$('.tab-pane.active .chart').get();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
+                    var ctx = canvas.getContext('2d');
+                    var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    var compositeOperation = ctx.globalCompositeOperation;
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
                     var img = canvas.toDataURL('image/png');
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.putImageData(data, 0, 0);
+                    ctx.globalCompositeOperation = compositeOperation;
+
                     var currentTab = this.$('.tab-pane.active').attr('id');
                     var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
                     var pom = document.createElement('a');
