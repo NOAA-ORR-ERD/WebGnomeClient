@@ -33,6 +33,7 @@ require.config({
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
         flotneedle: 'lib/flotneedle/flotNeedle',
         'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
+        html2canvas: 'lib/html2canvas/build/html2canvas',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
@@ -66,6 +67,9 @@ require.config({
         flotfillarea: ['flot'],
         flotselect: ['flot'],
         flotgantt: ['JUMFlotLib'],
+        html2canvas: {
+            exports: 'html2canvas'
+        },
         JUMFlotLib: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
