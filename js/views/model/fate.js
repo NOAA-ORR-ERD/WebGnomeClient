@@ -10,6 +10,8 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
+    'text!templates/model/fate/buttons.html',
+    'html2canvas',
     'flot',
     'flottime',
     'flotresize',
@@ -18,7 +20,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -46,7 +48,9 @@ define([
             'change #ics209 select': 'renderTableICS',
             'click #ics209 .export a.download': 'downloadTableICS',
             'click #ics209 .export a.print': 'printTableICS',
-            'click .gnome-help': 'renderHelp'
+            'click .gnome-help': 'renderHelp',
+            'click .saveas': 'saveGraphImage',
+            'click .print-graph': 'printGraphImage'
         },
 
         defaultChartOptions: {
@@ -151,6 +155,8 @@ define([
 
             var init_release = this.findInitialRelease(spills);
 
+            var buttonsTemplate = _.template(ButtonsTemplate, {});
+
             if (!_.isNull(substance)){
                 var pour_point;
                 var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
@@ -172,7 +178,8 @@ define([
                     water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
-                    units: spills.at(0).get('units')
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
                 });
             } else {
                 compiled = _.template(FateTemplate, {
@@ -184,7 +191,8 @@ define([
                     water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
-                    units: spills.at(0).get('units')
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
                 });
             }
             
@@ -1121,6 +1129,25 @@ define([
             });
 
             return release_init;
+        },
+
+        saveGraphImage: function(e){
+            var element = this.$('.tab-pane.active .chart').get();
+            html2canvas(element, {
+                onrendered: _.bind(function(canvas){
+                    var img = canvas.toDataURL('image/png');
+                    var currentTab = this.$('.tab-pane.active').attr('id');
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
+                    var pom = document.createElement('a');
+                    pom.setAttribute('href', img);
+                    pom.setAttribute('download', name);
+                    pom.click();
+                }, this)
+            });
+        },
+
+        printGraphImage: function(e){
+            window.print();
         },
 
         close: function(){
