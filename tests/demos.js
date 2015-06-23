@@ -162,8 +162,8 @@ describe('SSC Demo', function(){
     it('should finish', function(done){
         browser
             .pause(async_timeout + async_timeout)
-            .getHTML('#budget-table table', function(err, html){
-                assert(html.indexOf('208320') !== -1, 'run didn\'t finish');
+            .elements('#budget-table tr', function(err, elements){
+                assert(elements.value.length === 25, 'run didn\'t finish');
             })
             .call(done);
     });
