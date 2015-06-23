@@ -1154,7 +1154,6 @@ define([
 
         saveGraphImage: function(e){
             var img = this.canvasToImg(e);
-            this.$el.append(img);
             var currentTab = this.$('.tab-pane.active').attr('id');
             var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
             var pom = document.createElement('a');
