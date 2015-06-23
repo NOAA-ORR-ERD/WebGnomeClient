@@ -990,7 +990,8 @@ define([
                         'beached',
                         'sedimentation',
                         'dissolution',
-                        'off_maps'
+                        'off_maps',
+                        'observed_beached'
                     ].indexOf(this.dataset[set].name) !== -1){
                     var min = _.min(step.get('WeatheringOutput'), this.runIterator(set), this);
                     low_value = min[this.dataset[set].name];
