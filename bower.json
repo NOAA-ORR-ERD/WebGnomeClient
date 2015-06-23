@@ -33,8 +33,5 @@
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3",
     "html2canvas": "~0.4.1"
-  },
-  "devDependencies": {
-    "qunit": "1.14.0"
   }
 }
