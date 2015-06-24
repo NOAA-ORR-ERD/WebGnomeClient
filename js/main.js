@@ -46,7 +46,8 @@ require.config({
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
-        nucos: 'lib/nucos/nucos'
+        nucos: 'lib/nucos/nucos',
+        'fizzy-ui-utils': 'lib/fizzy-ui-utils/'
     },
     shim: {
         jquery: {
