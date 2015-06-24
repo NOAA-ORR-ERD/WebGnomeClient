@@ -23,6 +23,18 @@ define([
         },
 
         render: function(options){
+            var showDispersant, showBurn, showSkimming;
+            _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                    if (el.attributes.name != "_natural") {
+                        showDispersant = true;
+                    }
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+                    showBurn = true;
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+                    showSkimming = true;
+                }
+            });
             this.body = _.template(RiskTemplate, {
                 surface: this.model.get('surface').toFixed(3),
                 column: this.model.get('column').toFixed(3),
@@ -30,6 +42,9 @@ define([
                 surfaceRI: (this.model.get('relativeImportance').surface * 100).toFixed(3),
                 columnRI: (this.model.get('relativeImportance').column * 100).toFixed(3),
                 shorelineRI: (this.model.get('relativeImportance').shoreline * 100).toFixed(3),
+                showDispersant: showDispersant,
+                showBurn: showBurn,
+                showSkimming: showSkimming
             });
 
             FormModal.prototype.render.call(this, options);
