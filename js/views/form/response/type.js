@@ -13,6 +13,7 @@ define([
     'views/form/response/skim'
 ], function($, _, Backbone, module, FormModal, FormTemplate, InSituBurnModel, DisperseModel, SkimModel, 
     InSituBurnForm, DisperseForm, SkimForm){
+    'use strict';
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
         className: 'modal fade form-modal responsetype-form',
@@ -46,6 +47,7 @@ define([
                     inSituBurnForm.on('hidden', function(){
                         inSituBurnForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -58,10 +60,13 @@ define([
                 disperseForm.on('wizardclose', disperseForm.close);
                 disperseForm.on('save', function(){
                     webgnome.model.get('weatherers').add(disperse);
+                    var waves = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
+                    disperse.set('waves', waves);
                     webgnome.model.save(null, {validate: false});
                     disperseForm.on('hidden', function(){
                         disperseForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -78,6 +83,7 @@ define([
                     skimForm.on('hidden', function(){
                         skimForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         }

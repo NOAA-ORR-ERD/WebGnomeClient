@@ -15,6 +15,7 @@ define([
 	'jqueryDatetimepicker',
     'bootstrap'
 ], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
+    'use strict';
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -23,6 +24,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .oil-select': 'elementSelect',
+                'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
@@ -57,7 +59,8 @@ define([
 			}
             this.showGeo = (localStorage.getItem('prediction')) === 'fate' ? false : true;
             this.showGeo = ((!_.isUndefined(options.showMap)) ? options.showMap : false) || this.showGeo;
-            if(this.model.get('name') == 'Spill'){
+            this.showSubstance = localStorage.getItem('prediction') === 'trajectory' ? false : true;
+            if(this.model.get('name') === 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
 		},
@@ -138,11 +141,11 @@ define([
             } else {
                 this.$('#map-status').addClass('ok');
             }
-            if (this.model.validateSubstance(this.model.attributes)){
-                this.$('#substance').addClass('error');
-            } else {
-                this.$('#substance').addClass('ok');
-            }
+            // if (this.model.validateSubstance(this.model.attributes)){
+            //     this.$('#substance').addClass('error');
+            // } else {
+            //     this.$('#substance').addClass('ok');
+            // }
             if (this.model.validateRelease(this.model.attributes)){
                 this.$('#info').addClass('error');
             } else {
@@ -164,7 +167,7 @@ define([
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
                     var substanceModel;
                     for (var i = 0; i < cachedOils.length; i++){
-                        if(cachedOils[i]['name'] === oilId){
+                        if(cachedOils[i].name === oilId){
                             substanceModel = new SubstanceModel(cachedOils[i]);
                             break;
                         }
@@ -188,7 +191,7 @@ define([
             var substance = substanceModel;
             if (!_.isNull(cachedOils) && !_.isNull(substanceModel) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
-                    if (cachedOils[i]['name'] === substance.get('name')){
+                    if (cachedOils[i].name === substance.get('name')){
                         cachedOils.splice(i, 1);
                     }
                 }
@@ -209,7 +212,7 @@ define([
         },
 
         renderSubstanceInfo: function(e, cached){
-            var substance;
+            var substance, compiled;
             var enabled = webgnome.model.get('spills').length > 0;
             if (_.isUndefined(cached)){
                 if (enabled){
@@ -223,7 +226,7 @@ define([
             var cachedOilArray = this.updateCachedOils(substance);
             var oilExists = !_.isNull(substance);
             if (oilExists){
-                var compiled = _.template(SubstanceTemplate, {
+                compiled = _.template(SubstanceTemplate, {
                     name: substance.get('name'),
                     api: Math.round(substance.get('api') * 1000) / 1000,
                     temps: substance.parseTemperatures(),
@@ -234,7 +237,7 @@ define([
                     oilCache: cachedOilArray
                 });
             } else {
-                var compiled = _.template(SubstanceNullTemplate, {
+                compiled = _.template(SubstanceNullTemplate, {
                     oilCache: cachedOilArray
                 });
             }
@@ -276,11 +279,11 @@ define([
 
         subtextUpdate: function(){
             if (this.$('#units-bullwinkle').val() === 'time'){
-                this.$('#hours').show();
-                this.$('#percent').hide();
+                this.$('.substanceinfo #hours').show();
+                this.$('.substanceinfo #percent').hide();
             } else {
-                this.$('#hours').hide();
-                this.$('#percent').show();
+                this.$('.substanceinfo #hours').hide();
+                this.$('.substanceinfo #percent').show();
             }
         },
 
@@ -328,6 +331,32 @@ define([
             }
 		},
 
+        setSubstanceNull: function(){
+            var element_type = this.model.get('element_type');
+            if (!_.isNull(element_type.get('substance'))) {
+                swal({
+                    title: "Warning!",
+                    text: "Setting the substance to non-weathering will delete the currently entered substance!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Set to Non-weathering",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                _.bind(function(isConfirm){
+                    if (isConfirm){
+                        if (webgnome.model.get('spills').length > 0){
+                            webgnome.model.get('spills').at(0).get('element_type').set('substance', null);
+                        } else {
+                            element_type.set('substance', null);
+                        }
+                        this.renderSubstanceInfo();
+                    }
+                }, this));
+            }
+        },
+
         save: function(){
             var validSubstance = this.model.validateSubstance(this.model.attributes);
             if (this.$('.error').length > 0){
@@ -342,9 +371,12 @@ define([
                     var spills = webgnome.model.get('spills');
                     if (spills.length > 1){
                         spills.forEach(function(spill){
-                            if (spill.get('element_type').get('substance').get('name') !== oilSubstance.get('name')){
-                                spill.get('element_type').set('substance', oilSubstance);
-                                spill.save();
+                            var spillSubstance = spill.get('element_type').get('substance');
+                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) || 
+                                !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
+
+                                    spill.get('element_type').set('substance', oilSubstance);
+                                    spill.save();
                             }
                         });
                     }
@@ -383,6 +415,22 @@ define([
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
+                var map = this.spillMapView.map;
+                this.$(map.getViewport()).on('mousemove', _.bind(function(e){
+                    var pixel = map.getEventPixel(e.originalEvent);
+                    var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                        if (feature.get('name') === 'Shoreline'){
+                            return feature;
+                        }
+                    });
+                    if (!_.isUndefined(feature)){
+                        this.$el.css('cursor', 'not-allowed');
+                        draw.setActive(false);
+                    } else {
+                        this.$el.css('cursor', '');
+                        draw.setActive(true);
+                    }
+                }, this));
                 draw.on('drawend', _.bind(function(e){
                     var feature = this.source.forEachFeature(_.bind(function(feature){
                         if (this.source.getFeatures().length > 1){
@@ -426,6 +474,7 @@ define([
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
+                var feature;
                 var startPosition = _.initial(this.model.get('release').get('start_position'));
                 if (startPosition[0] !== 0 && startPosition[1] !== 0){
                     var startPoint = this.convertCoords(this.model.get('release').get('start_position'));
@@ -433,7 +482,7 @@ define([
                     startPoint = ol.proj.transform(startPoint, 'EPSG:4326', 'EPSG:3857');
                     endPoint = ol.proj.transform(endPoint, 'EPSG:4326', 'EPSG:3857');
                     var pointsArray = [startPoint, endPoint];
-                    var feature = new ol.Feature(new ol.geom.LineString(pointsArray));
+                    feature = new ol.Feature(new ol.geom.LineString(pointsArray));
                     feature.set('name', 'start');
                     this.source.addFeature(feature);
                     
@@ -443,7 +492,7 @@ define([
                 var start = this.model.get('release').get('start_position');
                 var end = this.model.get('release').get('end_position');
                 if ((start[0] === end[0]) && (start[1] === end[1])){
-                    var feature = this.source.forEachFeature(_.bind(function(feature){
+                    feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                     }, this));
                     if (!_.isUndefined(feature)){
@@ -451,7 +500,7 @@ define([
                     }
                     var point = _.initial(start);
                     point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                    var feature = new ol.Feature(new ol.geom.Point(point));
+                    feature = new ol.Feature(new ol.geom.Point(point));
                     feature.setStyle( new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
@@ -476,6 +525,7 @@ define([
                         });
                         var extent = this.shorelineSource.getExtent();
                         this.shorelineLayer = new ol.layer.Vector({
+                            name: 'shoreline',
                             source: this.shorelineSource,
                             style: new ol.style.Style({
                                 fill: new ol.style.Fill({
@@ -492,6 +542,7 @@ define([
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
                             this.spillMapView.map.getView().fitExtent(extent, this.spillMapView.map.getSize());
                         }
+                        
 
                     }, this));
                 }
@@ -514,6 +565,10 @@ define([
             }
             var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
             var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
+            var startPosition = [startCoords[0], startCoords[1], 0];
+            var endPosition = [endCoords[0], endCoords[1], 0];
+            this.model.get('release').set('start_position', startPosition);
+            this.model.get('release').set('end_position', endPosition);
             startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
             endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
             var coordsArray = [startCoords, endCoords];
@@ -529,12 +584,6 @@ define([
             } else {
                 feature = new ol.Feature(new ol.geom.LineString(coordsArray));
             }
-            startCoords = ol.proj.transform(startCoords, 'EPSG:3857', 'EPSG:4326');
-            endCoords = ol.proj.transform(endCoords, 'EPSG:3857', 'EPSG:4326');
-            var startPosition = [startCoords[0], startCoords[1], 0];
-            var endPosition = [endCoords[0], endCoords[1], 0];
-            this.model.get('release').set('start_position', startPosition);
-            this.model.get('release').set('end_position', endPosition);
             this.source.addFeature(feature);
             this.spillMapView.map.getView().setCenter(startCoords);
             this.spillMapView.map.getView().setZoom(15);

@@ -10,7 +10,7 @@
 
 <div class="layers">
     <div class="title">Layers</div>
-    <form role="form" class="form-horizontal">
+    <form role="form" class="form-horizontal base">
         <div class="radio">
             <label for="mapquest"><input type="radio" id="mapquest" name="maplayer" checked="checked">Mapquest Map</label>
         </div>
@@ -18,20 +18,94 @@
             <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer">USGS Base Map</label>
         </div>
     </form>
-    <form role="form" class="form-horizontal">
+
+    <form role="form" class="form-horizontal checkboxes base">
         <div class="checkbox">
-            <label for="basemap"><input type="checkbox" id="basemap"> Base Map</label>
+            <label for="basemap"><input type="checkbox" id="basemap">Base Map</label>
         </div>
         <div class="checkbox">
             <label for="noaanavcharts"><input type="checkbox" id="noaanavcharts">NOAA Nav. Charts</label>
         </div>
         <div class="checkbox">
-            <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap"> Model Map</label>
+            <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap">Model Map</label>
         </div>
         <div class="checkbox">
-            <label for="spills"><input type="checkbox" checked="checked" id="spills"> Spills</label>
+            <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
         </div>
     </form>
+    
+
+    {% if(currents.length > 0){ %}
+        <form role="form" class="form-horizontal checkboxes current-grid">
+            <strong>Current Grid</strong>
+            <div class="inner">
+                {% for (var i = 0; i < currents.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="currents" id="grid-{{ currents[i].get('id') }}">
+                            {{ currents[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+
+        <form role="form" class="form-horizontal checkboxes current-uv">
+            <strong>Current Speed &amp; Direction</strong>
+            <div class="inner">
+                {% for (var i = 0; i < currents.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
+                            {{ currents[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+    {% } %}    
+
+    {% if(ice.length > 0){ %}
+        <form role="form" class="form-horizontal checkboxes ice-grid">
+            <strong>Ice Grid</strong>
+            <div class="inner">
+                {% for (var i = 0; i < ice.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="grid-{{ ice[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="ice" id="grid-{{ ice[i].get('id') }}">
+                            {{ ice[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+
+        <form role="form" class="form-horizontal checkboxes ice-uv">
+            <strong>Ice Data</strong>
+            <div class="radio">
+                <label for="thick">
+                    <input type="radio" id="thick" name="ice_data" value="thickness" checked>
+                    Thickness
+                </label>
+            </div>
+            <div class="radio">
+                <label for="con">
+                    <input type="radio" id="con" name="ice_data" value="coverage">
+                    Coverage
+                </label>
+            </div>
+            <div class="inner">
+                {% for (var i = 0; i < ice.length; i++){ %}
+                    <div class="checkbox">
+                        <label for="uv-{{ ice[i].get('id') }}" class="curLabel">
+                            <input type="checkbox" class="ice" id="uv-{{ ice[i].get('id') }}" {{ active_ice.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
+                            {{ ice[i].get('name') }}
+                        </label>
+                    </div>
+                {% } %}
+            </div>
+        </form>
+    {% } %}
 </div>
 
 <div class="spill-button ol-control">

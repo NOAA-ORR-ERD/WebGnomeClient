@@ -5,6 +5,7 @@ define([
     'model/base',
     'moment'
 ], function(_, Backbone, ol, BaseModel, moment){
+    'use strict';
     var gnomeRelease = BaseModel.extend({
         url: '/release',
 
@@ -20,7 +21,7 @@ define([
 
         initialize: function(options){
             var start_time = '';
-            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 start_time = moment(webgnome.model.get('start_time'));
             } else {
                 start_time = moment();
@@ -30,7 +31,7 @@ define([
                 this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
-            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 end_time = start_time.add(webgnome.model.get('duration'), 's');
             } else {
                 end_time = moment();
@@ -38,7 +39,7 @@ define([
 
             var prediction = localStorage.getItem('prediction');
 
-            if (prediction == 'trajectory' || prediction == 'both'){
+            if (prediction === 'trajectory' || prediction === 'both'){
                 this.set('num_per_timestep', null);
                 this.set('num_elements', 1000);
             } else {
@@ -49,6 +50,7 @@ define([
             if(_.isUndefined(this.get('end_release_time'))){
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
+
             BaseModel.prototype.initialize.call(this, options);
         },
 
@@ -66,11 +68,11 @@ define([
                 attrs = this.attributes;
             }
             
-            if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
+            if(parseFloat(attrs.start_position[0]) !== attrs.start_position[0] || parseFloat(attrs.start_position[1]) !== attrs.start_position[1]){
                 return 'Start position must be in decimal degrees.';
             }
 
-            if(parseFloat(attrs.end_position[0]) != attrs.end_position[0] || parseFloat(attrs.end_position[1]) != attrs.end_position[1]){
+            if(parseFloat(attrs.end_position[0]) !== attrs.end_position[0] || parseFloat(attrs.end_position[1]) !== attrs.end_position[1]){
                 return 'End position must be in decimal degrees.';
             }
 
@@ -78,17 +80,17 @@ define([
                 return 'Give a valid location for the spill!';
             }
 
-            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
-                return this.isReleaseInExtent(webgnome.model.get('map').getExtent());
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea()))){
+                return this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea());
             }
         },
 
-        isReleaseInExtent: function(locationExtent){
+        isReleaseInExtent: function(locationPolygon){
             var start = [this.get('start_position')[0], this.get('start_position')[1]];
             var end = [this.get('end_position')[0], this.get('end_position')[1]];
             var extentCoords = [start, end];
             var releaseExtent = ol.extent.boundingExtent(extentCoords);
-            if(!ol.extent.containsExtent(locationExtent, releaseExtent)){
+            if(!locationPolygon.intersectsExtent(releaseExtent)){
                 return 'Spill is not within the map bounds!';
             }
         },

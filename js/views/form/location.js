@@ -7,8 +7,8 @@ define([
     'views/modal/loading',
     'model/location',
     'model/gnome',
-    'model/outputters/geojson'
-], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel, GeojsonOutputter){
+], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
+    'use strict';
     var locationModal = FormModal.extend({
         className: 'modal fade form-modal location-form',
         size: 'lg',

@@ -9,6 +9,7 @@ define([
     'text!templates/model/index.html',
     'sweetalert'
 ], function($, _, Backbone, Cache, TreeView, TrajectoryView, FateView, IndexTemplate, swal){
+    'use strict';
     var modelView = Backbone.View.extend({
         className: 'page model',
 
@@ -40,7 +41,7 @@ define([
             } else {
                 // the view is defined make sure it's a viewable view based on the requested prediction
                 // ex. if the view is fate but pred is traj don't render the fate view.
-                if(prediction != 'both'){
+                if(prediction !== 'both'){
                     view = prediction;
                 }
             }
@@ -48,7 +49,7 @@ define([
             this.$('.switch').addClass(view);
             localStorage.setItem('view', view);
 
-            if (view == 'fate') {
+            if (view === 'fate') {
                 this.renderFate();
             } else {
                 this.renderTrajectory();
@@ -70,7 +71,7 @@ define([
 
         switchView: function(){
             var view = localStorage.getItem('view');
-            if(view == 'fate') {
+            if(view === 'fate') {
                 this.$('.switch').removeClass('fate').addClass('trajectory');
                 localStorage.setItem('view', 'trajectory');
                 view = 'trajectory';
@@ -116,7 +117,7 @@ define([
                 });
             }
 
-            if(view == 'fate'){
+            if(view === 'fate'){
                 this.renderFate();
                 this.$el.css('height', 'auto');
             } else {
@@ -139,7 +140,7 @@ define([
 
         updateHeight: function(){
             var view = localStorage.getItem('view');
-            if(view == 'trajectory'){
+            if(view === 'trajectory'){
                 var win = $(window).height();
                 var height = win - 94 - 52;
                 this.$el.css('height', height + 'px');

@@ -6,7 +6,8 @@ define([
     'views/default/map',
     'text!templates/location/index.html',
     'views/wizard/location'
-], function($, _, Backbone, ol, olMapView, LocationsTemplate, LocationWizard){
+], function($, _, Backbone, ol, OlMapView, LocationsTemplate, LocationWizard){
+    'use strict';
     var locationsView = Backbone.View.extend({
         className: 'page locations',
         mapView: null,
@@ -22,7 +23,7 @@ define([
                 this.dom_target = 'body';
             }
 
-            this.mapView = new olMapView({
+            this.mapView = new OlMapView({
                 controls: [],
                 id: 'locations-map',
                 layers: [
@@ -112,7 +113,7 @@ define([
         },
 
         render: function(){
-            compiled = _.template(LocationsTemplate);
+            var compiled = _.template(LocationsTemplate);
             $(this.dom_target).append(this.$el.html(compiled));
 
             this.popup = new ol.Overlay({

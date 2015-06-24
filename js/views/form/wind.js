@@ -6,6 +6,7 @@ define([
     'moment',
     'ol',
     'nucos',
+    'mousetrap',
     'views/modal/form',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
@@ -15,7 +16,8 @@ define([
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, olMapView, nwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, NwsWind){
+    'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal fade form-modal wind-form',
@@ -53,7 +55,7 @@ define([
                     })
                 })
             });
-            this.ol = new olMapView({
+            this.ol = new OlMapView({
                 id: 'wind-form-map',
                 zoom: 7,
                 center: ol.proj.transform([-137.49, 47.97], 'EPSG:4326', 'EPSG:3857'),
@@ -155,7 +157,7 @@ define([
                 this.originalTimeseries = this.model.get('timeseries');
             }
 
-            if(e.target.hash == '#constant'){
+            if(e.target.hash === '#constant'){
                 if(this.$('.constant-compass canvas').length === 0){
                     this.$('.constant-compass').compassRoseUI({
                         'arrow-direction': 'in',
@@ -168,7 +170,7 @@ define([
                     });
                 }
                 this.update();
-            } else if (e.target.hash == '#variable') {
+            } else if (e.target.hash === '#variable') {
                 if(this.$('.variable-compass canvas').length === 0){
                     this.$('.variable-compass').compassRoseUI({
                         'arrow-direction': 'in',
@@ -183,10 +185,11 @@ define([
                 this.unbindBaseMouseTrap();
                 this.renderTimeseries();
                 this.update();
-            } else if (e.target.hash == '#nws'){
+            } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
                     this.ol.map.on('click', _.bind(function(e){
+                        this.clearError();
                         this.source.forEachFeature(function(feature){
                             this.source.removeFeature(feature);
                         }, this);
@@ -194,12 +197,25 @@ define([
                         var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
-                        this.nws = new nwsWind({lat: coords[1], lon: coords[0]});
-                        this.nws.fetch();
+                        this.nws = new NwsWind({lat: coords[1], lon: coords[0]});
+                        this.nws.fetch({
+                            success: _.bind(this.nwsLoad, this),
+                            error: _.bind(this.nwsError, this)
+                        });
                     }, this));
                 }
             }
             $(window).trigger('resize');
+        },
+
+        nwsLoad: function(model){
+            this.model.set('timeseries', model.get('timeseries'));
+            this.model.set('units', model.get('units'));
+            this.$('.variable a').tab('show');
+        },
+
+        nwsError: function(){
+            this.error('Error!', 'No NWS forecast data found');
         },
 
         update: function(compass){
@@ -224,8 +240,9 @@ define([
             }
 
             if (active === 'variable' && this.model.get('timeseries')[0][0] === '2013-02-13T09:00:00' && this.model.get('timeseries').length <= 1){
-                speed = this.form['constant'].speed.val();
-                direction = this.form['constant'].direction.val();
+                speed = this.form.constant.speed.val();
+                direction = this.form.constant.direction.val();
+                this.form.variable.datetime.val(moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment));
                 this.model.set('timeseries', [[gnomeStart, [speed, direction]]]);
                 this.renderTimeseries();
             }
@@ -418,11 +435,6 @@ define([
             this.$('.additional-wind-compass').remove();
         },
 
-        addTimeseries: function(){
-            webgnome.model.get('environment').findWhere({id: windId});
-            $(window).trigger('resize');
-        },
-
         removeTimeseriesEntry: function(e){
             if (this.$('.input-speed').length === 0){
                 e.preventDefault();
@@ -472,13 +484,13 @@ define([
         },
 
         variableFormValidation: function(entry){
+            // need to add a error presentation if something doesn't pass validation here.
             var valid = true;
-            if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable['direction'].val()){
+            if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
                 valid = false;
             }
             var incrementVal = this.form.variable.increment.val();
-
-            if(incrementVal != parseInt(incrementVal, 10)) {
+            if(!incrementVal) {
                 valid = false;
             }
 

@@ -1,8 +1,10 @@
 define([
     'underscore',
     'backbone',
+    'nucos',
     'model/base'
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, nucos, BaseModel){
+    'use strict';
     var waterModel = BaseModel.extend({
         urlRoot: '/environment/',
         defaults: {
@@ -59,6 +61,13 @@ define([
                 return 'Sediment cannot exceed 1000 milligrams per liter!';
             }
 
+        },
+
+        getDensity: function(){
+            var temp = this.get('temperature');
+            var salinity = this.get('salinity');
+
+            return nucos.waterDensity().calcDensity(temp, salinity);
         }
 
     });

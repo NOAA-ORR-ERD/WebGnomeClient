@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'views/form/spill/base',
     'text!templates/form/spill/instant.html',
     'model/spill',
@@ -10,7 +11,8 @@ define([
     'views/default/map',
     'jqueryDatetimepicker',
     'moment'
-], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+    'use strict';
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
         className: 'modal fade form-modal instantspill-form',
@@ -45,6 +47,7 @@ define([
                 amount: this.model.get('amount'),
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 showGeo: this.showGeo,
+                showSubstance: this.showSubstance,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
                 disabled: disabled

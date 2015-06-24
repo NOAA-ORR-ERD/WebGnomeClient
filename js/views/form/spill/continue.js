@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
     'model/spill',
@@ -11,7 +12,8 @@ define([
     'jqueryDatetimepicker',
     'jqueryui/slider',
     'moment'
-], function($, _, Backbone, module, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+    'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
         className: 'modal fade form-modal continuespill-form',
@@ -20,9 +22,9 @@ define([
         events: function(){
             return _.defaults({
                 'blur #spill-amount': 'updateRate',
+                'blur #units': 'updateRate',
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
-                'blur #units': 'updateRate',
                 'click #amount': 'updateAmountTooltip',
                 'click #constant': 'updateRateTooltip'
             }, BaseSpillForm.prototype.events());
@@ -54,15 +56,23 @@ define([
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
-                    duration: duration,
+                    'duration': duration,
                     showGeo: this.showGeo,
+                    showSubstance: this.showSubstance,
                     start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                     end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
                     disabled: disabled
                 });
                 BaseSpillForm.prototype.render.call(this, options);
-                var durationInMins = (((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10)) * 60);
-                var rate = parseFloat(amount) / durationInMins;
+
+                var durationObj = moment.duration((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10), 'h');
+
+                var rate;
+                if ((this.$('#rate-units').val()).indexOf('hr') === -1){
+                    rate = parseFloat(amount) / durationObj.asMinutes();
+                } else {
+                    rate = parseFloat(amount) / durationObj.asHours();
+                }
 
                 this.$('#spill-rate').val(rate);
 
@@ -100,6 +110,8 @@ define([
                 if (!this.model.isNew()){
                     this.$('#amount .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
                     this.$('#constant .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.updateAmount();
+                    this.updateRate();
                     this.updateAmountSlide();
                     this.updateRateSlide();
                 }
@@ -258,7 +270,7 @@ define([
         },
 
         close: function(){
-            this.model.off('ready', this.render, this)
+            this.model.off('ready', this.render, this);
             BaseSpillForm.prototype.close.call(this);
         }
 

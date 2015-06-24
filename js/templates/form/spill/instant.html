@@ -9,12 +9,14 @@
         <li class="generalinfo active">
             <a href="#generalinfo-spill" data-toggle="tab">General<span id="info" class="status"></span></a>
         </li>
-        <li class="substanceinfo">
-            <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status"></span></a>
-        </li>
+        {% if (showSubstance){ %}
+            <li class="substanceinfo">
+                <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status optional"></span></a>
+            </li>
+        {% } %}
         {% if (showGeo){ %}
             <li class="mapspill">
-                <a href="#mapspill" data-toggle="tab">Map<span id="map-status" class="status"></span></a>
+                <a href="#mapspill" data-toggle="tab">Location<span id="map-status" class="status"></span></a>
             </li>
         {% } %}
     </ul>
@@ -39,24 +41,36 @@
             	</div>
             	<div class="col-sm-3">
             		<select class="form-control" id="units">
-            			<option value="m^3">
-            				m^3
-            			</option>
-            			<option value="gal">
-            				gal
-            			</option>
-            			<option value="bbl">
-            				bbl
-            			</option>
-            			<option value="ton">
-            				tons
-            			</option>
-            			<option value="metric ton">
-            				metric tons
-            			</option>
-                        <option value="kg">
-                            kilograms
-                        </option>
+            			{% if (showSubstance){ %}
+                            <option value="m^3">
+                                m^3
+                            </option>
+                            <option value="gal">
+                                gal
+                            </option>
+                            <option value="bbl">
+                                bbl
+                            </option>
+                            <option value="ton">
+                                tons
+                            </option>
+                            <option value="metric ton">
+                                metric tons
+                            </option>
+                            <option value="kg">
+                                kilograms
+                            </option>
+                        {% } else { %}
+                            <option value="ton">
+                                tons
+                            </option>
+                            <option value="metric ton">
+                                metric tons
+                            </option>
+                            <option value="kg">
+                                kilograms
+                            </option>
+                        {% } %}
             		</select>
             	</div>
             </div>

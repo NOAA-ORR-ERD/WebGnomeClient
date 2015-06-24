@@ -6,6 +6,7 @@ define([
     'text!templates/modal/base.html',
     'mousetrap'
 ], function($, _, Backbone, bs, ModalTemplate, Mousetrap){
+    'use strict';
     var baseModal = Backbone.View.extend({
         className: 'modal fade',
         name: 'default',
@@ -109,7 +110,7 @@ define([
                 this.$('.next').click();
             } else if (this.$('.finish').length > 0){
                 this.$('.finish').click();
-            } else if (this.$('.cancel').length > 0){
+            } else if (this.$('.cancel').length > 0 && this.$('.save').length === 0){
                 this.$('.cancel').click();
             }
         },
@@ -117,6 +118,9 @@ define([
         cancelByEsc: function(e){
             e.preventDefault();
             this.$('.cancel').click();
+            if (this.$('.cancel').length === 0){
+                this.$('.close').click();
+            }
         },
 
         updateTooltipWidth: function(){

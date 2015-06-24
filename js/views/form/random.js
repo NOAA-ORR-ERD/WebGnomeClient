@@ -5,6 +5,7 @@ define([
     'views/modal/form',
     'text!templates/form/random.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
+     'use strict';
 	   var randomForm = FormModal.extend({
       title: 'Diffusion Settings',
       className: 'modal fade form-modal',

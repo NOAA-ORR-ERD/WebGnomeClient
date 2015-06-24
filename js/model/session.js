@@ -3,6 +3,7 @@ define([
     'backbone',
     'sweetalert'
 ], function(_, Backbone, swal){
+    'use strict';
     var sessionModel = Backbone.Model.extend({
         url: '/session',
         defaults: {

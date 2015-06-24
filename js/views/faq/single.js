@@ -7,6 +7,7 @@ define([
     'text!templates/faq/specific.html',
     'model/help/help'
 ], function($, _, Backbone, chosen, HelpView, SpecificTemplate, HelpModel){
+    'use strict';
 	var singleFAQView = HelpView.extend({
 		className: 'helpcontent',
 		id: 'support',

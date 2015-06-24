@@ -5,6 +5,7 @@ define([
     'chosen',
     'text!templates/faq/default.html'
 ], function($, _, Backbone, chosen, DefaultTemplate){
+    'use strict';
 	var faqDefaultView = Backbone.View.extend({
 		className: 'helpcontent',
 		id: 'support',

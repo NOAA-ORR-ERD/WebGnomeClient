@@ -3,6 +3,7 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
+    'use strict';
     var gnomeSubstance = BaseModel.extend({
         url: function(){
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
@@ -18,7 +19,8 @@ define([
             var pourPointC = pourPointK - 273.15;
             var pourPointF = (pourPointC * (9 / 5)) + 32;
 
-            return {'pour_point_max_c': pourPointC.toFixed(3),
+            return {
+                    'pour_point_max_c': pourPointC.toFixed(3),
                     'pour_point_max_f': pourPointF.toFixed(3),
                     'flash_point_max_c': flashPointC.toFixed(3),
                     'flash_point_max_f': flashPointF.toFixed(3)

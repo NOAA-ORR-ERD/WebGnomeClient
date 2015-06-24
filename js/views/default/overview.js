@@ -4,6 +4,7 @@ define([
     'backbone',
     'text!templates/default/overview.html'
 ], function($, _, Backbone, FAQTemplate){
+    'use strict';
 	var overviewView = Backbone.View.extend({
         className: 'page overview',
 

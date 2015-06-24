@@ -4,6 +4,7 @@ define([
     'backbone',
     'views/modal/base',
 ], function($, _, Backbone, BaseModal){
+    'use strict';
     var helpModal = BaseModal.extend({
         name: 'gnome-help',
         size: 'md',

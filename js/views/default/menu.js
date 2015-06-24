@@ -9,6 +9,7 @@ define([
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
+    'use strict';
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -25,6 +26,7 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
+            //webgnome.model.on('change', this.contextualize, this);
         },
 
         events: {
@@ -184,7 +186,7 @@ define([
                 this.disableMenuItem('edit');
             }
 
-            if(window.location.href.indexOf('model') != -1){
+            if(window.location.href.indexOf('model') !== -1){
                 this.enableMenuItem('debugView');
             } else {
                 this.disableMenuItem('debugView');

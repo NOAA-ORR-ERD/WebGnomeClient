@@ -5,6 +5,7 @@ define([
     'model/initializers/windages',
     'model/substance'
 ], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
+    'use strict';
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
 
@@ -29,8 +30,10 @@ define([
         },
 
         validate: function(attrs, options){
-            if (attrs.substance && !attrs.substance.isValid()){
-                return attrs.substance.validationError;
+            if (localStorage.getItem('prediction') !== 'trajectory'){
+                if (attrs.substance && !attrs.substance.isValid()){
+                    return attrs.substance.validationError;
+                }
             }
         },
 

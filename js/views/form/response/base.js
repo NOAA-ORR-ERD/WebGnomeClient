@@ -7,11 +7,12 @@ define([
 	'jqueryDatetimepicker',
     'jqueryui/slider'
 ], function($, _, Backbone, FormModal, moment){
+    'use strict';
 	var baseResponseForm = FormModal.extend({
 
         events: function(){
             return _.defaults({
-
+                'click .slidertoggle': 'toggleEfficiencySlider'
             }, FormModal.prototype.events);
         },
 
@@ -48,7 +49,14 @@ define([
                     this.update();
                 }, this)
             });
+
+            if (_.isNull(this.model.get('efficiency'))){
+                this.$('.slidertoggle')[0].checked = true;
+                this.toggleEfficiencySlider();
+            }
+
             this.updateEfficiency();
+            this.setEfficiencySlider();
         },
 
         update: function(){
@@ -92,12 +100,35 @@ define([
             var value;
             if(!_.isUndefined(ui)){
                 value = ui.value;
+            } else if (!_.isNull(this.model.get('efficiency'))){
+                value = this.model.get('efficiency') * 100;
             } else {
                 value = this.$('.slider').slider('value');
             }
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
-            this.efficiencyValue = parseFloat(value) / 100;
+            this.model.set('efficiency', parseFloat(value) / 100);
+        },
+
+        toggleEfficiencySlider: function(){
+            if (this.$('.slidertoggle').is(':checked')){
+                this.$('.slider').slider({disabled: true});
+                this.model.set('efficiency', null);
+            } else {
+                this.$('.slider').slider({disabled: false});
+                this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
+            }
+        },
+
+        setEfficiencySlider: function(){
+            if (!_.isNull(this.model.get('efficiency'))){
+                var val = this.model.get('efficiency') * 100;
+                this.$('.slider').slider('value', val);
+                this.$('#rate-tooltip').text(val);
+            } else {
+                this.$('.slidertoggle').prop('checked', true);
+                this.toggleEfficiencySlider();
+            }
         },
 
         close: function(){

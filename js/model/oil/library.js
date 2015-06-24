@@ -5,8 +5,8 @@ define([
     'fuse',
     'moment'
 ], function(_, $, Backbone, Fuse, moment){
+    'use strict';
     var oilLib = Backbone.Collection.extend({
-
         ready: false,
         loaded: false,
         sortAttr: 'name',
@@ -26,7 +26,7 @@ define([
         },
 
         fetchOil: function(id, cb){
-            var oil = Backbone.Model.extend({
+            var Oil = Backbone.Model.extend({
                 urlRoot: this.url
                 // take: function(attr){
                 //     if (!_.has(this, this.idAttribute)){
@@ -40,7 +40,7 @@ define([
                 //     }
                 // }
             });
-            oil = new oil({id: id});
+            var oil = new Oil({id: id});
             oil.fetch({
                 success: cb
             });
@@ -120,9 +120,9 @@ define([
             a = a.get(this.sortAttr);
             b = b.get(this.sortAttr);
 
-            if (a == b) return 0;
+            if (a === b){ return 0; }
 
-            if (this.sortDir == 1) {
+            if (this.sortDir === 1) {
                 return a > b ? 1 : -1;
             } else {
                 return a < b ? 1 : -1;
@@ -144,20 +144,20 @@ define([
         sync: function(method, model, options){
             var oilCache = localStorage.getItem('oil_cache');
             var success = options.success;
-            if (!_.isNull(oilCache)){
+            if (!_.isNull(oilCache) && oilCache !== 'null'){
                 oilCache = JSON.parse(oilCache);
-                var ts = oilCache['ts'];
+                var ts = oilCache.ts;
                 var now = moment().unix();
                 if (now - ts < 86400){
-                    var data = oilCache['oils'];
+                    var data = oilCache.oils;
                     setTimeout(function(){
                         options.success(data, 'success', null);
                     }, 500);
                 } else {
                     options.success = function(resp, status, xhr){
                         var oilCache = {};
-                        oilCache['oils'] = resp;
-                        oilCache['ts'] = now;
+                        oilCache.oils = resp;
+                        oilCache.ts = now;
                         localStorage.setItem('oil_cache', JSON.stringify(oilCache));
                         success(resp, status, xhr);
                     };
@@ -167,8 +167,8 @@ define([
                 options.success = function(resp, status, xhr){
                     var now = moment().unix();
                     var oilCache = {};
-                    oilCache['oils'] = resp;
-                    oilCache['ts'] = now;
+                    oilCache.oils = resp;
+                    oilCache.ts = now;
                     localStorage.setItem('oil_cache', JSON.stringify(oilCache));
                     success(resp, status, xhr);
                 };

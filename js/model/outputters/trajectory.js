@@ -3,11 +3,12 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-    geojsonOutputter = BaseModel.extend({
+    'use strict';
+    var trajectoryOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
 
         defaults: {
-            'obj_type': 'gnome.outputters.geo_json.GeoJson',
+            'obj_type': 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput',
             'name': 'Outputter',
             'output_timestep': null,
             'output_last_step': 'true',
@@ -19,5 +20,5 @@ define([
         }
     });
 
-    return geojsonOutputter;
+    return trajectoryOutputter;
 });

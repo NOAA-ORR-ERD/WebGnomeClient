@@ -6,7 +6,8 @@ define([
     'text!templates/default/alert-danger.html',
     'views/default/help'
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
-    formModal = BaseModal.extend({
+    'use strict';
+    var formModal = BaseModal.extend({
         className: 'modal fade form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],
@@ -107,7 +108,7 @@ define([
                     success: _.bind(function(){
                         this.hide();
                         this.trigger('save', [this.model]);
-                        if(_.isFunction(callback)) callback();
+                        if(_.isFunction(callback)) { callback(); }
                     }, this),
                     error: _.bind(function(model, response){
                         this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
@@ -120,7 +121,7 @@ define([
             } else {
                 this.hide();
                 this.trigger('save', [this.model]);
-                if(_.isFunction(callback)) callback();
+                if(_.isFunction(callback)){ callback(); }
             }
         },
 

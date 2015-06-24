@@ -5,15 +5,18 @@ define([
     'socketio',
     'text!templates/default/logger/index.html'
 ], function($, _, Backbone, io, LoggerTemplate){
+    'use strict';
     var loggerView = Backbone.View.extend({
         className: 'logger',
         socketRoute: '/logger',
         socket: null,
-
+        count: 0,
+        log_item_height: 20,
         events: {
             'click .toggle': 'toggle',
             'mousewheel': 'scroll',
-            'click .view a': 'toggleViewable'
+            'click .view a:not(.clear)': 'toggleViewable',
+            'click .clear': 'clearMessages'
         },
 
         initialize: function(){
@@ -41,6 +44,7 @@ define([
                     localStorage.setItem('logger', null);
                 } else {
                     localStorage.setItem('logger', true);
+                    this.windowScrollCheck(true);
                 }
             }
         },
@@ -74,6 +78,7 @@ define([
         log: function(message){
             if(_.isString(message)){
                 this.$('.window .logs').append('<li class="misc">' + message + '</li>');
+                this.count++;
             }
 
             if(_.isObject(message)){
@@ -82,32 +87,43 @@ define([
                     source = 'misc';
                 }
                 var ts = message.time + ' ' + message.date;
-                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong>' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right">' + ts + '</div></li>');
+                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
+                this.count++;
             }
 
             this.evalLogs();
             this.windowScrollCheck();
         },
 
-        windowScrollCheck: function(){
+        windowScrollCheck: function(force){
+            force = force ? true : false;
             var win = this.$('.window')[0];
-            if((win.scrollHeight - win.scrollTop) - win.clientHeight < 25){
-                win.scrollTop = win.scrollHeight;
+            if(this.$el.hasClass('open') || force){
+                if((((this.count * this.log_item_height) + 25) - win.scrollTop) - win.clientHeight < 25 || force){
+                    win.scrollTop = win.scrollHeight;
+                }
             }
+            
         },
 
         evalLogs: function(){
-            var errors = this.$('.logs .error, .logs .criti').length;
-            var warnings = this.$('.logs .warni').length;
+            var errors = this.$('li.error, li.criti').length;
+            var warnings = this.$('li.warni').length;
 
             if(errors > 0){
                 this.$el.addClass('error');
                 this.$('.info .error .count').text(errors);
+            } else {
+                this.$el.removeClass('error');
+                this.$('.info .error .count').text('');
             }
 
             if(warnings > 0){
                 this.$el.addClass('warning');
                 this.$('.info .warning .count').text(warnings);
+            } else {
+                this.$el.removeClass('warning');
+                this.$('.info .warning .count').text('');
             }
         },
 
@@ -128,6 +144,14 @@ define([
             a.toggleClass('active');
             win.toggleClass(a.attr('href').replace('#', ''));
 
+            this.windowScrollCheck();
+        },
+
+        clearMessages: function(e){
+            e.preventDefault();
+            
+            this.$('.window .logs').html('');
+            this.evalLogs();
             this.windowScrollCheck();
         }
     });

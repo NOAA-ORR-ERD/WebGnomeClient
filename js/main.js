@@ -1,7 +1,7 @@
 
 // Configure RequireJS
 require.config({
-    baseUrl: 'js',
+    baseUrl: '/js',
     priority: ['underscore', 'jqueryui', 'bootstrap'],
     paths: {
         jquery: 'lib/jquery/dist/jquery',
@@ -34,6 +34,7 @@ require.config({
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
         flotneedle: 'lib/flotneedle/flotNeedle',
         'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
+        html2canvas: 'lib/html2canvas/build/html2canvas',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
@@ -49,7 +50,8 @@ require.config({
         nucos: 'lib/nucos/nucos',
         'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
-        socketio: 'lib/socket.io-client/dist/socket.io'
+        socketio: 'lib/socket.io-client/dist/socket.io',
+        localforage: 'lib/localforage/dist/localforage'
     },
     shim: {
         jquery: {
@@ -69,6 +71,9 @@ require.config({
         flotfillarea: ['flot'],
         flotselect: ['flot'],
         flotgantt: ['JUMFlotLib'],
+        html2canvas: {
+            exports: 'html2canvas'
+        },
         JUMFlotLib: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
@@ -100,8 +105,12 @@ require.config({
         },
         socketio: {
             exports: 'io'
+        },
+        localforage: {
+            exports: 'localforage'
         }
     },
+<<<<<<< HEAD
 });
 
 // set up the app
@@ -111,3 +120,6 @@ require([
     window.webgnome = App;
     webgnome.initialize();
 });
+=======
+});
+>>>>>>> develop

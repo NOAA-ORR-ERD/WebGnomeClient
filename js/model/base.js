@@ -2,6 +2,7 @@ define([
     'underscore',
     'backbone'
 ], function(_, Backbone){
+    'use strict';
     var baseModel = Backbone.Model.extend({
         initialize: function(options){
             Backbone.Model.prototype.initialize.call(this, options);
@@ -41,7 +42,7 @@ define([
                             // if the embedded class isn't an object it can only have one type of object in
                             // the given collection, so set it.
                             for(var obj in embeddedData){
-                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true, silent: true});
+                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true});
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
@@ -49,11 +50,11 @@ define([
                             // I.E. environment with wind and tide, figure out which one we have
                             // by looking at it's obj_type and cast it appropriatly.
 
-                            for(var obj in embeddedData){
-                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj].obj_type], embeddedData[obj]), {merge: true, silent: true});
+                            for(var obj2 in embeddedData){
+                                if(_.isFunction(embeddedClass[embeddedData[obj2].obj_type])){
+                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj]), {merge: true, silent: true});
+                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
                                 }
                             }
                         }
@@ -66,14 +67,15 @@ define([
             return response;
         },
 
-        setChild: function(cls, data){
+        setChild: function(Cls, data){
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
                 return webgnome.obj_ref[data.id];
             }
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new cls(data, {parse: true, silent: true});
+            var obj = new Cls();
+            obj.set(obj.parse(data), {silent: true});
             webgnome.obj_ref[data.id] = obj;
             return obj;
         }

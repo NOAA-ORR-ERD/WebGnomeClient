@@ -6,12 +6,15 @@ define([
     'views/base',
     'moment',
     'nucos',
+    'model/step',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
     'model/risk/risk',
     'views/form/risk/risk',
     'text!templates/risk/risk.html',
+    'text!templates/model/fate/buttons.html',
+    'html2canvas',
     'flot',
     'flottime',
     'flotresize',
@@ -20,7 +23,8 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate, ButtonsTemplate, html2canvas){
+    'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
         frame: 0,
@@ -32,7 +36,10 @@ define([
             'rgb(77,167,77)',
             'rgb(148,64,237)',
             'rgb(189,155,51)',
-            'rgb(140,172,198)'
+            'rgb(140,172,198)',
+            'rgb(207,124,30)',
+            'rgb(119,169,252)',
+            'rgb(63,40,87)'
         ],
 
         events: {
@@ -45,7 +52,9 @@ define([
             'change #ics209 select': 'renderTableICS',
             'click #ics209 .export a.download': 'downloadTableICS',
             'click #ics209 .export a.print': 'printTableICS',
-            'click .gnome-help': 'renderHelp'
+            'click .gnome-help': 'renderHelp',
+            'click .saveas': 'saveGraphImage',
+            'click .print-graph': 'printGraphImage'
         },
 
         defaultChartOptions: {
@@ -87,19 +96,28 @@ define([
         },
 
         load: function(){
-            if(webgnome.cache.models.length > 0 &&
-            _.has(webgnome.cache.models[0].get('WeatheringOutput'), 'nominal')){
-
-                webgnome.cache.forEach(_.bind(function(step){
+            if(webgnome.cache.length > 0){
+                while(this.frame < webgnome.cache.length){
+                    webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
                     this.frame++;
-                    this.formatDataset(step);
-                }, this));
+                }
+            } else {
+                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                webgnome.cache.step();
+            }
+        },
 
-                if(this.frame < webgnome.model.get('num_time_steps')){
+        loadStep: function(err, step){
+           this.formatDataset(new GnomeStep(step));
+
+            // on the last step render the graph and if there are more steps start the steping.
+            if(step.WeatheringOutput.step_num === webgnome.cache.length - 1){
+                this.renderGraphs();
+                if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
+                    webgnome.cache.on('step:recieved', this.buildDataset, this);
                     webgnome.cache.step();
                 }
-            }
-            webgnome.cache.on('step:recieved', this.buildDataset, this);
+            }     
         },
 
         reset: function(){
@@ -116,8 +134,11 @@ define([
 
         render: function(){
             BaseView.prototype.render.call(this);
+            var compiled;
+            var spills = webgnome.model.get('spills');
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
+            var wind_speed;
             if(_.isUndefined(wind)){
                 wind_speed = '';
             } else if (wind.get('timeseries').length === 1) {
@@ -126,40 +147,58 @@ define([
                 wind_speed = 'Variable Speed';
             }
 
-            var pour_point;
-            var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
-            var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
-            if(pp_min === pp_max){
-                pour_point = pp_min;
-            } else if (pp_min && pp_max) {
-                pour_point = pp_min + ' - ' + pp_max;
-            } else {
-                pour_point = pp_min + pp_max;
-            }
-
             var water = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('water');
             var wave_height = 'Computed from wind';
+            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
+
             if(water.get('wave_height')){
                 wave_height = water.get('wave_height') + ' ' + water.get('units').wave_height;
             } else if (water.get('fetch')) {
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
-            var spills = webgnome.model.get('spills');
             var init_release = this.findInitialRelease(spills);
-            var total_released = this.calcAmountReleased(spills, webgnome.model) + ' ' + spills.at(0).get('units');
 
-            var compiled = _.template(FateTemplate, {
-                name: substance.get('name'),
-                api: substance.get('api'),
-                wind_speed: wind_speed,
-                pour_point: pour_point + ' &deg;C',
-                wave_height: wave_height,
-                water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
-                release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
-                total_released: total_released,
-                units: spills.at(0).get('units')
-            });
+            var buttonsTemplate = _.template(ButtonsTemplate, {});
+
+            if (!_.isNull(substance)){
+                var pour_point;
+                var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+                var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
+                if(pp_min === pp_max){
+                    pour_point = pp_min;
+                } else if (pp_min && pp_max) {
+                    pour_point = pp_min + ' - ' + pp_max;
+                } else {
+                    pour_point = pp_min + pp_max;
+                }
+
+                compiled = _.template(FateTemplate, {
+                    name: substance.get('name'),
+                    api: substance.get('api'),
+                    wind_speed: wind_speed,
+                    pour_point: pour_point + ' &deg;C',
+                    wave_height: wave_height,
+                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
+                    total_released: total_released,
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
+                });
+            } else {
+                compiled = _.template(FateTemplate, {
+                    name: 'Non-weathering substance',
+                    api: 'N/A',
+                    wind_speed: wind_speed,
+                    pour_point: 'N/A',
+                    wave_height: wave_height,
+                    water_temp: water.get('temperature') + ' &deg;' + water.get('units').temperature,
+                    release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
+                    total_released: total_released,
+                    units: spills.at(0).get('units'),
+                    buttons: buttonsTemplate
+                });
+            }
             
             this.$el.html(compiled);
             this.rendered = true;
@@ -182,7 +221,6 @@ define([
                 container: 'body'
             });
             this.load();
-            this.renderLoop();
         },
 
         clickRisk: function(){
@@ -216,29 +254,41 @@ define([
 
             $('#flotTip').remove();
 
-            if(active == '#budget-graph') {
+            if(active === '#budget-graph') {
                 this.renderGraphOilBudget(this.dataset);
-            } else if(active == '#budget-table') {
+            } else if(active === '#budget-table') {
                 this.renderTableOilBudget(this.dataset);
-            } else if(active == '#evaporation') {
+            } else if(active === '#evaporation') {
                 this.renderGraphEvaporation(this.dataset);
-            } else if(active == '#dispersion') {
+            } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
-            } else if(active == '#sedimentation') {
+            } else if(active === '#sedimentation') {
                 this.renderGraphSedimentation(this.dataset);
-            } else if(active == '#density') {
+            } else if(active === '#density') {
                 this.renderGraphDensity(this.dataset);
-            } else if(active == '#emulsification') {
+            } else if(active === '#emulsification') {
                 this.renderGraphEmulsification(this.dataset);
-            } else if(active == '#viscosity') {
+            } else if(active === '#viscosity') {
                 this.renderGraphViscosity(this.dataset);
-            } else if(active == '#ics209') {
+            } else if(active === '#ics209') {
                 this.renderGraphICS(this.dataset);
             }
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
@@ -268,12 +318,24 @@ define([
 
         renderPies: function(dataset, pos){
             this.renderPiesTimeout = null;
-            if(this.$('#budget-graph:visible .timeline .chart').length != 1){
+            if(this.$('#budget-graph:visible .timeline .chart').length !== 1){
                 return;
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -303,14 +365,19 @@ define([
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
-                this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
                 this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
-                this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+
+                if (this.uncertainityExists){
+                    this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
+                    this.$('.chart-holder-uncert').addClass('invisible');
+                }
             }
         },
 
         getPieData: function(pos, dataset, key){
-            d = [];
+            var d = [];
             for (var i = 0; i < dataset.length; ++i) {
 
                 var series = dataset[i];
@@ -344,7 +411,18 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -354,24 +432,30 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('element_type').get('substance');
+            var substanceAPI;
+            if (_.isNull(substance)){
+                substanceAPI = 10;
+            } else {
+                substanceAPI = substance.get('api');
+            }
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
-            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substance.get('api'), 'API degree', to_unit)) + ' ' + to_unit);
+            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit)) + ' ' + to_unit);
 
             table.html('');
             table = '';
-            m_date = moment(webgnome.model.get('start_time'));
+            var m_date = moment(webgnome.model.get('start_time'));
             var opacity;
             for (var row = 0; row < dataset[0].data.length; row++){
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
 
-                if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
-                    duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
-                    duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
+                if(ts_date.minutes() === 0 && (duration.asHours() < 7 ||
+                    duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
+                    duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
+                    duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
+                    duration.asHours() > 121 && duration.asHours() % 24 === 0)){
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {
@@ -382,7 +466,7 @@ define([
                     if(parseInt(row, 10) === 0){
                         row_html += '<thead><tr>';
                     } else {
-                        row_html += '<tr>';
+                        row_html += '<tr class="' + row + '">';
                     }
                     if(display.time === 'date'){
                         if(row === 0){
@@ -417,11 +501,11 @@ define([
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                 value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                  to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, from_unit, substance.get('api'), 'API degree', to_unit));
+                                    value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
                                 } else if (display.other === 'percent'){
                                     value = Math.round(value / dataset[dataset.length - 1].data[row][1] * 100);
                                 } else {
@@ -532,7 +616,7 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            var dataset = this.pluckDataset(dataset, ['avg_density']);
+            dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -562,7 +646,7 @@ define([
         },
 
         renderGraphViscosity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_viscosity']);
+            dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -586,7 +670,18 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
+            dataset = this.pruneDataset(dataset, ['avg_density',
+                'amount_released',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+                ]);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
@@ -698,8 +793,9 @@ define([
             var start = selection.xaxis.from;
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
-            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation']);
+            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var api = (!_.isNull(substance)) ? substance.get('api') : 10;
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -710,7 +806,8 @@ define([
                 amount_released: 0,
                 natural_dispersion: 0,
                 sedimentation: 0,
-                dissolution: 0
+                dissolution: 0,
+                beached: 0
             };
             var cumulative = _.clone(report);
             var low = _.clone(report);
@@ -722,19 +819,19 @@ define([
                         report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-                for(var step in dataset[set].data){
-                    if(dataset[set].data[step][0] <= end){
-                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
+                for(var step2 in dataset[set].data){
+                    if(dataset[set].data[step2][0] <= end){
+                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step2][1], 10);
                     }
                 }
-                for(var step in dataset[set].low){
-                    if(dataset[set].low[step][0] <= end){
-                        low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
+                for(var step3 in dataset[set].low){
+                    if(dataset[set].low[step3][0] <= end){
+                        low[dataset[set].name] += parseInt(dataset[set].low[step3][1], 10);
                     }
                 }
-                for(var step in dataset[set].high){
-                    if(dataset[set].high[step][0] <= end){
-                        high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
+                for(var step4 in dataset[set].high){
+                    if(dataset[set].high[step4][0] <= end){
+                        high[dataset[set].name] += parseInt(dataset[set].high[step4][1], 10);
                     }
                 }
                 
@@ -752,12 +849,11 @@ define([
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
                 report[value] = Math.round(converter.Convert(report[value], 'kg', api, 'API degree', units));
-                
             }
-            for(var value in cumulative){
-                cumulative[value] = Math.round(converter.Convert(cumulative[value], 'kg', api, 'API degree', units));
-                low[value] = Math.round(converter.Convert(low[value], 'kg', api, 'API degree', units));
-                high[value] = Math.round(converter.Convert(high[value], 'kg', api, 'API degree', units));
+            for(var value2 in cumulative){
+                cumulative[value2] = Math.round(converter.Convert(cumulative[value2], 'kg', api, 'API degree', units));
+                low[value2] = Math.round(converter.Convert(low[value2], 'kg', api, 'API degree', units));
+                high[value2] = Math.round(converter.Convert(high[value2], 'kg', api, 'API degree', units));
             }
             
             var compiled = _.template(ICSTemplate, {
@@ -815,10 +911,10 @@ define([
             if(!_.isUndefined(header)){
                 var cols = csv[0].split(',').length;
                 header.each(function(row){
-                    cells = $(header[row]).text().split(':');
-                    csv_row = [cells[0] + ':', cells[1]];
+                    var cells = $(header[row]).text().split(':');
+                    var csv_row = [cells[0] + ':', cells[1]];
 
-                    for(i = 0; i < cols.length - cells.length; i++){
+                    for(var i = 0; i < cols.length - cells.length; i++){
                         csv_row.push(' ');
                     }
                     csv.unshift(csv_row.join(','));
@@ -847,8 +943,11 @@ define([
 
         formatDataset: function(step){
             var nominal = step.get('WeatheringOutput').nominal;
-            var high = step.get('WeatheringOutput').high;
-            var low = step.get('WeatheringOutput').low;
+
+            this.uncertainityExists = !_.isNull(step.get('WeatheringOutput').high);
+
+            var high = _.isNull(step.get('WeatheringOutput').high) ? nominal : step.get('WeatheringOutput').high;
+            var low = _.isNull(step.get('WeatheringOutput').low) ? nominal : step.get('WeatheringOutput').low;
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
@@ -859,9 +958,16 @@ define([
                 delete titles.natural_dispersion;
                 delete titles.evaporated;
                 delete titles.amount_released;
+                delete titles.beached;
+                delete titles.off_maps;
                 var keys = Object.keys(titles);
-                keys.unshift('floating', 'evaporated', 'natural_dispersion');
-                keys.push('amount_released');
+                keys.unshift('evaporated', 'natural_dispersion');
+                
+                if (localStorage.getItem('prediction') !== 'fate'){
+                    keys.push('beached', 'off_maps');
+                }
+
+                keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'amount_released');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -874,11 +980,7 @@ define([
                             show: false
                         },
                         needle: {
-                            label: function(text){
-                                var num = parseFloat(text).toFixed(2);
-                                var units = $('.tab-pane:visible .yaxisLabel').text();
-                                return num + ' ' + units;
-                            }
+                            label: this.formatNeedleLabel
                         }
                     });
                 }
@@ -886,31 +988,37 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
-            var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            var api;
+            if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+                api = 10;
+            } else {
+                api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+            }
             var converter = new nucos.OilQuantityConverter();
+            var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var waterDensity = water.getDensity();
 
             for(var set in this.dataset){
+                var low_value, nominal_value, high_value;
                 if([
-                        'natural_dispersion', 
-                        'dispersed', 
-                        'evaporated', 
-                        'floating', 
-                        'amount_released', 
-                        'skimmed', 
-                        'burned', 
+                        'natural_dispersion',
+                        'chem_dispersed',
+                        'evaporated',
+                        'floating',
+                        'amount_released',
+                        'skimmed',
+                        'burned',
                         'beached',
                         'sedimentation',
-                        'dissolution'
+                        'dissolution',
+                        'off_maps',
+                        'observed_beached'
                     ].indexOf(this.dataset[set].name) !== -1){
-                    min = _.min(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
-                    }, this);
+                    var min = _.min(step.get('WeatheringOutput'), this.runIterator(set), this);
                     low_value = min[this.dataset[set].name];
                     low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
 
-                    max = _.max(step.get('WeatheringOutput'), function(run){
-                        return run[this.dataset[set].name];
-                    }, this);
+                    var max = _.max(step.get('WeatheringOutput'), this.runIterator(set), this);
                     high_value = max[this.dataset[set].name];
                     high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
 
@@ -928,6 +1036,22 @@ define([
                     low_value = low[this.dataset[set].name] * 100;
                     nominal_value = nominal[this.dataset[set].name] * 100;
                     high_value = high[this.dataset[set].name] * 100;
+                } else if (this.dataset[set].name === 'water_density'){
+                    low_value = waterDensity;
+                    nominal_value = waterDensity;
+                    high_value = waterDensity;
+                } else if (this.dataset[set].name === 'water_viscosity'){
+                    low_value = 1;
+                    nominal_value = 1;
+                    high_value = 1;
+                } else if (this.dataset[set].name === 'dispersibility_difficult'){
+                    low_value = 2000;
+                    nominal_value = 2000;
+                    high_value = 2000;
+                } else if (this.dataset[set].name === 'dispersibility_unlikely'){
+                    low_value = 10000;
+                    nominal_value = 10000;
+                    high_value = 10000;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
@@ -940,6 +1064,20 @@ define([
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
                 webgnome.mass_balance = this.dataset;
             }
+        },
+
+        runIterator: function(set){
+            return (function(run){
+                if (!_.isNull(run)){
+                    return run[this.dataset[set].name];
+                }
+            });
+        },
+
+        formatNeedleLabel: function(text){
+            var num = parseFloat(text).toFixed(2);
+            var units = $('.tab-pane:visible .yaxisLabel').text();
+            return num + ' ' + units;
         },
 
         pruneDataset: function(dataset, leaves){
@@ -1006,13 +1144,44 @@ define([
         findInitialRelease: function(spills){
             var release_init = moment(spills.at(0).get('release').get('release_time')).unix();
             spills.forEach(function(spill){
-                release_start = moment(spill.get('release').get('release_time')).unix();
+                var release_start = moment(spill.get('release').get('release_time')).unix();
                 if(release_start < release_init){
                     release_init = release_start;
                 }
             });
 
             return release_init;
+        },
+
+        saveGraphImage: function(e){
+            var element = this.$('.tab-pane.active .timeline').get();
+            html2canvas(element, {
+                onrendered: _.bind(function(canvas){
+                    var ctx = canvas.getContext('2d');
+                    var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    var compositeOperation = ctx.globalCompositeOperation;
+                    ctx.globalCompositeOperation = 'destination-over';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    var img = canvas.toDataURL('image/png');
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.putImageData(data, 0, 0);
+                    ctx.globalCompositeOperation = compositeOperation;
+
+                    var currentTab = this.$('.tab-pane.active').attr('id');
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
+                    var pom = document.createElement('a');
+                    pom.setAttribute('href', img);
+                    pom.setAttribute('download', name);
+                    pom.click();
+                }, this)
+            });
+        },
+
+        printGraphImage: function(e){
+            window.print();
         },
 
         close: function(){

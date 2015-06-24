@@ -6,12 +6,14 @@ define([
     'views/modal/form',
     'text!templates/form/spill/type.html',
     'model/spill',
+    'model/release',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel,
+], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel, GnomeRelease,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
+    'use strict';
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
         className: 'modal fade form-modal spilltype-form',
@@ -37,7 +39,7 @@ define([
         },
 
         instant: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillInstantForm(null, spill);
                 spillForm.render();
@@ -48,12 +50,13 @@ define([
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },
 
         continue: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillContinueForm(null, spill);
                 spillForm.render();
@@ -64,6 +67,7 @@ define([
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },

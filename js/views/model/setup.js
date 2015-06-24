@@ -29,11 +29,14 @@ define([
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
+    'model/weatherers/manual_beaching',
+    'views/form/beached',
+    'text!templates/panel/beached.html',
     'text!templates/panel/response.html',
     'views/form/response/disperse',
     'views/form/response/insituBurn',
     'views/form/response/skim',
-    'model/outputters/geojson',
+    'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
     'jqueryDatetimepicker',
@@ -48,10 +51,12 @@ define([
     MapModel, MapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
-    LocationForm, olMapView, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-    GeojsonOutputter, WeatheringOutputter, EvaporationModel){
+    LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
+    'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
+        current_extents: [],
 
         events: function(){
             return _.defaults({
@@ -71,6 +76,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
+                'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
 
@@ -110,6 +116,12 @@ define([
                     this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
+                this.updateWind();
+                this.updateLocation();
+                this.updateWater();
+                this.updateSpill();
+                this.updateCurrent();
+                this.updateObjects();
             }, this), 1);
 
             this.$('.datetime').datetimepicker({
@@ -118,6 +130,7 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
             }, this));
+
         },
 
         showHelp: function(){
@@ -177,21 +190,40 @@ define([
                 weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
             });
 
-            webgnome.model.save(null, {validate: false});
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    this.updateSpill();
+                    this.updateResponse();
+                }, this)
+            });
+        },
+
+        updateModelValues: function(e){
+            var name = webgnome.model.get('name');
+            var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
+            var durationAttrs = webgnome.model.formatDuration();
+
+            this.$('#name').val(name);
+            this.$('#start_time').val(start_time);
+            this.$('#days').val(durationAttrs.days);
+            this.$('#hours').val(durationAttrs.hours);
         },
 
         selectPrediction: function(e){
             var target;
-            if(e.target.length === 0) return false;
+            if(e.target.length === 0){ return false; }
             if(this.$(e.target).hasClass('icon')){
                 target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
             } else {
                 target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
             }
 
+            // anything that change the model's values or objects values should go in
+            // the configure method.
             this.configure(target);
 
-            if (target == 'fate' && webgnome.model.get('map').get('obj_type') != 'gnome.map.GnomeMap'){
+            if (target === 'fate' && webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
                 swal({
                     title: 'Warning!',
                     type: 'warning',
@@ -200,17 +232,29 @@ define([
                     confirmButtonText: 'Switch to fate only modeling'
                 }, _.bind(function(isConfirmed){
                     if(isConfirmed){
-                        webgnome.model.resetLocation();
+                        webgnome.model.resetLocation(_.bind(function(){
+                            this.updateLocation();
+                            this.updateCurrent();
+                            this.updateSpill();
+                            this.updateModelValues();
+                        }, this));
+
                         this.togglePrediction(e, target);
                     }
                 }, this));
             } else {
                 this.togglePrediction(e, target);
                 if(webgnome.model.hasChanged()){
-                    webgnome.model.save(null, {validate: false});
-                } else {
-                    this.updateObjects();
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.updateObjects();
+                            this.updateModelValues();
+                            this.updateSpill();
+                        }, this)
+                    });
                 }
+                
             }
         },
 
@@ -225,14 +269,16 @@ define([
 
             localStorage.setItem('prediction', target);
 
-            if (target == 'fate') {
+            if (target === 'fate') {
                 this.showFateObjects();
-            } else if (target == 'trajectory') {
+            } else if (target === 'trajectory') {
                 this.showTrajectoryObjects();
-            } else if (target == 'both') {
+            } else if (target === 'both') {
                 this.showAllObjects();
+
             }
             this.$('.stage-2').show();
+            this.updateSpill();
         },
 
         showFateObjects: function(){
@@ -240,10 +286,12 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.water').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
+            this.$('.beached').show().removeClass('disabled');
         },
 
         showAllObjects: function(){
             this.$('.object').show().removeClass('disabled');
+            this.$('.beached').hide().addClass('disabled');
         },
 
         showTrajectoryObjects: function(){
@@ -251,62 +299,62 @@ define([
             this.$('.wind').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
             this.$('.location').show().removeClass('disabled');
+            this.$('.current').show().removeClass('disabled');
+            this.$('.beached').hide().addClass('disabled');
         },
 
         updateObjects: function(){
-            this.constructModelTimeSeries(_.bind(function(){
-                this.updateWind();
-                this.updateLocation();
-                this.updateWater();
-                this.updateSpill();
-                
-                var delay = {
-                    show: 500,
-                    hide: 100
-                };
+            var delay = {
+                show: 500,
+                hide: 100
+            };
 
-                $('.panel-heading .add').tooltip({
-                    title: function(){
-                        var object = $(this).parents('.panel-heading').text().trim();
+            $('.panel-heading .add').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
 
-                        if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
-                            return 'Edit ' + object;
-                        } else {
-                            return 'Create ' + object;
-                        }
-                    },
-                    delay: delay,
-                    container: 'body'
-                });
+                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                        return 'Edit ' + object;
+                    } else {
+                        return 'Create ' + object;
+                    }
+                },
+                delay: delay,
+                container: 'body'
+            });
 
-                $('.panel-heading .state').tooltip({
-                    title: function(){
-                        var object = $(this).parents('.panel-heading').text().trim();
+            $('.panel-heading .state').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
 
-                        if($(this).parents('.panel').hasClass('complete')){
-                            return object + ' requirement met';
-                        } else if($(this).parents('.panel').hasClass('optional')){
-                            return object + ' optional';                            
-                        } else {
-                            return object + ' required';
-                        }
-                    },
-                    container: 'body',
-                    delay: delay
-                });
+                    if($(this).parents('.panel').hasClass('complete')){
+                        return object + ' requirement met';
+                    } else if($(this).parents('.panel').hasClass('optional')){
+                        return object + ' optional';
+                    } else {
+                        return object + ' required';
+                    }
+                },
+                container: 'body',
+                delay: delay
+            });
 
-                $('.spill .trash, .spill .edit').tooltip({
-                    container: 'body',
-                    delay: delay
-                });
-                if(this.$('.stage-2 .panel:visible').length == this.$('.stage-2 .panel.complete:visible').length && localStorage.getItem('prediction') !== 'null'){
-                    this.$('.stage-3').show();
-                    this.updateResponse();
-                } else {
-                    this.$('.stage-3').hide();
+            $('.spill .trash, .spill .edit').tooltip({
+                container: 'body',
+                delay: delay
+            });
+
+
+            if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
+                this.$('.stage-3').show();
+                this.updateResponse();
+                if(this.$('.beached.object:visible').length > 0){
+                    this.updateBeached();
                 }
-                this.mason.layout();
-            }, this));
+            } else {
+                this.$('.stage-3').hide();
+            }
+            this.mason.layout();
         },
 
         clickWind: function(){
@@ -317,19 +365,20 @@ define([
 
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
-            windForm.on('save', function(){
+            windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
 
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('wind', wind);
 
                 var mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
-                if(_.isUndefined(mover) || mover.get('wind').get('id') != wind.get('id')){
+                if(_.isUndefined(mover) || mover.get('wind').get('id') !== wind.get('id')){
                     var windMover = new WindMoverModel({wind: wind});
                     webgnome.model.get('movers').add(windMover, {merge: true});
                 }
+                this.updateWind();
                 webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
-            });
+            }, this));
             windForm.render();
         },
 
@@ -346,9 +395,9 @@ define([
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
-                var compiled;
+                var compiled, dataset;
                 this.$('.wind .panel').addClass('complete');
-                if(wind.get('timeseries').length == 1){
+                if(wind.get('timeseries').length === 1){
                     var windSpeed;
                     if (wind.get('speed_uncertainty_scale') === 0) {
                         windSpeed = wind.get('timeseries')[0][1][0];
@@ -365,16 +414,18 @@ define([
                     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
+                    var raw_data = [];
                     var rate = Math.round(ts.length / 24);
                     
                     for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                         if(rate === 0 ||  entry % rate === 0){
-                            var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                             data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                         }
+                        raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                     }
 
-                    var dataset = [{
+                    dataset = [{
                         data: data,
                         color: 'rgba(151,187,205,1)',
                         hoverable: true,
@@ -392,27 +443,45 @@ define([
                         }
                     }];
 
+                    if (ts.length > 24){
+                        dataset.push({
+                            data: raw_data,
+                            color: 'rgba(151,187,205,1)',
+                            hoverable: true,
+                            shadowSize: 0,
+                            lines: {
+                                show: true,
+                                lineWidth: 2
+                            },
+                            direction: {
+                                show: false
+                            }
+                        });
+                    }
+
                     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
                 }
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
 
-                if(!_.isUndefined(dataset)){
+                if(dataset){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                        grid: {
-                            borderWidth: 1,
-                            borderColor: '#ddd'
-                        },
-                        xaxis: {
-                            mode: 'time',
-                            timezone: 'browser',
-                            tickColor: '#ddd'
-                        },
-                        yaxis: {
-                            tickColor: '#ddd'
-                        }
-                    });
+                    setTimeout(_.bind(function(){
+                        this.windPlot = $.plot('.wind .chart .canvas', dataset, {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#ddd'
+                            },
+                            xaxis: {
+                                mode: 'time',
+                                timezone: 'browser',
+                                tickColor: '#ddd'
+                            },
+                            yaxis: {
+                                tickColor: '#ddd'
+                            }
+                        });
+                    }, this), 2);
                 }
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
@@ -428,13 +497,13 @@ define([
             }
             var waterForm = new WaterForm(null, water);
             waterForm.on('hidden', waterForm.close);
-            waterForm.on('save', function(){
+            waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
                 var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 evaporation.set('water', water);
-                
+                this.updateWater();
                 webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
-            });
+            }, this));
             waterForm.render();
         },
 
@@ -478,44 +547,26 @@ define([
                 spillView.on('hidden', spillView.close);
             });
             // only update the model if the spill saves
-            spillView.on('save', function(){
+            spillView.on('save', _.bind(function(){
                 webgnome.model.save(null, {validate: false});
-            });
+                this.updateSpill();
+            }, this));
 
             spillView.render();
         },
 
-        constructModelTimeSeries: function(cb){
-            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var numOfTimeSteps = webgnome.model.get('num_time_steps');
-            var timeStep = webgnome.model.get('time_step');
-            var timeSeries = [];
-
-            for (var i = 0; i < numOfTimeSteps; i++){
-                if (i === 0){
-                    timeSeries.push(start_time * 1000);
-                } else {
-                    var answer = moment(timeSeries[i - 1]).add(timeStep, 's').unix() * 1000;
-                    timeSeries.push(answer);
-                }
-            }
-
-            this.timeSeries = timeSeries;
-            
-            if (cb){
-                cb();
-            }
-        },
-
-        calculateSpillAmount: function(timeseries){
+        calculateSpillAmount: function(){
+            var oilAPI;
             var oilconvert = new nucos.OilQuantityConverter();
             var spills = webgnome.model.get('spills');
-            if (spills.length > 0){
-                var oilAPI = spills.at(0).get('element_type').get('substance').api;
-                oilAPI = oilAPI ? oilAPI : 10;
+            if (spills.length > 0 && spills.at(0).get('element_type').get('substance')){
+                oilAPI = spills.at(0).get('element_type').get('substance').api;
             }
+            oilAPI = oilAPI ? oilAPI : 10;
             var units = spills.models.length ? spills.at(0).get('units') : '';
             var timeStep = webgnome.model.get('time_step');
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
             var data = {};
             for (var j = 0; j < spills.models.length; j++){
                 var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
@@ -524,10 +575,10 @@ define([
                 var spillUnits = spills.models[j].get('units');
                 var amount = 0;
                 var amountArray = [];
-                for (var i = 0; i < timeseries.length; i++){
-                    var upperBound = moment(timeseries[i]).unix();
+                for (var i = 0; i < numOfTimeSteps; i++){
+                    var upperBound = moment(start_time).add(i * timeStep, 's').unix();
                     var lowerBound = upperBound - timeStep;
-                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i !== timeseries.length){
+                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i < numOfTimeSteps){
                         amount += spills.models[j].get('amount');
                     } else if (timeDiff > timeStep) {
                         var rateOfRelease = spills.models[j].get('amount') / timeDiff;
@@ -543,8 +594,8 @@ define([
                     }
                     amountArray.push(amount);
                 }
-                for (var i = 0; i < amountArray.length; i++){
-                    amountArray[i] = oilconvert.Convert(amountArray[i], spillUnits, oilAPI, "API degree", units);
+                for (var o = 0; o < amountArray.length; o++){
+                    amountArray[o] = oilconvert.Convert(amountArray[o], spillUnits, oilAPI, "API degree", units);
                 }
                 data[j] = amountArray;
             }
@@ -553,19 +604,29 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
-            var timeSeries = this.timeSeries;
-            var spillArray = this.calculateSpillAmount(timeSeries);
+            var spillArray = this.calculateSpillAmount();
+            var compiled;
+            var mode = localStorage.getItem('prediction');
+
+            var numOfTimeSteps = webgnome.model.get('num_time_steps');
+            var timeStep = webgnome.model.get('time_step');
+
             if(spills.models.length > 0){
                 this.$('.spill .panel').addClass('complete');
                 var substance = spills.at(0).get('element_type').get('substance');
-                var compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories()});
+                if (!_.isNull(substance)){
+                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories(), mode: mode});
+                } else {
+                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: false, categories: [], mode: mode});
+                }
 
                 var dataset = [];
                 for (var spill in spills.models){
-                    if (!_.isNull(spills.models[spill].validationError)) continue;
+                    if (!_.isNull(spills.models[spill].validationError)){ continue; }
                     var data = [];
-                    for (var i = 0; i < timeSeries.length; i++){
-                        var date = timeSeries[i];
+                    var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
+                    for (var i = 0; i < numOfTimeSteps; i++){
+                        var date = start_time.add(timeStep, 's').unix() * 1000;
                         var amount = spillArray[spill][i];
                         data.push([parseInt(date, 10), parseInt(amount, 10)]);
                     }
@@ -584,13 +645,16 @@ define([
                         id: spills.models[spill].get('id')
                     });
                 }
+
                 this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.spill .panel-body').html(compiled);
                 this.$('.spill .panel-body').show();
 
                 if(!_.isUndefined(dataset)){
                     this.spillDataset = dataset;
-                    this.renderSpillRelease(dataset);
+                    setTimeout(_.bind(function(){
+                        this.renderSpillRelease(dataset);
+                    }, this), 1);
                 }
                 
             } else {
@@ -598,6 +662,7 @@ define([
                 this.$('.spill .panel-body').hide().html('');
                 this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
             }
+            this.mason.layout();
         },
 
         renderSpillRelease: function(dataset){
@@ -647,7 +712,7 @@ define([
                 var coloredSet = [];
                 for(var dataset in this.spillDataset){
                     var ds = _.clone(this.spillDataset[dataset]);
-                    if (this.spillDataset[dataset].id != id){
+                    if (this.spillDataset[dataset].id !== id){
                         ds.color = '#ddd';
                     }
 
@@ -690,13 +755,17 @@ define([
             var locationForm = new LocationForm();
             locationForm.on('loaded', _.bind(function(){
                 locationForm.hide();
+                this.updateLocation();
+                this.updateCurrent();
+                this.updateSpill();
+                this.updateModelValues();
             }, this));
             locationForm.render();
         },
 
         updateLocation: function(){
             var map = webgnome.model.get('map');
-            if(map && map.get('obj_type') != 'gnome.map.GnomeMap'){
+            if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
                 this.$('.location .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
                     this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
@@ -706,20 +775,23 @@ define([
                         object: geojson
                     });
 
-                    var shorelineLayer = new ol.layer.Vector({
+                    var shorelineLayer = new ol.layer.Image({
                         name: 'modelmap',
-                        source: shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
+                        source: new ol.source.ImageVector({
+                            source: shorelineSource,
+                            style: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                    color: [228, 195, 140, 0.6]
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: [228, 195, 140, 0.75],
+                                    width: 1
+                                })
                             })
-                        })
+                        }),
                     });
-                    var locationMap = new olMapView({
+                    
+                    var locationMap = new OlMapView({
                         id: 'mini-locmap',
                         controls: [],
                         layers: [
@@ -741,6 +813,68 @@ define([
             }
         },
 
+        updateCurrent: function(){
+            // for right now only visualize cats mover grids
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+            });
+
+            if(currents.length > 0){
+                this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
+                this.current_layers = new ol.Collection([
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'})
+                    })
+                ]);
+
+                var currentMap = new OlMapView({
+                    id: 'mini-currentmap',
+                    controls: [],
+                    layers: this.current_layers
+                });
+                currentMap.render();
+
+                for(var c = 0; c < currents.length; c++){
+                    currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
+                }
+                if(webgnome.model.get('map')){
+                    var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
+                    currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
+                }
+                this.mason.layout();
+            } else {
+                this.$('.current .panel-body').hide().html('');
+            }
+        },
+
+        addCurrentToPanel: function(geojson){
+            if(geojson){
+                var gridSource = new ol.source.GeoJSON({
+                    projection: 'EPSG:3857',
+                    object: geojson
+                });
+                var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
+
+                var gridLayer = new ol.layer.Image({
+                    name: 'modelcurrent',
+                    source: new ol.source.ImageVector({
+                        source: gridSource,
+                        style: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: [171, 37, 184, 0.75],
+                                width: 1
+                            })
+                        })
+                    })
+                });
+
+                if(!_.contains(this.current_extents, extentSum)){
+                    this.current_layers.push(gridLayer);
+                    this.current_extents.push(extentSum);
+                }
+            }
+        },
+
         clickResponse: function(){
             var typeForm = new ResponseTypeForm();
             typeForm.render();
@@ -749,10 +883,10 @@ define([
 
         updateResponse: function(weatherers){
             if (_.isUndefined(weatherers)){
-                var weatherers = webgnome.model.get('weatherers').models;
+                weatherers = webgnome.model.get('weatherers').models;
             }
             var timeSeries = this.timeSeries;
-            var filteredNames = ["Dispersion", "Skimmer", "Burn"];
+            var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
@@ -777,58 +911,50 @@ define([
         },
 
         graphReponses: function(responses){
-            var burnData = [];
-            var skimData = [];
-            var disperseData = [];
-            var yticks = [[1, "Skim"], [2, "Dispersion"], [3, "Burn"]];
+            var yticks = [];
+            var dataset = [];
+            var colors = {
+                'gnome.weatherers.cleanup.Burn': '#CB4B4B',
+                'gnome.weatherers.cleanup.ChemicalDispersion': '#AFD8F8',
+                'gnome.weatherers.cleanup.Skimmer': '#EDC240'
+            };
+            var t = responses.length;
             for (var i in responses){
                 var responseObjType = responses[i].get('obj_type').split(".");
                 var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                 var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
-                switch (responseObjType[responseObjType.length - 1]){
-                    case "Skimmer":
-                        skimData.push([startTime, 1, endTime, responses[i].get('id')]);
-                        break;
-                    case "Dispersion":
-                        disperseData.push([startTime, 2, endTime, responses[i].get('id')]);
-                        break;
-                    case "Burn":
-                        burnData.push([startTime, 3, endTime, responses[i].get('id')]);
-                }
-            }
 
-            var dataset = [
-                {
-                    //label: "Burns",
-                    data: burnData,
+                yticks.push([t, responses[i].get('name')]);
+                dataset.push({
+                    data: [[startTime, t, endTime, responses[i].get('id')]],
+                    color: colors[responses[i].get('obj_type')],
+                    lines: {
+                        show: false,
+                        fill: false
+                    },
                     direction: {
                         show: false
-                    }
-                },
-                {
-                    //label: "Skim",
-                    data: skimData,
-                    direction: {
-                        show: false
-                    }
-                },
-                {
-                    //label: "Dispersion",
-                    data: disperseData,
-                    direction: {
-                        show: false
-                    }
-                }
-            ];
+                    },
+                    id: responses[i].get('id')
+                });
+                t--;
+
+            }
 
             if(!_.isUndefined(dataset)){
                 this.responseDataset = dataset;
-                this.renderResponseGraph(dataset, yticks);
+                setTimeout(_.bind(function(){
+                    this.renderResponseGraph(dataset, yticks);
+                }, this), 2);
             }
 
         },
 
         renderResponseGraph: function(dataset, yticks){
+            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+            var numOfTimeSteps = webgnome.model.get('num_time_steps') - 1;
+            var timeStep = webgnome.model.get('time_step');
+            var end_time = moment.unix(start_time / 1000).add(numOfTimeSteps * timeStep, 's').unix() * 1000;
             this.responsePlot = $.plot('.response .chart .canvas', dataset, {
                 series: {
                     editMode: 'v',
@@ -847,8 +973,8 @@ define([
                 xaxis: {
                     mode: 'time',
                     timezone: 'browser',
-                    min: this.timeSeries[0],
-                    max: this.timeSeries[this.timeSeries.length - 1]
+                    min: start_time,
+                    max: end_time
                 },
                 yaxis: {
                     min: 0.5,
@@ -864,11 +990,22 @@ define([
             if (_.isUndefined(id)){
                 id = $(e.target).parents('.single').data('id');
             }
-            this.graphReponses([webgnome.model.get('weatherers').get(id)]);
+            var coloredSet = [];
+            for(var dataset in this.responseDataset){
+                var ds = _.clone(this.responseDataset[dataset]);
+                if (this.responseDataset[dataset].id !== id){
+                    ds.color = '#ddd';
+                }
+
+                coloredSet.push(ds);
+            }
+            this.responsePlot.setData(coloredSet);
+            this.responsePlot.draw();
         },
 
         unhoverResponse: function(){
-            this.graphReponses(this.responses);
+            this.responsePlot.setData(this.responseDataset);
+            this.responsePlot.draw();
         },
 
         loadResponse: function(e){
@@ -877,7 +1014,7 @@ define([
             var responseView;
             var nameArray = response.get('obj_type').split('.');
             switch (nameArray[nameArray.length - 1]){
-                case "Dispersion":
+                case "ChemicalDispersion":
                     responseView = new ResponseDisperseView(null, response);
                     break;
                 case "Burn":
@@ -890,12 +1027,13 @@ define([
             responseView.on('wizardclose', function(){
                 responseView.on('hidden', responseView.close);
             });
-            responseView.on('save', function(){
+            responseView.on('save', _.bind(function(){
                 webgnome.model.save(null, {validate: false});
                 setTimeout(_.bind(function(){
-                    responseView.close();},
-                this), 750);
-            });
+                    responseView.close();
+                    this.updateResponse();
+                }, this), 750);
+            }, this));
             responseView.render();
         },
 
@@ -921,20 +1059,122 @@ define([
                 }
             }, this));
         },
+
+        clickBeached: function(){
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (_.isUndefined(beached) || beached.length === 0){
+                beached = new BeachedModel();
+            }
+            var beachedForm = new BeachedForm({}, beached);
+            beachedForm.on('hidden', beachedForm.close);
+            beachedForm.on('save', _.bind(function(){
+                webgnome.model.get('weatherers').add(beached, {merge: true});
+                webgnome.model.save({
+                    success: _.bind(function(){
+                        this.updateBeached();
+                    }, this)
+                });
+            }, this));
+            beachedForm.render();
+        },
+
+        updateBeached: function(){
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (!_.isUndefined(beached) && beached.get('timeseries').length > 0){
+                var compiled, dataset;
+                this.$('.beached .panel').addClass('complete');
+                if (beached.get('timeseries').length === 1){
+                    var amountBeached = beached.get('timeseries')[0][1];
+                    var singleDate = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
+                    compiled = _.template( BeachedPanelTemplate, {
+                        amount: amountBeached,
+                        units: beached.get('units'),
+                        date: singleDate
+                    });
+                    this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                } else if (beached.get('timeseries').length > 1) {
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
+
+                    var ts = beached.get('timeseries');
+                    var data = [];
+
+                    for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                        data.push([parseInt(date, 10), parseInt(ts[entry][1], 10)]);
+                    }
+
+                    dataset = [{
+                        data: data,
+                        color: '#9CD1FF',
+                        hoverable: true,
+                        lines: {
+                            show: true,
+                            fill: true
+                        },
+                        points: {
+                            show: false
+                        },
+                        direction: {
+                            show: false
+                        }
+                    }];
+
+                    this.$('.beached').removeClass('col-md-3').addClass('col-md-6');
+                }
+                this.$('.beached .panel-body').html(compiled);
+                this.$('.beached .panel-body').show();
+
+                if (dataset) {
+                    setTimeout(_.bind(function(){
+                        this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#ddd'
+                            },
+                            xaxis: {
+                                mode: 'time',
+                                timezone: 'browser',
+                                tickColor: '#ddd'
+                            },
+                            series: {
+                                stack: true,
+                                group: true,
+                                groupInterval: 1,
+                                lines: {
+                                    show: true,
+                                    fill: true,
+                                    lineWidth: 2
+                                },
+                                shadowSize: 0
+                            }
+                        });
+                    }, this), 1);
+                }
+            } else {
+                this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
+                this.$('.beached .panel').removeClass('complete');
+                this.$('.beached .panel-body').hide().html('');
+            }
+        },
         
         configure: function(target){
+            // model change need to take place before changing any child objects
             this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
         },
 
         configureWeatherers: function(prediction){
-            if (prediction == 'fate' || prediction == 'both'){
+            if (prediction === 'fate' || prediction === 'both'){
                 // turn on weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', true);
                 });
-            } else if (prediction == 'trajectory') {
+                var beaching = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+                if (!_.isUndefined(beaching) && prediction === 'both'){
+                    beaching.set('on', false);
+                }
+            } else if (prediction === 'trajectory') {
                 // turn off weatherers
                 webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
                     weatherer.set('on', false);
@@ -944,7 +1184,7 @@ define([
 
         configureRelease: function(prediction){
             var spills = webgnome.model.get('spills');
-            if (prediction == 'trajectory' || prediction == 'both'){
+            if (prediction === 'trajectory' || prediction === 'both'){
                 spills.forEach(function(spill, index, list){
                     spill.get('release').set('num_per_timestep', null);
                     spill.get('release').set('num_elements', 1000);
@@ -960,14 +1200,17 @@ define([
         configureModel: function(prediction){
             var changes = {
                 time_step: null,
-                uncertain: null
+                uncertain: null,
+                duration: null
             };
-            if(prediction == 'trajectory' || prediction == 'both'){
+            if(prediction === 'trajectory' || prediction === 'both'){
                 changes.time_step = 900;
                 changes.uncertain = true;
+                changes.duration = 86400;
             } else {
                 changes.time_step = 3600;
                 changes.uncertain = false;
+                changes.duration = 86400 * 5;
             }
 
             webgnome.model.set(changes);

@@ -2,9 +2,11 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'ol',
     'views/modal/form',
     'text!templates/form/map.html'
-], function(_, $, Backbone, FormModal, FormTemplate){
+], function(_, $, Backbone, ol, FormModal, FormTemplate){
+    'use strict';
     var mapForm = FormModal.extend({
         className: 'modal fade form-modal map-form',
         name: 'map',
@@ -57,7 +59,7 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) == -1){
+            if(['EmptyMap.bna', 'coast', 'draw'].indexOf(this.model.get('filename')) === -1){
                 this.$('.upload').val(this.model.get('filename'));
             }
 
@@ -72,7 +74,7 @@ define([
         },
 
         tab_ready: function(event){
-            if (event.target.hash == '#coast' || event.target.id == 'coast'){
+            if (event.target.hash === '#coast' || event.target.id === 'coast'){
                 if(_.isUndefined(this.coast_map)){
                     this.coast_map = new ol.Map({
                         target: 'map-form-coast-map',
@@ -87,7 +89,7 @@ define([
                         })
                     });
                 }
-            } else if (event.target.hash == '#draw' || event.target.id == 'draw') {
+            } else if (event.target.hash === '#draw' || event.target.id === 'draw') {
                 if (_.isUndefined(this.draw_map)){
                     this.source = new ol.source.Vector();
                     this.draw_map = new ol.Map({

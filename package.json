@@ -29,8 +29,13 @@
     "colors": "0.6.2",
     "http-server": "*",
     "less": "*",
-    "node-qunit-phantomjs": "0.2.2",
-    "phantomjs": "1.9.9",
-    "requirejs": "*"
+    "requirejs": "*",
+    "grunt": "*",
+    "grunt-contrib-requirejs": "*",
+    "grunt-contrib-jshint": "*"
+  },
+  "devDependencies": {
+    "grunt-jsdoc": "^0.6.7",
+    "grunt-webdriver": "^0.5.2"
   }
 }

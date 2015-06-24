@@ -7,6 +7,7 @@ define([
     'text!templates/default/footer/disclaimer.html',
     'text!templates/default/footer/privacy.html'
 ], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate, PrivacyTemplate){
+    'use strict';
     var footerView = Backbone.View.extend({
         className: 'footer',
         rendered: false,

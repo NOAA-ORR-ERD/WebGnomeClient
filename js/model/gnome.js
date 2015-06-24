@@ -14,19 +14,25 @@ define([
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
-    'model/outputters/geojson',
+    'model/movers/ice',
+    'model/outputters/trajectory',
     'model/outputters/weathering',
+    'model/outputters/current',
+    'model/outputters/ice',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim',
-    'model/weatherers/natural_dispersion'
+    'model/weatherers/natural_dispersion',
+    'model/weatherers/manual_beaching',
+    'model/weatherers/base'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover,
-    GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer){
+    WindMover, RandomMover, CatsMover, IceMover,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, BaseWeatherer){
+    'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
@@ -45,19 +51,25 @@ define([
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
-                'gnome.movers.current_movers.CatsMover': CatsMover
+                'gnome.movers.current_movers.CatsMover': CatsMover,
+                'gnome.movers.current_movers.IceMover': IceMover
             },
             outputters: {
-                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter,
-                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
+                'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
+                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
+                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
+                'gnome.outputters.geo_json.IceGeoJsonOutput': IceOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
-                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer,
+                'gnome.weatherers.cleanup.ChemicalDispersion': DispersionWeatherer,
                 'gnome.weatherers.emulsification.Emulsification': EmulsificationWeatherer,
                 'gnome.weatherers.cleanup.Burn': BurnWeatherer,
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer,
-                'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer
+                'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
+                'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
+                'gnome.weatherers.spreading.FayGravityViscous': BaseWeatherer,
+                'gnome.weatherers.weathering_data.WeatheringData': BaseWeatherer
             }
         },
 
@@ -67,9 +79,12 @@ define([
                 time_step: 900,
                 start_time: moment().format('YYYY-MM-DDTHH:00:00'),
                 duration: 86400,
+                map: new MapModel(),
                 outputters: new Backbone.Collection([
-                    new GeojsonOutputter(),
+                    new TrajectoryOutputter(),
                     new WeatheringOutputter(),
+                    new CurrentOutputter(),
+                    new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),
@@ -96,6 +111,16 @@ define([
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.on('change:map', this.validateSpills, this);
+            this.on('change:map', this.addMapListeners, this);
+        },
+
+        addMapListeners: function(){
+            this.get('map').on('change', this.mapChange, this);
+        },
+
+        mapChange: function(child){
+            this.validateSpills(child);
+            this.childChange('map', child);
         },
 
         environmentChange: function(child){
@@ -196,7 +221,7 @@ define([
             var hours = duration / 3600;
             var days = hours / 24;
 
-            if (Math.round(days) != days) {
+            if (Math.round(days) !== days) {
                 if (days < 1){
                     days = 0;
                 } else {
@@ -280,6 +305,12 @@ define([
             environment.add(water);
             environment.add(waves);
 
+            // drop all of the currents from current outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).get('current_movers').reset();
+
+            // drop all of the ice movers from the ice mover outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'}).get('ice_movers').reset();
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
             this.set('map', map, {silent: true});
@@ -318,11 +349,32 @@ define([
                         }
                         natural_dispersion.set('waves', waves);
 
-                        this.save().always(cb);
+                        this.save();
                     }, this)
                 });
             } else {
                 cb();
+            }
+        },
+
+        updateOutputters: function(cb){
+            // temp add first cats current to the current outputter
+            var currents = this.get('movers').where({
+                obj_type: 'gnome.movers.current_movers.CatsMover'
+            });
+
+            if(currents.length > 0){
+                var outputter = this.get('outputters').findWhere({
+                    obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'
+                });
+                if(outputter){
+                    outputter.get('current_movers').add(currents, {merge: true});
+                } else {
+                    outputter = new CurrentOutputter({current_movers: currents});
+                    this.get('outputters').add(outputter);
+                }
+
+                this.save(null, {validate: false}).always(cb);
             }
         },
 

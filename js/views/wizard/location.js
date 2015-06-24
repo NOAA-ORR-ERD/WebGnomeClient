@@ -8,15 +8,16 @@ define([
     'model/location',
     'model/environment/wind',
     'model/movers/wind',
-    'model/outputters/geojson',
+    'model/outputters/trajectory',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
     'views/modal/loading'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    GeojsonOutputter,
+    TrajectoryOutputter,
     TextForm, ModelForm, WindForm, LoadingModal){
+    'use strict';
     var locationWizardView = BaseWizard.extend({
         steps: [],
         initialize: function(opts){
@@ -63,7 +64,7 @@ define([
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
                 
-                if(el.type == 'text' || el.type == 'welcome'){
+                if(el.type === 'text' || el.type === 'welcome'){
                     if(!el.title){
                         title[0] = 'Welcome';
                     }
@@ -73,14 +74,14 @@ define([
                         body: el.body,
                         buttons: el.buttons
                     }));
-                } else if (el.type == 'model') {
+                } else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons
                     }, webgnome.model));
-                } else if (el.type == 'wind') {
+                } else if (el.type === 'wind') {
                     if(!el.title){
                         title[0] = 'Wind';
                     }

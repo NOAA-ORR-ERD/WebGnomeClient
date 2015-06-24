@@ -14,6 +14,7 @@ define([
     'views/form/oil/specific',
     'text!templates/form/oil.html'
 ], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+    'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
@@ -29,7 +30,7 @@ define([
             formModalHash['change input:not(.chosen-search input)'] = 'update';
             formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
-            formModalHash['ready'] = 'triggerTableResize';
+            formModalHash.ready = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
@@ -122,24 +123,32 @@ define([
                 var min = quantity + '_min';
                 var max = quantity + '_max';
                 if (!this[min] && !this[max] && (quantity !== 'pour_point' && quantity !== 'viscosity')){
-                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
-                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
                 } else if (quantity === 'viscosity') {
-                    var visMin = _.min(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
-                    var visMax = _.max(this.oilTable.oilLib.models, function(model){ return model.attributes[quantity]; }).attributes[quantity] * 1000000;
+                    var visMin = _.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
+                    var visMax = _.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
                     this[min] = visMin;
                     this[max] = visMax;
                 } else {
-                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity][0]; }).attributes[quantity][0]);
-                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity][1]; }).attributes[quantity][1]);
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models, this.modelIteratorWithKey(quantity, 0), this).attributes[quantity][0]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models, this.modelIteratorWithKey(quantity, 1), this).attributes[quantity][1]);
                 }
                 obj[quantity] = {'min': this[min], 'max': this[max]};
             }
             return obj;
+        },
+
+        modelIterator: function(quantity){
+            return (function(model){
+                return model.attributes[quantity];
+            });
+        },
+
+        modelIteratorWithKey: function(quantity, key){
+            return (function(model){
+                return model.attributes[quantity][key];
+            });
         },
 
         renderTable: function(){
@@ -197,7 +206,6 @@ define([
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
-            this.model.set('substance', new SubstanceModel({adios_oil_id: this.$('.select').data('id')}));
         },
 
         viewSpecificOil: function(){
@@ -227,11 +235,14 @@ define([
         save: function(){
             var oilName = this.$('.select').data('name');
             var oilId = this.$('.select').data('id');
-            this.model.get('substance').set('name', oilName);
-            this.model.get('substance').set('adios_oil_id', oilId);
+            this.model.set('substance', new SubstanceModel({adios_oil_id: oilId, name: oilName}));
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
+                    var spills = webgnome.model.get('spills');
+                    for (var i = 0; i < spills.length; i++){
+                        spills.at(i).get('element_type').set('substance', model);
+                    }
                     this.hide();
                 }, this)
             });
