@@ -48,7 +48,6 @@ require.config({
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
-        'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
         localforage: 'lib/localforage/dist/localforage'
@@ -110,16 +109,5 @@ require.config({
             exports: 'localforage'
         }
     },
-<<<<<<< HEAD
 });
 
-// set up the app
-require([
-    'app',
-], function(App){
-    window.webgnome = App;
-    webgnome.initialize();
-});
-=======
-});
->>>>>>> develop

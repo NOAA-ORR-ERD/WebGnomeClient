@@ -11,8 +11,8 @@ define([
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
     'model/risk/risk',
-    'views/form/risk/risk',
-    'text!templates/risk/risk.html',
+    'views/form/risk/input',
+    'views/form/risk/tuning',
     'text!templates/model/fate/buttons.html',
     'html2canvas',
     'flot',
@@ -23,7 +23,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate, ButtonsTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, InputRiskForm, TuningRiskForm, ButtonsTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -117,7 +117,7 @@ define([
                     webgnome.cache.on('step:recieved', this.buildDataset, this);
                     webgnome.cache.step();
                 }
-            }     
+            }
         },
 
         reset: function(){
@@ -230,9 +230,11 @@ define([
                 // save new model
             }
 
-            var riskForm = new RiskForm();
-            riskForm.on('hidden', riskForm.close);
-            riskForm.render();
+            var inputForm = new InputRiskForm({}, risk);
+            var tuningForm = new TuningRiskForm({}, risk);
+            inputForm.on('hidden', inputForm.close);
+            inputForm.on('hidden', tuningForm.render);
+            inputForm.render();
         },
 
         renderLoop: function(){
