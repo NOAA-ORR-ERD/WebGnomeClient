@@ -54,16 +54,30 @@
 					<div class="col-sm-3 salinity-input hide"><input type="number" min="0" class="form-control salinity"></div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-sm-5" for="sediment">Water Sediment Load (mg/L):</label>
+					<label class="control-label col-sm-5" for="sediment">Water Sediment Load:</label>
 					<div class="col-sm-4">
 						<select class="form-control sediment-select sediment">
-							<option value="5">5 (ocean)</option>
-							<option value="50">50 (avg. river/estuary)</option>
-							<option value="500">500 (muddy river)</option>
+							<option value="5">5 mg/l (ocean)</option>
+							<option value="50">50 mg/l (avg. river/estuary)</option>
+							<option value="500">500 mg/l (muddy river)</option>
 							<option value="other">Other Value...</option>
 						</select>
 					</div>
 					<div class="col-sm-3 sediment-input hide"><input type="number" min="0" class="form-control sediment"></div>
+					<div class="col-sm-3 sediment-input hide">
+						<select class="form-control sediment sediment-units">
+							<option value="mg/l">mg / l</option>
+							<option value="kg/m^3">kg / m^3</option>
+							<option value="lb/ft^3">lb / ft^3</option>
+							<option value="mg/kg">mg / kg</option>
+							<option value="pptr">pptr</option>
+							<option value="ug/l">ug / l</option>
+							<option value="%">percent</option>
+							<option value="mg/ml">mg / ml</option>
+							<option value="ppt">ppt</option>
+							<option value="ppm">ppm</option>
+						</select>
+					</div>
 				</div>
 				<div class="form-group" id="sea-state">
 					<label class="control-label col-sm-5" for="sea-height">Wave Height:</label>

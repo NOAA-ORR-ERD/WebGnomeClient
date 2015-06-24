@@ -91,6 +91,14 @@ define([
 
             this.$('input').addClass('mousetrap');
             this.$('select').addClass('mousetrap');
+
+            if (_.isUndefined(this.resizeEvent)){
+                this.resizeEvent = this.$('.modal-body').on('resize', _.bind(this.windowResize, this));
+            }
+        },
+
+        windowResize: function(e){
+            $(window).trigger('resize');
         },
 
         submitByEnter: function(e){
@@ -99,9 +107,10 @@ define([
             this.$('.save').click();
             if (this.$('.next').length > 0){
                 this.$('.next').click();
-            }
-            if (this.$('.finish').length > 0){
+            } else if (this.$('.finish').length > 0){
                 this.$('.finish').click();
+            } else if (this.$('.cancel').length > 0){
+                this.$('.cancel').click();
             }
         },
 

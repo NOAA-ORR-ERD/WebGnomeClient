@@ -41,7 +41,6 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'flottooltip',
     'flotstack',
     'flotgantt'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
@@ -363,7 +362,7 @@ define([
                     });
                     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 } else {
-                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Timeline (24 hrs)</div><div class="canvas"></div></div>';
+                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
                     var ts = wind.get('timeseries');
                     var data = [];
                     var rate = Math.round(ts.length / 24);
@@ -371,7 +370,7 @@ define([
                     for (var entry in ts){
                         if(rate === 0 ||  entry % rate === 0){
                             var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                            data.push([parseInt(date, 10), parseInt(ts[entry][1][0], 10), parseInt(ts[entry][1][1], 10) - 180]);
+                            data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
                         }
                     }
 
@@ -634,7 +633,8 @@ define([
                         lineWidth: 2
                     },
                     shadowSize: 0
-                }
+                },
+                needle: false
             });
         },
 
@@ -676,7 +676,7 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.save({
+                    webgnome.model.save(null, {
                         success: _.bind(function(){
                             this.updateSpill();
                         }, this),
@@ -854,8 +854,8 @@ define([
                     min: 0.5,
                     max: yticks.length + 0.5,
                     ticks: yticks
-                }
-
+                },
+                needle: false
             });
         },
 

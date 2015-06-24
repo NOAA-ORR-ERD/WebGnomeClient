@@ -43,34 +43,29 @@ define([
             var a = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
-                a.assessment_time = webgnome.model.get('start_time');
+                if (a.assessment_time == 0) {
+                    a.assessment_time = webgnome.model.get('start_time');
+                }
 
                 // initialize efficiency to response values
                 var e = a.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
                     if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
                         if (el.attributes.name != "_natural") {
-console.log("setting dispersant efficiency to  " + el.attributes.efficiency);
                             if (!_.isUndefined(el.attributes.efficiency)){
                                 e.disperant = el.attributes.efficiency * 100;
                             }
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
-console.log("setting burn efficiency to  " + el.attributes.efficiency);
                         if (!_.isUndefined(el.attributes.efficiency)){
                             e.insitu_burn = el.attributes.efficiency * 100;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
-console.log("setting skimming efficiency to  " + el.attributes.efficiency);
                         if (!_.isUndefined(el.attributes.efficiency)){
                             e.skimming = el.attributes.efficiency * 100;
                         }
                     }
                 });
-
-
-
-
             } else {
                 a.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
             }
@@ -128,6 +123,41 @@ console.log("setting skimming efficiency to  " + el.attributes.efficiency);
             return a;
         },
 
+        getMasses: function(frame){
+            var massSW = 0;
+            var massSH = 0;
+            var percentWC = 0;
+            var amount_released = 0;
+            $.each(webgnome.mass_balance, function(idx, mass) {
+                data = mass.data[frame];
+                if (mass.name.toUpperCase() === 'FLOATING') {
+                    massSW = data[1];
+                }
+                else if (mass.name.toUpperCase() === 'EVAPORATED') {
+                }
+                else if (mass.name.toUpperCase() === 'DISPERSED') {
+                }
+                else if (mass.name.toUpperCase() === 'BEACHED') {
+                    massSH = data[1];
+                }
+                else if (mass.name.toUpperCase() === 'AVG_DENSITY') {
+                }
+                else if (mass.name.toUpperCase() === 'BURNED') {
+                }
+                else if (mass.name.toUpperCase() === 'AVG_VISCOSITY') {
+                }
+                else if (mass.name.toUpperCase() === 'WATER_CONTENT') {
+                    percentWC = data[1];
+                }
+                else if (mass.name.toUpperCase() === 'AMOUNT_RELEASED') {
+                    amount_released = data[1];
+                }
+            });
+            var massWC = amount_released * percentWC / 100;
+
+            return [massSW, massSH, massWC];
+        },
+
         assessment: function(){
             var area = this.convertAreaToSquareMeters();
             var diameter = this.convertDiameterToMeters();
@@ -140,52 +170,19 @@ console.log("setting skimming efficiency to  " + el.attributes.efficiency);
             var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var frame = (assessmentTime - startTime) / timeStep;
 
-            var spills = webgnome.model.get('spills');
-            var volumeTotal = 0;
-            var massTotal = 0;
-            // TODO: figure out volumes at time step, not total
-            $.each(spills.models, function(idx, model) {
-                var a = model.get('amount');
-                // convert to cubic meters
-                switch (model.get('units')) {
-                    case 'bbl':
-                        a = a * 0.119240471
-                        break;
-                    case 'cubic meters':
-                        break;
-                    case 'gal':
-                        a = a * 0.00378541;
-                        break;
-                    case 'ton':
-                        a = a * 1.018324160;
-                        break;
-                    case 'metric ton':
-                        break;
-                    default:
-                }
-                volumeTotal += a;
-                var et = model.get('element_type');
-                var s = et.get('substance');
-                // TODO: figure out how multiple densities may correspond to one spill volume.
-                var densities = s.get('densities');
-                var rho = 0;
-                $.each(densities, function(i, density) {
-                    rho = density.kg_m_3;
-                });
-                massTotal += (a*rho);
-            });
+            var masses = this.getMasses(frame);
 
-            var MASSwc = massTotal;
+            var MASSwc = masses[2];
             var LOCwc = 0.001;
             var VOLCwc = MASSwc / LOCwc;
             var FCwc = VOLCwc / (area * depth);
 
-            var MASSsw = massTotal;
+            var MASSsw = masses[0];
             var LOCsw = 0.01;
             var AREACsw = MASSsw / LOCsw;
             var FCsw = AREACsw / area;
 
-            var MASSsh = massTotal;
+            var MASSsh = masses[1];
             var LOCsh = 0.5
             var LCsh = MASSsh / LOCsh;
             var Lsh = Math.PI * diameter;

@@ -22,7 +22,7 @@ define([
 
         setup: function(e){
             e.preventDefault();
-            webgnome.router.navigate('setup', true);
+            webgnome.router.navigate('config', true);
         }
     });
 

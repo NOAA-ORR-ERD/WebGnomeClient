@@ -27,13 +27,13 @@ require.config({
         flotresize: 'lib/flot/jquery.flot.resize',
         flotdirection: 'lib/flotdirection/index',
         flotspline: 'lib/flotspline/jquery.flot.spline',
-        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
-        flotcrosshair: 'lib/flot/jquery.flot.crosshair',
         flotstack: 'lib/flot/jquery.flot.stack',
         flotpie: 'lib/flot/jquery.flot.pie',
         flotfillarea: 'lib/flotfillarea/jquery.flot.fillarea',
         flotselect: 'lib/flot/jquery.flot.selection',
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
+        flotneedle: 'lib/flotneedle/flotNeedle',
+        'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
@@ -47,7 +47,9 @@ require.config({
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
-        'fizzy-ui-utils': 'lib/fizzy-ui-utils/'
+        'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module',
+        socketio: 'lib/socket.io-client/dist/socket.io'
     },
     shim: {
         jquery: {
@@ -61,8 +63,7 @@ require.config({
         flotresize: ['flot'],
         flotdirection: ['flot'],
         flotspline: ['flot'],
-        flottooltip: ['flot'],
-        flotcrosshair: ['flot'],
+        flotneedle: ['flot'],
         flotstack: ['flot'],
         flotpie: ['flot'],
         flotfillarea: ['flot'],
@@ -96,6 +97,9 @@ require.config({
         },
         gauge: {
             exports: 'Gauge'
+        },
+        socketio: {
+            exports: 'io'
         }
     },
 });

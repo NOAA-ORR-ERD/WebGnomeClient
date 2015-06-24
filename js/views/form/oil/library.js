@@ -6,13 +6,14 @@ define([
     'chosen',
     'moment',
     'jqueryui/core',
+    'model/substance',
     'model/oil/distinct',
     'views/modal/form',
     'views/form/oil/table',
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html'
-], function($, _, Backbone, module, chosen, moment, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
@@ -68,18 +69,12 @@ define([
                     this.loadingGif.hide();
                 }
 
-                // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
-
                 FormModal.prototype.render.call(this, options);
 
                 this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
 
-                var oilImported = this.model.get('substance').get('imported');
-
-                if (!_.isUndefined(oilImported)){
-                    this.$('tr[data-id="' + oilImported.adios_oil_id + '"]').addClass('select');
-                }
+                
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -99,6 +94,7 @@ define([
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
                 this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
                 this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
+                this.updateTooltipWidth();
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -107,6 +103,11 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
+
+            var substance = this.model.get('substance');
+            if (substance && substance.get('adios_oil_id')){
+                this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
+            }
         },
 
         triggerTableResize: function(){
@@ -196,7 +197,7 @@ define([
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parent().addClass('select');
             this.$('.oilInfo').show();
-            this.model.get('substance').set('adios_oil_id', this.$('.select').data('id'));
+            this.model.set('substance', new SubstanceModel({adios_oil_id: this.$('.select').data('id')}));
         },
 
         viewSpecificOil: function(){

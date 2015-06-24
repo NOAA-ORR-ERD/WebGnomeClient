@@ -10,8 +10,8 @@ define([
             temperature: 46,
             salinity: 32,
             sediment: 5,
-            wave_height: 0,
-            fetch: 0,
+            wave_height: null,
+            fetch: null,
             units: {
                 'temperature': 'F',
                 'salinity': 'psu',
@@ -53,6 +53,10 @@ define([
 
             if (attrs.fetch < 0 || attrs.fetch === ''){
                 return 'Fetch must be a number greater than or equal to zero!';
+            }
+
+            if (attrs.sediment > 1000){
+                return 'Sediment cannot exceed 1000 milligrams per liter!';
             }
 
         }

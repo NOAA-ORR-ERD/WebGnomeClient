@@ -15,6 +15,12 @@ define([
         title: 'In-Situ Burn Response',
         className: 'modal response fade form-modal insituburn-form',
 
+        events: function(){
+            return _.defaults({
+                'click .slidertoggle': 'toggleEfficiencySlider'
+            }, ResponseFormModal.prototype.events());
+        },
+
         initialize: function(options, burnModel){
             this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, burnModel);
@@ -32,7 +38,30 @@ define([
             });
             ResponseFormModal.prototype.render.call(this, options);
 
+            this.setEfficiencySlider();
+
             this.setUnitSelects();
+        },
+
+        toggleEfficiencySlider: function(){
+            if (this.$('.slidertoggle').is(':checked')){
+                this.$('.slider').slider({disabled: true});
+                this.model.set('efficiency', null);
+            } else {
+                this.$('.slider').slider({disabled: false});
+                this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
+            }
+        },
+
+        setEfficiencySlider: function(){
+            if (!_.isNull(this.model.get('efficiency'))){
+                var val = this.model.get('efficiency') * 100;
+                this.$('.slider').slider('value', val);
+                this.$('#rate-tooltip').text(val);
+            } else {
+                this.$('.slidertoggle').prop('checked', true);
+                this.toggleEfficiencySlider();
+            }
         },
 
         setUnitSelects: function(){
@@ -74,6 +103,7 @@ define([
             var boomedOilThickness = this.$('#oilthickness').val();
             var boomedThicknessUnits = this.$('#thicknessunits').val();
             var start_time = this.startTime;
+            var efficiencyVal = this.efficiencyValue;
 
             var thicknessInMeters = this.convertLength(boomedOilThickness, boomedThicknessUnits);
             var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
@@ -85,6 +115,7 @@ define([
             this.model.set('thickness', boomedOilThickness);
             this.model.set('area_units', boomedAreaUnits);
             this.model.set('thickness_units', boomedThicknessUnits);
+            this.model.set('efficiency', efficiencyVal);
         }
     });
 

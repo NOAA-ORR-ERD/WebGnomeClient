@@ -4,9 +4,11 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
+    'views/modal/hotkeys',
     'sweetalert',
+    'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, swal) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -23,9 +25,6 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
-            if(webgnome.hasModel()){
-                webgnome.model.on('sync', this.contextualize, this);
-            }
         },
 
         events: {
@@ -44,6 +43,7 @@ define([
             'click .about': 'about',
             'click .overview': 'overview',
             'click .faq': 'faq',
+            'click .hotkeys': 'hotkeys',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
@@ -91,20 +91,29 @@ define([
                 text:'Creating a new model will delete all data related to any current model.',
                 type: 'warning',
                 showCancelButton: true,
-            }, function(isConfirm){
+            }, _.bind(function(isConfirm){
                 if(isConfirm){
-                    webgnome.model = null;
-                    webgnome.router.navigate('', true);
                     localStorage.setItem('prediction', null);
-                    webgnome.router.navigate('setup', true);        
+                    webgnome.model = new GnomeModel();
+
+                    if(_.has(webgnome, 'cache')){
+                        webgnome.cache.rewind();
+                    }
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.contextualize();
+                            webgnome.router.navigate('', true);
+                            webgnome.router.navigate('config', true);
+                        }, this)
+                    });
                 }
-            });
-            
+            }, this));
         },
 
         editModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate('setup', true);
+            webgnome.router.navigate('config', true);
         },
 
         load: function(event){
@@ -119,7 +128,7 @@ define([
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('save', true);
+            window.location.href = webgnome.config.api + '/download';
         },
 
         debugView: function(event){
@@ -149,6 +158,11 @@ define([
             webgnome.router.navigate('faq', true);
         },
 
+        hotkeys: function(event){
+            event.preventDefault();
+            new HotkeysModal().render();
+        },
+
         enableMenuItem: function(item){
             this.$el.find('.' + item).show();
         },
@@ -158,8 +172,10 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel() || !webgnome.validModel()){
+            if(!webgnome.hasModel()){
                 this.disableMenuItem('save');
+            } else {
+                this.enableMenuItem('save');
             }
             
             if(webgnome.hasModel()){
@@ -185,9 +201,8 @@ define([
         },
 
         close: function(){
-            if(!_.isUndefined(webgnome) && webgnome.model){
-                webgnome.model.off('sync', this.contextualize, this);
-            }
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
 
             Backbone.View.prototype.close.call(this);
         }

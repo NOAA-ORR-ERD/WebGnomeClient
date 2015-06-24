@@ -4,8 +4,6 @@ define([
     'backbone',
     'module',
     'moment',
-    'ol',
-    'nucos',
     'fabric',
     'gauge',
     'views/modal/form',
@@ -16,18 +14,24 @@ define([
     'jqueryui/slider',
     'jqueryDatetimepicker',
     'relimpui',
-], function($, _, Backbone, module, moment, ol, nucos, fabric, Gauge, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
+], function($, _, Backbone, module, moment, fabric, Gauge, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
     var riskForm = FormModal.extend({
         title: 'Environmental Risk Assessment',
         className: 'modal fade form-modal risk-form',
         events: function(){
             return _.defaults({
                 'shown.bs.tab': 'showTab',
-                'click .store': 'store',
+                'click .remodel': 'remodel',
                 'click #era-tuning-link': this.inputValid
             }, FormModal.prototype.events);
         },
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="store btn btn-primary">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Close</button>',
+
+        efficiency: {
+            'skimming': 100,
+            'dispersant': 100,
+            'insitu_burn': 100
+        },
 
         benefitGauge: null,
         self: null,
@@ -36,6 +40,14 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = new RiskModel({id: 1234567890});
+            var ri = this.model.get('relativeImportance');
+            ri.surface = 1/3;
+            ri.column = 1/3;
+            ri.shoreline = 1/3;
+            var e = this.model.get('efficiency');
+            this.efficiency.skimming =  e.skimming;
+            this.efficiency.dispersant =  e.dispersant;
+            this.efficiency.insitu_burn =  e.insitu_burn;
             this.on('ready', this.rendered, this);
 
             self = this;
@@ -87,9 +99,9 @@ define([
 
             this.createBenefitGauge('benefit', 50);
 
-            this.createSlider('#skimming', this.model.get('efficiency').skimming);
-            this.createSlider('#dispersant', this.model.get('efficiency').dispersant);
-            this.createSlider('#insituburn', this.model.get('efficiency').insitu_burn);
+            this.createSlider('#skimming', self.efficiency.skimming);
+            this.createSlider('#dispersant', self.efficiency.dispersant);
+            this.createSlider('#insituburn', self.efficiency.insitu_burn);
 
             $('#importance').relativeImportanceUI({callback: this.calculateRI});
 
@@ -103,10 +115,7 @@ define([
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                assessment_time: this.model.get('assessment_time'),
-                surface: this.model.get('surface'),
-                column: this.model.get('column'),
-                shoreline: this.model.get('shoreline')
+                assessment_time: moment(this.model.get('assessment_time')).format('YYYY/M/D H:mm')
             });
 
             this.$('#era-input').html(template);
@@ -192,11 +201,10 @@ define([
                         this.updateSlide(selector, ui);
                     }, this),
                     stop: _.bind(function(e, ui){
-                        this.reassessRisk();
+                        this.updateBenefit();
                     }, this)
                 });
 
-                this.$(selector + ' .slider').slider("option", "value", 100);
             }, this), 1);
         },
 
@@ -209,23 +217,39 @@ define([
             }
             this.$(selector + ' .tooltip-inner').text(value);
             this.updateTooltipWidth();
-        },
-
-        reassessRisk: function(){
-            var skimming = this.$('#skimming .slider').slider('value');
-            var dispersant = this.$('#dispersant .slider').slider('value');
-            var insitu_burn = this.$('#insituburn .slider').slider('value');
 
             // set model
+//            var e = self.model.get('efficiency');
+            if (selector === "#skimming") {
+                self.efficiency.skimming = value;
+            } else if (selector === "#dispersant") {
+                self.efficiency.dispersant = value;
+            } else if (selector === "#insituburn") {
+                self.efficiency.insitu_burn = value;
+            }
+        },
+
+        remodel: function(){
             var e = this.model.get('efficiency');
-            e.skimming = skimming;
-            e.dispersant = dispersant;
-            e.insitu_burn = insitu_burn;
+            _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
+                    if (el.attributes.name != "_natural") {
+                        el.attributes.efficiency = e.dispersant / 100;
+                    }
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
+                    el.attributes.efficiency = e.insitu_burn / 100;
+                } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
+                    el.attributes.efficiency = e.skimming / 100;
+                }
+            });
 
-            // assess model
-            this.model.assessment();
+            webgnome.model.save(null, {validate: true});
+            if (webgnome.model.isValid()){
+                // the fate.js has a listener to rerun the model on a rewind
+                webgnome.cache.rewind();
+            }
 
-            this.updateBenefit();
+            this.close();
         },
 
         // callback from relative importance ui when values change.
@@ -251,11 +275,24 @@ define([
         },
 
         updateBenefit: function(){
+            var newSkimming = self.efficiency.skimming;
+            var newDispersant = self.efficiency.dispersant;
+            var newBurn = self.efficiency.insitu_burn;
+
+            // in the info I have, only the water column uses the 
+            // mass of dispersed oil in it calculations,
+            // so only water column is effected by adjusting the efficiencies.
+            var e = this.model.get('efficiency');
+            var modelSkimming = e.skimming;
+            var modelDispersant = e.dispersant;
+            var modelBurn = e.insitu_burn;
+
             var ri = this.model.get('relativeImportance');
             var surface = this.model.get('surface');
-            var column = this.model.get('column');
+            var column = this.model.get('column') * newDispersant / modelDispersant;
             var shoreline = this.model.get('shoreline');
-            var benefit = (1 - (ri.surface * surface + ri.column * column + ri.shoreline * shoreline)) * this.benefitGauge.maxValue;
+            var tc = ri.surface * surface + ri.column * column + ri.shoreline * shoreline;
+            var benefit = (1 - tc) * this.benefitGauge.maxValue;
 
             // update ui
             this.$('#surface').html((surface).toFixed(3));
@@ -276,13 +313,8 @@ define([
             }
         },
 
-        store: function() {
-            console.log("in the store method");
-            this.model.save();
-            this.close();
-        },
-
         close: function() {
+            this.model.save();
             FormModal.prototype.close.call(this);
         }
 

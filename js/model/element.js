@@ -29,7 +29,7 @@ define([
         },
 
         validate: function(attrs, options){
-            if (!attrs.substance.isValid()){
+            if (attrs.substance && !attrs.substance.isValid()){
                 return attrs.substance.validationError;
             }
         },

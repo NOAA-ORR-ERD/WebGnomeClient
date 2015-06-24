@@ -19,8 +19,7 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flottooltip',
-    'flotcrosshair'
+    'flotneedle'
 ], function($, _, Backbone, module, BaseView, moment, nucos, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskForm, RiskTemplate){
     var fateView = BaseView.extend({
         className: 'fate',
@@ -66,19 +65,17 @@ define([
                 },
                 shadowSize: 0
             },
-            crosshair: {
-                mode: 'x',
-                color: '#999',
-                showToolTip: true
-            },
-            tooltip: true,
-            tooltipOpts: {
-                lines: {
-                    track: true,
-                    threshold: 10000000
-                }
-            },
-            yaxis: {}
+            yaxis: {},
+            needle: {
+                on: true,
+                label: function(text){
+                    var num = parseFloat(text);
+                    var units = this.$('');
+                    return num.toFixed(2) + '';
+                },
+                stack: false,
+                noduplicates: true
+            }
         },
 
         initialize: function(options){
@@ -86,6 +83,7 @@ define([
             BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.on('rewind', this.reset, this);
         },
 
         load: function(){
@@ -102,6 +100,18 @@ define([
                 }
             }
             webgnome.cache.on('step:recieved', this.buildDataset, this);
+        },
+
+        reset: function(){
+            webgnome.cache.off('step:recieved', this.buildDataset, this);
+            if(webgnome.cache.fetching){
+                webgnome.cache.once('step:recieved', this.reset, this);
+            } else {
+                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                this.dataset = undefined;
+                this.frame = 0;
+                this.renderLoop();
+            }
         },
 
         render: function(){
@@ -214,6 +224,8 @@ define([
                 this.renderGraphEvaporation(this.dataset);
             } else if(active == '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
+            } else if(active == '#sedimentation') {
+                this.renderGraphSedimentation(this.dataset);
             } else if(active == '#density') {
                 this.renderGraphDensity(this.dataset);
             } else if(active == '#emulsification') {
@@ -226,13 +238,14 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             if(_.isUndefined(this.graphOilBudget)){
-                var options = _.clone(this.defaultChartOptions);
+                var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = true;
+                options.needle.noduplicates = false;
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
@@ -260,7 +273,7 @@ define([
             }
             
             var i, j;
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'data');
             var highData = this.getPieData(pos, dataset, 'high');
@@ -331,7 +344,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             var table = this.$('#budget-table table:first');
             var display = {
                 time: this.$('#budget-table .time').val().trim(),
@@ -353,12 +366,12 @@ define([
             for (var row = 0; row < dataset[0].data.length; row++){
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
+
                 if(ts_date.minutes() === 0 && duration.asHours() < 7 ||
                     duration.asHours() < 25 && duration.asHours() % 3 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 && ts_date.minutes() === 0 ||
                     duration.asHours() < 241 && duration.asHours() % 24 === 0 && ts_date.minutes() === 0){
-
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {
@@ -366,7 +379,7 @@ define([
                     }
 
                     var row_html = '';
-                    if(row === 0){
+                    if(parseInt(row, 10) === 0){
                         row_html += '<thead><tr>';
                     } else {
                         row_html += '<tr>';
@@ -489,7 +502,7 @@ define([
         },
 
         renderGraphDispersion: function(dataset){
-            dataset = this.pluckDataset(dataset, ['dispersed']);
+            dataset = this.pluckDataset(dataset, ['natural_dispersion']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -499,6 +512,21 @@ define([
                 this.graphDispersion.setData(dataset);
                 this.graphDispersion.setupGrid();
                 this.graphDispersion.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
+        renderGraphSedimentation: function(dataset){
+            dataset = this.pluckDataset(dataset, ['sedimentation']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphSedimentation)){
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
+                this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
+            } else {
+                this.graphSedimentation.setData(dataset);
+                this.graphSedimentation.setupGrid();
+                this.graphSedimentation.draw();
             }
             dataset[0].fillArea = null;
         },
@@ -558,7 +586,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content']);
+            dataset = this.pruneDataset(dataset, ['avg_density', 'amount_released', 'avg_viscosity', 'step_num', 'time_stamp', 'water_content', 'non_weathering']);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
@@ -577,6 +605,7 @@ define([
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
+                options.needle = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
@@ -670,7 +699,7 @@ define([
             var end = selection.xaxis.to;
             var units = this.$('#ics209 .vol-units').val();
             var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            var dataset = this.pluckDataset(this.dataset, ['amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -678,7 +707,10 @@ define([
                 burned: 0,
                 skimmed: 0,
                 floating: 0,
-                amount_released: 0
+                amount_released: 0,
+                natural_dispersion: 0,
+                sedimentation: 0,
+                dissolution: 0
             };
             var cumulative = _.clone(report);
             var low = _.clone(report);
@@ -690,28 +722,32 @@ define([
                         report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].data){
                     if(dataset[set].data[step][0] <= end){
                         cumulative[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].low){
                     if(dataset[set].low[step][0] <= end){
                         low[dataset[set].name] += parseInt(dataset[set].low[step][1], 10);
                     }
                 }
-            }
-            for(var set in dataset){
                 for(var step in dataset[set].high){
                     if(dataset[set].high[step][0] <= end){
                         high[dataset[set].name] += parseInt(dataset[set].high[step][1], 10);
                     }
                 }
+                
             }
+
+            cumulative.natural_dispersion += cumulative.sedimentation;
+            cumulative.natural_dispersion += cumulative.dissolution;
+            low.natural_dispersion += low.sedimentation;
+            low.natural_dispersion += low.dissolution;
+            high.natural_dispersion += high.sedimentation;
+            high.natural_dispersion += high.dissolution;
+            report.natural_dispersion += report.sedimentation;
+            report.natural_dispersion += report.dissolution;
 
             var converter = new nucos.OilQuantityConverter();
             for(var value in report){
@@ -820,11 +856,11 @@ define([
                 delete titles.step_num;
                 delete titles.time_stamp;
                 delete titles.floating;
-                delete titles.dispersed;
+                delete titles.natural_dispersion;
                 delete titles.evaporated;
                 delete titles.amount_released;
                 var keys = Object.keys(titles);
-                keys.unshift('floating', 'evaporated', 'dispersed');
+                keys.unshift('floating', 'evaporated', 'natural_dispersion');
                 keys.push('amount_released');
 
                 for(var type in keys){
@@ -837,6 +873,13 @@ define([
                         direction: {
                             show: false
                         },
+                        needle: {
+                            label: function(text){
+                                var num = parseFloat(text).toFixed(2);
+                                var units = $('.tab-pane:visible .yaxisLabel').text();
+                                return num + ' ' + units;
+                            }
+                        }
                     });
                 }
             }
@@ -847,7 +890,18 @@ define([
             var converter = new nucos.OilQuantityConverter();
 
             for(var set in this.dataset){
-                if(['dispersed', 'evaporated', 'floating', 'amount_released', 'skimmed', 'burned', 'beached'].indexOf(this.dataset[set].name) !== -1){
+                if([
+                        'natural_dispersion', 
+                        'dispersed', 
+                        'evaporated', 
+                        'floating', 
+                        'amount_released', 
+                        'skimmed', 
+                        'burned', 
+                        'beached',
+                        'sedimentation',
+                        'dissolution'
+                    ].indexOf(this.dataset[set].name) !== -1){
                     min = _.min(step.get('WeatheringOutput'), function(run){
                         return run[this.dataset[set].name];
                     }, this);
@@ -864,9 +918,9 @@ define([
                     nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
                     // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
-                    low_value = low[this.dataset[set].name] * 1000000;
-                    nominal_value = nominal[this.dataset[set].name] * 1000000;
-                    high_value = high[this.dataset[set].name] * 1000000;
+                    low_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', low[this.dataset[set].name]);
+                    nominal_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', nominal[this.dataset[set].name]);
+                    high_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', high[this.dataset[set].name]);
 
                 } else if (this.dataset[set].name === 'water_content'){
                     // Convert water content into a % it's an easier unit to understand
@@ -965,6 +1019,7 @@ define([
             $('.xdsoft_datetimepicker').remove();
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.off('step:recieved', this.buildDataset, this);
+            webgnome.cache.off('rewind', this.reset, this);
 
             this.rendered = false;
             Backbone.View.prototype.close.call(this);

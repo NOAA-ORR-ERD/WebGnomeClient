@@ -23,14 +23,20 @@
     "flot": "0.8.3",
     "flotdirection": "https://jquery-flot-direction.googlecode.com/files/jquery.flot.direction.js",
     "flotspline": "git://github.com/alexbardas/flot.git",
-    "flot.tooltip": "~0.8.4",
+    "flotneedle": "https://srccontrol.orr.noaa.gov/alex.miranda/flotNeedle.git",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "1.*.*",
     "sweetalert": "0.4.*"
     ,"fabric": "1.4.12",
-    "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js"
+    "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js",
+    "fabric": "1.4.12",
+    "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js",
+    "nucos": "1.0.0",
+    "sweetalert": "0.4.*",
+    "dropzone": "4.0.*",
+    "socket.io-client": "0.9.*"
   },
   "devDependencies": {
     "qunit": "1.14.0"

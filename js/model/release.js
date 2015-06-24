@@ -20,7 +20,7 @@ define([
 
         initialize: function(options){
             var start_time = '';
-            if (!_.isUndefined(webgnome.model)){
+            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
                 start_time = moment(webgnome.model.get('start_time'));
             } else {
                 start_time = moment();
@@ -30,7 +30,7 @@ define([
                 this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
-            if (!_.isUndefined(webgnome.model)){
+            if (!_.isUndefined(window.webgnome) && !_.isUndefined(webgnome.model)){
                 end_time = start_time.add(webgnome.model.get('duration'), 's');
             } else {
                 end_time = moment();
@@ -78,7 +78,7 @@ define([
                 return 'Give a valid location for the spill!';
             }
 
-            if (!_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getExtent()))){
                 return this.isReleaseInExtent(webgnome.model.get('map').getExtent());
             }
         },

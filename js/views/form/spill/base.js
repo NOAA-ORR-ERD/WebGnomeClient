@@ -6,6 +6,7 @@ define([
 	'views/form/oil/library',
 	'views/default/map',
     'text!templates/form/spill/substance.html',
+    'text!templates/form/spill/substance-null.html',
     'model/substance',
 	'nucos',
 	'ol',
@@ -13,7 +14,7 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
@@ -81,9 +82,28 @@ define([
             if (this.model.isNew()){
                 this.$('.delete').prop('disabled', true);
             }
+
+            // Need to add a model if check to see if the user
+            // persisted a different bullwinkle_fraction value
+            // other than the default
+            if (!_.isNull(this.model.get('element_type').get('substance'))){
+                this.setEmulsificationOverride();
+            }
+
             this.subtextUpdate();
             this.initTabStatus();
 		},
+
+        setEmulsificationOverride: function(){
+            var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
+
+            if (_.isNull(bullwinkle_time)){
+                this.$('.radio input[value="default"]').prop('checked', true);
+            } else {
+                this.$('.radio input[value="manual"]').prop('checked', true);
+                this.$('.manual').val(bullwinkle_time);
+            }
+        },
 
         tabStatusSetter: function(){
             var activeTab = this.$('li.active');
@@ -166,7 +186,7 @@ define([
         updateCachedOils: function(substanceModel){
             var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
             var substance = substanceModel;
-            if (!_.isNull(cachedOils) && !_.isUndefined(substance.get('name'))){
+            if (!_.isNull(cachedOils) && !_.isNull(substanceModel) && !_.isUndefined(substance.get('name'))){
                 for (var i = 0; i < cachedOils.length; i++){
                     if (cachedOils[i]['name'] === substance.get('name')){
                         cachedOils.splice(i, 1);
@@ -178,7 +198,7 @@ define([
                 }
             } else {
                 cachedOils = [];
-                if (!_.isUndefined(substance.get('name'))){
+                if (!_.isNull(substanceModel) && !_.isUndefined(substance.get('name'))){
                     cachedOils.push(substance);
                 }
             }
@@ -201,18 +221,23 @@ define([
                 substance = cached;
             }
             var cachedOilArray = this.updateCachedOils(substance);
-            var oilExists = !_.isUndefined(substance.get('name'));
-            var compiled = _.template(SubstanceTemplate, {
-                name: substance.get('name'),
-                api: Math.round(substance.get('api') * 1000) / 1000,
-                temps: substance.parseTemperatures(),
-                categories: substance.parseCategories(),
-                enabled: enabled,
-                oilExists: oilExists,
-                emuls: substance.get('emulsion_water_fraction_max'),
-                bullwinkle: substance.get('bullwinkle_fraction'),
-                oilCache: cachedOilArray
-            });
+            var oilExists = !_.isNull(substance);
+            if (oilExists){
+                var compiled = _.template(SubstanceTemplate, {
+                    name: substance.get('name'),
+                    api: Math.round(substance.get('api') * 1000) / 1000,
+                    temps: substance.parseTemperatures(),
+                    categories: substance.parseCategories(),
+                    enabled: enabled,
+                    emuls: substance.get('emulsion_water_fraction_max'),
+                    bullwinkle: substance.get('bullwinkle_fraction'),
+                    oilCache: cachedOilArray
+                });
+            } else {
+                var compiled = _.template(SubstanceNullTemplate, {
+                    oilCache: cachedOilArray
+                });
+            }
             this.$('#oilInfo').html('');
             this.$('#oilInfo').html(compiled);
             
@@ -237,6 +262,11 @@ define([
                     container: '.modal-body',
                     delay: {show: 500, hide: 100}
                 });
+
+            if (!_.isNull(this.model.get('element_type').get('substance'))){
+                this.setEmulsificationOverride();
+                this.subtextUpdate();
+            }
 
             if (enabled){
                 this.model.get('element_type').set('substance', substance);

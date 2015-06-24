@@ -40,6 +40,8 @@ define([
                 inSituBurnForm.on('wizardclose', inSituBurnForm.close);
                 inSituBurnForm.on('save', function(){
                     webgnome.model.get('weatherers').add(insituBurn);
+                    var wind = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+                    insituBurn.set('wind', wind);
                     webgnome.model.save(null, {validate: false});
                     inSituBurnForm.on('hidden', function(){
                         inSituBurnForm.trigger('wizardclose');

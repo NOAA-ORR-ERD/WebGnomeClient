@@ -12,19 +12,23 @@ define([
     'views/default/adios',
     'views/default/overview',
     'views/default/faq',
-    'views/default/footer'
+    'views/default/load',
+    'views/default/footer',
+    'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, FooterView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
         routes: {
             '': 'index',
             'locations': 'locations',
-            'setup': 'setup',
+            'config': 'config',
             'model': 'model',
             'overview': 'overview',
             'faq': 'faq',
+            'faq/:title': 'faq',
+            'load': 'load',
 
             '*actions': 'notfound'
         },
@@ -39,6 +43,9 @@ define([
             if(window.location.href.indexOf('test.html') === -1){
                 this.views.push(new FooterView());
             }
+            if(_.isUndefined(this.logger)){
+                this.logger = new LoggerView();
+            }
         },
 
         index: function(){
@@ -49,7 +56,7 @@ define([
             }
         },
 
-        setup: function(){
+        config: function(){
             this.views.push(new MenuView());
             this.views.push(new SetupView());
         },
@@ -64,7 +71,7 @@ define([
                 this.views.push(new MenuView());
                 this.views.push(new ModelView());
             } else {
-                this.navigate('setup', true);
+                this.navigate('config', true);
             }
         },
 
@@ -73,9 +80,18 @@ define([
             this.views.push(new OverviewView());
         },
 
-        faq: function(){
+        faq: function(title){
             this.views.push(new MenuView());
-            this.views.push(new FAQView());
+            if (!_.isUndefined(title)){
+                this.views.push(new FAQView({topic: title}));
+            } else {
+                this.views.push(new FAQView());
+            }
+        },
+
+        load: function(){
+            this.views.push(new MenuView());
+            this.views.push(new LoadView());
         },
 
         notfound: function(actions){

@@ -38,7 +38,8 @@ define([
             'click .rewind': 'rewind',
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
-            'slidestop .seek > div': 'blur'
+            'slidestop .seek > div': 'blur',
+            'click .layers label': 'toggleLayers'
         },
 
         initialize: function(options){
@@ -69,7 +70,7 @@ define([
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'basemap',
+                        name: 'mapquest',
                         type: 'base',
                         visible: false
                     }),
@@ -88,7 +89,7 @@ define([
                             url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                             params: {'LAYERS': '1', 'TILED': true}
                         }),
-                        opacity: 0.7,
+                        opacity: 0.5,
                         visible: false
                     })
                 ]
@@ -143,13 +144,11 @@ define([
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
                 var compiled = _.template(ControlsTemplate, {date: date});
-                this.$el.html(compiled);
+                this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
                 }, this));
-                this.$('.layers input[type="radio"]').click(_.bind(this.toggleBase, this));
-                this.$('.radio #basemap').attr('checked', true);
-                this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
+                
                 this.controls = {
                     'play': this.$('.controls .play'),
                     'pause': this.$('.controls .play'),
@@ -218,17 +217,9 @@ define([
             if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
                     // the step already exists in the index, make it visible.
-                    if(this.SpillGroupLayers.item(this.controls.seek.slider('value')).getSource().getFeatures()[0].getGeometry().getPoints().length > 0){
-                        this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
-                            setTimeout(_.bind(function(){
-                                this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                            }, this), 60);
-                        }, this));
-                    } else {
-                        setTimeout(_.bind(function(){
-                            this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                        }, this), 60);
-                    }
+                    setTimeout(_.bind(function(){
+                        this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
+                    }, this), 60);
                     this.renderStep({step: this.controls.seek.slider('value')});
 
                 } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
@@ -338,15 +329,11 @@ define([
 
         getStepLayer: function(step){
             var layer = this.makeLayer(step);
-            this.SpillGroupLayers.push(layer);
 
-            if(step.get('GeoJson').feature_collection.features[0].geometry.coordinates.length > 0){
-                layer.once('render', _.bind(function(){
-                    this.getStepLayerRendered(step);
-                }, this));
-            } else {
+            setTimeout(_.bind(function(){
+                this.SpillGroupLayers.push(layer);
                 this.getStepLayerRendered(step);
-            }
+            }, this), 60);
         },
 
         getStepLayerRendered: function(step){
@@ -394,6 +381,37 @@ define([
                     object: step.get('GeoJson').feature_collection
                 })
             });
+            
+            // var layer = new ol.layer.Image({
+            //     step_num: step.get('GeoJson').step_num,
+            //     ts: moment(step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
+                
+            //     visible: visible,
+            //     source: new ol.source.ImageVector({
+            //         source: new ol.source.GeoJSON({
+            //             // url: ''
+            //             projection: 'EPSG:3857',
+            //             object: step.get('GeoJson').feature_collection
+            //         }),
+            //         style: function(feature, resolution){
+            //             var color = 'rgba(0, 0, 0, 1)';
+            //             if(feature.get('sc_type') == 'uncertain'){
+            //                 color = 'rgba(255, 54, 54, 1)';
+            //             }
+            //             return [new ol.style.Style({
+            //                 image: new ol.style.Circle({
+            //                     fill: new ol.style.Fill({
+            //                         color: 'rgba(0, 0, 0, .75)'
+            //                     }),
+            //                     radius: 1,
+            //                     stroke: new ol.style.Stroke({
+            //                         color: color
+            //                     })
+            //                 })
+            //             })];
+            //         }
+            //     }),
+            // });
 
             return layer;
         },
@@ -479,49 +497,29 @@ define([
             }
         },
 
-        toggleBase: function(event){
-            var layer = event.target.id;
-            if(layer){
-                this.ol.map.getLayers().forEach(function(el){
-                    if (layer === el.get('name')){
-                        if (layer === 'basemap' && this.checkedBase){
-                            el.setVisible(true);
-                        }
-                        if (layer === 'usgsbase' && this.checkedBase){
-                            el.setVisible(true);
-                        }
-                    } else if (el.get('name') === 'basemap' || el.get('name') === 'usgsbase'){
-                        el.setVisible(false);
-                    }
-                });
-            }
-        },
+        toggleLayers: function(event){
+            var checked_layers = [];
+            this.$('.layers input:checked').each(function(i, input){
+                checked_layers.push(input.id);
+            });
 
-        toggleLayer: function(event){
-            var layer = event.target.id;
-            if (layer !== 'basemap'){
-                this.ol.map.getLayers().forEach(function(el){
-                    if (layer == el.get('name')){
-                        if (el.getVisible()){
-                            el.setVisible(false);
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('type') === 'base'){
+                    if (checked_layers.indexOf('basemap') !== -1){
+                        if(checked_layers.indexOf(layer.get('name')) !== -1){
+                            layer.setVisible(true);
                         } else {
-                            el.setVisible(true);
+                            layer.setVisible(false);
                         }
+                    } else {
+                        layer.setVisible(false);
                     }
-                });
-            } else {
-                this.ol.map.getLayers().forEach(function(el){
-                    if (el.get('type') === 'base'){
-                        if (this.$('#basemap:checked').length === 1){
-                            this.checkedBase = true;
-                            el.setVisible(true);
-                        } else {
-                            this.checkedBase = false;
-                            el.setVisible(false);
-                        }
-                    }
-                });
-            }
+                } else if (checked_layers.indexOf(layer.get('name')) !== -1){
+                    layer.setVisible(true);
+                } else {
+                    layer.setVisible(false);
+                }
+            });
         },
 
         toggleSpill: function(e){
