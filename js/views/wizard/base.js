@@ -19,13 +19,16 @@ define([
         },
 
         next: function(){
-            this.step++;
-            this.steps[this.step].render();
+            this.steps[this.step].once('hidden', _.bind(function(){
+                this.step++;
+                this.steps[this.step].render();
+            }, this));
         },
 
         prev: function(){
-            this.step--;
-            this.steps[this.step].render();
+            //this.steps[this.step].one('hidden')
+                this.step--;
+                this.steps[this.step].render();
         },
 
         goto: function(step){

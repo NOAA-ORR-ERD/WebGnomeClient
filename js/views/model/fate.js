@@ -11,8 +11,7 @@ define([
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
     'model/risk/risk',
-    'views/form/risk/input',
-    'views/form/risk/tuning',
+    'views/wizard/risk',
     'text!templates/model/fate/buttons.html',
     'html2canvas',
     'flot',
@@ -23,7 +22,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, InputRiskForm, TuningRiskForm, ButtonsTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -93,6 +92,11 @@ define([
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
+            webgnome.cache.on('step:failed', this.enableRAC, this);
+        },
+
+        enableRAC: function(){
+            this.$('.run-risk').removeClass('disabled');
         },
 
         load: function(){
@@ -230,11 +234,8 @@ define([
                 // save new model
             }
 
-            var inputForm = new InputRiskForm({}, risk);
-            var tuningForm = new TuningRiskForm({}, risk);
-            inputForm.on('hidden', inputForm.close);
-            inputForm.on('hidden', tuningForm.render);
-            inputForm.render();
+            var riskWizard = new RiskFormWizard();
+            riskWizard.render();
         },
 
         renderLoop: function(){

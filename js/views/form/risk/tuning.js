@@ -77,7 +77,7 @@ define([
                 maxValue: 100,
                 animationSpeed: 20
             };
-            var target = document.getElementById('benefit'); // your canvas element
+            var target = document.getElementById(selector); // your canvas element
             this.benefitGauge = new Gauge(target).setOptions(opts);
         },
 
