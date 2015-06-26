@@ -279,11 +279,11 @@ define([
 
         subtextUpdate: function(){
             if (this.$('#units-bullwinkle').val() === 'time'){
-                this.$('.substanceinfo #hours').show();
-                this.$('.substanceinfo #percent').hide();
+                this.$('#manual #hours').show();
+                this.$('#manual #percent').hide();
             } else {
-                this.$('.substanceinfo #hours').hide();
-                this.$('.substanceinfo #percent').show();
+                this.$('#manual #hours').hide();
+                this.$('#manual #percent').show();
             }
         },
 
