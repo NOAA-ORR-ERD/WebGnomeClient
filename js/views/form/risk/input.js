@@ -11,6 +11,10 @@ define([
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
 
+        events: function(){
+            return _.defaults({}, FormModal.prototype.events);
+        },
+
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
@@ -52,10 +56,9 @@ define([
                 this.clearError();
 
                 this.model.assessment();
-
                 this.hide();
-                this.trigger('save');
-                if(_.isFunction(callback)) callback();
+                this.trigger('save', [this.model]);
+                if(_.isFunction(callback)){ callback(); }
             }
         },
 
@@ -75,6 +78,11 @@ define([
             if(this.model.isValid()){
                 this.$('.next').removeClass('disabled');
             }
+        },
+
+        close: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.close.call(this);
         }
 
     });

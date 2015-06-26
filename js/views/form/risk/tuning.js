@@ -16,6 +16,10 @@ define([
         benefitGauge: null,
         self: null,
 
+        events: function(){
+            return _.defaults({}, FormModal.prototype.events);
+        },
+
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);

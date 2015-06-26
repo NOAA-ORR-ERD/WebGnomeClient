@@ -128,7 +128,7 @@ define([
             var massSH = 0;
             var percentWC = 0;
             var amount_released = 0;
-            $.each(webgnome.mass_balance, function(idx, mass) {
+            _.each(webgnome.mass_balance, function(mass, idx) {
                 data = mass.data[frame];
                 if (mass.name.toUpperCase() === 'FLOATING') {
                     massSW = data[1];
@@ -168,7 +168,7 @@ define([
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var timeStep = webgnome.model.get('time_step');
             var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var frame = (assessmentTime - startTime) / timeStep;
+            var frame = Math.floor((assessmentTime - startTime) / timeStep);
 
             var masses = this.getMasses(frame);
 
@@ -183,7 +183,7 @@ define([
             var FCsw = AREACsw / area;
 
             var MASSsh = masses[1];
-            var LOCsh = 0.5
+            var LOCsh = 0.5;
             var LCsh = MASSsh / LOCsh;
             var Lsh = Math.PI * diameter;
             var FCsh = LCsh / Lsh;

@@ -72,7 +72,7 @@ define([
                 body: this.body,
                 buttons: this.buttons
             });
-            this.$el.append(compiled);
+            this.$el.html(compiled);
 
             if (_.isObject(this.body)){
                 this.$el.find('.modal-body').html('').append(this.body);
