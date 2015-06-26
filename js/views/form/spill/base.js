@@ -291,6 +291,15 @@ define([
             this.subtextUpdate();
             if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
                 this.$('.manual').prop('disabled', false);
+                var manualVal = parseFloat(this.$('input.manual').val());
+                if (manualVal !== ''){
+                    var substance = this.model.get('element_type').get('substance');
+                    if (this.$('#units-bullwinkle').val() === 'time'){
+                        substance.set('bullwinkle_time', manualVal);
+                    } else {
+                        substance.set('bullwinkle_fraction', manualVal / 100);
+                    }
+                }
             } else {
                 this.$('.manual').prop('disabled', true);
             }
