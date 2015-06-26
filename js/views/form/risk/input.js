@@ -21,12 +21,13 @@ define([
         },
 
         render: function(options){
+            var formattedTime = moment(this.model.get('assessment_time')).format('YYYY/M/D H:mm');
             this.body = _.template(RiskTemplate, {
                 area: this.model.get('area'),
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                assessment_time: this.model.get('assessment_time'),
+                assessment_time: formattedTime,
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
                 shoreline: this.model.get('shoreline')
