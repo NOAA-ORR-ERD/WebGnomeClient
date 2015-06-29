@@ -99,13 +99,14 @@ define([
 
         setEmulsificationOverride: function(){
             var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
-
             if (_.isNull(bullwinkle_time)){
                 this.$('.radio input[value="default"]').prop('checked', true);
             } else {
                 this.$('.radio input[value="manual"]').prop('checked', true);
                 this.$('.manual').val(bullwinkle_time);
+                this.$('#units-bullwinkle').val('time');
             }
+            this.emulsionUpdate();
         },
 
         tabStatusSetter: function(){
@@ -287,13 +288,14 @@ define([
             }
         },
 
-		update: function(){
+        emulsionUpdate: function(){
+            var substance = this.model.get('element_type').get('substance');
             this.subtextUpdate();
+            substance.set('bullwinkle_time', null);
             if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
                 this.$('.manual').prop('disabled', false);
                 var manualVal = parseFloat(this.$('input.manual').val());
                 if (manualVal !== ''){
-                    var substance = this.model.get('element_type').get('substance');
                     if (this.$('#units-bullwinkle').val() === 'time'){
                         substance.set('bullwinkle_time', manualVal);
                     } else {
@@ -303,6 +305,10 @@ define([
             } else {
                 this.$('.manual').prop('disabled', true);
             }
+        },
+
+		update: function(){
+            this.emulsionUpdate();
             this.tabStatusSetter();
 		},
 
