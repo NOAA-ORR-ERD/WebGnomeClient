@@ -36,7 +36,8 @@ define([
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
-                'ready': 'rendered'
+                'ready': 'rendered',
+                'click .clear-winds': 'clearTimeseries'
             }, formModalHash);
         },
 
@@ -369,6 +370,13 @@ define([
                 this.$(row).html(template);
                 this.attachCompass(e, entry, row);
             }
+        },
+
+        clearTimeseries: function(e){
+            e.preventDefault();
+            var timeseries = this.model.get('timeseries');
+            this.model.set('timeseries', [timeseries[0], [timeseries[1][0], timeseries[1][1]]]);
+            this.renderTimeseries();
         },
 
         attachCompass: function(e, entry, row){
