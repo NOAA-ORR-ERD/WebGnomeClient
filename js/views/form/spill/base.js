@@ -93,20 +93,22 @@ define([
                 this.setEmulsificationOverride();
             }
 
-            this.subtextUpdate();
             this.initTabStatus();
 		},
 
         setEmulsificationOverride: function(){
-            var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
+            var substance = this.model.get('element_type').get('substance');
+            console.log(substance);
+            var bullwinkle_fraction = substance.get('bullwinkle_fraction');
+            console.log(bullwinkle_fraction);
+            var bullwinkle_time = substance.get('bullwinkle_time');
             if (_.isNull(bullwinkle_time)){
-                this.$('.radio input[value="default"]').prop('checked', true);
+                this.$('.manual').val(bullwinkle_fraction);
+                this.$('#units-bullwinkle').val('percent');
             } else {
-                this.$('.radio input[value="manual"]').prop('checked', true);
                 this.$('.manual').val(bullwinkle_time);
                 this.$('#units-bullwinkle').val('time');
             }
-            this.emulsionUpdate();
         },
 
         tabStatusSetter: function(){
@@ -269,7 +271,6 @@ define([
 
             if (!_.isNull(this.model.get('element_type').get('substance'))){
                 this.setEmulsificationOverride();
-                this.subtextUpdate();
             }
 
             if (enabled){
@@ -278,33 +279,16 @@ define([
             }
         },
 
-        subtextUpdate: function(){
-            if (this.$('#units-bullwinkle').val() === 'time'){
-                this.$('#manual #hours').show();
-                this.$('#manual #percent').hide();
-            } else {
-                this.$('#manual #hours').hide();
-                this.$('#manual #percent').show();
-            }
-        },
-
         emulsionUpdate: function(){
             var substance = this.model.get('element_type').get('substance');
-            this.subtextUpdate();
-            substance.set('bullwinkle_time', null);
-            if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
-                this.$('.manual').prop('disabled', false);
-                var manualVal = parseFloat(this.$('input.manual').val());
-                if (manualVal !== ''){
-                    if (this.$('#units-bullwinkle').val() === 'time'){
-                        substance.set('bullwinkle_time', manualVal);
-                    } else {
-                        substance.set('bullwinkle_fraction', manualVal / 100);
-                    }
-                }
-            } else {
-                this.$('.manual').prop('disabled', true);
-            }
+            var manualVal = parseFloat(this.$('input.manual').val());
+            // if (manualVal !== ''){
+            //     if (this.$('#units-bullwinkle').val() === 'time'){
+            //         substance.set('bullwinkle_time', manualVal);
+            //     } else {
+            //         substance.set('bullwinkle_fraction', manualVal / 100);
+            //     }
+            // }
         },
 
 		update: function(){

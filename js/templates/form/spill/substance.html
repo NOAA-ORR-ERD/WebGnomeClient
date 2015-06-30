@@ -4,6 +4,30 @@
         <div><label>API:</label> {{ api }}</div>
         <div><label>Pour Point &deg;F (&deg;C):</label> {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})</div>
         <div><label>Flash Point &deg;F (&deg;C):</label> {{ temps.flash_point_max_f }} ({{ temps.flash_point_max_c }})</div>
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label id="manual" for="emulsion">Emulsion Override:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="emulsion" class="manual form-control col-md-1" min="0">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control col-md-3 manual" id="units-bullwinkle">
+                                <option value="time">
+                                    hours
+                                </option>
+                                <option value="percent">
+                                    %
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div>
             <label>Categories: </label>
             {% for(c in categories){ %}
@@ -21,47 +45,6 @@
             <a class="btn btn-default null-substance">
                 Set Non-weathering Substance
             </a>
-        </div>
-    </div>
-</div>
-<div class="col-sm-12">
-    <div class="panel panel-default emulsion-override">
-        <div class="panel-heading">
-            <h4 class="panel-title">Emulsion Override</h4>
-        </div>
-        <div class="panel-body show">
-            <div class="radio"> 
-                <div>
-                    <label id="default" class="radio inline">
-                        <input type="radio" name="bullwinkle" value="default" selected>
-                        Default - computed from oil and weather information
-                    </label>
-                </div>
-                <div>
-                    <label id="manual" class="radio inline">
-                        <input type="radio" name="bullwinkle" value="manual" class="override-input">
-                            <div class="col-md-3">
-                                <input type="number" class="manual form-control col-md-1" min="0" disabled>
-                            </div>
-                            <div class="col-md-3">
-                                <select class="form-control col-md-3 manual" id="units-bullwinkle" disabled>
-                                    <option value="time">
-                                        hours
-                                    </option>
-                                    <option value="percent">
-                                        %
-                                    </option>
-                                </select>
-                            </div>
-                        <div id="percent" class="override-text">
-                            of any part of the spill has evaporated
-                        </div>
-                        <div id="hours" class="override-text">
-                            have elapsed since start of spill
-                        </div>
-                    </label>
-                </div>
-            </div>
         </div>
     </div>
 </div>
