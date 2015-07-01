@@ -30,7 +30,8 @@ define([
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'shown.bs.tab .mapspill': 'locationSelect',
-                'click .oil-cache': 'clickCachedOil'
+                'click .oil-cache': 'clickCachedOil',
+                'click .reload-oil': 'reloadOil'
             }, FormModal.prototype.events);
         },
 
@@ -107,6 +108,16 @@ define([
                 this.$('.manual').val(bullwinkle_time);
                 this.$('#units-bullwinkle').val('time');
             }
+        },
+
+        reloadOil: function(e){
+            e.preventDefault();
+            var substance = this.model.get('element_type').get('substance');
+            substance.fetch({
+                success: _.bind(function(model, res, options){
+                    this.renderSubstanceInfo(null, model);
+                }, this)
+            });
         },
 
         tabStatusSetter: function(){
