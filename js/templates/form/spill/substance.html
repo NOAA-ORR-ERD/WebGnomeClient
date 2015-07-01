@@ -4,28 +4,35 @@
         <div><label>API:</label> {{ api }}</div>
         <div><label>Pour Point &deg;F (&deg;C):</label> {{ temps.pour_point_max_f }} ({{ temps.pour_point_max_c }})</div>
         <div><label>Flash Point &deg;F (&deg;C):</label> {{ temps.flash_point_max_f }} ({{ temps.flash_point_max_c }})</div>
+        <div class="row col-md-12">
+            <form class="form-inline">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <label id="manual" for="emulsion" class="control-label">Emulsion Constant:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" id="emulsion" class="manual form-control col-md-1" min="0">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control col-md-3 manual" id="units-bullwinkle">
+                            <option value="time">
+                                hours
+                            </option>
+                            <option value="percent">
+                                %
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
         <div class="row">
             <div class="col-md-12">
-                <form class="form-inline">
-                    <div class="form-group">
-                        <div class="col-md-4">
-                            <label id="manual" for="emulsion">Emulsion Override:</label>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" id="emulsion" class="manual form-control col-md-1" min="0">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-control col-md-3 manual" id="units-bullwinkle">
-                                <option value="time">
-                                    hours
-                                </option>
-                                <option value="percent">
-                                    %
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </form>
+                <div class="form-group col-md-6">
+                    <a class="btn btn-default reload-oil">
+                        Reload Oil from Database
+                    </a>
+                </div>
             </div>
         </div>
         <div>
