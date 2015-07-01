@@ -98,12 +98,10 @@ define([
 
         setEmulsificationOverride: function(){
             var substance = this.model.get('element_type').get('substance');
-            console.log(substance);
             var bullwinkle_fraction = substance.get('bullwinkle_fraction');
-            console.log(bullwinkle_fraction);
             var bullwinkle_time = substance.get('bullwinkle_time');
             if (_.isNull(bullwinkle_time)){
-                this.$('.manual').val(bullwinkle_fraction);
+                this.$('.manual').val(bullwinkle_fraction * 100);
                 this.$('#units-bullwinkle').val('percent');
             } else {
                 this.$('.manual').val(bullwinkle_time);
@@ -282,13 +280,14 @@ define([
         emulsionUpdate: function(){
             var substance = this.model.get('element_type').get('substance');
             var manualVal = parseFloat(this.$('input.manual').val());
-            // if (manualVal !== ''){
-            //     if (this.$('#units-bullwinkle').val() === 'time'){
-            //         substance.set('bullwinkle_time', manualVal);
-            //     } else {
-            //         substance.set('bullwinkle_fraction', manualVal / 100);
-            //     }
-            // }
+            substance.set('bullwinkle_time', null);
+            if (manualVal !== ''){
+                if (this.$('#units-bullwinkle').val() === 'time'){
+                    substance.set('bullwinkle_time', manualVal);
+                } else {
+                    substance.set('bullwinkle_fraction', manualVal / 100);
+                }
+            }
         },
 
 		update: function(){
