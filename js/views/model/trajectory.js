@@ -527,7 +527,7 @@ define([
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
             this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
             if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
-                setTimeout(_.bind(function(){
+                this.drawStepTimeout = setTimeout(_.bind(function(){
                     this.controls.seek.slider('value', this.frame + 1);
                 }, this), 60);
             } else {
@@ -980,6 +980,9 @@ define([
                 webgnome.model.off('change', this.contextualize, this);
                 webgnome.model.off('sync', this.spillListeners, this);
                 webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
+            }
+            if(this.drawStepTimeout){
+                clearTimeout(this.drawStepTimeout);
             }
             webgnome.cache.off('step:recieved', this.renderStep, this);
             webgnome.cache.off('step:failed', this.pause, this);
