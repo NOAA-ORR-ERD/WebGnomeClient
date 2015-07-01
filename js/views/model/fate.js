@@ -93,9 +93,16 @@ define([
 
         load: function(){
             if(webgnome.cache.length > 0){
-                while(this.frame < webgnome.cache.length){
-                    webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
-                    this.frame++;
+                // incase trajectory triggered a /step but it hasn't returned yet
+                // and the user just toggled the switch to fate view
+                // add a listener to handle that pending step.
+                if(webgnome.cache.fetching){
+                    webgnome.cache.once('step:recieved', this.load, this);
+                } else {
+                    while(this.frame < webgnome.cache.length){
+                        webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
+                        this.frame++;
+                    }
                 }
             } else {
                 webgnome.cache.on('step:recieved', this.buildDataset, this);
