@@ -279,9 +279,9 @@ define([
 
         emulsionUpdate: function(){
             var substance = this.model.get('element_type').get('substance');
-            var manualVal = parseFloat(this.$('input.manual').val());
-            substance.set('bullwinkle_time', null);
-            if (manualVal !== ''){
+            var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
+            if (manualVal !== '' && !_.isUndefined(substance)){
+                substance.set('bullwinkle_time', null);
                 if (this.$('#units-bullwinkle').val() === 'time'){
                     substance.set('bullwinkle_time', manualVal);
                 } else {
