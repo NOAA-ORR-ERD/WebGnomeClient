@@ -111,7 +111,7 @@ define([
         },
 
         reloadOil: function(e){
-            e.preventDefault();
+            //e.preventDefault();
             var substance = this.model.get('element_type').get('substance');
             substance.fetch({
                 success: _.bind(function(model, res, options){
@@ -311,6 +311,7 @@ define([
                 this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
                 this.oilLibraryView.render();
                 this.oilLibraryView.on('hidden', _.bind(this.show, this));
+                this.oilLibraryView.on('hidden', this.reloadOil, this);
             } else {
                 this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }
