@@ -184,7 +184,8 @@ define([
                             break;
                         }
                     }
-                    this.renderSubstanceInfo(null, substanceModel);
+                    this.model.get('element_type').set('substance', substanceModel);
+                    this.reloadOil();
                 }
             }, this));
         },
