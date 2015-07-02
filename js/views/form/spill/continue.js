@@ -256,6 +256,7 @@ define([
                     this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
+            this.model.set('amount_uncertainty_scale', value / 5);
             this.updateTooltipWidth();
         },
 
