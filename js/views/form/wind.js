@@ -200,6 +200,7 @@ define([
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
                         this.nws = new NwsWind({lat: coords[1], lon: coords[0]});
+                        this.$('.save').addClass('disabled');
                         this.nws.fetch({
                             success: _.bind(this.nwsLoad, this),
                             error: _.bind(this.nwsError, this)
@@ -214,6 +215,7 @@ define([
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
+            this.$('.save').removeClass('disabled');
         },
 
         nwsError: function(){
