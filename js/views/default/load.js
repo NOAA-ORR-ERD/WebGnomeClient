@@ -28,7 +28,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_model',
                 maxFiles: 1,
-                acceptedFiles: 'application/zip,application/x-zip',
+                acceptedFiles: '.zip',
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
