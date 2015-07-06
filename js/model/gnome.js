@@ -26,12 +26,13 @@ define([
     'model/weatherers/skim',
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
-    'model/weatherers/base'
+    'model/weatherers/base',
+    'model/risk/risk'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, BaseWeatherer){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, BaseWeatherer, RiskModel){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -100,6 +101,7 @@ define([
         initialize: function(options){
             // BaseModel.prototype.initialize.call(this, options);
             webgnome.cache = new Cache(null, this);
+            webgnome.riskCalc = new RiskModel();
             webgnome.obj_ref = {};
             this.addListeners();
         },

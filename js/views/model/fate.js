@@ -228,12 +228,6 @@ define([
         },
 
         clickRisk: function(){
-            var risk = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.resources.Risk'});
-            if(_.isUndefined(risk) || risk.length === 0){
-                risk = new RiskModel();
-                // save new model
-            }
-
             var riskWizard = new RiskFormWizard();
             riskWizard.render();
         },

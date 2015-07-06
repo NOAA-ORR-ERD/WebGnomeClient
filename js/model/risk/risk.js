@@ -39,7 +39,6 @@ define([
         },
 
         initialize: function(options){
-            this.fetch();
             this.on('change', this.save, this);
             var a = this.attributes;
 
@@ -170,15 +169,15 @@ define([
 
         // OVERRIDES for local storage of model
         fetch: function() {
-            this.set(JSON.parse(localStorage.getItem(this.id)));
+            this.set(JSON.parse(localStorage.getItem('risk_calculator')));
         },
 
         save: function(attributes) {
-            localStorage.setItem(this.id, JSON.stringify(this.toJSON()));
+            localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
         },
 
         destroy: function(options) {
-            localStorage.removeItem(this.id);
+            localStorage.setItem('risk_calculator', null);
         }
 
     });
