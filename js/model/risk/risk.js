@@ -2,7 +2,8 @@ define([
     'underscore',
     'backbone',
     'moment',
-], function(_, Backbone, moment){
+    'nucos'
+], function(_, Backbone, moment, nucos){
     var risk = Backbone.Model.extend({
         url: '/',
 
@@ -30,7 +31,7 @@ define([
             },
 
             units: {
-                'area': 'sq. km',
+                'area': 'sq km',
                 'diameter': 'km',
                 'distance': 'km',
                 'depth': 'm'
@@ -71,58 +72,6 @@ define([
             }
         },
 
-        convertAreaToSquareMeters: function(){
-            var a = this.get('area');
-            var u = this.get('units').area;
-
-            if (u === 'sq. km') {
-                a = a * 1000 * 1000;
-            } else if (u === 'sq. miles') {
-                a = a * 2.59 * 1000 * 1000;
-            } else if (u === 'hectares') {
-                a = a * 10000;
-            } else if (u === 'acres') {
-                a = a * 4046.86;
-            }
-            return a;
-        },
-
-        convertDiameterToMeters: function(){
-            var a = this.get('diameter');
-            var u = this.get('units').diameter;
-
-            if (u === 'km') {
-                a = a * 1000;
-            } else if (u === 'miles') {
-                a = a * 2.59 * 1000;
-            }
-            return a;
-        },
-
-        convertDistanceToMeters: function(){
-            var a = this.get('distance');
-            var u = this.get('units').distance;
-
-            if (u === 'km') {
-                a = a * 1000;
-            } else if (u === 'miles') {
-                a = a * 2.59 * 1000;
-            }
-            return a;
-        },
-
-        convertDepthToMeters: function(){
-            var a = this.get('depth');
-            var u = this.get('units').depth;
-
-            if (u === 'ft') {
-                a = a * 0.3048;
-            } else if (u === 'yards') {
-                a = a * 0.9144;
-            }
-            return a;
-        },
-
         getMasses: function(frame){
             var massSW = 0;
             var massSH = 0;
@@ -159,10 +108,15 @@ define([
         },
 
         assessment: function(){
-            var area = this.convertAreaToSquareMeters();
-            var diameter = this.convertDiameterToMeters();
-            var distance = this.convertDistanceToMeters();
-            var depth = this.convertDepthToMeters();
+            var units = this.get('units');
+            var _area = this.get('area');
+            var _diameter = this.get('diameter');
+            var _distance = this.get('distance');
+            var _depth = this.get('depth');
+            var area = nucos.convert('Area', units.area, 'm^2', _area);
+            var diameter = nucos.convert('Length', units.diameter, 'm', _diameter);
+            var distance = nucos.convert('Length', units.distance, 'm', _distance);
+            var depth = nucos.convert('Length', units.depth, 'm', _depth);
 
             // calculate what time step this is
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();

@@ -298,7 +298,6 @@ define([
             this.$('#surface').html((surface).toFixed(3));
             this.$('#column').html((column).toFixed(3));
             this.$('#shoreline').html((shoreline).toFixed(3));
-
             this.benefitGauge.set(benefit);
         },
 
