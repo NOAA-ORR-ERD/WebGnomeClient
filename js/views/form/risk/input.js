@@ -34,7 +34,6 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-
             this.$('#area-units option[value="' + this.model.get('units').area + '"]').attr('selected', 'selected');
             this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
