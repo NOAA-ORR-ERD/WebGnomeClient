@@ -10,25 +10,24 @@ define([
 ], function($, _, Backbone, BaseWizard, InputForm, TuningForm, RiskModel, GnomeModel){
     var riskWizardView = BaseWizard.extend({
         initialize: function(){
-            risk_model = webgnome.riskCalc;
-            if(_.isUndefined(risk_model) || risk_model.length === 0){
-                risk_model = new RiskModel();
+            if(_.isUndefined(webgnome.riskCalc)){
+                webgnome.riskCalc = new RiskModel();
             }
-            this.setup();
+            this.setup(webgnome.riskCalc);
         },
 
-        setup: function(){
+        setup: function(riskModel){
             this.steps = [
                 new InputForm({
                     name: 'step1',
                     title: 'Environmental Risk Assessment <span class="sub-title">Input</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
-                }, risk_model),
+                }, riskModel),
                 new TuningForm({
                     name: 'step2',
                     title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button>',
-                }, risk_model)
+                }, riskModel)
             ];
             this.start();
         },

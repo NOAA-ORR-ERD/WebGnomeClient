@@ -43,29 +43,27 @@ define([
             this.on('change', this.save, this);
             var attrs = this.attributes;
 
-            console.log(webgnome);
-
             if (!_.isUndefined(webgnome.model)){
                 if (attrs.assessment_time == 0) {
                     attrs.assessment_time = webgnome.model.get('start_time');
                 }
 
                 // initialize efficiency to response values
-                var e = attrs.efficiency;
+                var eff = attrs.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
                     if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
                         if (el.attributes.name != "_natural") {
                             if (!_.isUndefined(el.attributes.efficiency)){
-                                e.disperant = el.attributes.efficiency * 100;
+                                eff.disperant = el.attributes.efficiency * 100;
                             }
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
                         if (!_.isUndefined(el.attributes.efficiency)){
-                            e.insitu_burn = el.attributes.efficiency * 100;
+                            eff.insitu_burn = el.attributes.efficiency * 100;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
                         if (!_.isUndefined(el.attributes.efficiency)){
-                            e.skimming = el.attributes.efficiency * 100;
+                            eff.skimming = el.attributes.efficiency * 100;
                         }
                     }
                 });

@@ -101,9 +101,9 @@ define([
         initialize: function(options){
             // BaseModel.prototype.initialize.call(this, options);
             webgnome.cache = new Cache(null, this);
-            webgnome.riskCalc = new RiskModel();
             webgnome.obj_ref = {};
             this.addListeners();
+            //webgnome.riskCalc = new RiskModel();
         },
 
         addListeners: function(){
