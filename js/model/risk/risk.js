@@ -43,6 +43,8 @@ define([
             this.on('change', this.save, this);
             var attrs = this.attributes;
 
+            console.log(webgnome);
+
             if (!_.isUndefined(webgnome.model)){
                 if (attrs.assessment_time == 0) {
                     attrs.assessment_time = webgnome.model.get('start_time');
@@ -175,7 +177,6 @@ define([
 
         save: function(attributes) {
             localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
-            console.log(this.toJSON());
         },
 
         destroy: function(options) {
