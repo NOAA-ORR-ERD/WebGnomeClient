@@ -96,6 +96,7 @@ define([
             }, _.bind(function(isConfirm){
                 if(isConfirm){
                     localStorage.setItem('prediction', null);
+                    webgnome.riskCalc.destroy();
                     webgnome.model = new GnomeModel();
 
                     if(_.has(webgnome, 'cache')){

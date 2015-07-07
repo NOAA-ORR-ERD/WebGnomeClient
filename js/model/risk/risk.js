@@ -39,6 +39,7 @@ define([
         },
 
         initialize: function(options){
+            this.fetch();
             this.on('change', this.save, this);
             var attrs = this.attributes;
 
@@ -174,6 +175,7 @@ define([
 
         save: function(attributes) {
             localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
+            console.log(this.toJSON());
         },
 
         destroy: function(options) {

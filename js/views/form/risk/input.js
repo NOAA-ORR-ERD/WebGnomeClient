@@ -75,6 +75,8 @@ define([
             units.distance = this.$('#distance-units').val();
             units.depth = this.$('#depth-units').val();
 
+            this.model.set('units', units);
+
             if(this.model.isValid()){
                 this.$('.next').removeClass('disabled');
             }
