@@ -10,12 +10,12 @@
             var canvas = this.__canvas = new fabric.Canvas($(this).attr('id'), { selection: false });
             fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
-            var pt1x = settings.centerx + settings.radius * Math.cos(0),
-                pt1y = settings.centery + settings.radius * Math.sin(0);
-            var pt2x = settings.centerx + settings.radius * Math.cos(4*Math.PI/3),
-                pt2y = settings.centery + settings.radius * Math.sin(4*Math.PI/3);
-            var pt3x = settings.centerx + settings.radius * Math.cos(-4*Math.PI/3),
-                pt3y = settings.centery + settings.radius * Math.sin(-4*Math.PI/3);
+            var pt1x = settings.centerx + settings.radius * Math.cos(3*Math.PI/2),
+                pt1y = settings.centery + settings.radius * Math.sin(3*Math.PI/2);
+            var pt2x = settings.centerx + settings.radius * Math.cos(Math.PI/6),
+                pt2y = settings.centery + settings.radius * Math.sin(Math.PI/6);
+            var pt3x = settings.centerx + settings.radius * Math.cos(5*Math.PI/6),
+                pt3y = settings.centery + settings.radius * Math.sin(5*Math.PI/6);
 
             var line1 = makeLine([pt1x,  pt1y, settings.centerx, settings.centery], 'surface'),
                 line2 = makeLine([settings.centerx, settings.centery, pt2x, pt2y], 'column'),
