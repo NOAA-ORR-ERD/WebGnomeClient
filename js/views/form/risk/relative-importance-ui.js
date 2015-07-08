@@ -23,7 +23,8 @@
 
             canvas.add(line1, line2, line3);
 
-            canvas.add( makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
+            canvas.add( makeTriangle(),
+                        makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
                         makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
                         makeCircle(line2.get('x2'), line2.get('y2'), true, line2, null,  null, 'column'),
                         makeCircle(line3.get('x2'), line3.get('y2'), true, line3, null,  null, 'shoreline')
@@ -76,7 +77,7 @@
 
         if (l !== null) {
             var t = new fabric.Text(l, { fontSize: 14, evented: false });
-            g = new fabric.Group([c,t], { left: left, top: top, selectable: s });
+            g = new fabric.Group([c,t], { left: left + 2, top: top + 2, selectable: s });
         } else {
             g = new fabric.Group([c], { left: left, top: top, selectable: s });
         }
@@ -87,6 +88,23 @@
         g.l3 = l3;
 
         return g;
+    };
+
+    function makeTriangle() {
+        var triangle = new fabric.Triangle({
+            width: 100 * Math.sqrt(3),
+            height: 150,
+            hasControls: false,
+            hasRotatingPoint: false,
+            stroke: 'black',
+            fill: 'white',
+            lockMovementX: true,
+            lockMovementY: true,
+            left: 150,
+            top: 125
+        });
+
+        return triangle;
     };
 
     function makeLine(coords, n) {
