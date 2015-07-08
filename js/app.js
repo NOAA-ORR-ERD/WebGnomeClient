@@ -9,8 +9,9 @@ define([
     'text!../package.json',
     'model/session',
     'model/gnome',
+    'model/risk/risk',
     'views/default/loading'
-], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, LoadingView) {
+], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, RiskModel, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
@@ -101,6 +102,7 @@ define([
                             webgnome.cache.rewind(true);
                             webgnome.model.isValid();
                         }
+                        webgnome.riskCalc = new RiskModel();
                         Backbone.history.start();
                     },
                     error: function(){

@@ -103,7 +103,6 @@ define([
             webgnome.cache = new Cache(null, this);
             webgnome.obj_ref = {};
             this.addListeners();
-            //webgnome.riskCalc = new RiskModel();
         },
 
         addListeners: function(){

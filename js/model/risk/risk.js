@@ -39,6 +39,7 @@ define([
         },
 
         initialize: function(options){
+            Backbone.Model.prototype.initialize.call(this, options);
             this.fetch();
             this.on('change', this.save, this);
             var attrs = this.attributes;
