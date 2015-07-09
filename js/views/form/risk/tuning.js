@@ -125,7 +125,7 @@ define([
             var surfaceRI = objects['surface'];
             var columnRI = objects['column'];
             var shorelineRI = objects['shoreline'];
-            var t = surfaceRI+columnRI+shorelineRI;
+            var t = surfaceRI + columnRI + shorelineRI;
 
             // set model
             var ri = self.model.get('relativeImportance');

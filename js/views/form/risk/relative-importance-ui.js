@@ -23,12 +23,18 @@
 
             canvas.add(line1, line2, line3);
 
-            canvas.add( makeTriangle(),
+            canvas.add( //makeTriangle(),
                         makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
-                        makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
+                        //makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
                         makeCircle(line2.get('x2'), line2.get('y2'), true, line2, null,  null, 'column'),
                         makeCircle(line3.get('x2'), line3.get('y2'), true, line3, null,  null, 'shoreline')
             );
+
+            var circle = makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null);
+
+            var group = createWidget(circle);
+
+            canvas.add(group);
 
             canvas.on('object:moving', _.bind(movementUpdate , this));
 
@@ -89,6 +95,26 @@
 
         return g;
     };
+
+    function createWidget(circle){
+        var group = new fabric.Group([makeTriangle(), circle]);
+        group.item(0).set({
+            width: 100 * Math.sqrt(3),
+            height: 150,
+            hasControls: false,
+            hasRotatingPoint: false,
+            stroke: 'black',
+            fill: 'white',
+            lockMovementX: true,
+            lockMovementY: true
+        });
+        group.item(1).set({
+            lockMovementY: false,
+            lockMovementX: false
+        });
+
+        return group;
+    }
 
     function makeTriangle() {
         var triangle = new fabric.Triangle({
