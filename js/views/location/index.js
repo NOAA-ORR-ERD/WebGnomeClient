@@ -31,8 +31,8 @@ define([
                         source: new ol.source.MapQuest({layer: 'osm'})
                     }),
                     new ol.layer.Vector({
-                        source: new ol.source.GeoJSON({
-                            projection: 'EPSG:3857',
+                        source: new ol.source.Vector({
+                            format: new ol.format.GeoJSON(),
                             url: webgnome.config.api + '/location',
                         }),
                         style: new ol.style.Style({

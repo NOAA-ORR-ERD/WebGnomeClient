@@ -66,9 +66,9 @@ define([
                         source: new ol.source.MapQuest({layer: 'osm'})
                     }),
                     new ol.layer.Vector({
-                        source: new ol.source.GeoJSON({
+                        source: new ol.source.Vector({
+                            format: new ol.format.GeoJSON(),
                             url: '/resource/nws_coast.json',
-                            projection: 'EPSG:3857'
                         }),
                         style: new ol.style.Style({
                             stroke: new ol.style.Stroke({

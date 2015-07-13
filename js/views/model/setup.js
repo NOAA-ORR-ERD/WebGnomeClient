@@ -770,9 +770,8 @@ define([
                 map.getGeoJSON(_.bind(function(geojson){
                     this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
 
-                    var shorelineSource = new ol.source.GeoJSON({
-                        projection: 'EPSG:3857',
-                        object: geojson
+                    var shorelineSource = new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                     });
 
                     var shorelineLayer = new ol.layer.Image({
@@ -804,7 +803,7 @@ define([
                     
                     locationMap.render();
                     var extent = shorelineSource.getExtent();
-                    locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
+                    locationMap.map.getView().fit(extent, locationMap.map.getSize());
                     this.mason.layout();
                 }, this));
             } else {
@@ -839,7 +838,7 @@ define([
                 }
                 if(webgnome.model.get('map')){
                     var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                    currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
+                    currentMap.map.getView().fit(extent, currentMap.map.getSize());
                 }
                 this.mason.layout();
             } else {
@@ -849,9 +848,8 @@ define([
 
         addCurrentToPanel: function(geojson){
             if(geojson){
-                var gridSource = new ol.source.GeoJSON({
-                    projection: 'EPSG:3857',
-                    object: geojson
+                var gridSource = new ol.source.Vector({
+                    features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                 });
                 var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
 
