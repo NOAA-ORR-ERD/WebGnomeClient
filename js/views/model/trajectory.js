@@ -606,7 +606,8 @@ define([
                 }
             }
             var ice_source = new ol.source.Vector({
-                features: ice_features
+                features: ice_features,
+                useSpatialIndex: false
             });
 
             var ice_image = new ol.source.ImageVector({
