@@ -833,6 +833,7 @@ define([
                 });
                 currentMap.render();
 
+                this.current_extents = [];
                 for(var c = 0; c < currents.length; c++){
                     currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
@@ -842,6 +843,7 @@ define([
                 }
                 this.mason.layout();
             } else {
+                this.current_extents = [];
                 this.$('.current .panel-body').hide().html('');
             }
         },
