@@ -336,9 +336,8 @@ define([
                     // but don't draw it agian for a normal render if the map is undefined redraw it.
                     if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
                         this.ol.render();
-                        this.shorelineSource = new ol.source.GeoJSON({
-                            object: geojson,
-                            projection: 'EPSG:3857'
+                        this.shorelineSource = new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                         });
 
                         this.shorelineLayer = new ol.layer.Image({
@@ -352,7 +351,7 @@ define([
                         var extent = this.shorelineSource.getExtent();
                         if(this.ol.map){
                             this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
+                            this.ol.map.getView().fit(extent, this.ol.map.getSize());
                         }
 
                         this.graticule.setMap(this.ol.map);
@@ -536,9 +535,9 @@ define([
         },
 
         renderSpill: function(step){
-            var traj_source = new ol.source.GeoJSON({
-                object: step.get('TrajectoryGeoJsonOutput').feature_collection,
-                projection: 'EPSG:3857'
+            var traj_source = new ol.source.Vector({
+                features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
+                useSpatialIndex: false
             });
             this.SpillLayer.setSource(traj_source);
         },
@@ -566,11 +565,11 @@ define([
             }
 
             var cur_source = new ol.source.Vector({
-                features: current_features,
+                features: current_features
             });
 
             var cur_cluster = new ol.source.Cluster({
-                source: cur_source,
+                source: cur_source
             });
 
             this.CurrentLayer.setSource(cur_cluster);
@@ -679,9 +678,9 @@ define([
                 var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
                 current.getGrid(_.bind(function(geojson){
                     if (geojson){
-                        var gridSource = new ol.source.GeoJSON({
-                            projection: 'EPSG:3857',
-                            object: geojson
+                        var gridSource = new ol.source.Vector({
+                            useSpatialIndex: false,
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
                         });
 
                         gridLayer = new ol.layer.Image({
@@ -750,9 +749,9 @@ define([
                 var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
                 current.getGrid(_.bind(function(geojson){
                     if (geojson){
-                        var gridSource = new ol.source.GeoJSON({
-                            projection: 'EPSG:3857',
-                            object: geojson
+                        var gridSource = new ol.source.Vector({
+                            useSpatialIndex: false,
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
                         });
 
                         gridLayer = new ol.layer.Image({
