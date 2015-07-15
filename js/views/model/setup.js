@@ -64,11 +64,12 @@ define([
                 'click .wind .add': 'clickWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
+                'click .map .add': 'clickMap',
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
-                'click .location .add': 'clickLocation',
+                'click .location': 'clickLocation',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
                 'click .response .single .trash': 'deleteResponse',
@@ -130,7 +131,6 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
             }, this));
-
         },
 
         showHelp: function(){
@@ -766,9 +766,9 @@ define([
         updateLocation: function(){
             var map = webgnome.model.get('map');
             if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                this.$('.location .panel').addClass('complete');
+                this.$('.map .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
-                    this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
+                    this.$('.map .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
 
                     var shorelineSource = new ol.source.Vector({
                         features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
@@ -807,8 +807,8 @@ define([
                     this.mason.layout();
                 }, this));
             } else {
-                this.$('.location .panel').removeClass('complete');
-                this.$('.location .panel-body').hide().html('');
+                this.$('.map .panel').removeClass('complete');
+                this.$('.map .panel-body').hide().html('');
             }
         },
 
@@ -873,6 +873,11 @@ define([
                     this.current_extents.push(extentSum);
                 }
             }
+        },
+
+        clickMap: function(){
+            var mapForm = new MapForm(null, webgnome.model.get('map'));
+            mapForm.render();
         },
 
         clickResponse: function(){
