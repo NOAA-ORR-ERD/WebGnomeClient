@@ -615,9 +615,19 @@ define([
                 this.$('.spill .panel').addClass('complete');
                 var substance = spills.at(0).get('element_type').get('substance');
                 if (!_.isNull(substance)){
-                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories(), mode: mode});
+                    compiled = _.template(SpillPanelTemplate, {
+                        spills: spills.models, 
+                        substance: substance, 
+                        categories: substance.parseCategories(), 
+                        mode: mode
+                    });
                 } else {
-                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: false, categories: [], mode: mode});
+                    compiled = _.template(SpillPanelTemplate, {
+                        spills: spills.models, 
+                        substance: false, 
+                        categories: [], mode: 
+                        mode
+                    });
                 }
 
                 var dataset = [];
