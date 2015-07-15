@@ -550,10 +550,10 @@ define([
             }
         },
 
-        next: function(){
-            $('.xdsoft_datetimepicker:last').remove();
-            this.ol.close();
-            FormModal.prototype.next.call(this);
+        save: function(){
+            if(_.isUndefined(this.nws) || !this.nws.fetching){
+                FormModal.prototype.save.call(this);
+            }
         },
 
         back: function(){
