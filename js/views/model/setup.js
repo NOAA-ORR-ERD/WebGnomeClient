@@ -298,7 +298,7 @@ define([
             this.$('.model-objects > div').hide().addClass('disabled');
             this.$('.wind').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
-            this.$('.location').show().removeClass('disabled');
+            this.$('.map.object').show().removeClass('disabled');
             this.$('.current').show().removeClass('disabled');
             this.$('.beached').hide().addClass('disabled');
         },
