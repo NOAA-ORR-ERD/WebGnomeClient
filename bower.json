@@ -28,16 +28,13 @@
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "1.*.*",
-    "sweetalert": "0.4.*"
-    ,"fabric": "1.4.12",
-    "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js",
+    "sweetalert": "0.4.*",
     "fabric": "1.4.12",
     "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js",
-    "nucos": "1.*.*",
-    "sweetalert": "0.4.*",
     "dropzone": "4.0.*",
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3",
-    "html2canvas": "~0.4.1"
+    "html2canvas": "~0.4.1",
+    "relativeimportance": "*"
   }
 }

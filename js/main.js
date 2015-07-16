@@ -48,6 +48,7 @@ require.config({
         fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
+        relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
         localforage: 'lib/localforage/dist/localforage'

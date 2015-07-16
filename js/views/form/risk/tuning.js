@@ -7,8 +7,10 @@ define([
     'gauge',
     'views/modal/form',
     'text!templates/risk/tuning.html',
-    'relimpui',
-], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate) {
+    'text!templates/risk/relativeimportance.html',
+    'relativeimportance',
+    'relimpui'
+], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, Triangle) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -39,13 +41,13 @@ define([
                     showSkimming = true;
                 }
             });
+
+            this.relativeImportancePercent({});
+
             this.body = _.template(RiskTemplate, {
                 surface: this.model.get('surface').toFixed(3),
                 column: this.model.get('column').toFixed(3),
                 shoreline: this.model.get('shoreline').toFixed(3),
-                surfaceRI: (this.model.get('relativeImportance').surface * 100).toFixed(3),
-                columnRI: (this.model.get('relativeImportance').column * 100).toFixed(3),
-                shorelineRI: (this.model.get('relativeImportance').shoreline * 100).toFixed(3),
                 showDispersant: showDispersant,
                 showBurn: showBurn,
                 showSkimming: showSkimming
@@ -59,9 +61,25 @@ define([
             this.createSlider('.slider-dispersant', this.model.get('efficiency').dispersant);
             this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
 
-            $('#importance').relativeImportanceUI({callback: this.calculateRI});
+            this.relativeImp = new Triangle('importance',
+                {   sideLength: 200,
+                    point1Name: 'column',
+                    point2Name: 'surface',
+                    point3Name: 'shoreline',
+                    callback: _.bind(this.relativeImportancePercent, this)
+                });
+
+            this.relativeImp.draw();
 
             this.updateBenefit();
+        },
+
+        relativeImportancePercent: function(data){
+            this.$('.relative-importance').html('');
+            var relativeimportance = _.template(RelativeImportanceTemplate, {
+                'data': data
+            });
+            this.$('.relative-importance').html(relativeimportance);
         },
 
         createBenefitGauge: function(selector, value){

@@ -25,16 +25,10 @@
 
             canvas.add( //makeTriangle(),
                         makeCircle(line1.get('x1'), line1.get('y1'), true, null,  line1, null, 'surface'),
-                        //makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
+                        makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null),
                         makeCircle(line2.get('x2'), line2.get('y2'), true, line2, null,  null, 'column'),
                         makeCircle(line3.get('x2'), line3.get('y2'), true, line3, null,  null, 'shoreline')
             );
-
-            var circle = makeCircle(line1.get('x2'), line1.get('y2'), true, line1, line2, line3, null);
-
-            var group = createWidget(circle);
-
-            canvas.add(group);
 
             canvas.on('object:moving', _.bind(movementUpdate , this));
 

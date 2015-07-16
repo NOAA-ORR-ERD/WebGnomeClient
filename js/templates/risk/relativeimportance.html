@@ -1,0 +1,7 @@
+<label class="control-label" for="importance">Relative Importance:</label>
+<div class="small col-md-offset-1">
+    <span>Indicate the relative importance of the resources at risk during the spill.</span>
+    {% for (var key in data){ %}
+        <div>{{ key }}: <span>{{ data[key] }}</span>%</div>
+    {% } %}
+</div>
