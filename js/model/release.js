@@ -80,18 +80,31 @@ define([
                 return 'Give a valid location for the spill!';
             }
 
-            if (!_.isUndefined(webgnome.model) && !_.isUndefined(this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea()))){
-                return this.isReleaseInExtent(webgnome.model.get('map').getSpillableArea());
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.model.get('map'))){
+                return this.isReleaseInGeom(webgnome.model.get('map').getSpillableArea());
             }
         },
 
-        isReleaseInExtent: function(locationPolygon){
+        isReleaseInGeom: function(geom){
             var start = [this.get('start_position')[0], this.get('start_position')[1]];
             var end = [this.get('end_position')[0], this.get('end_position')[1]];
-            var extentCoords = [start, end];
-            var releaseExtent = ol.extent.boundingExtent(extentCoords);
-            if(!locationPolygon.intersectsExtent(releaseExtent)){
-                return 'Spill is not within the map bounds!';
+            var error = 'Start or End position are outside of supported area';
+            for(var p = 0; p < geom.length; p++){
+                var source = new ol.source.Vector({
+                    features: [new ol.Feature({
+                        geometry: geom[p]
+                    })]
+                });
+                if(source.getFeaturesAtCoordinate(start).length > 0){
+                    error = false;
+                }
+                if(source.getFeaturesAtCoordinate(end).length > 0){
+                    error = false;
+                }
+            }
+
+            if(error){
+                return error;
             }
         },
 
