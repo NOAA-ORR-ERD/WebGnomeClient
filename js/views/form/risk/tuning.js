@@ -9,7 +9,7 @@ define([
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
     'relativeimportance',
-    'relimpui'
+    'flot'
 ], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, Triangle) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
@@ -71,6 +71,8 @@ define([
 
             this.relativeImp.draw();
 
+            this.on('relativeRendered', _.bind(function(){this.renderPie(this.pieData);}, this));
+
             this.updateBenefit();
         },
 
@@ -80,6 +82,43 @@ define([
                 'data': data
             });
             this.$('.relative-importance').html(relativeimportance);
+            this.pieData = data;
+            this.trigger('relativeRendered');
+        },
+
+        formatPieData: function(data){
+            var dataArray = [];
+            for (var key in data){
+                var obj = {
+                    label: key,
+                    'data': data[key]
+                };
+                dataArray.push(obj);
+            }
+            return dataArray;
+        },
+
+        renderPie: function(data){
+            var plotData = this.formatPieData(data);
+            $.plot('#pie-importance .chart', plotData, {
+                series: {
+                    pie: {
+                        show: true,
+                        radius: 3 / 4,
+                        label: {
+                            show: true,
+                            radius: 3 / 4,
+                            background: {
+                                opacity: 0.5,
+                                color: '#000'
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    show: false
+                }
+            });
         },
 
         createBenefitGauge: function(selector, value){
