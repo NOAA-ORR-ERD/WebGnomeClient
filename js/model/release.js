@@ -86,6 +86,10 @@ define([
         },
 
         isReleaseInGeom: function(geom){
+            if(!_.isArray(geom)){
+                geom = [geom];                
+            }
+            
             var start = [this.get('start_position')[0], this.get('start_position')[1]];
             var end = [this.get('end_position')[0], this.get('end_position')[1]];
             var error = 'Start or End position are outside of supported area';
