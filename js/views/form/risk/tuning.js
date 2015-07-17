@@ -62,7 +62,7 @@ define([
             this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
 
             this.relativeImp = new Triangle('importance',
-                {   sideLength: 200,
+                {   sideLength: 150,
                     point1Name: 'column',
                     point2Name: 'surface',
                     point3Name: 'shoreline',
