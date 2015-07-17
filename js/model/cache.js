@@ -11,7 +11,7 @@ define([
 
         initialize: function(options, model){
             this.gnome_model = model;
-            this.gnome_model.on('sync', _.bind(this.checkState, this));
+            // this.gnome_model.on('sync', _.bind(this.checkState, this));
             localforage.config({
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'

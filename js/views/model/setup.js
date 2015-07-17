@@ -77,6 +77,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
+                'click .rewind': 'rewind',
                 'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
@@ -172,6 +173,12 @@ define([
             } else {
                 webgnome.router.navigate('model', true);
             }
+        },
+
+        rewind: function(e){
+            e.preventDefault();
+            webgnome.cache.rewind();
+            this.$('.stage-4').hide();
         },
 
         updateModel: function(){
@@ -349,6 +356,9 @@ define([
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
                     this.updateBeached();
+                }
+                if(webgnome.cache.length > 0){
+                    this.$('.stage-4').show();
                 }
             } else {
                 this.$('.stage-3').hide();
@@ -1182,6 +1192,11 @@ define([
         
         configure: function(target){
             // model change need to take place before changing any child objects
+            
+            if(target !== localStorage.getItem('prediction')){
+                webgnome.cache.rewind();
+            }
+
             this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
