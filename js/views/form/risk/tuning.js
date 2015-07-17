@@ -10,7 +10,7 @@ define([
     'text!templates/risk/relativeimportance.html',
     'relativeimportance',
     'flot'
-], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, Triangle) {
+], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -61,11 +61,11 @@ define([
             this.createSlider('.slider-dispersant', this.model.get('efficiency').dispersant);
             this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
 
-            this.relativeImp = new Triangle('importance',
+            this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
-                    point1Name: 'column',
-                    point2Name: 'surface',
-                    point3Name: 'shoreline',
+                    point1: {label: 'column'},
+                    point2: {label: 'surface'},
+                    point3: {label: 'shoreline'},
                     callback: _.bind(this.relativeImportancePercent, this)
                 });
 
@@ -73,7 +73,11 @@ define([
 
             this.on('relativeRendered', _.bind(function(){this.renderPie(this.pieData);}, this));
 
+            this.on('rendered', _.bind(function(){this.renderPie(this.pieData);}, this));
+
             this.updateBenefit();
+
+            this.trigger('rendered');
         },
 
         relativeImportancePercent: function(data){
