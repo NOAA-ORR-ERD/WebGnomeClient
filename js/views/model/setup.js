@@ -176,7 +176,7 @@ define([
         },
 
         rewind: function(e){
-            e.preventDefault();
+            if(e){ e.preventDefault();}
             webgnome.cache.rewind();
             this.$('.stage-4').hide();
         },
@@ -1194,7 +1194,7 @@ define([
             // model change need to take place before changing any child objects
             
             if(target !== localStorage.getItem('prediction')){
-                webgnome.cache.rewind();
+                this.rewind();
             }
 
             this.configureModel(target);
