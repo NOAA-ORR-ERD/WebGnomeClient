@@ -278,7 +278,6 @@ define([
 
             }
             this.$('.stage-2').show();
-            this.updateSpill();
         },
 
         showFateObjects: function(){
@@ -604,6 +603,9 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
+            spills.forEach(function(spill){
+                spill.isValid();
+            });
             var spillArray = this.calculateSpillAmount();
             var compiled;
             var mode = localStorage.getItem('prediction');
