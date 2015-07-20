@@ -73,11 +73,9 @@ define([
 
             this.on('relativeRendered', _.bind(function(){this.renderPie(this.pieData);}, this));
 
-            this.on('rendered', _.bind(function(){this.renderPie(this.pieData);}, this));
-
             this.updateBenefit();
 
-            this.trigger('rendered');
+            this.trigger('relativeRendered');
         },
 
         relativeImportancePercent: function(data){
