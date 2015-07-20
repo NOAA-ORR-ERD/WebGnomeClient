@@ -45,7 +45,6 @@ require.config({
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
-        fabric: 'lib/fabric/dist/fabric',
         gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
         relativeimportance: 'lib/relativeimportance/relativeImportance',
@@ -96,9 +95,6 @@ require.config({
         },
         sweetalert: {
             exports: 'swal'
-        },
-        fabric: {
-            exports: 'fabric'
         },
         gauge: {
             exports: 'Gauge'

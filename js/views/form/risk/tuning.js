@@ -3,14 +3,13 @@ define([
     'underscore',
     'backbone',
     'jqueryui/core',
-    'fabric',
     'gauge',
     'views/modal/form',
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
     'relativeimportance',
     'flot'
-], function($, _, Backbone, jqueryui, fabric, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
+], function($, _, Backbone, jqueryui, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -110,12 +109,11 @@ define([
                         show: true,
                         radius: 3 / 4,
                         label: {
+                            formatter: function(label, series){
+                                return '<div><span style="background-color:' + series.color + ';"></span>' + label + '<br>' + Math.round(series.data[0][1]) + '%</div>';
+                            },
                             show: true,
-                            radius: 3 / 4,
-                            background: {
-                                opacity: 0.5,
-                                color: '#000'
-                            }
+                            radius: 6 / 10
                         }
                     }
                 },
