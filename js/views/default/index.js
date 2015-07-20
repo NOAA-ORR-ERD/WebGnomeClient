@@ -4,6 +4,7 @@ define([
     'backbone',
     'text!templates/default/index.html'
 ], function($, _, Backbone, IndexTemplate){
+    'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
 
@@ -22,7 +23,7 @@ define([
 
         setup: function(e){
             e.preventDefault();
-            webgnome.router.navigate('setup', true);
+            webgnome.router.navigate('config', true);
         }
     });
 

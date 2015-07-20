@@ -3,7 +3,8 @@ define([
     'backbone',
     'model/base'
 ], function(_, Backbone, BaseModel){
-    geojsonOutputter = BaseModel.extend({
+    'use strict';
+    var weatheringOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
 
         defaults: {
@@ -19,5 +20,5 @@ define([
         }
     });
 
-    return geojsonOutputter;
+    return weatheringOutputter;
 });

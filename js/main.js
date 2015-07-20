@@ -1,7 +1,7 @@
 
 // Configure RequireJS
 require.config({
-    baseUrl: 'js',
+    baseUrl: '/js',
     priority: ['underscore', 'jqueryui', 'bootstrap'],
     paths: {
         jquery: 'lib/jquery/dist/jquery',
@@ -11,7 +11,6 @@ require.config({
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
-        geolib: 'lib/geolib/dist/geolib',
         text: 'lib/requirejs-text/text',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
@@ -27,10 +26,15 @@ require.config({
         flotresize: 'lib/flot/jquery.flot.resize',
         flotdirection: 'lib/flotdirection/index',
         flotspline: 'lib/flotspline/jquery.flot.spline',
-        flottooltip: 'lib/flot.tooltip/js/jquery.flot.tooltip',
-        flotcrosshair: 'lib/flot/jquery.flot.crosshair',
         flotstack: 'lib/flot/jquery.flot.stack',
         flotpie: 'lib/flot/jquery.flot.pie',
+        flotfillarea: 'lib/flotfillarea/jquery.flot.fillarea',
+        flotselect: 'lib/flot/jquery.flot.selection',
+        flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
+        flotneedle: 'lib/flotneedle/flotNeedle',
+        'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
+        html2canvas: 'lib/html2canvas/build/html2canvas',
+        JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
         masonry: 'lib/masonry/masonry',
         eventie: 'lib/eventie/',
         'doc-ready': 'lib/doc-ready/',
@@ -39,8 +43,11 @@ require.config({
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
-        sweetalert: 'lib/sweetalert/lib/sweet-alert'
-        // nucos: 'lib/nucos/nucos'
+        sweetalert: 'lib/sweetalert/lib/sweet-alert',
+        nucos: 'lib/nucos/nucos',
+        dropzone: 'lib/dropzone/dist/dropzone-amd-module',
+        socketio: 'lib/socket.io-client/dist/socket.io',
+        localforage: 'lib/localforage/dist/localforage'
     },
     shim: {
         jquery: {
@@ -54,10 +61,16 @@ require.config({
         flotresize: ['flot'],
         flotdirection: ['flot'],
         flotspline: ['flot'],
-        flottooltip: ['flot'],
-        flotcrosshair: ['flot'],
+        flotneedle: ['flot'],
         flotstack: ['flot'],
         flotpie: ['flot'],
+        flotfillarea: ['flot'],
+        flotselect: ['flot'],
+        flotgantt: ['JUMFlotLib'],
+        html2canvas: {
+            exports: 'html2canvas'
+        },
+        JUMFlotLib: ['flot'],
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'
@@ -71,21 +84,16 @@ require.config({
         },
         chosen: {
             deps: ['jquery'],
-            exports: 'jQuery.fn.chosen'
-        },
-        geolib: {
-            exports: 'geolib'
+            exports: '$'
         },
         sweetalert: {
             exports: 'swal'
+        },
+        socketio: {
+            exports: 'io'
+        },
+        localforage: {
+            exports: 'localforage'
         }
     },
-});
-
-// set up the app
-require([
-    'app',
-], function(App){
-    window.webgnome = App;
-    webgnome.initialize();
 });

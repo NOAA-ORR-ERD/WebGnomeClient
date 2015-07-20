@@ -5,51 +5,97 @@
             <input type="text" id="name" class="form-control" value="{{ name }}">
         </div>
     </div>
-	<div class="form-group">
-		<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
-		<div class="col-sm-5">
-            <input type="text" id="datetime" class="form-control" value="{{ time }}">
-        </div>
-    </div>
-    <div class="form-group">
-    	<label class="col-sm-4 control-label" for="spill-amount">Amount Released:</label>
-    	<div class="col-sm-2">
-    		<input type="text" id="spill-amount" class="form-control" value="{{ amount }}">
-    	</div>
-    	<div class="col-sm-3">
-    		<select class="form-control" id="units">
-    			<option value="cubic meters">
-    				cu m
-    			</option>
-    			<option value="gal">
-    				gal
-    			</option>
-    			<option value="bbl">
-    				bbl
-    			</option>
-    			<option value="ton">
-    				tons
-    			</option>
-    			<option value="metric ton">
-    				metric tons
-    			</option>
-    		</select>
-    	</div>
-        <div class="form-group">
-            <label class="control-label col-sm-4">Confidence in Data:</label>
-            <div class="col-sm-8 col-sm-offset-1">
-                <div class="slider"></div>
-            </div>
-            <div class="col-sm-5 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
-            <div class="col-sm-3 col-sm-offset-2 slider-label"><sup>Uncertain</sup></div>
-        </div>
+    <ul class="nav nav-tabs">
+        <li class="generalinfo active">
+            <a href="#generalinfo-spill" data-toggle="tab">General<span id="info" class="status"></span></a>
+        </li>
+        {% if (showSubstance){ %}
+            <li class="substanceinfo">
+                <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status optional"></span></a>
+            </li>
+        {% } %}
         {% if (showGeo){ %}
+            <li class="mapspill">
+                <a href="#mapspill" data-toggle="tab">Location<span id="map-status" class="status"></span></a>
+            </li>
+        {% } %}
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="generalinfo-spill">
+        	<div class="form-group">
+        		<label class="col-sm-5 control-label" for="datetime">Time of Release:</label>
+        		<div class="col-sm-5">
+                    <div class="input-group date">
+                        <input type="text" id="datetime" class="form-control" value="{{ time }}">
+                        <span class="input-group-addon" id="datepick">
+                            <i></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+            	<label class="col-sm-5 control-label" for="spill-amount">Amount Released:</label>
+            	<div class="col-sm-3">
+            		<input type="text" id="spill-amount" class="form-control" value="{{ amount }}">
+            	</div>
+            	<div class="col-sm-3">
+            		<select class="form-control" id="units">
+            			{% if (showSubstance){ %}
+                            <option value="m^3">
+                                m^3
+                            </option>
+                            <option value="gal">
+                                gal
+                            </option>
+                            <option value="bbl">
+                                bbl
+                            </option>
+                            <option value="ton">
+                                tons
+                            </option>
+                            <option value="metric ton">
+                                metric tons
+                            </option>
+                            <option value="kg">
+                                kilograms
+                            </option>
+                        {% } else { %}
+                            <option value="ton">
+                                tons
+                            </option>
+                            <option value="metric ton">
+                                metric tons
+                            </option>
+                            <option value="kg">
+                                kilograms
+                            </option>
+                        {% } %}
+            		</select>
+            	</div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
+                <div class="col-sm-6">
+                    <div class="slider"></div>
+                </div>
+                <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
+                <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="substanceinfo">
+            <div id="oilInfo"></div>
+        </div>
+
+        <div class="tab-pane" id="mapspill">
+            <div id="spill-form-map" class="map"></div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Start Position</label>
                 <div class="col-sm-9">
-                    <label for="start-lat" class="col-sm-1 control-label">Lat.</label>
+                    <label for="start-lat" class="col-sm-2 control-label">Lat.</label>
                     <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}"></div>
-                    <label for="start-lng" class="col-sm-1 control-label">Lng.</label>
+                    <label for="start-lng" class="col-sm-2 control-label">Long.</label>
                     <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}"></div>
                 </div>
             </div>
@@ -57,35 +103,12 @@
             <div class="form-group end-position">
                 <label class="col-sm-3 control-label">End Position</label>
                 <div class="col-sm-9">
-                    <label for="end-lat" class="col-sm-1 control-label">Lat.</label>
+                    <label for="end-lat" class="col-sm-2 control-label">Lat.</label>
                     <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}"></div>
-                    <label for="end-lng" class="col-sm-1 control-label">Lng.</label>
+                    <label for="end-lng" class="col-sm-2 control-label">Long.</label>
                     <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}"></div>
                 </div>
             </div>
-        {% } %}
-   	</div>
-    {% if (showGeo){ %}
-        <div id="spill-form-map" class="map"></div>
-    {% } %}
-    <div class="form-group">
-        <label class="control-label col-sm-4">Oil Selected:</label>
-        <div class="col-sm-3">
-            <input class="col-sm-4 form-control oilName" value="{{ oilName }}"></input>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-6">
-            <a class="btn btn-default oilSelect">
-                Select Oil
-            </a>
-        </div>
-        {% if (showGeo){ %}
-            <div class="col-sm-6">
-                <a class="pull-right btn btn-default locationSelect">
-                    Plot Location on Map
-                </a>
-            </div>
-        {% } %}
     </div>
 </form>

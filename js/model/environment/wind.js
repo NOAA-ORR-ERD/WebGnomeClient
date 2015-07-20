@@ -4,13 +4,15 @@ define([
     'moment',
     'model/base'
 ], function(_, Backbone, moment, BaseModel){
+    'use strict';
     var windModel = BaseModel.extend({
         urlRoot: '/environment/',
 
         defaults: {
             timeseries: [['2014-07-07T12:00:00', [0, 0]]],
-            units: 'm/s',
-            obj_type: 'gnome.environment.wind.Wind'
+            units: 'knots',
+            obj_type: 'gnome.environment.wind.Wind',
+            speed_uncertainty_scale: 0
         },
 
         validate: function(attrs, options){
@@ -20,9 +22,16 @@ define([
                     if(el[1][0] < 0){
                         msg = 'Speed must be greater than or equal to 0';
                     }
+                    if(el[1][0] > 40){
+                        msg = 'Speed must be less than or equal to 40';
+                    }
 
                     if(el[1][1] < 0 || el[1][1] > 360){
                         msg = 'Direction must be between 0 and 360 degrees';
+                    }
+
+                    if(_.isNull(el[1][1])){
+                        msg = 'Enter a valid direction!';
                     }
                 });
                 if (msg) {

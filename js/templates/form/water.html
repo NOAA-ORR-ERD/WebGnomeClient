@@ -1,10 +1,10 @@
 <form class="form-horizontal" role="form">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<div class="form-group">
 					<label class="control-label col-sm-5" for="temp">Temperature:</label>
-					<div class="col-sm-2">
+					<div class="col-sm-4">
 						<input class="form-control" type="number" id="temp" value="{{ water_temp }}">
 					</div>
 					<div class="col-sm-2">
@@ -13,6 +13,32 @@
 							<option value="C">&deg;C</option>
 							<option value="K">K</option>
 						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-5 col-md-6">
+						Example Temperature:
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th></th>
+									<th>Gulf Coast</th>
+									<th>Alaska</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><strong>Summer</strong></td>
+									<td>82&deg; F</td>
+									<td>53&deg; F</td>
+								</tr>
+								<tr>
+									<td><strong>Winter</strong></td>
+									<td>68&deg; F</td>
+									<td>41&deg; F</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 				<div class="form-group">
@@ -25,19 +51,33 @@
 							<option value="other">Other Value...</option>
 						</select>
 					</div>
-					<div class="col-sm-3 salinity-input hide"><input type="number" class="form-control salinity"></div>
+					<div class="col-sm-3 salinity-input hide"><input type="number" min="0" class="form-control salinity"></div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-sm-5" for="sediment">Water Sediment Load (mg/L):</label>
+					<label class="control-label col-sm-5" for="sediment">Water Sediment Load:</label>
 					<div class="col-sm-4">
 						<select class="form-control sediment-select sediment">
-							<option value="5">5 (ocean)</option>
-							<option value="50">50 (avg. river/estuary)</option>
-							<option value="500">500 (muddy river)</option>
+							<option value="5">5 mg/l (ocean)</option>
+							<option value="50">50 mg/l (avg. river/estuary)</option>
+							<option value="500">500 mg/l (muddy river)</option>
 							<option value="other">Other Value...</option>
 						</select>
 					</div>
-					<div class="col-sm-3 sediment-input hide"><input type="number" class="form-control sediment"></div>
+					<div class="col-sm-3 sediment-input hide"><input type="number" min="0" class="form-control sediment"></div>
+					<div class="col-sm-3 sediment-input hide">
+						<select class="form-control sediment sediment-units">
+							<option value="mg/l">mg / l</option>
+							<option value="kg/m^3">kg / m^3</option>
+							<option value="lb/ft^3">lb / ft^3</option>
+							<option value="mg/kg">mg / kg</option>
+							<option value="pptr">pptr</option>
+							<option value="ug/l">ug / l</option>
+							<option value="%">percent</option>
+							<option value="mg/ml">mg / ml</option>
+							<option value="ppt">ppt</option>
+							<option value="ppm">ppm</option>
+						</select>
+					</div>
 				</div>
 				<div class="form-group" id="sea-state">
 					<label class="control-label col-sm-5" for="sea-height">Wave Height:</label>
@@ -52,7 +92,7 @@
 				<div class="form-group fetch hide">
 					<label class="control-label col-sm-5" for="#fetch">Fetch</label>
 					<div class="col-sm-2">
-						<input type="number" class="form-control" id="fetch">
+						<input type="number" min="0" class="form-control" id="fetch">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="fetch-units">
@@ -64,7 +104,7 @@
 				<div class="form-group specified hide">
 					<label class="control-label col-sm-5" for="height">Height</label>
 					<div class="col-sm-2">
-						<input type="number" id="height" class="form-control">
+						<input type="number" min="0" id="height" class="form-control">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control col-xs-8" id="wave_height-units">

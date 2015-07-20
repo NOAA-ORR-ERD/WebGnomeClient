@@ -6,6 +6,7 @@ define([
     'views/wizard/new',
     'views/form/oil/library'
 ], function($, _, Backbone, GnomeTemplate, NewWizardForm, OilLibForm){
+    'use strict';
     var gnomeView = Backbone.View.extend({
         className: 'container page gnome',
 

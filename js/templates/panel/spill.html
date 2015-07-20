@@ -1,15 +1,91 @@
-<div class="axisLabel yaxisLabel">{{ spills[0].get('units') }}</div><div class="chart"></div>
-{% if (spills.length > 0) { %}
-	<div class="spill-list">
-	{% for (var i = 0; i < spills.length; i++){ %}
-		<div class="single row" data-id="{{ spills[i].get('id') }}">
-			<div class="col-sm-5">{{ spills[i].get('name') }}</div>
-			<div class="col-sm-4">{{ spills[i].get('amount') }} {{ spills[i].get('units') }}</div>
-			<div class="col-sm-3">
-                <span class="trash" title="Remove {{ spills[i].get('name') }}"></span>
-                <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
+<div class="chart">
+    <div class="axisLabel yaxisLabel">{{ spills[0].get('units') }}</div>
+    <div class="axisLabel xaxisLabel">Time</div> 
+    <div class="canvas"></div>
+</div>
+{% if (spills.length > 0 && substance) { %}
+    <div class="row">
+        <div class="substance-info col-sm-12">
+            <div class="row">
+                <div class="col-sm-12"><label>Substance</label></div>
+                <div class="col-sm-6 substance-data">
+                    <label>Name: </label>
+                    {{ substance.get('name') }}
+                </div>
+                <div class="col-sm-6 substance-data">
+                    <label>API: </label>
+                    {{ substance.get('api').toFixed(1) }}
+                </div>
+                <div class="col-sm-6 substance-data">
+                    <label>Categories: </label>
+                    {% for(c in categories){ %}
+                        <div class="label label-warning">{{ categories[c] }}</div>
+                    {% } %}
+                    {% if (categories.length === 0){ %}
+                        <div class="label label-warning">None</div>
+                    {% } %}
+                </div>
             </div>
-		</div>
-	{% } %}
+        </div>
+    </div>
+{% } else if (mode !== 'trajectory') { %}
+    <div class="row">
+        <div class="substance-info error col-sm-12">
+            <div class="row">
+                <div class="col-sm-12"><label>Substance</label></div>
+                <div class="col-sm-6 substance-data">
+                    <label>Name: </label>
+                    Non-weathering substance
+                </div>
+            </div>
+        </div>
+    </div>
+{% } %}
+<div class="spill-list">
+{% for (var i = 0; i < spills.length; i++){ %}
+    {% var spillValid = spills[i].validationContext %}
+    {% var rowClass = 'single row'; %}
+    {% if (spillValid === 'map') rowClass += 'single row error-map';  %}
+    {% if (spillValid === 'info') rowClass = 'single row error-gen'; %}
+	<div class="{{ rowClass }}" data-id="{{ spills[i].get('id') }}">
+		<div class="col-sm-10">
+            <h5>{{ spills[i].get('name') }}</h5>
+            {% var amount = spills[i].get('amount'); %}
+            {%     if(spills[i].get('amount_uncertainty_scale') > 0){ %}
+            {%        var value = spills[i].get('amount_uncertainty_scale'); %}
+            {%        var bottom = parseInt(Math.round((amount * (1 - value))), 10); %}
+            {%        if (bottom < 0) { %}
+            {%            bottom = 0; %}
+            {%        } %}
+            {%        var top = parseInt(Math.round((amount * (1 + value))), 10);     %}
+            {%        amount = bottom + ' - ' + top; %}
+            {%    } %}
+            {%    var units = spills[i].get('units'); %}
+            {%    var info = amount + ' ' + units; %}
+            {% if (spillValid === 'info') info += ' (invalid amount or units)'; %}
+            <span class="label label-default amount">{{ info }}</span>
+            {% if (spills[i].get('release').get('start_position') && localStorage.getItem('prediction') !== 'fate'){ %}
+                {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
+                {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
+                {% var start = lat + ', ' + lon %}
+                {% lon = Math.round(spills[i].get('release').get('end_position')[0] * 100) / 100 %}
+                {% lat = Math.round(spills[i].get('release').get('end_position')[1] * 100) / 100 %}
+                {% var end = lat + ', ' + lon %}
+                {% if (start === end ){ %}
+                    {% pos = start %}
+                {% } else{ %}
+                    {% pos = start + ' - ' + end %}
+                {% } %}
+                {% if (spillValid === 'map'){ %}
+                    {% pos += ' (out of map bounds)' %}
+                {% } %}
+                <span class="coords"><span class="glyphicon glyphicon-map-marker"></span> {{ pos }}</span>
+            {% } %}
+        </div>
+		<div class="col-sm-2">
+            <span class="trash" title="Remove {{ spills[i].get('name') }}"></span>
+            <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
+        </div>
 	</div>
 {% } %}
+</div>

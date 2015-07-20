@@ -4,26 +4,40 @@ define([
     'backbone',
     'moment',
     'model/base',
+    'model/cache',
     'model/map',
     'model/spill',
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
+    'model/environment/waves',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
-    'model/outputters/geojson',
+    'model/movers/ice',
+    'model/outputters/trajectory',
     'model/outputters/weathering',
+    'model/outputters/current',
+    'model/outputters/ice',
     'model/weatherers/evaporation',
-    'model/weatherers/dispersion'
+    'model/weatherers/dispersion',
+    'model/weatherers/emulsification',
+    'model/weatherers/burn',
+    'model/weatherers/skim',
+    'model/weatherers/natural_dispersion',
+    'model/weatherers/manual_beaching',
+    'model/weatherers/fay_gravity_viscous',
+    'model/weatherers/weathering_data'
 ], function(_, $, Backbone, moment,
-    BaseModel, MapModel, SpillModel, TideModel, WindModel, WaterModel,
-    WindMover, RandomMover, CatsMover,
-    GeojsonOutputter, WeatheringOutputter,
-    EvaporationWeatherer, DispersionWeatherer){
+    BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
+    WindMover, RandomMover, CatsMover, IceMover,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData){
+    'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
+        ref_hash: {},
         model: {
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
@@ -32,88 +46,122 @@ define([
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
-                'gnome.environment.environment.Water': WaterModel
+                'gnome.environment.environment.Water': WaterModel,
+                'gnome.environment.waves.Waves': WavesModel
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
-                'gnome.movers.current_movers.CatsMover': CatsMover
+                'gnome.movers.current_movers.CatsMover': CatsMover,
+                'gnome.movers.current_movers.IceMover': IceMover
             },
             outputters: {
-                'gnome.outputters.geo_json.GeoJson': GeojsonOutputter,
-                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter
+                'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
+                'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
+                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
+                'gnome.outputters.geo_json.IceGeoJsonOutput': IceOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
-                'gnome.weatherers.cleanup.Dispersion': DispersionWeatherer
+                'gnome.weatherers.cleanup.ChemicalDispersion': DispersionWeatherer,
+                'gnome.weatherers.emulsification.Emulsification': EmulsificationWeatherer,
+                'gnome.weatherers.cleanup.Burn': BurnWeatherer,
+                'gnome.weatherers.cleanup.Skimmer': SkimWeatherer,
+                'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
+                'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
+                'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
+                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData
             }
         },
 
-        sync: function(method, model, options){
-            // because of the unique structure of the gnome model, it's relation to other child object
-            // via ids, we need to dehydrate any child objects into just an id before sending it to the
-            // server.
-            if(_.indexOf(['update'], method) != -1){
-                for(var key in model.model){
-                    if(model.get(key)){
-                        if(model.get(key) instanceof Backbone.Collection){
-                            var array = model.get(key).toArray();
-                            model.set(key, [], {silent: true});
-                            if(array.length > 0){
-                                _.each(array, function(element){
-                                    if(!_.isUndefined(element.get('id'))){
-                                        model.get(key).push({id: element.get('id'), obj_type: element.get('obj_type')});
-                                    } else {
-                                        model.get(key).push(element);
-                                    }
-                                });
-                            }
-                        } else {
-                            model.set(key, {id: model.get(key).get('id'), obj_type: model.get(key).get('obj_type')}, {silent: true});
-                        }
-                    }
-                }
-            }
-            return BaseModel.prototype.sync.call(this, method, model, options);
+        defaults: function(){
+            return {
+                obj_type: 'gnome.model.Model',
+                time_step: 900,
+                start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                duration: 86400,
+                map: new MapModel(),
+                outputters: new Backbone.Collection([
+                    new TrajectoryOutputter(),
+                    new WeatheringOutputter(),
+                    new CurrentOutputter(),
+                    new IceOutputter()
+                ]),
+                weatherers: new Backbone.Collection([
+                    new EvaporationWeatherer(),
+                    new NaturalDispersionWeatherer({name: '_natural'}),
+                    new EmulsificationWeatherer(),
+                    new FayGravityViscous()
+                ]),
+                movers: new Backbone.Collection(),
+                environment: new Backbone.Collection(),
+                spills: new Backbone.Collection()
+            };
         },
 
-        parse: function(response){
-            // model needs a special parse function to turn object id's into objects
-            for(var key in this.model){
-                if(response[key]){
-                    var embeddedClass = this.model[key];
-                    var embeddedData = response[key];
+        initialize: function(options){
+            // BaseModel.prototype.initialize.call(this, options);
+            webgnome.cache = new Cache(null, this);
+            webgnome.obj_ref = {};
+            this.addListeners();
+        },
 
-                    if(_.isArray(embeddedData)){
-                        response[key] = new Backbone.Collection();
-                        // if the embedded class isn't an object it can only have one type of object in
-                        // the given collection, so set it.
+        addListeners: function(){
+            this.get('environment').on('change add remove', this.environmentChange, this);
+            this.get('movers').on('change add remove', this.moversChange, this);
+            this.get('spills').on('change add remove', this.spillsChange, this);
+            this.get('weatherers').on('change add remove', this.weatherersChange, this);
+            this.get('outputters').on('change add remove', this.outputtersChange, this);
+            this.on('change:map', this.validateSpills, this);
+            this.on('change:map', this.addMapListeners, this);
+        },
 
-                        if(!_.isObject(embeddedClass)){
-                            for(var obj in embeddedData){
-                                response[key].add(new embeddedClass(embeddedData[obj], {parse: true, silent: true}));
-                            }
-                        } else {
-                            // the embedded class is an object therefore we can assume
-                            // that the collection can have several types of objects
-                            // I.E. environment with wind and tide, figure out which one we have
-                            // by looking at it's obj_type and cast it appropriatly.
+        addMapListeners: function(){
+            this.get('map').on('change', this.mapChange, this);
+        },
 
-                            for(var obj in embeddedData){
-                                // console.log(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                if(_.isFunction(embeddedClass[embeddedData[obj].obj_type])){
-                                    response[key].add(new embeddedClass[embeddedData[obj].obj_type](embeddedData[obj], {parse: true, silent: true}));
-                                } else {
-                                    response[key].add(new Backbone.Model(embeddedData[obj], {parse: true, silent: true}));
-                                }
-                            }
-                        }
-                    } else {
-                        response[key] = new embeddedClass(embeddedData, {parse: true, silent: true});
-                    }
+        mapChange: function(child){
+            this.validateSpills(child);
+            this.childChange('map', child);
+        },
+
+        environmentChange: function(child){
+            this.childChange('environment', child);
+        },
+
+        moversChange: function(child){
+            this.childChange('movers', child);
+        },
+
+        spillsChange: function(child){
+            this.childChange('spills', child);
+        },
+
+        weatherersChange: function(child){
+            this.childChange('weatherers', child);
+        },
+
+        outputtersChange: function(child){
+            this.childChange('outputters', child);
+        },
+
+        childChange: function(attr, child){
+            if(!_.isObject(this.changed[attr])){
+                this.changed[attr] = {};
+            }
+            this.changed[attr][child.get('id')] = child.changed;
+            this.trigger('change', this);
+        },
+
+        validateSpills: function() {
+            var spills = this.get('spills');
+            var spillNames = '';
+            for (var i = 0; i < spills.length; i++){
+                if (!spills.at(i).isValid()){
+                    spillNames += spills.at(i).get('name') + ' ';
                 }
             }
-            return response;
+            return spillNames;
         },
 
         validate: function(attrs, options) {
@@ -143,6 +191,11 @@ define([
                 return 'Time step values should be numbers only.';
             }
 
+            if (this.validateSpills() !== ''){
+                return this.validateSpills();
+            }
+
+
             // if (attrs.map_id === null) {
             //     return 'Model requires a map.';
             // }
@@ -170,7 +223,7 @@ define([
             var hours = duration / 3600;
             var days = hours / 24;
 
-            if (Math.round(days) != days) {
+            if (Math.round(days) !== days) {
                 if (days < 1){
                     days = 0;
                 } else {
@@ -237,7 +290,7 @@ define([
             return false;
         },
 
-        resetLocation: function(){
+        resetLocation: function(cb){
             // clear any location relevant objects from the model.
 
             // reset movers only preserving the wind at the moment.
@@ -245,75 +298,90 @@ define([
             var windMovers = movers.where({obj_type: 'gnome.movers.wind_movers.WindMover'});
             movers.reset(windMovers);
 
+            // remove any environment other than wind and water
+            var environment = this.get('environment');
+            var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
+            var waves = environment.where({obj_type: 'gnome.environment.waves.Waves'});
+            environment.reset(winds);
+            environment.add(water);
+            environment.add(waves);
+
+            // drop all of the currents from current outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).get('current_movers').reset();
+
+            // drop all of the ice movers from the ice mover outputter
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'}).get('ice_movers').reset();
+
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
-            map.save(null, {
-                success: _.bind(function(){
-                    this.set('map', map);
-                    // remove any environment other than wind
-                    var environment = this.get('environment');
-                    var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
-                    environment.reset(winds);
-                    this.trigger('reset:location');
-                }, this)
-            });
+            this.set('map', map, {silent: true});
+            this.save(null, {validate: false, success: cb});
         },
 
-        setup: function(cb){
-            this.save(null, {
-                validate: false,
-                success: _.bind(function(){
-                    var gout = new GeojsonOutputter();
-                    gout.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.get('outputters').add(gout);
-                            var wout = new WeatheringOutputter();
-                            wout.save(null, {
-                                validate: false,
-                                success: _.bind(function(){
-                                    this.get('outputters').add(wout);
-                                    var evaporation = new EvaporationWeatherer();
-                                    evaporation.save(null, {
-                                        success: _.bind(function(model, response, options){
-                                            this.get('weatherers').add(evaporation);
-                                            var dispersion = new DispersionWeatherer();
-                                            dispersion.save(null, {
-                                                success: _.bind(function(model, repsonse, options){
-                                                    this.get('weatherers').add(dispersion);
-                                                    this.save(null, {
-                                                        validate: false,
-                                                        success: _.bind(function(model, response, options){
-                                                            if(_.isFunction(cb)){
-                                                                cb();
-                                                            }
-                                                        }, this)
-                                                    });
-                                                }, this)
-                                            });
-                                        }, this)
-                                    });
-                                }, this)
-                            });
-                        }, this)
-                    });
-                }, this)
-            });
-        },
+        updateWaves: function(cb){
+            var environment = this.get('environment');
+            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
 
-        mergeModel: function(model){
-            // merge a given model with this model.
-            // merge collections
-            // set map from given model only if this model doesn't have one.
+            if(wind && water){
 
-            if (this.get('map')) {
-                this.set('map', model.get('map'));
+                var waves = environment.findWhere({obj_type: 'gnome.environment.waves.Waves'});
+                if(_.isUndefined(waves)){
+                    waves = new WavesModel();
+                    environment.add(waves);
+                }
+
+                waves.set('wind', wind);
+                waves.set('water', water);
+                waves.save(null, {
+                    validate: false,
+                    success: _.bind(function(){
+                        var emul = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.emulsification.Emulsification'});
+                        if(!emul){
+                            emul = new EmulsificationWeatherer();
+                            this.get('weatherers').add(emul);
+                        }
+                        emul.set('waves', waves);
+
+                        var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
+                        if(!natural_dispersion){
+                            natural_dispersion = new NaturalDispersionWeatherer();
+                            this.get('weatherers').add(natural_dispersion);
+                        }
+                        natural_dispersion.set('waves', waves);
+
+                        cb();
+                    }, this)
+                });
+            } else {
+                cb();
             }
+        },
 
-            this.get('spills').add(model.get('spills').models);
-            this.get('environment').add(model.get('environment').models);
-            this.get('movers').add(model.get('movers').models);
-            this.get('weatherers').add(model.get('weatherers').models);
+        updateOutputters: function(cb){
+            // temp add first cats current to the current outputter
+            var currents = this.get('movers').where({
+                obj_type: 'gnome.movers.current_movers.CatsMover'
+            });
+
+            if(currents.length > 0){
+                var outputter = this.get('outputters').findWhere({
+                    obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'
+                });
+                if(outputter){
+                    outputter.get('current_movers').add(currents, {merge: true});
+                } else {
+                    outputter = new CurrentOutputter({current_movers: currents});
+                    this.get('outputters').add(outputter);
+                }
+
+                this.save(null, {validate: false}).always(cb);
+            }
+        },
+
+        updateBurn: function(){
+            
         }
     });
     

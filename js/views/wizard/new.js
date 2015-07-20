@@ -12,6 +12,7 @@ define([
     'model/map',
     'collection/spills',
 ], function($, _, Backbone, BaseWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, RandomForm, GnomeModel, GnomeMap, GnomeSpills){
+    'use strict';
     var newWizardView = BaseWizard.extend({
         initialize: function(){
             webgnome.model = new GnomeModel();

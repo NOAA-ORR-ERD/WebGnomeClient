@@ -8,18 +8,27 @@ define([
     'views/location/index',
     'views/model/setup',
     'views/model/index',
-    'views/tests/index',
-    'views/default/adios'
+    'views/default/adios',
+    'views/default/overview',
+    'views/default/faq',
+    'views/default/load',
+    'views/default/footer',
+    'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, TestView, AdiosView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    'use strict';
     var Router = Backbone.Router.extend({
         views: [],
         name: 'Main',
         routes: {
             '': 'index',
             'locations': 'locations',
-            'setup': 'setup',
+            'config': 'config',
             'model': 'model',
+            'overview': 'overview',
+            'faq': 'faq',
+            'faq/:title': 'faq',
+            'load': 'load',
 
             '*actions': 'notfound'
         },
@@ -30,18 +39,18 @@ define([
                 this.views[view].close();
             }
             this.views = [];
-            if(callback) callback.apply(this, args);
-        },
-
-        index: function(){
-            if (window.location.href.indexOf('test.html') != -1){
-                this.views.push(new TestView());
-            } else {
-                this.views.push(new IndexView());
+            if(callback){ callback.apply(this, args); }
+            this.views.push(new FooterView());
+            if(_.isUndefined(this.logger)){
+                this.logger = new LoggerView();
             }
         },
 
-        setup: function(){
+        index: function(){
+            this.views.push(new IndexView());
+        },
+
+        config: function(){
             this.views.push(new MenuView());
             this.views.push(new SetupView());
         },
@@ -56,8 +65,27 @@ define([
                 this.views.push(new MenuView());
                 this.views.push(new ModelView());
             } else {
-                this.navigate('setup', true);
+                this.navigate('config', true);
             }
+        },
+
+        overview: function(){
+            this.views.push(new MenuView());
+            this.views.push(new OverviewView());
+        },
+
+        faq: function(title){
+            this.views.push(new MenuView());
+            if (!_.isUndefined(title)){
+                this.views.push(new FAQView({topic: title}));
+            } else {
+                this.views.push(new FAQView());
+            }
+        },
+
+        load: function(){
+            this.views.push(new MenuView());
+            this.views.push(new LoadView());
         },
 
         notfound: function(actions){

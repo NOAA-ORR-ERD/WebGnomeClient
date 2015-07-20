@@ -2,104 +2,253 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'module',
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
     'ol',
     'model/spill',
-    'views/form/spill',
+    'views/form/spill/continue',
     'model/step',
     'mousetrap',
     'jqueryui/slider',
     'jqueryFileupload'
-], function($, _, Backbone, moment, ControlsTemplate, olMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
-    var trajectoryView = Backbone.View.extend({
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+    'use strict';
+    var trajectoryView = BaseView.extend({
         className: 'map',
         id: 'map',
-        full: false,
         spillToggle: false,
         spillCoords: [],
         state: 'pause',
-        step: new GnomeStep(),
         frame: 0,
         contracted: false,
-
-        events: {
-            'click .spill-button .fixed': 'toggleSpill',
-            'click .spill-button .moving': 'toggleSpill',
-            'mouseout .spill-button': 'toggleSpillBlur',
-            'focusout .spill-button': 'toggleSpillBlur',
-            'click .play': 'play',
-            'click .pause': 'pause',
-            'click .next': 'next',
-            'click .rewind': 'rewind',
-            'slide .seek > div': 'seek',
-            'slidechange .seek > div': 'loop',
-            'slidestop .seek > div': 'blur'
-        },
-
-        initialize: function(){
-            if(webgnome.hasModel()){
-                this.modelListeners();
-            }
-            
-            webgnome.model.trigger('sync');
-            this.render();
-        },
-
-        modelListeners: function(){
-            webgnome.model.get('map').on('change', this.resetMap, this);
-            webgnome.model.on('change', this.contextualize, this);
-            // because when the model syncs it creates a new collection object for the spills
-            // the original listeners get reset and have to be re-applied.
-            webgnome.model.on('sync', this.spillListeners, this);
-        },
-
-        spillListeners: function(){
-            webgnome.model.get('spills').on('add', this.resetSpills, this);
-            webgnome.model.get('spills').on('remove', this.resetSpills, this);
-        },
-
-        render: function(){
-            this.ol = new olMapView({
-                controls: 'full',
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'basemap'
-                    })
-                ]
-            });
-
-            this.SpillIndexSource = new ol.source.Vector();
-            this.SpillIndexLayer = new ol.layer.Vector({
-                source: this.SpillIndexSource,
-                name: 'spills',
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1.0],
-                        src: '/img/spill-pin.png',
-                        size: [32, 40]
-                    })
+        styles: {
+            ice: {
+                coverage: function(feature, resolution){
+                    var cov = feature.get('coverage');
+                    var alpha = parseFloat(cov);
+                    return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(36, 36, 227,' + alpha + ')'
+                        })
+                    })];
+                },
+                thickness: function(feature, resolution){
+                    var thick = feature.get('thickness');
+                    var alpha = thick / 5;
+                    return [new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: 'rgba(36, 36, 227,' + alpha + ')'
+                        })
+                    })];
+                }
+            },
+            ice_grid: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [36, 36, 227, 0.75],
+                    width: 1
                 })
-            });
-
-            this.SpillGroupLayers = new ol.Collection();
-            this.SpillGroupLayer = new ol.layer.Group({
-                name:'spills',
-                style: new ol.style.Style({
+            }),
+            elements: function(feature, resolution){
+                var color = 'rgba(0, 0, 0, 1)';
+                if(feature.get('sc_type') === 'uncertain'){
+                    color = 'rgba(255, 54, 54, 1)';
+                }
+                return [new ol.style.Style({
                     image: new ol.style.Circle({
                         fill: new ol.style.Fill({
                             color: 'rgba(0, 0, 0, .75)'
                         }),
                         radius: 1,
                         stroke: new ol.style.Stroke({
-                            color: 'rgba(0, 0, 0, 1)'
+                            color: color
                         })
                     })
+                })];
+            },
+            spill: new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
                 }),
-                layers: this.SpillGroupLayers
+                stroke: new ol.style.Stroke({
+                    color: '#3399CC',
+                    width: 1.25
+                })
+            }),
+            shoreline: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: [228, 195, 140, 0.6]
+                }),
+                stroke: new ol.style.Stroke({
+                    color: [228, 195, 140, 0.75],
+                    width: 1
+                })
+            }),
+            currents: function(feature, resolution){
+                var features = feature.get('features');
+
+                var v_x = 0;
+                var v_y = 0;
+                for(var i = 0; i < features.length; i++){
+                    var f = features[i];
+                    var velocity = f.get('velocity');
+
+                    v_x += velocity[0];
+                    v_y += velocity[1];
+                }
+
+                v_x = v_x / features.length;
+                v_y = v_y / features.length;
+
+                var scale_factor = 50 * resolution;
+                var coords = feature.getGeometry().getCoordinates();
+                var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
+
+                // find the angle between the two points
+                var x = shifted[0] - coords[0];
+                var y = shifted[1] - coords[1];
+
+                var rad;
+                if(x === 0 ){
+                    rad = Math.PI / 2;
+                } else {
+                    rad = Math.atan(Math.abs(y/x));
+                }
+
+                if(x < 0 && y > 0){
+                    rad = Math.PI - rad;
+                } else if(x < 0 && y < 0){
+                    rad = Math.PI + rad;
+                } else if(x > 0 && y < 0){
+                    rad = (2 * Math.PI) - rad;
+                }
+
+                var len = -5 * resolution;
+                var rad_right = 0.785398163; //3.92699082;
+                var rad_left = 0.785398163;
+
+                var arr_left = rad - rad_left;
+                arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
+                var arr_right = rad + rad_right;
+                arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
+
+                return [new ol.style.Style({
+                    geometry: new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]),
+                    stroke: new ol.style.Stroke({
+                        color: [171, 37, 184, 0.75],
+                        width: 2
+                    })
+                })];
+            },
+            currents_grid: new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: [171, 37, 184, 0.75],
+                    width: 1
+                })
+            })
+        },
+
+        events: {
+            'click .spill-button .fixed': 'toggleSpill',
+            'click .spill-button .moving': 'toggleSpill',
+            'click .help-button button': 'renderHelp',
+            'mouseout .spill-button': 'toggleSpillBlur',
+            'focusout .spill-button': 'toggleSpillBlur',
+            'mouseout .help-button': 'helpBlur',
+            'focusout .help-button': 'helpBlur',
+            'click .play': 'play',
+            'click .pause': 'pause',
+            'click .next': 'next',
+            'click .rewind': 'rewind',
+            'slide .seek > div': 'seek',
+            'slidechange .seek > div': 'loop',
+            'slidestop .seek > div': 'blur',
+            'click .base input': 'toggleLayers',
+            'click .current-grid input': 'toggleCurrentGrid',
+            'click .current-uv input': 'toggleCurrentUV',
+            'click .ice-grid input[type="checkbox"]': 'toggleIceGrid',
+            'click .ice-uv input[type="checkbox"]': 'toggleIceUV',
+            'click .ice-uv input[type="radio"]': 'toggleIceData'
+        },
+
+        initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
+            if(webgnome.hasModel()){
+                this.modelListeners();
+            }
+
+            this.render();
+        },
+
+        modelListeners: function(){
+            webgnome.model.get('map').on('change', this.resetMap, this);
+            webgnome.model.on('change', this.contextualize, this);
+            this.spillListeners();
+        },
+
+        spillListeners: function(){
+            webgnome.model.get('spills').on('add change remove', this.resetSpills, this);
+        },
+
+        render: function(){
+            BaseView.prototype.render.call(this);
+
+            this.ol = new OlMapView({
+                controls: 'full',
+                renderer: 'canvas',
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'}),
+                        name: 'mapquest',
+                        type: 'base',
+                        visible: false
+                    }),
+                    new ol.layer.Tile({
+                        name: 'usgsbase',
+                        source: new ol.source.TileWMS({
+                            url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                            params: {'LAYERS': '0', 'TILED': true}
+                        }),
+                        visible: false,
+                        type: 'base'
+                    }),
+                    new ol.layer.Tile({
+                        name: 'noaanavcharts',
+                        source: new ol.source.TileWMS({
+                            url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                            params: {'LAYERS': '1', 'TILED': true}
+                        }),
+                        opacity: 0.5,
+                        visible: false
+                    })
+                ]
             });
+
+            this.SpillIndexSource = new ol.source.Vector();
+            this.SpillIndexLayer = new ol.layer.Image({
+                name: 'spills',
+                source: new ol.source.ImageVector({
+                    source: this.SpillIndexSource,
+                    style: this.styles.spill
+                }),
+            });
+
+            this.SpillLayer = new ol.layer.Vector({
+                name:'spills',
+                style: this.styles.elements
+            });
+
+            this.CurrentLayer = new ol.layer.Vector({
+                name: 'currents',
+                style: this.styles.currents
+            });
+
+            this.IceLayer = new ol.layer.Image();
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -115,12 +264,43 @@ define([
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
-                var compiled = _.template(ControlsTemplate, {date: date});
-                this.$el.html(compiled);
+                var currents = webgnome.model.get('movers').filter(function(mover){
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                });
+                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+                var active_currents = [];
+                if(current_outputter.get('on')){
+                    current_outputter.get('current_movers').forEach(function(mover){
+                        active_currents.push(mover.get('id'));
+                    });
+                }
+                this.checked_currents = active_currents;
+
+
+                var ice = webgnome.model.get('movers').filter(function(mover){
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+                });
+                var ice_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+                var active_ice = [];
+                if(ice_outputter.get('on')){
+                    ice_outputter.get('ice_movers').forEach(function(mover){
+                        active_ice.push(mover.get('id'));
+                    });
+                }
+                this.checked_ice = active_ice;
+
+                var compiled = _.template(ControlsTemplate, {
+                    date: date,
+                    currents: currents,
+                    active_currents: active_currents,
+                    ice: ice,
+                    active_ice: active_ice
+                });
+                this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
                     this.$('.layers').toggleClass('expanded');
                 }, this));
-                this.$('.layers input[type="checkbox"]').click(_.bind(this.toggleLayer, this));
+                
                 this.controls = {
                     'play': this.$('.controls .play'),
                     'pause': this.$('.controls .play'),
@@ -132,16 +312,80 @@ define([
                 };
 
                 this.controls.seek.slider();
+                this.load();
             }
 
             this.contextualize();
-            
+
+            if(localStorage.getItem('advanced') === 'true'){
+                this.toggle();
+            }
+
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
         },
 
-        contract: function(){
+        renderMap: function(){
+            // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
+            // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
+            // named modelmap
+            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
+                webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                    // the map isn't rendered yet, so draw it before adding the layer.
+                    // but don't draw it agian for a normal render if the map is undefined redraw it.
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
+                        this.ol.render();
+                        this.shorelineSource = new ol.source.Vector({
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
+                        });
+
+                        this.shorelineLayer = new ol.layer.Image({
+                            name: 'modelmap',
+                            source: new ol.source.ImageVector({
+                                source: this.shorelineSource,
+                                style: this.styles.shoreline
+                            }),
+                        });
+
+                        var extent = this.shorelineSource.getExtent();
+                        if(this.ol.map){
+                            this.ol.map.addLayer(this.shorelineLayer);
+                            this.ol.map.getView().fit(extent, this.ol.map.getSize());
+                        }
+
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.CurrentLayer);
+                        this.ol.map.addLayer(this.IceLayer);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
+
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
+                }, this));
+            } else {
+                // if the model doens't have a renderable map yet just render the base layer
+                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
+                        this.ol.render();
+                        this.graticule.setMap(this.ol.map);
+                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.addLayer(this.SpillLayer);
+                        this.ol.map.on('pointermove', this.spillHover, this);
+                        this.ol.map.on('click', this.spillClick, this);
+                    }
+                    if(this.ol.redraw === false){
+                        this.renderSpills();
+                    }
+                }
+            }
+        },
+
+        toggle: function(){
             if(this.contracted === true){
                 this.$el.removeClass('contracted');
                 this.contracted = false;
@@ -162,59 +406,40 @@ define([
                 this.enableUI();
             }
 
-            if (localStorage.getItem('advanced') == 'true'){
-                this.contract();
-            }
-
             // set the slider to the correct number of steps
             this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
-            this.SpillGroupLayers.clear();
-            this.rewind();
+        },
+
+        load: function(){
+            this.updateProgress();
+            this.play();
+            webgnome.cache.on('step:recieved', this.renderStep, this);
+            webgnome.cache.on('step:failed', this.pause, this);
         },
 
         loop: function(){
-            if(this.state == 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
-                if(this.SpillGroupLayers.item(this.controls.seek.slider('value'))){
-                    // the step already exists in the index, make it visible.
-                    if(this.SpillGroupLayers.item(this.controls.seek.slider('value')).getSource().getFeatures()[0].getGeometry().getPoints().length > 0){
-                        this.SpillGroupLayers.item(this.controls.seek.slider('value')).once('render', _.bind(function(){
-                            setTimeout(_.bind(function(){
-                                this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                            }, this), 60);
-                        }, this));
-                    } else {
-                        setTimeout(_.bind(function(){
-                            this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                        }, this), 60);
-                    }
+            if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
+                if (webgnome.cache.at(this.controls.seek.slider('value'))){
+                    // the cache has the step, just render it
                     this.renderStep({step: this.controls.seek.slider('value')});
-
-                } else if (this.controls.seek.slider('value') < webgnome.model.get('num_time_steps')){
-                    // the step doesn't already exist on the map and it's with in the number of 
-                    // time steps this model should have so load
-
-                    this.controls.progress.addClass('active').addClass('progress-bar-striped');
-                    var percent = Math.round(((this.frame + 1) / (webgnome.model.get('num_time_steps') - 1)) * 100);
-                    this.controls.progress.css('width', percent + '%');
-                    this.step.fetch({
-                        success: _.bind(this.renderStep, this),
-                        error: _.bind(function(){
-                            this.pause();
-                            console.log('error loading step');
-                        }, this)
-                    });
-                } else {
-                    this.pause();
-                    this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
+                } else  {
+                    this.updateProgress();
+                    webgnome.cache.step();
                 }
             } else {
                 this.pause();
-                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
         },
 
-        togglePlay: function(){
-            if (this.state == 'play') {
+        updateProgress: function(){
+            this.controls.progress.addClass('progress-bar-stripes active');
+            var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);
+            this.controls.progress.css('width', percent + '%');
+        },
+
+        togglePlay: function(e){
+            e.preventDefault();
+            if (this.state === 'play') {
                 this.pause();
             } else {
                 this.play();
@@ -233,6 +458,7 @@ define([
             if($('.modal').length === 0){
                 this.state = 'pause';
                 this.controls.play.addClass('play').removeClass('pause');
+                // this.controls.progress.removeClass('active progress-bar-striped');
             }
         },
 
@@ -241,10 +467,7 @@ define([
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.frame = 0;
-            $.get(webgnome.config.api + '/rewind');
-
-            // clean up the spill ... ha
-            this.SpillGroupLayers.clear();
+            webgnome.cache.rewind();
         },
 
         prev: function(){
@@ -258,10 +481,8 @@ define([
         next: function(){
             if($('.modal').length === 0){
                 this.pause();
-                if(this.SpillGroupLayers.item(this.frame + 1)){
-                    this.controls.seek.slider('value', this.frame + 1);
-                    this.renderStep({step: this.frame + 1});
-                }
+                this.controls.seek.slider('value', this.frame + 1);
+                this.renderStep({step: this.frame + 1});
             }
         },
 
@@ -269,7 +490,12 @@ define([
             this.pause();
             this.state = 'seek';
             this.controls.seek.slider('value', ui.value);
-            this.renderStep({step: ui.value});
+
+            if(ui.value <= webgnome.cache.length){
+                this.renderStep({step: ui.value});
+            } else {
+                this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+            }
         },
 
         resetSeek: function(){
@@ -277,71 +503,119 @@ define([
             this.state = 'pause';
         },
 
-        renderStep: function(options){
-            if(!_.isUndefined(options.step)) {
-                // if the map has the requested frame render it while seeking
-                if(this.SpillGroupLayers.item(options.step)){
-                    this.SpillGroupLayers.item(this.frame).setVisible(false);
-                    this.SpillGroupLayers.item(options.step).setVisible(true);
-                    this.frame = options.step;
-                    this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-                } else {
-                    if(this.state == 'seek'){
-                        // map doesn't have the requested frame layer
-                        // if the user drops it outside the loaded range reset it.
-                        this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
+        renderStep: function(source){
+            var step;
+            if(_.has(source, 'step')){
+                webgnome.cache.at(source.step, _.bind(function(err, step){
+                    if(!err){
+                        this.drawStep(new GnomeStep(step));
                     }
-                }
-            } else if(this.step.get('GeoJson')){
-                this.getStepLayer();
-            }
-        },
-
-        getStepLayer: function(){
-            var layer = new ol.layer.Vector({
-                step: this.step.get('GeoJson').step_num,
-                ts: moment(this.step.get('GeoJson').time_stamp, 'YYYY-MM-DDTHH:mm:ss').format('MM/DD/YYYY HH:mm'),
-                style: new ol.style.Style({
-                    image: new ol.style.Circle({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(0, 0, 0, .75)'
-                        }),
-                        radius: 1,
-                        stroke: new ol.style.Stroke({
-                            color: 'rgba(0, 0, 0, 1)'
-                        })
-                    })
-                }),
-                source: new ol.source.GeoJSON({
-                    // url: ''
-                    projection: 'EPSG:3857',
-                    object: this.step.get('GeoJson').feature_collection
-                })
-            });
-            
-            this.SpillGroupLayers.push(layer);
-
-            if(this.step.get('GeoJson').feature_collection.features[0].geometry.coordinates.length > 0){
-                layer.once('render', _.bind(function(){
-                    this.getStepLayerRendered();
                 }, this));
             } else {
-                this.getStepLayerRendered();
+                step = source;
+                this.drawStep(step);
             }
         },
 
-        getStepLayerRendered: function(){
-            if(this.step.get('GeoJson').step_num > 0){
-                this.SpillGroupLayers.item(this.step.get('GeoJson').step_num - 1).setVisible(false);
-                this.frame = this.step.get('GeoJson').step_num;
-                this.controls.date.text(this.SpillGroupLayers.item(this.frame).get('ts'));
-            }
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state == 'play'){
-                this.controls.seek.slider('value', this.frame + 1);
+        drawStep: function(step){
+            if(!step){ return; }
+            this.renderSpill(step);
+            this.renderCurrent(step);
+            this.renderIce(step);
+
+            this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
+            this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
+                this.drawStepTimeout = setTimeout(_.bind(function(){
+                    this.controls.seek.slider('value', this.frame + 1);
+                }, this), 60);
             } else {
                 this.pause();
-                this.controls.progress.removeClass('active').removeClass('progress-bar-striped');
             }
+        },
+
+        renderSpill: function(step){
+            var traj_source = new ol.source.Vector({
+                features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
+                useSpatialIndex: false
+            });
+            this.SpillLayer.setSource(traj_source);
+        },
+
+        renderCurrent: function(step){
+            var current_features = [];
+            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
+                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
+                for(var i = 0; i < this.checked_currents.length; i++){
+                    var id = this.checked_currents[i];
+                    if(_.has(currents, id)){
+                        for (var c = 0; c < currents[id].features.length; c++){
+                            var coords = currents[id].features[c].geometry.coordinates;
+                            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                            var velocity = currents[id].features[c].properties.velocity;
+                            var f = new ol.Feature({
+                                geometry: new ol.geom.Point(coords)
+                            });
+                            f.set('velocity', velocity);
+
+                            current_features.push(f);
+                        }
+                    }
+                }
+            }
+
+            var cur_source = new ol.source.Vector({
+                features: current_features
+            });
+
+            var cur_cluster = new ol.source.Cluster({
+                source: cur_source
+            });
+
+            this.CurrentLayer.setSource(cur_cluster);
+        },
+
+        renderIce: function(step){
+            var ice_features = [];
+            var ice_data = this.$('input[name=ice_data]:checked').val();
+
+            if(step && step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
+                var ice = step.get('IceGeoJsonOutput').feature_collections;
+                for(var t = 0; t < this.checked_ice.length; t++){
+                    var id = this.checked_ice[t];
+                    if(_.has(ice, id)){
+                        var features;
+                        if(ice_data === 'thickness'){
+                            features = ice[id][1].features;
+                        } else {
+                            features = ice[id][0].features;
+                        }
+                        for(var r = 0; r < features.length; r++){
+                            var coords = features[r].geometry.coordinates;
+                            var poly = new ol.geom.MultiPolygon([coords]);
+                            poly.transform('EPSG:4326', 'EPSG:3857');
+                            var properties = {
+                                geometry: poly
+                            };
+                            properties[ice_data] = features[r].properties[ice_data];
+                            
+                            var f = new ol.Feature(properties);
+                            ice_features.push(f);
+                        }
+                    }
+                }
+            }
+            var ice_source = new ol.source.Vector({
+                features: ice_features,
+                useSpatialIndex: false
+            });
+
+            var ice_image = new ol.source.ImageVector({
+                source: ice_source,
+                style: this.styles.ice[ice_data]
+            });
+
+            this.IceLayer.setSource(ice_image);
         },
 
         disableUI: function(){
@@ -362,89 +636,176 @@ define([
             Mousetrap.bind('left', _.bind(this.prev, this));
         },
 
-        toggle: function(offset){
-            offset = typeof offset !== 'undefined' ? offset : 0;
+        toggleLayers: function(event){
+            var checked_layers = [];
+            this.$('.layers input:checked').each(function(i, input){
+                checked_layers.push(input.id);
+            });
 
-            if(this.full){
-                this.full = false;
-                this.$el.css({width: this.width, paddingLeft: 0});
-            } else{
-                this.full = true;
-                this.$el.css({width: '100%', paddingLeft: offset});
-            }
-            this.ol.map.updateSize();
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('type') === 'base'){
+                    if (checked_layers.indexOf('basemap') !== -1){
+                        if(checked_layers.indexOf(layer.get('name')) !== -1){
+                            layer.setVisible(true);
+                        } else {
+                            layer.setVisible(false);
+                        }
+                    } else {
+                        layer.setVisible(false);
+                    }
+                } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
+                    layer.setVisible(true);
+                } else if (_.isUndefined(layer.get('id'))){
+                    layer.setVisible(false);
+                }
+            });
         },
 
-        renderMap: function(){
-            // check if the model has a map, specifically a bna map that has a geojson output
-            // if it does load it's geojson and put it in a layer on the map
-            // named modelmap
-                        
-            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.MapFromBNA') {
-                webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                    // the map isn't rendered yet, so draw it before adding the layer.
-                    // but don't draw it agian for a normal render if the map is undefined redraw it.
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
-                        this.ol.render();
-                        this.shorelineSource = new ol.source.GeoJSON({
-                            object: geojson,
-                            projection: 'EPSG:3857'
+        toggleCurrentGrid: function(e){
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+            });
+            var id = this.$(e.currentTarget).attr('id');
+            var checked = this.$(e.currentTarget).is(':checked');
+            var gridLayer;
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === id){
+                    gridLayer = layer;
+                }
+            });
+            
+            if (_.isUndefined(gridLayer)){
+                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+                current.getGrid(_.bind(function(geojson){
+                    if (geojson){
+                        var gridSource = new ol.source.Vector({
+                            useSpatialIndex: false,
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
                         });
-                        this.shorelineLayer = new ol.layer.Vector({
-                            source: this.shorelineSource,
-                            name: 'modelmap',
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
+
+                        gridLayer = new ol.layer.Image({
+                            id: id,
+                            source: new ol.source.ImageVector({
+                                source: gridSource,
+                                style: this.styles.currents_grid
                             })
                         });
-
-                        var extent = this.shorelineSource.getExtent();
-                        if(this.ol.map){
-                            this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.map.getView().fitExtent(extent, this.ol.map.getSize());
-                        }
-
-                        this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillGroupLayer);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
+                        this.ol.map.getLayers().insertAt(3, gridLayer);
                     }
-                    if(this.ol.redraw === false){
-                        this.renderSpills();
+                }, this));
+            } else if (!checked && !_.isUndefined(gridLayer)) {
+                this.ol.map.getLayers().forEach(_.bind(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(false);
                     }
                 }, this));
             } else {
-                // if the model doens't have a renderable map yet just render the base layer
-                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    this.ol.render();
-                    this.graticule.setMap(this.ol.map);
-                    this.ol.map.addLayer(this.SpillIndexLayer);
-                    this.ol.map.addLayer(this.SpillGroupLayer);
-                    this.ol.map.render();
-                    this.resetSpills();
-                }
-            }
-        },
-
-        toggleLayer: function(event){
-            var layer = event.target.id;
-
-            if(layer){
-                this.ol.map.getLayers().forEach(function(el){
-                    if(el.get('name') == layer){
-                        if(el.getVisible()){
-                            el.setVisible(false);
-                        } else {
-                            el.setVisible(true);
-                        }
+                this.ol.map.getLayers().forEach(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(true);
                     }
                 });
             }
+        },
+
+        toggleCurrentUV: function(e){
+            var checked = this.$('.current-uv input:checked');
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+
+            if (checked.length > 0){
+                current_outputter.get('current_movers').reset();
+                this.checked_currents = [];
+
+                this.$('.current-uv input:checked').each(_.bind(function(i, input){
+                    var id = input.id.replace('uv-', '');
+                    var current = webgnome.model.get('movers').get(id);
+                    this.checked_currents.push(id);
+                    current_outputter.get('current_movers').add(current);
+                }, this));
+            } else {
+                current_outputter.get('current_movers').reset();
+                this.checked_currents = [];
+            }
+            this.renderStep({step: this.frame});
+
+            current_outputter.save();
+        },
+
+        toggleIceGrid: function(e){
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+            });
+            var id = this.$(e.currentTarget).attr('id');
+            var checked = this.$(e.currentTarget).is(':checked');
+            var gridLayer;
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === id){
+                    gridLayer = layer;
+                }
+            });
+            
+            if (_.isUndefined(gridLayer)){
+                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+                current.getGrid(_.bind(function(geojson){
+                    if (geojson){
+                        var gridSource = new ol.source.Vector({
+                            useSpatialIndex: false,
+                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
+                        });
+
+                        gridLayer = new ol.layer.Image({
+                            id: id,
+                            source: new ol.source.ImageVector({
+                                source: gridSource,
+                                style: this.styles.ice_grid
+                            })
+                        });
+                        this.ol.map.getLayers().insertAt(3, gridLayer);
+                    }
+                }, this));
+            } else if (!checked && !_.isUndefined(gridLayer)) {
+                this.ol.map.getLayers().forEach(_.bind(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(false);
+                    }
+                }, this));
+            } else {
+                this.ol.map.getLayers().forEach(function(layer){
+                    if (layer.get('id') === id){
+                        layer.setVisible(true);
+                    }
+                });
+            }
+        },
+
+        toggleIceUV: function(e){
+            var checked = this.$('.ice-uv input:checked');
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+
+            if (checked.length > 0){
+                current_outputter.get('ice_movers').reset();
+                this.checked_ice = [];
+
+                this.$('.ice-uv input:checked').each(_.bind(function(i, input){
+                    var id = input.id.replace('uv-', '');
+                    var current = webgnome.model.get('movers').get(id);
+                    this.checked_ice.push(id);
+                    current_outputter.get('ice_movers').add(current);
+                }, this));
+            } else {
+                current_outputter.get('ice_movers').reset();
+                this.checked_ice = [];
+            }
+
+            this.renderStep({step: this.frame});
+
+            current_outputter.save();
+        },
+
+        toggleIceData: function(e){
+            this.renderStep({step: this.frame});
         },
 
         toggleSpill: function(e){
@@ -456,7 +817,7 @@ define([
                 if(this.$('.on').hasClass('fixed')){
                     this.ol.map.un('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.un('click', this.addLineSpill, this);
+                    this.ol.map.removeInteraction(this.draw);
                 }
 
                 this.$('.on').toggleClass('on');
@@ -469,7 +830,7 @@ define([
                 if(this.$(e.target).hasClass('fixed')){
                     this.ol.map.on('click', this.addPointSpill, this);
                 } else {
-                    this.ol.map.on('click', this.addLineSpill, this);
+                    this.addLineSpill();
                 }
             }
         },
@@ -478,25 +839,35 @@ define([
             event.target.blur();
         },
 
+        showHelp: function(){
+            this.$('.help-button').show();
+        },
+
+        helpBlur: function(e){
+            e.target.blur();
+        },
+
         renderSpills: function(){
             // foreach spill add at feature to the source
-            spills = webgnome.model.get('spills');
+            var spills = webgnome.model.get('spills');
             spills.forEach(function(spill){
                 var start_position = spill.get('release').get('start_position');
-                if(start_position.length > 2){
+                var end_position = spill.get('release').get('end_position');
+                var geom;
+                if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                     start_position = [start_position[0], start_position[1]];
+                    geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+                } else {
+                    start_position = [start_position[0], start_position[1]];
+                    end_position = [end_position[0], end_position[1]];
+                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
                 }
-                var geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
                 var feature = new ol.Feature({
                     geometry: geom,
                     spill: spill.get('id')
                 });
-
                 this.SpillIndexSource.addFeature(feature);
             }, this);
-
-            this.ol.map.on('pointermove', this.spillHover, this);
-            this.ol.map.on('click', this.spillClick, this);
         },
 
         resetSpills: function(){
@@ -506,33 +877,32 @@ define([
         },
 
         addLineSpill: function(e){
-            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-            coord.push(0);
-            this.spillCoords.push(coord);
-            if(this.spillCoords.length > 1){
+            this.draw = new ol.interaction.Draw({
+                source: this.SpillIndexSource,
+                type: 'LineString'
+            });
+            this.ol.map.addInteraction(this.draw);
+            this.draw.on('drawend', _.bind(function(e){
+                var spillCoords = e.feature.getGeometry().getCoordinates();
+                for (var i = 0; i < spillCoords.length; i++){
+                    spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
+                    spillCoords[i].push('0');
+                }
                 var spill = new GnomeSpill();
-                // add the dummy z-index thing
-                spill.get('release').set('start_position', this.spillCoords[0]);
-                spill.get('release').set('end_position', this.spillCoords[1]);
+                spill.get('release').set('start_position', spillCoords[0]);
+                spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
                 spill.get('release').set('release_time', webgnome.model.get('start_time'));
                 spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-
-                spill.save(null, {
-                    validate: false,
-                    success: function(){
-                        var spillform = new SpillForm(null, spill);
-                        spillform.render();
-                        spillform.on('save', function(){
-                            webgnome.model.get('spills').add(spill);
-                            webgnome.model.save();
-                        });
-                        spillform.on('hidden', spillform.close);
-                    }
+                var spillform = new SpillForm({showMap: true}, spill);
+                spillform.render();
+                spillform.on('save', function(spill){
+                    webgnome.model.get('spills').add(spill);
+                    webgnome.model.trigger('sync');
                 });
-
+                spillform.on('hidden', spillform.close);
                 this.toggleSpill();
 
-            }
+            }, this));
         },
 
         addPointSpill: function(e){
@@ -546,18 +916,13 @@ define([
             spill.get('release').set('release_time', webgnome.model.get('start_time'));
             spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
 
-            spill.save(null, {
-                validate: false,
-                success: function(){
-                    var spillform = new SpillForm(null, spill);
-                    spillform.render();
-                    spillform.on('save', function(){
-                        webgnome.model.get('spills').add(spill);
-                        webgnome.model.save();
-                    });
-                    spillform.on('hidden', spillform.close);
-                }
+            var spillform = new SpillForm({showMap: true}, spill);
+            spillform.render();
+            spillform.on('save', function(spill){
+                webgnome.model.get('spills').add(spill);
+                webgnome.model.trigger('sync');
             });
+            spillform.on('hidden', spillform.close);
 
             this.toggleSpill();
         },
@@ -567,14 +932,14 @@ define([
                 var pointer = this.ol.map.forEachFeatureAtPixel(e.pixel, function(){
                     return true;
                 }, null, function(layer){
-                    if(layer.get('name') == 'spills'){
+                    if(layer.get('name') === 'spills'){
                         return layer;
                     }
                     return false;
                 });
                 if (pointer) {
                     this.ol.map.getViewport().style.cursor = 'pointer';
-                } else if(this.ol.map.getViewport().style.cursor == 'pointer') {
+                } else if(this.ol.map.getViewport().style.cursor === 'pointer') {
                     this.ol.map.getViewport().style.cursor = '';
                 }
             }
@@ -584,17 +949,18 @@ define([
             var spill = this.ol.map.forEachFeatureAtPixel(e.pixel, function(feature){
                 return feature.get('spill');
             }, null, function(layer){
-                if(layer.get('name') == 'spills'){
+                if(layer.get('name') === 'spills'){
                     return layer;
                 }
                 return false;
             });
             if(spill){
-                var spillform = new SpillForm(null, webgnome.model.get('spills').get(spill));
-                spillform.on('hidden', function(){
+                var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
+                spillform.on('hidden', spillform.close);
+                spillform.on('save', function(spill){
+                    webgnome.model.get('spills').trigger('change');
                     webgnome.model.trigger('sync');
                 });
-                spillform.on('hidden', spillform.close);
                 spillform.render();
             }
         },
@@ -613,7 +979,16 @@ define([
             if(webgnome.model){
                 webgnome.model.off('change', this.contextualize, this);
                 webgnome.model.off('sync', this.spillListeners, this);
+                webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
             }
+            if(this.drawStepTimeout){
+                clearTimeout(this.drawStepTimeout);
+            }
+            webgnome.cache.off('step:recieved', this.renderStep, this);
+            webgnome.cache.off('step:failed', this.pause, this);
+            Mousetrap.unbind('space');
+            Mousetrap.unbind('right');
+            Mousetrap.unbind('left');
             this.remove();
             this.unbind();
             this.ol.close();

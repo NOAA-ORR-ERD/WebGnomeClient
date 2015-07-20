@@ -2,41 +2,50 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'chosen',
+    'moment',
     'jqueryui/core',
+    'model/substance',
     'model/oil/distinct',
     'views/modal/form',
     'views/form/oil/table',
     'views/modal/loading',
     'views/form/oil/specific',
     'text!templates/form/oil.html'
-], function($, _, Backbone, chosen, jqueryui, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+    'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal fade form-modal oil-form',
         name: 'oillib',
         title: 'Oil Query Form',
         size: 'lg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
-
+        
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
-            formModalHash['change input:not(.chosen)'] = 'update';
-            formModalHash['keyup input:not(.chosen)'] = 'update';
+            formModalHash['change input:not(.chosen-search input)'] = 'update';
+            formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
-            formModalHash['shown.bs.modal'] = 'triggerTableResize';
+            formModalHash.ready = 'triggerTableResize';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
-        initialize: function(elementModel, options){
+        initialize: function(options, elementModel){
+            this.module = module;
             this.oilTable = new OilTable();
-            this.elementModel = elementModel;
+            this.model = elementModel;
+            this.oilCache = localStorage.getItem('oil_cache');
+            var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
 
-            this.loadingGif = new LoadingModal();
-            this.loadingGif.render();
+            if (_.isNull(oilCacheJson) || moment().unix() - oilCacheJson.ts > 86400){
+                this.loadingGif = new LoadingModal({title: "Loading Oil Database..."});
+                this.loadingGif.render();
+            }
 
             // Passed oilTable's events hash to this view's events
             
@@ -50,10 +59,6 @@ define([
 
         render: function(options){
             if(this.oilTable.ready){
-                // Removes loading modal just prior to render call of oilLib
-
-                this.loadingGif.hide();
-                
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
@@ -61,12 +66,16 @@ define([
                     results: this.oilTable.oilLib.length
                 });
 
-                // Placeholder value for chosen that allows it to be properly scoped aka be usable by the view
+                if (!_.isUndefined(this.loadingGif)){
+                    this.loadingGif.hide();
+                }
 
                 FormModal.prototype.render.call(this, options);
 
                 this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
+
+                
 
                 // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
@@ -86,6 +95,7 @@ define([
                 this.createSliders(this.api_min, this.api_max, '.slider-api');
                 this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
                 this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
+                this.updateTooltipWidth();
             } else {
                 this.oilTable.on('ready', this.render, this);
             }
@@ -94,6 +104,11 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
+
+            var substance = this.model.get('substance');
+            if (substance && substance.get('adios_oil_id')){
+                this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
+            }
         },
 
         triggerTableResize: function(){
@@ -107,20 +122,33 @@ define([
                 var quantity = arr[i];
                 var min = quantity + '_min';
                 var max = quantity + '_max';
-                if (!this[min] && !this[max] && quantity !== 'pour_point'){
-                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
-                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity]; }).attributes[quantity]);
+                if (!this[min] && !this[max] && (quantity !== 'pour_point' && quantity !== 'viscosity')){
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
+                } else if (quantity === 'viscosity') {
+                    var visMin = _.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
+                    var visMax = _.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
+                    this[min] = visMin;
+                    this[max] = visMax;
                 } else {
-                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity][0]; }).attributes[quantity][0]);
-                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models,
-                        function(model){ return model.attributes[quantity][1]; }).attributes[quantity][1]);
+                    this[min] = Math.floor(_.min(this.oilTable.oilLib.models, this.modelIteratorWithKey(quantity, 0), this).attributes[quantity][0]);
+                    this[max] = Math.ceil(_.max(this.oilTable.oilLib.models, this.modelIteratorWithKey(quantity, 1), this).attributes[quantity][1]);
                 }
                 obj[quantity] = {'min': this[min], 'max': this[max]};
             }
             return obj;
+        },
+
+        modelIterator: function(quantity){
+            return (function(model){
+                return model.attributes[quantity];
+            });
+        },
+
+        modelIteratorWithKey: function(quantity, key){
+            return (function(model){
+                return model.attributes[quantity][key];
+            });
         },
 
         renderTable: function(){
@@ -128,8 +156,7 @@ define([
         },
 
         populateSelect: function(){
-            var chosen = jQuery.fn.chosen;
-            this.$('.chosen-select').chosen({width: '265px', no_results_text: 'No results match: '});
+            this.$('.chosen-select').chosen({width: '192.5px', no_results_text: 'No results match: '});
             var valueObj = this.oilDistinct.at(2).get('values');
             this.$('.chosen-select').append($('<option></option>').attr('value', 'All').text('All'));
             for (var key in valueObj){
@@ -158,8 +185,10 @@ define([
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
-            }
-            else {
+            } else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
+                search.text = search.text.replace(/^.*(number|#).*$/, "no.");
+                this.oilTable.oilLib.search(search);
+            } else {
                 this.oilTable.oilLib.search(search);
             }
             this.oilTable.render();
@@ -192,42 +221,83 @@ define([
         },
 
         close: function(){
-            this.specificOil.close();
+            if(this.specificOil){
+                this.specificOil.close();
+            }
             this.oilTable.close();
             this.trigger('close');
             FormModal.prototype.close.call(this);
+            if (!_.isUndefined(this.loadingGif)){
+                this.loadingGif.close();
+            }
         },
 
         save: function(){
-            this.oilName = this.$('.select').data('name');
-            this.elementModel.set('substance', this.oilName);
-            this.elementModel.save();
-            console.log(this.elementModel);
-            FormModal.prototype.save.call(this);
+            var oilName = this.$('.select').data('name');
+            var oilId = this.$('.select').data('id');
+            this.model.set('substance', new SubstanceModel({adios_oil_id: oilId, name: oilName}));
+            this.model.get('substance').fetch({
+                success: _.bind(function(model){
+                    this.model.set('substance', model);
+                    var spills = webgnome.model.get('spills');
+                    for (var i = 0; i < spills.length; i++){
+                        spills.at(i).get('element_type').set('substance', model);
+                    }
+                    this.hide();
+                }, this)
+            });
         },
 
         createSliders: function(minNum, maxNum, selector){
-            this.$(selector).slider({
-                        range: true,
-                        min: minNum,
-                        max: maxNum,
-                        values: [minNum, maxNum],
-                        create: _.bind(function(){
+            //Converting viscosity from m^2/s to cSt before appending the values to the slider
+            if (selector !== '.slider-viscosity'){
+                this.$(selector).slider({
+                            range: true,
+                            min: minNum,
+                            max: maxNum,
+                            values: [minNum, maxNum],
+                            create: _.bind(function(){
+                               this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 minNum + '</div></div>');
+                               this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 maxNum + '</div></div>');
+                            }, this),
+                            slide: _.bind(function(e, ui){
+                               this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 ui.values[0] + '</div></div>');
+                               this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                 ui.values[1] + '</div></div>');
+                               this.updateTooltipWidth();
+                            }, this),
+                            stop: _.bind(function(){
+                                this.update();
+                            }, this)
+                        });
+            } else {
+                // Overriding the original slide callback to follow log scale for the viscosity slider
+                this.$(selector).slider({
+                    range: true,
+                    min: 0,
+                    max: 8,
+                    values: [0, 8],
+                    create: _.bind(function(e, ui){
                            this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             minNum + '</div></div>');
+                                                             Math.pow(10, 0) + '</div></div>');
                            this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             maxNum + '</div></div>');
+                                                             Math.pow(10, 8) + '</div></div>');
                         }, this),
-                        slide: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             ui.values[0] + '</div></div>');
-                           this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             ui.values[1] + '</div></div>');
-                        }, this),
-                        stop: _.bind(function(){
-                            this.update();
-                        }, this)
-                    });
+                    slide: _.bind(function(e, ui){
+                            this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                Math.pow(10, ui.values[0]) + '</div></div>');
+                            this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
+                                                                Math.pow(10, ui.values[1]) + '</div></div>');
+                            this.updateTooltipWidth();
+                    }, this),
+                    stop: _.bind(function(){
+                        this.update();
+                    }, this)
+                });
+            }
         },
 
         goBack: function(e){

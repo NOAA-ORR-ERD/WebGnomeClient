@@ -3,10 +3,13 @@ define([
     'jquery',
     'backbone'
 ], function(_, $, Backbone){
+    'use strict';
     var nwsWind = Backbone.Model.extend({
+        fetching: false,
+
         url: function(){
-            // return 'http://forecast.weather.gov/MapClick.php';
-            return 'http://graphical.weather.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?'
+            // http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?latitude=47&longitude=-125.5&format=JSON
+            return 'http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?format=JSON';
         },
 
         validate: function(attrs, options){
@@ -21,22 +24,23 @@ define([
                     options = {};
                 }
                 if(!_.has(options, 'data')){
-                    options.data = {};
+                    options.data = {
+                        'latitude': this.get('lat'),
+                        'longitude': this.get('lon')
+                    };
+                } else {
+                    options.data.latitude = this.get('lat');
+                    options.data.longitude = this.get('lon');
                 }
-                _.extend(options.data, {
-                    // 'FcstType': 'digitalDWML',
-                    // 'w3': 'sfcwind',
-                    // 'w3u': '0',
-                    'product': 'time-series',
-                    'wspd': 'wspd',
-                    'wdir': 'wdir',
-                    'lat': this.get('lat'),
-                    'lon': this.get('lon')
-                });
+                this.fetching = true;
                 Backbone.Model.prototype.fetch.call(this, options);
             }
         },
 
+        parse: function(options){
+            this.fetching = false;
+            return Backbone.Model.prototype.parse.call(this, options);
+        },
     });
 
     return nwsWind;

@@ -2,15 +2,18 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
     'text!templates/form/spill/type.html',
     'model/spill',
+    'model/release',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/spill/well',
     'views/form/spill/pipeline'
-], function($, _, Backbone, FormModal, FormTemplate, SpillModel,
+], function($, _, Backbone, module, FormModal, FormTemplate, SpillModel, GnomeRelease,
     SpillInstantForm, SpillContinueForm, SpillWellForm, SpillPipeForm){
+    'use strict';
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
         className: 'modal fade form-modal spilltype-form',
@@ -24,6 +27,11 @@ define([
             }, FormModal.prototype.events);
         },
 
+        initialize: function(options){
+            this.module = module;
+            FormModal.prototype.initialize.call(this, options);
+        },
+
         render: function(options){
             this.body = _.template(FormTemplate);
             this.buttons = null;
@@ -31,33 +39,35 @@ define([
         },
 
         instant: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillInstantForm(null, spill);
                 spillForm.render();
                 spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },
 
         continue: function(){
-            var spill = new SpillModel();
+            var spill = new SpillModel({release: new GnomeRelease()});
             this.on('hidden', _.bind(function(){
                 var spillForm = new SpillContinueForm(null, spill);
                 spillForm.render();
                 spillForm.on('wizardclose', spillForm.close);
                 spillForm.on('save', function(){
                     webgnome.model.get('spills').add(spill);
-                    webgnome.model.save();
+                    webgnome.model.save(null, {validate: false});
                     spillForm.on('hidden', function(){
                         spillForm.trigger('wizardclose');
                     });
+                    webgnome.router.views[1].updateSpill();
                 });
             }, this));
         },

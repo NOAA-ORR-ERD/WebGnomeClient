@@ -4,8 +4,12 @@ define([
     'backbone',
     'text!templates/default/menu.html',
     'views/modal/about',
+    'views/modal/hotkeys',
+    'sweetalert',
+    'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
+    'use strict';
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
      listens for click events on menu items and fires specialized events, like
@@ -22,9 +26,7 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
-            if(webgnome.hasModel()){
-                webgnome.model.on('sync', this.contextualize, this);
-            }
+            //webgnome.model.on('change', this.contextualize, this);
         },
 
         events: {
@@ -41,7 +43,9 @@ define([
             // 'click .rununtil': 'rununtil',
 
             'click .about': 'about',
-            'click .tutorial': 'tutorial',
+            'click .overview': 'overview',
+            'click .faq': 'faq',
+            'click .hotkeys': 'hotkeys',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
@@ -84,14 +88,34 @@ define([
 
         newModel: function(event){
             event.preventDefault();
-            webgnome.model = null;
-            webgnome.router.navigate('', true);
-            webgnome.router.navigate('setup', true);
+            swal({
+                title: 'Create New Model?',
+                text:'Creating a new model will delete all data related to any current model.',
+                type: 'warning',
+                showCancelButton: true,
+            }, _.bind(function(isConfirm){
+                if(isConfirm){
+                    localStorage.setItem('prediction', null);
+                    webgnome.model = new GnomeModel();
+
+                    if(_.has(webgnome, 'cache')){
+                        webgnome.cache.rewind();
+                    }
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.contextualize();
+                            webgnome.router.navigate('', true);
+                            webgnome.router.navigate('config', true);
+                        }, this)
+                    });
+                }
+            }, this));
         },
 
         editModel: function(event){
             event.preventDefault();
-            webgnome.router.navigate('setup', true);
+            webgnome.router.navigate('config', true);
         },
 
         load: function(event){
@@ -106,7 +130,7 @@ define([
 
         save: function(event){
             event.preventDefault();
-            webgnome.router.navigate('save', true);
+            window.location.href = webgnome.config.api + '/download';
         },
 
         debugView: function(event){
@@ -126,8 +150,19 @@ define([
             new AboutModal().render();
         },
 
-        tutorial: function(event){
+        overview: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('overview', true);
+        },
 
+        faq: function(event){
+            event.preventDefault();
+            webgnome.router.navigate('faq', true);
+        },
+
+        hotkeys: function(event){
+            event.preventDefault();
+            new HotkeysModal().render();
         },
 
         enableMenuItem: function(item){
@@ -139,8 +174,10 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel() || !webgnome.validModel()){
+            if(!webgnome.hasModel()){
                 this.disableMenuItem('save');
+            } else {
+                this.enableMenuItem('save');
             }
             
             if(webgnome.hasModel()){
@@ -149,7 +186,7 @@ define([
                 this.disableMenuItem('edit');
             }
 
-            if(window.location.href.indexOf('model') != -1){
+            if(window.location.href.indexOf('model') !== -1){
                 this.enableMenuItem('debugView');
             } else {
                 this.disableMenuItem('debugView');
@@ -163,6 +200,13 @@ define([
                 placement: 'right',
                 container: 'body'
             });
+        },
+
+        close: function(){
+            $('.sweet-overlay').remove();
+            $('.sweet-alert').remove();
+
+            Backbone.View.prototype.close.call(this);
         }
     });
 

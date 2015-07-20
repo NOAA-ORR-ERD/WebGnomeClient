@@ -4,6 +4,7 @@ define([
     'backbone',
     'text!templates/default/adios.html'
 ], function($, _, Backbone, AdiosTemplate){
+    'use strict';
     var adiosView = Backbone.View.extend({
         className: 'container page adios',
 

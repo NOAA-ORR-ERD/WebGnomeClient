@@ -1,35 +1,253 @@
-<ul class="nav nav-tabs" role="tablist">
-    <li class="active"><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
-    <li><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
-    <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
-    <li><a href="#water" role="tab" data-toggle="tab">Water</a></li>
-    <li><a href="#viscosity" role="tab" data-toggle="tab">Viscosity</a></li>
-    <li><a href="#ics209" role="tab" data-toggle="tab">ICS209</a></li>
-</ul>
-
-<div class="tab-content">
-    <div class="tab-pane active" id="budget-graph">
-        <div class="chart-holder">
-            <h5>Least Remaining</h5>
-            <div class="chart minimum"></div>
-        </div>
-        <div class="chart-holder">
-            <h5>Expected Remaining</h5>
-            <div class="chart mean"></div>
-        </div>
-        <div class="chart-holder">
-            <h5>Most Remaining</h5>
-            <div class="chart maximum"></div>
-        </div>
-        <div class="timeline">
-            <h5>Timeline</h5>
-            <div class="chart"></div>
-        </div>
+<div class="container">
+    <div class="col-md-12">
+        <div class="pull-right gnome-help" title="Click for Help"></div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#budget-table" role="tab" data-toggle="tab">Oil Budget - Table</a></li>
+            <li><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
+            <li><a href="#evaporation" role="tab" data-toggle="tab">Evaporation</a></li>
+            <li><a href="#dispersion" role="tab" data-toggle="tab">Dispersion</a></li>
+            <li><a href="#sedimentation" role="tab" data-toggle="tab">Sedimentation</a></li>
+            <li><a href="#emulsification" role="tab" data-toggle="tab">Water</a></li>
+            <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
+            <li><a href="#viscosity" role="tab" data-toggle="tab">Viscosity</a></li>
+            <li><a href="#ics209" role="tab" data-toggle="tab">ICS209</a></li>
+        </ul>
     </div>
-    <div class="tab-pane" id="budget-table">
-        <table>
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+
+    <div class="tab-content">
+        <div class="tab-pane" id="budget-graph">
+            {{ buttons }}
+            <div class="chart-holder chart-holder-uncert">
+                <h6>Least Floating</h6>
+                <div class="chart minimum">
+                    <div class="canvas"></div>
+                </div>
+            </div>
+            <div class="chart-holder">
+                <h6 class="bold">Expected Floating</h6>
+                <div class="chart mean">
+                    <div class="canvas"></div>
+                </div>
+            </div>
+            <div class="chart-holder chart-holder-uncert">
+                <h6>Most Floating</h6>
+                <div class="chart maximum">
+                    <div class="canvas"></div>
+                </div>
+            </div>
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane active" id="budget-table">
+            <div class="col-md-8">
+                <div class="panel panel-default settings">
+                    <div class="panel-heading">Table Column Display</div>
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label for="" class="control-label col-md-1">Time</label>
+                                <div class="col-md-2">
+                                    <select class="form-control time">
+                                        <option value="date">Date</option>
+                                        <option value="hour" selected>Hour</option>
+                                    </select>
+                                </div>
+                                <label for="" class="control-label col-md-2">Released</label>
+                                <div class="col-md-2">
+                                    <select name="" id="" class="form-control released">
+                                        <option value="bbl">bbl</option>
+                                        <option value="gal">gal</option>
+                                        <option value="m^3">m^3</option>
+                                        <option value="ton">ton</option>
+                                        <option value="metric ton">mt</option>
+                                        <option value="kg">kg</option>
+                                    </select>
+                                </div>
+                                <label for="" class="control-label col-md-2">Other</label>
+                                <div class="col-md-3">
+                                    <select name="" id="" class="form-control other">
+                                        <option value="same">Same as Released</option>
+                                        <option value="percent">Percent</option>
+                                        <option value="fraction">Fraction</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default export">
+                    <div class="panel-heading">Export</div>
+                    <div class="panel-body">
+                        <a class="btn btn-info download" data-type="csv" title="CSV files are best when importing into spreadsheet applications (Numbers, Excel, Calc)."><span class="glyphicon glyphicon-cloud-download"></span> CSV</a>
+                        <a class="btn btn-info download" data-type="html" title="HTML files are best when importing into wordprocessing applications (Word, Pages, Writer)."><span class="glyphicon glyphicon-cloud-download"></span> HTML</a>
+                        <a class="btn btn-info print"><span class="glyphicon glyphicon-print"></span> Print</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info">
+                    <div><label>Oil Name:</label> {{ name }}</div>
+                    <div><label>API:</label> {{ api }}</div>
+                    <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                    <div><label>Pour Point:</label> {{ pour_point }}</div>
+                    <div><label>Wave Height:</label> {{ wave_height }}</div>
+                    <div><label>Water Temp:</label> {{ water_temp }}</div>
+                    <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                    <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <table class="table table-striped">
+                    <tr><td>
+                        <div class="spinner">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+                    </td></tr>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane" id="evaporation">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="dispersion">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="sedimentation">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="density">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">kg/cu m</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="emulsification">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">Percent</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="viscosity">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">cSt</div>
+                    <div class="axisLabel xaxisLabel">Time</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="ics209">
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Report Period</div>
+                    <div class="panel-body">
+                        <div class="timeline">
+                            <div class="chart">
+                                <div class="axisLabel yaxisLabel">{{ units }}</div>
+                                <div class="axisLabel xaxisLabel">Time</div> 
+                                <div class="canvas"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <form class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="start_time" class="col-xs-2 control-label">Start Time</label>
+                                    <div class="col-xs-4">
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control" id="start_time" value="">
+                                            <span class="input-group-addon" id="datepick_start">
+                                                <i></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <label for="end_time" class="col-xs-2 control-label">End Time</label>
+                                    <div class="col-xs-4">
+                                        <div class="input-group date">
+                                            <input type="text" class="form-control" id="end_time" value="">
+                                            <span class="input-group-addon" id="datepick_end">
+                                                <i></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default settings">
+                    <div class="panel-heading">Settings </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <label for="" class="control-label col-md-2">Unit</label>
+                            <div class="col-md-6">
+                                <select name="" id="" class="form-control vol-units">
+                                    <option value="bbl">bbl</option>
+                                    <option value="gal">gal</option>
+                                    <option value="m^3">m^3</option>
+                                    <option value="ton">ton</option>
+                                    <option value="metric ton">mt</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default export">
+                    <div class="panel-heading">Export</div>
+                    <div class="panel-body">
+                        <a class="btn btn-info download" data-type="csv" title="CSV files are best when importing into spreadsheet applications (Numbers, Excel, Calc)."><span class="glyphicon glyphicon-cloud-download"></span> CSV</a>
+                        <a class="btn btn-info download" data-type="html" title="HTML files are best when importing into wordprocessing applications (Word, Pages, Writer)."><span class="glyphicon glyphicon-cloud-download"></span> HTML</a>
+                        <a class="btn btn-info print"><span class="glyphicon glyphicon-print"></span> Print</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12 ics-table">
+            </div>
+        </div>
     </div>
 </div>

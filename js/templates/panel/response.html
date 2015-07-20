@@ -1,0 +1,20 @@
+<div class="chart">
+    <div class="axisLabel yaxisLabel"></div>
+    <div class="axisLabel xaxisLabel">Time</div> 
+    <div class="canvas"></div>
+</div>
+{% if (responses.length > 0) { %}
+    <div class="response-list">
+        {% for (var i = 0; i < responses.length; i++){ %}
+            <div class="single row" data-id="{{ responses[i].get('id') }}">
+                <div class="col-sm-9">
+                    <h5>{{ responses[i].get('name') }}</h5>
+                </div>
+                <div class="col-sm-3">
+                    <span class="trash" title="Remove {{ responses[i].get('name') }}"></span>
+                    <span class="edit" title="Edit {{ responses[i].get('name') }}"></span>
+                </div>
+            </div>
+        {% } %}
+    </div>
+{% } %}

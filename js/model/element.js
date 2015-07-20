@@ -2,17 +2,21 @@ define([
     'underscore',
     'backbone',
     'model/base',
-    'model/initializers/windages'
-], function(_, Backbone, BaseModel, GnomeWindages){
+    'model/initializers/windages',
+    'model/substance'
+], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
+    'use strict';
     var gnomeElement = BaseModel.extend({
         url: '/element_type',
+
+        model: {
+            substance: GnomeSubstance
+        },
 
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
-            'substance': {
-                'name': 'ALAMO'
-            },
+            'substance': null,
             'initializers': [
                 {
                     'windage_range': [
@@ -21,15 +25,16 @@ define([
                     ],
                     'obj_type': 'gnome.spill.elements.InitWindages',
                     'windage_persist': 900
-                },
-                {
-                    'obj_type': 'gnome.spill.elements.InitArraysFromOilProps'
                 }
             ]
         },
 
-        validate: function(){
-            
+        validate: function(attrs, options){
+            if (localStorage.getItem('prediction') !== 'trajectory'){
+                if (attrs.substance && !attrs.substance.isValid()){
+                    return attrs.substance.validationError;
+                }
+            }
         },
 
         toTree: function(){

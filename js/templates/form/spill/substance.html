@@ -1,0 +1,78 @@
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-primary add oil-select">
+            Select Oil
+        </a>
+        <a class="btn btn-default null-substance pull-right">
+            Non-weathering Substance
+        </a>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal">
+            <div class="form-group static">
+                <label class="control-label col-md-4">Name:</label> 
+                <div class="col-md-8"><p class="form-control-static">{{ name }}</p></div>
+            </div>
+            <div class="form-group static">
+                <label class="control-label col-md-4">API:</label>
+                <div class="col-md-4"><p class="form-control-static">{{ api }}</p></div>
+            </div>
+            <div class="form-group static">
+                <label class="control-label col-md-4">Pour Point:</label> 
+                <div class="col-md-4"><p class="form-control-static">{{ temps.pour_point_max_f }} &deg;F | ({{ temps.pour_point_max_c }} &deg;C)</p></div>
+            </div>
+            <div class="form-group static">
+                <label class="control-label col-md-4">Flash Point:</label> 
+                <div class="col-md-4"><p class="form-control-static">{{ temps.flash_point_max_f }} &deg;F | ({{ temps.flash_point_max_c }} &deg;C)</p></div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-4">Categories: </label>
+                <div class="col-md-8">
+                    <p class="form-control-static">
+                        {% for(c in categories){ %}
+                            <span class="label label-warning">{{ categories[c] }}</span>
+                        {% } %}
+                    </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label id="manual" for="emulsion" class="control-label col-md-4">Emulsion Constant:</label>
+                <div class="col-md-2">
+                    <input type="number" id="emulsion" class="manual form-control col-md-1" min="0">
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control manual" id="units-bullwinkle">
+                        <option value="time">hours</option>
+                        <option value="percent">%</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <a class="btn btn-link reload-oil">
+                        Reset
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if (oilCache.length > 1){ %}
+        <div class="col-sm-12">
+            <div class="cacheContainer panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Recently selected oils</h4>
+                </div>
+                <div class="panel-body show">
+                    <ul>
+                        {% for (var i = 1; i < oilCache.length; i++){ %}
+                            <li>
+                                <a class="btn oil-cache" data-adios-id="{{ oilCache[i].get('name') }}">
+                                    {{ oilCache[i].get('name') }}
+                                </a>
+                            </li>
+                        {% } %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% } %}
+</div>

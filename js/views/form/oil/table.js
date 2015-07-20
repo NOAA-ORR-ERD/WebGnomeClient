@@ -5,6 +5,7 @@ define([
     'model/oil/library',
     'text!templates/oil/table.html'
 ], function($, _, Backbone, OilLib, OilTableTemplate){
+    'use strict';
     var oilTableView = Backbone.View.extend({
         id: 'tableContainer',
         ready: false,
@@ -59,7 +60,7 @@ define([
             var ns = e.target.className,
                 cs = this.oilLib.sortAttr;
 
-            if (ns == cs){
+            if (ns === cs){
                 this.oilLib.sortDir *= -1;
             } else {
                 this.oilLib.sortDir = 1;

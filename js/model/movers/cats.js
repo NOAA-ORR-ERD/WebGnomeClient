@@ -1,10 +1,11 @@
 define([
     'underscore',
     'backbone',
-    'model/base',
+    'model/movers/base',
     'model/environment/tide'
-], function(_, Backbone, BaseModel, GnomeTide){
-    var currentMover = BaseModel.extend({
+], function(_, Backbone, BaseMover, GnomeTide){
+    'use strict';
+    var catsMover = BaseMover.extend({
         urlRoot: '/mover/',
 
         defaults: {
@@ -52,5 +53,5 @@ define([
         }
     });
 
-    return currentMover;
+    return catsMover;
 });

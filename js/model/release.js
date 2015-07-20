@@ -1,9 +1,11 @@
 define([
     'underscore',
     'backbone',
+    'ol',
     'model/base',
     'moment'
-], function(_, Backbone, BaseModel, moment){
+], function(_, Backbone, ol, BaseModel, moment){
+    'use strict';
     var gnomeRelease = BaseModel.extend({
         url: '/release',
 
@@ -19,41 +21,98 @@ define([
 
         initialize: function(options){
             var start_time = '';
-            if (!_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 start_time = moment(webgnome.model.get('start_time'));
             } else {
                 start_time = moment();
             }
 
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
             }
             var end_time = '';
-            if (!_.isUndefined(webgnome.model)){
+            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 end_time = start_time.add(webgnome.model.get('duration'), 's');
             } else {
                 end_time = moment();
             }
+
+            var prediction = localStorage.getItem('prediction');
+
+            if (prediction === 'trajectory' || prediction === 'both'){
+                this.set('num_per_timestep', null);
+                this.set('num_elements', 1000);
+            } else {
+                this.set('num_per_timestep', 10);
+                this.set('num_elements', null);
+            }
             
             if(_.isUndefined(this.get('end_release_time'))){
-                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
+                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
+
             BaseModel.prototype.initialize.call(this, options);
         },
 
         validate: function(attrs, options){
-            if(parseFloat(attrs.start_position[0]) != attrs.start_position[0] || parseFloat(attrs.start_position[1]) != attrs.start_position[1]){
-                return 'Start position must be in decimal degrees.';
+            if(this.validateAmount(attrs)){
+                return this.validateAmount(attrs);
             }
-
-            if(parseFloat(attrs.end_position[0]) != attrs.end_position[0] || parseFloat(attrs.end_position[1]) != attrs.end_position[1]){
-                return 'Start position must be in decimal degrees.';
+            if(this.validateLocation(attrs)){
+                return this.validateLocation(attrs);
             }
+        },
 
-            if(isNaN(attrs.num_elements)){
-                return 'Release amount must be a number.';
+        validateLocation: function(attrs){
+            if (_.isUndefined(attrs)){
+                attrs = this.attributes;
             }
             
+            if(parseFloat(attrs.start_position[0]) !== attrs.start_position[0] || parseFloat(attrs.start_position[1]) !== attrs.start_position[1]){
+                return 'Start position must be in decimal degrees.';
+            }
+
+            if(parseFloat(attrs.end_position[0]) !== attrs.end_position[0] || parseFloat(attrs.end_position[1]) !== attrs.end_position[1]){
+                return 'End position must be in decimal degrees.';
+            }
+
+            if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
+                return 'Give a valid location for the spill!';
+            }
+
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.model.get('map'))){
+                return this.isReleaseInGeom(webgnome.model.get('map').getSpillableArea());
+            }
+        },
+
+        isReleaseInGeom: function(geom){
+            if(!_.isArray(geom)){
+                geom = [geom];                
+            }
+            
+            var start = [this.get('start_position')[0], this.get('start_position')[1]];
+            var end = [this.get('end_position')[0], this.get('end_position')[1]];
+            var error = 'Start or End position are outside of supported area';
+            for(var p = 0; p < geom.length; p++){
+                var source = new ol.source.Vector({
+                    features: [new ol.Feature({
+                        geometry: geom[p]
+                    })]
+                });
+                if(source.getFeaturesAtCoordinate(start).length > 0){
+                    error = false;
+                }
+                if(source.getFeaturesAtCoordinate(end).length > 0){
+                    error = false;
+                }
+            }
+
+            if(error){
+                return error;
+            }
+        },
+
+        validateAmount: function(attrs){
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)){
                 return 'Duration must be a positive value';
             }

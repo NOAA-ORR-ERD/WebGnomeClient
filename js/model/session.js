@@ -3,6 +3,7 @@ define([
     'backbone',
     'sweetalert'
 ], function(_, Backbone, swal){
+    'use strict';
     var sessionModel = Backbone.Model.extend({
         url: '/session',
         defaults: {
@@ -11,9 +12,13 @@ define([
 
         initialize: function(callback){
             this.save(null, {
-                success: callback,
+                success: function(model){
+                    localStorage.setItem('session', model.id);
+                    callback();
+                },
                 error: this.error
             });
+
         },
 
         error: function(){

@@ -4,6 +4,7 @@ define([
     'backbone',
     'ol'
 ], function($, _, Backbone, ol){
+    'use strict';
     var olMapView = Backbone.View.extend({
         className: 'map',
         id:'map',
@@ -30,6 +31,7 @@ define([
         overlays: [],
         extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
         zoom: 10,
+        renderer: 'canvas',
 
 
         initialize: function(options){
@@ -81,6 +83,11 @@ define([
                 if(!_.isUndefined(options.extent)){
                     this.extent = options.extent;
                 }
+
+                if(!_.isUndefined(options.renderer)){
+                    this.renderer = options.renderer;
+                }
+                   
             }
         },
 
@@ -89,6 +96,7 @@ define([
                 interactions: this.interactions,
                 controls: this.controls,
                 target: this.id,
+                renderer: this.renderer,
                 layers: this.layers,
                 view: new ol.View({
                     center: this.center,
