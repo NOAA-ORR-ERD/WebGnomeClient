@@ -92,7 +92,7 @@ define([
 
         formatPieData: function(data){
             var dataArray = [];
-            console.log(data);
+
             for (var key in data){
                 var obj = {
                     label: key,
