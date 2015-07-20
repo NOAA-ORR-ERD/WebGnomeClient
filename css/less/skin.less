@@ -49,6 +49,12 @@ img{
     }
 }
 
+.form-group{
+    &.static{
+        margin-bottom: 0px;
+    }
+}
+
 @media print {
     body{
         font-size: 10px !important;
@@ -711,6 +717,9 @@ nav.navbar{
     h2{
         margin-bottom: 20px;
     }
+    .rewind{
+        margin-right: 15px;
+    }
     .icon{
         height: 144px;
         background: #e1e1e1;
@@ -756,7 +765,7 @@ nav.navbar{
         margin-bottom: 30px;
     }
 
-    .stage-2, .stage-3{
+    .stage-2, .stage-3, .stage-4{
         display: none;
     }
 
@@ -807,11 +816,11 @@ nav.navbar{
                         > div{
                             color: #a1a1a1;
                         }
-    
-                        .add:hover{
-                            color: #666;
-                        }
                         
+                        .add{
+                            color: #337ab7;
+                        }
+
                         .state{
                             color: rgba(176, 13, 0, 0.57);
                         }
@@ -837,6 +846,7 @@ nav.navbar{
 
                     .add{
                         .glyphicon-plus;
+                        color: #7a7a7a;
                         cursor: pointer;
                     }
 
@@ -988,7 +998,12 @@ nav.navbar{
         }
     }
 
-    .location, .current{
+    .map, .current{
+        .panel-heading{
+            .add{
+                display: none !important;
+            }
+        }
         .panel-body{
             padding: 0;
         }
@@ -1811,27 +1826,6 @@ nav.navbar{
     }
 
     #oilInfo {
-        .clearfix;
-        a {
-            margin-top: 10px;
-        }
-
-        .emulsion-override {
-            .override-input {
-                margin-top: 12px;
-            }
-
-            .override-text {
-                margin-top: 8px;
-            }
-        }
-
-        .cacheContainer {
-            margin-bottom: 10px;
-            a {
-                width: 110px;
-            }
-        }
     }
 
     .sticky-modal-footer {
@@ -2309,9 +2303,6 @@ nav.navbar{
     }
 
     &.continuespill-form, &.instantspill-form {
-        .btn-default{
-            margin-top: 10px;
-        }
         .slider-label{
             margin-top: 5px;
         }

@@ -64,11 +64,12 @@ define([
                 'click .wind .add': 'clickWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
+                'click .map .add': 'clickMap',
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
-                'click .location .add': 'clickLocation',
+                'click .location': 'clickLocation',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
                 'click .response .single .trash': 'deleteResponse',
@@ -76,6 +77,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
+                'click .rewind': 'rewind',
                 'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
@@ -130,7 +132,6 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
             }, this));
-
         },
 
         showHelp: function(){
@@ -172,6 +173,12 @@ define([
             } else {
                 webgnome.router.navigate('model', true);
             }
+        },
+
+        rewind: function(e){
+            if(e){ e.preventDefault();}
+            webgnome.cache.rewind();
+            this.$('.stage-4').hide();
         },
 
         updateModel: function(){
@@ -278,7 +285,6 @@ define([
 
             }
             this.$('.stage-2').show();
-            this.updateSpill();
         },
 
         showFateObjects: function(){
@@ -298,7 +304,7 @@ define([
             this.$('.model-objects > div').hide().addClass('disabled');
             this.$('.wind').show().removeClass('disabled');
             this.$('.spill').show().removeClass('disabled');
-            this.$('.location').show().removeClass('disabled');
+            this.$('.map.object').show().removeClass('disabled');
             this.$('.current').show().removeClass('disabled');
             this.$('.beached').hide().addClass('disabled');
         },
@@ -350,6 +356,9 @@ define([
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
                     this.updateBeached();
+                }
+                if(webgnome.cache.length > 0){
+                    this.$('.stage-4').show();
                 }
             } else {
                 this.$('.stage-3').hide();
@@ -604,6 +613,9 @@ define([
 
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
+            spills.forEach(function(spill){
+                spill.isValid();
+            });
             var spillArray = this.calculateSpillAmount();
             var compiled;
             var mode = localStorage.getItem('prediction');
@@ -615,9 +627,19 @@ define([
                 this.$('.spill .panel').addClass('complete');
                 var substance = spills.at(0).get('element_type').get('substance');
                 if (!_.isNull(substance)){
-                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: substance, categories: substance.parseCategories(), mode: mode});
+                    compiled = _.template(SpillPanelTemplate, {
+                        spills: spills.models, 
+                        substance: substance, 
+                        categories: substance.parseCategories(), 
+                        mode: mode
+                    });
                 } else {
-                    compiled = _.template(SpillPanelTemplate, {spills: spills.models, substance: false, categories: [], mode: mode});
+                    compiled = _.template(SpillPanelTemplate, {
+                        spills: spills.models, 
+                        substance: false, 
+                        categories: [], mode: 
+                        mode
+                    });
                 }
 
                 var dataset = [];
@@ -766,13 +788,12 @@ define([
         updateLocation: function(){
             var map = webgnome.model.get('map');
             if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                this.$('.location .panel').addClass('complete');
+                this.$('.map .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
-                    this.$('.location .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
+                    this.$('.map .panel-body').show().html('<div class="map" id="mini-locmap"></div>');
 
-                    var shorelineSource = new ol.source.GeoJSON({
-                        projection: 'EPSG:3857',
-                        object: geojson
+                    var shorelineSource = new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                     });
 
                     var shorelineLayer = new ol.layer.Image({
@@ -804,12 +825,12 @@ define([
                     
                     locationMap.render();
                     var extent = shorelineSource.getExtent();
-                    locationMap.map.getView().fitExtent(extent, locationMap.map.getSize());
+                    locationMap.map.getView().fit(extent, locationMap.map.getSize());
                     this.mason.layout();
                 }, this));
             } else {
-                this.$('.location .panel').removeClass('complete');
-                this.$('.location .panel-body').hide().html('');
+                this.$('.map .panel').removeClass('complete');
+                this.$('.map .panel-body').hide().html('');
             }
         },
 
@@ -834,24 +855,25 @@ define([
                 });
                 currentMap.render();
 
+                this.current_extents = [];
                 for(var c = 0; c < currents.length; c++){
                     currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
                 if(webgnome.model.get('map')){
                     var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                    currentMap.map.getView().fitExtent(extent, currentMap.map.getSize());
+                    currentMap.map.getView().fit(extent, currentMap.map.getSize());
                 }
                 this.mason.layout();
             } else {
+                this.current_extents = [];
                 this.$('.current .panel-body').hide().html('');
             }
         },
 
         addCurrentToPanel: function(geojson){
             if(geojson){
-                var gridSource = new ol.source.GeoJSON({
-                    projection: 'EPSG:3857',
-                    object: geojson
+                var gridSource = new ol.source.Vector({
+                    features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                 });
                 var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
 
@@ -873,6 +895,11 @@ define([
                     this.current_extents.push(extentSum);
                 }
             }
+        },
+
+        clickMap: function(){
+            var mapForm = new MapForm(null, webgnome.model.get('map'));
+            mapForm.render();
         },
 
         clickResponse: function(){
@@ -1165,6 +1192,11 @@ define([
         
         configure: function(target){
             // model change need to take place before changing any child objects
+            
+            if(target !== localStorage.getItem('prediction')){
+                this.rewind();
+            }
+
             this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
