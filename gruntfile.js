@@ -141,7 +141,7 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-inline');
 
     grunt.registerTask('install', ['bower:install']);
-    grunt.registerTask('develop', ['install', 'connect:start', 'watch:css']);
+    grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build', ['jshint:all', 'less:compile', 'requirejs:build', 'copy:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:start']);
     grunt.registerTask('docs', ['jsdoc:docs']);
