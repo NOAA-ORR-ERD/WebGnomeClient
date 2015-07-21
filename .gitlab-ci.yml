@@ -1,0 +1,12 @@
+before_script: 
+  - grunt install
+
+master: 
+  script:
+    - grunt build
+  only: 
+    - master
+
+develop:
+  script:
+    - grunt lint 
