@@ -16,7 +16,7 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: 'static',
-            keyboard: true,
+            keyboard: false,
             show: true,
             remote: false
         },

@@ -27,12 +27,15 @@ define([
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/base',
+    'model/weatherers/fay_gravity_viscous',
+    'model/weatherers/weathering_data',
     'model/risk/risk'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, BaseWeatherer, RiskModel){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData,
+    RiskModel){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -69,8 +72,8 @@ define([
                 'gnome.weatherers.cleanup.Skimmer': SkimWeatherer,
                 'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
-                'gnome.weatherers.spreading.FayGravityViscous': BaseWeatherer,
-                'gnome.weatherers.weathering_data.WeatheringData': BaseWeatherer
+                'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
+                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData
             }
         },
 
@@ -90,7 +93,8 @@ define([
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),
                     new NaturalDispersionWeatherer({name: '_natural'}),
-                    new EmulsificationWeatherer()
+                    new EmulsificationWeatherer(),
+                    new FayGravityViscous()
                 ]),
                 movers: new Backbone.Collection(),
                 environment: new Backbone.Collection(),

@@ -42,6 +42,7 @@ define([
             }
 
             if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1){
+                this.validationContext = 'info';
                 return 'Amount released must use units of mass when in trajectory only mode!';
             }
 

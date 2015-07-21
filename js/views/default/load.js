@@ -61,7 +61,9 @@ define([
             var invalidWeatherers = [];
 
             for (var i = weathererKeys.length - 1; i >= 0; i--){
-                if (weathererKeys[i].indexOf('cleanup') !== -1 || weathererKeys[i].indexOf('beaching') !== -1){
+                if (weathererKeys[i].indexOf('cleanup') !== -1 ||
+                     weathererKeys[i].indexOf('beaching') !== -1 ||
+                     weathererKeys[i].indexOf('weathering_data') !== -1){
                     weathererKeys.splice(i, 1);
                 }
             }

@@ -50,9 +50,18 @@
 	<div class="{{ rowClass }}" data-id="{{ spills[i].get('id') }}">
 		<div class="col-sm-10">
             <h5>{{ spills[i].get('name') }}</h5>
-            {% var amount = spills[i].get('amount') %}
-            {% var units = spills[i].get('units') %}
-            {% var info = amount + ' ' + units %}
+            {% var amount = spills[i].get('amount'); %}
+            {%     if(spills[i].get('amount_uncertainty_scale') > 0){ %}
+            {%        var value = spills[i].get('amount_uncertainty_scale'); %}
+            {%        var bottom = parseInt(Math.round((amount * (1 - value))), 10); %}
+            {%        if (bottom < 0) { %}
+            {%            bottom = 0; %}
+            {%        } %}
+            {%        var top = parseInt(Math.round((amount * (1 + value))), 10);     %}
+            {%        amount = bottom + ' - ' + top; %}
+            {%    } %}
+            {%    var units = spills[i].get('units'); %}
+            {%    var info = amount + ' ' + units; %}
             {% if (spillValid === 'info') info += ' (invalid amount or units)'; %}
             <span class="label label-default amount">{{ info }}</span>
             {% if (spills[i].get('release').get('start_position') && localStorage.getItem('prediction') !== 'fate'){ %}
