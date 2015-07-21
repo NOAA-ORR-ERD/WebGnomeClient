@@ -45,12 +45,13 @@ require.config({
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
         sweetalert: 'lib/sweetalert/lib/sweet-alert',
-        gauge: 'lib/gauge/index',
         nucos: 'lib/nucos/nucos',
         relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
-        localforage: 'lib/localforage/dist/localforage'
+        localforage: 'lib/localforage/dist/localforage',
+        async: 'lib/requirejs-plugins/src/async',
+        goog: 'lib/requirejs-plugins/src/goog'
     },
     shim: {
         jquery: {
@@ -95,9 +96,6 @@ require.config({
         },
         sweetalert: {
             exports: 'swal'
-        },
-        gauge: {
-            exports: 'Gauge'
         },
         socketio: {
             exports: 'io'

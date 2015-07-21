@@ -3,13 +3,12 @@ define([
     'underscore',
     'backbone',
     'jqueryui/core',
-    'gauge',
     'views/modal/form',
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
     'relativeimportance',
     'flot'
-], function($, _, Backbone, jqueryui, Gauge, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
+], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -54,8 +53,6 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.createBenefitGauge('benefit', 50);
-
             this.createSlider('.slider-skimming', this.model.get('efficiency').skimming);
             this.createSlider('.slider-dispersant', this.model.get('efficiency').dispersant);
             this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
@@ -71,8 +68,6 @@ define([
             this.relativeImp.draw();
 
             this.on('relativeRendered', _.bind(function(){this.renderPie(this.pieData);}, this));
-
-            this.updateBenefit();
 
             this.trigger('relativeRendered');
         },
@@ -123,27 +118,6 @@ define([
             });
         },
 
-        createBenefitGauge: function(selector, value){
-            var opts = {
-                angle: 0, // The length of each line
-                pointer: {
-                    length: 0.5, // The radius of the inner circle
-                    strokeWidth: 0.035, // The rotation offset
-                    color: '#000000' // Fill color
-                },
-                limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
-                colorStart: '#ff0000',   // Colors
-                colorStop: '#00ff00',    // just experiment with them
-                strokeColor: '#E0E0E0',   // to see which ones work best for you
-                generateGradient: true,
-                gradientType: 1,
-                maxValue: 100,
-                animationSpeed: 20
-            };
-            var target = document.getElementById(selector); // your canvas element
-            this.benefitGauge = new Gauge(target).setOptions(opts);
-        },
-
         createSlider: function(selector, value){
             this.$(selector).slider({
                     max: 100,
@@ -175,7 +149,6 @@ define([
             // assess model
             this.model.assessment();
 
-            this.updateBenefit();
         },
 
         // callback from relative importance ui when values change.
@@ -197,23 +170,7 @@ define([
             self.$('#columnRI').html((ri.column*100).toFixed(3));
             self.$('#shorelineRI').html((ri.shoreline*100).toFixed(3));
 
-            self.updateBenefit();
         },
-
-        updateBenefit: function(){
-            var ri = this.model.get('relativeImportance');
-            var surface = this.model.get('surface');
-            var column = this.model.get('column');
-            var shoreline = this.model.get('shoreline');
-            var benefit = (1 - (ri.surface * surface + ri.column * column + ri.shoreline * shoreline)) * this.benefitGauge.maxValue;
-
-            // update ui
-            this.$('#surface').html((surface).toFixed(3));
-            this.$('#column').html((column).toFixed(3));
-            this.$('#shoreline').html((shoreline).toFixed(3));
-
-            this.benefitGauge.set(benefit);
-        }
 
     });
 

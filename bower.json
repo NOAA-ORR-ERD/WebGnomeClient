@@ -29,11 +29,12 @@
     "masonry": "*",
     "nucos": "1.*.*",
     "sweetalert": "0.4.*",
-    "gauge": "http://bernii.github.io/gauge.js/dist/gauge.min.js",
     "dropzone": "4.0.*",
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3",
     "html2canvas": "~0.4.1",
-    "relativeimportance": "*"
+    "relativeimportance": "*",
+    "google-chart": "GoogleWebComponents/google-chart#~1.0.2",
+    "requirejs-plugins": "~1.0.3"
   }
 }

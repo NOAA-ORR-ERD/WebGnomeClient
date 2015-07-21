@@ -10,8 +10,12 @@
     		</div>
     	</div>
     	<div class="col-md-8">
-    		<div>
-    			<canvas id="benefit">
+    		<div class="gauge-container">
+    			<google-chart 
+                    type='gauge'
+                    options='{"title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
+                    data='[["Label", "Value"], ["Benefit", 50]]'>
+                </google-chart>
     		</div>
     	</div>
     </div>
