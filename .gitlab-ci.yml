@@ -1,5 +1,5 @@
 before_script: 
-  - grunt install
+  - npm install
 
 master: 
   script:
