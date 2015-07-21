@@ -1068,12 +1068,18 @@ define([
             var beachedForm = new BeachedForm({}, beached);
             beachedForm.on('hidden', beachedForm.close);
             beachedForm.on('save', _.bind(function(){
-                webgnome.model.get('weatherers').add(beached, {merge: true});
+                if(beached.get('timeseries').length === 0){
+                    webgnome.model.get('weatherers').remove(beached);
+                } else {
+                    webgnome.model.get('weatherers').add(beached, {merge: true});
+                }
+                
                 webgnome.model.save({
                     success: _.bind(function(){
                         this.updateBeached();
                     }, this)
                 });
+                    
             }, this));
             beachedForm.render();
         },

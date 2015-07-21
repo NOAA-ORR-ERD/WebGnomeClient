@@ -101,9 +101,16 @@ define([
 
         load: function(){
             if(webgnome.cache.length > 0){
-                while(this.frame < webgnome.cache.length){
-                    webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
-                    this.frame++;
+                // incase trajectory triggered a /step but it hasn't returned yet
+                // and the user just toggled the switch to fate view
+                // add a listener to handle that pending step.
+                if(webgnome.cache.fetching){
+                    webgnome.cache.once('step:recieved', this.load, this);
+                } else {
+                    while(this.frame < webgnome.cache.length){
+                        webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
+                        this.frame++;
+                    }
                 }
             } else {
                 webgnome.cache.on('step:recieved', this.buildDataset, this);
@@ -746,21 +753,27 @@ define([
         },
 
         ICSInputSelect: function(){
-            var start_input = this.$('#ics209 #start_time');
-            var end_input = this.$('#ics209 #end_time');
             var date_format = webgnome.config.date_format.moment;
-            var start_time = moment(start_input.val(), date_format);
-            var end_time = moment(end_input.val(), date_format);
+            var model_start_time = webgnome.model.get('start_time');
+            var model_end_time = moment(model_start_time).add(webgnome.model.get('duration'), 's').format(date_format);
+            var start_input = (this.$('#ics209 #start_time').val() === '') ? model_start_time : this.$('#ics209 #start_time').val();
+            var end_input = (this.$('#ics209 #end_time').val() === '') ? model_end_time : this.$('#ics209 #end_time').val();
+            var start_time = moment(start_input, date_format);
+            var end_time = moment(end_input, date_format);
             var selection = {
                 xaxis: {
                     from: start_time.unix() * 1000,
                     to: end_time.unix() * 1000
-                },
-                yaxis:{
-                    from: this.ICSSelection.yaxis.from,
-                    to: this.ICSSelection.yaxis.to
                 }
             };
+            if (!_.isUndefined(this.ICSSelection)){
+                selection.yaxis = {
+                    from: this.ICSSelection.yaxis.from,
+                    to: this.ICSSelection.yaxis.to
+                };
+            } else {
+                selection.yaxis = {};
+            }
 
             this.updateICSSelection(selection);
         },

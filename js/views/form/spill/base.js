@@ -30,7 +30,8 @@ define([
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'shown.bs.tab .mapspill': 'locationSelect',
-                'click .oil-cache': 'clickCachedOil'
+                'click .oil-cache': 'clickCachedOil',
+                'click .reload-oil': 'reloadOil'
             }, FormModal.prototype.events);
         },
 
@@ -93,19 +94,30 @@ define([
                 this.setEmulsificationOverride();
             }
 
-            this.subtextUpdate();
             this.initTabStatus();
 		},
 
         setEmulsificationOverride: function(){
-            var bullwinkle_time = this.model.get('element_type').get('substance').get('bullwinkle_time');
-
+            var substance = this.model.get('element_type').get('substance');
+            var bullwinkle_fraction = substance.get('bullwinkle_fraction');
+            var bullwinkle_time = substance.get('bullwinkle_time');
             if (_.isNull(bullwinkle_time)){
-                this.$('.radio input[value="default"]').prop('checked', true);
+                this.$('.manual').val(bullwinkle_fraction * 100);
+                this.$('#units-bullwinkle').val('percent');
             } else {
-                this.$('.radio input[value="manual"]').prop('checked', true);
                 this.$('.manual').val(bullwinkle_time);
+                this.$('#units-bullwinkle').val('time');
             }
+        },
+
+        reloadOil: function(e){
+            //e.preventDefault();
+            var substance = this.model.get('element_type').get('substance');
+            substance.fetch({
+                success: _.bind(function(model, res, options){
+                    this.renderSubstanceInfo(null, model);
+                }, this)
+            });
         },
 
         tabStatusSetter: function(){
@@ -172,7 +184,8 @@ define([
                             break;
                         }
                     }
-                    this.renderSubstanceInfo(null, substanceModel);
+                    this.model.get('element_type').set('substance', substanceModel);
+                    this.reloadOil();
                 }
             }, this));
         },
@@ -268,7 +281,6 @@ define([
 
             if (!_.isNull(this.model.get('element_type').get('substance'))){
                 this.setEmulsificationOverride();
-                this.subtextUpdate();
             }
 
             if (enabled){
@@ -277,23 +289,21 @@ define([
             }
         },
 
-        subtextUpdate: function(){
-            if (this.$('#units-bullwinkle').val() === 'time'){
-                this.$('.substanceinfo #hours').show();
-                this.$('.substanceinfo #percent').hide();
-            } else {
-                this.$('.substanceinfo #hours').hide();
-                this.$('.substanceinfo #percent').show();
+        emulsionUpdate: function(){
+            var substance = this.model.get('element_type').get('substance');
+            var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
+            if (manualVal !== '' && !_.isUndefined(substance)){
+                substance.set('bullwinkle_time', null);
+                if (this.$('#units-bullwinkle').val() === 'time'){
+                    substance.set('bullwinkle_time', manualVal);
+                } else {
+                    substance.set('bullwinkle_fraction', manualVal / 100);
+                }
             }
         },
 
 		update: function(){
-            this.subtextUpdate();
-            if (this.$('input:radio[name="bullwinkle"]:checked').val() !== 'default'){
-                this.$('.manual').prop('disabled', false);
-            } else {
-                this.$('.manual').prop('disabled', true);
-            }
+            this.emulsionUpdate();
             this.tabStatusSetter();
 		},
 
@@ -302,6 +312,7 @@ define([
                 this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
                 this.oilLibraryView.render();
                 this.oilLibraryView.on('hidden', _.bind(this.show, this));
+                this.oilLibraryView.on('hidden', this.reloadOil, this);
             } else {
                 this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }

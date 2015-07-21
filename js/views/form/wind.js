@@ -7,6 +7,7 @@ define([
     'ol',
     'nucos',
     'mousetrap',
+    'sweetalert',
     'views/modal/form',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
@@ -16,7 +17,7 @@ define([
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, NwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -36,7 +37,8 @@ define([
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
-                'ready': 'rendered'
+                'ready': 'rendered',
+                'click .clear-winds': 'clearTimeseries'
             }, formModalHash);
         },
 
@@ -198,6 +200,7 @@ define([
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
                         this.nws = new NwsWind({lat: coords[1], lon: coords[0]});
+                        this.$('.save').addClass('disabled');
                         this.nws.fetch({
                             success: _.bind(this.nwsLoad, this),
                             error: _.bind(this.nwsError, this)
@@ -212,6 +215,7 @@ define([
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
+            this.$('.save').removeClass('disabled');
         },
 
         nwsError: function(){
@@ -369,6 +373,26 @@ define([
                 this.$(row).html(template);
                 this.attachCompass(e, entry, row);
             }
+        },
+
+        clearTimeseries: function(e){
+            e.preventDefault();
+            var model_start_time = webgnome.model.get('start_time');
+            swal({
+                title: 'Are you sure?',
+                text: 'This action will delete the all of the wind entries below.',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: "Yes, delete it.",
+                closeOnConfirm: true
+            },
+            _.bind(function(isConfirm){
+                if (isConfirm){
+                    this.model.set('timeseries', [[model_start_time, [0, 0]]]);
+                    this.originalTimeseries = [[model_start_time, [0, 0]]];
+                    this.renderTimeseries();
+                }
+            }, this));
         },
 
         attachCompass: function(e, entry, row){

@@ -69,7 +69,7 @@ define([
 
                 var rate;
                 if ((this.$('#rate-units').val()).indexOf('hr') === -1){
-                    rate = parseFloat(amount) / durationObj.asMinutes();
+                    rate = parseFloat(amount) / durationObj.asDays();
                 } else {
                     rate = parseFloat(amount) / durationObj.asHours();
                 }
@@ -179,8 +179,14 @@ define([
             var duration = ((days * 24) + parseFloat(hours));
             this.rate = amount / duration;
             var units = this.$('#units').val();
-            this.$('#spill-rate').val(this.rate);
-            this.$('#rate-units').val(units + '/hr');
+            if (units === 'bbl' && this.rate % 24 === 0) {
+                this.$('#spill-rate').val(this.rate / 24);
+                this.$('#rate-units').val('bbl/day');
+            } else {
+                this.$('#spill-rate').val(this.rate);
+                this.$('#rate-units').val(units + '/hr');
+            }
+            
             this.updateRateSlide();
             this.updateAmountSlide();
         },
@@ -190,7 +196,12 @@ define([
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
             var duration = ((days * 24) + parseFloat(hours));
-            var amount = this.rate * duration;
+            var amount;
+            if (this.$('#rate-units').val() === 'bbl/day'){
+                amount = this.rate * duration / 24;
+            } else {
+                amount = this.rate * duration;
+            }
             this.$('#spill-amount').val(amount);
             var units = this.$('#rate-units').val().split('/')[0];
             this.$('#units').val(units);
@@ -256,6 +267,7 @@ define([
                     this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
+            this.model.set('amount_uncertainty_scale', value / 5);
             this.updateTooltipWidth();
         },
 

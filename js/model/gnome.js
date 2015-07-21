@@ -350,7 +350,7 @@ define([
                         }
                         natural_dispersion.set('waves', waves);
 
-                        this.save();
+                        cb();
                     }, this)
                 });
             } else {
