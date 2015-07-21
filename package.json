@@ -28,11 +28,11 @@
     "http-server": "*",
     "less": "*",
     "requirejs": "*",
-    "grunt": "*",
+    "grunt": "*"
   },
   "devDependencies": {
     "grunt-contrib-requirejs": "*",
-    "grunt-contrib-jshint": "*"
+    "grunt-contrib-jshint": "*",
     "grunt-bower-task": "^0.4.0",
     "grunt-contrib-connect": "^0.10.1",
     "grunt-contrib-less": "^1.0.1",
