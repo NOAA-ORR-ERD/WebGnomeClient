@@ -45,6 +45,23 @@ module.exports = function(grunt){
                 }
             }
         },
+        copy: {
+            build: {
+                expand: true,
+                src: ['favicon.ico', 'css/style.css'],
+                dest: 'dist/build/',
+                flatten: true
+            }
+        },
+        inline: {
+            options: {
+                tag: '',
+            },
+            build: {
+                src: 'build-template.html',
+                dest: 'dist/build/build.html'
+            }
+        },
         less: {
             compile: {
                 options: {
@@ -120,10 +137,12 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-webdriver');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-inline');
 
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'connect:start', 'watch:css']);
-    grunt.registerTask('build', ['jshint:all', 'less:compile', 'requirejs:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:compile', 'requirejs:build', 'copy:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:start']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
