@@ -161,6 +161,8 @@ define([
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
+            var cleanup = this.checkForCleanup();
+
             var init_release = this.findInitialRelease(spills);
 
             var buttonsTemplate = _.template(ButtonsTemplate, {});
@@ -187,7 +189,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    cleanup: cleanup
                 });
             } else {
                 compiled = _.template(FateTemplate, {
@@ -200,7 +203,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    cleanup: cleanup
                 });
             }
             
@@ -225,6 +229,16 @@ define([
                 container: 'body'
             });
             this.load();
+        },
+
+        checkForCleanup: function(){
+            var weatherers = webgnome.model.get('weatherers');
+            for (var i = 0; i < weatherers.length; i++){
+                if (weatherers.at(i).get('obj_type').indexOf('cleanup') > -1){
+                    return true;
+                }
+            }
+            return false;
         },
 
         clickRisk: function(){
