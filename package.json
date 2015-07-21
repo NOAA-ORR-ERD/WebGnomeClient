@@ -2,9 +2,7 @@
   "name": "WebGnomeClient",
   "main": "index.html",
   "scripts": {
-    "start": "http-server",
-    "postinstall": "node ./scripts/postupdate.js",
-    "test": "node ./scripts/test.js"
+    "postinstall": "grunt install"
   },
   "config": {
     "localhost,0.0.0.0": {
@@ -31,10 +29,14 @@
     "less": "*",
     "requirejs": "*",
     "grunt": "*",
-    "grunt-contrib-requirejs": "*",
-    "grunt-contrib-jshint": "*"
   },
   "devDependencies": {
+    "grunt-contrib-requirejs": "*",
+    "grunt-contrib-jshint": "*"
+    "grunt-bower-task": "^0.4.0",
+    "grunt-contrib-connect": "^0.10.1",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-jsdoc": "^0.6.7",
     "grunt-webdriver": "^0.5.2"
   }

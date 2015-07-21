@@ -28,6 +28,34 @@ module.exports = function(grunt){
                 }
             }
         },
+        bower: {
+            install: {
+                options: {
+                    cleanTargetDir: true,
+                    copy: false,
+                    targetDir: './js/lib'
+                }
+            }
+        },
+        connect: {
+            start:{
+                options: {
+                    port: 8080,
+                    hostname: '*'
+                }
+            }
+        },
+        less: {
+            compile: {
+                options: {
+                    ieCompat: true,
+                    compress: true,
+                },
+                files: {
+                    'css/style.css': 'css/less/style.less'
+                }
+            }
+        },
         jshint: {
             options: {
                 "curly": true,
@@ -60,6 +88,15 @@ module.exports = function(grunt){
                 }
             }
         },
+        watch: {
+            css: {
+                files: 'css/less/*',
+                tasks: ['less:compile'],
+                options: {
+                    debounceDelay: 0
+                }
+            }
+        },
         webdriver:{
             options: {
                 desiredCapabilities: {
@@ -74,13 +111,20 @@ module.exports = function(grunt){
             }
         }
     });
-
+    
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-webdriver');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
-    grunt.registerTask('build', ['jshint:all', 'requirejs:build']);
+    grunt.registerTask('install', ['bower:install']);
+    grunt.registerTask('develop', ['install', 'connect:start', 'watch:css']);
+    grunt.registerTask('build', ['jshint:all', 'less:compile', 'requirejs:build']);
+    grunt.registerTask('serve', ['connect:start']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
     grunt.registerTask('test', ['jshint:all', 'webdriver:all']);
