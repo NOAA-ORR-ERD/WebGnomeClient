@@ -40,8 +40,6 @@ define([
                 }
             });
 
-            this.relativeImportancePercent({});
-
             this.body = _.template(RiskTemplate, {
                 surface: this.model.get('surface').toFixed(3),
                 column: this.model.get('column').toFixed(3),
@@ -116,6 +114,12 @@ define([
                     show: false
                 }
             });
+            this.updateBenefit(this.pieData);
+        },
+
+        updateBenefit: function(data){
+            var benefit = Math.round(data.column.data);
+            this.$('google-chart').attr('data', '[["Label", "Value"], ["Benefit", ' + benefit + ']]');
         },
 
         createSlider: function(selector, value){

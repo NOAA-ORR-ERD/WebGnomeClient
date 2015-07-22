@@ -13,7 +13,7 @@
     		<div class="gauge-container">
     			<google-chart 
                     type='gauge'
-                    options='{"title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
+                    options='{"height": 200, "width": 200, "title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
                     data='[["Label", "Value"], ["Benefit", 50]]'>
                 </google-chart>
     		</div>
@@ -62,8 +62,8 @@
             <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
             <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
         </div>
-        <div class="{%if(!showSkimming&&!showDispersant&&!showBurn){%}hide{%}%} col-sm-11 col-sm-offset-1 text-center">
-            <button type="button" class="remodel btn btn-info" data-dismiss="modal">Reassess model</button>
+        <div class="col-sm-11 col-sm-offset-1 text-center">
+            
         </div>
     </div>
 </form>

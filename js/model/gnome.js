@@ -26,7 +26,6 @@ define([
     'model/weatherers/skim',
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
-    'model/weatherers/base',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/weathering_data',
     'model/risk/risk'
