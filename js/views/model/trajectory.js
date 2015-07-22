@@ -12,8 +12,7 @@ define([
     'views/form/spill/continue',
     'model/step',
     'mousetrap',
-    'jqueryui/slider',
-    'jqueryFileupload'
+    'jqueryui/slider'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
