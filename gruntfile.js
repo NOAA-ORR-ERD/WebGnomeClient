@@ -1,6 +1,6 @@
 module.exports = function(grunt){
     var src = [
-        'Gruntfile.js',
+        'gruntfile.js',
         'js/*.js',
         'js/collection/*.js',
         'js/model/*.js',
