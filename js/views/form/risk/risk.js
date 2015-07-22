@@ -4,17 +4,14 @@ define([
     'backbone',
     'module',
     'moment',
-    'fabric',
-    'gauge',
     'views/modal/form',
     'text!templates/risk/risk.html',
     'text!templates/risk/input.html',
     'text!templates/risk/tuning.html',
     'model/risk/risk',
     'jqueryui/slider',
-    'jqueryDatetimepicker',
-    'relimpui',
-], function($, _, Backbone, module, moment, fabric, Gauge, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
+    'jqueryDatetimepicker'
+], function($, _, Backbone, module, moment, FormModal, FormTemplate, InputTemplate, TuningTemplate, RiskModel){
     var riskForm = FormModal.extend({
         title: 'Environmental Risk Assessment',
         className: 'modal fade form-modal risk-form',

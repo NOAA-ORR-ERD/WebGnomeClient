@@ -78,6 +78,8 @@ define([
             this.$('.relative-importance').html(relativeimportance);
             this.pieData = data;
             this.trigger('relativeRendered');
+
+            this.model.set('relativeImportance', this.pieData);
         },
 
         formatPieData: function(data){
@@ -114,11 +116,11 @@ define([
                     show: false
                 }
             });
-            this.updateBenefit(this.pieData);
+            this.updateBenefit();
         },
 
-        updateBenefit: function(data){
-            var benefit = Math.round(data.column.data);
+        updateBenefit: function(){
+            var benefit = Math.round(this.model.calculateBenefit() * 100);
             this.$('google-chart').attr('data', '[["Label", "Value"], ["Benefit", ' + benefit + ']]');
         },
 
@@ -152,7 +154,6 @@ define([
 
             // assess model
             this.model.assessment();
-
         },
 
         // callback from relative importance ui when values change.

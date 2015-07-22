@@ -45,7 +45,7 @@ define([
             var attrs = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
-                if (attrs.assessment_time == 0) {
+                if (attrs.assessment_time === 0) {
                     attrs.assessment_time = webgnome.model.get('start_time');
                 }
 
@@ -83,18 +83,8 @@ define([
                 if (mass.name.toUpperCase() === 'FLOATING') {
                     massSW = data[1];
                 }
-                else if (mass.name.toUpperCase() === 'EVAPORATED') {
-                }
-                else if (mass.name.toUpperCase() === 'DISPERSED') {
-                }
                 else if (mass.name.toUpperCase() === 'BEACHED') {
                     massSH = data[1];
-                }
-                else if (mass.name.toUpperCase() === 'AVG_DENSITY') {
-                }
-                else if (mass.name.toUpperCase() === 'BURNED') {
-                }
-                else if (mass.name.toUpperCase() === 'AVG_VISCOSITY') {
                 }
                 else if (mass.name.toUpperCase() === 'WATER_CONTENT') {
                     percentWC = data[1];
@@ -146,6 +136,36 @@ define([
             this.set('column', FCwc);
             this.set('surface', FCsw);
             this.set('shoreline', FCsh);
+        },
+
+        calculateShorelineFract: function(){
+
+        },
+
+        calculateWaterSurfaceFract: function(){
+
+        },
+
+        calculateWaterColumnFract: function(){
+
+        },
+
+        calculateBenefit: function(){
+            var values = this.get('relativeImportance');
+            var netERA, columnBenefit, shorelineBenefit, surfaceBenefit;
+            for (var key in values){
+                if (key === 'column'){
+                    columnBenefit = this.get('column') * (values[key].data / 100);
+                } else if (key === 'shoreline'){
+                    shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
+                } else if (key === 'surface'){
+                    surfaceBenefit = this.get('surface') * (values[key].data / 100);
+                }
+            }
+
+            netERA = 1 - (columnBenefit + shorelineBenefit + surfaceBenefit);
+
+            return netERA;
         },
 
         validate: function(attrs, options){
