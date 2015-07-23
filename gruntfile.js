@@ -48,9 +48,8 @@ module.exports = function(grunt){
         copy: {
             build: {
                 expand: true,
-                src: ['favicon.ico', 'css/style.css'],
-                dest: 'dist/build/',
-                flatten: true
+                src: ['favicon.ico', 'fonts/*'],
+                dest: 'dist/build/'
             }
         },
         inline: {
@@ -65,11 +64,26 @@ module.exports = function(grunt){
         less: {
             compile: {
                 options: {
-                    ieCompat: true,
-                    compress: true,
+                    syncImport: true,
+                    relativeUrls: true
                 },
                 files: {
                     'css/style.css': 'css/less/style.less'
+                }
+            },
+            build: {
+                options: {
+                    ieCompat: true,
+                    compress: true,
+                    strictImports: true,
+                    syncImport: true,
+                    relativeUrls: true,
+                    plugins: [
+                        new require('less-plugin-inline-urls')
+                    ]
+                },
+                files: {
+                    'dist/build/style.css': 'css/less/style.less'
                 }
             }
         },
@@ -142,7 +156,7 @@ module.exports = function(grunt){
 
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
-    grunt.registerTask('build', ['jshint:all', 'less:compile', 'requirejs:build', 'copy:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:start']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
