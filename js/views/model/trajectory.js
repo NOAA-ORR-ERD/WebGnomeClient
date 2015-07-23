@@ -12,8 +12,7 @@ define([
     'views/form/spill/continue',
     'model/step',
     'mousetrap',
-    'jqueryui/slider',
-    'jqueryFileupload'
+    'jqueryui/slider'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
@@ -386,13 +385,13 @@ define([
         },
 
         toggle: function(){
-            if(this.contracted === true){
-                this.$el.removeClass('contracted');
-                this.contracted = false;
-            } else {
-                this.$el.addClass('contracted');
-                this.contracted = true;
-            }
+            // if(this.contracted === true){
+            //     this.$el.removeClass('contracted');
+            //     this.contracted = false;
+            // } else {
+            //     this.$el.addClass('contracted');
+            //     this.contracted = true;
+            // }
             
             if(this.ol.map){
                 this.ol.map.updateSize();

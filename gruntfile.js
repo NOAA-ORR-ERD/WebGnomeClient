@@ -1,6 +1,6 @@
 module.exports = function(grunt){
     var src = [
-        'Gruntfile.js',
+        'gruntfile.js',
         'js/*.js',
         'js/collection/*.js',
         'js/model/*.js',
@@ -25,6 +25,65 @@ module.exports = function(grunt){
                     name: 'main',
                     out: 'dist/build/build.js',
                     optimize: 'uglify2'
+                }
+            }
+        },
+        bower: {
+            install: {
+                options: {
+                    cleanTargetDir: true,
+                    copy: false,
+                    targetDir: './js/lib'
+                }
+            }
+        },
+        connect: {
+            start:{
+                options: {
+                    port: 8080,
+                    hostname: '*'
+                }
+            }
+        },
+        copy: {
+            build: {
+                expand: true,
+                src: ['favicon.ico', 'fonts/*'],
+                dest: 'dist/build/'
+            }
+        },
+        inline: {
+            options: {
+                tag: '',
+            },
+            build: {
+                src: 'build-template.html',
+                dest: 'dist/build/build.html'
+            }
+        },
+        less: {
+            compile: {
+                options: {
+                    syncImport: true,
+                    relativeUrls: true
+                },
+                files: {
+                    'css/style.css': 'css/less/style.less'
+                }
+            },
+            build: {
+                options: {
+                    ieCompat: true,
+                    compress: true,
+                    strictImports: true,
+                    syncImport: true,
+                    relativeUrls: true,
+                    plugins: [
+                        new require('less-plugin-inline-urls')
+                    ]
+                },
+                files: {
+                    'dist/build/style.css': 'css/less/style.less'
                 }
             }
         },
@@ -60,6 +119,15 @@ module.exports = function(grunt){
                 }
             }
         },
+        watch: {
+            css: {
+                files: 'css/less/*',
+                tasks: ['less:compile'],
+                options: {
+                    debounceDelay: 0
+                }
+            }
+        },
         webdriver:{
             options: {
                 desiredCapabilities: {
@@ -74,13 +142,22 @@ module.exports = function(grunt){
             }
         }
     });
-
+    
+    grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-webdriver');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-inline');
 
-    grunt.registerTask('build', ['jshint:all', 'requirejs:build']);
+    grunt.registerTask('install', ['bower:install']);
+    grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'inline:build']);
+    grunt.registerTask('serve', ['connect:start']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
     grunt.registerTask('test', ['jshint:all', 'webdriver:all']);
