@@ -1,38 +1,40 @@
 <form class="form-horizontal tuning" role="form">
     <div class="row">
         <div class="col-md-5 inset">
-            <div class="col-sm-12">
-                <label class="control-label">Efficiencies:</label>
-            </div>
-            <div id="skimming" class="{%if(!showSkimming){%}hide{%}%} co-sm-11 col-sm-offset-1">
-                <div class="col-sm-3">
-                    <label class="control-label" id="skimminglabel">Skimming:</label>
+            <div class="row">
+                <div class="col-sm-12">
+                    <label class="control-label">Efficiencies:</label>
                 </div>
-                <div class="col-sm-9">
-                    <div class="slider"></div>
+                <div id="skimming" class="{%if(!showSkimming){%}hide{%}%} col-sm-11 col-sm-offset-1">
+                    <div class="col-sm-12">
+                        <label class="control-label" id="skimminglabel">Skimming:</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="slider"></div>
+                    </div>
+                    <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                    <div class="col-sm-2 col-sm-offset-7 slider-label" style="text-align:right"><sup>100%</sup></div>
                 </div>
-                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
-            </div>
-            <div id="dispersant" class="{%if(!showDispersant){%}hide{%}%} co-sm-11 col-sm-offset-1">
-                <div class="col-sm-3">
-                    <label class="control-label" id="dispersantlabel">Dispersant:</label>
+                <div id="dispersant" class="{%if(!showDispersant){%}hide{%}%} col-sm-11 col-sm-offset-1">
+                    <div class="col-sm-12">
+                        <label class="control-label" id="dispersantlabel">Dispersant:</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="slider"></div>
+                    </div>
+                    <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                    <div class="col-sm-2 col-sm-offset-7 slider-label" style="text-align:right"><sup>100%</sup></div>
                 </div>
-                <div class="col-sm-9">
-                    <div class="slider"></div>
+                <div id="insituburn" class="{%if(!showBurn){%}hide{%}%} col-sm-11 col-sm-offset-1">
+                    <div class="col-sm-12">
+                        <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="slider"></div>
+                    </div>
+                    <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                    <div class="col-sm-2 col-sm-offset-7 slider-label" style="text-align:right"><sup>100%</sup></div>
                 </div>
-                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
-            </div>
-            <div id="insituburn" class="{%if(!showBurn){%}hide{%}%} co-sm-11 col-sm-offset-1">
-                <div class="col-sm-3">
-                    <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
-                </div>
-                <div class="col-sm-9">
-                    <div class="slider"></div>
-                </div>
-                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
             </div>
         </div>
         <div class="col-md-7 main">

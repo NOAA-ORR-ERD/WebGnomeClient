@@ -13,8 +13,6 @@ define([
         className: 'modal fade form-modal risk-form tuning',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
-        benefitGauge: null,
-        self: null,
 
         events: function(){
             return _.defaults({}, FormModal.prototype.events);
@@ -23,16 +21,13 @@ define([
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
-            self = this;
         },
 
         render: function(options){
             var showDispersant, showBurn, showSkimming;
             _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
-                    if (el.attributes.name != "_natural") {
-                        showDispersant = true;
-                    }
+                if (el.attributes.obj_type === "gnome.weatherers.cleanup.ChemicalDispersion") {
+                    showDispersant = true;
                 } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
                     showBurn = true;
                 } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
@@ -51,9 +46,9 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.createSlider('.slider-skimming', this.model.get('efficiency').skimming);
-            this.createSlider('.slider-dispersant', this.model.get('efficiency').dispersant);
-            this.createSlider('.slider-in-situ-burn', this.model.get('efficiency').insitu_burn);
+            this.createSlider('#skimming .slider', this.model.get('efficiency').skimming);
+            this.createSlider('#dispersant .slider', this.model.get('efficiency').dispersant);
+            this.createSlider('#insituburn .slider', this.model.get('efficiency').insitu_burn);
 
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
@@ -65,7 +60,9 @@ define([
 
             this.relativeImp.draw();
 
-            this.on('relativeRendered', _.bind(function(){this.renderPie(this.pieData);}, this));
+            this.on('relativeRendered', _.bind(function(){
+                this.renderPie(this.pieData);
+            }, this));
 
             this.trigger('relativeRendered');
         },
@@ -130,10 +127,10 @@ define([
                     min: 0,
                     value: value,
                     create: _.bind(function(e, ui){
-                           this.$(selector+' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
+                           this.$(selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
                         }, this),
                     slide: _.bind(function(e, ui){
-                           this.$(selector+' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
+                           this.$(selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
                         }, this),
                     stop: _.bind(function(e, ui){
                             this.reassessRisk();
@@ -154,28 +151,7 @@ define([
 
             // assess model
             this.model.assessment();
-        },
-
-        // callback from relative importance ui when values change.
-        // to update the UI values and set model values.
-        calculateRI: function(objects){
-            var surfaceRI = objects['surface'];
-            var columnRI = objects['column'];
-            var shorelineRI = objects['shoreline'];
-            var t = surfaceRI + columnRI + shorelineRI;
-
-            // set model
-            var ri = self.model.get('relativeImportance');
-            ri.surface = surfaceRI / t;
-            ri.column = columnRI / t;
-            ri.shoreline = shorelineRI / t;
-
-            // update ui
-            self.$('#surfaceRI').html((ri.surface*100).toFixed(3));
-            self.$('#columnRI').html((ri.column*100).toFixed(3));
-            self.$('#shorelineRI').html((ri.shoreline*100).toFixed(3));
-
-        },
+        }
 
     });
 
