@@ -10,7 +10,7 @@ define([
     'flot'
 ], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
-        className: 'modal fade form-modal risk-form',
+        className: 'modal fade form-modal risk-form tuning',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
         benefitGauge: null,

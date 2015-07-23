@@ -2371,8 +2371,8 @@ nav.navbar{
 
     &.risk-form{
 
-        div.modal-body{
-            padding: none;
+        &.tuning .modal-body{
+            background-color: #F9F9F9;
         }
 
         google-chart {
@@ -2381,8 +2381,19 @@ nav.navbar{
         }
 
         .inset {
-            background-color: #F9F9F9;
+            background-color: transparent;
             height: 100%;
+        }
+
+        .main {
+            background-color: #FFFFFF;
+            margin-top: -15px;
+            margin-bottom: -15px;
+
+            .container {
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
         }
 
         .chart {
