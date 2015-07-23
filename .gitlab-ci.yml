@@ -3,6 +3,7 @@ before_script:
 
 master: 
   script:
+    - grunt install
     - grunt build
   only: 
     - master
