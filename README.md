@@ -1,5 +1,6 @@
 WebGnomeClient
 ==============
+[![build status](https://ci.orr.noaa.gov/projects/2/status.png?ref=master)](https://ci.orr.noaa.gov/projects/2?ref=master)
 
 Javascript client that uses the WebGnomeAPI to create and run py_gnome models.
 
