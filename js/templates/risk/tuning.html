@@ -1,69 +1,59 @@
 <form class="form-horizontal" role="form">
     <div class="form-group">
-    	<div class="col-md-4">
-    		<label class="control-label" for="benefit">Benefit:</label>
-            <div class="small col-md-offset-1">
-    			<span>this is some text to explain the benefit calculation.</span>
-    			<div>Column: <span id="column">{{ column }}</span></div>
-    			<div>Surface: <span id="surface">{{ surface }}</span></div>
-    			<div>Shoreline: <span id="shoreline">{{ shoreline }}</span></div>
-    		</div>
-    	</div>
-    	<div class="col-md-8">
-    		<div class="gauge-container">
-    			<google-chart 
-                    type='gauge'
-                    options='{"height": 200, "width": 200, "title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
-                    data='[["Label", "Value"], ["Benefit", 50]]'>
-                </google-chart>
-    		</div>
-    	</div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-12">
-            <label for="importance">Relative Importance:</label>
+        <div class="col-md-4">
+            <div class="col-sm-12">
+                <label class="control-label">Efficiencies:</label>
+            </div>
+            <div id="skimming" class="{%if(!showSkimming){%}hide{%}%} co-sm-11 col-sm-offset-1">
+                <div class="col-sm-3">
+                    <label class="control-label" id="skimminglabel">Skimming:</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="slider"></div>
+                </div>
+                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
+            </div>
+            <div id="dispersant" class="{%if(!showDispersant){%}hide{%}%} co-sm-11 col-sm-offset-1">
+                <div class="col-sm-3">
+                    <label class="control-label" id="dispersantlabel">Dispersant:</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="slider"></div>
+                </div>
+                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
+            </div>
+            <div id="insituburn" class="{%if(!showBurn){%}hide{%}%} co-sm-11 col-sm-offset-1">
+                <div class="col-sm-3">
+                    <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
+                </div>
+                <div class="col-sm-9">
+                    <div class="slider"></div>
+                </div>
+                <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
+                <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
+            </div>
         </div>
-    	<div class="col-sm-6 relative-importance"></div>
-    	<div class="col-sm-6">
-    		<canvas id="importance" height="225" width="225" style="border:1px solid #000000;">
-    	</div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-12">
-	       <label class="control-label">Efficiencies:</label>
-        </div>
-        <div id="skimming" class="{%if(!showSkimming){%}hide{%}%} co-sm-11 col-sm-offset-1">
-            <div class="col-sm-3">
-                <label class="control-label" id="skimminglabel">Skimming:</label>
+        <div class="col-md-8">
+        	<div class="col-md-6">
+        		<div class="gauge-container">
+        			<google-chart 
+                        type='gauge'
+                        options='{"height": 200, "width": 200, "title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
+                        data='[["Label", "Value"], ["Benefit", 50]]'>
+                    </google-chart>
+        		</div>
+        	</div>
+            <div class="col-sm-12">
+                <label for="importance">Relative Importance:</label>
             </div>
-            <div class="col-sm-9">
-                <div class="slider"></div>
+            <div class="col-sm-12">
+                <canvas id="importance" height="225" width="225">
             </div>
-            <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-            <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
-        </div>
-        <div id="dispersant" class="{%if(!showDispersant){%}hide{%}%} co-sm-11 col-sm-offset-1">
-            <div class="col-sm-3">
-                <label class="control-label" id="dispersantlabel">Dispersant:</label>
+            <div class="col-md-6">
+                <div class="col-sm-6 relative-importance"></div>
             </div>
-            <div class="col-sm-9">
-                <div class="slider"></div>
-            </div>
-            <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-            <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
-        </div>
-        <div id="insituburn" class="{%if(!showBurn){%}hide{%}%} co-sm-11 col-sm-offset-1">
-            <div class="col-sm-3">
-                <label class="control-label" id="insituburnlabel">In-situ Burn:</label>
-            </div>
-            <div class="col-sm-9">
-                <div class="slider"></div>
-            </div>
-            <div class="col-sm-2 col-sm-offset-0 slider-label"><sup>0%</sup></div>
-            <div class="col-sm-2 col-sm-offset-5 slider-label" style="text-align:right"><sup>100%</sup></div>
-        </div>
-        <div class="col-sm-11 col-sm-offset-1 text-center">
-            
         </div>
     </div>
 </form>
