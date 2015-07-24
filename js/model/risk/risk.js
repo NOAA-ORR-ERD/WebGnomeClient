@@ -52,11 +52,9 @@ define([
                 // initialize efficiency to response values
                 var eff = attrs.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.Dispersion") {
-                        if (el.attributes.name != "_natural") {
-                            if (!_.isUndefined(el.attributes.efficiency)){
-                                eff.disperant = el.attributes.efficiency * 100;
-                            }
+                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.ChemicalDispersion") {
+                        if (!_.isUndefined(el.attributes.efficiency)){
+                            eff.disperant = el.attributes.efficiency * 100;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
                         if (!_.isUndefined(el.attributes.efficiency)){
@@ -79,7 +77,7 @@ define([
             var percentWC = 0;
             var amount_released = 0;
             _.each(webgnome.mass_balance, function(mass, idx) {
-                data = mass.data[frame];
+                var data = mass.data[frame];
                 if (mass.name.toUpperCase() === 'FLOATING') {
                     massSW = data[1];
                 }
