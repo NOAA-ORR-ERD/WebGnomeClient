@@ -52,17 +52,17 @@ define([
                 // initialize efficiency to response values
                 var eff = attrs.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                    if (el.attributes.obj_type === "gnome.weatherers.cleanup.ChemicalDispersion") {
-                        if (!_.isUndefined(el.attributes.efficiency)){
-                            eff.disperant = el.attributes.efficiency * 100;
+                    if (el.get('obj_type') === "gnome.weatherers.cleanup.ChemicalDispersion") {
+                        if (!_.isUndefined(el.get('efficiency'))){
+                            eff.dispersant = el.get('efficiency') * 100;
                         }
-                    } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Burn") {
-                        if (!_.isUndefined(el.attributes.efficiency)){
-                            eff.insitu_burn = el.attributes.efficiency * 100;
+                    } else if (el.get('obj_type') === "gnome.weatherers.cleanup.Burn") {
+                        if (!_.isUndefined(el.get('efficiency'))){
+                            eff.insitu_burn = el.get('efficiency') * 100;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
-                        if (!_.isUndefined(el.attributes.efficiency)){
-                            eff.skimming = el.attributes.efficiency * 100;
+                        if (!_.isUndefined(el.get('efficiency'))){
+                            eff.skimming = el.get('efficiency') * 100;
                         }
                     }
                 });

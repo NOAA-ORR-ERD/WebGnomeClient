@@ -144,10 +144,10 @@ define([
             var insitu_burn = this.$('.slider-in-situ-burn').slider('value');
 
             // set model
-            var e = this.model.get('efficiency');
-            e.skimming = skimming;
-            e.dispersant = dispersant;
-            e.insitu_burn = insitu_burn;
+            var eff = this.model.get('efficiency');
+            eff.skimming = skimming;
+            eff.dispersant = dispersant;
+            eff.insitu_burn = insitu_burn;
 
             // assess model
             this.model.assessment();
