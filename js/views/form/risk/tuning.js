@@ -139,15 +139,17 @@ define([
         },
 
         reassessRisk: function(){
-            var skimming = this.$('.slider-skimming').slider('value');
-            var dispersant = this.$('.slider-dispersant').slider('value');
-            var insitu_burn = this.$('.slider-in-situ-burn').slider('value');
+            var skimming = this.$('#skimming .slider').slider('value');
+            var dispersant = this.$('#dispersant .slider').slider('value');
+            var insitu_burn = this.$('#insituburn .slider').slider('value');
 
             // set model
             var eff = this.model.get('efficiency');
             eff.skimming = skimming;
             eff.dispersant = dispersant;
             eff.insitu_burn = insitu_burn;
+
+            this.model.set('efficiency', eff);
 
             // assess model
             this.model.assessment();
