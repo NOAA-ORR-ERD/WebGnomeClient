@@ -6,9 +6,10 @@ define([
     'views/modal/form',
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
+    'text!templates/risk/slider.html',
     'relativeimportance',
     'flot'
-], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, RelativeImportance) {
+], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form tuning',
         name: 'risk',
@@ -46,9 +47,9 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.createSlider('#skimming .slider', this.model.get('efficiency').skimming);
-            this.createSlider('#dispersant .slider', this.model.get('efficiency').dispersant);
-            this.createSlider('#insituburn .slider', this.model.get('efficiency').insitu_burn);
+            this.createSlider('Skimming', this.model.get('efficiency').skimming);
+            this.createSlider('Dispersant', this.model.get('efficiency').dispersant);
+            this.createSlider('Insituburn', this.model.get('efficiency').insitu_burn);
 
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
@@ -122,23 +123,27 @@ define([
         },
 
         createSlider: function(selector, value){
-            this.$(selector).slider({
+            var sliderTemplate = _.template(SliderTemplate, {'selector': selector});
+
+            this.$('.sliders-container').append(sliderTemplate);
+            
+            this.$('#' + selector + ' .slider').slider({
                     max: 100,
                     min: 0,
                     value: value,
                     create: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
+                           this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
                         }, this),
                     slide: _.bind(function(e, ui){
-                           this.$(selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
+                           this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
                         }, this),
                     stop: _.bind(function(e, ui){
-                            this.reassessRisk();
+                            this.reassessRisk(selector);
                         }, this)
             });
         },
 
-        reassessRisk: function(){
+        reassessRisk: function(selector){
             var skimming = this.$('#skimming .slider').slider('value');
             var dispersant = this.$('#dispersant .slider').slider('value');
             var insitu_burn = this.$('#insituburn .slider').slider('value');
@@ -150,6 +155,8 @@ define([
             eff.insitu_burn = insitu_burn;
 
             this.model.set('efficiency', eff);
+
+            this.$('#' + selector + ' p').removeClass('hide');
 
             // assess model
             this.model.assessment();
