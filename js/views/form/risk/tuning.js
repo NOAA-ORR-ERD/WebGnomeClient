@@ -47,9 +47,9 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.createSlider('Skimming', this.model.get('efficiency').skimming);
-            this.createSlider('Dispersant', this.model.get('efficiency').dispersant);
-            this.createSlider('Insituburn', this.model.get('efficiency').insitu_burn);
+            this.createSlider('Skimming', this.model.get('efficiency').Skimming);
+            this.createSlider('Dispersion', this.model.get('efficiency').Dispersion);
+            this.createSlider('Burn', this.model.get('efficiency').Burn);
 
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
@@ -144,19 +144,27 @@ define([
         },
 
         reassessRisk: function(selector){
-            var skimming = this.$('#skimming .slider').slider('value');
-            var dispersant = this.$('#dispersant .slider').slider('value');
-            var insitu_burn = this.$('#insituburn .slider').slider('value');
-
+            var sliderEff = this.$('#' + selector + ' .slider').slider('value');
             // set model
             var eff = this.model.get('efficiency');
-            eff.skimming = skimming;
-            eff.dispersant = dispersant;
-            eff.insitu_burn = insitu_burn;
+            eff[selector] = sliderEff;
 
             this.model.set('efficiency', eff);
 
-            this.$('#' + selector + ' p').removeClass('hide');
+            var gnomeEff;
+
+            if (selector === 'Dispersion'){
+                var obj_str = 'Chemical' + selector;
+                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + obj_str}).get('efficiency') * 100;
+            } else {
+                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + selector}).get('efficiency') * 100;
+            }
+
+            if (gnomeEff !== sliderEff){
+                this.$('#' + selector + ' p').removeClass('hide');
+            } else {
+                this.$('#' + selector + ' p').addClass('hide');
+            }
 
             // assess model
             this.model.assessment();

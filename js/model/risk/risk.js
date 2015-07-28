@@ -15,9 +15,9 @@ define([
             'assessment_time': 0,
 
             efficiency: {
-                'skimming': 100,
-                'dispersant': 100,
-                'insitu_burn': 100
+                'Skimming': 100,
+                'Dispersant': 100,
+                'Burn': 100
             },
 
             'surface': 1/3,
@@ -52,17 +52,18 @@ define([
                 // initialize efficiency to response values
                 var eff = attrs.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
+                    console.log(eff);
                     if (el.get('obj_type') === "gnome.weatherers.cleanup.ChemicalDispersion") {
                         if (!_.isUndefined(el.get('efficiency'))){
-                            eff.dispersant = el.get('efficiency') * 100;
+                            eff.Dispersion = el.get('efficiency') * 100;
                         }
                     } else if (el.get('obj_type') === "gnome.weatherers.cleanup.Burn") {
                         if (!_.isUndefined(el.get('efficiency'))){
-                            eff.insitu_burn = el.get('efficiency') * 100;
+                            eff.Burn = el.get('efficiency') * 100;
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
                         if (!_.isUndefined(el.get('efficiency'))){
-                            eff.skimming = el.get('efficiency') * 100;
+                            eff.Skimming = el.get('efficiency') * 100;
                         }
                     }
                 });
