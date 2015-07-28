@@ -52,7 +52,6 @@ define([
                 // initialize efficiency to response values
                 var eff = attrs.efficiency;
                 _.each(webgnome.model.get('weatherers').models, function(el, idx){
-                    console.log(eff);
                     if (el.get('obj_type') === "gnome.weatherers.cleanup.ChemicalDispersion") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.Dispersion = el.get('efficiency') * 100;

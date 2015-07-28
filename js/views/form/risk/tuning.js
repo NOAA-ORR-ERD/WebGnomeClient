@@ -36,21 +36,20 @@ define([
                 }
             });
 
-            this.body = _.template(RiskTemplate, {
-                surface: this.model.get('surface').toFixed(3),
-                column: this.model.get('column').toFixed(3),
-                shoreline: this.model.get('shoreline').toFixed(3),
-                showDispersant: showDispersant,
-                showBurn: showBurn,
-                showSkimming: showSkimming
-            });
+            this.body = _.template(RiskTemplate, {});
 
             FormModal.prototype.render.call(this, options);
 
-            this.createSlider('Skimming', this.model.get('efficiency').Skimming);
-            this.createSlider('Dispersion', this.model.get('efficiency').Dispersion);
-            this.createSlider('Burn', this.model.get('efficiency').Burn);
-
+            if (showSkimming){
+                this.createSlider('Skimming', this.model.get('efficiency').Skimming);
+            }
+            if (showDispersant){
+                this.createSlider('Dispersion', this.model.get('efficiency').Dispersion);
+            }
+            if (showBurn){
+                this.createSlider('Burn', this.model.get('efficiency').Burn);
+            }
+            
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
                     point1: {label: 'column'},
@@ -156,6 +155,8 @@ define([
             if (selector === 'Dispersion'){
                 var obj_str = 'Chemical' + selector;
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + obj_str}).get('efficiency') * 100;
+            } else if (selector === 'Skimming'){
+                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Skimmer'}).get('efficiency') * 100;
             } else {
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + selector}).get('efficiency') * 100;
             }
