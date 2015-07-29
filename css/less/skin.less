@@ -293,7 +293,14 @@ img{
     border-radius: 0;
     border: 0;
     background: #efefef;
-
+    
+    &.panel-primary{
+        .panel-heading{
+            a{
+                color: white;
+            }
+        }
+    }
 
     .panel-heading{
         border-radius: 0;
@@ -1392,8 +1399,8 @@ nav.navbar{
 
         .layers{
             top: 75px;
-            right: -200px;
-            width: 200px;
+            right: -300px;
+            width: 300px;
             position: absolute;
             z-index: 1;
             .transition(all .2s);
@@ -1402,25 +1409,36 @@ nav.navbar{
                 right: 0;
             }
 
-            form{
+            .panel{
+                margin-bottom: 0;
                 background: rgba(255, 255, 255, .75);
-                padding: 10px;
+                .panel-body{
+                    background: none;
+
+                    form:last-of-type{
+                        margin-bottom: 0;
+                    }
+                }
+            }
+            
+            form {
+                margin-bottom: 10px;
             }
             
             .title{
-                background: rgba(255, 255, 255, .75);
+                background: #337ab7;
+                color: white;
                 .rotate(-90deg);
                 position: absolute;
                 left: -43px;
                 top: 18px;
                 padding: 3px 10px;
-                color: lighten(black, 10%);
                 cursor: pointer;
                 border-radius: 4px 4px 0 0;
 
             }
 
-            .current-grid, .current-uv, .ice-grid, .ice-uv{
+            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
                 .inner{
                     max-height: 143px;
                     overflow-x: scroll;
