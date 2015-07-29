@@ -150,10 +150,10 @@ define([
 
         calculateBenefit: function(){
             var values = this.get('relativeImportance');
-            var netERA, columnBenefit, shorelineBenefit, surfaceBenefit;
+            var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
             for (var key in values){
-                if (key === 'Column'){
-                    columnBenefit = this.get('column') * (values[key].data / 100);
+                if (key === 'Subsurface'){
+                    subsurfaceBenefit = this.get('column') * (values[key].data / 100);
                 } else if (key === 'Shoreline'){
                     shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
                 } else if (key === 'Surface'){

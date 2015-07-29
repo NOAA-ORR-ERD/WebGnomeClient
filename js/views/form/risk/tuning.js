@@ -52,7 +52,7 @@ define([
             
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
-                    point1: {label: 'Column'},
+                    point1: {label: 'Subsurface'},
                     point2: {label: 'Surface'},
                     point3: {label: 'Shoreline'},
                     callback: _.bind(this.relativeImportancePercent, this)
