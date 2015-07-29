@@ -152,11 +152,11 @@ define([
             var values = this.get('relativeImportance');
             var netERA, columnBenefit, shorelineBenefit, surfaceBenefit;
             for (var key in values){
-                if (key === 'column'){
+                if (key === 'Column'){
                     columnBenefit = this.get('column') * (values[key].data / 100);
-                } else if (key === 'shoreline'){
+                } else if (key === 'Shoreline'){
                     shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
-                } else if (key === 'surface'){
+                } else if (key === 'Surface'){
                     surfaceBenefit = this.get('surface') * (values[key].data / 100);
                 }
             }

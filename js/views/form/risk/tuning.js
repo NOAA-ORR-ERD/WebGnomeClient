@@ -52,9 +52,9 @@ define([
             
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
-                    point1: {label: 'column'},
-                    point2: {label: 'surface'},
-                    point3: {label: 'shoreline'},
+                    point1: {label: 'Column'},
+                    point2: {label: 'Surface'},
+                    point3: {label: 'Shoreline'},
                     callback: _.bind(this.relativeImportancePercent, this)
                 });
 
@@ -144,7 +144,9 @@ define([
         },
 
         save: function(){
-            console.log(this.model);
+            var weatherers = webgnome.model.get('weatherers');
+            this.model.save();
+
         }
 
     });
