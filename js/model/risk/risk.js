@@ -15,9 +15,9 @@ define([
             'assessment_time': 0,
 
             efficiency: {
-                'Skimming': 100,
-                'Dispersant': 100,
-                'Burn': 100
+                'Skimming': null,
+                'Dispersant': null,
+                'Burn': null
             },
 
             'surface': 1/3,

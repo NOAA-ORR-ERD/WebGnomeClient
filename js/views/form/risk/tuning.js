@@ -141,6 +141,10 @@ define([
 
             // assess model
             this.model.assessment();
+        },
+
+        save: function(){
+            console.log(this.model);
         }
 
     });

@@ -26,7 +26,7 @@ define([
                 new TuningForm({
                     name: 'step2',
                     title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Submit</button>',
                 }, riskModel)
             ];
             this.start();
