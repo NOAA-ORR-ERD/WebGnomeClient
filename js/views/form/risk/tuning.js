@@ -7,9 +7,9 @@ define([
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
     'text!templates/risk/slider.html',
-    'relativeimportance',
-    'flot'
-], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelativeImportance) {
+    'text!templates/risk/relativeimportancetable.html',
+    'relativeimportance'
+], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form tuning',
         name: 'risk',
@@ -61,7 +61,7 @@ define([
             this.relativeImp.draw();
 
             this.on('relativeRendered', _.bind(function(){
-                this.renderPie(this.pieData);
+                this.renderTable(this.tableData);
             }, this));
 
             this.trigger('relativeRendered');
@@ -73,46 +73,18 @@ define([
                 'data': data
             });
             this.$('.relative-importance').html(relativeimportance);
-            this.pieData = data;
+            this.tableData = data;
             this.trigger('relativeRendered');
 
-            this.model.set('relativeImportance', this.pieData);
+            this.model.set('relativeImportance', this.tableData);
         },
 
-        formatPieData: function(data){
-            var dataArray = [];
-
-            for (var key in data){
-                var obj = {
-                    label: key,
-                    'data': data[key].data,
-                    color: data[key].color
-                };
-                dataArray.push(obj);
-            }
-            return dataArray;
-        },
-
-        renderPie: function(data){
-            var plotData = this.formatPieData(data);
-            $.plot('#pie-importance .chart', plotData, {
-                series: {
-                    pie: {
-                        show: true,
-                        radius: 3 / 4,
-                        label: {
-                            formatter: function(label, series){
-                                return '<div><span style="background-color:' + series.color + ';"></span>' + label + '<br>' + Math.round(series.data[0][1]) + '%</div>';
-                            },
-                            show: true,
-                            radius: 6 / 10
-                        }
-                    }
-                },
-                legend: {
-                    show: false
-                }
+        renderTable: function(data){
+            this.$('.relative-importance').html('');
+            var template = _.template(RelImpTableTemplate, {
+                'data': data
             });
+            this.$('.relative-importance').html(template);
             this.updateBenefit();
         },
 
