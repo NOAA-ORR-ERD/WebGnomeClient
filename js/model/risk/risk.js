@@ -161,7 +161,7 @@ define([
                 }
             }
 
-            netERA = 1 - (columnBenefit + shorelineBenefit + surfaceBenefit);
+            netERA = 1 - (subsurfaceBenefit + shorelineBenefit + surfaceBenefit);
 
             return netERA;
         },
