@@ -498,7 +498,7 @@ define([
                     this.source.addFeature(feature);
                     
                     this.spillMapView.map.getView().setCenter(startPoint);
-                    this.spillMapView.map.getView().setZoom(15);
+                    this.spillMapView.map.getView().setZoom(24);
                 }
                 var start = this.model.get('release').get('start_position');
                 var end = this.model.get('release').get('end_position');
