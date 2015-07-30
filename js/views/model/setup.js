@@ -1195,9 +1195,9 @@ define([
             
             if(target !== localStorage.getItem('prediction')){
                 this.rewind();
+                this.configureModel(target);
             }
 
-            this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
         },
