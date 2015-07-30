@@ -146,7 +146,7 @@ define([
         save: function(){
             var weatherers = webgnome.model.get('weatherers');
             this.model.save();
-
+            
         }
 
     });

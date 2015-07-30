@@ -35,10 +35,19 @@ define([
                 this.$('#datetime').datetimepicker('show');
             }, this));
 
+            var value;
+            var commonWeatherers = this.findCommonWeatherers();
+            if (commonWeatherers.length > 0){
+                value = commonWeatherers[0].get('efficiency');
+                this.model.set('efficiency', value);
+            } else {
+                value = 20;
+            }
+
             this.$('.slider').slider({
                 min: 0,
                 max: 100,
-                value: 20,
+                value: value,
                 create: _.bind(function(e, ui){
                     this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + ui.value + '</div></div>');
                 }, this),
@@ -127,8 +136,23 @@ define([
                 this.$('#rate-tooltip').text(val);
             } else {
                 this.$('.slidertoggle').prop('checked', true);
+                this.$('.slider').slider('value', 20);
                 this.toggleEfficiencySlider();
             }
+        },
+
+        findCommonWeatherers: function(){
+            return webgnome.model.get('weatherers').where({'obj_type': this.model.get('obj_type')});
+        },
+
+        save: function(){
+            var modelEff = this.model.get('efficiency');
+            var sameTypeWeatherers = this.findCommonWeatherers();
+            _.each(sameTypeWeatherers, _.bind(function(el, i, col){
+                el.set('efficiency', modelEff);
+            }, this));
+            webgnome.model.save();
+            FormModal.prototype.save.call(this);
         },
 
         close: function(){
