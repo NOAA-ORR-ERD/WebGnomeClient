@@ -15,6 +15,7 @@ define([
     'model/movers/random',
     'model/movers/cats',
     'model/movers/ice',
+    'model/movers/grid_current',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
@@ -30,7 +31,7 @@ define([
     'model/weatherers/weathering_data'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover, IceMover,
+    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData){
     'use strict';
@@ -53,7 +54,8 @@ define([
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.current_movers.CatsMover': CatsMover,
-                'gnome.movers.current_movers.IceMover': IceMover
+                'gnome.movers.current_movers.IceMover': IceMover,
+                'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,

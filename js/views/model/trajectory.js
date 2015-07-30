@@ -265,7 +265,7 @@ define([
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
                 var currents = webgnome.model.get('movers').filter(function(mover){
-                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover' || mover.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover';
                 });
                 var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
                 var active_currents = [];
