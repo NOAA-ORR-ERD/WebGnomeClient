@@ -11,6 +11,7 @@ define([
         socketRoute: '/logger',
         socket: null,
         count: 0,
+        limit: 250,
         log_item_height: 20,
         events: {
             'click .toggle': 'toggle',
@@ -89,6 +90,11 @@ define([
                 var ts = message.time + ' ' + message.date;
                 this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
                 this.count++;
+            }
+
+            if(this.count > this.limit){
+                this.$('.window .logs li:first').remove();
+                this.count--;
             }
 
             this.evalLogs();

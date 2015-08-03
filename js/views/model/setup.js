@@ -837,7 +837,7 @@ define([
         updateCurrent: function(){
             // for right now only visualize cats mover grids
             var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                return ['gnome.movers.current_movers.CatsMover', 'gnome.movers.current_movers.GridCurrentMover'].indexOf(mover.get('obj_type')) !== -1;
             });
 
             if(currents.length > 0){
@@ -1195,9 +1195,9 @@ define([
             
             if(target !== localStorage.getItem('prediction')){
                 this.rewind();
+                this.configureModel(target);
             }
 
-            this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
         },
