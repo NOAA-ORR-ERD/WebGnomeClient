@@ -192,7 +192,7 @@ define([
             this.set(JSON.parse(localStorage.getItem('risk_calculator')));
         },
 
-        save: function(attributes) {
+        save: function(attributes, options) {
             localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
         },
 
