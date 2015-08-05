@@ -23,8 +23,7 @@ module.exports = function(grunt){
                     },
                     include: ['requireLib', 'boot'],
                     name: 'main',
-                    out: 'dist/build/build.js',
-                    optimize: 'uglify2'
+                    out: 'dist/build/build.js'
                 }
             }
         },
