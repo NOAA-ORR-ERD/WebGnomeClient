@@ -193,8 +193,10 @@ define([
             webgnome.model.set('duration', duration);
 
             webgnome.model.get('weatherers').forEach(function(weatherer){
-                weatherer.set('active_start', webgnome.model.get('start_time'));
-                weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+                if(weatherer.get('obj_type').indexOf('cleanup') === -1){
+                    weatherer.set('active_start', webgnome.model.get('start_time'));
+                    weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+                }
             });
 
             webgnome.model.save(null, {
