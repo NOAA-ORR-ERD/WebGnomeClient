@@ -16,19 +16,13 @@ define([
 
             efficiency: {
                 'Skimming': null,
-                'Dispersant': null,
+                'Dispersion': null,
                 'Burn': null
             },
 
             'surface': 1/3,
             'column': 1/3,
             'shoreline': 1/3,
-
-            relativeImportance: {
-                'surface': 1/3,
-                'column': 1/3,
-                'shoreline': 1/3
-            },
 
             units: {
                 'area': 'sq km',
@@ -194,6 +188,22 @@ define([
 
         save: function(attributes, options) {
             localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
+            this.writeGnomeEff();
+        },
+
+        writeGnomeEff: function(){
+            for (var key in this.get('efficiency')){
+                if (!_.isNull(this.get('efficiency')[key])){
+                    var weatheringModel;
+                    // if (key === 'Dispersion'){
+                    //     weatheringModel = webgnome.model.get('weatherers').
+                    // } else if (key === 'Burn'){
+
+                    // } else if (key === 'Skimming'){
+
+                    // }
+                }
+            }
         },
 
         destroy: function(options) {
