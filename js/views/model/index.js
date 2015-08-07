@@ -3,12 +3,11 @@ define([
     'underscore',
     'backbone',
     'model/cache',
-    'views/model/tree',
     'views/model/trajectory',
     'views/model/fate',
     'text!templates/model/index.html',
     'sweetalert'
-], function($, _, Backbone, Cache, TreeView, TrajectoryView, FateView, IndexTemplate, swal){
+], function($, _, Backbone, Cache, TrajectoryView, FateView, IndexTemplate, swal){
     'use strict';
     var modelView = Backbone.View.extend({
         className: 'page model',
@@ -58,10 +57,10 @@ define([
         },
 
         renderTrajectory: function(){
-            this.TreeView = new TreeView();
+            // this.TreeView = new TreeView();
             this.TrajectoryView = new TrajectoryView();
-            this.TreeView.on('toggle', this.TrajectoryView.toggle, this.TrajectoryView);
-            this.$el.append(this.TreeView.$el).append(this.TrajectoryView.$el);
+            // this.TreeView.on('toggle', this.TrajectoryView.toggle, this.TrajectoryView);
+            this.$el.append(this.TrajectoryView.$el);
         },
 
         renderFate: function(){
@@ -127,9 +126,9 @@ define([
         },
 
         reset: function(){
-            if(this.TreeView){
-                this.TreeView.close();
-            }
+            // if(this.TreeView){
+            //     this.TreeView.close();
+            // }
             if(this.TrajectoryView){
                 this.TrajectoryView.close();
             }

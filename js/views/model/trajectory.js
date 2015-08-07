@@ -12,8 +12,7 @@ define([
     'views/form/spill/continue',
     'model/step',
     'mousetrap',
-    'jqueryui/slider',
-    'jqueryFileupload'
+    'jqueryui/slider'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
@@ -169,10 +168,11 @@ define([
             'slidestop .seek > div': 'blur',
             'click .base input': 'toggleLayers',
             'click .current-grid input': 'toggleCurrentGrid',
-            'click .current-uv input': 'toggleCurrentUV',
+            'click .current-uv input': 'toggleUV',
+            'click .ice-uv input': 'toggleUV',
             'click .ice-grid input[type="checkbox"]': 'toggleIceGrid',
-            'click .ice-uv input[type="checkbox"]': 'toggleIceUV',
-            'click .ice-uv input[type="radio"]': 'toggleIceData'
+            'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
+            'click .ice-tc input[type="radio"]': 'toggleIceData'
         },
 
         initialize: function(options){
@@ -265,7 +265,7 @@ define([
             // or if there is a redraw request because of the map object changing
             if(_.isUndefined(this.ol.map) && this.ol.redraw === false || this.ol.redraw){
                 var currents = webgnome.model.get('movers').filter(function(mover){
-                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                    return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover' || mover.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover';
                 });
                 var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
                 var active_currents = [];
@@ -280,21 +280,21 @@ define([
                 var ice = webgnome.model.get('movers').filter(function(mover){
                     return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
                 });
-                var ice_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
-                var active_ice = [];
-                if(ice_outputter.get('on')){
-                    ice_outputter.get('ice_movers').forEach(function(mover){
-                        active_ice.push(mover.get('id'));
+                var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+                var tc_ice = [];
+                if(ice_tc_outputter.get('on')){
+                    ice_tc_outputter.get('ice_movers').forEach(function(mover){
+                        tc_ice.push(mover.get('id'));
                     });
                 }
-                this.checked_ice = active_ice;
+                this.tc_ice = tc_ice;
 
                 var compiled = _.template(ControlsTemplate, {
                     date: date,
                     currents: currents,
                     active_currents: active_currents,
                     ice: ice,
-                    active_ice: active_ice
+                    tc_ice: tc_ice,
                 });
                 this.$el.append(compiled);
                 this.$('.layers .title').click(_.bind(function(){
@@ -386,13 +386,13 @@ define([
         },
 
         toggle: function(){
-            if(this.contracted === true){
-                this.$el.removeClass('contracted');
-                this.contracted = false;
-            } else {
-                this.$el.addClass('contracted');
-                this.contracted = true;
-            }
+            // if(this.contracted === true){
+            //     this.$el.removeClass('contracted');
+            //     this.contracted = false;
+            // } else {
+            //     this.$el.addClass('contracted');
+            //     this.contracted = true;
+            // }
             
             if(this.ol.map){
                 this.ol.map.updateSize();
@@ -579,10 +579,10 @@ define([
             var ice_features = [];
             var ice_data = this.$('input[name=ice_data]:checked').val();
 
-            if(step && step.get('IceGeoJsonOutput') && this.checked_ice && this.checked_ice.length > 0){
+            if(step && step.get('IceGeoJsonOutput') && this.tc_ice && this.tc_ice.length > 0){
                 var ice = step.get('IceGeoJsonOutput').feature_collections;
-                for(var t = 0; t < this.checked_ice.length; t++){
-                    var id = this.checked_ice[t];
+                for(var t = 0; t < this.tc_ice.length; t++){
+                    var id = this.tc_ice[t];
                     if(_.has(ice, id)){
                         var features;
                         if(ice_data === 'thickness'){
@@ -709,15 +709,15 @@ define([
             }
         },
 
-        toggleCurrentUV: function(e){
-            var checked = this.$('.current-uv input:checked');
+        toggleUV: function(e){
+            var checked = this.$('.current-uv input:checked, .ice-uv input:checked');
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
 
             if (checked.length > 0){
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
 
-                this.$('.current-uv input:checked').each(_.bind(function(i, input){
+                this.$('.current-uv input:checked, .ice-uv input:checked').each(_.bind(function(i, input){
                     var id = input.id.replace('uv-', '');
                     var current = webgnome.model.get('movers').get(id);
                     this.checked_currents.push(id);
@@ -780,23 +780,23 @@ define([
             }
         },
 
-        toggleIceUV: function(e){
-            var checked = this.$('.ice-uv input:checked');
+        toggleIceTC: function(e){
+            var checked = this.$('.ice-tc input:checked');
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
 
             if (checked.length > 0){
                 current_outputter.get('ice_movers').reset();
-                this.checked_ice = [];
+                this.tc_ice = [];
 
-                this.$('.ice-uv input:checked').each(_.bind(function(i, input){
-                    var id = input.id.replace('uv-', '');
+                this.$('.ice-tc input:checked').each(_.bind(function(i, input){
+                    var id = input.id.replace('tc-', '');
                     var current = webgnome.model.get('movers').get(id);
-                    this.checked_ice.push(id);
+                    this.tc_ice.push(id);
                     current_outputter.get('ice_movers').add(current);
                 }, this));
             } else {
                 current_outputter.get('ice_movers').reset();
-                this.checked_ice = [];
+                this.tc_ice = [];
             }
 
             this.renderStep({step: this.frame});

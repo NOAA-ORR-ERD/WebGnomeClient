@@ -6,7 +6,6 @@ require.config({
     paths: {
         jquery: 'lib/jquery/dist/jquery',
         jqueryui: 'lib/jquery-ui/ui',
-        'jquery.ui.widget': 'lib/jquery-file-upload/js/vendor/jquery.ui.widget',
         underscore: 'lib/underscore/underscore',
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
@@ -14,11 +13,8 @@ require.config({
         text: 'lib/requirejs-text/text',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
-        jqueryFileupload: 'lib/jquery-file-upload/js/jquery.fileupload',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
-        relimpui: 'views/form/risk/relative-importance-ui',
-        fancytree: 'lib/fancytree/dist/jquery.fancytree',
         chosen: 'lib/chosen/chosen.jquery',
         fuse: 'lib/fuse/src/fuse',
         flot: 'lib/flot/jquery.flot',
@@ -58,7 +54,10 @@ require.config({
             exports: '$'
         },
         bootstrap: ['jquery'],
-        jqueryui: ['jquery'],
+        jqueryui: {
+            deps: ['jquery'],
+            exports: '$.ui'
+        },
         flot: ['jquery'],
         flotsymbol: ['flot'],
         flottime: ['flot'],
@@ -82,13 +81,6 @@ require.config({
         compassui: {
             exports: '$',
             deps: ['jquery']
-        },
-        relimpui: {
-            exports: '$',
-            deps: ['jquery']
-        },
-        fancytree: {
-            deps: ['jquery', 'jqueryui/core', 'jqueryui/widget']
         },
         chosen: {
             deps: ['jquery'],
