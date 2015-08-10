@@ -36,18 +36,20 @@ define([
                 }
             });
 
+            this.model.updateEfficiencies();
+
             this.body = _.template(RiskTemplate, {});
 
             FormModal.prototype.render.call(this, options);
 
             if (showSkimming){
-                this.createSlider('Skimming', this.model.get('efficiency').Skimming);
+                this.createSlider('Skimming', this.model.get('efficiency').Skimming * 100);
             }
             if (showDispersant){
-                this.createSlider('Dispersion', this.model.get('efficiency').Dispersion);
+                this.createSlider('Dispersion', this.model.get('efficiency').Dispersion * 100);
             }
             if (showBurn){
-                this.createSlider('Burn', this.model.get('efficiency').Burn);
+                this.createSlider('Burn', this.model.get('efficiency').Burn * 100);
             }
             
             this.relativeImp = new RelativeImportance('importance',
@@ -118,7 +120,7 @@ define([
             var sliderEff = this.$('#' + selector + ' .slider').slider('value');
             // set model
             var eff = this.model.get('efficiency');
-            eff[selector] = sliderEff;
+            eff[selector] = sliderEff / 100;
 
             this.model.set('efficiency', eff);
 
