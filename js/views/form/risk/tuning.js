@@ -14,6 +14,7 @@ define([
         className: 'modal fade form-modal risk-form tuning',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
+        effChanged: false,
 
         events: function(){
             return _.defaults({}, FormModal.prototype.events);
@@ -137,18 +138,25 @@ define([
 
             if (gnomeEff !== sliderEff){
                 this.$('#' + selector + ' p').removeClass('hide');
+                this.effChanged = true;
             } else {
                 this.$('#' + selector + ' p').addClass('hide');
+                this.effChanged = false;
             }
 
             // assess model
             this.model.assessment();
         },
 
-        save: function(){
+        save: function(e){
+            e.preventDefault();
             var weatherers = webgnome.model.get('weatherers');
             this.model.save();
             FormModal.prototype.wizardclose.call(this);
+            if (this.effChanged){
+                webgnome.cache.rewind();
+                webgnome.router.navigate('model', true);
+            }
         }
 
     });
