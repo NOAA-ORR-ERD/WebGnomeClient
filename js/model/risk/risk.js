@@ -95,14 +95,10 @@ define([
 
         assessment: function(){
             var units = this.get('units');
-            var _area = this.get('area');
-            var _diameter = this.get('diameter');
-            var _distance = this.get('distance');
-            var _depth = this.get('depth');
-            var area = nucos.convert('Area', units.area, 'm^2', _area);
-            var diameter = nucos.convert('Length', units.diameter, 'm', _diameter);
-            var distance = nucos.convert('Length', units.distance, 'm', _distance);
-            var depth = nucos.convert('Length', units.depth, 'm', _depth);
+            var area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
+            var diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
+            var distance = nucos.convert('Length', units.distance, 'm', this.get('distance'));
+            var depth = nucos.convert('Length', units.depth, 'm', this.get('depth'));
 
             // calculate what time step this is
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
