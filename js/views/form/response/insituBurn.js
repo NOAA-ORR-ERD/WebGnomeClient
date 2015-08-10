@@ -44,30 +44,6 @@ define([
             this.$('#thicknessunits').val(thicknessUnits);
         },
 
-        convertLength: function(length, units){
-            var len = parseFloat(length);
-            switch (units) {
-                case "mm":
-                  return len / 1000;
-                case "in":
-                  return len / 39.370;
-                case "cm":
-                  return len / 100;
-            }
-        },
-
-        convertArea: function(area, units){
-            var numArea = parseFloat(area);
-            switch (units){
-                case "ft^2":
-                    return numArea / 10.7639;
-                case "yd^2":
-                    return numArea / 1.19599;
-                case "m^2":
-                    return numArea;
-            }
-        },
-
         update: function(){
             ResponseFormModal.prototype.update.call(this);
             var boomedOilArea = this.$('#oilarea').val();
@@ -76,7 +52,7 @@ define([
             var boomedThicknessUnits = this.$('#thicknessunits').val();
             var start_time = this.startTime;
 
-            var thicknessInMeters = this.convertLength(boomedOilThickness, boomedThicknessUnits);
+            var thicknessInMeters = nucos.convert('Length', boomedThicknessUnits, 'm', boomedOilThickness);
             var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
             var burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
 
