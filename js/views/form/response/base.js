@@ -116,7 +116,7 @@ define([
             }
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
-            this.model.set('efficiency', parseInt(value / 100, 10));
+            this.model.set('efficiency', value / 100);
         },
 
         toggleEfficiencySlider: function(){
