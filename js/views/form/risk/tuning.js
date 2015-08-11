@@ -17,7 +17,9 @@ define([
         effChanged: false,
 
         events: function(){
-            return _.defaults({}, FormModal.prototype.events);
+            return _.defaults({
+                'shown.bs.modal': 'renderRelativeImportance'
+            }, FormModal.prototype.events);
         },
 
         initialize: function(options, model) {
@@ -44,13 +46,13 @@ define([
             FormModal.prototype.render.call(this, options);
 
             if (showSkimming){
-                this.createSlider('Skimming', this.model.get('efficiency').Skimming * 100);
+                this.createSlider('Skimming', parseInt(this.model.get('efficiency').Skimming * 100, 10));
             }
             if (showDispersant){
-                this.createSlider('Dispersion', this.model.get('efficiency').Dispersion * 100);
+                this.createSlider('Dispersion', parseInt(this.model.get('efficiency').Dispersion * 100, 10));
             }
             if (showBurn){
-                this.createSlider('Burn', this.model.get('efficiency').Burn * 100);
+                this.createSlider('Burn', parseInt(this.model.get('efficiency').Burn * 100, 10));
             }
             
             this.relativeImp = new RelativeImportance('importance',
@@ -60,7 +62,9 @@ define([
                     point3: {label: 'Shoreline'},
                     callback: _.bind(this.relativeImportancePercent, this)
                 });
+        },
 
+        renderRelativeImportance: function(){
             this.relativeImp.draw();
 
             this.on('relativeRendered', _.bind(function(){
