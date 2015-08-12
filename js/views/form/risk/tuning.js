@@ -25,6 +25,7 @@ define([
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
+            this.model.updateEfficiencies();
         },
 
         render: function(options){
@@ -38,8 +39,6 @@ define([
                     showSkimming = true;
                 }
             });
-
-            this.model.updateEfficiencies();
 
             this.body = _.template(RiskTemplate, {});
 
@@ -111,9 +110,11 @@ define([
                     value: value,
                     create: _.bind(function(e, ui){
                            this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
+                           this.updateTooltipWidth();
                         }, this),
                     slide: _.bind(function(e, ui){
                            this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
+                           this.updateTooltipWidth();
                         }, this),
                     stop: _.bind(function(e, ui){
                             this.reassessRisk(selector);
@@ -154,7 +155,6 @@ define([
 
         save: function(e){
             e.preventDefault();
-            var weatherers = webgnome.model.get('weatherers');
             this.model.save();
             FormModal.prototype.wizardclose.call(this);
             if (this.effChanged){

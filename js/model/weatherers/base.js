@@ -50,7 +50,6 @@ define([
             });
             webgnome.model.save();
         }
-
 	});
 
 	return baseWeathererModel;
