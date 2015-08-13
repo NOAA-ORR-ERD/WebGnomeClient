@@ -287,7 +287,6 @@ define([
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
-                console.log(options.needle);
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
                 this.graphOilBudget.setData(dataset);
@@ -975,7 +974,7 @@ define([
                             show: false
                         },
                         needle: {
-                            label: this.formatNeedleLabel
+                            label: _.bind(this.formatNeedleLabel, this)
                         }
                     });
                 }
@@ -1070,7 +1069,7 @@ define([
         },
 
         formatNeedleLabel: function(text){
-            var num = parseFloat(text).toPrecision(3).toString();
+            var num = parseFloat(text).toPrecision(this.dataPrecision).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
@@ -1092,7 +1091,7 @@ define([
         },
 
         formatNumber: function(number){
-            return number.toPrecision(3);
+            return number.toPrecision(this.dataPrecision);
         },
 
         /**
