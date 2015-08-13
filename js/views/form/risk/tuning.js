@@ -53,7 +53,6 @@ define([
             if (showBurn){
                 this.createSlider('Burn', parseInt(this.model.get('efficiency').Burn * 100, 10));
             }
-            
             this.relativeImp = new RelativeImportance('importance',
                 {   sideLength: 150,
                     point1: {label: 'Subsurface'},
