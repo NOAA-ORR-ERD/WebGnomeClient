@@ -76,11 +76,6 @@ define([
             yaxis: {},
             needle: {
                 on: true,
-                label: function(text){
-                    var num = parseFloat(text);
-                    var units = this.$('');
-                    return num.toFixed(2) + '';
-                },
                 stack: false,
                 noduplicates: true
             }
@@ -1099,7 +1094,7 @@ define([
         },
 
         formatNeedleLabel: function(text){
-            var num = parseFloat(text).toFixed(2);
+            var num = parseFloat(text).toPrecision(3).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
