@@ -55,6 +55,7 @@ define([
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage'
         },
+        dataPrecision: 3,
 
         defaultChartOptions: {
             grid: {
@@ -77,7 +78,8 @@ define([
             needle: {
                 on: true,
                 stack: false,
-                noduplicates: true
+                noduplicates: true,
+                label: this.formatNeedleLabel
             }
         },
 
@@ -312,6 +314,7 @@ define([
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
+                console.log(options.needle);
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
                 this.graphOilBudget.setData(dataset);
@@ -1116,7 +1119,7 @@ define([
         },
 
         formatNumber: function(number){
-            return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').split('.')[0];
+            return number.toPrecision(3);
         },
 
         /**
