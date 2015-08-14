@@ -1069,7 +1069,7 @@ define([
         },
 
         formatNeedleLabel: function(text){
-            var num = parseFloat(text).toPrecision(this.dataPrecision).toString();
+            var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
@@ -1091,7 +1091,7 @@ define([
         },
 
         formatNumber: function(number){
-            return number.toPrecision(this.dataPrecision);
+            return parseFloat(number.toPrecision(this.dataPrecision));
         },
 
         /**
