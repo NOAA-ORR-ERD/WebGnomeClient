@@ -1090,7 +1090,7 @@ define([
         },
 
         formatLabel: function(label){
-             return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
+            return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
         },
 
         formatNumber: function(number){
