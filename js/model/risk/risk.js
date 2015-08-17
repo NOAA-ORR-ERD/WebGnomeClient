@@ -96,49 +96,46 @@ define([
         assessment: function(){
             var units = this.get('units');
             var area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
-            var diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
             var distance = nucos.convert('Length', units.distance, 'm', this.get('distance'));
-            var depth = nucos.convert('Length', units.depth, 'm', this.get('depth'));
+            
+            var frame = this.calculateFrame();
+            var masses = this.getMasses(frame);
 
-            // calculate what time step this is
+            this.calculateShorelineFract(masses, units);
+            this.calculateWaterSurfaceFract(masses, units, area);
+            this.calculateWaterColumnFract(masses, units, area);
+        },
+
+        calculateFrame: function(){
             var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var timeStep = webgnome.model.get('time_step');
             var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
             var frame = Math.floor((assessmentTime - startTime) / timeStep);
-
-            var masses = this.getMasses(frame);
-
-            var MASSwc = masses[2];
-            var LOCwc = 0.001;
-            var VOLCwc = MASSwc / LOCwc;
-            var FCwc = VOLCwc / (area * depth);
-
-            var MASSsw = masses[0];
-            var LOCsw = 0.01;
-            var AREACsw = MASSsw / LOCsw;
-            var FCsw = AREACsw / area;
-
-            var MASSsh = masses[1];
-            var LOCsh = 0.5;
-            var LCsh = MASSsh / LOCsh;
-            var Lsh = Math.PI * diameter;
-            var FCsh = LCsh / Lsh;
-
-            this.set('column', FCwc);
-            this.set('surface', FCsw);
-            this.set('shoreline', FCsh);
+            return frame;
         },
 
-        calculateShorelineFract: function(){
-
+        calculateShorelineFract: function(masses, units){
+            var massShoreline = masses[1];
+            var shorelineLOC = 0.5;
+            var diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
+            var shorelineLength = Math.PI * diameter;
+            var fractOfContaminatedSh = (massShoreline / shorelineLOC) / shorelineLength;
+            this.set('shoreline', fractOfContaminatedSh);
         },
 
-        calculateWaterSurfaceFract: function(){
-
+        calculateWaterSurfaceFract: function(masses, units, area){
+            var massOnWaterSurface = masses[0];
+            var waterSurfaceLOC = 0.01;
+            var fractOfContaminatedWs = (massOnWaterSurface / waterSurfaceLOC) / area;
+            this.set('surface', fractOfContaminatedWs);
         },
 
-        calculateWaterColumnFract: function(){
-
+        calculateWaterColumnFract: function(masses, units, area){
+            var massInWaterColumn = masses[2];
+            var waterColumnLOC = 0.001;
+            var depth = nucos.convert('Length', units.depth, 'm', this.get('depth'));
+            var fractOfContaminatedWc = (massInWaterColumn / waterColumnLOC) / (area * depth);
+            this.set('column', fractOfContaminatedWc);
         },
 
         calculateBenefit: function(){
