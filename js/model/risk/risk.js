@@ -69,28 +69,28 @@ define([
         },
 
         getMasses: function(frame){
-            var massSW = 0;
-            var massSH = 0;
-            var percentWC = 0;
+            var surfaceMass = 0;
+            var shorelineMass = 0;
+            var waterColumnPercent = 0;
             var amount_released = 0;
             _.each(webgnome.mass_balance, function(mass, idx) {
                 var data = mass.data[frame];
                 if (mass.name.toUpperCase() === 'FLOATING') {
-                    massSW = data[1];
+                    surfaceMass = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'BEACHED') {
-                    massSH = data[1];
+                    shorelineMass = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'WATER_CONTENT') {
-                    percentWC = data[1];
+                    waterColumnPercent = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'AMOUNT_RELEASED') {
                     amount_released = data[1];
                 }
             });
-            var massWC = amount_released * percentWC / 100;
+            var waterColumnMass = amount_released * waterColumnPercent / 100;
 
-            return [massSW, massSH, massWC];
+            return [surfaceMass, shorelineMass, waterColumnMass];
         },
 
         assessment: function(){
@@ -157,17 +157,33 @@ define([
         },
 
         validate: function(attrs, options){
-            if (attrs.area < 1 || attrs.area === ''){
-                return 'Water area must be greater than zero!';
+            var distance = nucos.convert('Length', attrs.units.distance, 'm', attrs.distance);
+            var diameter = nucos.convert('Length', attrs.units.diameter, 'm', attrs.diameter);
+            var area = nucos.convert('Area', attrs.units.area, 'm^2', attrs.area);
+            var depth = nucos.convert('Length', attrs.units.depth, 'm', attrs.depth);
+            if (area < 10000 || attrs.area === ''){
+                return 'Water area must be greater than 10,000 square meters!';
             }
-            if (attrs.diameter < 1 || attrs.diameter === ''){
-                return 'Water diameter must be greater than zero!';
+            if (area > Math.pow(10, 12)) {
+                return 'Water area cannot be larger than ' + Math.pow(10, 12) + ' square meters!';
             }
-            if (attrs.distance < 1 || attrs.distance === ''){
-                return 'Distance from shore must be greater than zero!';
+            if (diameter < 100 || attrs.diameter === ''){
+                return 'Water diameter must be greater than 100 meters!';
             }
-            if (attrs.depth < 1 || attrs.depth === ''){
+            if (diameter > Math.pow(10, 6)){
+                return 'Water diameter cannot be longer than ' + Math.pow(10, 6) + ' meters!';
+            }
+            if (distance < 100 || attrs.distance === ''){
+                return 'Distance from shore must be greater!';
+            }
+            if (distance > Math.pow(10, 6)){
+                return 'Distance cannot be longer than ' + Math.pow(10, 6) + ' meters!';
+            }
+            if (depth < 1 || attrs.depth === ''){
                 return 'Average water depth must be greater than zero!';
+            }
+            if (depth > 10000){
+                return 'Average water depth must be smaller than 10,000 meters!';
             }
             var st = moment(webgnome.model.get('start_time'));
             var et = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
