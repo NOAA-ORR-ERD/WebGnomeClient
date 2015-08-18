@@ -2,10 +2,11 @@
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="water-area">Water Area:</label>
 		<div class="col-sm-2">
-			<input type="text" id="water-area" class="form-control" value="{{ area }}">
+			<input type="text" id="water-area" class="form-control" value="{{ area }}" />
 		</div>
 		<div class="col-sm-3">
 			<select class="form-control col-sm-3" id="area-units">
+				<option value="m^2">sq. m</option>
 				<option value="km^2">sq. km</option>
 				<option value="sq miles">sq. miles</option>
 				<option value="hectares">hectares</option>
@@ -16,10 +17,11 @@
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="water-diameter">Water Diameter:</label>
 		<div class="col-sm-2">
-			<input type="text" id="water-diameter" class="form-control" value="{{ diameter }}">
+			<input type="text" id="water-diameter" class="form-control" value="{{ diameter }}" />
 		</div>
 		<div class="col-sm-3">
 			<select class="form-control col-sm-3" id="diameter-units">
+				<option value="m">m</option>
 				<option value="km">km</option>
 				<option value="miles">miles</option>
 			</select>
@@ -28,10 +30,11 @@
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="distance-from-shore">Spill Distance from Shore:</label>
 		<div class="col-sm-2">
-			<input type="text" id="distance-from-shore" class="form-control" value="{{ distance }}">
+			<input type="text" id="distance-from-shore" class="form-control" value="{{ distance }}" />
 		</div>
 		<div class="col-sm-3">
 			<select class="form-control col-sm-3" id="distance-units">
+				<option value="m">m</option>
 				<option value="km">km</option>
 				<option value="miles">miles</option>
 			</select>
@@ -40,7 +43,7 @@
 	<div class="form-group">
 		<label class="control-label col-sm-5" for="average-water-depth">Average Water Depth:</label>
 		<div class="col-sm-2">
-			<input type="text" id="average-water-depth" class="form-control" value="{{ depth }}">
+			<input type="text" id="average-water-depth" class="form-control" value="{{ depth }}" />
 		</div>
 		<div class="col-sm-3">
 			<select class="form-control col-sm-3" id="depth-units">
@@ -53,7 +56,7 @@
         	<div class="form-group">
 		<label class="control-label col-sm-5" for="duration-hours">Time:</label>
 		<div class="col-sm-5">
-			<input type="text" class="form-control date" id="assessment_time" value="{{ assessment_time }}" name="assessment_time">
+			<input type="text" class="form-control date" id="assessment_time" value="{{ assessment_time }}" name="assessment_time" />
 		</div>
 	</div>
 </form>
