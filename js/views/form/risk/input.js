@@ -80,6 +80,12 @@ define([
             if(this.model.isValid()){
                 this.$('.next').removeClass('disabled');
             }
+
+            if(!this.model.isValid()){
+                this.error('Error!', this.model.validationError);
+            } else {
+                this.clearError();
+            }
         },
 
         close: function(){
