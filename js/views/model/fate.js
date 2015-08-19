@@ -80,6 +80,9 @@ define([
                 stack: false,
                 noduplicates: true,
                 label: this.formatNeedleLabel
+            },
+            legend: {
+                position: 'nw'
             }
         },
 
@@ -716,6 +719,7 @@ define([
                 options.crosshair = undefined;
                 options.tooltip = false;
                 options.needle = false;
+                options.legend = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
