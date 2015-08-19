@@ -161,7 +161,7 @@ define([
             'm': 'Length'
         },
 
-        boundGenerator: function(amount, fromUnits, toUnits){
+        validateMessageGenerator: function(amount, fromUnits, toUnits){
             var type = this.unitDict[fromUnits];
             var bound = Math.round(nucos.convert(type, fromUnits, toUnits, amount));
             return bound + ' ' + toUnits + '!';
@@ -173,28 +173,28 @@ define([
             var area = nucos.convert('Area', attrs.units.area, 'm^2', attrs.area);
             var depth = nucos.convert('Length', attrs.units.depth, 'm', attrs.depth);
             if (area < 10000 || attrs.area === ''){
-                return 'Water area must be greater than ' + this.boundGenerator(10000, 'm^2', attrs.units.area);
+                return 'Water area must be greater than ' + this.validateMessageGenerator(10000, 'm^2', attrs.units.area);
             }
             if (area > Math.pow(10, 12)) {
-                return 'Water area cannot be larger than ' + this.boundGenerator(Math.pow(10, 12), 'm^2', attrs.units.area);
+                return 'Water area cannot be larger than ' + this.validateMessageGenerator(Math.pow(10, 12), 'm^2', attrs.units.area);
             }
             if (diameter < 100 || attrs.diameter === ''){
-                return 'Water diameter must be greater than ' + this.boundGenerator(100, 'm', attrs.units.diameter);
+                return 'Water diameter must be greater than ' + this.validateMessageGenerator(100, 'm', attrs.units.diameter);
             }
             if (diameter > Math.pow(10, 6)){
-                return 'Water diameter cannot be longer than ' + this.boundGenerator(Math.pow(10, 6), 'm', attrs.units.diameter);
+                return 'Water diameter cannot be longer than ' + this.validateMessageGenerator(Math.pow(10, 6), 'm', attrs.units.diameter);
             }
             if (distance < 100 || attrs.distance === ''){
-                return 'Distance from shore must be greater than ' + this.boundGenerator(100, 'm', attrs.units.distance);
+                return 'Distance from shore must be greater than ' + this.validateMessageGenerator(100, 'm', attrs.units.distance);
             }
             if (distance > Math.pow(10, 6)){
-                return 'Distance cannot be longer than ' + this.boundGenerator(Math.pow(10, 6), 'm', attrs.units.distance);
+                return 'Distance cannot be longer than ' + this.validateMessageGenerator(Math.pow(10, 6), 'm', attrs.units.distance);
             }
             if (depth < 1 || attrs.depth === ''){
-                return 'Average water depth must be greater than ' + this.boundGenerator(1, 'm', attrs.units.depth);
+                return 'Average water depth must be greater than ' + this.validateMessageGenerator(1, 'm', attrs.units.depth);
             }
             if (depth > 10000){
-                return 'Average water depth must be smaller than ' + this.boundGenerator(10000, 'm', attrs.units.depth);
+                return 'Average water depth must be smaller than ' + this.validateMessageGenerator(10000, 'm', attrs.units.depth);
             }
             var st = moment(webgnome.model.get('start_time'));
             var et = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
