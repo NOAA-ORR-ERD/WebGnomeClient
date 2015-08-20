@@ -204,16 +204,6 @@ define([
             }
         },
 
-        // OVERRIDES for local storage of model
-        fetch: function() {
-            this.set(JSON.parse(localStorage.getItem('risk_calculator')));
-        },
-
-        save: function(attributes, options) {
-            localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
-            this.writeGnomeEff();
-        },
-
         writeGnomeEff: function(){
             for (var key in this.get('efficiency')){
                 if (!_.isNull(this.get('efficiency')[key])){
@@ -230,6 +220,16 @@ define([
                     }
                 }
             }
+        },
+
+        // OVERRIDES for local storage of model
+        fetch: function() {
+            this.set(JSON.parse(localStorage.getItem('risk_calculator')));
+        },
+
+        save: function(attributes, options) {
+            localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
+            this.writeGnomeEff();
         },
 
         destroy: function(options) {
