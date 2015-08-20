@@ -12,7 +12,6 @@ define([
             'diameter': 0,
             'distance': 0,
             'depth': 0,
-            'assessment_time': 0,
 
             efficiency: {
                 'Skimming': null,
@@ -39,12 +38,7 @@ define([
             var attrs = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
-                if (attrs.assessment_time === 0) {
-                    attrs.assessment_time = webgnome.model.get('start_time');
-                }
                 this.updateEfficiencies();
-            } else {
-                attrs.assessment_time = moment().format('YYYY-MM-DDTHH:mm:ss');
             }
         },
 
@@ -68,13 +62,14 @@ define([
             this.set('efficiency', eff);
         },
 
-        getMasses: function(frame){
+        getMasses: function(){
             var surfaceMass = 0;
             var shorelineMass = 0;
             var waterColumnPercent = 0;
             var amount_released = 0;
+            var last_time_index = webgnome.model.get('num_time_steps') - 1;
             _.each(webgnome.mass_balance, function(mass, idx) {
-                var data = mass.data[frame];
+                var data = mass.data[last_time_index];
                 if (mass.name.toUpperCase() === 'FLOATING') {
                     surfaceMass = data[1];
                 }
@@ -97,21 +92,11 @@ define([
             var units = this.get('units');
             var area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
             var distance = nucos.convert('Length', units.distance, 'm', this.get('distance'));
-            
-            var frame = this.calculateFrame();
-            var masses = this.getMasses(frame);
+            var masses = this.getMasses();
 
             this.calculateShorelineFract(masses, units);
             this.calculateWaterSurfaceFract(masses, units, area);
             this.calculateWaterColumnFract(masses, units, area);
-        },
-
-        calculateFrame: function(){
-            var startTime = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var timeStep = webgnome.model.get('time_step');
-            var assessmentTime = moment(this.get('assessment_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-            var frame = Math.floor((assessmentTime - startTime) / timeStep);
-            return frame;
         },
 
         calculateShorelineFract: function(masses, units){
@@ -195,12 +180,6 @@ define([
             }
             if (depth > 10000){
                 return 'Average water depth must be smaller than ' + this.validateMessageGenerator(10000, 'm', attrs.units.depth);
-            }
-            var st = moment(webgnome.model.get('start_time'));
-            var et = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
-            var at = moment(attrs.assessment_time);
-            if (at < st || at > et) {
-                return 'Assessment time must occur during the model time range!';
             }
         },
 

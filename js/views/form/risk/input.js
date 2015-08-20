@@ -27,7 +27,6 @@ define([
                 diameter: this.model.get('diameter'),
                 distance: this.model.get('distance'),
                 depth: this.model.get('depth'),
-                assessment_time: formattedTime,
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
                 shoreline: this.model.get('shoreline')
@@ -38,10 +37,6 @@ define([
             this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
-
-            this.$('.date').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker
-            });
 
             if (!webgnome.validModel()) {
                 this.$('.next').addClass('disabled');
@@ -67,8 +62,7 @@ define([
             this.model.set('diameter', this.$('#water-diameter').val());
             this.model.set('distance', this.$('#distance-from-shore').val());
             this.model.set('depth', this.$('#average-water-depth').val());
-            this.model.set('assessment_time', moment(this.$('#assessment_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss'));
-            
+
             var units = this.model.get('units');
             units.area = this.$('#area-units').val();
             units.diameter = this.$('#diameter-units').val();
