@@ -152,34 +152,53 @@ define([
             return bound + ' ' + toUnits + '!';
         },
 
+        boundsDict: {
+            area: {
+                high: Math.pow(10, 12),
+                low: 10000
+            },
+            diameter: {
+                high: Math.pow(10, 6),
+                low: 100
+            },
+            distance: {
+                high: Math.pow(10, 6),
+                low: 100
+            },
+            depth: {
+                high: 10000,
+                low: 1
+            }
+        },
+
         validate: function(attrs, options){
             var distance = nucos.convert('Length', attrs.units.distance, 'm', attrs.distance);
             var diameter = nucos.convert('Length', attrs.units.diameter, 'm', attrs.diameter);
             var area = nucos.convert('Area', attrs.units.area, 'm^2', attrs.area);
             var depth = nucos.convert('Length', attrs.units.depth, 'm', attrs.depth);
-            if (area < 10000 || attrs.area === ''){
-                return 'Water area must be greater than ' + this.validateMessageGenerator(10000, 'm^2', attrs.units.area);
+            if (area < this.boundsDict.area.low || attrs.area === ''){
+                return 'Water area must be greater than ' + this.validateMessageGenerator(this.boundsDict.area.low, 'm^2', attrs.units.area);
             }
-            if (area > Math.pow(10, 12)) {
-                return 'Water area cannot be larger than ' + this.validateMessageGenerator(Math.pow(10, 12), 'm^2', attrs.units.area);
+            if (area > this.boundsDict.area.high) {
+                return 'Water area cannot be larger than ' + this.validateMessageGenerator(this.boundsDict.area.high, 'm^2', attrs.units.area);
             }
-            if (diameter < 100 || attrs.diameter === ''){
-                return 'Water diameter must be greater than ' + this.validateMessageGenerator(100, 'm', attrs.units.diameter);
+            if (diameter < this.boundsDict.diameter.low || attrs.diameter === ''){
+                return 'Water diameter must be greater than ' + this.validateMessageGenerator(this.boundsDict.diameter.low, 'm', attrs.units.diameter);
             }
-            if (diameter > Math.pow(10, 6)){
-                return 'Water diameter cannot be longer than ' + this.validateMessageGenerator(Math.pow(10, 6), 'm', attrs.units.diameter);
+            if (diameter > this.boundsDict.diameter.high){
+                return 'Water diameter cannot be longer than ' + this.validateMessageGenerator(this.boundsDict.diameter.high, 'm', attrs.units.diameter);
             }
-            if (distance < 100 || attrs.distance === ''){
-                return 'Distance from shore must be greater than ' + this.validateMessageGenerator(100, 'm', attrs.units.distance);
+            if (distance < this.boundsDict.distance.low || attrs.distance === ''){
+                return 'Distance from shore must be greater than ' + this.validateMessageGenerator(this.boundsDict.distance.low, 'm', attrs.units.distance);
             }
-            if (distance > Math.pow(10, 6)){
-                return 'Distance cannot be longer than ' + this.validateMessageGenerator(Math.pow(10, 6), 'm', attrs.units.distance);
+            if (distance > this.boundsDict.distance.high){
+                return 'Distance cannot be longer than ' + this.validateMessageGenerator(this.boundsDict.distance.high, 'm', attrs.units.distance);
             }
-            if (depth < 1 || attrs.depth === ''){
-                return 'Average water depth must be greater than ' + this.validateMessageGenerator(1, 'm', attrs.units.depth);
+            if (depth < this.boundsDict.depth.low || attrs.depth === ''){
+                return 'Average water depth must be greater than ' + this.validateMessageGenerator(this.boundsDict.depth.low, 'm', attrs.units.depth);
             }
-            if (depth > 10000){
-                return 'Average water depth must be smaller than ' + this.validateMessageGenerator(10000, 'm', attrs.units.depth);
+            if (depth > this.boundsDict.depth.high){
+                return 'Average water depth must be smaller than ' + this.validateMessageGenerator(this.boundsDict.depth.high, 'm', attrs.units.depth);
             }
         },
 
