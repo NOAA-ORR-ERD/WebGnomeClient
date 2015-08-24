@@ -73,7 +73,7 @@ define([
                 if (mass.name.toUpperCase() === 'FLOATING') {
                     surfaceMass = data[1];
                 }
-                else if (mass.name.toUpperCase() === 'BEACHED') {
+                else if (mass.name.toUpperCase() === 'BEACHED' || mass.name.toUpperCase() === 'OBSERVED_BEACHED') {
                     shorelineMass = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'WATER_CONTENT') {
@@ -83,7 +83,7 @@ define([
                     amount_released = data[1];
                 }
             });
-            var waterColumnMass = amount_released * waterColumnPercent / 100;
+            var waterColumnMass = amount_released * (waterColumnPercent / 100);
 
             return [surfaceMass, shorelineMass, waterColumnMass];
         },
