@@ -128,11 +128,11 @@ define([
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
             for (var key in values){
                 if (key === 'Subsurface'){
-                    subsurfaceBenefit = this.get('column') * values[key].data;
+                    subsurfaceBenefit = this.get('column') * (values[key].data);
                 } else if (key === 'Shoreline'){
-                    shorelineBenefit = this.get('shoreline') * values[key].data;
+                    shorelineBenefit = this.get('shoreline') * (values[key].data);
                 } else if (key === 'Surface'){
-                    surfaceBenefit = this.get('surface') * values[key].data;
+                    surfaceBenefit = this.get('surface') * (values[key].data);
                 }
             }
 
