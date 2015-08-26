@@ -7,6 +7,7 @@ define([
 	'views/default/map',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
+    'text!templates/form/spill/map/controls.html',
     'model/substance',
 	'nucos',
 	'ol',
@@ -14,7 +15,7 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
@@ -383,7 +384,7 @@ define([
                     if (spills.length > 1){
                         spills.forEach(function(spill){
                             var spillSubstance = spill.get('element_type').get('substance');
-                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) || 
+                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) ||
                                 !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
 
                                     spill.get('element_type').set('substance', oilSubstance);
@@ -422,7 +423,8 @@ define([
                         }),
                         this.layer
                     ],
-                    interactions: ol.interaction.defaults().extend([draw])
+                    interactions: ol.interaction.defaults().extend([draw]),
+                    controls: 'full'
                 });
                 this.spillMapView.render();
                 this.mapShown = true;
