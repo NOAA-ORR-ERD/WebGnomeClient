@@ -426,6 +426,8 @@ define([
                     interactions: ol.interaction.defaults().extend([draw]),
                     controls: 'full'
                 });
+                var controls = _.template(MapControlsTemplate, {});
+                this.$('.map').append(controls);
                 this.spillMapView.render();
                 this.mapShown = true;
                 var map = this.spillMapView.map;
