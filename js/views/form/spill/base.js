@@ -32,7 +32,9 @@ define([
                 'show.bs.modal': 'renderSubstanceInfo',
                 'shown.bs.tab .mapspill': 'locationSelect',
                 'click .oil-cache': 'clickCachedOil',
-                'click .reload-oil': 'reloadOil'
+                'click .reload-oil': 'reloadOil',
+                'click .spill-button .fixed': 'toggleSpill',
+                'click .spill-button .moving': 'toggleSpill'
             }, FormModal.prototype.events);
         },
 
@@ -405,11 +407,6 @@ define([
         mapRender: function(){
             if (!this.mapShown){
                 this.$('.map').show();
-                this.source = new ol.source.Vector();
-                var draw = new ol.interaction.Draw({
-                    source: this.source,
-                    type: 'LineString'
-                });
                 this.layer = new ol.layer.Vector({
                     source: this.source
                 });
@@ -423,75 +420,18 @@ define([
                         }),
                         this.layer
                     ],
-                    interactions: ol.interaction.defaults().extend([draw]),
                     controls: 'full'
                 });
                 var controls = _.template(MapControlsTemplate, {});
                 this.$('.map').append(controls);
                 this.spillMapView.render();
                 this.mapShown = true;
-                var map = this.spillMapView.map;
-                this.$(map.getViewport()).on('mousemove', _.bind(function(e){
-                    var pixel = map.getEventPixel(e.originalEvent);
-                    var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                        if (feature.get('name') === 'Shoreline'){
-                            return feature;
-                        }
-                    });
-                    if (!_.isUndefined(feature)){
-                        this.$el.css('cursor', 'not-allowed');
-                        draw.setActive(false);
-                    } else {
-                        this.$el.css('cursor', '');
-                        draw.setActive(true);
-                    }
-                }, this));
-                draw.on('drawend', _.bind(function(e){
-                    var feature = this.source.forEachFeature(_.bind(function(feature){
-                        if (this.source.getFeatures().length > 1){
-                            return feature;
-                        }
-                    }, this));
-                    if (feature){
-                        this.source.removeFeature(feature);
-                    }
-                    var coordsArray = e.feature.getGeometry().getCoordinates();
-                    for (var i = 0; i < coordsArray.length; i++){
-                        coordsArray[i] = new ol.proj.transform(coordsArray[i], 'EPSG:3857', 'EPSG:4326');
-                    }
-                    var startPoint = coordsArray[0];
-                    var endPoint = coordsArray[coordsArray.length - 1];
-                    this.model.get('release').set('start_position', startPoint);
-                    this.model.get('release').set('end_position', endPoint);
-                    this.$('#start-lat').val(startPoint[1]);
-                    this.$('#start-lon').val(startPoint[0]);
-                    this.$('#end-lat').val(endPoint[1]);
-                    this.$('#end-lon').val(endPoint[0]);
-                    if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
-                        feature = this.source.forEachFeature(_.bind(function(feature){
-                            return feature;
-                        }, this));
-                        this.source.removeFeature(feature);
-                        var point = startPoint;
-                        point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                        feature = new ol.Feature(new ol.geom.Point(point));
-                        feature.setStyle( new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        }));
-                        this.source.addFeature(feature);
-                    }
-                    this.update();
-                }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
                 var feature;
                 var startPosition = _.initial(this.model.get('release').get('start_position'));
-                if (startPosition[0] !== 0 && startPosition[1] !== 0){
+                if (startPosition[0] !== 0 && startPosition[1] !== 0 && feature){
                     var startPoint = this.convertCoords(this.model.get('release').get('start_position'));
                     var endPoint = this.convertCoords(this.model.get('release').get('end_position'));
                     startPoint = ol.proj.transform(startPoint, 'EPSG:4326', 'EPSG:3857');
@@ -506,7 +446,7 @@ define([
                 }
                 var start = this.model.get('release').get('start_position');
                 var end = this.model.get('release').get('end_position');
-                if ((start[0] === end[0]) && (start[1] === end[1])){
+                if ((start[0] === end[0]) && (start[1] === end[1]) && feature){
                     feature = this.source.forEachFeature(_.bind(function(feature){
                             return feature;
                     }, this));
@@ -526,6 +466,25 @@ define([
                     this.source.addFeature(feature);
                 }
             }
+        },
+
+        toggleMapHover: function(){
+            var map = this.spillMapView.map;
+            this.$(map.getViewport()).on('mousemove', _.bind(function(e){
+                var pixel = map.getEventPixel(e.originalEvent);
+                var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                    if (feature.get('name') === 'Shoreline'){
+                        return feature;
+                    }
+                });
+                if (!_.isUndefined(feature)){
+                    this.$el.css('cursor', 'not-allowed');
+                    draw.setActive(false);
+                } else {
+                    this.$el.css('cursor', '');
+                    draw.setActive(true);
+                }
+            }, this));
         },
 
 		locationSelect: function(){
@@ -567,6 +526,92 @@ define([
             coordsArray = _.clone(coordsArray);
             coordsArray.pop();
             return coordsArray;
+        },
+
+        toggleSpill: function(e){
+            if(this.spillToggle){
+                this.spillMapView.map.getViewport().style.cursor = '';
+                this.spillToggle = false;
+                this.spillCoords = [];
+
+                if(this.$('.on').hasClass('fixed')){
+                    this.spillMapView.map.un('click', this.addPointSpill, this);
+                } else {
+                    this.spillMapView.map.removeInteraction(this.draw);
+                }
+
+                this.$('.on').toggleClass('on');
+
+            } else {
+                this.spillMapView.map.getViewport().style.cursor = 'crosshair';
+                this.spillToggle = true;
+                this.$(e.target).toggleClass('on');
+
+                if(this.$(e.target).hasClass('fixed')){
+                    this.spillMapView.map.on('click', this.addPointSpill, this);
+                } else {
+                    this.addLineSpill();
+                }
+            }
+        },
+
+        addPointSpill: function(e){
+            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+            coord.push(0);
+
+            this.model.get('release').set('start_position', coord);
+            this.model.get('release').set('end_position', coord);
+
+            this.toggleSpill();
+        },
+
+        addLineSpill: function(){
+            this.source = new ol.source.Vector();
+            var draw = new ol.interaction.Draw({
+                source: this.source,
+                type: 'LineString'
+            });
+            this.spillMapView.map.addInteraction(draw);
+            draw.on('drawend', _.bind(function(e){
+                var feature = this.source.forEachFeature(_.bind(function(feature){
+                    if (this.source.getFeatures().length > 1){
+                        return feature;
+                    }
+                }, this));
+                if (feature){
+                    this.source.removeFeature(feature);
+                }
+                var coordsArray = e.feature.getGeometry().getCoordinates();
+                for (var i = 0; i < coordsArray.length; i++){
+                    coordsArray[i] = new ol.proj.transform(coordsArray[i], 'EPSG:3857', 'EPSG:4326');
+                }
+                var startPoint = coordsArray[0];
+                var endPoint = coordsArray[coordsArray.length - 1];
+                this.model.get('release').set('start_position', startPoint);
+                this.model.get('release').set('end_position', endPoint);
+                this.$('#start-lat').val(startPoint[1]);
+                this.$('#start-lon').val(startPoint[0]);
+                this.$('#end-lat').val(endPoint[1]);
+                this.$('#end-lon').val(endPoint[0]);
+                if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
+                    feature = this.source.forEachFeature(_.bind(function(feature){
+                        return feature;
+                    }, this));
+                    this.source.removeFeature(feature);
+                    var point = startPoint;
+                    point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
+                    feature = new ol.Feature(new ol.geom.Point(point));
+                    feature.setStyle( new ol.style.Style({
+                        image: new ol.style.Icon({
+                            anchor: [0.5, 1.0],
+                            src: '/img/map-pin.png',
+                            size: [32, 40]
+                        })
+                    }));
+                    this.source.addFeature(feature);
+                }
+                this.update();
+            }, this));
         },
 
         manualMapInput: function(){
