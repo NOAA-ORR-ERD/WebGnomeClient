@@ -404,6 +404,11 @@ define([
             FormModal.prototype.show.call(this);
         },
 
+        addMapControls: function(){
+            var controls = _.template(MapControlsTemplate, {});
+            this.$('.map').append(controls);
+        },
+
         mapRender: function(){
             if (!this.mapShown){
                 this.$('.map').show();
@@ -422,8 +427,7 @@ define([
                     ],
                     controls: 'full'
                 });
-                var controls = _.template(MapControlsTemplate, {});
-                this.$('.map').append(controls);
+                this.addMapControls();
                 this.spillMapView.render();
                 this.mapShown = true;
                 setTimeout(_.bind(function(){
