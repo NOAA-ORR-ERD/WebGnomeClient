@@ -52,6 +52,7 @@ define([
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage'
         },
+        dataPrecision: 3,
 
         defaultChartOptions: {
             grid: {
@@ -73,13 +74,12 @@ define([
             yaxis: {},
             needle: {
                 on: true,
-                label: function(text){
-                    var num = parseFloat(text);
-                    var units = this.$('');
-                    return num.toFixed(2) + '';
-                },
                 stack: false,
-                noduplicates: true
+                noduplicates: true,
+                label: this.formatNeedleLabel
+            },
+            legend: {
+                position: 'nw'
             }
         },
 
@@ -692,6 +692,7 @@ define([
                 options.crosshair = undefined;
                 options.tooltip = false;
                 options.needle = false;
+                options.legend = false;
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
@@ -977,7 +978,7 @@ define([
                             show: false
                         },
                         needle: {
-                            label: this.formatNeedleLabel
+                            label: _.bind(this.formatNeedleLabel, this)
                         }
                     });
                 }
@@ -1072,7 +1073,7 @@ define([
         },
 
         formatNeedleLabel: function(text){
-            var num = parseFloat(text).toFixed(2);
+            var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
@@ -1094,7 +1095,7 @@ define([
         },
 
         formatNumber: function(number){
-            return number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').split('.')[0];
+            return parseFloat(number.toPrecision(this.dataPrecision));
         },
 
         /**
