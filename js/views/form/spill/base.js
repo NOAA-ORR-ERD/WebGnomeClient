@@ -641,23 +641,6 @@ define([
                 this.model.get('release').set('start_position', startPoint);
                 this.model.get('release').set('end_position', endPoint);
                 this.setManualFields();
-                if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
-                    feature = this.source.forEachFeature(_.bind(function(feature){
-                        return feature;
-                    }, this));
-                    this.source.removeFeature(feature);
-                    var point = startPoint;
-                    point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                    feature = new ol.Feature(new ol.geom.Point(point));
-                    feature.setStyle( new ol.style.Style({
-                        image: new ol.style.Icon({
-                            anchor: [0.5, 1.0],
-                            src: '/img/map-pin.png',
-                            size: [32, 40]
-                        })
-                    }));
-                    this.source.addFeature(feature);
-                }
                 this.update();
             }, this));
         },
