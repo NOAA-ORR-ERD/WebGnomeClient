@@ -413,6 +413,7 @@ define([
         mapRender: function(){
             if (!this.mapShown){
                 this.$('.map').show();
+                this.source = new ol.source.Vector();
                 this.layer = new ol.layer.Vector({
                     source: this.source
                 });
@@ -540,26 +541,44 @@ define([
                 this.spillToggle = false;
                 this.spillCoords = [];
 
-                if(this.$('.on').hasClass('fixed')){
+                if(this.$('.on').parent().hasClass('fixed')){
                     this.spillMapView.map.un('click', this.addPointSpill, this);
                 } else {
                     this.spillMapView.map.removeInteraction(this.draw);
                 }
 
                 this.$('.on').toggleClass('on');
-
             } else {
                 this.spillMapView.map.getViewport().style.cursor = 'crosshair';
                 this.spillToggle = true;
                 this.$(e.target).toggleClass('on');
 
-                if(this.$(e.target).hasClass('fixed')){
-                    console.log('moo');
+                if(this.$(e.target).parent().hasClass('fixed')){
                     this.spillMapView.map.on('click', this.addPointSpill, this);
                 } else {
                     this.addLineSpill();
                 }
             }
+        },
+
+        renderSpillFeature: function(){
+            this.source = new ol.source.Vector();
+            var start_position = this.model.get('release').get('start_position');
+            var end_position = this.model.get('release').get('end_position');
+            var geom;
+            if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
+                start_position = [start_position[0], start_position[1]];
+                geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
+            } else {
+                start_position = [start_position[0], start_position[1]];
+                end_position = [end_position[0], end_position[1]];
+                geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
+            }
+            var feature = new ol.Feature({
+                geometry: geom,
+                spill: this.model.get('id')
+            });
+            this.source.addFeature(feature);
         },
 
         addPointSpill: function(e){
@@ -569,11 +588,23 @@ define([
             this.model.get('release').set('start_position', coord);
             this.model.get('release').set('end_position', coord);
 
-            this.toggleSpill();
+            this.setManualFields();
+
+            this.toggleSpill(e);
+            this.renderSpillFeature();
+        },
+
+        setManualFields: function(){
+            var startPoint = this.model.get('release').get('start_position');
+            var endPoint = this.model.get('release').get('end_position');
+
+            this.$('#start-lat').val(startPoint[1]);
+            this.$('#start-lon').val(startPoint[0]);
+            this.$('#end-lat').val(endPoint[1]);
+            this.$('#end-lon').val(endPoint[0]);
         },
 
         addLineSpill: function(){
-            this.source = new ol.source.Vector();
             var draw = new ol.interaction.Draw({
                 source: this.source,
                 type: 'LineString'
@@ -596,10 +627,7 @@ define([
                 var endPoint = coordsArray[coordsArray.length - 1];
                 this.model.get('release').set('start_position', startPoint);
                 this.model.get('release').set('end_position', endPoint);
-                this.$('#start-lat').val(startPoint[1]);
-                this.$('#start-lon').val(startPoint[0]);
-                this.$('#end-lat').val(endPoint[1]);
-                this.$('#end-lon').val(endPoint[0]);
+                this.setManualFields();
                 if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
                     feature = this.source.forEachFeature(_.bind(function(feature){
                         return feature;
