@@ -21,6 +21,7 @@ define([
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 		mapShown: false,
+        spillToggle: false,
 
         events: function(){
             return _.defaults({
@@ -533,6 +534,7 @@ define([
         },
 
         toggleSpill: function(e){
+            e.preventDefault();
             if(this.spillToggle){
                 this.spillMapView.map.getViewport().style.cursor = '';
                 this.spillToggle = false;
@@ -552,6 +554,7 @@ define([
                 this.$(e.target).toggleClass('on');
 
                 if(this.$(e.target).hasClass('fixed')){
+                    console.log('moo');
                     this.spillMapView.map.on('click', this.addPointSpill, this);
                 } else {
                     this.addLineSpill();
