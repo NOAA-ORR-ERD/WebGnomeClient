@@ -451,8 +451,10 @@ define([
                 });
                 if (!_.isUndefined(feature)){
                     this.$el.css('cursor', 'not-allowed');
+                    this.spillPlacementAllowed = false;
                 } else {
                     this.$el.css('cursor', '');
+                    this.spillPlacementAllowed = true;
                 }
             }, this));
         },
@@ -501,12 +503,11 @@ define([
             if(this.spillToggle){
                 this.spillMapView.map.getViewport().style.cursor = '';
                 this.spillToggle = false;
-                this.spillCoords = [];
 
                 if(this.$('.on').parent().hasClass('fixed')){
                     this.spillMapView.map.un('click', this.addPointSpill, this);
                 } else {
-                    this.spillMapView.map.removeInteraction(this.draw);
+                    this.spillMapView.map.un('click', this.addLineSpill, this);
                 }
 
                 this.$('.on').toggleClass('on');
@@ -518,7 +519,7 @@ define([
                 if(this.$(e.target).parent().hasClass('fixed')){
                     this.spillMapView.map.on('click', this.addPointSpill, this);
                 } else {
-                    this.addLineSpill();
+                    this.spillMapView.map.once('click', this.addLineSpill, this);
                 }
             }
             this.update();
@@ -542,22 +543,22 @@ define([
                 start_position = [start_position[0], start_position[1]];
                 end_position = [end_position[0], end_position[1]];
                 geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
-                featureStyle = new ol.style.Stroke({
-                    color: '#3399CC',
-                    width: 1.25
-                });
+                // featureStyle = new ol.style.Stroke({
+                //     color: '#3399CC',
+                //     width: 1.25
+                // });
             }
             var feature = new ol.Feature({
                 geometry: geom,
                 spill: this.model.get('id')
             });
-            feature.setStyle(featureStyle);
+            if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
             this.source.clear();
             this.source.addFeature(feature);
         },
 
         addPointSpill: function(e){
-            if (this.$el.css('cursor') !== 'not-allowed'){
+            if (this.spillPlacementAllowed){
                 var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 coord.push(0);
 
@@ -581,8 +582,20 @@ define([
             this.$('#end-lon').val(endPoint[0]);
         },
 
-        addLineSpill: function(){
-            
+        addLineSpill: function(e){
+            if (this.spillPlacementAllowed){
+                var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                start_position.push(0);
+                this.model.get('release').set('start_position', start_position);
+                this.spillMapView.map.once('click', _.bind(function(e){
+                    var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                    end_position.push(0);
+                    this.model.get('release').set('end_position', end_position);
+                    this.setManualFields();
+                    this.toggleSpill(e);
+                    this.renderSpillFeature();
+                }, this));
+            }
         },
 
         manualMapInput: function(){
