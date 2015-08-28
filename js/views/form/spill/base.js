@@ -407,7 +407,7 @@ define([
 
         addMapControls: function(){
             var controls = _.template(MapControlsTemplate, {});
-            this.$('.map').append(controls);
+            this.$('.ol-viewport').append(controls);
         },
 
         mapRender: function(){
@@ -429,9 +429,9 @@ define([
                     ],
                     controls: 'full'
                 });
-                this.addMapControls();
                 this.spillMapView.render();
                 this.toggleMapHover();
+                this.addMapControls();
                 this.mapShown = true;
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
