@@ -485,8 +485,6 @@ define([
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
                             this.spillMapView.map.getView().fit(extent, this.spillMapView.map.getSize());
                         }
-                        
-
                     }, this));
                 }
             }
@@ -559,16 +557,18 @@ define([
         },
 
         addPointSpill: function(e){
-            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-            coord.push(0);
+            if (this.$el.css('cursor') !== 'not-allowed'){
+                var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                coord.push(0);
 
-            this.model.get('release').set('start_position', coord);
-            this.model.get('release').set('end_position', coord);
+                this.model.get('release').set('start_position', coord);
+                this.model.get('release').set('end_position', coord);
 
-            this.setManualFields();
+                this.setManualFields();
 
-            this.toggleSpill(e);
-            this.renderSpillFeature();
+                this.toggleSpill(e);
+                this.renderSpillFeature();
+            }
         },
 
         setManualFields: function(){
