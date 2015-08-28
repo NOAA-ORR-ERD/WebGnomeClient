@@ -451,10 +451,8 @@ define([
                 });
                 if (!_.isUndefined(feature)){
                     this.$el.css('cursor', 'not-allowed');
-                    //draw.setActive(false);
                 } else {
                     this.$el.css('cursor', '');
-                    //draw.setActive(true);
                 }
             }, this));
         },
@@ -525,6 +523,7 @@ define([
                     this.addLineSpill();
                 }
             }
+            this.update();
         },
 
         renderSpillFeature: function(){
