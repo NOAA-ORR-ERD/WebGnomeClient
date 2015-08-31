@@ -3,3 +3,4 @@ build.js
 js/lib
 dist
 style.css
+config.json
