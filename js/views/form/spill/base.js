@@ -408,6 +408,7 @@ define([
         addMapControls: function(){
             var controls = _.template(MapControlsTemplate, {});
             this.$('.ol-viewport').append(controls);
+            //this.$('.ol-has-tooltip').tooltip({placement: 'right'});
         },
 
         mapRender: function(){
@@ -426,8 +427,7 @@ define([
                             source: new ol.source.MapQuest({layer: 'osm'})
                         }),
                         this.layer
-                    ],
-                    controls: 'full'
+                    ]
                 });
                 this.spillMapView.render();
                 this.toggleMapHover();
@@ -452,6 +452,9 @@ define([
                 if (!_.isUndefined(feature)){
                     this.$el.css('cursor', 'not-allowed');
                     this.spillPlacementAllowed = false;
+                } else if (this.spillToggle){
+                    this.$el.css('cursor', 'crosshair');
+                    this.spillPlacementAllowed = true;
                 } else {
                     this.$el.css('cursor', '');
                     this.spillPlacementAllowed = true;
@@ -501,10 +504,9 @@ define([
         toggleSpill: function(e){
             e.preventDefault();
             if(this.spillToggle){
-                this.spillMapView.map.getViewport().style.cursor = '';
                 this.spillToggle = false;
 
-                if(this.$('.on').parent().hasClass('fixed')){
+                if(this.$('.on').hasClass('fixed')){
                     this.spillMapView.map.un('click', this.addPointSpill, this);
                 } else {
                     this.spillMapView.map.un('click', this.addLineSpill, this);
@@ -512,11 +514,10 @@ define([
 
                 this.$('.on').toggleClass('on');
             } else {
-                //this.spillMapView.map.getViewport().style.cursor = 'crosshair';
                 this.spillToggle = true;
                 this.$(e.target).toggleClass('on');
 
-                if(this.$(e.target).parent().hasClass('fixed')){
+                if(this.$(e.target).hasClass('fixed')){
                     this.spillMapView.map.on('click', this.addPointSpill, this);
                 } else {
                     this.spillMapView.map.once('click', this.addLineSpill, this);
@@ -552,7 +553,7 @@ define([
                 geometry: geom,
                 spill: this.model.get('id')
             });
-            if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
+            if (!_.isUndefined(featureStyle)){ feature.setStyle(featureStyle);}
             this.source.clear();
             this.source.addFeature(feature);
         },
@@ -582,19 +583,28 @@ define([
             this.$('#end-lon').val(endPoint[0]);
         },
 
+        endPointPlacement: function(e){
+            if (this.spillPlacementAllowed){
+                var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                end_position.push(0);
+                this.model.get('release').set('end_position', end_position);
+                this.setManualFields();
+                this.toggleSpill(e);
+                this.renderSpillFeature();
+            } else {
+                this.spillMapView.map.once('click', this.endPointPlacement, this);
+            }
+        },
+
         addLineSpill: function(e){
             if (this.spillPlacementAllowed){
                 var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 start_position.push(0);
                 this.model.get('release').set('start_position', start_position);
-                this.spillMapView.map.once('click', _.bind(function(e){
-                    var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-                    end_position.push(0);
-                    this.model.get('release').set('end_position', end_position);
-                    this.setManualFields();
-                    this.toggleSpill(e);
-                    this.renderSpillFeature();
-                }, this));
+                this.setManualFields();
+                this.spillMapView.map.once('click', this.endPointPlacement, this);
+            } else {
+                this.spillMapView.map.once('click', this.addLineSpill, this);
             }
         },
 
