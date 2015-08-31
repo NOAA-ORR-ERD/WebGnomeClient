@@ -6,12 +6,12 @@ define([
     'router',
     'moment',
     'sweetalert',
-    'text!../package.json',
+    'text!../config.json',
     'model/session',
     'model/gnome',
     'model/risk/risk',
     'views/default/loading'
-], function($, _, Backbone, Router, moment, swal, Package, SessionModel, GnomeModel, RiskModel, LoadingView) {
+], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
@@ -215,7 +215,7 @@ define([
                         for (var i = 0; i < el.length; i++){
                             var arrayString = '[' + el[i] + ']';
                             var arrayObj = {title: arrayString};
-                            arrayOfStrings.push(arrayObj);    
+                            arrayOfStrings.push(arrayObj);
                         }
                         if (el.length > 0){
                             children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});
@@ -277,26 +277,7 @@ define([
         },
 
         getConfig: function(){
-            var config = {};
-            var sets = JSON.parse(Package).config;
-            var domains = _.keys(sets);
-            var loc = window.location.href.split('/')[2].replace(/:.*/, '');
-            for(var set in domains){
-                var dset = domains[set].split(',');
-                if(dset.indexOf(loc) !== -1){
-                    var keys = _.keys(sets[domains[set]]);
-                    for(var attr in keys){
-                        config[keys[attr]] = sets[domains[set]][keys[attr]];
-                    }
-                }
-            }
-
-            var defaults = _.keys(sets['*']);
-            for(var attr2 in defaults){
-                config[defaults[attr2]] = sets['*'][defaults[attr2]];
-            }
-
-            return config;
+            return  JSON.parse(config);
         },
         
         validModel: function(){
