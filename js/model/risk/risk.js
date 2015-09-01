@@ -158,7 +158,7 @@ define([
                 low: 10000
             },
             diameter: {
-                high: Math.pow(10, 6),
+                high: 20000,
                 low: 100
             },
             distance: {
@@ -166,7 +166,7 @@ define([
                 low: 100
             },
             depth: {
-                high: 10000,
+                high: 100,
                 low: 1
             }
         },
