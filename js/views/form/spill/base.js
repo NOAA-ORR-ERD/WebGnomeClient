@@ -408,7 +408,7 @@ define([
         addMapControls: function(){
             var controls = _.template(MapControlsTemplate, {});
             this.$('.ol-viewport').append(controls);
-            //this.$('.ol-has-tooltip').tooltip({placement: 'right'});
+            this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
         },
 
         mapRender: function(){
@@ -601,7 +601,9 @@ define([
                 var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 start_position.push(0);
                 this.model.get('release').set('start_position', start_position);
+                this.model.get('release').set('end_position', start_position);
                 this.setManualFields();
+                this.renderSpillFeature();
                 this.spillMapView.map.once('click', this.endPointPlacement, this);
             } else {
                 this.spillMapView.map.once('click', this.addLineSpill, this);
