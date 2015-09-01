@@ -37,6 +37,8 @@ define([
             this.on('change', this.save, this);
             var attrs = this.attributes;
 
+            this.deriveAreaBounds();
+
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
             }
@@ -152,11 +154,20 @@ define([
             return bound + ' ' + toUnits + '!';
         },
 
+        deriveAreaBounds: function(){
+            var upperDiameter = this.boundsDict.diameter.high;
+            var lowerDiameter = this.boundsDict.diameter.low;
+
+            var upperArea = Math.round(Math.pow((upperDiameter / 2), 2) * Math.PI);
+            var lowerArea = Math.round(Math.pow((lowerDiameter / 2), 2) * Math.PI);
+
+            this.boundsDict.area = {};
+
+            this.boundsDict.area.high = upperArea;
+            this.boundsDict.area.low = lowerArea;
+        },
+
         boundsDict: {
-            area: {
-                high: Math.pow(10, 12),
-                low: 10000
-            },
             diameter: {
                 high: 20000,
                 low: 100
