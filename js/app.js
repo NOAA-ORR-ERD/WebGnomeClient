@@ -11,7 +11,7 @@ define([
     'model/gnome',
     'model/risk/risk',
     'views/default/loading'
-], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, LoadingView) {
+], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, RiskModel, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
