@@ -503,6 +503,7 @@ define([
 
         toggleSpill: function(e){
             e.preventDefault();
+            e.stopPropagation();
             if(this.spillToggle){
                 this.spillToggle = false;
 
