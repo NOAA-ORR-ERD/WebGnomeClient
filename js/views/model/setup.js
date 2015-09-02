@@ -147,6 +147,7 @@ define([
                 {label: 'Model', start: start, end: end},
             ];
 
+            // spills
             webgnome.model.get('spills').forEach(function(spill){
                 var start = parseInt(moment(spill.get('release').get('release_time')).format('x'));
                 var end = Math.max(
@@ -162,11 +163,12 @@ define([
                 });
             });
 
+            // general movers w/ bundle collection for inf
             var bundle = [];
             webgnome.model.get('movers').forEach(function(mover){
-                if(mover.get('active_start') === '-inf' && mover.get('active_stop') === 'inf'){
+                if(mover.get('active_start') === '-inf' && mover.get('active_stop') === 'inf' && mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover'){
                     bundle.push(mover);
-                } else {
+                } else if(mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover') {
                     var start, end;
 
                     if(mover.get('active_start') === "-inf"){
@@ -190,6 +192,49 @@ define([
                 }
             });
 
+            // windmovers and their winds
+            var windmovers = webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            for(var m = 0; m < windmovers.length; m++){
+                var mover = windmovers[m];
+                if(mover.get('active_start') === "-inf"){
+                    start = -Infinity;
+                } else {
+                    start = parseInt(moment(mover.get('active_start')).format('x'));
+                }
+
+                if(mover.get('active_stop') === 'inf'){
+                    end = Infinity;
+                } else {
+                    end = parseInt(moment(mover.get('active_stop')).format('x'));
+                }
+
+                timelinedata.push({
+                    label: mover.get('name'),
+                    start: start,
+                    end: end,
+                    fillColor: '#D6A0FF'
+                });
+
+                if(mover.get('wind')){
+                    var wind = mover.get('wind');
+
+                    if(wind.get('timeseries').length > 1){
+                        console.log(start, end);
+                        start = moment(wind.get('timeseries')[0][0]).format('x');
+                        end = moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('x');
+                        console.log(start, end);
+                    }
+
+                    timelinedata.push({
+                        label: mover.get('name') + ' - ' + wind.get('name'),
+                        start: start,
+                        end: end,
+                        fillColor: 'rgba(214, 160, 255, 0.5)'
+                    });
+                }
+            }
+
+            // inf mover bundle
             var label = '';
             for(var i = 0; i < bundle.length; i++){
                 label += bundle[i].get('name') + ', ';
