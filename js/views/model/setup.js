@@ -166,13 +166,13 @@ define([
 
                 var offset = (webgnome.model.get('duration') / 12) * 1000;
                 if(mover.get('active_start') === "-inf"){
-                    start = parseInt(moment(webgnome.model.get('start_time')).format('x')) - offset;
+                    start = -Infinity;
                 } else {
                     start = parseInt(moment(mover.get('active_start')).format('x'));
                 }
 
                 if(mover.get('active_stop') === 'inf'){
-                    end = parseInt(start + (webgnome.model.get('duration') * 1000)) + (offset * 2);
+                    end = Infinity;
                 } else {
                     end = parseInt(moment(mover.get('active_stop')).format('x'));
                 }
