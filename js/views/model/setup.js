@@ -153,7 +153,6 @@ define([
                     parseInt(start + (webgnome.model.get('time_step') * 1000))
                 );
 
-                console.log(start, end);
                 timelinedata.push({
                     label: spill.get('name'),
                     start: start,
