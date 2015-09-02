@@ -157,7 +157,8 @@ define([
                 timelinedata.push({
                     label: spill.get('name'),
                     start: start,
-                    end: end
+                    end: end,
+                    fillColor: '#FFE6A0'
                 });
             });
 
@@ -183,7 +184,8 @@ define([
                     timelinedata.push({
                         label: mover.get('name'),
                         start: start,
-                        end: end
+                        end: end,
+                        fillColor: '#D6A0FF'
                     });
                 }
             });
@@ -197,7 +199,8 @@ define([
                 timelinedata.push({
                     start: -Infinity,
                     end: Infinity,
-                    label: label
+                    label: label,
+                    fillColor: '#D6A0FF'
                 });
             }
 
