@@ -46,7 +46,8 @@ define([
     'flotdirection',
     'flotstack',
     'flotgantt',
-    'flotextents'
+    'flotextents',
+    'flotnavigate'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -201,6 +202,12 @@ define([
                 },
                 yaxis: {
                     show: false
+                },
+                zoom: {
+                    interactive: true
+                },
+                pan: {
+                    interactive: true
                 },
                 series: {
                     extents: {
