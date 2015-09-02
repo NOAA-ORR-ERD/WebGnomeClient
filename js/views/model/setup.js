@@ -160,6 +160,29 @@ define([
                 });
             });
 
+            webgnome.model.get('movers').forEach(function(mover){
+                var start, end;
+
+                var offset = (webgnome.model.get('duration') / 12) * 1000;
+                if(mover.get('active_start') === "-inf"){
+                    start = parseInt(moment(webgnome.model.get('start_time')).format('x')) - offset;
+                } else {
+                    start = parseInt(moment(mover.get('active_start')).format('x'));
+                }
+
+                if(mover.get('active_stop') === 'inf'){
+                    end = parseInt(start + (webgnome.model.get('duration') * 1000)) + (offset * 2);
+                } else {
+                    end = parseInt(moment(mover.get('active_stop')).format('x'));
+                }
+
+                timelinedata.push({
+                    label: mover.get('name'),
+                    start: start,
+                    end: end
+                });
+            });
+
     
             var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
 
@@ -178,6 +201,12 @@ define([
                 },
                 yaxis: {
                     show: false
+                },
+                series: {
+                    extents: {
+                        color: 'rgba(255, 255, 255, .25)',
+                        lineWidth: 10
+                    }
                 }
             });
         },
