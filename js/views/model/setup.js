@@ -45,7 +45,8 @@ define([
     'flotresize',
     'flotdirection',
     'flotstack',
-    'flotgantt'
+    'flotgantt',
+    'flotextents'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapForm, MapPanelTemplate,
@@ -132,6 +133,54 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
             }, this));
+            this.renderTimeline();
+        },
+
+        renderTimeline: function(){
+            var start = parseInt(moment(webgnome.model.get('start_time')).format('x'));
+            var end = parseInt(start + (webgnome.model.get('duration') * 1000));
+            var offset = (webgnome.model.get('duration') / 12) * 1000;
+            var baseline = {label: "empty", data: [[start - offset, 0],[end + offset, 0]]};
+
+            var timelinedata = [
+                {label: 'Model', start: start, end: end},
+            ];
+
+            webgnome.model.get('spills').forEach(function(spill){
+                var start = parseInt(moment(spill.get('release').get('release_time')).format('x'));
+                var end = Math.max(
+                    parseInt(moment(spill.get('release').get('end_release_time')).format('x')),
+                    parseInt(start + (webgnome.model.get('time_step') * 1000))
+                );
+
+                console.log(start, end);
+                timelinedata.push({
+                    label: spill.get('name'),
+                    start: start,
+                    end: end
+                });
+            });
+
+    
+            var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
+
+            this.timeline = $.plot('.timeline', [baseline,timeline], {
+                legend: {
+                    show: false
+                },
+                grid: {
+                    borderWidth: 1,
+                    borderColor: '#ddd'
+                },
+                xaxis: {
+                    mode: 'time',
+                    timezone: 'browser',
+                    tickColor: '#ddd'
+                },
+                yaxis: {
+                    show: false
+                }
+            });
         },
 
         showHelp: function(){

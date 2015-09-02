@@ -24,6 +24,7 @@
     "flotspline": "git://github.com/alexbardas/flot.git",
     "flotneedle": "https://srccontrol.orr.noaa.gov/alex.miranda/flotNeedle.git",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
+    "flotextents": "git://github.com/NOAA-ORR-ERD/flot-extents.git",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "*",
     "nucos": "1.1.1",
