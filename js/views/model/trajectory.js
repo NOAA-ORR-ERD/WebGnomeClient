@@ -370,7 +370,7 @@ define([
             } else {
                 // if the model doens't have a renderable map yet just render the base layer
                 if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){  
+                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
                         this.ol.render();
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.SpillIndexLayer);
