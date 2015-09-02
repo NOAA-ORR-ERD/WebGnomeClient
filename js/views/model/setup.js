@@ -161,30 +161,46 @@ define([
                 });
             });
 
+            var bundle = [];
             webgnome.model.get('movers').forEach(function(mover){
-                var start, end;
-
-                var offset = (webgnome.model.get('duration') / 12) * 1000;
-                if(mover.get('active_start') === "-inf"){
-                    start = -Infinity;
+                if(mover.get('active_start') === '-inf' && mover.get('active_stop') === 'inf'){
+                    bundle.push(mover);
                 } else {
-                    start = parseInt(moment(mover.get('active_start')).format('x'));
-                }
+                    var start, end;
 
-                if(mover.get('active_stop') === 'inf'){
-                    end = Infinity;
-                } else {
-                    end = parseInt(moment(mover.get('active_stop')).format('x'));
-                }
+                    if(mover.get('active_start') === "-inf"){
+                        start = -Infinity;
+                    } else {
+                        start = parseInt(moment(mover.get('active_start')).format('x'));
+                    }
 
-                timelinedata.push({
-                    label: mover.get('name'),
-                    start: start,
-                    end: end
-                });
+                    if(mover.get('active_stop') === 'inf'){
+                        end = Infinity;
+                    } else {
+                        end = parseInt(moment(mover.get('active_stop')).format('x'));
+                    }
+
+                    timelinedata.push({
+                        label: mover.get('name'),
+                        start: start,
+                        end: end
+                    });
+                }
             });
 
-    
+            var label = '';
+            for(var i = 0; i < bundle.length; i++){
+                label += bundle[i].get('name') + ', ';
+            }
+
+            if(bundle.length > 0){
+                timelinedata.push({
+                    start: -Infinity,
+                    end: Infinity,
+                    label: label
+                });
+            }
+
             var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
 
             this.timeline = $.plot('.timeline', [baseline,timeline], {
