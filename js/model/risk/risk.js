@@ -65,32 +65,53 @@ define([
         },
 
         getMasses: function(){
-            var surfaceMass = 0;
-            var shorelineMass = 0;
-            var waterColumnPercent = 0;
-            var amount_released = 0;
+            var naturalDispersion = 0;
+            var chemicalDispersion = 0;
+            var masses = {
+                surface: 0,
+                shoreline: 0,
+                column: 0
+            };
             var last_time_index = webgnome.model.get('num_time_steps') - 1;
             _.each(webgnome.mass_balance, function(mass, idx) {
                 var data = mass.data[last_time_index];
                 if (mass.name.toUpperCase() === 'FLOATING') {
-                    surfaceMass = data[1];
+                    masses.surface = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'BEACHED' || mass.name.toUpperCase() === 'OBSERVED_BEACHED') {
-                    shorelineMass = data[1];
+                    masses.shoreline = data[1];
                 }
-                else if (mass.name.toUpperCase() === 'WATER_CONTENT') {
-                    waterColumnPercent = data[1];
+                else if (mass.name.toUpperCase() === 'CHEMICAL_DISPERSION') {
+                    chemicalDispersion = data[1];
                 }
                 else if (mass.name.toUpperCase() === 'AMOUNT_RELEASED') {
                     amount_released = data[1];
                 }
+                else if (mass.name.toUpperCase() === 'NATURAL_DISPERSION'){
+                    naturalDispersion = data[1];
+                }
             });
-            var waterColumnMass = amount_released * (waterColumnPercent / 100);
 
-            return [surfaceMass, shorelineMass, waterColumnMass];
+            masses.column = naturalDispersion + chemicalDispersion;
+            return masses;
+        },
+
+        deriveAreaDiameter: function(){
+            var area, diameter;
+            var units = this.get('units');
+            if (_.isNull(this.get('area'))){
+                diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
+                area = nucos.convert('Area', 'm^2', units.area, Math.pow((diameter / 2), 2) * Math.PI);
+                this.set('area', area);
+            } else {
+                area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
+                diameter = nucos.convert('Length', 'm', units.diameter, 2 * Math.sqrt(area / Math.PI));
+                this.set('diameter', diameter);
+            }
         },
 
         assessment: function(){
+            this.deriveAreaDiameter();
             var units = this.get('units');
             var area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
             var distance = nucos.convert('Length', units.distance, 'm', this.get('distance'));
@@ -102,7 +123,7 @@ define([
         },
 
         calculateShorelineFract: function(masses, units){
-            var massShoreline = masses[1];
+            var massShoreline = masses.shoreline;
             var shorelineLOC = 0.5;
             var diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
             var shorelineLength = Math.PI * diameter;
@@ -111,14 +132,14 @@ define([
         },
 
         calculateWaterSurfaceFract: function(masses, units, area){
-            var massOnWaterSurface = masses[0];
+            var massOnWaterSurface = masses.surface;
             var waterSurfaceLOC = 0.01;
             var fractOfContaminatedWs = (massOnWaterSurface / waterSurfaceLOC) / area;
             this.set('surface', fractOfContaminatedWs);
         },
 
         calculateWaterColumnFract: function(masses, units, area){
-            var massInWaterColumn = masses[2];
+            var massInWaterColumn = masses.column;
             var waterColumnLOC = 0.001;
             var depth = nucos.convert('Length', units.depth, 'm', this.get('depth'));
             var fractOfContaminatedWc = (massInWaterColumn / waterColumnLOC) / (area * depth);
@@ -130,11 +151,11 @@ define([
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
             for (var key in values){
                 if (key === 'Subsurface'){
-                    subsurfaceBenefit = this.get('column') * (values[key].data);
+                    subsurfaceBenefit = this.get('column') * (values[key].data / 100);
                 } else if (key === 'Shoreline'){
-                    shorelineBenefit = this.get('shoreline') * (values[key].data);
+                    shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
                 } else if (key === 'Surface'){
-                    surfaceBenefit = this.get('surface') * (values[key].data);
+                    surfaceBenefit = this.get('surface') * (values[key].data / 100);
                 }
             }
 

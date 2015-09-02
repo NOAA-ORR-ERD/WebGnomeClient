@@ -5,7 +5,8 @@ define([
     'moment',
     'views/modal/form',
     'text!templates/risk/input.html',
-], function($, _, Backbone, moment, FormModal, RiskTemplate) {
+    'nucos'
+], function($, _, Backbone, moment, FormModal, RiskTemplate, nucos) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
         name: 'risk',
@@ -38,6 +39,8 @@ define([
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
 
+            this.toggleWaterMetric();
+
             if (!webgnome.validModel()) {
                 this.$('.next').addClass('disabled');
             }
@@ -50,6 +53,7 @@ define([
             } else {
                 this.clearError();
 
+                this.settingMetricOnModel();
                 this.model.assessment();
                 this.hide();
                 this.trigger('save', [this.model]);
@@ -57,7 +61,15 @@ define([
             }
         },
 
-        update: function(){
+        settingMetricOnModel: function(){
+            if (this.$('.area').hasClass('hide')){
+                this.model.set('area', null);
+            } else {
+                this.model.set('diameter', null);
+            }
+        },
+
+        update: function(e){
             this.model.set('area', this.$('#water-area').val());
             this.model.set('diameter', this.$('#water-diameter').val());
             this.model.set('distance', this.$('#distance-from-shore').val());
@@ -75,10 +87,24 @@ define([
                 this.$('.next').removeClass('disabled');
             }
 
+            this.toggleWaterMetric(e);
+
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
             } else {
                 this.clearError();
+            }
+        },
+
+        toggleWaterMetric: function(e){
+            var desiredMetric = this.$('#water-select').val();
+            if (desiredMetric === 'area'){
+                this.$('.area').removeClass('hide');
+                this.$('.diameter').addClass('hide');
+
+            } else {
+                this.$('.area').addClass('hide');
+                this.$('.diameter').removeClass('hide');
             }
         },
 
