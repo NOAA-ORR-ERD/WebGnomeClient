@@ -203,16 +203,15 @@ define([
                 yaxis: {
                     show: false
                 },
-                zoom: {
-                    interactive: true
-                },
                 pan: {
                     interactive: true
                 },
                 series: {
                     extents: {
                         color: 'rgba(255, 255, 255, .25)',
-                        lineWidth: 10
+                        lineWidth: 10,
+                        rowHeight: 20,
+                        barHeight: 20
                     }
                 }
             });
