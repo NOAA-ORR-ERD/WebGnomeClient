@@ -96,9 +96,6 @@ define([
                 else if (mass.name.toUpperCase() === 'CHEMICAL_DISPERSION') {
                     chemicalDispersion = data[1];
                 }
-                else if (mass.name.toUpperCase() === 'AMOUNT_RELEASED') {
-                    amount_released = data[1];
-                }
                 else if (mass.name.toUpperCase() === 'NATURAL_DISPERSION'){
                     naturalDispersion = data[1];
                 }
