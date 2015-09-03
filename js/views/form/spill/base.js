@@ -7,6 +7,7 @@ define([
 	'views/default/map',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
+    'text!templates/form/spill/map/controls.html',
     'model/substance',
 	'nucos',
 	'ol',
@@ -14,12 +15,13 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 		mapShown: false,
+        spillToggle: false,
 
         events: function(){
             return _.defaults({
@@ -31,7 +33,9 @@ define([
                 'show.bs.modal': 'renderSubstanceInfo',
                 'shown.bs.tab .mapspill': 'locationSelect',
                 'click .oil-cache': 'clickCachedOil',
-                'click .reload-oil': 'reloadOil'
+                'click .reload-oil': 'reloadOil',
+                'click .spill-button .fixed': 'toggleSpill',
+                'click .spill-button .moving': 'toggleSpill'
             }, FormModal.prototype.events);
         },
 
@@ -383,7 +387,7 @@ define([
                     if (spills.length > 1){
                         spills.forEach(function(spill){
                             var spillSubstance = spill.get('element_type').get('substance');
-                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) || 
+                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) ||
                                 !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
 
                                     spill.get('element_type').set('substance', oilSubstance);
@@ -401,14 +405,16 @@ define([
             FormModal.prototype.show.call(this);
         },
 
+        addMapControls: function(){
+            var controls = _.template(MapControlsTemplate, {});
+            this.$('.ol-viewport').append(controls);
+            this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
+        },
+
         mapRender: function(){
             if (!this.mapShown){
                 this.$('.map').show();
                 this.source = new ol.source.Vector();
-                var draw = new ol.interaction.Draw({
-                    source: this.source,
-                    type: 'LineString'
-                });
                 this.layer = new ol.layer.Vector({
                     source: this.source
                 });
@@ -421,107 +427,39 @@ define([
                             source: new ol.source.MapQuest({layer: 'osm'})
                         }),
                         this.layer
-                    ],
-                    interactions: ol.interaction.defaults().extend([draw])
+                    ]
                 });
                 this.spillMapView.render();
+                this.toggleMapHover();
+                this.addMapControls();
                 this.mapShown = true;
-                var map = this.spillMapView.map;
-                this.$(map.getViewport()).on('mousemove', _.bind(function(e){
-                    var pixel = map.getEventPixel(e.originalEvent);
-                    var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                        if (feature.get('name') === 'Shoreline'){
-                            return feature;
-                        }
-                    });
-                    if (!_.isUndefined(feature)){
-                        this.$el.css('cursor', 'not-allowed');
-                        draw.setActive(false);
-                    } else {
-                        this.$el.css('cursor', '');
-                        draw.setActive(true);
-                    }
-                }, this));
-                draw.on('drawend', _.bind(function(e){
-                    var feature = this.source.forEachFeature(_.bind(function(feature){
-                        if (this.source.getFeatures().length > 1){
-                            return feature;
-                        }
-                    }, this));
-                    if (feature){
-                        this.source.removeFeature(feature);
-                    }
-                    var coordsArray = e.feature.getGeometry().getCoordinates();
-                    for (var i = 0; i < coordsArray.length; i++){
-                        coordsArray[i] = new ol.proj.transform(coordsArray[i], 'EPSG:3857', 'EPSG:4326');
-                    }
-                    var startPoint = coordsArray[0];
-                    var endPoint = coordsArray[coordsArray.length - 1];
-                    this.model.get('release').set('start_position', startPoint);
-                    this.model.get('release').set('end_position', endPoint);
-                    this.$('#start-lat').val(startPoint[1]);
-                    this.$('#start-lon').val(startPoint[0]);
-                    this.$('#end-lat').val(endPoint[1]);
-                    this.$('#end-lon').val(endPoint[0]);
-                    if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])){
-                        feature = this.source.forEachFeature(_.bind(function(feature){
-                            return feature;
-                        }, this));
-                        this.source.removeFeature(feature);
-                        var point = startPoint;
-                        point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                        feature = new ol.Feature(new ol.geom.Point(point));
-                        feature.setStyle( new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        }));
-                        this.source.addFeature(feature);
-                    }
-                    this.update();
-                }, this));
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
-                var feature;
-                var startPosition = _.initial(this.model.get('release').get('start_position'));
-                if (startPosition[0] !== 0 && startPosition[1] !== 0){
-                    var startPoint = this.convertCoords(this.model.get('release').get('start_position'));
-                    var endPoint = this.convertCoords(this.model.get('release').get('end_position'));
-                    startPoint = ol.proj.transform(startPoint, 'EPSG:4326', 'EPSG:3857');
-                    endPoint = ol.proj.transform(endPoint, 'EPSG:4326', 'EPSG:3857');
-                    var pointsArray = [startPoint, endPoint];
-                    feature = new ol.Feature(new ol.geom.LineString(pointsArray));
-                    feature.set('name', 'start');
-                    this.source.addFeature(feature);
-                    
-                    this.spillMapView.map.getView().setCenter(startPoint);
-                    this.spillMapView.map.getView().setZoom(24);
-                }
-                var start = this.model.get('release').get('start_position');
-                var end = this.model.get('release').get('end_position');
-                if ((start[0] === end[0]) && (start[1] === end[1])){
-                    feature = this.source.forEachFeature(_.bind(function(feature){
-                            return feature;
-                    }, this));
-                    if (!_.isUndefined(feature)){
-                        this.source.removeFeature(feature);
-                    }
-                    var point = _.initial(start);
-                    point = ol.proj.transform(point, 'EPSG:4326', 'EPSG:3857');
-                    feature = new ol.Feature(new ol.geom.Point(point));
-                    feature.setStyle( new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        }));
-                    this.source.addFeature(feature);
-                }
+                this.renderSpillFeature();
             }
+        },
+
+        toggleMapHover: function(){
+            var map = this.spillMapView.map;
+            this.$(map.getViewport()).on('mousemove', _.bind(function(e){
+                var pixel = map.getEventPixel(e.originalEvent);
+                var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                    if (feature.get('name') === 'Shoreline'){
+                        return feature;
+                    }
+                });
+                if (!_.isUndefined(feature)){
+                    this.$el.css('cursor', 'not-allowed');
+                    this.spillPlacementAllowed = false;
+                } else if (this.spillToggle){
+                    this.$el.css('cursor', 'crosshair');
+                    this.spillPlacementAllowed = true;
+                } else {
+                    this.$el.css('cursor', '');
+                    this.spillPlacementAllowed = true;
+                }
+            }, this));
         },
 
 		locationSelect: function(){
@@ -552,8 +490,6 @@ define([
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
                             this.spillMapView.map.getView().fit(extent, this.spillMapView.map.getSize());
                         }
-                        
-
                     }, this));
                 }
             }
@@ -563,6 +499,116 @@ define([
             coordsArray = _.clone(coordsArray);
             coordsArray.pop();
             return coordsArray;
+        },
+
+        toggleSpill: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            if(this.spillToggle){
+                this.spillToggle = false;
+
+                if(this.$('.on').hasClass('fixed')){
+                    this.spillMapView.map.un('click', this.addPointSpill, this);
+                } else {
+                    this.spillMapView.map.un('click', this.addLineSpill, this);
+                }
+
+                this.$('.on').toggleClass('on');
+            } else {
+                this.spillToggle = true;
+                this.$(e.target).toggleClass('on');
+
+                if(this.$(e.target).hasClass('fixed')){
+                    this.spillMapView.map.on('click', this.addPointSpill, this);
+                } else {
+                    this.spillMapView.map.once('click', this.addLineSpill, this);
+                }
+            }
+            this.update();
+        },
+
+        renderSpillFeature: function(){
+            var start_position = this.model.get('release').get('start_position');
+            var end_position = this.model.get('release').get('end_position');
+            var geom, featureStyle;
+            if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
+                start_position = [start_position[0], start_position[1]];
+                geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
+                featureStyle = new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/map-pin.png',
+                                size: [32, 40]
+                            })
+                        });
+            } else {
+                start_position = [start_position[0], start_position[1]];
+                end_position = [end_position[0], end_position[1]];
+                geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
+                // featureStyle = new ol.style.Stroke({
+                //     color: '#3399CC',
+                //     width: 1.25
+                // });
+            }
+            var feature = new ol.Feature({
+                geometry: geom,
+                spill: this.model.get('id')
+            });
+            if (!_.isUndefined(featureStyle)){ feature.setStyle(featureStyle);}
+            this.source.clear();
+            this.source.addFeature(feature);
+        },
+
+        addPointSpill: function(e){
+            if (this.spillPlacementAllowed){
+                var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                coord.push(0);
+
+                this.model.get('release').set('start_position', coord);
+                this.model.get('release').set('end_position', coord);
+
+                this.setManualFields();
+
+                this.toggleSpill(e);
+                this.renderSpillFeature();
+            }
+        },
+
+        setManualFields: function(){
+            var startPoint = this.model.get('release').get('start_position');
+            var endPoint = this.model.get('release').get('end_position');
+
+            this.$('#start-lat').val(startPoint[1]);
+            this.$('#start-lon').val(startPoint[0]);
+            this.$('#end-lat').val(endPoint[1]);
+            this.$('#end-lon').val(endPoint[0]);
+        },
+
+        endPointPlacement: function(e){
+            if (this.spillPlacementAllowed){
+                var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                end_position.push(0);
+                this.model.get('release').set('end_position', end_position);
+                this.setManualFields();
+                this.toggleSpill(e);
+                this.renderSpillFeature();
+            } else {
+                this.spillMapView.map.once('click', this.endPointPlacement, this);
+            }
+        },
+
+        addLineSpill: function(e){
+            if (this.spillPlacementAllowed){
+                var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+                start_position.push(0);
+                this.model.get('release').set('start_position', start_position);
+                this.model.get('release').set('end_position', start_position);
+                this.setManualFields();
+                this.renderSpillFeature();
+                this.spillMapView.map.once('click', this.endPointPlacement, this);
+            } else {
+                this.spillMapView.map.once('click', this.addLineSpill, this);
+            }
         },
 
         manualMapInput: function(){

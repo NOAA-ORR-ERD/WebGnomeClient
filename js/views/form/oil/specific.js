@@ -94,22 +94,23 @@ define([
                             }
                         } else if (_.isArray(oil[attr][key])) {
                         // For loop that goes through array
+                            var p;
                             for (var o = 0; o < oil[attr][key].length; o++){
                                 for (var k in oil[attr][key][o]) {
-                                    if (!oil[attr][key][o][v] && oil[attr][key][o] !== 'weathering'){
-                                        oil[attr][key][o][v] = "--";
+                                    if (!oil[attr][key][o][p] && oil[attr][key][o] !== 'weathering'){
+                                        oil[attr][key][o][p] = "--";
                                     } else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
                                         var k2;
                                         if (oil.estimated[attr]){
-                                            oil[attr][key][o][v] = (oil[attr][key][o][v] - 273.15).toFixed(3);
+                                            oil[attr][key][o][p] = (oil[attr][key][o][p] - 273.15).toFixed(3);
                                             k2 = k.substring(0, k.length - 2) + '_f';
-                                            oil[attr][key][o][k2] = '<code>' + this.cToF(oil[attr][key][o][v]).toString() + '</code>';
-                                            oil[attr][key][o][v] = '<code>(' + oil[attr][key][o][v] + ')</code>';
+                                            oil[attr][key][o][k2] = '<code>' + this.cToF(oil[attr][key][o][p]).toString() + '</code>';
+                                            oil[attr][key][o][p] = '<code>(' + oil[attr][key][o][p] + ')</code>';
                                         } else {
-                                            oil[attr][key][o][v] = (oil[attr][key][o][v] - 273.15).toFixed(3);
+                                            oil[attr][key][o][p] = (oil[attr][key][o][p] - 273.15).toFixed(3);
                                             k2 = k.substring(0, k.length - 2) + '_f';
-                                            oil[attr][key][o][k2] = this.cToF(oil[attr][key][o][v]).toString();
-                                            oil[attr][key][o][v] = '(' + oil[attr][key][o][v] + ')';
+                                            oil[attr][key][o][k2] = this.cToF(oil[attr][key][o][p]).toString();
+                                            oil[attr][key][o][p] = '(' + oil[attr][key][o][p] + ')';
                                         }
                                     }
                                 }

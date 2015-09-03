@@ -124,7 +124,7 @@ define([
         },
 
         updateTooltipWidth: function(){
-            this.$('.tooltip').each(function(){
+            this.$('.slider .tooltip').each(function(){
                 var chars = $(this).text().split('').length;
                 var width = 0;
                 if(chars <= 3){
@@ -134,7 +134,7 @@ define([
                 } else {
                     width = chars * 9;
                 }
-                var margin = (width / 2) - parseInt(7);
+                var margin = (width / 2) - parseInt(7, 10);
                 $(this).css({
                     width: width + 'px',
                     marginLeft: '-' + margin + 'px'
