@@ -12,6 +12,7 @@ define([
             'diameter': 0,
             'distance': 0,
             'depth': 0,
+            'assessmentTime': 0,
 
             efficiency: {
                 'Skimming': null,
@@ -40,10 +41,19 @@ define([
             var attrs = this.attributes;
 
             this.deriveAreaBounds();
+            this.deriveAssessmentTime();
 
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
             }
+        },
+
+        deriveAssessmentTime: function(){
+            var start_time = moment(webgnome.model.get('start_time'));
+            var duration = webgnome.model.get('duration');
+            var end_time = moment(start_time.add(duration, 's'));
+
+            this.set('assessmentTime', end_time.format(webgnome.config.date_format.moment));
         },
 
         updateEfficiencies: function(){
@@ -101,7 +111,7 @@ define([
         deriveAreaDiameter: function(){
             var area, diameter;
             var units = this.get('units');
-            if (_.isNull(this.get('area'))){
+            if (this.get('waterBodyMetric') === 'diameter'){
                 diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
                 area = nucos.convert('Area', 'm^2', units.area, Math.pow((diameter / 2), 2) * Math.PI);
                 this.set('area', area);
@@ -233,6 +243,9 @@ define([
             }
             if (depth > this.boundsDict.depth.high){
                 return 'Average water depth must be smaller than ' + this.validateMessageGenerator(this.boundsDict.depth.high, 'm', attrs.units.depth);
+            }
+            if (distance > diameter){
+                return 'Distance from shore cannot be greater than the diameter of the bay!';
             }
         },
 

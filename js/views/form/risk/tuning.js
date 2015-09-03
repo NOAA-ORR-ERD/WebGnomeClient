@@ -40,7 +40,9 @@ define([
                 }
             });
 
-            this.body = _.template(RiskTemplate, {});
+            this.body = _.template(RiskTemplate, {
+                assessmentTime: this.model.get('assessmentTime')
+            });
 
             FormModal.prototype.render.call(this, options);
 
