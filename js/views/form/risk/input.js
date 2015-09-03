@@ -38,6 +38,7 @@ define([
             this.$('#diameter-units option[value="' + this.model.get('units').diameter + '"]').attr('selected', 'selected');
             this.$('#distance-units option[value="' + this.model.get('units').distance + '"]').attr('selected', 'selected');
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
+            this.$('#water-select option[value="' + this.model.get('waterBodyMetric') + '"]').attr('selected', 'selected');
 
             this.toggleWaterMetric();
 
@@ -74,6 +75,7 @@ define([
             this.model.set('diameter', this.$('#water-diameter').val());
             this.model.set('distance', this.$('#distance-from-shore').val());
             this.model.set('depth', this.$('#average-water-depth').val());
+            this.model.set('waterBodyMetric', this.$('#water-select').val());
 
             var units = this.model.get('units');
             units.area = this.$('#area-units').val();
@@ -97,11 +99,10 @@ define([
         },
 
         toggleWaterMetric: function(e){
-            var desiredMetric = this.$('#water-select').val();
+            var desiredMetric = this.model.get('waterBodyMetric');
             if (desiredMetric === 'area'){
                 this.$('.area').removeClass('hide');
                 this.$('.diameter').addClass('hide');
-
             } else {
                 this.$('.area').addClass('hide');
                 this.$('.diameter').removeClass('hide');

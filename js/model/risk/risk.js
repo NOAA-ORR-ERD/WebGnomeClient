@@ -28,7 +28,9 @@ define([
                 'diameter': 'km',
                 'distance': 'km',
                 'depth': 'm'
-            }
+            },
+
+            waterBodyMetric: 'area'
         },
 
         initialize: function(options){
