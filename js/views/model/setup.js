@@ -126,6 +126,9 @@ define([
                 this.updateObjects();
             }, this), 1);
 
+            this.$('.icon').tooltip({
+                placement: 'bottom'
+            });
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
