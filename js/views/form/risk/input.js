@@ -94,13 +94,13 @@ define([
             var desiredMetric = this.model.get('waterBodyMetric');
             if (desiredMetric === 'area'){
                 this.$('.area').removeClass('hide');
-                this.$('.area').val(this.model.get('area'));
                 this.$('.diameter').addClass('hide');
             } else {
                 this.$('.area').addClass('hide');
-                this.$('.diameter').val(this.model.get('diameter'));
                 this.$('.diameter').removeClass('hide');
             }
+            this.$('.area input').val(this.model.get('area'));
+            this.$('.diameter input').val(this.model.get('diameter'));
         },
 
         close: function(){
