@@ -54,19 +54,10 @@ define([
             } else {
                 this.clearError();
 
-                this.settingMetricOnModel();
                 this.model.assessment();
                 this.hide();
                 this.trigger('save', [this.model]);
                 if(_.isFunction(callback)){ callback(); }
-            }
-        },
-
-        settingMetricOnModel: function(){
-            if (this.$('.area').hasClass('hide')){
-                this.model.set('area', null);
-            } else {
-                this.model.set('diameter', null);
             }
         },
 
@@ -99,12 +90,15 @@ define([
         },
 
         toggleWaterMetric: function(e){
+            this.model.deriveAreaDiameter();
             var desiredMetric = this.model.get('waterBodyMetric');
             if (desiredMetric === 'area'){
                 this.$('.area').removeClass('hide');
+                this.$('.area').val(this.model.get('area'));
                 this.$('.diameter').addClass('hide');
             } else {
                 this.$('.area').addClass('hide');
+                this.$('.diameter').val(this.model.get('diameter'));
                 this.$('.diameter').removeClass('hide');
             }
         },

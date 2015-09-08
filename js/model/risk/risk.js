@@ -41,12 +41,11 @@ define([
             var attrs = this.attributes;
 
             this.deriveAreaBounds();
-            this.deriveAssessmentTime();
-
-            webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
 
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
+                webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
+                this.deriveAssessmentTime();
             }
         },
 
