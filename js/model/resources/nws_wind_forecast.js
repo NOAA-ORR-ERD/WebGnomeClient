@@ -9,7 +9,7 @@ define([
 
         url: function(){
             // http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?latitude=47&longitude=-125.5&format=JSON
-            return 'http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?format=JSON';
+            return 'https://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?format=JSON';
         },
 
         validate: function(attrs, options){
