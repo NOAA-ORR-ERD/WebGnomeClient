@@ -4,6 +4,7 @@ before_script:
 master: 
   script:
     - grunt install
+    - cp config-example.json config.json
     - grunt build
   only: 
     - master

@@ -128,6 +128,9 @@ define([
                 this.updateObjects();
             }, this), 1);
 
+            this.$('.icon').tooltip({
+                placement: 'bottom'
+            });
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
@@ -969,7 +972,11 @@ define([
                                 source: new ol.source.MapQuest({layer: 'osm'})
                             }),
                             shorelineLayer
-                        ]
+                        ],
+                        interactions: ol.interaction.defaults({
+                            mouseWheelZoom: false,
+                            dragPan: false
+                        }),
                     });
                     
                     locationMap.render();
@@ -1000,7 +1007,11 @@ define([
                 var currentMap = new OlMapView({
                     id: 'mini-currentmap',
                     controls: [],
-                    layers: this.current_layers
+                    layers: this.current_layers,
+                    interactions: ol.interaction.defaults({
+                        mouseWheelZoom: false,
+                        dragPan: false
+                    }),
                 });
                 currentMap.render();
 
