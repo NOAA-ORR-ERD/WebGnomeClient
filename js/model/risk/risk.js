@@ -45,8 +45,9 @@ define([
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
                 webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
+                webgnome.model.on('change:weatherers', this.findAssessmentTimeLowerBound, this);
                 this.deriveAssessmentTime();
-                this.findAssessmentTimeLowerBound();
+                this.findAssessmentTimeBounds();
             }
         },
 
@@ -214,7 +215,10 @@ define([
             }
         },
 
-        findAssessmentTimeLowerBound: function(){
+        findAssessmentTimeBounds: function(){
+            var start_time = moment(webgnome.model.get('start_time'));
+            var duration = webgnome.model.get('duration');
+            var model_end_time = moment(start_time.add(duration, 's'));
             var lowerBound = 0;
             var weatherers = webgnome.model.get('weatherers');
             weatherers.each(function(weatherer){
@@ -225,7 +229,10 @@ define([
                     }
                 }
             });
-            return lowerBound;
+            this.assessmentBounds = {};
+
+            this.assessmentBounds.lower = lowerBound;
+            this.assessmentBounds.upper = model_end_time;
         },
 
         validate: function(attrs, options){
@@ -233,6 +240,7 @@ define([
             var diameter = nucos.convert('Length', attrs.units.diameter, 'm', attrs.diameter);
             var area = nucos.convert('Area', attrs.units.area, 'm^2', attrs.area);
             var depth = nucos.convert('Length', attrs.units.depth, 'm', attrs.depth);
+            var assessment_time = moment(attrs.assessmentTime).unix();
             if (area < this.boundsDict.area.low || attrs.area === ''){
                 return 'Water area must be greater than ' + this.validateMessageGenerator(this.boundsDict.area.low, 'm^2', attrs.units.area);
             }
@@ -259,6 +267,9 @@ define([
             }
             if (distance > diameter){
                 return 'Distance from shore cannot be greater than the diameter of the bay!';
+            }
+            if (assessment_time < this.assessmentBounds.lower || assessment_time > this.assessmentBounds.upper){
+                return 'Assessment Time is out of valid bounds!';
             }
         },
 
