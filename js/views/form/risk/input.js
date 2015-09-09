@@ -5,7 +5,8 @@ define([
     'moment',
     'views/modal/form',
     'text!templates/risk/input.html',
-    'nucos'
+    'nucos',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, FormModal, RiskTemplate, nucos) {
     var riskForm = FormModal.extend({
         className: 'modal fade form-modal risk-form',
@@ -30,7 +31,8 @@ define([
                 depth: this.model.get('depth'),
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
-                shoreline: this.model.get('shoreline')
+                shoreline: this.model.get('shoreline'),
+                assessmentTime: this.model.get('assessmentTime')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -45,6 +47,13 @@ define([
             if (!webgnome.validModel()) {
                 this.$('.next').addClass('disabled');
             }
+
+            this.$('#datetime').datetimepicker({
+                format: 'Y/n/j G:i',
+            });
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#datetime').datetimepicker('show');
+            }, this));
         },
 
         // overide the 'Next' button event method
