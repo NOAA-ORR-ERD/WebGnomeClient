@@ -46,6 +46,7 @@ define([
                 this.updateEfficiencies();
                 webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
                 this.deriveAssessmentTime();
+                this.findAssessmentTimeLowerBound();
             }
         },
 
@@ -211,6 +212,20 @@ define([
                 high: 100,
                 low: 1
             }
+        },
+
+        findAssessmentTimeLowerBound: function(){
+            var lowerBound = 0;
+            var weatherers = webgnome.model.get('weatherers');
+            weatherers.each(function(weatherer){
+                if (weatherer.get('obj_type').indexOf('cleanup') > -1){
+                    var end_time = moment(weatherer.get('active_stop')).unix();
+                    if (end_time > lowerBound){
+                        lowerBound = end_time;
+                    }
+                }
+            });
+            return lowerBound;
         },
 
         validate: function(attrs, options){
