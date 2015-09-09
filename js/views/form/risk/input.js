@@ -32,7 +32,6 @@ define([
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
                 shoreline: this.model.get('shoreline'),
-                assessmentTime: this.model.get('assessmentTime'),
                 direction: this.model.get('direction')
             });
 
@@ -49,12 +48,12 @@ define([
                 this.$('.next').addClass('disabled');
             }
 
-            this.$('#datetime').datetimepicker({
-                format: 'Y/n/j G:i',
-            });
-            this.$('#datepick').on('click', _.bind(function(){
-                this.$('#datetime').datetimepicker('show');
-            }, this));
+            // this.$('#datetime').datetimepicker({
+            //     format: 'Y/n/j G:i',
+            // });
+            // this.$('#datepick').on('click', _.bind(function(){
+            //     this.$('#datetime').datetimepicker('show');
+            // }, this));
         },
 
         // overide the 'Next' button event method
@@ -77,7 +76,7 @@ define([
             this.model.set('distance', this.$('#distance-from-shore').val());
             this.model.set('depth', this.$('#average-water-depth').val());
             this.model.set('waterBodyMetric', this.$('#water-select').val());
-            this.model.set('assessmentTime', this.$('#datetime').val());
+            // this.model.set('assessmentTime', this.$('#datetime').val());
 
             var units = this.model.get('units');
             units.area = this.$('#area-units').val();
