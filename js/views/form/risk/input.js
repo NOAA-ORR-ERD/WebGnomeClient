@@ -32,7 +32,8 @@ define([
                 surface: this.model.get('surface'),
                 column: this.model.get('column'),
                 shoreline: this.model.get('shoreline'),
-                assessmentTime: this.model.get('assessmentTime')
+                assessmentTime: this.model.get('assessmentTime'),
+                direction: this.model.get('direction')
             });
 
             FormModal.prototype.render.call(this, options);

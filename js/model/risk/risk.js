@@ -12,6 +12,7 @@ define([
             'diameter': 0,
             'distance': 0,
             'depth': 0,
+            'direction': 0,
             'assessmentTime': 0,
 
             efficiency: {
