@@ -47,11 +47,40 @@ define([
                 this.updateEfficiencies();
                 webgnome.model.on('change:duration', this.findAssessmentTimeBounds, this);
                 webgnome.model.on('change:weatherers', this.findAssessmentTimeBounds, this);
+                this.sumWindVectors();
                 this.findAssessmentTimeBounds();
                 if (_.isUndefined(this.assessmentTime)){
                     this.deriveAssessmentTime();
                 }
             }
+        },
+
+        convertBearing: function(deg){
+            return (90 - parseInt(deg, 10)) * -1;
+        },
+
+        sumWindVectors: function(){
+            var timeseries = this.deriveWindDirection();
+            var x_sum = 0;
+            var y_sum = 0;
+            for (var i = 0; i < timeseries.length; i++){
+                var magnitude = timeseries[i][1][0];
+                var bearing = this.convertBearing(timeseries[i][1][1]);
+
+                x_sum += Math.cos(bearing) * magnitude;
+                y_sum += Math.sin(bearing) * magnitude;
+            }
+            console.log(x_sum, y_sum);
+        },
+
+        deriveWindDirection: function(){
+            var timeseries;
+            _.each(webgnome.model.get('environment').models, function(el, i, arr){
+                if (el.get('obj_type').indexOf('Wind') > -1){
+                    timeseries = el.get('timeseries');
+                }
+            });
+            return timeseries;
         },
 
         deriveAssessmentTime: function(){
