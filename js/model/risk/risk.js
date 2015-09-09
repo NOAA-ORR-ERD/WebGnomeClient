@@ -47,7 +47,7 @@ define([
                 this.updateEfficiencies();
                 webgnome.model.on('change:duration', this.findAssessmentTimeBounds, this);
                 webgnome.model.on('change:weatherers', this.findAssessmentTimeBounds, this);
-                this.sumWindVectors();
+                this.deriveWindDirection();
                 this.findAssessmentTimeBounds();
                 if (_.isUndefined(this.assessmentTime)){
                     this.deriveAssessmentTime();
@@ -60,7 +60,7 @@ define([
         },
 
         sumWindVectors: function(){
-            var timeseries = this.deriveWindDirection();
+            var timeseries = this.getTimeseries();
             var x_sum = 0;
             var y_sum = 0;
             for (var i = 0; i < timeseries.length; i++){
@@ -70,10 +70,10 @@ define([
                 x_sum += Math.cos(bearing) * magnitude;
                 y_sum += Math.sin(bearing) * magnitude;
             }
-            console.log(x_sum, y_sum);
+            return {x: x_sum, y: y_sum};
         },
 
-        deriveWindDirection: function(){
+        getTimeseries: function(){
             var timeseries;
             _.each(webgnome.model.get('environment').models, function(el, i, arr){
                 if (el.get('obj_type').indexOf('Wind') > -1){
@@ -81,6 +81,11 @@ define([
                 }
             });
             return timeseries;
+        },
+
+        deriveWindDirection: function(){
+            var windComponents = this.sumWindVectors();
+            var magnitude = Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2));
         },
 
         deriveAssessmentTime: function(){
