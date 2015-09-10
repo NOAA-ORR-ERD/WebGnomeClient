@@ -59,15 +59,21 @@ define([
             var units = this.get('units').direction;
             var angle;
             if (units === 'degree'){
-                angle = deg * (Math.PI / 180);
+                angle = this.convertToRadians(deg);
             } else {
                 angle = deg;
             }
             return angle;
         },
 
+        convertToRadians: function(deg){
+            return deg * (Math.PI / 180);
+        },
+
         sumWindVectors: function(){
-            var timeseries = this.getTimeseries();
+            var windData = this.getTimeseries();
+            var timeseries = windData.timeseries;
+            var units = windData.units;
             var x_sum = 0;
             var y_sum = 0;
             for (var i = 0; i < timeseries.length; i++){
@@ -76,17 +82,19 @@ define([
                 x_sum += Math.sin(bearing) * magnitude;
                 y_sum += Math.cos(bearing) * magnitude;
             }
-            return {x: x_sum, y: y_sum, wind_num: timeseries.length};
+            return {x: x_sum, y: y_sum, wind_num: timeseries.length, wind_units: units};
         },
 
         getTimeseries: function(){
             var timeseries;
+            var units;
             _.each(webgnome.model.get('environment').models, function(el, i, arr){
                 if (el.get('obj_type').indexOf('Wind') > -1){
                     timeseries = el.get('timeseries');
+                    units = el.get('units');
                 }
             });
-            return timeseries;
+            return {timeseries: timeseries, units: units};
         },
 
         deriveAverageWind: function(){
@@ -165,6 +173,20 @@ define([
                 diameter = nucos.convert('Length', 'm', units.diameter, 2 * Math.sqrt(area / Math.PI));
                 this.set('diameter', diameter);
             }
+        },
+
+        calculateBeachingTime: function(){
+            var shoreDirection = this.convertBearing(this.get('direction'));
+            var distanceToShore = nucos.convert('Length', this.get('units').distance, 'm', this.get('distance'));
+            var avgWind = this.deriveAverageWind();
+            var avgWindDirRadians = this.convertToRadians(avgWind.dir);
+            var avgWindSpeed = nucos.convert('Speed', avgWind.units, 'm/s', avgWind.mag);
+            var timeToBeach;
+            if (avgWindDirRadians <= (shoreDirection + (Math.PI / 2)) && avgWindDirRadians >= (shoreDirection - (Math.PI / 2))){
+                timeToBeach = distanceToShore / avgWindSpeed;
+            }
+
+            return timeToBeach;
         },
 
         assessment: function(){
