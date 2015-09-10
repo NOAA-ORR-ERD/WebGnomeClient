@@ -76,6 +76,7 @@ define([
             this.model.set('distance', this.$('#distance-from-shore').val());
             this.model.set('depth', this.$('#average-water-depth').val());
             this.model.set('waterBodyMetric', this.$('#water-select').val());
+            this.model.set('direction', this.$('#direction-from-shore').val());
             // this.model.set('assessmentTime', this.$('#datetime').val());
 
             var units = this.model.get('units');
@@ -83,6 +84,7 @@ define([
             units.diameter = this.$('#diameter-units').val();
             units.distance = this.$('#distance-units').val();
             units.depth = this.$('#depth-units').val();
+            units.direction = this.$('#direction-units').val();
 
             this.model.set('units', units);
 

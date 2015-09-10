@@ -316,6 +316,12 @@ define([
             if (assessment_time < this.assessmentBounds.lower || assessment_time > this.assessmentBounds.upper){
                 return 'Assessment Time is out of valid bounds!';
             }
+            if (attrs.units.direction === 'degree' && (attrs.direction > 360 || attrs.direction < 0)){
+                return 'Direction to shore must be between 0 and 360 degrees!';
+            }
+            if (attrs.units.direction === 'radian' && (attrs.direction > 2 * Math.PI || attrs.direction < 0)){
+                return 'Direction to shore must be between 0 and 2\u03C0 radians!';
+            }
         },
 
         writeGnomeEff: function(){
