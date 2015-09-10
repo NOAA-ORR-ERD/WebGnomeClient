@@ -29,7 +29,8 @@ define([
                 'area': 'sq km',
                 'diameter': 'km',
                 'distance': 'km',
-                'depth': 'm'
+                'depth': 'm',
+                'direction': 'degree'
             },
 
             waterBodyMetric: 'area'
@@ -47,7 +48,6 @@ define([
                 this.updateEfficiencies();
                 webgnome.model.on('change:duration', this.findAssessmentTimeBounds, this);
                 webgnome.model.on('change:weatherers', this.findAssessmentTimeBounds, this);
-                this.deriveWindDirection();
                 this.findAssessmentTimeBounds();
                 if (_.isUndefined(this.assessmentTime)){
                     this.deriveAssessmentTime();
@@ -56,7 +56,14 @@ define([
         },
 
         convertBearing: function(deg){
-            return (90 - parseInt(deg, 10)) * -1;
+            var units = this.get('units').direction;
+            var angle;
+            if (units === 'degree'){
+                angle = deg * (Math.PI / 180);
+            } else {
+                angle = deg;
+            }
+            return angle;
         },
 
         sumWindVectors: function(){
@@ -66,11 +73,10 @@ define([
             for (var i = 0; i < timeseries.length; i++){
                 var magnitude = timeseries[i][1][0];
                 var bearing = this.convertBearing(timeseries[i][1][1]);
-
-                x_sum += Math.cos(bearing) * magnitude;
-                y_sum += Math.sin(bearing) * magnitude;
+                x_sum += Math.sin(bearing) * magnitude;
+                y_sum += Math.cos(bearing) * magnitude;
             }
-            return {x: x_sum, y: y_sum};
+            return {x: x_sum, y: y_sum, wind_num: timeseries.length};
         },
 
         getTimeseries: function(){
@@ -83,9 +89,11 @@ define([
             return timeseries;
         },
 
-        deriveWindDirection: function(){
+        deriveAverageWind: function(){
             var windComponents = this.sumWindVectors();
-            var magnitude = Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2));
+            var magnitude = Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2)) / windComponents.wind_num;
+            var direction = Math.atan2(windComponents.y, windComponents.x) * (180 / Math.PI);
+            return {mag: magnitude, dir: direction};
         },
 
         deriveAssessmentTime: function(){
