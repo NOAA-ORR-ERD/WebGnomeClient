@@ -46,12 +46,13 @@ define([
 
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
-                webgnome.model.on('change:duration', this.findAssessmentTimeBounds, this);
-                webgnome.model.on('change:weatherers', this.findAssessmentTimeBounds, this);
                 this.findAssessmentTimeBounds();
-                if (_.isUndefined(this.assessmentTime)){
-                    this.deriveAssessmentTime();
-                }
+                webgnome.model.on('change:duration', this.setAssessmentTime, this);
+                webgnome.model.on('change:weatherers', this.setAssessmentTime, this);
+                this.setAssessmentTime();
+                // if (_.isUndefined(this.assessmentTime)){
+                //     this.deriveAssessmentTime();
+                // }
             }
         },
 
@@ -73,16 +74,33 @@ define([
         sumWindVectors: function(){
             var windData = this.getTimeseries();
             var timeseries = windData.timeseries;
+            var durationArray = this.findWindDurations(windData);
             var units = windData.units;
             var x_sum = 0;
             var y_sum = 0;
             for (var i = 0; i < timeseries.length; i++){
                 var magnitude = timeseries[i][1][0];
                 var bearing = this.convertBearing(timeseries[i][1][1]);
-                x_sum += Math.sin(bearing) * magnitude;
-                y_sum += Math.cos(bearing) * magnitude;
+                x_sum += (Math.sin(bearing) * magnitude) / durationArray[i];
+                y_sum += (Math.cos(bearing) * magnitude) / durationArray[i];
             }
             return {x: x_sum, y: y_sum, wind_num: timeseries.length, wind_units: units};
+        },
+
+        findWindDurations: function(windData){
+            var durations = [];
+            var model_end_time = moment(webgnome.model.get('start_time')).add('s', webgnome.model.get('duration')).unix();
+            for (var i = 0; i < windData.timeseries.length; i++){
+                var k = i + 1;
+                var current_wind = moment(windData.timeseries[i][0]).unix();
+                if (k === windData.timeseries.length){
+                    durations.push(current_wind - model_end_time);
+                } else {
+                    var next_wind = moment(windData.timeseries[k][0]).unix();
+                    durations.push(next_wind - current_wind);
+                }
+            }
+            return durations;
         },
 
         getTimeseries: function(){
@@ -99,9 +117,10 @@ define([
 
         deriveAverageWind: function(){
             var windComponents = this.sumWindVectors();
-            var magnitude = Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2)) / windComponents.wind_num;
+            var units = windComponents.wind_units;
+            var magnitude = (Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2)) / windComponents.wind_num) * 0.03;
             var direction = Math.atan2(windComponents.y, windComponents.x) * (180 / Math.PI);
-            return {mag: magnitude, dir: direction};
+            return {mag: magnitude, dir: direction, units: units};
         },
 
         deriveAssessmentTime: function(){
@@ -110,6 +129,17 @@ define([
             var end_time = moment(start_time.add(duration, 's'));
 
             this.set('assessmentTime', end_time.format(webgnome.config.date_format.moment));
+        },
+
+        setAssessmentTime: function(){
+            var beachingTime = this.calculateBeachingTime();
+            var lastCleanupEndTime = this.assessmentBounds.lower;
+
+            if (!_.isUndefined(beachingTime) && (beachingTime > lastCleanupEndTime)){
+                this.set('assessmentTime', moment(beachingTime).format(webgnome.config.date_format.moment));
+            } else {
+                this.set('assessmentTime', moment(lastCleanupEndTime).format(webgnome.config.date_format.moment));
+            }
         },
 
         updateEfficiencies: function(){
@@ -180,12 +210,12 @@ define([
             var distanceToShore = nucos.convert('Length', this.get('units').distance, 'm', this.get('distance'));
             var avgWind = this.deriveAverageWind();
             var avgWindDirRadians = this.convertToRadians(avgWind.dir);
-            var avgWindSpeed = nucos.convert('Speed', avgWind.units, 'm/s', avgWind.mag);
+            var avgWindSpeed = nucos.convert('Velocity', avgWind.units, 'm/s', avgWind.mag);
             var timeToBeach;
             if (avgWindDirRadians <= (shoreDirection + (Math.PI / 2)) && avgWindDirRadians >= (shoreDirection - (Math.PI / 2))){
-                timeToBeach = distanceToShore / avgWindSpeed;
+                timeToBeach = moment(webgnome.model.get('start_time')).unix() + (distanceToShore / avgWindSpeed);
             }
-
+            console.log(moment(timeToBeach).format(webgnome.config.date_format.moment));
             return timeToBeach;
         },
 
@@ -300,6 +330,7 @@ define([
 
             this.assessmentBounds.lower = lowerBound;
             this.assessmentBounds.upper = model_end_time;
+            console.log(this.assessmentBounds);
         },
 
         validate: function(attrs, options){
@@ -334,9 +365,6 @@ define([
             }
             if (distance > diameter){
                 return 'Distance from shore cannot be greater than the diameter of the bay!';
-            }
-            if (assessment_time < this.assessmentBounds.lower || assessment_time > this.assessmentBounds.upper){
-                return 'Assessment Time is out of valid bounds!';
             }
             if (attrs.units.direction === 'degree' && (attrs.direction > 360 || attrs.direction < 0)){
                 return 'Direction to shore must be between 0 and 360 degrees!';
