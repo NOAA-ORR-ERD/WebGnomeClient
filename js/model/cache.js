@@ -58,7 +58,7 @@ define([
                 for(var m = 0; m < models.length; m++){
                     key = this.length;
                     if(m === models.length - 1){
-                        localforage.setItem(key.toString(), modems[m].toJSON(), options.success);
+                        localforage.setItem(key.toString(), models[m].toJSON(), options.success);
                     } else {
                         localforage.setItem(key.toString(), models[m].toJSON());
                     }
