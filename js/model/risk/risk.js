@@ -60,15 +60,11 @@ define([
             var units = this.get('units').direction;
             var angle;
             if (units === 'degree'){
-                angle = this.convertToRadians(deg);
+                angle = deg * (Math.PI / 180);
             } else {
                 angle = deg;
             }
             return angle;
-        },
-
-        convertToRadians: function(deg){
-            return deg * (Math.PI / 180);
         },
 
         sumWindVectors: function(){
@@ -129,7 +125,7 @@ define([
             var units = windComponents.wind_units;
             var windageFactor = 0.03;
             var magnitude = (Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2)) / windComponents.wind_num) * windageFactor;
-            var direction = Math.atan2(windComponents.y, windComponents.x) * (180 / Math.PI);
+            var direction = Math.atan2(windComponents.y, windComponents.x);
             return {
                 mag: magnitude,
                 dir: direction,
@@ -225,10 +221,9 @@ define([
             var shoreDirection = this.convertBearing(this.get('direction'));
             var distanceToShore = nucos.convert('Length', this.get('units').distance, 'm', this.get('distance'));
             var avgWind = this.deriveAverageWind();
-            var avgWindDirRadians = this.convertToRadians(avgWind.dir);
             var avgWindSpeed = nucos.convert('Velocity', avgWind.units, 'm/s', avgWind.mag);
             var timeToBeach;
-            if (avgWindDirRadians <= (shoreDirection + (Math.PI / 2)) && avgWindDirRadians >= (shoreDirection - (Math.PI / 2))){
+            if (avgWind.dir <= (shoreDirection + (Math.PI / 2)) && avgWind.dir >= (shoreDirection - (Math.PI / 2))){
                 timeToBeach = Math.round(this.gnomeEndTime - (distanceToShore / avgWindSpeed));
             }
             return timeToBeach;
