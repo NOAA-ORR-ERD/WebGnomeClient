@@ -145,7 +145,7 @@ define([
             var beachingTime = this.calculateBeachingTime();
             var lastCleanupEndTime = this.assessmentBounds.lower;
 
-            //console.log(moment(beachingTime).format(webgnome.config.date_format.moment), moment(lastCleanupEndTime).format(webgnome.config.date_format.moment));
+            console.log(moment(beachingTime).format(webgnome.config.date_format.moment), moment(lastCleanupEndTime).format(webgnome.config.date_format.moment));
 
             if (!_.isUndefined(beachingTime) && (beachingTime > lastCleanupEndTime)){
                 this.set('assessmentTime', moment(beachingTime).format(webgnome.config.date_format.moment));
@@ -325,12 +325,13 @@ define([
         findAssessmentTimeBounds: function(){
             var start_time = moment(webgnome.model.get('start_time'));
             var duration = webgnome.model.get('duration');
-            var model_end_time = moment(start_time.add(duration, 's')).unix();
+            var model_end_time = moment(start_time.add(duration, 's')).unix() * 1000;
             var lowerBound = 0;
             var weatherers = webgnome.model.get('weatherers');
             weatherers.each(function(weatherer){
                 if (weatherer.get('obj_type').indexOf('cleanup') > -1){
-                    var end_time = moment(weatherer.get('active_stop')).unix();
+                    console.log(moment(weatherer.get('active_stop'), webgnome.config.date_format.moment).unix());
+                    var end_time = moment(weatherer.get('active_stop')).unix() * 1000;
                     if (end_time > lowerBound){
                         lowerBound = end_time;
                     }
@@ -338,6 +339,7 @@ define([
             });
             this.assessmentBounds = {};
             this.gnomeEndTime = model_end_time;
+            console.log(moment(this.gnomeEndTime).format(webgnome.config.date_format.moment));
             this.assessmentBounds.lower = lowerBound;
             this.assessmentBounds.upper = model_end_time;
         },
