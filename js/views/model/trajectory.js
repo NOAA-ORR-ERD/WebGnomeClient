@@ -524,7 +524,7 @@ define([
             this.renderIce(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
-            this.frame = step.get('TrajectoryGeoJsonOutput').step_num;
+            this.frame = step.get('step_num');
             if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
                 this.drawStepTimeout = setTimeout(_.bind(function(){
                     this.controls.seek.slider('value', this.frame + 1);
