@@ -330,7 +330,6 @@ define([
             var weatherers = webgnome.model.get('weatherers');
             weatherers.each(function(weatherer){
                 if (weatherer.get('obj_type').indexOf('cleanup') > -1){
-                    console.log(moment(weatherer.get('active_stop'), webgnome.config.date_format.moment).unix());
                     var end_time = moment(weatherer.get('active_stop')).unix() * 1000;
                     if (end_time > lowerBound){
                         lowerBound = end_time;
@@ -339,7 +338,6 @@ define([
             });
             this.assessmentBounds = {};
             this.gnomeEndTime = model_end_time;
-            console.log(moment(this.gnomeEndTime).format(webgnome.config.date_format.moment));
             this.assessmentBounds.lower = lowerBound;
             this.assessmentBounds.upper = model_end_time;
         },
