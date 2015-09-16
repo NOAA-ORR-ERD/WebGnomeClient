@@ -59,7 +59,7 @@ define([
                 },
                 select: _.bind(function(e, ui){
                     if (!_.isUndefined(e)){
-                        this.update({which: 13}, e.toElement.innerHTML);
+                        this.update({which: 13}, ui.item.value);
                     }
                     $('.chosen-select').autocomplete('close');
                     $('.chosen-select').val(ui.item.value);
@@ -145,7 +145,7 @@ define([
                 target = e.target.dataset.title;
             }
             for (var i in data){
-                if (title === data[i].title || data[i].title === target){
+                if (data[i].title === target){
                     this.singleHelp = new SingleView({topic: data[i]});
                     break;
                 }
