@@ -110,14 +110,14 @@ define([
             if(this.model.get('amount')){
                 var amount = this.model.get('amount');
                 if(value === 0){
-                    this.$('.tooltip-inner').text(amount);
+                    this.$('.slider .tooltip-inner').text(amount);
                 } else {
                     var bottom = parseInt(Math.round((amount * (1 - ((value / 25.0) * 5)))), 10);
                     if (bottom < 0) {
                         bottom = 0;
                     }
                     var top = parseInt(Math.round((amount * (1 + ((value / 25.0) * 5)))), 10);
-                    this.$('.tooltip-inner').text(bottom + ' - ' + top);
+                    this.$('.slider .tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
             this.model.set('amount_uncertainty_scale', value / 5);

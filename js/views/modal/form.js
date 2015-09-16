@@ -22,6 +22,7 @@ define([
             'click .cancel': 'wizardclose',
             'change input': 'update',
             'keyup input': 'update',
+            'click input': 'selectContents',
             'change select': 'update',
             'click .finish': 'finish',
             'click .modal-header .gnome-help': 'showHelp'
@@ -32,6 +33,11 @@ define([
             if (this.module) {
                 this.help = new HelpView({path: this.module.id});
             }
+        },
+
+        selectContents: function(e){
+            e.preventDefault();
+            this.$(e.target).select();
         },
 
         stickyFooter: function(){

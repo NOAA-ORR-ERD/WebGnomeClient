@@ -126,6 +126,9 @@ define([
                 this.updateObjects();
             }, this), 1);
 
+            this.$('.icon').tooltip({
+                placement: 'bottom'
+            });
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
@@ -193,8 +196,10 @@ define([
             webgnome.model.set('duration', duration);
 
             webgnome.model.get('weatherers').forEach(function(weatherer){
-                weatherer.set('active_start', webgnome.model.get('start_time'));
-                weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+                if(weatherer.get('obj_type').indexOf('cleanup') === -1){
+                    weatherer.set('active_start', webgnome.model.get('start_time'));
+                    weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
+                }
             });
 
             webgnome.model.save(null, {
@@ -820,7 +825,11 @@ define([
                                 source: new ol.source.MapQuest({layer: 'osm'})
                             }),
                             shorelineLayer
-                        ]
+                        ],
+                        interactions: ol.interaction.defaults({
+                            mouseWheelZoom: false,
+                            dragPan: false
+                        }),
                     });
                     
                     locationMap.render();
@@ -837,7 +846,7 @@ define([
         updateCurrent: function(){
             // for right now only visualize cats mover grids
             var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
+                return ['gnome.movers.current_movers.CatsMover', 'gnome.movers.current_movers.GridCurrentMover'].indexOf(mover.get('obj_type')) !== -1;
             });
 
             if(currents.length > 0){
@@ -851,7 +860,11 @@ define([
                 var currentMap = new OlMapView({
                     id: 'mini-currentmap',
                     controls: [],
-                    layers: this.current_layers
+                    layers: this.current_layers,
+                    interactions: ol.interaction.defaults({
+                        mouseWheelZoom: false,
+                        dragPan: false
+                    }),
                 });
                 currentMap.render();
 
@@ -1195,9 +1208,9 @@ define([
             
             if(target !== localStorage.getItem('prediction')){
                 this.rewind();
+                this.configureModel(target);
             }
 
-            this.configureModel(target);
             this.configureWeatherers(target);
             this.configureRelease(target);
         },

@@ -126,8 +126,8 @@ define([
                     this[min] = Math.floor(_.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
                     this[max] = Math.ceil(_.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity]);
                 } else if (quantity === 'viscosity') {
-                    var visMin = _.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
-                    var visMax = _.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 1000000;
+                    var visMin = _.min(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 100000;
+                    var visMax = _.max(this.oilTable.oilLib.models, this.modelIterator(quantity), this).attributes[quantity] * 100000;
                     this[min] = visMin;
                     this[max] = visMax;
                 } else {
@@ -278,13 +278,13 @@ define([
                 this.$(selector).slider({
                     range: true,
                     min: 0,
-                    max: 8,
-                    values: [0, 8],
+                    max: 5,
+                    values: [0, 5],
                     create: _.bind(function(e, ui){
                            this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
                                                              Math.pow(10, 0) + '</div></div>');
                            this.$(selector + ' .ui-slider-handle:last').html('<div class="tooltip bottom slider-tip" style="display: visible;"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +
-                                                             Math.pow(10, 8) + '</div></div>');
+                                                             Math.pow(10, 5) + '</div></div>');
                         }, this),
                     slide: _.bind(function(e, ui){
                             this.$(selector + ' .ui-slider-handle:first').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' +

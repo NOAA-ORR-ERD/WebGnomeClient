@@ -1,0 +1,14 @@
+before_script: 
+  - npm install
+
+master: 
+  script:
+    - grunt install
+    - cp config-example.json config.json
+    - grunt build
+  only: 
+    - master
+
+develop:
+  script:
+    - grunt lint 
