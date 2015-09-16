@@ -95,7 +95,7 @@ define([
                 success: _.bind(function(){
                     this.$('.helpful, .response').hide();
                     this.$('.thankyou').fadeIn();
-                })
+                }, this)
             });
         },
 
