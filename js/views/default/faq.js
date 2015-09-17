@@ -63,10 +63,7 @@ define([
                     }
                     $('.chosen-select').autocomplete('close');
                     $('.chosen-select').val(ui.item.value);
-                }, this),
-                open: _.bind(function(e, ui){
-                    console.log(ui);
-                })
+                }, this)
              };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
@@ -136,11 +133,12 @@ define([
             for (var i in data){
                 if (data[i].cid === target || data[i].title === target){
                     this.singleHelp = new SingleView({topic: data[i]});
+                    target = data[i].title;
                     break;
                 }
             }
-            // var encodedUrl = encodeURI(target);
-            // webgnome.router.navigate('faq/' + encodedUrl);
+            var encodedUrl = encodeURI(target);
+            webgnome.router.navigate('faq/' + encodedUrl);
         },
 
         back: function(){
