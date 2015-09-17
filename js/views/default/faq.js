@@ -51,7 +51,7 @@ define([
             var obj = this.getData(this.topicArray);
             var titles = [];
             for (var i in obj){
-                titles.push(obj[i].title);
+                titles.push({label: obj[i].title, value: obj[i].cid});
             }
             var autocompleteConfig = {
                 source: function(req, res){
@@ -59,7 +59,7 @@ define([
                 },
                 select: _.bind(function(e, ui){
                     if (!_.isUndefined(e)){
-                        this.update({which: 13}, e.toElement.innerHTML);
+                        this.update({which: 13}, ui.item.value);
                     }
                     $('.chosen-select').autocomplete('close');
                     $('.chosen-select').val(ui.item.value);
@@ -68,26 +68,11 @@ define([
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
-            if (this.exactMatch(term, titles) && e.which === 13){
+            if (e.which === 13){
                 this.specificHelp(null, term);
                 this.$('.chosen-select').autocomplete('close');
             }
-
-            if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
-                this.$('.chosen-select').val(titles[0]);
-                this.specificHelp(null, titles[0]);
-                this.$('.chosen-select').autocomplete('close');
-            }
             this.trigger('updated');
-        },
-
-        exactMatch: function(term, titles){
-            for (var i in titles){
-                if (term === titles[i]){
-                    return true;
-                }
-            }
-            return false;
         },
 
         seed: function(){
@@ -109,8 +94,9 @@ define([
                     var path = models[i].get('path');
                     var excerpt = models[i].makeExcerpt();
                     var keywords = models[i].get('keywords');
+                    var id = models[i].cid;
                     if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt});
+                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt, id: id});
                     }
                 }
             }
@@ -145,8 +131,9 @@ define([
                 target = e.target.dataset.title;
             }
             for (var i in data){
-                if (title === data[i].title || data[i].title === target){
+                if (data[i].id === target){
                     this.singleHelp = new SingleView({topic: data[i]});
+                    target = data[i].title;
                     break;
                 }
             }
