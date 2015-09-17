@@ -10,14 +10,16 @@ define([
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
 
-        defaults: {
-            'on': true,
-            'obj_type': 'gnome.spill.spill.Spill',
-            'release': new GnomeRelease(),
-            'element_type': new GnomeElement(),
-            'name': 'Spill',
-            'amount': 0,
-            'units': 'bbl'
+        defaults: function(){
+            return {
+                'on': true,
+                'obj_type': 'gnome.spill.spill.Spill',
+                'release': new GnomeRelease(),
+                'element_type': new GnomeElement(),
+                'name': 'Spill',
+                'amount': 0,
+                'units': 'bbl'
+            }
         },
 
         model: {
