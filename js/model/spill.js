@@ -19,7 +19,7 @@ define([
                 'name': 'Spill',
                 'amount': 0,
                 'units': 'bbl'
-            }
+            };
         },
 
         model: {
