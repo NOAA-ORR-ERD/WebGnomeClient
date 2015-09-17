@@ -131,7 +131,7 @@ define([
                 target = e.target.dataset.title;
             }
             for (var i in data){
-                if (data[i].cid === target || data[i].title === target){
+                if (data[i].id === target){
                     this.singleHelp = new SingleView({topic: data[i]});
                     target = data[i].title;
                     break;
