@@ -668,6 +668,7 @@ define([
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.save();
+                    webgnome.model.trigger('sync');
                     this.hide();
                 }
             }, this));

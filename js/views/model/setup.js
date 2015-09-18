@@ -118,6 +118,7 @@ define([
                     this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
+                webgnome.model.on('sync', this.updateSpill, this);
                 this.updateWind();
                 this.updateLocation();
                 this.updateWater();
@@ -125,8 +126,6 @@ define([
                 this.updateCurrent();
                 this.updateObjects();
             }, this), 1);
-
-            webgnome.model.on('change', this.updateSpill, this);
 
             this.$('.icon').tooltip({
                 placement: 'bottom'
@@ -561,6 +560,7 @@ define([
             }
             spillView.on('save wizardclose', function(){
                 webgnome.model.save(null, {validate: false});
+                webgnome.model.trigger('sync');
             });
 
             spillView.on('hidden', spillView.close);
