@@ -560,19 +560,10 @@ define([
                 spillView = new SpillInstantView(null, spill);
             }
             spillView.on('save wizardclose', function(){
-                webgnome.model.save({
-                    success: _.bind(function(){
-                        this.updateSpill();
-                    }, this)
-                }, {validate: false});
+                webgnome.model.save(null, {validate: false});
             });
 
             spillView.on('hidden', spillView.close);
-
-            // only update the model if the spill saves
-            // spillView.on('save', _.bind(function(){
-            //     webgnome.model.save(null, {validate: false});
-            // }, this));
 
             spillView.render();
         },
