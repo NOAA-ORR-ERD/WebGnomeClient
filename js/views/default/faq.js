@@ -27,22 +27,22 @@ define([
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
             if (!_.isUndefined(options.topic)){
-                this.title = options.topic;
+                this.cid = options.topic;
             }
         },
 
         render: function(){
             var compiled = _.template(FAQTemplate, {});
             $('.faqspace').append(this.$el.append(compiled));
-            if (this.title){
-                var title = decodeURI(this.title);
+            if (this.cid){
+                var title = decodeURI(this.cid);
                 this.specificHelp({}, title);
             } else {
                 this.defaultView = new DefaultView({topics: this.parsedData});
             }
         },
 
-        update: function(e, str){
+        update: function(e, str, label){
             var term = this.$('.chosen-select').val();
             if (str){
                 term = str;
@@ -51,7 +51,7 @@ define([
             var obj = this.getData(this.topicArray);
             var titles = [];
             for (var i in obj){
-                titles.push({label: obj[i].title, value: obj[i].cid});
+                titles.push({label: obj[i].title, value: obj[i].id});
             }
             var autocompleteConfig = {
                 source: function(req, res){
@@ -59,18 +59,22 @@ define([
                 },
                 select: _.bind(function(e, ui){
                     if (!_.isUndefined(e)){
-                        this.update({which: 13}, ui.item.value);
+                        this.update({which: 13}, ui.item.value, ui.item.label);
                     }
+                    $('.chosen-select').val(ui.item.label);
                     $('.chosen-select').autocomplete('close');
-                    $('.chosen-select').val(ui.item.value);
-                }, this)
+                }, this),
+                focus: _.bind(function(e, ui){
+                    $('.chosen-select').attr('value', ui.item.label);
+                })
              };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
             if (e.which === 13){
                 this.specificHelp(null, term);
-                this.$('.chosen-select').autocomplete('close');
+                $('.chosen-select').val(label);
+                $('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
         },
@@ -125,15 +129,15 @@ define([
             var subtemplate;
             if (_.isNull(e) || _.isEmpty(e)){
                 target = title;
-            } else if (_.isUndefined(e.target.dataset.title)){
-                target = this.$(e.target).siblings('h4')[0].dataset.title;
+            } else if (_.isUndefined(this.$(e.target).data().cid)){
+                target = $(this.$(e.target).siblings('h4')[0]).data().cid;
             } else {
-                target = e.target.dataset.title;
+                target = this.$(e.target).data().cid;
             }
             for (var i in data){
                 if (data[i].id === target){
                     this.singleHelp = new SingleView({topic: data[i]});
-                    target = data[i].title;
+                    target = data[i].id;
                     break;
                 }
             }

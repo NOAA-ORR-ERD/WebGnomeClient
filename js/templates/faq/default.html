@@ -5,7 +5,7 @@
 <div class="answercontent">
 	{% for (var i in topics){ %}
 		<div class="col-md-6">
-			<div class="topic" data-title="{{ topics[i].id }}"><h4 data-title="{{ topics[i].id }}">{{ topics[i].title }}</h4><p class="subtext">{{ topics[i].excerpt }}</p></div>
+			<div class="topic" data-cid="{{ topics[i].id }}"><h4 data-cid="{{ topics[i].id }}">{{ topics[i].title }}</h4><p class="subtext">{{ topics[i].excerpt }}</p></div>
 		</div>
 	{% } %}
 </div>
