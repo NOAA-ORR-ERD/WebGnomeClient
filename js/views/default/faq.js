@@ -42,7 +42,7 @@ define([
             }
         },
 
-        update: function(e, str, label){
+        update: function(e, str){
             var term = this.$('.chosen-select').val();
             if (str){
                 term = str;
@@ -51,7 +51,7 @@ define([
             var obj = this.getData(this.topicArray);
             var titles = [];
             for (var i in obj){
-                titles.push({label: obj[i].title, value: obj[i].id});
+                titles.push(obj[i].title);
             }
             var autocompleteConfig = {
                 source: function(req, res){
@@ -59,21 +59,16 @@ define([
                 },
                 select: _.bind(function(e, ui){
                     if (!_.isUndefined(e)){
-                        this.update({which: 13}, ui.item.value, ui.item.label);
+                        this.update({which: 13}, ui.item.value);
                     }
-                    $('.chosen-select').val(ui.item.label);
                     $('.chosen-select').autocomplete('close');
-                }, this),
-                focus: _.bind(function(e, ui){
-                    $('.chosen-select').attr('value', ui.item.label);
-                })
+                }, this)
              };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
             if (e.which === 13){
                 this.specificHelp(null, term);
-                $('.chosen-select').val(label);
                 $('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
@@ -85,7 +80,7 @@ define([
         },
 
         getData: function(models){
-            var data = [];
+            var data = {};
             if (_.isUndefined(models)){
                 models = this.body.models;
             }
@@ -99,8 +94,8 @@ define([
                     var excerpt = models[i].makeExcerpt();
                     var keywords = models[i].get('keywords');
                     var id = models[i].cid;
-                    if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt, id: id});
+                    if (helpTitle !== '' && excerpt !== ''){
+                        data[helpTitle] = {title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt, id: id};
                     }
                 }
             }
@@ -128,7 +123,7 @@ define([
             var compiled;
             var subtemplate;
             if (_.isNull(e) || _.isEmpty(e)){
-                target = title;
+                target = data[title].id;
             } else if (_.isUndefined(this.$(e.target).data().cid)){
                 target = $(this.$(e.target).siblings('h4')[0]).data().cid;
             } else {
