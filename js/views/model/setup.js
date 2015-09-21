@@ -562,6 +562,8 @@ define([
                 this.updateSpill();
             }, this));
 
+            spillView.on('wizardclose', spillView.close);
+
             spillView.render();
         },
 
