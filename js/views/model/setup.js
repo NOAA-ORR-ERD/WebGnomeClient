@@ -118,7 +118,7 @@ define([
                     this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
-                webgnome.model.on('sync', this.updateSpill, this);
+                //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateWind();
                 this.updateLocation();
                 this.updateWater();
@@ -558,12 +558,9 @@ define([
             } else {
                 spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('save wizardclose', function(){
-                webgnome.model.save(null, {validate: false});
-                webgnome.model.trigger('sync');
-            });
-
-            spillView.on('hidden', spillView.close);
+            spillView.on('save wizardclose', _.bind(function(){
+                this.updateSpill();
+            }, this));
 
             spillView.render();
         },
