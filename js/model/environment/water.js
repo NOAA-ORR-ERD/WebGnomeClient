@@ -9,7 +9,7 @@ define([
         urlRoot: '/environment/',
         defaults: {
             obj_type: 'gnome.environment.environment.Water',
-            temperature: 46,
+            temperature: null,
             salinity: 32,
             sediment: 5,
             wave_height: null,
@@ -45,7 +45,7 @@ define([
                 return 'Sediment load must be a number greater than or equal to zero!';
             }
 
-            if(this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15){
+            if(attrs.temperature !== '' && (this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15)){
                 return 'Water temperature must be a reasonable degree.';
             }
 
