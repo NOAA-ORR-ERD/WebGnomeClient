@@ -27,15 +27,15 @@ define([
             this.on('ready', this.parseHelp);
             this.fetchQuestions();
             if (!_.isUndefined(options.topic)){
-                this.title = options.topic;
+                this.cid = options.topic;
             }
         },
 
         render: function(){
             var compiled = _.template(FAQTemplate, {});
             $('.faqspace').append(this.$el.append(compiled));
-            if (this.title){
-                var title = decodeURI(this.title);
+            if (this.cid){
+                var title = decodeURI(this.cid);
                 this.specificHelp({}, title);
             } else {
                 this.defaultView = new DefaultView({topics: this.parsedData});
@@ -59,35 +59,19 @@ define([
                 },
                 select: _.bind(function(e, ui){
                     if (!_.isUndefined(e)){
-                        this.update({which: 13}, e.toElement.innerHTML);
+                        this.update({which: 13}, ui.item.value);
                     }
                     $('.chosen-select').autocomplete('close');
-                    $('.chosen-select').val(ui.item.value);
                 }, this)
              };
 
             this.$('#helpquery').autocomplete(autocompleteConfig);
 
-            if (this.exactMatch(term, titles) && e.which === 13){
+            if (e.which === 13){
                 this.specificHelp(null, term);
-                this.$('.chosen-select').autocomplete('close');
-            }
-
-            if (!_.isUndefined(e) && titles.length === 1 && e.which === 13){
-                this.$('.chosen-select').val(titles[0]);
-                this.specificHelp(null, titles[0]);
-                this.$('.chosen-select').autocomplete('close');
+                $('.chosen-select').autocomplete('close');
             }
             this.trigger('updated');
-        },
-
-        exactMatch: function(term, titles){
-            for (var i in titles){
-                if (term === titles[i]){
-                    return true;
-                }
-            }
-            return false;
         },
 
         seed: function(){
@@ -96,7 +80,7 @@ define([
         },
 
         getData: function(models){
-            var data = [];
+            var data = {};
             if (_.isUndefined(models)){
                 models = this.body.models;
             }
@@ -109,8 +93,9 @@ define([
                     var path = models[i].get('path');
                     var excerpt = models[i].makeExcerpt();
                     var keywords = models[i].get('keywords');
-                    if (helpTitle !== ''){
-                        data.push({title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt});
+                    var id = models[i].cid;
+                    if (helpTitle !== '' && excerpt !== ''){
+                        data[helpTitle] = {title: helpTitle, content: helpContent, path: path, keywords: keywords, excerpt: excerpt, id: id};
                     }
                 }
             }
@@ -138,15 +123,16 @@ define([
             var compiled;
             var subtemplate;
             if (_.isNull(e) || _.isEmpty(e)){
-                target = title;
-            } else if (_.isUndefined(e.target.dataset.title)){
-                target = this.$(e.target).siblings('h4')[0].dataset.title;
+                target = data[title].id;
+            } else if (_.isUndefined(this.$(e.target).data().cid)){
+                target = $(this.$(e.target).siblings('h4')[0]).data().cid;
             } else {
-                target = e.target.dataset.title;
+                target = this.$(e.target).data().cid;
             }
             for (var i in data){
-                if (title === data[i].title || data[i].title === target){
+                if (data[i].id === target){
                     this.singleHelp = new SingleView({topic: data[i]});
+                    target = data[i].id;
                     break;
                 }
             }

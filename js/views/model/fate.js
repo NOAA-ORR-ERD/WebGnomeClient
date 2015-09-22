@@ -122,9 +122,9 @@ define([
            this.formatDataset(new GnomeStep(step));
 
             // on the last step render the graph and if there are more steps start the steping.
-            if(step.WeatheringOutput.step_num === webgnome.cache.length - 1){
+            if(step.step_num === webgnome.cache.length - 1){
                 this.renderGraphs();
-                if(step.WeatheringOutput.step_num < webgnome.model.get('num_time_steps')){
+                if(step.step_num < webgnome.model.get('num_time_steps')){
                     webgnome.cache.on('step:recieved', this.buildDataset, this);
                     webgnome.cache.step();
                 }

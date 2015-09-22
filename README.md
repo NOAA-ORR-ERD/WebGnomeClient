@@ -4,20 +4,39 @@ WebGnomeClient
 
 Javascript client that uses the WebGnomeAPI to create and run py_gnome models.
 
-## Setup
-[Node.js](http://nodejs.org/) and [npm](https://www.npmjs.org/) are required to install and manage this application. Assuming both are installed on your system a simple `npm install` from inside the `WebGnomeClient` directory should install and prep everything for the app.
-
-As of 05/27/2014 the `WebGnomeClient` requires that `WebGnomeApi` be running on the same computer you're loading the client. Specifically port `9899`.
+## System Requirments
+* [Node.js](http://nodejs.org/)
+* [npm](http://www.npmjs.org/)
+* grunt-cli
+* Some form of http server, webroot set to `./build` and directory index set to `build.html` (created after running `grunt build`)
 
 ## Commands
-<dl>
-    <dt>npm install</dt>
-    <dd>Installs all of the applications dependencies described in `package.json` using npm and `bower.json` using bower</dd>
-</dl>
+`npm install`
+> Installs all of the applications dependencies described in `package.json`. Calls `grunt install` upon completion.
 
-<dl>
-    <dt>npm start</dt>
-    <dd>Compiles the backbone application into `js/build.js` and starts a node http server to serve the application. *Currently `js/build.js` isn't referenced by anything and start it just used to build it, this needs reevaluation.*
-<dl>
+`grunt install`
+> Installs all client side dependancies from bower.
 
+`grunt develop`
+> Sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
 
+`grunt build`
+> Builds a compiled version of the application into a single index.html file (marginally supported currently, still has a few external image and font dependancies that are relatively pathed) located in `./dist/build/`.
+
+`grunt build:lite`
+> Simpler version of `grunt build`, sets up the applcation for requirejs based dynamic builds.
+
+`grunt serve`
+> Starts a http server on port 8080 for serving dynamic builds.
+
+`grunt docs`
+> Generate JSDoc based documentation. Located in `./dist/docs`.
+
+`grunt lint`
+> Runs jshint over application source files
+
+`grunt test`
+> Runs jshint over application source files, followed by a series of selenium tests. (Only works if you have a working client on your system running at `http://localhost:8080`).
+
+`grunt test:demos`
+> Similar to `grunt test` but only runs use case specific demo tests.

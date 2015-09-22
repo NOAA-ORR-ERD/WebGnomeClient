@@ -29,9 +29,12 @@ define([
                 this.fetching = true;
                 step.fetch({
                     success: _.bind(function(step){
-                        this.add(step);
-                        this.fetching = false;
-                        this.trigger('step:recieved', step);
+                        this.add(step, {
+                            success: _.bind(function(){
+                                this.fetching = false;
+                                this.trigger('step:recieved', step);
+                            }, this)
+                        });
                     }, this),
                     error: _.bind(function(){
                         this.fetching = false;
@@ -54,12 +57,16 @@ define([
             if(_.isArray(models)){
                 for(var m = 0; m < models.length; m++){
                     key = this.length;
-                    localforage.setItem(key.toString(), models[m].toJSON());
+                    if(m === models.length - 1){
+                        localforage.setItem(key.toString(), models[m].toJSON(), options.success);
+                    } else {
+                        localforage.setItem(key.toString(), models[m].toJSON());
+                    }
                     this.length++;
                 }
             } else {
                 key = this.length;
-                localforage.setItem(key.toString(), models.toJSON());
+                localforage.setItem(key.toString(), models.toJSON(), options.success);
                 this.length++;
             }
         },

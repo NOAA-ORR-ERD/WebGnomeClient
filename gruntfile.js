@@ -43,6 +43,13 @@ module.exports = function(grunt){
                     port: 8080,
                     hostname: '*'
                 }
+            },
+            keepalive: {
+                options:{
+                    port: 8080,
+                    hostname: '*',
+                    keepalive: true
+                }
             }
         },
         copy: {
@@ -158,7 +165,7 @@ module.exports = function(grunt){
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
     grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'inline:build']);
-    grunt.registerTask('serve', ['connect:start']);
+    grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
     grunt.registerTask('test', ['jshint:all', 'webdriver:all']);

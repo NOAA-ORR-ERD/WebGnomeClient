@@ -118,6 +118,7 @@ define([
                     this.selectPrediction({target: this.$('.' + pred)}, pred);
                 }
                 webgnome.model.on('sync', this.updateObjects, this);
+                //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateWind();
                 this.updateLocation();
                 this.updateWater();
@@ -126,6 +127,9 @@ define([
                 this.updateObjects();
             }, this), 1);
 
+            this.$('.icon').tooltip({
+                placement: 'bottom'
+            });
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
@@ -554,14 +558,11 @@ define([
             } else {
                 spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('save wizardclose', function(){
-                spillView.on('hidden', spillView.close);
-            });
-            // only update the model if the spill saves
-            spillView.on('save', _.bind(function(){
-                webgnome.model.save(null, {validate: false});
+            spillView.on('save wizardclose', _.bind(function(){
                 this.updateSpill();
             }, this));
+
+            spillView.on('wizardclose', spillView.close);
 
             spillView.render();
         },
@@ -630,17 +631,17 @@ define([
                 var substance = spills.at(0).get('element_type').get('substance');
                 if (!_.isNull(substance)){
                     compiled = _.template(SpillPanelTemplate, {
-                        spills: spills.models, 
-                        substance: substance, 
-                        categories: substance.parseCategories(), 
+                        spills: spills.models,
+                        substance: substance,
+                        categories: substance.parseCategories(),
                         mode: mode
                     });
                 } else {
                     compiled = _.template(SpillPanelTemplate, {
-                        spills: spills.models, 
-                        substance: false, 
-                        categories: [], mode: 
-                        mode
+                        spills: spills.models,
+                        substance: false,
+                        categories: [],
+                        mode: mode
                     });
                 }
 
