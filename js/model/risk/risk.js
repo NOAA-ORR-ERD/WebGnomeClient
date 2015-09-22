@@ -145,8 +145,6 @@ define([
             var beachingTime = this.calculateBeachingTime();
             var lastCleanupEndTime = this.assessmentBounds.lower;
 
-            console.log(moment(beachingTime).format(webgnome.config.date_format.moment), moment(lastCleanupEndTime).format(webgnome.config.date_format.moment));
-
             if (!_.isUndefined(beachingTime) && (beachingTime > lastCleanupEndTime)){
                 this.set('assessmentTime', moment(beachingTime).format(webgnome.config.date_format.moment));
             } else {
