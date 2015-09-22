@@ -10,9 +10,9 @@
 </div>
 <div><label>Salinity: </label> {{ salinity }} {{ units.salinity }}</div>
 <div><label>Sediment Load: </label> {{ sediment }} {{ units.sediment }}</div>
-{% if (wave_height){  %}
+{% if (!_.isNull(wave_height)){  %}
 	<div><label>Wave Height: </label> {{ wave_height }} {{ units.wave_height }}</div>
 {% } %}
-{% if (fetch){ %}
+{% if (!_.isNull(fetch)){ %}
 	<div><label>Fetch: </label> {{ fetch }} {{ units.fetch }}</div>
 {% } %}
