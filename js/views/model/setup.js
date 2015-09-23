@@ -177,9 +177,9 @@ define([
                         start: start,
                         end: end,
                         fillColor: '#FFA0A0'
-                    })
+                    });
                 }
-            })
+            });
 
             // general movers w/ bundle collection for inf
             var bundle = [];
