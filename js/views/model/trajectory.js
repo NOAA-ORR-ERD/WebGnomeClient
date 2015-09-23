@@ -51,21 +51,51 @@ define([
                 })
             }),
             elements: function(feature, resolution){
+                // TODO: should use a cache for generated styles.
+                // total of 4 unique styles can be returned.
+                // red "x" | black "x" | red "o" | black "o"
+
                 var color = 'rgba(0, 0, 0, 1)';
                 if(feature.get('sc_type') === 'uncertain'){
                     color = 'rgba(255, 54, 54, 1)';
                 }
-                return [new ol.style.Style({
-                    image: new ol.style.Circle({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(0, 0, 0, .75)'
-                        }),
-                        radius: 1,
-                        stroke: new ol.style.Stroke({
-                            color: color
+
+                var style;
+                if(feature.get('status_code') === 3){
+                    // 3 = on land
+                    // x
+                    style = new ol.style.Style({
+                        image: new ol.style.RegularShape({
+                            fill: new ol.style.Fill({
+                                color: color
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: color,
+                                width: 2
+                            }),
+                            points: 4,
+                            radius: 4,
+                            radius2: 0,
+                            angle: Math.PI / 4
                         })
-                    })
-                })];
+                    }) 
+                } else {
+                    // everything else should be visualized as a dot.
+                    // o
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(0, 0, 0, .75)'
+                            }),
+                            radius: 1,
+                            stroke: new ol.style.Stroke({
+                                color: color
+                            })
+                        })
+                    });
+                }
+
+                return [style];
             },
             spill: new ol.style.Style({
                 image: new ol.style.Icon({
@@ -88,6 +118,7 @@ define([
                 })
             }),
             currents: function(feature, resolution){
+                // TODO: should add cache for generated style
                 var features = feature.get('features');
 
                 var v_x = 0;
