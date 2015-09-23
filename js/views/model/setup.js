@@ -167,6 +167,20 @@ define([
                 });
             });
 
+            webgnome.model.get('weatherers').forEach(function(weatherer){
+                if(weatherer.get('obj_type').indexOf('cleanup') !== -1){
+                    var start = parseInt(moment(weatherer.get('active_start')).format('x'));
+                    var end = parseInt(moment(weatherer.get('active_stop')).format('x'));
+
+                    timelinedata.push({
+                        label: weatherer.get('name'),
+                        start: start,
+                        end: end,
+                        fillColor: '#FFA0A0'
+                    })
+                }
+            })
+
             // general movers w/ bundle collection for inf
             var bundle = [];
             webgnome.model.get('movers').forEach(function(mover){
