@@ -78,7 +78,7 @@ define([
                             radius2: 0,
                             angle: Math.PI / 4
                         })
-                    }) 
+                    });
                 } else {
                     // everything else should be visualized as a dot.
                     // o
