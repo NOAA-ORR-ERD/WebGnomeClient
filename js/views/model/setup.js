@@ -223,10 +223,8 @@ define([
                     var wind = mover.get('wind');
 
                     if(wind.get('timeseries').length > 1){
-                        console.log(start, end);
                         start = moment(wind.get('timeseries')[0][0]).format('x');
                         end = moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('x');
-                        console.log(start, end);
                     }
 
                     timelinedata.push({
@@ -252,6 +250,10 @@ define([
                     fillColor: '#D6A0FF'
                 });
             }
+
+            // dynamically set the height of the timeline div
+            var height = (timelinedata.length * 20) + 100;
+            this.$('.timeline').css('height', height + 'px');
 
             var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
 
@@ -279,7 +281,8 @@ define([
                         color: 'rgba(255, 255, 255, .25)',
                         lineWidth: 10,
                         rowHeight: 20,
-                        barHeight: 20
+                        barHeight: 20,
+                        rows: timelinedata.length
                     }
                 }
             });
@@ -516,6 +519,7 @@ define([
             } else {
                 this.$('.stage-3').hide();
             }
+            this.renderTimeline();
             this.mason.layout();
         },
 
