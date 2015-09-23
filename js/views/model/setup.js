@@ -726,7 +726,9 @@ define([
             spillView.on('save wizardclose', _.bind(function(){
                 this.updateSpill();
             }, this));
-
+            spillView.on('save', function(){
+                spillView.on('hidden', spillView.close);
+            })
             spillView.on('wizardclose', spillView.close);
 
             spillView.render();
