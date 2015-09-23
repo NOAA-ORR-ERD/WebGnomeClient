@@ -252,7 +252,7 @@ define([
             }
 
             // dynamically set the height of the timeline div
-            var height = (timelinedata.length * 20) + 100;
+            var height = (timelinedata.length * 20) + 40;
             this.$('.timeline').css('height', height + 'px');
 
             var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
