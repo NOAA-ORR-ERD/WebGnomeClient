@@ -657,9 +657,8 @@ define([
 
         deleteSpill: function(){
             var id = this.model.get('id');
-            var spill = webgnome.model.get('spills').get(id);
             swal({
-                title: 'Delete "' + spill.get('name') + '"',
+                title: 'Delete "' + this.model.get('name') + '"',
                 text: 'Are you sure you want to delete this spill?',
                 type: 'warning',
                 confirmButtonText: 'Delete',
@@ -668,8 +667,11 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.trigger('sync');
-                    this.close();
+                    webgnome.model.save();
+                    this.hide();
+                    this.on('hidden', _.bind(function(){
+                        this.trigger('wizardclose');
+                    }, this));
                 }
             }, this));
         },

@@ -35,11 +35,11 @@ define([
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
             this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
 
-            if (this.model.get('fetch')){
+            if (!_.isNull(this.model.get('fetch'))){
                 this.$('#data-source').val('fetch');
                 this.$('#fetch').val(this.model.get('fetch'));
             }
-            if (this.model.get('wave_height')){
+            if (!_.isNull(this.model.get('wave_height'))){
                 this.$('#data-source').val('specified');
                 this.$('#height').val(this.model.get('wave_height'));
             }
