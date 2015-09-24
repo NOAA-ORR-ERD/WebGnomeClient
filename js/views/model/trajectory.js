@@ -240,7 +240,7 @@ define([
                         visible: false
                     }),
                     new ol.layer.Tile({
-                        name: 'usgsbase',
+                        name: 'usgs',
                         source: new ol.source.TileWMS({
                             url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
                             params: {'LAYERS': '0', 'TILED': true}
@@ -672,11 +672,12 @@ define([
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
             });
+            var base_layer = this.$('.layers input[name="maplayer"]:checked').val();
 
             this.ol.map.getLayers().forEach(function(layer){
                 if (layer.get('type') === 'base'){
-                    if (checked_layers.indexOf('basemap') !== -1){
-                        if(checked_layers.indexOf(layer.get('name')) !== -1){
+                    if (base_layer !== 'none'){
+                        if(layer.get('name') === base_layer){
                             layer.setVisible(true);
                         } else {
                             layer.setVisible(false);
