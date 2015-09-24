@@ -486,7 +486,7 @@ define([
                         });
                         if(this.spillMapView.map){
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            this.spillMapView.locationSelect();
+                            this.spillMapView.setMapOrientation();
                         }
                     }, this));
                 }

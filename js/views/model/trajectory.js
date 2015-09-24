@@ -379,12 +379,9 @@ define([
                             }),
                         });
 
-                        this.ol.locationSelect();
-
-                        var extent = this.shorelineSource.getExtent();
                         if(this.ol.map){
                             this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.map.getView().fit(extent, this.ol.map.getSize());
+                            this.ol.setMapOrientation();
                         }
 
                         this.graticule.setMap(this.ol.map);
