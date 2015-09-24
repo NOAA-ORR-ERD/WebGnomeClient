@@ -130,7 +130,6 @@ define([
             } else if (value === 'windcalc') {
                 this.$('.fetch, .specified').addClass('hide');
             }
-            this.update();
         }
 
     });
