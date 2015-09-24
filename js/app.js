@@ -97,6 +97,7 @@ define([
                     success: function(model){
                         if(model.id){
                             window.webgnome.model = model;
+                            webgnome.model.changed = {};
                             webgnome.model.addMapListeners();
                             webgnome.cache.rewind(true);
                             webgnome.model.isValid();
