@@ -190,7 +190,7 @@ define([
             } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
-                    this.locationSelect();
+                    this.ol.locationSelect();
                     this.ol.map.on('click', _.bind(function(e){
                         this.clearError();
                         this.source.forEachFeature(function(feature){
@@ -210,13 +210,6 @@ define([
                 }
             }
             $(window).trigger('resize');
-        },
-
-        locationSelect: function(){
-            if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                var extent = ol.proj.transformExtent(webgnome.model.get('map').getExtent(), 'EPSG:4326', 'EPSG:3857');
-                this.ol.map.getView().fit(extent, this.ol.map.getSize());
-            }
         },
 
         nwsLoad: function(model){

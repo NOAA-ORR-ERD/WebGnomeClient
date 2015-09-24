@@ -379,6 +379,8 @@ define([
                             }),
                         });
 
+                        this.ol.locationSelect();
+
                         var extent = this.shorelineSource.getExtent();
                         if(this.ol.map){
                             this.ol.map.addLayer(this.shorelineLayer);

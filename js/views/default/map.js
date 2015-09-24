@@ -106,6 +106,13 @@ define([
                 })
             });
             this.redraw = false;
+        },
+
+        locationSelect: function(){
+            if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
+                var extent = ol.proj.transformExtent(webgnome.model.get('map').getExtent(), 'EPSG:4326', 'EPSG:3857');
+                this.map.getView().fit(extent, this.map.getSize());
+            }
         }
     });
 
