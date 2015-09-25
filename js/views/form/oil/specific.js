@@ -23,65 +23,29 @@ define([
             return (((c * (9/5)) + 32).toFixed(1));
         },
 
-		dataParse: function(oil){
-            var groupAnalysis = ['aromatics',
-                                 'polars',
-                                 'resins',
-                                 'saturates',
-                                 'paraffins',
-                                 'sulphur',
-                                 'benezene',
-                                 'wax_content'
-                                 ];
-            var tempAttrs = ['pour_point_min_k',
-                             'pour_point_max_k',
-                             'flash_point_max_k',
-                             'flash_point_min_k'
-                             ];
+        groupAnalysis: [
+            'aromatics',
+             'polars',
+             'resins',
+             'saturates',
+             'paraffins',
+             'sulphur',
+             'benezene',
+             'wax_content'
+            ],
 
+        tempAttrs: [
+            'pour_point_min_k',
+            'pour_point_max_k',
+            'flash_point_max_k',
+            'flash_point_min_k'
+            ],
+
+		dataParse: function(oil){
             for (var attr in oil){
                 // When value of oil attribute is null
-
-                if (!oil[attr] && tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
+                if (!oil[attr] && this.tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
                     oil[attr] = "--";
-                } else if (tempAttrs.indexOf(attr) !== -1){
-                    var str;
-                    if (oil[attr]){
-                        if (attr.indexOf('max') > -1){
-                            str = attr.substring(0, attr.length - 6) + '_min_k';
-                            if (oil[str] === oil[attr]){
-                                oil[str] = '';
-                            }
-                        } else {
-                            str = attr.substring(0, attr.length - 6) + '_max_k';
-                            if (oil[str] === oil[attr]){
-                                oil[str] = '';
-                            }
-                        }
-                        var celsius = (oil[attr] - 273.15).toFixed(1);
-                        if (oil.estimated[attr]){
-                            oil[attr] = '<code>' + this.cToF(celsius) + ' (' + celsius + ')</code> &deg;F (&deg;C)';
-                        } else {
-                            oil[attr] = this.cToF(celsius) + ' (' + celsius + ') &deg;F (&deg;C)';
-                        }
-                    } else {
-                        for (var i = 0; i < tempAttrs.length; i++){
-                            if (attr === tempAttrs[i]){
-                                if (attr.indexOf('max') > -1){
-                                    str = attr.substring(0, attr.length - 6) + '_min_k';
-                                    if (oil[str] === oil[attr]){
-                                        oil[str] = '';
-                                    }
-                                } else {
-                                    str = attr.substring(0, attr.length - 6) + '_max_k';
-                                    if (oil[str] === oil[attr]){
-                                        oil[str] = '';
-                                    }
-                                }
-                            }
-                        }
-                        oil[attr] = null;
-                    }
                 } else if (attr === 'bullwinkle_fraction'){
                     if (oil.estimated[attr]){
                         oil[attr] = '<code>' + oil[attr].toFixed(2) + '</code>';
@@ -94,10 +58,6 @@ define([
                 // When value of oil attribute is of type array
                  else if (_.isArray(oil[attr])) {
                     this.parseArrayData(oil, attr);
-                }
-                // Checks if oil attribute is one of the group analysis terms and if so converts to percent
-                else if (groupAnalysis.indexOf(attr) !== -1){
-                    oil[attr] = (oil[attr] * 100).toFixed(2);
                 }
                 // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
                 else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
@@ -117,9 +77,60 @@ define([
                         oil[attr] = '<code>' + oil[attr] + '</code>';
                     }
                 }
+                this.parseTemperatureData(oil, attr);
+                this.parseGroupAnalysis(oil, attr);
 			}
 			return oil;
 		},
+
+        parseTemperatureData: function(oil, attr){
+            if (this.tempAttrs.indexOf(attr) !== -1){
+                var str;
+                if (oil[attr]){
+                    if (attr.indexOf('max') > -1){
+                        str = attr.substring(0, attr.length - 6) + '_min_k';
+                        if (oil[str] === oil[attr]){
+                            oil[str] = '';
+                        }
+                    } else {
+                        str = attr.substring(0, attr.length - 6) + '_max_k';
+                        if (oil[str] === oil[attr]){
+                            oil[str] = '';
+                        }
+                    }
+                    var celsius = (oil[attr] - 273.15).toFixed(1);
+                    if (oil.estimated[attr]){
+                        oil[attr] = '<code>' + this.cToF(celsius) + ' (' + celsius + ')</code> &deg;F (&deg;C)';
+                    } else {
+                        oil[attr] = this.cToF(celsius) + ' (' + celsius + ') &deg;F (&deg;C)';
+                    }
+                } else {
+                    for (var i = 0; i < this.tempAttrs.length; i++){
+                        if (attr === this.tempAttrs[i]){
+                            if (attr.indexOf('max') > -1){
+                                str = attr.substring(0, attr.length - 6) + '_min_k';
+                                if (oil[str] === oil[attr]){
+                                    oil[str] = '';
+                                }
+                            } else {
+                                str = attr.substring(0, attr.length - 6) + '_max_k';
+                                if (oil[str] === oil[attr]){
+                                    oil[str] = '';
+                                }
+                            }
+                        }
+                    }
+                    oil[attr] = null;
+                }
+            }
+        },
+
+        parseGroupAnalysis: function(oil, attr){
+            // Checks if oil attribute is one of the group analysis terms and if so converts to percent
+            if (this.groupAnalysis.indexOf(attr) !== -1){
+                oil[attr] = (oil[attr] * 100).toFixed(2);
+            }
+        },
 
         parseObjectData: function(oil, attr){
             for (var key in oil[attr]){
