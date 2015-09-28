@@ -29,6 +29,8 @@ require.config({
         flotselect: 'lib/flot/jquery.flot.selection',
         flotgantt: 'lib/JUMFlot/jquery.flot.gantt',
         flotneedle: 'lib/flotneedle/flotNeedle',
+        flotextents: 'lib/flotextents/src/jquery.flot.extents',
+        flotnavigate: 'lib/flot/jquery.flot.navigate',
         'fizzy-ui-utils': 'lib/fizzy-ui-utils/',
         html2canvas: 'lib/html2canvas/build/html2canvas',
         JUMFlotLib: 'lib/JUMFlot/jquery.flot.JUMlib',
@@ -66,6 +68,8 @@ require.config({
         flotpie: ['flot'],
         flotfillarea: ['flot'],
         flotselect: ['flot'],
+        flotextents: ['flot'],
+        flotnavigate: ['flot'],
         flotgantt: ['JUMFlotLib'],
         html2canvas: {
             exports: 'html2canvas'

@@ -19,17 +19,17 @@
                 <strong>Base Map Type</strong>
                 <form role="form" class="form-horizontal base">
                     <div class="radio">
-                        <label for="mapquest"><input type="radio" id="mapquest" name="maplayer" checked="checked">Mapquest</label>
+                        <label for="none"><input type="radio" id="none" name="maplayer" checked="checked" value="none">None</label>
                     </div>
                     <div class="radio">
-                        <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer">USGS</label>
+                        <label for="mapquest"><input type="radio" id="mapquest" name="maplayer" value="mapquest">Mapquest</label>
+                    </div>
+                    <div class="radio">
+                        <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer" value="usgs">USGS</label>
                     </div>
                 </form>
                 <strong>Visibility</strong>
                 <form role="form" class="form-horizontal checkboxes base">
-                    <div class="checkbox">
-                        <label for="basemap"><input type="checkbox" id="basemap">Base Map</label>
-                    </div>
                     <div class="checkbox">
                         <label for="noaanavcharts"><input type="checkbox" id="noaanavcharts">NOAA Nav. Charts</label>
                     </div>

@@ -775,6 +775,12 @@ nav.navbar{
         margin-bottom: 30px;
     }
 
+    .timeline{
+        height: 200px;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+
     .stage-2, .stage-3, .stage-4{
         display: none;
     }
@@ -2460,6 +2466,19 @@ nav.navbar{
     .slider-tip {
         opacity:1;
         top: 100%;
+
+        left: 50%;
+        transform: translateX(-50%);
+
+        .min {
+            left: 20%;
+            transform: translateX(-20%);
+        }
+
+        .max {
+            left: -30%;
+            transform: translateX(30%);
+        }
     }
 
     #sliders {

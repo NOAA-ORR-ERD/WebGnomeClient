@@ -10,14 +10,16 @@ define([
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
 
-        defaults: {
-            'on': true,
-            'obj_type': 'gnome.spill.spill.Spill',
-            'release': new GnomeRelease(),
-            'element_type': new GnomeElement(),
-            'name': 'Spill',
-            'amount': 0,
-            'units': 'bbl'
+        defaults: function(){
+            return {
+                'on': true,
+                'obj_type': 'gnome.spill.spill.Spill',
+                'release': new GnomeRelease(),
+                'element_type': new GnomeElement(),
+                'name': 'Spill',
+                'amount': 0,
+                'units': 'bbl'
+            };
         },
 
         model: {
@@ -41,7 +43,7 @@ define([
                 return 'Amount must be a positive number';
             }
 
-            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1){
+            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
                 this.validationContext = 'info';
                 return 'Amount released must use units of mass when in trajectory only mode!';
             }

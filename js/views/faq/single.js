@@ -13,9 +13,7 @@ define([
 		id: 'support',
 
 		events: function(){
-			return _.defaults({
-
-			}, HelpView.prototype.events);
+			return _.defaults({}, HelpView.prototype.events);
 		},
 
 		initialize: function(options){

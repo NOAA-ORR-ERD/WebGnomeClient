@@ -190,6 +190,7 @@ define([
             } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
+                    this.ol.setMapOrientation();
                     this.ol.map.on('click', _.bind(function(e){
                         this.clearError();
                         this.source.forEachFeature(function(feature){
@@ -220,6 +221,7 @@ define([
 
         nwsError: function(){
             this.error('Error!', 'No NWS forecast data found');
+            this.$('.save').removeClass('disabled');
         },
 
         update: function(compass){

@@ -51,21 +51,51 @@ define([
                 })
             }),
             elements: function(feature, resolution){
+                // TODO: should use a cache for generated styles.
+                // total of 4 unique styles can be returned.
+                // red "x" | black "x" | red "o" | black "o"
+
                 var color = 'rgba(0, 0, 0, 1)';
                 if(feature.get('sc_type') === 'uncertain'){
                     color = 'rgba(255, 54, 54, 1)';
                 }
-                return [new ol.style.Style({
-                    image: new ol.style.Circle({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(0, 0, 0, .75)'
-                        }),
-                        radius: 1,
-                        stroke: new ol.style.Stroke({
-                            color: color
+
+                var style;
+                if(feature.get('status_code') === 3){
+                    // 3 = on land
+                    // x
+                    style = new ol.style.Style({
+                        image: new ol.style.RegularShape({
+                            fill: new ol.style.Fill({
+                                color: color
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: color,
+                                width: 2
+                            }),
+                            points: 4,
+                            radius: 4,
+                            radius2: 0,
+                            angle: Math.PI / 4
                         })
-                    })
-                })];
+                    });
+                } else {
+                    // everything else should be visualized as a dot.
+                    // o
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(0, 0, 0, .75)'
+                            }),
+                            radius: 1,
+                            stroke: new ol.style.Stroke({
+                                color: color
+                            })
+                        })
+                    });
+                }
+
+                return [style];
             },
             spill: new ol.style.Style({
                 image: new ol.style.Icon({
@@ -88,6 +118,7 @@ define([
                 })
             }),
             currents: function(feature, resolution){
+                // TODO: should add cache for generated style
                 var features = feature.get('features');
 
                 var v_x = 0;
@@ -209,7 +240,7 @@ define([
                         visible: false
                     }),
                     new ol.layer.Tile({
-                        name: 'usgsbase',
+                        name: 'usgs',
                         source: new ol.source.TileWMS({
                             url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
                             params: {'LAYERS': '0', 'TILED': true}
@@ -348,10 +379,9 @@ define([
                             }),
                         });
 
-                        var extent = this.shorelineSource.getExtent();
                         if(this.ol.map){
                             this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.map.getView().fit(extent, this.ol.map.getSize());
+                            this.ol.setMapOrientation();
                         }
 
                         this.graticule.setMap(this.ol.map);
@@ -641,11 +671,12 @@ define([
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
             });
+            var base_layer = this.$('.layers input[name="maplayer"]:checked').val();
 
             this.ol.map.getLayers().forEach(function(layer){
                 if (layer.get('type') === 'base'){
-                    if (checked_layers.indexOf('basemap') !== -1){
-                        if(checked_layers.indexOf(layer.get('name')) !== -1){
+                    if (base_layer !== 'none'){
+                        if(layer.get('name') === base_layer){
                             layer.setVisible(true);
                         } else {
                             layer.setVisible(false);

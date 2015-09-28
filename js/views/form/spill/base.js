@@ -471,7 +471,6 @@ define([
                         this.shorelineSource = new ol.source.Vector({
                             features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
                         });
-                        var extent = this.shorelineSource.getExtent();
                         this.shorelineLayer = new ol.layer.Vector({
                             name: 'shoreline',
                             source: this.shorelineSource,
@@ -486,9 +485,8 @@ define([
                             })
                         });
                         if(this.spillMapView.map){
-                            var startPosition = _.initial(this.model.get('release').get('start_position'));
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            this.spillMapView.map.getView().fit(extent, this.spillMapView.map.getSize());
+                            this.spillMapView.setMapOrientation();
                         }
                     }, this));
                 }
@@ -657,9 +655,8 @@ define([
 
         deleteSpill: function(){
             var id = this.model.get('id');
-            var spill = webgnome.model.get('spills').get(id);
             swal({
-                title: 'Delete "' + spill.get('name') + '"',
+                title: 'Delete "' + this.model.get('name') + '"',
                 text: 'Are you sure you want to delete this spill?',
                 type: 'warning',
                 confirmButtonText: 'Delete',
@@ -668,8 +665,11 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
-                    webgnome.model.trigger('sync');
-                    this.close();
+                    webgnome.model.save();
+                    this.hide();
+                    this.on('hidden', _.bind(function(){
+                        this.trigger('wizardclose');
+                    }, this));
                 }
             }, this));
         },
