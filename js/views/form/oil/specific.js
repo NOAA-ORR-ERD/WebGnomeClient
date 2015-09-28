@@ -24,14 +24,14 @@ define([
         },
 
         groupAnalysis: [
-            'aromatics',
-             'polars',
-             'resins',
-             'saturates',
-             'paraffins',
-             'sulphur',
-             'benezene',
-             'wax_content'
+            'aromatics_fraction',
+             'polars_fraction',
+             'resins_fraction',
+             'saturates_fraction',
+             'paraffins_fraction',
+             'sulphur_fraction',
+             'benzene_fraction',
+             'wax_content_fraction'
             ],
 
         tempAttrs: [
@@ -40,6 +40,10 @@ define([
              'flash_point_max_k',
              'flash_point_min_k'
             ],
+
+        estimatedParse: function(){
+            
+        },
 
 		dataParse: function(oil){
             for (var attr in oil){
@@ -73,6 +77,7 @@ define([
                 }
                 this.parseTemperatureData(oil, attr);
                 this.parseGroupAnalysis(oil, attr);
+                // When value of oil attribute is of type object but not array
                 this.parseObjectData(oil, attr);
                 // When value of oil attribute is of type array
                 this.parseArrayData(oil, attr);
@@ -124,8 +129,8 @@ define([
 
         parseGroupAnalysis: function(oil, attr){
             // Checks if oil attribute is one of the group analysis terms and if so converts to percent
-            if (this.groupAnalysis.indexOf(attr) !== -1){
-                oil[attr] = (oil[attr] * 100).toFixed(2);
+            if (this.groupAnalysis.indexOf(attr) !== -1 && !_.isNull(oil[attr])){
+                oil[attr] = isNaN((oil[attr] * 100).toFixed(2)) ? '--' : (oil[attr] * 100).toFixed(2);
             }
         },
 
