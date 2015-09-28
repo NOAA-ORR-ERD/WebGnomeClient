@@ -130,7 +130,7 @@ define([
         parseGroupAnalysis: function(oil, attr){
             // Checks if oil attribute is one of the group analysis terms and if so converts to percent
             if (this.groupAnalysis.indexOf(attr) !== -1 && !_.isNull(oil[attr])){
-                oil[attr] = isNaN((oil[attr] * 100).toFixed(2)) ? '--' : (oil[attr] * 100).toFixed(2);
+                oil[attr] = isNaN(Math.round((oil[attr] * 100).toFixed(2))) ? '--' : Math.round((oil[attr] * 100).toFixed(2));
             }
         },
 
