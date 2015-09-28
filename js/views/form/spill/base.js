@@ -471,7 +471,6 @@ define([
                         this.shorelineSource = new ol.source.Vector({
                             features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
                         });
-                        var extent = this.shorelineSource.getExtent();
                         this.shorelineLayer = new ol.layer.Vector({
                             name: 'shoreline',
                             source: this.shorelineSource,
@@ -486,9 +485,8 @@ define([
                             })
                         });
                         if(this.spillMapView.map){
-                            var startPosition = _.initial(this.model.get('release').get('start_position'));
                             this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            this.spillMapView.map.getView().fit(extent, this.spillMapView.map.getSize());
+                            this.spillMapView.setMapOrientation();
                         }
                     }, this));
                 }

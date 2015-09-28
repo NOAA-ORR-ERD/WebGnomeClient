@@ -31,7 +31,7 @@ define([
 
             $.ajaxPrefilter('json', _.bind(function(options, originalOptions, jqxhr){
                 // Filter json requestions to redirect them to the api server
-                if(options.url.indexOf('http://') === -1){
+                if(options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1){
                     options.url = webgnome.config.api + options.url;
                 } else {
                     // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
@@ -98,6 +98,7 @@ define([
                     success: function(model){
                         if(model.id){
                             window.webgnome.model = model;
+                            webgnome.model.changed = {};
                             webgnome.model.addMapListeners();
                             webgnome.cache.rewind(true);
                             webgnome.model.isValid();

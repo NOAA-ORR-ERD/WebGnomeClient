@@ -43,7 +43,7 @@ define([
                 return 'Amount must be a positive number';
             }
 
-            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1){
+            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
                 this.validationContext = 'info';
                 return 'Amount released must use units of mass when in trajectory only mode!';
             }
