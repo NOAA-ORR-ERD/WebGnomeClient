@@ -31,7 +31,8 @@ define([
              'paraffins_fraction',
              'sulphur_fraction',
              'benzene_fraction',
-             'wax_content_fraction'
+             'wax_content_fraction',
+             'asphaltenes_fraction'
             ],
 
         tempAttrs: [
