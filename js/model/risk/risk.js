@@ -33,6 +33,7 @@ define([
                 'direction': 'degree'
             },
 
+            shorelineType: null,
             waterBodyMetric: 'area'
         },
 

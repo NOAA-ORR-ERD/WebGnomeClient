@@ -17,7 +17,8 @@ define([
 			}, FormModal.prototype.events);
 		},
 
-		initialize: function(options){
+		initialize: function(options, model){
+            this.model = model;
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -28,10 +29,12 @@ define([
         },
 
         straight: function(e){
+            this.model.set('shorelineType', 'straight');
             this.trigger('save');
         },
 
         semiCircle: function(){
+            this.model.set('shorelineType', 'semi-circle');
             this.trigger('save');
         }
 
