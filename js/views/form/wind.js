@@ -221,6 +221,7 @@ define([
 
         nwsError: function(){
             this.error('Error!', 'No NWS forecast data found');
+            this.$('.save').removeClass('disabled');
         },
 
         update: function(compass){
