@@ -13,7 +13,7 @@ define([
 		events: function(){
 			return _.defaults({
 				'click .straight': 'straight',
-				'click .semi-circle': 'semi-circle'
+				'click .semi-circle': 'semiCircle'
 			}, FormModal.prototype.events);
 		},
 
@@ -25,6 +25,14 @@ define([
             this.body = _.template(SelectTemplate);
             this.buttons = null;
             FormModal.prototype.render.call(this, options);
+        },
+
+        straight: function(e){
+            this.trigger('save');
+        },
+
+        semiCircle: function(){
+            this.trigger('save');
         }
 
 	});
