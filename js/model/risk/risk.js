@@ -67,72 +67,6 @@ define([
             return angle;
         },
 
-        sumWindVectors: function(){
-            var windData = this.getWindData();
-            var timeseries = windData.timeseries;
-            var durationArray = this.findWindDurations(windData);
-            var units = windData.units;
-            var x_sum = 0;
-            var y_sum = 0;
-            for (var i = 0; i < timeseries.length; i++){
-                var magnitude = timeseries[i][1][0];
-                var bearing = this.convertBearing(timeseries[i][1][1]);
-                x_sum += (Math.sin(bearing) * magnitude) / durationArray[i];
-                y_sum += (Math.cos(bearing) * magnitude) / durationArray[i];
-            }
-            return {
-                x: x_sum,
-                y: y_sum,
-                wind_num: timeseries.length,
-                wind_units: units
-            };
-        },
-
-        findWindDurations: function(windData){
-            var durations = [];
-            var model_end_time = moment(webgnome.model.get('start_time')).add('s', webgnome.model.get('duration')).unix();
-            for (var i = 0; i < windData.timeseries.length; i++){
-                var k = i + 1;
-                var current_wind = moment(windData.timeseries[i][0]).unix();
-                if (k === windData.timeseries.length){
-                    durations.push(current_wind - model_end_time);
-                } else {
-                    var next_wind = moment(windData.timeseries[k][0]).unix();
-                    durations.push(next_wind - current_wind);
-                }
-            }
-            return durations;
-        },
-
-        getWindData: function(){
-            var timeseries;
-            var units;
-            _.each(webgnome.model.get('environment').models, function(el, i, arr){
-                if (el.get('obj_type').indexOf('Wind') > -1){
-                    timeseries = el.get('timeseries');
-                    units = el.get('units');
-                }
-            });
-
-            return {
-                timeseries: timeseries,
-                units: units
-            };
-        },
-
-        deriveAverageWind: function(){
-            var windComponents = this.sumWindVectors();
-            var units = windComponents.wind_units;
-            var windageFactor = 0.03;
-            var magnitude = (Math.sqrt(Math.pow(windComponents.x, 2) + Math.pow(windComponents.y, 2)) / windComponents.wind_num) * windageFactor;
-            var direction = Math.atan2(windComponents.y, windComponents.x);
-            return {
-                mag: magnitude,
-                dir: direction,
-                units: units
-            };
-        },
-
         deriveAssessmentTime: function(){
             var start_time = moment(webgnome.model.get('start_time'));
             var duration = webgnome.model.get('duration');
@@ -142,7 +76,7 @@ define([
         },
 
         setAssessmentTime: function(){
-            var beachingTime = this.calculateBeachingTime();
+            var beachingTime;
             var lastCleanupEndTime = this.assessmentBounds.lower;
 
             if (!_.isUndefined(beachingTime) && (beachingTime > lastCleanupEndTime)){
@@ -213,18 +147,6 @@ define([
                 diameter = nucos.convert('Length', 'm', units.diameter, 2 * Math.sqrt(area / Math.PI));
                 this.set('diameter', diameter);
             }
-        },
-
-        calculateBeachingTime: function(){
-            var shoreDirection = this.convertBearing(this.get('direction'));
-            var distanceToShore = nucos.convert('Length', this.get('units').distance, 'm', this.get('distance'));
-            var avgWind = this.deriveAverageWind();
-            var avgWindSpeed = nucos.convert('Velocity', avgWind.units, 'm/s', avgWind.mag);
-            var timeToBeach;
-            if (avgWind.dir <= (shoreDirection + (Math.PI / 2)) && avgWind.dir >= (shoreDirection - (Math.PI / 2))){
-                timeToBeach = Math.round(this.gnomeEndTime - (distanceToShore / avgWindSpeed));
-            }
-            return timeToBeach;
         },
 
         assessment: function(){

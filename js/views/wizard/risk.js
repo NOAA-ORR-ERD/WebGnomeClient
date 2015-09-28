@@ -5,9 +5,10 @@ define([
     'views/wizard/base',
     'views/form/risk/input',
     'views/form/risk/tuning',
+    'views/form/risk/shorelineSelect',
     'model/risk/risk',
     'model/gnome',
-], function($, _, Backbone, BaseWizard, InputForm, TuningForm, RiskModel, GnomeModel){
+], function($, _, Backbone, BaseWizard, InputForm, TuningForm, ShorelineSelect, RiskModel, GnomeModel){
     var riskWizardView = BaseWizard.extend({
         initialize: function(){
             if(_.isUndefined(webgnome.riskCalc)){
@@ -18,6 +19,9 @@ define([
 
         setup: function(riskModel){
             this.steps = [
+                new ShorelineSelect({
+                    name: 'step0'
+                }, riskModel),
                 new InputForm({
                     name: 'step1',
                     title: 'Environmental Risk Assessment <span class="sub-title">Input</span>',
