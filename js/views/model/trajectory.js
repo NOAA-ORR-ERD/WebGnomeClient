@@ -193,7 +193,7 @@ define([
             'click .play': 'play',
             'click .pause': 'pause',
             'click .next': 'next',
-            'click .rewind': 'rewind',
+            'click .rewind': 'rewindClick',
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
@@ -214,6 +214,7 @@ define([
             }
 
             this.render();
+            webgnome.cache.on('rewind', this.rewind, this);
         },
 
         modelListeners: function(){
@@ -497,6 +498,9 @@ define([
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.frame = 0;
+        },
+
+        rewindClick: function(e){
             webgnome.cache.rewind();
         },
 
@@ -1017,6 +1021,8 @@ define([
             }
             webgnome.cache.off('step:recieved', this.renderStep, this);
             webgnome.cache.off('step:failed', this.pause, this);
+            webgnome.cache.off('rewind', this.rewind, this);
+
             Mousetrap.unbind('space');
             Mousetrap.unbind('right');
             Mousetrap.unbind('left');

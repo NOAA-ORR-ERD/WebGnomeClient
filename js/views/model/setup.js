@@ -79,7 +79,7 @@ define([
                 'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
-                'click .rewind': 'rewind',
+                'click .rewind': 'rewindClick',
                 'click .beached .add': 'clickBeached'
             }, BaseView.prototype.events);
         },
@@ -102,6 +102,7 @@ define([
                     }, this)
                 });
             }
+            webgnome.cache.on('rewind', this.rewind, this);
         },
 
         render: function(){
@@ -343,9 +344,12 @@ define([
             }
         },
 
-        rewind: function(e){
+        rewindClick: function(e){
             if(e){ e.preventDefault();}
             webgnome.cache.rewind();
+        },
+
+        rewind: function(){
             this.$('.stage-4').hide();
         },
 
@@ -1440,6 +1444,9 @@ define([
             if(webgnome.model){
                 webgnome.model.off('sync', this.updateObjects, this);
             }
+
+            webgnome.cache.off('rewind', this.rewind, this);
+
             $('.sweet-overlay').remove();
             $('.sweet-alert').remove();
             Backbone.View.prototype.close.call(this);

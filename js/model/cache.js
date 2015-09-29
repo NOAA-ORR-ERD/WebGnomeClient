@@ -45,7 +45,7 @@ define([
         },
 
         rewind: function(override){
-            if(this.length > 0 || override){
+            if(this.length > 0 || override === true){
                 $.get(webgnome.config.api + '/rewind');
                 this.trigger('rewind');
                 this.reset();

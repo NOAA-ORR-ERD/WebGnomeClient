@@ -116,6 +116,7 @@ define([
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
+            this.on('sync', webgnome.cache.rewind, webgnome.cache);
         },
 
         addMapListeners: function(){
