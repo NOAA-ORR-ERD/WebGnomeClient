@@ -5,19 +5,19 @@ define([
     'views/modal/form',
     'text!templates/risk/shorelineSelect.html'
 ], function($, _, Backbone, FormModal, SelectTemplate){
-	'use strict';
-	var selectShorelineForm = FormModal.extend({
-		title: 'Select Shoreline Type for Risk Assessment',
-		className: 'modal fade form-modal shorelinetype-form',
+    'use strict';
+    var selectShorelineForm = FormModal.extend({
+        title: 'Select Shoreline Type for Risk Assessment',
+        className: 'modal fade form-modal shorelinetype-form',
 
-		events: function(){
-			return _.defaults({
-				'click .straight': 'straight',
-				'click .semi-circle': 'semiCircle'
-			}, FormModal.prototype.events);
-		},
+        events: function(){
+            return _.defaults({
+                'click .straight': 'straight',
+                'click .semi-circle': 'semiCircle'
+            }, FormModal.prototype.events);
+        },
 
-		initialize: function(options, model){
+        initialize: function(options, model){
             this.model = model;
             FormModal.prototype.initialize.call(this, options);
         },
@@ -33,11 +33,11 @@ define([
             this.trigger('save');
         },
 
-        semiCircle: function(){
+        semiCircle: function(e){
             this.model.set('shorelineType', 'semi-circle');
             this.trigger('save');
         }
 
-	});
-	return selectShorelineForm;
+    });
+    return selectShorelineForm;
 });
