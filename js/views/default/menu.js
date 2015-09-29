@@ -5,10 +5,11 @@ define([
     'text!templates/default/menu.html',
     'views/modal/about',
     'views/modal/hotkeys',
+    'views/form/location',
     'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, swal, GnomeModel) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, swal, GnomeModel) {
     'use strict';
     /*
      `MenuView` handles the drop-down menus on the top of the page. The object
@@ -127,7 +128,14 @@ define([
 
         locations: function(event){
             event.preventDefault();
-            webgnome.router.navigate('locations', true);
+            var locationForm = new LocationForm();
+            locationForm.on('loaded', _.bind(function(){
+                locationForm.hide();
+                webgnome.router.navigate('', true);
+                webgnome.router.navigate('config', true);
+            }, this));
+            locationForm.render();
+            // webgnome.router.navigate('locations', true);
         },
 
         save: function(event){
