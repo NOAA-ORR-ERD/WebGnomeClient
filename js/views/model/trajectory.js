@@ -118,6 +118,9 @@ define([
                 })
             }),
             currents: function(feature, resolution){
+                if(!_.has(webgnome.styleCache, 'currents')){
+                    webgnome.styleCache.currents = {};
+                }
                 // TODO: should add cache for generated style
                 var features = feature.get('features');
 
@@ -142,37 +145,54 @@ define([
                 var x = shifted[0] - coords[0];
                 var y = shifted[1] - coords[1];
 
+                if(_.has(webgnome.styleCache.currents, x + ',' + y)){
+                    return [webgnome.styleCache.currents[x+','+y]];
+                }
+
+                var geom;
+                var width;
                 var rad;
-                if(x === 0 ){
+
+                if(x === 0){
                     rad = Math.PI / 2;
                 } else {
                     rad = Math.atan(Math.abs(y/x));
                 }
 
-                if(x < 0 && y > 0){
+                if(x < 0 && y >= 0){
                     rad = Math.PI - rad;
                 } else if(x < 0 && y < 0){
                     rad = Math.PI + rad;
-                } else if(x > 0 && y < 0){
+                } else if(x >= 0 && y < 0){
                     rad = (2 * Math.PI) - rad;
                 }
 
-                var len = -5 * resolution;
+                var len = Math.sqrt((x * x) + (y * y));
+                len = Math.abs(len / Math.log(len)) * -2;
+
                 var rad_right = 0.785398163; //3.92699082;
                 var rad_left = 0.785398163;
+                            
+                var arr_left;
+                var arr_right;
 
-                var arr_left = rad - rad_left;
+                arr_left = rad - rad_left;
                 arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
-                var arr_right = rad + rad_right;
+                arr_right = rad + rad_right;
                 arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
 
-                return [new ol.style.Style({
-                    geometry: new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]),
+                geom = new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]);
+                width = 2;
+                var style = new ol.style.Style({
+                    geometry: geom,
                     stroke: new ol.style.Stroke({
                         color: [171, 37, 184, 0.75],
-                        width: 2
+                        width: width
                     })
-                })];
+                });
+                webgnome.styleCache.currents[x+','+y] = style;
+
+                return [style];
             },
             currents_grid: new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -585,14 +605,16 @@ define([
                     if(_.has(currents, id)){
                         for (var c = 0; c < currents[id].features.length; c++){
                             var coords = currents[id].features[c].geometry.coordinates;
-                            coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-                            var velocity = currents[id].features[c].properties.velocity;
-                            var f = new ol.Feature({
-                                geometry: new ol.geom.Point(coords)
-                            });
-                            f.set('velocity', velocity);
+                            for(var co = 0; co < coords.length; co++){
+                                var feature_coords = ol.proj.transform(coords[co], 'EPSG:4326', 'EPSG:3857');
+                                var velocity = currents[id].features[c].properties.velocity;
+                                var f = new ol.Feature({
+                                    geometry: new ol.geom.Point(feature_coords)
+                                });
+                                f.set('velocity', velocity);
 
-                            current_features.push(f);
+                                current_features.push(f);    
+                            }
                         }
                     }
                 }
@@ -603,7 +625,8 @@ define([
             });
 
             var cur_cluster = new ol.source.Cluster({
-                source: cur_source
+                source: cur_source,
+                distance: 30
             });
 
             this.CurrentLayer.setSource(cur_cluster);
