@@ -4,9 +4,12 @@ define([
     'backbone',
     'ol',
     'views/default/map',
+    'model/location',
+    'model/gnome',
+    'sweetalert',
     'text!templates/location/index.html',
     'views/wizard/location'
-], function($, _, Backbone, ol, OlMapView, LocationsTemplate, LocationWizard){
+], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, LocationWizard){
     'use strict';
     var locationsView = Backbone.View.extend({
         className: 'page locations',
@@ -87,29 +90,81 @@ define([
                 placement: 'top',
                 html: true,
                 title: feature.get('title'),
-                content: '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load</button>'
+                content: '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>' + 
+                        '<button class="btn btn-primary setup pull-right" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">New Model</button>'
             });
             this.$('.popup').popover('show');
 
             this.$('.popup').one('shown.bs.popover', _.bind(function(){
+
                 this.$('.load').on('click', _.bind(function(){
                     var slug = this.$('.load').data('slug');
                     var name = this.$('.load').data('name');
                     webgnome.model.resetLocation(_.bind(function(){
+                        // model could be null if it's coming from a new model to merge
+                        if(localStorage.getItem('prediction') === 'null' || _.isNull(localStorage.getItem('prediction'))){
+                            localStorage.setItem('prediction', 'both');
+                        }
+
                         this.load({slug: slug, name: name});
                         this.$('.popup').popover('destroy');
                     }, this));
+                }, this));
+
+                this.$('.setup').on('click', _.bind(function(){
+                    var slug = this.$('.load').data('slug');
+                    var name = this.$('.load').data('name');
+                    swal({
+                        title: 'Create a new Model?',
+                        text: 'Doing this will overwrite any settings or data on your currently active model',
+                        type: 'warning',
+                        showCancelButton: true
+                    }, _.bind(function(isConfirm){
+                        if(isConfirm){
+                            localStorage.setItem('prediction', 'both');
+                            webgnome.model = new GnomeModel();
+                            if(_.has(webgnome, 'cache')){
+                                webgnome.cache.rewind();
+                            }
+                            webgnome.model.save(null, {
+                                validate: false,
+                                success: _.bind(function(){
+                                    this.wizard({slug: slug, name: name});
+                                    this.$('.popup').popover('destroy');
+                                }, this)
+                            });
+                        }
+                    }, this))
+                    
                 }, this));
             }, this));
 
             this.$('.popup').one('hide.bs.popover', _.bind(function(){
                 this.$('.load').off('click');
+                this.$('.setup').off('click');
             }, this));
         },
 
         load: function(options){
+            this.loading = true;
             this.trigger('load');
-            this.wizard = new LocationWizard(options);
+            var locationModel = new GnomeLocation({id: options.slug});
+            locationModel.fetch({
+                success: _.bind(function(){
+                    webgnome.model.fetch({
+                        success: _.bind(function(){
+                            this.trigger('loaded');
+                            this.loading = false;
+                            webgnome.router.navigate('config', true);
+                        }, this)
+                    });
+                }, this)
+            });    
+        },
+
+        wizard: function(options){
+            this.trigger('load');
+            this.wizard_ = new LocationWizard(options);
         },
 
         render: function(){
