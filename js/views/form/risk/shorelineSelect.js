@@ -12,8 +12,9 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .straight': 'straight',
-                'click .semi-circle': 'semiCircle'
+                'click .waterWorld': 'waterWorld',
+                'click .parameterized': 'parameterized',
+                'click .realLocation': 'realLocation'
             }, FormModal.prototype.events);
         },
 
@@ -28,14 +29,16 @@ define([
             FormModal.prototype.render.call(this, options);
         },
 
-        straight: function(e){
-            this.model.set('shorelineType', 'straight');
-            this.trigger('save');
+        waterWorld: function(e){
+
         },
 
-        semiCircle: function(e){
-            this.model.set('shorelineType', 'semi-circle');
-            this.trigger('save');
+        parameterized: function(e){
+            
+        },
+
+        realLocation: function(e){
+
         }
 
     });
