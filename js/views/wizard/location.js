@@ -91,6 +91,17 @@ define([
                     }, this));
 
                     this.steps.push(windform);
+                } else if (el.type === 'finish') {
+                    if (!el.title){
+                        title[0] = 'Finish Model';
+                    }
+                    var finishForm = new TextForm({
+                        name: el.name,
+                        title: title.join(' '),
+                        body: el.body,
+                        buttons: el.buttons
+                    });
+                    this.steps.push(finishForm);
                 }
 
             }, this));
