@@ -111,6 +111,7 @@ define([
         addListeners: function(){
             this.get('environment').on('change add remove', this.environmentChange, this);
             this.get('environment').on('add', this.configureWindRelations, this);
+            this.get('environment').on('add', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
@@ -345,6 +346,17 @@ define([
                 }
                 this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));    
             }
+        },
+
+        configureWaterRelations: function(child){
+            if(child.get('obj_type') !== 'gnome.environment.environment.Water'){ return; }
+
+            var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
+            if(evaporation){
+                evaporation.set('water', water);
+            }
+            this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
         },
 
         updateWaves: function(cb){

@@ -673,10 +673,7 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
-                var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
-                evaporation.set('water', water);
-                this.updateWater();
-                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
+                this.updateWater(); 
             }, this));
             waterForm.render();
         },
