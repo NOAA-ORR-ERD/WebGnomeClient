@@ -23,7 +23,8 @@ define([
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertainty: this.model.get('uncertain'),
-                time_steps: this.model.get('time_step') / 60
+                time_steps: this.model.get('time_step') / 60,
+                name: this.model.get('name')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -42,12 +43,15 @@ define([
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             this.model.set('duration', duration);
 
-            var uncertainty = this.$('#uncertainty:checked').val();
-            this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
+            var name = this.$('#name').val();
+            this.model.set('name', name);
 
-            var time_steps = this.$('#time_steps').val();
-            var time_steps_mins = parseFloat(time_steps, 10) * 60;
-            this.model.set('time_step', time_steps_mins);
+            // var uncertainty = this.$('#uncertainty:checked').val();
+            // this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
+
+            // var time_steps = this.$('#time_steps').val();
+            // var time_steps_mins = parseFloat(time_steps, 10) * 60;
+            // this.model.set('time_step', time_steps_mins);
 
             if(!this.model.isValid()){
                 this.error('Error!', this.model.validationError);
