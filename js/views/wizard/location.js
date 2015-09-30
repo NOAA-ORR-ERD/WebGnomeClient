@@ -31,7 +31,7 @@ define([
 
         found: function(){
             webgnome.model.fetch({
-                success: _.bind(this.loaded, this),
+                success: _.bind(this.load_location, this),
                 error: _.bind(this.failed_load, this)
             });
         },
@@ -42,12 +42,6 @@ define([
                 title: 'Failed to Load Location',
                 text: 'Something went wrong while loading the location model.',
                 type: 'error',
-            });
-        },
-
-        loaded: function(){
-            webgnome.model.save(null, {
-                success: _.bind(this.load_location, this)
             });
         },
 
