@@ -24,7 +24,6 @@ define([
             'keyup input': 'update',
             'click input': 'selectContents',
             'change select': 'update',
-            'click .finish': 'finish',
             'click .modal-header .gnome-help': 'showHelp'
         },
 
@@ -173,15 +172,6 @@ define([
                 this.model.fetch();
             }
             this.trigger('wizardclose');
-        },
-
-        finish: function(){
-            this.on('hidden', function(){
-                this.trigger('finish');
-                webgnome.model.fetch();
-                webgnome.router.navigate('model', true);
-            });
-            this.hide();
         },
 
         close: function(){

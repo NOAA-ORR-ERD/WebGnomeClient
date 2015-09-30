@@ -57,7 +57,6 @@ define([
                 var title = [];
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
-                
                 if(el.type === 'text' || el.type === 'welcome'){
                     if(!el.title){
                         title[0] = 'Welcome';
@@ -93,14 +92,20 @@ define([
                     this.steps.push(windform);
                 } else if (el.type === 'finish') {
                     if (!el.title){
-                        title[0] = 'Finish Model';
+                        title[0] = 'Finalize Model';
                     }
                     var finishForm = new TextForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: el.buttons
+                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finalize Model</button>"
                     });
+                    finishForm.on('hidden', function(){
+                        finishForm.trigger('finish');
+                        webgnome.model.fetch();
+                        webgnome.router.navigate('config', true);
+                    });
+
                     this.steps.push(finishForm);
                 }
 
