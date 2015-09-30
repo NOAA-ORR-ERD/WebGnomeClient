@@ -42,7 +42,7 @@ define([
                             // if the embedded class isn't an object it can only have one type of object in
                             // the given collection, so set it.
                             for(var obj in embeddedData){
-                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true});
+                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true, silent: true});
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
@@ -52,9 +52,9 @@ define([
 
                             for(var obj2 in embeddedData){
                                 if(_.isFunction(embeddedClass[embeddedData[obj2].obj_type])){
-                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true});
+                                    response[key].add(this.setChild(embeddedClass[embeddedData[obj2].obj_type], embeddedData[obj2]), {merge: true, silent: true});
                                 } else {
-                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true});
+                                    response[key].add(this.setChild(Backbone.Model, embeddedData[obj2]), {merge: true, silent: true});
                                 }
                             }
                         }
