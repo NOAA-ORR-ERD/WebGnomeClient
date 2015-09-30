@@ -126,14 +126,7 @@ define([
 
         locations: function(event){
             event.preventDefault();
-            var locationForm = new LocationForm();
-            locationForm.on('loaded', _.bind(function(){
-                locationForm.hide();
-                webgnome.router.navigate('', true);
-                webgnome.router.navigate('config', true);
-            }, this));
-            locationForm.render();
-            // webgnome.router.navigate('locations', true);
+            webgnome.router.navigate('locations', true);
         },
 
         save: function(event){

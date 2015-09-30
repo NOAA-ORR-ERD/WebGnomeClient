@@ -551,17 +551,7 @@ define([
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
-
-                var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
-                evaporation.set('wind', wind);
-
-                var mover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
-                if(_.isUndefined(mover) || mover.get('wind').get('id') !== wind.get('id')){
-                    var windMover = new WindMoverModel({wind: wind});
-                    webgnome.model.get('movers').add(windMover, {merge: true});
-                }
-                this.updateWind();
-                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
+                this.updateWind(); 
             }, this));
             windForm.render();
         },
@@ -683,10 +673,7 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
-                var evaporation = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
-                evaporation.set('water', water);
-                this.updateWater();
-                webgnome.model.updateWaves(function(){webgnome.model.save(null, {validate: false});});
+                this.updateWater(); 
             }, this));
             waterForm.render();
         },
@@ -729,6 +716,7 @@ define([
             }
             spillView.on('save wizardclose', _.bind(function(){
                 this.updateSpill();
+                this.renderTimeline();
             }, this));
             spillView.on('save', function(){
                 spillView.on('hidden', spillView.close);

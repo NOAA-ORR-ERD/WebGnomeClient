@@ -31,7 +31,7 @@ define([
 
         found: function(){
             webgnome.model.fetch({
-                success: _.bind(this.loaded, this),
+                success: _.bind(this.load_location, this),
                 error: _.bind(this.failed_load, this)
             });
         },
@@ -42,12 +42,6 @@ define([
                 title: 'Failed to Load Location',
                 text: 'Something went wrong while loading the location model.',
                 type: 'error',
-            });
-        },
-
-        loaded: function(){
-            webgnome.model.save(null, {
-                success: _.bind(this.load_location, this)
             });
         },
 
@@ -86,26 +80,17 @@ define([
                         title[0] = 'Wind';
                     }
                     var wind = new GnomeWind();
-                    wind.save(null, {
-                        success: function(){
-                            webgnome.model.get('environment').add(wind);
-                            var windMover = new GnomeWindMover({wind: wind});
-                            windMover.save(null, {
-                                validate: false,
-                                success: function(){
-                                    webgnome.model.get('movers').add(windMover);
-                                    webgnome.model.save();
-                                }
-                            });
-                        }
-                    });
-
-                    this.steps.push(new WindForm({
+                    var windform = new WindForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons
-                    }, wind));
+                    }, wind);
+                    windform.on('save', _.bind(function(){
+                        webgnome.model.get('environment').add(wind, {merge: true});
+                    }, this));
+
+                    this.steps.push(windform);
                 }
 
             }, this));

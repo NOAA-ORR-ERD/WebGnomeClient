@@ -20,17 +20,29 @@ define([
 
         next: function(){
             this.step++;
-            this.steps[this.step].render();
+            if(this.steps[this.step].rendered_){
+                this.steps[this.step].show();
+            } else {
+                this.steps[this.step].render();
+            }
         },
 
         prev: function(){
             this.step--;
-            this.steps[this.step].render();
+             if(this.steps[this.step].rendered_){
+                this.steps[this.step].show();
+            } else {
+                this.steps[this.step].render();
+            }
         },
 
         goto: function(step){
             this.step = step;
-            this.steps[this.step].render();
+            if(this.steps[this.step].rendered_){
+                this.steps[this.step].show();
+            } else {
+                this.steps[this.step].render();
+            }
         },
 
         register: function(step){

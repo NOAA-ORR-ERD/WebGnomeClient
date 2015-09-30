@@ -13,6 +13,7 @@ define([
         title: 'Default Modal',
         body: '',
         size: 'reg',
+        rendered_: false,
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
             backdrop: 'static',
@@ -73,7 +74,7 @@ define([
                 buttons: this.buttons
             });
             this.$el.append(compiled);
-
+            this.rendered_ = true;
             if (_.isObject(this.body)){
                 this.$el.find('.modal-body').html('').append(this.body);
             }
