@@ -80,26 +80,17 @@ define([
                         title[0] = 'Wind';
                     }
                     var wind = new GnomeWind();
-                    wind.save(null, {
-                        success: function(){
-                            webgnome.model.get('environment').add(wind);
-                            var windMover = new GnomeWindMover({wind: wind});
-                            windMover.save(null, {
-                                validate: false,
-                                success: function(){
-                                    webgnome.model.get('movers').add(windMover);
-                                    webgnome.model.save();
-                                }
-                            });
-                        }
-                    });
-
-                    this.steps.push(new WindForm({
+                    var windform = new WindForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons
-                    }, wind));
+                    }, wind);
+                    windform.on('save', _.bind(function(){
+                        webgnome.model.get('environment').add(wind, {merge: true});
+                    }, this));
+
+                    this.steps.push(windform);
                 }
 
             }, this));
