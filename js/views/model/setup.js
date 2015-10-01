@@ -62,7 +62,6 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .icon': 'selectPrediction',
                 'click .wind .add': 'clickWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
@@ -116,10 +115,6 @@ define([
             this.initMason();
 
             setTimeout(_.bind(function(){
-                var pred = localStorage.getItem('prediction');
-                if(!_.isUndefined(pred) && pred !== 'null'){
-                    this.selectPrediction({target: this.$('.' + pred)}, pred);
-                }
                 webgnome.model.on('sync', this.updateObjects, this);
                 //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateWind();
@@ -391,76 +386,6 @@ define([
             this.$('#hours').val(durationAttrs.hours);
         },
 
-        selectPrediction: function(e){
-            var target;
-            if(e.target.length === 0){ return false; }
-            if(this.$(e.target).hasClass('icon')){
-                target = this.$(e.target).attr('class').replace('icon', '').replace('selected', '').trim();
-            } else {
-                target = this.$(e.target).parent().attr('class').replace('icon', '').replace('selected', '').trim();
-            }
-
-            // anything that change the model's values or objects values should go in
-            // the configure method.
-            this.configure(target);
-
-            if (target === 'fate' && webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                swal({
-                    title: 'Warning!',
-                    type: 'warning',
-                    text: 'Switching to a fate only model will remove any geospatial objects (map, currents, etc...).',
-                    showCancelButton: true,
-                    confirmButtonText: 'Switch to fate only modeling'
-                }, _.bind(function(isConfirmed){
-                    if(isConfirmed){
-                        webgnome.model.resetLocation(_.bind(function(){
-                            this.updateLocation();
-                            this.updateCurrent();
-                            this.updateSpill();
-                            this.updateModelValues();
-                        }, this));
-
-                        this.togglePrediction(e, target);
-                    }
-                }, this));
-            } else {
-                this.togglePrediction(e, target);
-                if(webgnome.model.hasChanged()){
-                    webgnome.model.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.updateObjects();
-                            this.updateModelValues();
-                            this.updateSpill();
-                        }, this)
-                    });
-                }
-                
-            }
-        },
-
-        togglePrediction: function(e, target){
-            this.$('.icon').removeClass('selected');
-
-            if(this.$(e.target).hasClass('icon')){
-                this.$(e.target).addClass('selected');
-            } else {
-                this.$(e.target).parent().addClass('selected');
-            }
-
-            localStorage.setItem('prediction', target);
-
-            if (target === 'fate') {
-                this.showFateObjects();
-            } else if (target === 'trajectory') {
-                this.showTrajectoryObjects();
-            } else if (target === 'both') {
-                this.showAllObjects();
-
-            }
-            this.$('.stage-2').show();
-        },
-
         showFateObjects: function(){
             this.$('.model-objects > div').hide().addClass('disabled');
             this.$('.wind').show().removeClass('disabled');
@@ -523,7 +448,6 @@ define([
                 container: 'body',
                 delay: delay
             });
-
 
             if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
                 this.$('.stage-3').show();
@@ -784,7 +708,6 @@ define([
             });
             var spillArray = this.calculateSpillAmount();
             var compiled;
-            var mode = localStorage.getItem('prediction');
 
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
@@ -797,14 +720,12 @@ define([
                         spills: spills.models,
                         substance: substance,
                         categories: substance.parseCategories(),
-                        mode: mode
                     });
                 } else {
                     compiled = _.template(SpillPanelTemplate, {
                         spills: spills.models,
                         substance: false,
                         categories: [],
-                        mode: mode
                     });
                 }
 
@@ -1364,70 +1285,6 @@ define([
             }
         },
         
-        configure: function(target){
-            // model change need to take place before changing any child objects
-            
-            if(target !== localStorage.getItem('prediction')){
-                this.rewind();
-                this.configureModel(target);
-            }
-
-            this.configureWeatherers(target);
-            this.configureRelease(target);
-        },
-
-        configureWeatherers: function(prediction){
-            if (prediction === 'fate' || prediction === 'both'){
-                // turn on weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', true);
-                });
-                var beaching = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-                if (!_.isUndefined(beaching) && prediction === 'both'){
-                    beaching.set('on', false);
-                }
-            } else if (prediction === 'trajectory') {
-                // turn off weatherers
-                webgnome.model.get('weatherers').forEach(function(weatherer, index, list){
-                    weatherer.set('on', false);
-                });
-            }
-        },
-
-        configureRelease: function(prediction){
-            var spills = webgnome.model.get('spills');
-            if (prediction === 'trajectory' || prediction === 'both'){
-                spills.forEach(function(spill, index, list){
-                    spill.get('release').set('num_per_timestep', null);
-                    spill.get('release').set('num_elements', 1000);
-                });
-            } else {
-                spills.forEach(function(spill, index, list){
-                    spill.get('release').set('num_per_timestep', 10);
-                    spill.get('release').set('num_elements', null);
-                });
-            }
-        },
-
-        configureModel: function(prediction){
-            var changes = {
-                time_step: null,
-                uncertain: null,
-                duration: null
-            };
-            if(prediction === 'trajectory' || prediction === 'both'){
-                changes.time_step = 900;
-                changes.uncertain = true;
-                changes.duration = 86400;
-            } else {
-                changes.time_step = 3600;
-                changes.uncertain = false;
-                changes.duration = 86400 * 5;
-            }
-
-            webgnome.model.set(changes);
-        },
-
         close: function(){
             $('.xdsoft_datetimepicker').remove();
             if(!_.isUndefined(this.windPlot)){

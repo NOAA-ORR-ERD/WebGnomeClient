@@ -76,10 +76,6 @@ define([
                 return 'End position must be in decimal degrees.';
             }
 
-            if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
-                return 'Give a valid location for the spill!';
-            }
-
             if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.model.get('map'))){
                 return this.isReleaseInGeom(webgnome.model.get('map').getSpillableArea());
             }
