@@ -134,7 +134,7 @@ define([
                                 }, this)
                             });
                         }
-                    }, this))
+                    }, this));
                     
                 }, this));
             }, this));
