@@ -433,6 +433,7 @@ define([
                 this.toggleMapHover();
                 this.addMapControls();
                 this.mapShown = true;
+                this.addDrawInteraction();
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
@@ -462,7 +463,7 @@ define([
             }, this));
         },
 
-		locationSelect: function(){
+        locationSelect: function(){
             if (!this.mapShown){
                 this.mapRender();
                 var map = webgnome.model.get('map');
@@ -523,6 +524,18 @@ define([
                 }
             }
             this.update();
+        },
+
+        addDrawInteraction: function(){
+            var draw = new ol.interaction.Draw({
+                type: 'Point'
+            });
+            this.spillMapView.map.addInteraction(draw);
+            this.drawInteraction = draw;
+        },
+
+        modifyDrawInteraction: function(){
+
         },
 
         renderSpillFeature: function(){
