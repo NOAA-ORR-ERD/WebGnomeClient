@@ -101,11 +101,6 @@ define([
                     var slug = this.$('.load').data('slug');
                     var name = this.$('.load').data('name');
                     webgnome.model.resetLocation(_.bind(function(){
-                        // model could be null if it's coming from a new model to merge
-                        if(localStorage.getItem('prediction') === 'null' || _.isNull(localStorage.getItem('prediction'))){
-                            localStorage.setItem('prediction', 'both');
-                        }
-
                         this.load({slug: slug, name: name});
                         this.$('.popup').popover('destroy');
                     }, this));

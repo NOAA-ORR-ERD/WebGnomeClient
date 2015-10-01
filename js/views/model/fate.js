@@ -960,10 +960,7 @@ define([
                 delete titles.off_maps;
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
-                
-                if (localStorage.getItem('prediction') !== 'fate'){
-                    keys.push('beached', 'off_maps');
-                }
+                keys.push('beached', 'off_maps');
 
                 keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'amount_released');
 

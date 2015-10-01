@@ -449,7 +449,7 @@ define([
                 delay: delay
             });
 
-            if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length && !_.isNull(localStorage.getItem('prediction')) && localStorage.getItem('prediction') !== 'null'){
+            if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length){
                 this.$('.stage-3').show();
                 this.updateResponse();
                 if(this.$('.beached.object:visible').length > 0){
@@ -457,10 +457,6 @@ define([
                 }
                 if(webgnome.cache.length > 0){
                     this.$('.stage-4').show();
-                }
-
-                if (localStorage.getItem('prediction') === 'trajectory'){
-                    this.$('.response-panels').hide();
                 }
             } else {
                 this.$('.stage-3').hide();

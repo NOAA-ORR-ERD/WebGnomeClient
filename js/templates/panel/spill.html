@@ -64,7 +64,7 @@
             {%    var info = amount + ' ' + units; %}
             {% if (spillValid === 'info') info += ' (invalid amount or units)'; %}
             <span class="label label-default amount">{{ info }}</span>
-            {% if (spills[i].get('release').get('start_position') && localStorage.getItem('prediction') !== 'fate'){ %}
+            {% if (spills[i].get('release').get('start_position')){ %}
                 {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
                 {% var lat = Math.round(spills[i].get('release').get('start_position')[1] * 100) / 100 %}
                 {% var start = lat + ', ' + lon %}
