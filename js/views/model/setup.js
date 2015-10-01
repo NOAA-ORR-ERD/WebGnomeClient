@@ -534,6 +534,10 @@ define([
                 if(webgnome.cache.length > 0){
                     this.$('.stage-4').show();
                 }
+
+                if (localStorage.getItem('prediction') === 'trajectory'){
+                    this.$('.response-panels').hide();
+                }
             } else {
                 this.$('.stage-3').hide();
             }
