@@ -585,6 +585,7 @@ define([
                         });
                     }, this), 2);
                 }
+                this.mason.layout();
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.wind .panel').removeClass('complete');
