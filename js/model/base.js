@@ -23,6 +23,14 @@ define([
             //         this.set(key, collection, {silent: true});
             //     }
             // }
+
+            this.on('sync', this.rewindModel, this);
+        },
+
+        rewindModel: function(){
+            if(!_.isUndefined(webgnome) && _.has(webgnome, 'cache')){
+                webgnome.cache.rewind();
+            }
         },
 
         parse: function(response){
