@@ -18,7 +18,7 @@ define([
         },
 
         initialize: function(options){
-            BaseModel.prototype.initialize.call(options, this);
+            BaseModel.prototype.initialize.call(this, options);
             this.on('change', this.resetRequest, this);
         },
 

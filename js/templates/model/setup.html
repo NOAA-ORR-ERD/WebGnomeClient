@@ -7,85 +7,62 @@
                 <div class="stage-4 pull-right"><a href="#" class="rewind btn btn-warning"><span class="glyphicon glyphicon-backward"></span> Rewind</a></div>
             </h2>
         </div>
-        <div class="col-md-6">
-            <div class="panel-primary panel">
-                <div class="panel-heading">Incident</div>
-                <div class="panel-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label" for="name">Incident Name</label>
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" id="name" name="name" value="{{ name }}">                        
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label" for="start_time">Start Time</label>
-                            <div class="col-sm-6">
-                                <div class="input-group date">
-                                    <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
-                                    <span class="input-group-addon" id="datepick">
-                                        <i></i>
-                                    </span>
-                                </div>
-                            </div>                        
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-4 control-label">Max Duration</label>
-                            <div class="col-sm-3">
-                                <label class="control-label" for="days">Day(s)</label>
-                                <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}">
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="control-label" for="hours">Hour(s)</label>
-                                <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="panel panel-primary">
-                <div class="panel-heading">Requested Prediction</div>
-                <div class="panel-body">
-                    <div class="col-sm-4">
-                        <div class="fate icon" title="Predict only the fate and behavior of spilled oil (no map)">
-                            <span class="glyphicon glyphicon-stats"></span>
-                            <div class="icon-footer">Weathering Only</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="trajectory icon" title="Predict trajectory of spilled oil">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                            <div class="icon-footer">Trajectory Only</div>
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="both icon" title="Predict the fate and trajectory of spilled oil (map required)">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                            <span class="glyphicon glyphicon-stats"></span>
-                            <div class="icon-footer">Weathering &amp; Trajectory</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
-
-<!--     <div class="row stage-2">
-        <div class="col-md-12">
-            <a class="btn btn-link location pull-right">Load Location File</a>
-            <h4>Model</h4>
-        </div>
-    </div> -->
-    <div class="row stage-2">
+    <div class="row">
         <div class="model-objects">
+            <div class="col-md-6 model object complete">
+                <div class="panel-primary panel">
+                    <div class="panel-heading">Incident</div>
+                    <div class="panel-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="name">Incident Name</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ name }}">                        
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label" for="start_time">Start Time</label>
+                                <div class="col-sm-6">
+                                    <div class="input-group date">
+                                        <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
+                                        <span class="input-group-addon" id="datepick">
+                                            <i></i>
+                                        </span>
+                                    </div>
+                                </div>                        
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Max Duration</label>
+                                <div class="col-sm-3">
+                                    <label class="control-label" for="days">Day(s)</label>
+                                    <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="control-label" for="hours">Hour(s)</label>
+                                    <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3 map object">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="add"></div>
                         <div class="state"></div>
                         Map
+                    </div>
+                    <div class="panel-body"></div>
+                </div>
+            </div>
+            <div class="col-md-3 current object">
+                <div class="panel panel-default complete">
+                    <div class="panel-heading">
+                        <!-- <div class="add"></div>  -->
+                        <!-- <div class="state"></div> -->
+                        Current
                     </div>
                     <div class="panel-body"></div>
                 </div>
@@ -120,20 +97,9 @@
                     <div class="panel-body"></div>
                 </div>
             </div>
-            
-            <div class="col-md-3 current object">
-                <div class="panel panel-default complete">
-                    <div class="panel-heading">
-                        <!-- <div class="add"></div>  -->
-                        <!-- <div class="state"></div> -->
-                        Current
-                    </div>
-                    <div class="panel-body"></div>
-                </div>
-            </div>
         </div>
     </div>
-    <div class="row stage-3 response-panels">
+    <div class="row response-panels">
         <div class="response-objects">
             <div class="col-md-12"><h4>Removal Options</h4></div>
             <div class="col-md-3 response">
@@ -157,7 +123,7 @@
         </div>
     </div>
 
-    <div class="row stage-2">
+    <div class="row">
         <div class="col-md-12">
             <h4>Timeline</h4>
         </div>

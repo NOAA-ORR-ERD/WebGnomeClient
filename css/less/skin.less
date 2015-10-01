@@ -891,7 +891,17 @@ nav.navbar{
                 color: #7a7a7a;
             }
         }
-
+        .model{
+            .panel{
+                .panel-heading{
+                    background: #337ab7;
+                }
+                .panel-body{
+                    height: 200px;
+                    display: block;
+                }
+            }
+        }
         .wind, .spill, .response, .beached{
             position: relative;
 
@@ -1022,6 +1032,9 @@ nav.navbar{
         }
         .panel-body{
             padding: 0;
+            &.text{
+                padding: 15px;
+            }
         }
         .map{
             height: 200px;
