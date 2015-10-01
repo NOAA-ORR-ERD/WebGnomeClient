@@ -110,8 +110,8 @@ define([
 
         addListeners: function(){
             this.get('environment').on('change add remove', this.environmentChange, this);
-            this.get('environment').on('add change', this.configureWindRelations, this);
-            this.get('environment').on('add change', this.configureWaterRelations, this);
+            this.get('environment').on('add remove sort', this.configureWindRelations, this);
+            this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
