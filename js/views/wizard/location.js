@@ -104,6 +104,7 @@ define([
                         finishForm.trigger('finish');
                         webgnome.model.fetch();
                         webgnome.router.navigate('config', true);
+                        $('.spill .add').click();
                     });
 
                     this.steps.push(finishForm);
