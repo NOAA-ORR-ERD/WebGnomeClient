@@ -97,7 +97,7 @@ define([
                     var finishForm = new TextForm({
                         name: el.name,
                         title: title.join(' '),
-                        body: el.body,
+                        body: "<div>Filler Text</div>",
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finalize Model</button>"
                     });
                     finishForm.on('hidden', function(){
