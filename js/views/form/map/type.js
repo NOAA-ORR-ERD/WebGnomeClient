@@ -7,7 +7,7 @@ define([
 ], function($, _, Backbone, FormModal, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
-        title: 'Select Shoreline Type for Risk Assessment',
+        title: 'Select Map Type',
         className: 'modal fade form-modal shorelinetype-form',
 
         events: function(){
