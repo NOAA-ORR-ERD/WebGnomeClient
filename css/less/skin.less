@@ -1438,12 +1438,21 @@ nav.navbar{
                 background: rgba(255, 255, 255, .75);
                 .panel-body{
                     background: none;
+                    max-height: 200px;
+                    overflow-x: scroll;
 
                     form:last-of-type{
                         margin-bottom: 0;
                     }
                 }
+
+                #general{
+                    .panel-body{
+                        max-height: none;
+                    }
+                }
             }
+
             
             form {
                 margin-bottom: 10px;
