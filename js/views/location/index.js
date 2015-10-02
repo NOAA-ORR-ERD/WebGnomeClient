@@ -154,7 +154,7 @@ define([
                         }, this)
                     });
                 }, this)
-            });    
+            });
         },
 
         wizard: function(options){

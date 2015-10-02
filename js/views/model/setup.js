@@ -475,7 +475,7 @@ define([
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
-                this.updateWind(); 
+                this.updateWind();
             }, this));
             windForm.render();
         },
@@ -598,7 +598,7 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
-                this.updateWater(); 
+                this.updateWater();
             }, this));
             waterForm.render();
         },
