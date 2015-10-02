@@ -31,8 +31,11 @@ define([
         },
 
         waterWorld: function(e){
-            this.model.set('obj_type', 'gnome.map.GnomeMap');
-            this.model.fetch();
+            webgnome.model.resetLocation(_.bind(function(){
+                this.hide();
+                webgnome.router.views[1].updateLocation();
+                webgnome.router.views[1].updateCurrent();
+            }, this));
         },
 
         parameterized: function(e){
