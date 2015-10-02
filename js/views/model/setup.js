@@ -16,7 +16,7 @@ define([
     'views/form/wind',
     'text!templates/panel/wind.html',
     'model/map',
-    'views/form/map',
+    'views/form/map/type',
     'text!templates/panel/map.html',
     'model/environment/water',
     'views/form/water',
@@ -50,7 +50,7 @@ define([
     'flotnavigate'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
-    MapModel, MapForm, MapPanelTemplate,
+    MapModel, MapTypeForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
@@ -990,7 +990,7 @@ define([
         },
 
         clickMap: function(){
-            var mapForm = new MapForm(null, webgnome.model.get('map'));
+            var mapForm = new MapTypeForm(null, webgnome.model.get('map'));
             mapForm.render();
         },
 

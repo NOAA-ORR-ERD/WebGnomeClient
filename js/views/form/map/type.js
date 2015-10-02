@@ -6,7 +6,7 @@ define([
     'text!templates/form/map/mapSelect.html'
 ], function($, _, Backbone, FormModal, SelectTemplate){
     'use strict';
-    var selectShorelineForm = FormModal.extend({
+    var mapTypeForm = FormModal.extend({
         title: 'Select Shoreline Type for Risk Assessment',
         className: 'modal fade form-modal shorelinetype-form',
 
@@ -42,5 +42,5 @@ define([
         }
 
     });
-    return selectShorelineForm;
+    return mapTypeForm;
 });
