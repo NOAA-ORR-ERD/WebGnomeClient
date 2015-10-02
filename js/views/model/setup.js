@@ -991,6 +991,7 @@ define([
 
         clickMap: function(){
             var mapForm = new MapTypeForm(null, webgnome.model.get('map'));
+            mapForm.on('hidden', mapForm.close);
             mapForm.render();
         },
 
