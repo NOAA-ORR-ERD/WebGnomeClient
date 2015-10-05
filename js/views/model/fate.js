@@ -338,14 +338,10 @@ define([
                         stroke: {
                             width: 0
                         },
-                        innerRadius: 0.25,
                         label: {
-                            formatter: _.bind(function(label, series){
-                                var units = webgnome.model.get('spills').at(0).get('units');
-                                return '<div><span style="background:' + series.color + ';"></span>' + label + '<br>' + this.formatNumber(Math.round(series.data[0][1])) + ' ' + units + ' (' + Math.round(series.percent) + '%)</div>';
-                            }, this),
-                            radius: 3/4
-                        }
+                            show: false
+                        },
+                        innerRadius: 0.25
                     }
                 },
                 colors: this.colors,

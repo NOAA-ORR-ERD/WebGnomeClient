@@ -17,25 +17,45 @@
     <div class="tab-content">
         <div class="tab-pane" id="budget-graph">
             {{ buttons }}
-            <div class="chart-holder chart-holder-uncert">
-                <h6>Least Floating</h6>
-                <div class="chart minimum">
-                    <div class="canvas"></div>
+            <div class="col-md-4">
+                <div class="panel panel-blank chart-holder-uncert">
+                    <div class="panel-heading">
+                        Least Floating
+                    </div>
+                    <div class="panel-body chart-holder">
+                        <div class="chart minimum">
+                            <div class="canvas"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="chart-holder">
-                <h6 class="bold">Expected Floating</h6>
-                <div class="chart mean">
-                    <div class="canvas"></div>
+            <div class="col-md-4">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        Expected Floating
+                    </div>
+                    <div class="panel-body chart-holder">
+                        <div class="chart mean">
+                            <div class="canvas"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="chart-holder chart-holder-uncert">
-                <h6>Most Floating</h6>
-                <div class="chart maximum">
-                    <div class="canvas"></div>
+            <div class="col-md-4">
+                <div class="panel panel-blank chart-holder-uncert">
+                    <div class="panel-heading">
+                        Most Floating
+                    </div>
+                    <div class="panel-body chart-holder">
+                        <div class="chart maximum">
+                            <div class="canvas"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="timeline">
+            <div class="col-md-12 breakdown">
+            </div>
+            <div class="timeline col-md-12">
                 <div class="chart">
                     <div class="axisLabel yaxisLabel">{{ units }}</div>
                     <div class="axisLabel xaxisLabel">Time</div> 

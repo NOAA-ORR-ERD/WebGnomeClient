@@ -301,6 +301,15 @@ img{
             }
         }
     }
+    &.panel-blank{
+        background: none;
+        .panel-heading{
+            background: none;
+        }
+        .panel-body{
+            background: none;
+        }
+    }
 
     .panel-heading{
         border-radius: 0;
@@ -1517,19 +1526,19 @@ nav.navbar{
         }
     
         .chart-holder{
-            width: 33.33%;
-            float: left;
-            height: 300px;
+            height: 230px;
             position: relative;
             h6{
                 text-align: center;
             }
             .chart{
                 position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                top: 10px;
+                left: 0px;
+                right: 0px;
+                bottom: 15px;
+                top: 15px;
+                width: auto;
+
                 .canvas{
                     left: 0;
                     bottom: 0;
@@ -1582,6 +1591,38 @@ nav.navbar{
                 left: 0;
                 right: 0;
                 top: 0;
+            }
+        }
+        #budget-graph{
+            .panel{
+                cursor: pointer;
+                margin-bottom: 0;
+
+                &:hover{
+                    .panel-heading{
+                        color: white;
+                        background: #337ab7;
+                    }
+                }
+
+                .panel-heading{
+                    text-align: center;
+                }    
+            }
+            
+            .breakdown{
+                background: #efefef;
+            }    
+
+            .timeline{
+                background: #efefef;
+                .chart{
+                    left: 15px;
+                    top: 0;
+                    right: 15px;
+                    bottom: 15px;
+                    width: auto;
+                }
             }
         }
 
