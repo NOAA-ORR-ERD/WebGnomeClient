@@ -527,7 +527,8 @@ define([
 
         addDrawInteraction: function(){
             var draw = new ol.interaction.Draw({
-                type: 'Point'
+                type: 'Point',
+                features: this.source
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
@@ -564,7 +565,7 @@ define([
                 geometry: geom,
                 spill: this.model.get('id')
             });
-            if (!_.isUndefined(featureStyle)){ feature.setStyle(featureStyle);}
+            if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
             this.source.clear();
             this.source.addFeature(feature);
         },
