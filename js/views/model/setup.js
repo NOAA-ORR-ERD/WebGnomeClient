@@ -874,6 +874,7 @@ define([
             if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
                 this.$('.map .panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
+                    this.$('.map .panel-body').removeClass('text');
                     this.$('.map .panel-body').addClass('map').show().html('<div class="map" id="mini-locmap"></div>');
 
                     var shorelineSource = new ol.source.Vector({
@@ -919,6 +920,7 @@ define([
             } else {
                 this.$('.map .panel').addClass('complete');
                 this.$('.map .panel-body').addClass('text').show().html('<div><label>Type:</label> Infinite Ocean</div>');
+                this.$('.map .panel-body').removeClass('map');
                 this.mason.layout();
             }
         },

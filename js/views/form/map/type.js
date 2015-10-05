@@ -35,7 +35,6 @@ define([
                 webgnome.router.views[1].updateLocation();
                 webgnome.router.views[1].updateCurrent();
                 webgnome.router.views[1].mason.layout();
-                webgnome.router.views[1].updateMap();
                 this.hide();
             }, this));
         },
@@ -52,7 +51,6 @@ define([
                     webgnome.router.views[1].updateLocation();
                     webgnome.router.views[1].updateCurrent();
                     webgnome.router.views[1].mason.layout();
-                    webgnome.router.views[1].updateMap();
                 });
             });
         }
