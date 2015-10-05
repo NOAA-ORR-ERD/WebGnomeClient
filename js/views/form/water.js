@@ -43,7 +43,7 @@ define([
                 this.$('#data-source').val('specified');
                 this.$('#height').val(this.model.get('wave_height'));
             }
-            
+
             if ([0, 15, 32].indexOf(this.model.get('salinity')) === -1){
                 // one of the drop down options was not selected.
                 this.$('.salinity-select').parent().hide();
