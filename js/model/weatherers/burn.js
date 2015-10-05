@@ -7,7 +7,7 @@ define([
     'use strict';
     var burnWeatherer = BaseModel.extend({
         defaults: {
-            'obj_type': 'gnome.weatherers.Burn',
+            'obj_type': 'gnome.weatherers.cleanup.Burn',
             'name': 'Burn',
             'area': 0,
             'thickness': 0,

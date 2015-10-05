@@ -24,6 +24,7 @@ define([
                 if(_.isUndefined(this.get('active_start'))){
                     this.set('active_start', start_time.format('YYYY-MM-DDTHH:00:00'));
                 }
+                
                 var end_time = '';
                 if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                     end_time = start_time.add(webgnome.model.get('duration'), 's');

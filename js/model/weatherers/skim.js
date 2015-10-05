@@ -6,7 +6,7 @@ define([
     'use strict';
     var skimWeatherer = BaseModel.extend({
         defaults: {
-            'obj_type': 'gnome.weatherers.Skimmer',
+            'obj_type': 'gnome.weatherers.cleanup.Skimmer',
             'name': 'Skimmer',
             'efficiency': 0.20,
             'amount': 0,
