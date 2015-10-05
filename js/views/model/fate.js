@@ -73,7 +73,7 @@ define([
             },
             yaxis: {},
             needle: {
-                on: true,
+                on: false,
                 stack: false,
                 noduplicates: true,
                 label: this.formatNeedleLabel
@@ -286,7 +286,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.needle.noduplicates = false;
+                options.needle = null;
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
                 this.renderPiesTimeout = null;
@@ -341,7 +341,7 @@ define([
                         label: {
                             show: false
                         },
-                        innerRadius: 0.25
+                        innerRadius: 0.65
                     }
                 },
                 colors: this.colors,
@@ -354,12 +354,25 @@ define([
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
                 this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
+                this.$('.mean .oil-total').html('<span>' + Math.round(this.pieFloating(nominalData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
 
                 if (this.uncertainityExists){
                     this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.$('.maximum .oil-total').html('<span>' + Math.round(this.pieFloating(highData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
+
                     this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                    this.$('.minimum .oil-total').html('<span>' + Math.round(this.pieFloating(lowData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
+
                 } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
                     this.$('.chart-holder-uncert').addClass('invisible');
+                }
+            }
+        },
+
+        pieFloating: function(data){
+            for(var i = 0; i < data.length; i++){
+                if(data[i].label === 'Floating'){
+                    return data[i].data;                   
                 }
             }
         },
