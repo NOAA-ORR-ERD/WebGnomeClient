@@ -57,7 +57,6 @@ define([
                 var title = [];
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
-                console.log(el.buttons);
                 if(el.type === 'text' || el.type === 'welcome'){
                     if(!el.title){
                         title[0] = 'Welcome';
