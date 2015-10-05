@@ -32,9 +32,11 @@ define([
 
         waterWorld: function(e){
             webgnome.model.resetLocation(_.bind(function(){
-                this.hide();
                 webgnome.router.views[1].updateLocation();
                 webgnome.router.views[1].updateCurrent();
+                webgnome.router.views[1].mason.layout();
+                webgnome.router.views[1].updateMap();
+                this.hide();
             }, this));
         },
 
@@ -49,6 +51,8 @@ define([
                 locationForm.on('loaded', function(){
                     webgnome.router.views[1].updateLocation();
                     webgnome.router.views[1].updateCurrent();
+                    webgnome.router.views[1].mason.layout();
+                    webgnome.router.views[1].updateMap();
                 });
             });
         }

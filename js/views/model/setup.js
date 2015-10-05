@@ -919,6 +919,7 @@ define([
             } else {
                 this.$('.map .panel').addClass('complete');
                 this.$('.map .panel-body').addClass('text').show().html('<div><label>Type:</label> Infinite Ocean</div>');
+                this.mason.layout();
             }
         },
 
