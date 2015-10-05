@@ -17,41 +17,43 @@
     <div class="tab-content">
         <div class="tab-pane" id="budget-graph">
             {{ buttons }}
-            <div class="col-md-4">
-                <div class="panel panel-blank chart-holder-uncert">
-                    <div class="panel-heading">
-                        Least Floating
-                    </div>
-                    <div class="panel-body chart-holder">
-                        <div class="chart minimum">
-                            <div class="canvas"></div>
-                            <div class="oil-total"></div>
+            <div class="pies">
+                <div class="col-md-4">
+                    <div class="panel panel-blank chart-holder-uncert" data-dataset="low">
+                        <div class="panel-heading">
+                            Least Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart minimum">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        Expected Floating
-                    </div>
-                    <div class="panel-body chart-holder">
-                        <div class="chart mean">
-                            <div class="canvas"></div>
-                            <div class="oil-total"></div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary" data-dataset="data">
+                        <div class="panel-heading">
+                            Expected Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart mean">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-blank chart-holder-uncert">
-                    <div class="panel-heading">
-                        Most Floating
-                    </div>
-                    <div class="panel-body chart-holder">
-                        <div class="chart maximum">
-                            <div class="canvas"></div>
-                            <div class="oil-total"></div>
+                <div class="col-md-4">
+                    <div class="panel panel-blank chart-holder-uncert" data-dataset="high">
+                        <div class="panel-heading">
+                            Most Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart maximum">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
                         </div>
                     </div>
                 </div>

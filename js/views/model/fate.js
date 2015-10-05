@@ -11,6 +11,7 @@ define([
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
     'text!templates/model/fate/buttons.html',
+    'text!templates/model/fate/breakdown_item.html',
     'html2canvas',
     'flot',
     'flottime',
@@ -20,7 +21,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, BreakdownTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -29,7 +30,7 @@ define([
         colors: [
             'rgb(203,75,75)',
             'rgb(237,194,64)',
-            'rgb(175,216,248)',
+            'rgb(75, 135, 181)',
             'rgb(77,167,77)',
             'rgb(148,64,237)',
             'rgb(189,155,51)',
@@ -303,7 +304,42 @@ define([
             if(!this.renderPiesTimeout){
                 this.renderPiesTimeout = setTimeout(_.bind(function(){
                     this.renderPies(this.dataset, pos);
+                    this.renderBreakdown(this.dataset, pos);
                 }, this), 50);
+            }
+        },
+
+        renderBreakdown: function(dataset, pos){
+            var dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+            ]);
+            
+            var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
+            if(data.length > 0){
+                var con_width = this.$('.breakdown').width();
+                var width = con_width / (data.length - 1);
+                var compiled = '';
+                var units = webgnome.model.get('spills').at(0).get('units');
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].label !== 'Amount released'){
+                        compiled += _.template(BreakdownTemplate, {
+                            color: this.colors[i],
+                            width: width,
+                            label: data[i].label,
+                            value: Math.round(data[i].data) + ' ' + units 
+                        });
+                    }
+                }
+                this.$('.breakdown').html(compiled);
             }
         },
 

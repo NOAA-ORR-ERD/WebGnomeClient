@@ -1594,38 +1594,54 @@ nav.navbar{
             }
         }
         #budget-graph{
-            .panel{
-                cursor: pointer;
-                margin-bottom: 0;
+            .pies{
+                .panel{
+                    cursor: pointer;
+                    margin-bottom: 0;
 
-                &:hover{
+                    &:hover{
+                        .panel-heading{
+                            color: white;
+                            background: #337ab7;
+                        }
+                    }
+
+                    .oil-total{
+                        position: absolute;
+                        z-index: 10;
+                        text-align: center;
+                        left: 115px;
+                        right: 115px;
+                        top: 80px;
+
+                        span{
+                            font-size: 15px;
+                            font-weight: bold;
+                        }
+                    }
+
                     .panel-heading{
-                        color: white;
-                        background: #337ab7;
-                    }
-                }
-
-                .oil-total{
-                    position: absolute;
-                    z-index: 10;
-                    text-align: center;
-                    left: 115px;
-                    right: 115px;
-                    top: 80px;
-
-                    span{
-                        font-size: 15px;
-                        font-weight: bold;
-                    }
-                }
-
-                .panel-heading{
-                    text-align: center;
+                        text-align: center;
+                    }    
                 }    
             }
             
             .breakdown{
+                padding-top: 15px;
                 background: #efefef;
+                .panel{
+                    color: white;
+                    float: left;
+                    .panel-heading{
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        padding: 5px;
+                    }
+                    .panel-body{
+                        padding: 5px;
+                    }
+                }
             }    
 
             .timeline{
