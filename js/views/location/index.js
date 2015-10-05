@@ -86,12 +86,18 @@ define([
 
         clickPin: function(feature){
             this.popup.setPosition(feature.getGeometry().getCoordinates());
+            var content;
+            if (this.dom_target.indexOf('.modal') > -1) {
+                content = '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>';
+            } else {
+                content = '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>' +
+                        '<button class="btn btn-primary setup pull-right" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">New Model</button>';
+            }
             this.$('.popup').popover({
                 placement: 'top',
                 html: true,
                 title: feature.get('title'),
-                content: '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>' + 
-                        '<button class="btn btn-primary setup pull-right" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">New Model</button>'
+                content: content
             });
             this.$('.popup').popover('show');
 
@@ -101,11 +107,6 @@ define([
                     var slug = this.$('.load').data('slug');
                     var name = this.$('.load').data('name');
                     webgnome.model.resetLocation(_.bind(function(){
-                        // model could be null if it's coming from a new model to merge
-                        if(localStorage.getItem('prediction') === 'null' || _.isNull(localStorage.getItem('prediction'))){
-                            localStorage.setItem('prediction', 'both');
-                        }
-
                         this.load({slug: slug, name: name});
                         this.$('.popup').popover('destroy');
                     }, this));
@@ -134,7 +135,7 @@ define([
                                 }, this)
                             });
                         }
-                    }, this))
+                    }, this));
                     
                 }, this));
             }, this));
@@ -159,7 +160,7 @@ define([
                         }, this)
                     });
                 }, this)
-            });    
+            });
         },
 
         wizard: function(options){

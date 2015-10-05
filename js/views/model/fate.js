@@ -285,7 +285,7 @@ define([
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
-                options.series.lines.fill = true;
+                options.series.lines.fill = 1;
                 options.needle.noduplicates = false;
                 options.colors = this.colors;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
@@ -338,6 +338,7 @@ define([
                         stroke: {
                             width: 0
                         },
+                        innerRadius: 0.25,
                         label: {
                             formatter: _.bind(function(label, series){
                                 var units = webgnome.model.get('spills').at(0).get('units');
@@ -566,7 +567,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[1]];
+                options.colors = [this.colors[0]];
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -581,7 +582,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[2]];
+                options.colors = [this.colors[1]];
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -686,7 +687,7 @@ define([
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
-                options.series.lines.fill = true;
+                options.series.lines.fill = 1;
                 options.colors = this.colors;
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
@@ -960,10 +961,9 @@ define([
                 delete titles.off_maps;
                 var keys = Object.keys(titles);
                 keys.unshift('evaporated', 'natural_dispersion');
-                
-                if (localStorage.getItem('prediction') !== 'fate'){
-                    keys.push('beached', 'off_maps');
-                }
+                // maybe add a check to see if the map is not a gnome map aka water world.
+                // beach and off_maps wouldn't apply then.
+                keys.push('beached', 'off_maps');
 
                 keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'amount_released');
 

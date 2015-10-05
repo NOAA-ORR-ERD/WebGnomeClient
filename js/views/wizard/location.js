@@ -83,7 +83,7 @@ define([
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: el.buttons
+                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
                     }, wind);
                     windform.on('save', _.bind(function(){
                         webgnome.model.get('environment').add(wind, {merge: true});
@@ -100,11 +100,11 @@ define([
                         body: "<div>Filler Text</div>",
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finalize Model</button>"
                     });
-                    finishForm.on('hidden', function(){
-                        finishForm.trigger('finish');
+                    finishForm.on('finish', function(){
                         webgnome.model.fetch();
                         webgnome.router.navigate('config', true);
                         $('.spill .add').click();
+                        finishForm.trigger('wizardclose');
                     });
 
                     this.steps.push(finishForm);

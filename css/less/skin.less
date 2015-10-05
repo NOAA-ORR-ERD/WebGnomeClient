@@ -891,7 +891,17 @@ nav.navbar{
                 color: #7a7a7a;
             }
         }
-
+        .model{
+            .panel{
+                .panel-heading{
+                    background: #337ab7;
+                }
+                .panel-body{
+                    height: 200px;
+                    display: block;
+                }
+            }
+        }
         .wind, .spill, .response, .beached{
             position: relative;
 
@@ -1014,14 +1024,20 @@ nav.navbar{
         }
     }
 
-    .map, .current{
+    .current{
         .panel-heading{
             .add{
-                display: none !important;
+                display: none;
             }
         }
+    }
+    
+    .map, .current{
         .panel-body{
             padding: 0;
+            &.text{
+                padding: 15px;
+            }
         }
         .map{
             height: 200px;
@@ -1422,12 +1438,21 @@ nav.navbar{
                 background: rgba(255, 255, 255, .75);
                 .panel-body{
                     background: none;
+                    max-height: 200px;
+                    overflow-x: scroll;
 
                     form:last-of-type{
                         margin-bottom: 0;
                     }
                 }
+
+                #general{
+                    .panel-body{
+                        max-height: none;
+                    }
+                }
             }
+
             
             form {
                 margin-bottom: 10px;
@@ -1505,6 +1530,10 @@ nav.navbar{
                 right: 0;
                 bottom: 0;
                 top: 10px;
+                .canvas{
+                    left: 0;
+                    bottom: 0;
+                }
 
                 .pieLabel{
                     padding: 4px;
@@ -1513,6 +1542,10 @@ nav.navbar{
                     font-size: 11px;
                     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
                     padding-left: 22px;
+
+                    &:hover{
+                        z-index: 999
+                    }
 
                     span{
                         border: 1px solid #fff;
@@ -1532,6 +1565,12 @@ nav.navbar{
             position: relative;
             width: 100%;
             height: 450px;
+
+            .legend{
+                td{
+                    padding-left: 5px;
+                }
+            }
 
             h6{
                 text-align: center;
@@ -2261,7 +2300,7 @@ nav.navbar{
         }
     }
 
-    &.spilltype-form, &.responsetype-form{
+    &.spilltype-form, &.responsetype-form, &.shorelinetype-form{
         .option{
             background: #efefef;
             height: 90px;

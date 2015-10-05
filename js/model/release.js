@@ -37,16 +37,6 @@ define([
                 end_time = moment();
             }
 
-            var prediction = localStorage.getItem('prediction');
-
-            if (prediction === 'trajectory' || prediction === 'both'){
-                this.set('num_per_timestep', null);
-                this.set('num_elements', 1000);
-            } else {
-                this.set('num_per_timestep', 10);
-                this.set('num_elements', null);
-            }
-            
             if(_.isUndefined(this.get('end_release_time'))){
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
@@ -74,10 +64,6 @@ define([
 
             if(parseFloat(attrs.end_position[0]) !== attrs.end_position[0] || parseFloat(attrs.end_position[1]) !== attrs.end_position[1]){
                 return 'End position must be in decimal degrees.';
-            }
-
-            if(attrs.start_position[0] === 0 && attrs.end_position[0] === 0){
-                return 'Give a valid location for the spill!';
             }
 
             if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.model.get('map'))){

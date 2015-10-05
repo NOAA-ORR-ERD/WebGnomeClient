@@ -171,7 +171,6 @@ define([
                         direction: this.form.constant.direction.val()
                     });
                 }
-                this.update();
             } else if (e.target.hash === '#variable') {
                 if(this.$('.variable-compass canvas').length === 0){
                     this.$('.variable-compass').compassRoseUI({
@@ -186,7 +185,6 @@ define([
 
                 this.unbindBaseMouseTrap();
                 this.renderTimeseries();
-                this.update();
             } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();

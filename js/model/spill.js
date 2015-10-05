@@ -43,32 +43,18 @@ define([
                 return 'Amount must be a positive number';
             }
 
-            if (localStorage.getItem('prediction') === 'trajectory' && massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
+            if (massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
                 this.validationContext = 'info';
-                return 'Amount released must use units of mass when in trajectory only mode!';
+                return 'Amount released must use units of mass when using non-weathering substance!';
             }
 
-            if (localStorage.getItem('prediction') !== 'trajectory' && massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
+            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
                 return 'You must either select a weathering substance or use mass units for amount!';
             }
 
-            // if (localStorage.getItem('prediction') !== 'trajectory'){
-            //     if (!attrs.element_type.isValid()){
-            //         this.validationContext = 'substance';
-            //         return attrs.element_type.validationError;
-            //     }
-
-            //     if (attrs.element_type.get('substance') && _.isUndefined(attrs.element_type.get('substance').get('name'))){
-            //         this.validationContext = 'substance';
-            //         return;
-            //     }
-            // }
-
-            if (localStorage.getItem('prediction') !== 'fate'){
-                if(!attrs.release.isValid()){
-                    this.validationContext = 'map';
-                    return attrs.release.validationError;
-                }
+            if(!attrs.release.isValid()){
+                this.validationContext = 'map';
+                return attrs.release.validationError;
             }
             this.validationContext = null;
         },
@@ -77,11 +63,6 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
-            // if (localStorage.getItem('prediction') !== 'trajectory'){
-            //     if(_.isNull(attrs.element_type.get('substance')) || _.isUndefined(attrs.element_type.get('substance').get('name'))){
-            //         return 'A substance must be selected!';
-            //     }
-            // }
         },
 
         validateSections: function(){

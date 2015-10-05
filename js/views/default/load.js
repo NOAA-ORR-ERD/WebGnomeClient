@@ -121,13 +121,6 @@ define([
                             spills[i].get('release').set('end_release_time', start_time);
                         }
                     }
-                    if (!locationExists && !spillGeo){
-                        localStorage.setItem('prediction', 'fate');
-                    } else if (_.isUndefined(water) && locationExists){
-                        localStorage.setItem('prediction', 'trajectory');
-                    } else {
-                        localStorage.setItem('prediction', 'both');
-                    }
 
                     var neededModels = this.modelHasWeatherers(model).concat(this.modelHasOutputters(model));
 

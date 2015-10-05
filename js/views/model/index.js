@@ -28,21 +28,9 @@ define([
             this.$el.append(IndexTemplate);
             $('body').append(this.$el);
             var view = localStorage.getItem('view');
-            var prediction = localStorage.getItem('prediction');
 
             if(_.isNull(view)){
-                // if the view is undefined, set it to requested prediction
-                if(prediction === 'both'){
-                    view = 'trajectory';
-                } else {
-                    view = prediction;
-                }
-            } else {
-                // the view is defined make sure it's a viewable view based on the requested prediction
-                // ex. if the view is fate but pred is traj don't render the fate view.
-                if(prediction !== 'both'){
-                    view = prediction;
-                }
+                view = 'fate';
             }
             
             this.$('.switch').addClass(view);
@@ -81,40 +69,6 @@ define([
             }
 
             this.reset();
-
-            if(view === 'trajectory' && localStorage.getItem('prediction') === 'fate'){
-                swal({
-                    title: 'Unable to run trajectory on a weathering model',
-                    text: 'If you would like to see the trajectory prediction for this model please set-up the model accordingly.',
-                    type: 'error',
-                    confirmButtonText: 'Add Trajectory',
-                    cancelButtonText: 'Back to Weathering',
-                    showCancelButton: true,
-                }, function(isConfirm){
-                    if(isConfirm){
-                        webgnome.router.navigate('config', true);
-                        localStorage.setItem('prediction', 'both');
-                    } else {
-                        webgnome.router.views[1].switchView();
-                    }
-                });
-            } else if (view === 'fate' && localStorage.getItem('prediction') === 'trajectory'){
-                swal({
-                    title: 'Unable to run weathering on a trajectory model',
-                    text: 'If you would like to see the weathering prediction for this model please set-up the model accordingly.',
-                    type: 'error',
-                    confirmButtonText: 'Add Weathering',
-                    cancelButtonText: 'Back to Trajectory',
-                    showCancelButton: true,
-                }, function(isConfirm){
-                    if(isConfirm){
-                        webgnome.router.navigate('config', true);
-                        localStorage.setItem('prediction', 'both');
-                    } else {
-                        webgnome.router.views[1].switchView();
-                    }
-                });
-            }
 
             if(view === 'fate'){
                 this.renderFate();

@@ -3,11 +3,12 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
+    'views/form/location',
     'text!templates/form/map/mapSelect.html'
-], function($, _, Backbone, FormModal, SelectTemplate){
+], function($, _, Backbone, FormModal, LocationForm, SelectTemplate){
     'use strict';
-    var selectShorelineForm = FormModal.extend({
-        title: 'Select Shoreline Type for Risk Assessment',
+    var mapTypeForm = FormModal.extend({
+        title: 'Select Map Type',
         className: 'modal fade form-modal shorelinetype-form',
 
         events: function(){
@@ -30,7 +31,12 @@ define([
         },
 
         waterWorld: function(e){
-
+            webgnome.model.resetLocation(_.bind(function(){
+                webgnome.router.views[1].updateLocation();
+                webgnome.router.views[1].updateCurrent();
+                webgnome.router.views[1].mason.layout();
+                this.hide();
+            }, this));
         },
 
         parameterized: function(e){
@@ -38,9 +44,17 @@ define([
         },
 
         realLocation: function(e){
-
+            this.on('hidden', function(){
+                var locationForm = new LocationForm();
+                locationForm.render();
+                locationForm.on('loaded', function(){
+                    webgnome.router.views[1].updateLocation();
+                    webgnome.router.views[1].updateCurrent();
+                    webgnome.router.views[1].mason.layout();
+                });
+            });
         }
 
     });
-    return selectShorelineForm;
+    return mapTypeForm;
 });

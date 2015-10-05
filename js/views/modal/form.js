@@ -19,6 +19,7 @@ define([
             'hidden.bs.modal': 'hidden',
             'click .modal-header>.close': 'wizardclose',
             'click .save': 'save',
+            'click .finish': 'finish',
             'click .cancel': 'wizardclose',
             'change input': 'update',
             'keyup input': 'update',
@@ -128,6 +129,10 @@ define([
                 this.trigger('save', [this.model]);
                 if(_.isFunction(callback)){ callback(); }
             }
+        },
+
+        finish: function(){
+            this.trigger('finish');
         },
 
         back: function() {

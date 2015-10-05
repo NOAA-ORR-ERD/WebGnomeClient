@@ -31,7 +31,7 @@ define([
                                 }, this)
                             });
                         }, this)
-                    });    
+                    });
                 }
             });
 
@@ -67,6 +67,7 @@ define([
 
         loaded: function(){
             this.trigger('loaded');
+            this.hide();
         },
 
         updateMapSize: function(){

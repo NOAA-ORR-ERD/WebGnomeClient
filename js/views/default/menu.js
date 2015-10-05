@@ -96,7 +96,6 @@ define([
                 showCancelButton: true,
             }, _.bind(function(isConfirm){
                 if(isConfirm){
-                    localStorage.setItem('prediction', null);
                     webgnome.model = new GnomeModel();
 
                     if(_.has(webgnome, 'cache')){
