@@ -1627,11 +1627,17 @@ nav.navbar{
             }
             
             .breakdown{
-                padding-top: 15px;
+                padding: 15px 15px 0 15px;                
                 background: #efefef;
                 .panel{
+                    margin-right: 15px;
                     color: white;
                     float: left;
+
+                    &:last-of-type{
+                        margin-right: 0;
+                    }
+
                     .panel-heading{
                         overflow: hidden;
                         white-space: nowrap;
@@ -1641,6 +1647,9 @@ nav.navbar{
                     .panel-body{
                         border-top: 1px solid rgba(0, 0, 0, .25);
                         padding: 5px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        text-align: center;
                     }
                 }
             }    
