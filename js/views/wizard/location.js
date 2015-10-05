@@ -57,6 +57,7 @@ define([
                 var title = [];
                 title[0] = el.title;
                 title[1] = '<span class="sub-title">' + this.name + '</span>';
+                console.log(el.buttons);
                 if(el.type === 'text' || el.type === 'welcome'){
                     if(!el.title){
                         title[0] = 'Welcome';
@@ -83,7 +84,7 @@ define([
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: el.buttons
+                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
                     }, wind);
                     windform.on('save', _.bind(function(){
                         webgnome.model.get('environment').add(wind, {merge: true});
