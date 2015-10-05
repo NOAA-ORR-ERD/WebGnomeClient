@@ -106,6 +106,7 @@ define([
             if (this.$('#data-source').val() === 'specified'){
                 this.model.set('wave_height', this.$('#height').val());
                 units.wave_height = this.$('#wave_height-units').val();
+                console.log(parseFloat(this.model.get('wave_height')));
             }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
@@ -129,6 +130,8 @@ define([
                 this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
             } else if (value === 'windcalc') {
                 this.$('.fetch, .specified').addClass('hide');
+                this.model.set('wave_height', null);
+                this.model.set('fetch', null);
             }
         }
 
