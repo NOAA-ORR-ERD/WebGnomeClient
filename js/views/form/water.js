@@ -100,11 +100,9 @@ define([
             units.sediment = this.$('.sediment-units').val();
             this.model.set('fetch', null);
             this.model.set('wave_height', null);
-            console.log(this.$('#data-source').val() === 'fetch');
             if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
                 units.fetch = this.$('#fetch-units').val();
-                console.log(this.$('#fetch').val());
             }
             if (this.$('#data-source').val() === 'specified'){
                 this.model.set('wave_height', this.$('#height').val());
