@@ -34,6 +34,7 @@ define([
 
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
             this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
+            this.$('#fetch-units option[value="' + this.model.get('units').fetch + '"]').attr('selected', 'selected');
 
             if (!_.isNull(this.model.get('fetch'))){
                 this.$('#data-source').val('fetch');
@@ -99,9 +100,11 @@ define([
             units.sediment = this.$('.sediment-units').val();
             this.model.set('fetch', null);
             this.model.set('wave_height', null);
+            console.log(this.$('#data-source').val() === 'fetch');
             if (this.$('#data-source').val() === 'fetch'){
                 this.model.set('fetch', this.$('#fetch').val());
                 units.fetch = this.$('#fetch-units').val();
+                console.log(this.$('#fetch').val());
             }
             if (this.$('#data-source').val() === 'specified'){
                 this.model.set('wave_height', this.$('#height').val());
@@ -122,7 +125,7 @@ define([
             var value = e.currentTarget.value;
 
             // special case for when a user selects selinity/sediment number in select
-            if(value.match(/\d*/)[0] !== ''){
+            if(value.match(/\d*/)[0] !== '' || ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1){
                 this.update(e);
             }
 
