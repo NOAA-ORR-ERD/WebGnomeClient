@@ -14,12 +14,9 @@ define([
         title: 'Water Properties',
 
         events: function(){
-            var formModalHash = FormModal.prototype.events;
-            delete formModalHash['change select'];
-            formModalHash['change select:not(#data-source)'] = 'update';
             return _.defaults({
-                'change #data-source': 'revealManualInputs',
-            }, formModalHash);
+                'change select': 'revealManualInputs',
+            }, FormModal.prototype.events);
         },
 
         initialize: function(options, model){
@@ -123,6 +120,13 @@ define([
 
         revealManualInputs: function(e){
             var value = e.currentTarget.value;
+
+            // special case for when a user selects selinity/sediment number in select
+            if(value.match(/\d*/)[0] !== ''){
+                this.update(e);
+            }
+
+            // for water sediment/salinity other select
             if (value === 'other'){
                 this.$(e.currentTarget).parent().addClass('hide');
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
