@@ -14,9 +14,12 @@ define([
         title: 'Water Properties',
 
         events: function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change select'];
+            formModalHash['change select:not(#data-source)'] = 'update';
             return _.defaults({
-                'change select': 'revealManualInputs',
-            }, FormModal.prototype.events);
+                'change #data-source': 'revealManualInputs',
+            }, formModalHash);
         },
 
         initialize: function(options, model){
@@ -106,7 +109,6 @@ define([
             if (this.$('#data-source').val() === 'specified'){
                 this.model.set('wave_height', this.$('#height').val());
                 units.wave_height = this.$('#wave_height-units').val();
-                console.log(parseFloat(this.model.get('wave_height')));
             }
             this.model.set('units', units);
             this.model.set('temperature', this.$('#temp').val());
@@ -128,6 +130,13 @@ define([
             if (['fetch', 'specified'].indexOf(value) !== -1) {
                 this.$('.fetch, .specified').addClass('hide');
                 this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
+                if (value === 'fetch') {
+                    this.model.set('fetch', '');
+                    this.model.set('wave_height', null);
+                } else if (value === 'specified') {
+                    this.model.set('wave_height', '');
+                    this.model.set('fetch', null);
+                }
             } else if (value === 'windcalc') {
                 this.$('.fetch, .specified').addClass('hide');
                 this.model.set('wave_height', null);
