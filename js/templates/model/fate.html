@@ -17,29 +17,57 @@
     <div class="tab-content">
         <div class="tab-pane" id="budget-graph">
             {{ buttons }}
-            <div class="chart-holder chart-holder-uncert">
-                <h6>Least Floating</h6>
-                <div class="chart minimum">
-                    <div class="canvas"></div>
+            <div class="pies">
+                <div class="col-md-4">
+                    <div class="panel panel-blank chart-holder-uncert" data-dataset="low">
+                        <div class="panel-heading">
+                            Least Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart minimum">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-primary" data-dataset="nominal">
+                        <div class="panel-heading">
+                            Expected Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart mean">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-blank chart-holder-uncert" data-dataset="high">
+                        <div class="panel-heading">
+                            Most Floating
+                        </div>
+                        <div class="panel-body chart-holder">
+                            <div class="chart maximum">
+                                <div class="canvas"></div>
+                                <div class="oil-total"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="chart-holder">
-                <h6 class="bold">Expected Floating</h6>
-                <div class="chart mean">
-                    <div class="canvas"></div>
-                </div>
+            <div class="col-md-12">
+                <div class="breakdown clearfix"></div>
             </div>
-            <div class="chart-holder chart-holder-uncert">
-                <h6>Most Floating</h6>
-                <div class="chart maximum">
-                    <div class="canvas"></div>
-                </div>
-            </div>
-            <div class="timeline">
-                <div class="chart">
-                    <div class="axisLabel yaxisLabel">{{ units }}</div>
-                    <div class="axisLabel xaxisLabel">Time</div> 
-                    <div class="canvas"></div>
+            <div class="col-md-12">
+                <div class="timeline">
+                    <div class="chart">
+                        <div class="axisLabel yaxisLabel">{{ units }}</div>
+                        <div class="axisLabel xaxisLabel">Time</div> 
+                        <div class="canvas"></div>
+                    </div>
                 </div>
             </div>
         </div>
