@@ -301,6 +301,15 @@ img{
             }
         }
     }
+    &.panel-blank{
+        background: none;
+        .panel-heading{
+            background: none;
+        }
+        .panel-body{
+            background: none;
+        }
+    }
 
     .panel-heading{
         border-radius: 0;
@@ -1517,19 +1526,19 @@ nav.navbar{
         }
     
         .chart-holder{
-            width: 33.33%;
-            float: left;
-            height: 300px;
+            height: 230px;
             position: relative;
             h6{
                 text-align: center;
             }
             .chart{
                 position: absolute;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                top: 10px;
+                left: 0px;
+                right: 0px;
+                bottom: 15px;
+                top: 15px;
+                width: auto;
+
                 .canvas{
                     left: 0;
                     bottom: 0;
@@ -1582,6 +1591,78 @@ nav.navbar{
                 left: 0;
                 right: 0;
                 top: 0;
+            }
+        }
+        #budget-graph{
+            .pies{
+                .panel{
+                    cursor: pointer;
+                    margin-bottom: 0;
+
+                    &:hover{
+                        .panel-heading{
+                            color: white;
+                            background: #337ab7;
+                        }
+                    }
+
+                    .oil-total{
+                        position: absolute;
+                        z-index: 10;
+                        text-align: center;
+                        left: 115px;
+                        right: 115px;
+                        top: 80px;
+
+                        span{
+                            font-size: 15px;
+                            font-weight: bold;
+                        }
+                    }
+
+                    .panel-heading{
+                        text-align: center;
+                    }    
+                }    
+            }
+            
+            .breakdown{
+                padding: 15px 15px 0 15px;                
+                background: #efefef;
+                .panel{
+                    margin-right: 15px;
+                    color: white;
+                    float: left;
+
+                    &:last-of-type{
+                        margin-right: 0;
+                    }
+
+                    .panel-heading{
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        padding: 5px;
+                    }
+                    .panel-body{
+                        border-top: 1px solid rgba(0, 0, 0, .25);
+                        padding: 5px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        text-align: center;
+                    }
+                }
+            }    
+
+            .timeline{
+                background: #efefef;
+                .chart{
+                    left: 15px;
+                    top: 0;
+                    right: 15px;
+                    bottom: 15px;
+                    width: auto;
+                }
             }
         }
 
