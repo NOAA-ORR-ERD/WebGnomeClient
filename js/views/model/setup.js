@@ -1004,6 +1004,14 @@ define([
                 }, this));
                 location.render();
             }, this));
+            mapForm.on('waterWorld', function(){
+                webgnome.model.resetLocation(function(){
+                    webgnome.router.views[1].updateLocation();
+                    webgnome.router.views[1].updateCurrent();
+                    webgnome.router.views[1].mason.layout();
+                    mapForm.hide();
+                });
+            });
             mapForm.render();
         },
 

@@ -30,12 +30,7 @@ define([
         },
 
         waterWorld: function(e){
-            webgnome.model.resetLocation(_.bind(function(){
-                webgnome.router.views[1].updateLocation();
-                webgnome.router.views[1].updateCurrent();
-                webgnome.router.views[1].mason.layout();
-                this.hide();
-            }, this));
+            this.trigger('waterWorld');
         },
 
         parameterized: function(e){
