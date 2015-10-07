@@ -492,12 +492,6 @@ define([
             }
         },
 
-        convertCoords: function(coordsArray){
-            coordsArray = _.clone(coordsArray);
-            coordsArray.pop();
-            return coordsArray;
-        },
-
         toggleSpill: function(e){
             e.preventDefault();
             e.stopPropagation();
@@ -527,10 +521,31 @@ define([
         addDrawInteraction: function(){
             var draw = new ol.interaction.Draw({
                 type: 'Point',
-                features: this.source
+                source: this.source
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
+
+            this.drawInteraction.on('drawend', _.bind(function(e){
+                var coordsObj = this.transformCoordsArray(e.feature.getGeometry().getCoordinates());
+                this.model.get('release').set('start_position', coordsObj.start);
+                this.model.get('release').set('end_position', coordsObj.end);
+                this.setManualFields();
+                this.renderSpillFeature();
+            }, this));
+        },
+
+        transformCoordsArray: function(coordsArr){
+            var outputArr = [];
+            for (var i = 0; i < coordsArr.length; i++){
+                outputArr[i] = new ol.proj.transform(coordsArr, 'EPSG:3857', 'EPSG:4326');
+                outputArr[i].push(0);
+            }
+
+            return {
+                start: outputArr[0],
+                end: outputArr[outputArr.length - 1]
+            };
         },
 
         modifyDrawInteraction: function(){
@@ -540,6 +555,7 @@ define([
         renderSpillFeature: function(){
             var start_position = this.model.get('release').get('start_position');
             var end_position = this.model.get('release').get('end_position');
+            console.log(start_position, end_position);
             var geom, featureStyle;
             if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
