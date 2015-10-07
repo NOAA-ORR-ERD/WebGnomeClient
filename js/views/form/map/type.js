@@ -3,9 +3,8 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
-    'views/form/location',
     'text!templates/form/map/mapSelect.html'
-], function($, _, Backbone, FormModal, LocationForm, SelectTemplate){
+], function($, _, Backbone, FormModal, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
@@ -44,15 +43,7 @@ define([
         },
 
         realLocation: function(e){
-            this.on('hidden', function(){
-                var locationForm = new LocationForm();
-                locationForm.render();
-                locationForm.on('loaded', function(){
-                    webgnome.router.views[1].updateLocation();
-                    webgnome.router.views[1].updateCurrent();
-                    webgnome.router.views[1].mason.layout();
-                });
-            });
+            this.trigger('realLocation');
         }
 
     });
