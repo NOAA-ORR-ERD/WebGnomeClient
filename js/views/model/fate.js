@@ -11,6 +11,7 @@ define([
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
     'text!templates/model/fate/buttons.html',
+    'text!templates/model/fate/breakdown_item.html',
     'html2canvas',
     'flot',
     'flottime',
@@ -20,7 +21,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, BreakdownTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -29,7 +30,7 @@ define([
         colors: [
             'rgb(203,75,75)',
             'rgb(237,194,64)',
-            'rgb(175,216,248)',
+            'rgb(75, 135, 181)',
             'rgb(77,167,77)',
             'rgb(148,64,237)',
             'rgb(189,155,51)',
@@ -50,7 +51,8 @@ define([
             'click #ics209 .export a.print': 'printTableICS',
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
-            'click .print-graph': 'printGraphImage'
+            'click .print-graph': 'printGraphImage',
+            'click #budget-graph .pies .panel': 'clickPie'
         },
         dataPrecision: 3,
 
@@ -73,7 +75,7 @@ define([
             },
             yaxis: {},
             needle: {
-                on: true,
+                on: false,
                 stack: false,
                 noduplicates: true,
                 label: this.formatNeedleLabel
@@ -267,7 +269,7 @@ define([
         },
 
         renderGraphOilBudget: function(dataset){
-            dataset = this.pruneDataset(dataset, [
+            var cloneset = this.pruneDataset(JSON.parse(JSON.stringify(dataset)), [
                 'avg_density',
                 'amount_released',
                 'avg_viscosity',
@@ -280,30 +282,71 @@ define([
                 'dispersibility_difficult',
                 'dispersibility_unlikely'
                 ]);
+            var selection = this.$('.panel-primary').data('dataset');
+
+            for(var i = 0; i < cloneset.length; i++){
+                cloneset[i].data = cloneset[i][selection];
+            }
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.needle.noduplicates = false;
+                options.needle = null;
                 options.colors = this.colors;
-                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', dataset, options);
+                options.legend.show = false;
+                this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', cloneset, options);
                 this.renderPiesTimeout = null;
                 this.$('#budget-graph .timeline .chart .canvas').on('plothover', _.bind(this.timelineHover, this));
             } else {
-                this.graphOilBudget.setData(dataset);
+                this.graphOilBudget.setData(cloneset);
                 this.graphOilBudget.setupGrid();
                 this.graphOilBudget.draw();
             }
-            this.timelineHover(null, {x: dataset[0].data[dataset[0].data.length - 1][0]}, null);
+            this.timelineHover(null, {x: cloneset[0].data[cloneset[0].data.length - 1][0]}, null);
         },
 
         timelineHover: function(e, pos, item){
             if(!this.renderPiesTimeout){
                 this.renderPiesTimeout = setTimeout(_.bind(function(){
                     this.renderPies(this.dataset, pos);
+                    this.renderBreakdown(this.dataset, pos);
                 }, this), 50);
+            }
+        },
+
+        renderBreakdown: function(dataset, pos){
+            var dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely'
+            ]);
+            
+            var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
+            if(data.length > 0){
+                var con_width = this.$('.breakdown').width() - (15 * (data.length - 2));
+                var width = con_width / (data.length - 1);
+                var compiled = '';
+                var units = webgnome.model.get('spills').at(0).get('units');
+                for(var i = 0; i < data.length; i++){
+                    if(data[i].label !== 'Amount released'){
+                        compiled += _.template(BreakdownTemplate, {
+                            color: this.colors[i],
+                            width: width,
+                            label: data[i].label,
+                            value: Math.round(data[i].data) + ' ' + units
+                        });
+                    }
+                }
+                this.$('.breakdown').html(compiled);
             }
         },
 
@@ -328,7 +371,7 @@ define([
                 'dispersibility_unlikely'
                 ]);
             var lowData = this.getPieData(pos, dataset, 'low');
-            var nominalData = this.getPieData(pos, dataset, 'data');
+            var nominalData = this.getPieData(pos, dataset, 'nominal');
             var highData = this.getPieData(pos, dataset, 'high');
 
             var chartOptions = {
@@ -338,14 +381,10 @@ define([
                         stroke: {
                             width: 0
                         },
-                        innerRadius: 0.25,
                         label: {
-                            formatter: _.bind(function(label, series){
-                                var units = webgnome.model.get('spills').at(0).get('units');
-                                return '<div><span style="background:' + series.color + ';"></span>' + label + '<br>' + this.formatNumber(Math.round(series.data[0][1])) + ' ' + units + ' (' + Math.round(series.percent) + '%)</div>';
-                            }, this),
-                            radius: 3/4
-                        }
+                            show: false
+                        },
+                        innerRadius: 0.65
                     }
                 },
                 colors: this.colors,
@@ -358,12 +397,34 @@ define([
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
                 this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
+                this.$('.mean .oil-total').html('<span>' + Math.round(this.pieFloating(nominalData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
 
                 if (this.uncertainityExists){
                     this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.$('.maximum .oil-total').html('<span>' + Math.round(this.pieFloating(highData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
+
                     this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                    this.$('.minimum .oil-total').html('<span>' + Math.round(this.pieFloating(lowData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
+
                 } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
                     this.$('.chart-holder-uncert').addClass('invisible');
+                }
+            }
+        },
+
+        clickPie: function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            this.$('.pies .panel-primary').toggleClass('panel-primary panel-blank');
+            this.$(e.currentTarget).toggleClass('panel-primary panel-blank');
+            this.graphOilBudget = undefined;
+            this.renderGraphOilBudget(this.dataset);
+        },
+
+        pieFloating: function(data){
+            for(var i = 0; i < data.length; i++){
+                if(data[i].label === 'Floating'){
+                    return data[i].data;                   
                 }
             }
         },
@@ -972,6 +1033,7 @@ define([
                         data: [],
                         high: [],
                         low: [],
+                        nominal: [],
                         label: this.formatLabel(keys[type]),
                         name: keys[type],
                         direction: {
@@ -1060,6 +1122,7 @@ define([
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
+                this.dataset[set].nominal.push([date.unix() * 1000, nominal_value]);
                 webgnome.mass_balance = this.dataset;
             }
         },

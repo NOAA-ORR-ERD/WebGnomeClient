@@ -34,6 +34,7 @@ define([
 
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
             this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
+            this.$('#fetch-units option[value="' + this.model.get('units').fetch + '"]').attr('selected', 'selected');
 
             if (!_.isNull(this.model.get('fetch'))){
                 this.$('#data-source').val('fetch');
@@ -43,7 +44,7 @@ define([
                 this.$('#data-source').val('specified');
                 this.$('#height').val(this.model.get('wave_height'));
             }
-            
+
             if ([0, 15, 32].indexOf(this.model.get('salinity')) === -1){
                 // one of the drop down options was not selected.
                 this.$('.salinity-select').parent().hide();
@@ -120,6 +121,13 @@ define([
 
         revealManualInputs: function(e){
             var value = e.currentTarget.value;
+
+            // special case for when a user selects selinity/sediment number in select
+            if(value.match(/\d*/)[0] !== '' || ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1){
+                this.update(e);
+            }
+
+            // for water sediment/salinity other select
             if (value === 'other'){
                 this.$(e.currentTarget).parent().addClass('hide');
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
@@ -127,8 +135,17 @@ define([
             if (['fetch', 'specified'].indexOf(value) !== -1) {
                 this.$('.fetch, .specified').addClass('hide');
                 this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
+                if (value === 'fetch') {
+                    this.model.set('fetch', '');
+                    this.model.set('wave_height', null);
+                } else if (value === 'specified') {
+                    this.model.set('wave_height', '');
+                    this.model.set('fetch', null);
+                }
             } else if (value === 'windcalc') {
                 this.$('.fetch, .specified').addClass('hide');
+                this.model.set('wave_height', null);
+                this.model.set('fetch', null);
             }
         }
 

@@ -18,7 +18,7 @@ define([
                 'element_type': new GnomeElement(),
                 'name': 'Spill',
                 'amount': 0,
-                'units': 'bbl'
+                'units': ''
             };
         },
 
@@ -41,6 +41,11 @@ define([
             } else if (attrs.amount <= 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
+            }
+
+            if (!attrs.units) {
+                this.validationContext = 'info';
+                return 'You must select a unit for the spill amount!';
             }
 
             if (massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
@@ -82,6 +87,9 @@ define([
             } else if (attrs.amount <= 0) {
                 this.validationContext = 'info';
                 return 'Amount must be a positive number';
+            } else if (!attrs.units) {
+                this.validationContext = 'info';
+                return 'A unit for amount must be selected';
             }
         },
 
