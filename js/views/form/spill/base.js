@@ -449,15 +449,14 @@ define([
                         return feature;
                     }
                 });
+                this.spillPlacementAllowed = true;
                 if (!_.isUndefined(feature)){
                     this.$el.css('cursor', 'not-allowed');
                     this.spillPlacementAllowed = false;
                 } else if (this.spillToggle){
                     this.$el.css('cursor', 'crosshair');
-                    this.spillPlacementAllowed = true;
                 } else {
                     this.$el.css('cursor', '');
-                    this.spillPlacementAllowed = true;
                 }
             }, this));
         },
@@ -491,7 +490,7 @@ define([
                     }, this));
                 }
             }
-		},
+        },
 
         convertCoords: function(coordsArray){
             coordsArray = _.clone(coordsArray);
@@ -556,10 +555,6 @@ define([
                 start_position = [start_position[0], start_position[1]];
                 end_position = [end_position[0], end_position[1]];
                 geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
-                // featureStyle = new ol.style.Stroke({
-                //     color: '#3399CC',
-                //     width: 1.25
-                // });
             }
             var feature = new ol.Feature({
                 geometry: geom,
