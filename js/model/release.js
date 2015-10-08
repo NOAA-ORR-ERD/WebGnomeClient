@@ -28,11 +28,12 @@ define([
             }
 
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
             var end_time = '';
             if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
-                end_time = start_time.add(webgnome.model.get('duration'), 's');
+                end_time = start_time.clone();
+                end_time.add(webgnome.model.get('duration'), 's');
             } else {
                 end_time = moment();
             }
@@ -48,7 +49,7 @@ define([
             }
             
             if(_.isUndefined(this.get('end_release_time'))){
-                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
+                this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:mm:ss'));
             }
 
             BaseModel.prototype.initialize.call(this, options);
