@@ -439,6 +439,24 @@ define([
             }
         },
 
+        checkForShoreline: function(coordsObj) {
+            var map = this.spillMapView.map;
+            for (var key in coordsObj) {
+                coordsObj[key].pop();
+                var convertedCoords = new ol.proj.transform(coordsObj[key], 'EPSG:4326', 'EPSG:3857');
+                var pixel = map.getPixelFromCoordinate(convertedCoords);
+                var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
+                    if (feature.get('name') === 'Shoreline') {
+                        return feature;
+                    }
+                });
+                if (!_.isUndefined(feature)){
+                    return false;
+                }
+            }
+            return true;
+        },
+
         toggleMapHover: function(){
             var map = this.spillMapView.map;
             this.$(map.getViewport()).on('mousemove', _.bind(function(e){
@@ -507,31 +525,6 @@ define([
                 featureType = 'Point';
             }
 
-            // if(this.spillToggle){
-            //     this.spillToggle = false;
-
-            //     if(this.$('.on').hasClass('fixed')){
-            //         //this.spillMapView.map.un('click', this.addPointSpill, this);
-            //         featureType = 'Point';
-            //     } else {
-            //         //this.spillMapView.map.un('click', this.addLineSpill, this);
-            //         featureType = 'Linestring';
-            //     }
-
-            //     this.$('.on').toggleClass('on');
-            // } else {
-            //     this.spillToggle = true;
-            //     this.$(e.target).toggleClass('on');
-
-            //     if(this.$(e.target).hasClass('fixed')){
-            //         //this.spillMapView.map.on('click', this.addPointSpill, this);
-            //         featureType = 'Point';
-            //     } else {
-            //         //this.spillMapView.map.once('click', this.addLineSpill, this);
-            //         featureType = 'LineString';
-            //     }
-            // }
-
             if (!_.isUndefined(this.drawInteraction)) {
                 var interaction = this.drawInteraction;
                 this.spillMapView.map.removeInteraction(interaction);
@@ -543,6 +536,8 @@ define([
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
 
+            //this.drawInteraction.on('drawstart', _.bind(function(e)))
+
             this.drawInteraction.on('drawend', _.bind(function(e){
                 var coordsObj;
                 if (featureType === 'Point') {
@@ -550,7 +545,12 @@ define([
                 } else if (featureType === 'LineString') {
                     coordsObj = this.transformLineStringCoords(e.feature.getGeometry().getCoordinates());
                 }
-                if (this.spillPlacementAllowed) {
+
+                var coordsAreValid = this.checkForShoreline(coordsObj);
+
+                console.log(coordsAreValid);
+
+                if (this.spillPlacementAllowed && coordsAreValid) {
                     this.model.get('release').set('start_position', coordsObj.start);
                     this.model.get('release').set('end_position', coordsObj.end);
                     this.setManualFields();
@@ -598,7 +598,6 @@ define([
             var start_position = this.model.get('release').get('start_position');
             var end_position = this.model.get('release').get('end_position');
             var geom, featureStyle;
-            this.source.clear();
             if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
                 geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
@@ -619,6 +618,7 @@ define([
                 spill: this.model.get('id')
             });
             if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
+            this.source.clear();
             this.source.addFeature(feature);
         },
 
