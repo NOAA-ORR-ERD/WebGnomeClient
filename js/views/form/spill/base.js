@@ -507,8 +507,6 @@ define([
                 featureType = 'Point';
             }
 
-            console.log(featureType);
-
             // if(this.spillToggle){
             //     this.spillToggle = false;
 
@@ -540,8 +538,7 @@ define([
             }
 
             var draw = new ol.interaction.Draw({
-                type: featureType,
-                source: this.source
+                type: featureType
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
@@ -553,12 +550,13 @@ define([
                 } else if (featureType === 'LineString') {
                     coordsObj = this.transformLineStringCoords(e.feature.getGeometry().getCoordinates());
                 }
-                this.model.get('release').set('start_position', coordsObj.start);
-                this.model.get('release').set('end_position', coordsObj.end);
-                console.log(coordsObj);
-                this.setManualFields();
-                this.renderSpillFeature();
-                this.tabStatusSetter();
+                if (this.spillPlacementAllowed) {
+                    this.model.get('release').set('start_position', coordsObj.start);
+                    this.model.get('release').set('end_position', coordsObj.end);
+                    this.setManualFields();
+                    this.renderSpillFeature();
+                    this.tabStatusSetter();
+                }
             }, this));
             this.update();
         },
@@ -569,7 +567,6 @@ define([
             for (var i = 0; i < coordsArr.length; i++){
                 outputArr[i] = new ol.proj.transform(coordsArr, 'EPSG:3857', 'EPSG:4326');
                 outputArr[i].push(0);
-                console.log(outputArr, outputArr[0], outputArr[outputArr.length - 1]);
             }
 
             return {
@@ -591,15 +588,17 @@ define([
                 }
                 outputArr[i].push(pointsArr);
             }
-            console.log(outputArr);
+            
+            var endIndex = outputArr[0][0].length - 1;
 
-            return {start: outputArr[0][0][0], end: outputArr[0][0][1]};
+            return {start: outputArr[0][0][0], end: outputArr[0][0][endIndex]};
         },
 
         renderSpillFeature: function(){
             var start_position = this.model.get('release').get('start_position');
             var end_position = this.model.get('release').get('end_position');
             var geom, featureStyle;
+            this.source.clear();
             if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
                 geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
@@ -620,7 +619,6 @@ define([
                 spill: this.model.get('id')
             });
             if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
-            this.source.clear();
             this.source.addFeature(feature);
         },
 
