@@ -431,7 +431,7 @@ define([
                 this.toggleMapHover();
                 this.addMapControls();
                 this.mapShown = true;
-                //this.addDrawInteraction();
+                this.toggleSpill();
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
@@ -492,38 +492,51 @@ define([
         },
 
         toggleSpill: function(e){
-            e.preventDefault();
-            e.stopPropagation();
-
             var featureType;
 
-            if(this.spillToggle){
-                this.spillToggle = false;
+            if (!_.isUndefined(e)) {
+                e.preventDefault();
+                e.stopPropagation();
 
-                if(this.$('.on').hasClass('fixed')){
-                    //this.spillMapView.map.un('click', this.addPointSpill, this);
+                if (this.$(e.target).hasClass('fixed')) {
                     featureType = 'Point';
                 } else {
-                    //this.spillMapView.map.un('click', this.addLineSpill, this);
-                    featureType = 'Linestring';
-                }
-
-                this.$('.on').toggleClass('on');
-            } else {
-                this.spillToggle = true;
-                this.$(e.target).toggleClass('on');
-
-                if(this.$(e.target).hasClass('fixed')){
-                    //this.spillMapView.map.on('click', this.addPointSpill, this);
-                    featureType = 'Point';
-                } else {
-                    //this.spillMapView.map.once('click', this.addLineSpill, this);
                     featureType = 'LineString';
                 }
+            } else {
+                featureType = 'Point';
             }
 
-            if (!_.isUndefined(this.drawInteraction)){
+            console.log(featureType);
 
+            // if(this.spillToggle){
+            //     this.spillToggle = false;
+
+            //     if(this.$('.on').hasClass('fixed')){
+            //         //this.spillMapView.map.un('click', this.addPointSpill, this);
+            //         featureType = 'Point';
+            //     } else {
+            //         //this.spillMapView.map.un('click', this.addLineSpill, this);
+            //         featureType = 'Linestring';
+            //     }
+
+            //     this.$('.on').toggleClass('on');
+            // } else {
+            //     this.spillToggle = true;
+            //     this.$(e.target).toggleClass('on');
+
+            //     if(this.$(e.target).hasClass('fixed')){
+            //         //this.spillMapView.map.on('click', this.addPointSpill, this);
+            //         featureType = 'Point';
+            //     } else {
+            //         //this.spillMapView.map.once('click', this.addLineSpill, this);
+            //         featureType = 'LineString';
+            //     }
+            // }
+
+            if (!_.isUndefined(this.drawInteraction)) {
+                var interaction = this.drawInteraction;
+                this.spillMapView.map.removeInteraction(interaction);
             }
 
             var draw = new ol.interaction.Draw({
@@ -542,9 +555,10 @@ define([
                 }
                 this.model.get('release').set('start_position', coordsObj.start);
                 this.model.get('release').set('end_position', coordsObj.end);
+                console.log(coordsObj);
                 this.setManualFields();
                 this.renderSpillFeature();
-                this.update();
+                this.tabStatusSetter();
             }, this));
             this.update();
         },
@@ -579,7 +593,7 @@ define([
             }
             console.log(outputArr);
 
-            return {start: outputArr[0][0], end: outputArr[0][1]};
+            return {start: outputArr[0][0][0], end: outputArr[0][0][1]};
         },
 
         renderSpillFeature: function(){
