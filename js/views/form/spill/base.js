@@ -388,7 +388,6 @@ define([
                             var spillSubstance = spill.get('element_type').get('substance');
                             if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) ||
                                 !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
-
                                     spill.get('element_type').set('substance', oilSubstance);
                                     spill.save();
                             }
@@ -432,7 +431,7 @@ define([
                 this.toggleMapHover();
                 this.addMapControls();
                 this.mapShown = true;
-                this.addDrawInteraction();
+                //this.addDrawInteraction();
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
@@ -495,13 +494,18 @@ define([
         toggleSpill: function(e){
             e.preventDefault();
             e.stopPropagation();
+
+            var featureType;
+
             if(this.spillToggle){
                 this.spillToggle = false;
 
                 if(this.$('.on').hasClass('fixed')){
-                    this.spillMapView.map.un('click', this.addPointSpill, this);
+                    //this.spillMapView.map.un('click', this.addPointSpill, this);
+                    featureType = 'Point';
                 } else {
-                    this.spillMapView.map.un('click', this.addLineSpill, this);
+                    //this.spillMapView.map.un('click', this.addLineSpill, this);
+                    featureType = 'Linestring';
                 }
 
                 this.$('.on').toggleClass('on');
@@ -510,36 +514,48 @@ define([
                 this.$(e.target).toggleClass('on');
 
                 if(this.$(e.target).hasClass('fixed')){
-                    this.spillMapView.map.on('click', this.addPointSpill, this);
+                    //this.spillMapView.map.on('click', this.addPointSpill, this);
+                    featureType = 'Point';
                 } else {
-                    this.spillMapView.map.once('click', this.addLineSpill, this);
+                    //this.spillMapView.map.once('click', this.addLineSpill, this);
+                    featureType = 'LineString';
                 }
             }
-            this.update();
-        },
 
-        addDrawInteraction: function(){
+            if (!_.isUndefined(this.drawInteraction)){
+
+            }
+
             var draw = new ol.interaction.Draw({
-                type: 'Point',
+                type: featureType,
                 source: this.source
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
 
             this.drawInteraction.on('drawend', _.bind(function(e){
-                var coordsObj = this.transformCoordsArray(e.feature.getGeometry().getCoordinates());
+                var coordsObj;
+                if (featureType === 'Point') {
+                    coordsObj = this.transformPointCoords(e.feature.getGeometry().getCoordinates());
+                } else if (featureType === 'LineString') {
+                    coordsObj = this.transformLineStringCoords(e.feature.getGeometry().getCoordinates());
+                }
                 this.model.get('release').set('start_position', coordsObj.start);
                 this.model.get('release').set('end_position', coordsObj.end);
                 this.setManualFields();
                 this.renderSpillFeature();
+                this.update();
             }, this));
+            this.update();
         },
 
-        transformCoordsArray: function(coordsArr){
+        transformPointCoords: function(coordsArr){
             var outputArr = [];
+            var points;
             for (var i = 0; i < coordsArr.length; i++){
                 outputArr[i] = new ol.proj.transform(coordsArr, 'EPSG:3857', 'EPSG:4326');
                 outputArr[i].push(0);
+                console.log(outputArr, outputArr[0], outputArr[outputArr.length - 1]);
             }
 
             return {
@@ -548,14 +564,27 @@ define([
             };
         },
 
-        modifyDrawInteraction: function(){
+        transformLineStringCoords: function(coordsArr){
+            var outputArr = [];
+            var points;
+            for (var i = 0; i < coordsArr.length; i++){
+                var pointsArr = [];
+                outputArr[i] = [];
+                for (var k = 0; k < coordsArr[i].length; k++){
+                    var point = new ol.proj.transform(coordsArr[k], 'EPSG:3857', 'EPSG:4326');
+                    point.push(0);
+                    pointsArr.push(point);
+                }
+                outputArr[i].push(pointsArr);
+            }
+            console.log(outputArr);
 
+            return {start: outputArr[0][0], end: outputArr[0][1]};
         },
 
         renderSpillFeature: function(){
             var start_position = this.model.get('release').get('start_position');
             var end_position = this.model.get('release').get('end_position');
-            console.log(start_position, end_position);
             var geom, featureStyle;
             if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
@@ -647,22 +676,7 @@ define([
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
             this.model.get('release').set('end_position', endPosition);
-            startCoords = ol.proj.transform(startCoords, 'EPSG:4326', 'EPSG:3857');
-            endCoords = ol.proj.transform(endCoords, 'EPSG:4326', 'EPSG:3857');
-            var coordsArray = [startCoords, endCoords];
-            if (startCoords[0] === endCoords[0] && startCoords[1] === endCoords[1]){
-                feature = new ol.Feature(new ol.geom.Point(startCoords));
-                feature.setStyle( new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        }));
-            } else {
-                feature = new ol.Feature(new ol.geom.LineString(coordsArray));
-            }
-            this.source.addFeature(feature);
+            this.renderSpillFeature();
             this.spillMapView.map.getView().setCenter(startCoords);
             this.spillMapView.map.getView().setZoom(15);
         },
