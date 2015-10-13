@@ -38,7 +38,7 @@ define([
         },
 
         realLocation: function(e){
-            this.trigger('realLocation');
+            this.hide();
         }
 
     });
