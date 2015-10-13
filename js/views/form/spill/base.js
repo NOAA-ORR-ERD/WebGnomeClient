@@ -536,8 +536,6 @@ define([
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
 
-            //this.drawInteraction.on('drawstart', _.bind(function(e)))
-
             this.drawInteraction.on('drawend', _.bind(function(e){
                 var coordsObj;
                 if (featureType === 'Point') {
@@ -545,20 +543,28 @@ define([
                 } else if (featureType === 'LineString') {
                     coordsObj = this.transformLineStringCoords(e.feature.getGeometry().getCoordinates());
                 }
+                var coordsCopy = coordsObj;
+                var coordsAreValid = this.checkForShoreline(coordsCopy);
 
-                var coordsAreValid = this.checkForShoreline(coordsObj);
-
-                console.log(coordsAreValid);
+                var convertedCoords = this.convertCoordObj(coordsObj);
 
                 if (this.spillPlacementAllowed && coordsAreValid) {
-                    this.model.get('release').set('start_position', coordsObj.start);
-                    this.model.get('release').set('end_position', coordsObj.end);
+                    this.model.get('release').set('start_position', convertedCoords.start);
+                    this.model.get('release').set('end_position', convertedCoords.end);
                     this.setManualFields();
                     this.renderSpillFeature();
                     this.tabStatusSetter();
                 }
             }, this));
             this.update();
+        },
+
+        convertCoordObj: function(obj){
+            for (var key in obj) {
+                obj[key].push(0);
+            }
+
+            return obj;
         },
 
         transformPointCoords: function(coordsArr){
@@ -598,7 +604,7 @@ define([
             var start_position = this.model.get('release').get('start_position');
             var end_position = this.model.get('release').get('end_position');
             var geom, featureStyle;
-            if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
+            if(start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
                 geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
                 featureStyle = new ol.style.Style({
