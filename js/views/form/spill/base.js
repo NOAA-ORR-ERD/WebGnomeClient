@@ -518,16 +518,21 @@ define([
 
                 if (this.$(e.target).hasClass('fixed')) {
                     featureType = 'Point';
+                    this.$('.fixed').addClass('on');
+                    this.$('.moving').removeClass('on');
                 } else {
                     featureType = 'LineString';
+                    this.$('.moving').addClass('on');
+                    this.$('.fixed').removeClass('on');
                 }
             } else {
                 featureType = 'Point';
+                this.$('.fixed').addClass('on');
             }
 
             if (!_.isUndefined(this.drawInteraction)) {
-                var interaction = this.drawInteraction;
-                this.spillMapView.map.removeInteraction(interaction);
+                var drawInteract = this.drawInteraction;
+                this.spillMapView.map.removeInteraction(drawInteract);
             }
 
             var draw = new ol.interaction.Draw({
@@ -535,6 +540,8 @@ define([
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
+
+            var source = this.source;
 
             this.drawInteraction.on('drawend', _.bind(function(e){
                 var coordsObj;
