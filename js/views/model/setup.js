@@ -995,15 +995,15 @@ define([
         clickMap: function(){
             var mapForm = new MapTypeForm(null, webgnome.model.get('map'));
             mapForm.on('hidden', mapForm.close);
-            mapForm.on('realLocation', _.bind(function(){
-                var location = new LocationForm();
-                location.on('loaded', _.bind(function(){
-                    this.updateLocation();
-                    this.updateCurrent();
-                    this.mason.layout();
-                }, this));
-                location.render();
-            }, this));
+            // mapForm.on('realLocation', _.bind(function(){
+            //     var location = new LocationForm();
+            //     location.on('loaded', _.bind(function(){
+            //         this.updateLocation();
+            //         this.updateCurrent();
+            //         this.mason.layout();
+            //     }, this));
+            //     location.render();
+            // }, this));
             mapForm.on('waterWorld', function(){
                 webgnome.model.resetLocation(function(){
                     webgnome.router.views[1].updateLocation();

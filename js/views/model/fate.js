@@ -1130,7 +1130,7 @@ define([
         runIterator: function(set){
             return (function(run){
                 if (!_.isNull(run)){
-                    return run[this.dataset[set].name];
+                    return run['floating'];
                 }
             });
         },
