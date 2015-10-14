@@ -542,22 +542,18 @@ define([
                 this.spillMapView.map.removeInteraction(drawInteract);
             }
 
-            if (!_.isUndefined(this.modifyInteraction)) {
-                var modifyInteract = this.modifyInteraction;
-                this.spillMapView.map.removeInteraction(modifyInteract);
-            }
-
             var draw = new ol.interaction.Draw({
                 type: featureType
             });
             this.spillMapView.map.addInteraction(draw);
             this.drawInteraction = draw;
 
-            this.drawInteraction.on('drawend', _.bind(this.drawModifyEndCallback, this));
+            this.drawInteraction.on('drawend', _.bind(this.drawEndCallback, this));
+            this.renderSpillFeature();
             this.update();
         },
 
-        drawModifyEndCallback: function(e) {
+        drawEndCallback: function(e) {
             var coordsObj;
             var featureType = this.featureType;
             if (featureType === 'Point') {
@@ -578,6 +574,11 @@ define([
                 this.tabStatusSetter();
             }
 
+            if (!_.isUndefined(this.modifyInteraction)) {
+                var modifyInteract = this.modifyInteraction;
+                this.spillMapView.map.removeInteraction(modifyInteract);
+            }
+
             var features = new ol.Collection(this.source.getFeatures());
 
             var modify = new ol.interaction.Modify({
@@ -588,6 +589,30 @@ define([
             });
             this.spillMapView.map.addInteraction(modify);
             this.modifyInteraction = modify;
+            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
+        },
+
+        modifyEndCallback: function(e) {
+            var coordsObj;
+            var featureType = this.featureType;
+
+            if (featureType === 'Point') {
+                coordsObj = this.transformPointCoords(e.features.array_[0].getGeometry().getCoordinates());
+            } else if (featureType === 'LineString') {
+                coordsObj = this.transformLineStringCoords(e.features.array_[0].getGeometry().getCoordinates());
+            }
+            var coordsCopy = coordsObj;
+            var coordsAreValid = this.checkForShoreline(coordsCopy);
+
+            var convertedCoords = this.convertCoordObj(coordsObj);
+
+            if (this.spillPlacementAllowed && coordsAreValid) {
+                this.model.get('release').set('start_position', convertedCoords.start);
+                this.model.get('release').set('end_position', convertedCoords.end);
+                this.setManualFields();
+                this.renderSpillFeature();
+                this.tabStatusSetter();
+            }
         },
 
         convertCoordObj: function(obj){
