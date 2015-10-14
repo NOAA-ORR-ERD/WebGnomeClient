@@ -51,8 +51,7 @@ define([
             'click #ics209 .export a.print': 'printTableICS',
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
-            'click .print-graph': 'printGraphImage',
-            'click #budget-graph .pies .panel': 'clickPie'
+            'click .print-graph': 'printGraphImage'
         },
         dataPrecision: 3,
 
@@ -410,15 +409,6 @@ define([
                     this.$('.chart-holder-uncert').addClass('invisible');
                 }
             }
-        },
-
-        clickPie: function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            this.$('.pies .panel-primary').toggleClass('panel-primary panel-blank');
-            this.$(e.currentTarget).toggleClass('panel-primary panel-blank');
-            this.graphOilBudget = undefined;
-            this.renderGraphOilBudget(this.dataset);
         },
 
         pieFloating: function(data){
