@@ -573,23 +573,7 @@ define([
                 this.renderSpillFeature();
                 this.tabStatusSetter();
             }
-
-            if (!_.isUndefined(this.modifyInteraction)) {
-                var modifyInteract = this.modifyInteraction;
-                this.spillMapView.map.removeInteraction(modifyInteract);
-            }
-
-            var features = new ol.Collection(this.source.getFeatures());
-
-            var modify = new ol.interaction.Modify({
-                features: features,
-                deleteCondition: _.bind(function(e) {
-                    return ol.events.condition.singleClick(e);
-                }, this)
-            });
-            this.spillMapView.map.addInteraction(modify);
-            this.modifyInteraction = modify;
-            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
+            
         },
 
         modifyEndCallback: function(e) {
@@ -682,6 +666,23 @@ define([
             if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
             this.source.clear();
             this.source.addFeature(feature);
+
+            if (!_.isUndefined(this.modifyInteraction)) {
+                var modifyInteract = this.modifyInteraction;
+                this.spillMapView.map.removeInteraction(modifyInteract);
+            }
+
+            var features = new ol.Collection(this.source.getFeatures());
+
+            var modify = new ol.interaction.Modify({
+                features: features,
+                deleteCondition: _.bind(function(e) {
+                    return ol.events.condition.singleClick(e);
+                }, this)
+            });
+            this.spillMapView.map.addInteraction(modify);
+            this.modifyInteraction = modify;
+            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
         },
 
         addPointSpill: function(e){
