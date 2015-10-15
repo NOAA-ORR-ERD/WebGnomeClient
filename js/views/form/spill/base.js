@@ -431,11 +431,11 @@ define([
                 this.toggleMapHover();
                 this.addMapControls();
                 this.mapShown = true;
-                this.toggleSpill();
                 setTimeout(_.bind(function(){
                     this.spillMapView.map.updateSize();
                 }, this), 250);
                 this.renderSpillFeature();
+                this.toggleSpill();
             }
         },
 
@@ -525,6 +525,13 @@ define([
                     this.$('.moving').addClass('on');
                     this.$('.fixed').removeClass('on');
                 }
+            } else if (!_.isUndefined(this.renderedFeature)) {
+                featureType = this.renderedFeature;
+                if (featureType === 'Point') {
+                    this.$('.fixed').addClass('on');
+                } else {
+                    this.$('.moving').addClass('on');
+                }
             } else {
                 featureType = 'Point';
                 this.$('.fixed').addClass('on');
@@ -578,7 +585,7 @@ define([
 
         modifyEndCallback: function(e) {
             var coordsObj;
-            var featureType = this.featureType;
+            var featureType = this.renderedFeature;
 
             if (featureType === 'Point') {
                 coordsObj = this.transformPointCoords(e.features.getArray()[0].getGeometry().getCoordinates());
@@ -655,16 +662,18 @@ define([
                                 size: [32, 40]
                             })
                         });
+                this.renderedFeature = 'Point';
             } else {
                 start_position = [start_position[0], start_position[1]];
                 end_position = [end_position[0], end_position[1]];
                 geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
+                this.renderedFeature = 'LineString';
             }
             var feature = new ol.Feature({
                 geometry: geom,
                 spill: this.model.get('id')
             });
-            if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
+            if (!_.isUndefined(featureStyle)) { feature.setStyle(featureStyle); }
             this.source.clear();
             this.source.addFeature(feature);
 
