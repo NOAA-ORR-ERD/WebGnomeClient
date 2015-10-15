@@ -140,6 +140,7 @@ define([
 
         spillsChange: function(child){
             this.childChange('spills', child);
+            this.toggleWeatherers(child);
         },
 
         weatherersChange: function(child){
@@ -156,6 +157,10 @@ define([
             }
             this.changed[attr][child.get('id')] = child.changed;
             this.trigger('change', this);
+        },
+
+        toggleWeatherers: function() {
+
         },
 
         validateSpills: function() {
