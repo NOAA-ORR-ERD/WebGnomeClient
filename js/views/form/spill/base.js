@@ -581,22 +581,25 @@ define([
             var featureType = this.featureType;
 
             if (featureType === 'Point') {
-                coordsObj = this.transformPointCoords(e.features.array_[0].getGeometry().getCoordinates());
+                coordsObj = this.transformPointCoords(e.features.getArray()[0].getGeometry().getCoordinates());
             } else if (featureType === 'LineString') {
-                coordsObj = this.transformLineStringCoords(e.features.array_[0].getGeometry().getCoordinates());
+                coordsObj = this.transformLineStringCoords(e.features.getArray()[0].getGeometry().getCoordinates());
             }
             var coordsCopy = coordsObj;
             var coordsAreValid = this.checkForShoreline(coordsCopy);
 
             var convertedCoords = this.convertCoordObj(coordsObj);
 
+            console.log(coordsAreValid);
+
             if (this.spillPlacementAllowed && coordsAreValid) {
                 this.model.get('release').set('start_position', convertedCoords.start);
                 this.model.get('release').set('end_position', convertedCoords.end);
                 this.setManualFields();
-                this.renderSpillFeature();
                 this.tabStatusSetter();
             }
+
+            this.renderSpillFeature();
         },
 
         convertCoordObj: function(obj){
