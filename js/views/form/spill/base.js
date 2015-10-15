@@ -590,8 +590,6 @@ define([
 
             var convertedCoords = this.convertCoordObj(coordsObj);
 
-            console.log(coordsAreValid);
-
             if (this.spillPlacementAllowed && coordsAreValid) {
                 this.model.get('release').set('start_position', convertedCoords.start);
                 this.model.get('release').set('end_position', convertedCoords.end);
