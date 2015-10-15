@@ -145,6 +145,7 @@ define([
 
         weatherersChange: function(child){
             this.childChange('weatherers', child);
+            this.toggleWeatherers(child);
         },
 
         outputtersChange: function(child){
@@ -173,7 +174,7 @@ define([
         toggleWeatherers: function(spillChild) {
             var hasSubstance = this.spillHasSubstance();
             var weatherers = this.get('weatherers');
-            
+
             for (var i = 0; i < weatherers.models.length; i++) {
                 weatherers.at(i).set('on', hasSubstance);
             }
