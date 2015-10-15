@@ -8,33 +8,36 @@ define([
     var olMapView = Backbone.View.extend({
         className: 'map',
         id:'map',
-        redraw: false,
-        interactions: ol.interaction.defaults(),
-        controls: ol.control.defaults().extend([
-            new ol.control.MousePosition({
-                coordinateFormat: function(coordinates){
-                    if(coordinates){
-                        var coords = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
-                        return 'Lat: ' + Math.round(coords[1] * 100) / 100 + ' Lng: ' + Math.round(coords[0] * 100) / 100;
-                    }
-                },
-                undefinedHTML: 'Mouse out of bounds'
-            })
-        ]),
-        layers: [
-            new ol.layer.Tile({
-                source: new ol.source.MapQuest({layer: 'osm'}),
-                name: 'basemap'
-            })
-        ],
-        center: ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857'),
-        overlays: [],
-        extent: [-20037508.34, -20037508.34, 20037508.34, 20037508.34],
-        zoom: 10,
-        renderer: 'canvas',
 
+        defaults: function(){
+            this.redraw = false;
+            this.interactions = ol.interaction.defaults();
+            this.controls = ol.control.defaults().extend([
+                new ol.control.MousePosition({
+                    coordinateFormat: function(coordinates){
+                        if(coordinates){
+                            var coords = ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326');
+                            return 'Lat: ' + Math.round(coords[1] * 100) / 100 + ' Lng: ' + Math.round(coords[0] * 100) / 100;
+                        }
+                    },
+                    undefinedHTML: 'Mouse out of bounds'
+                })
+            ]);
+            this.layers = [
+                new ol.layer.Tile({
+                    source: new ol.source.MapQuest({layer: 'osm'}),
+                    name: 'basemap'
+                })
+            ];
+            this.center = ol.proj.transform([-99.6, 40.6], 'EPSG:4326', 'EPSG:3857');
+            this.overlays = [];
+            this.extent = [-20037508.34, -20037508.34, 20037508.34, 20037508.34];
+            this.zoom = 10;
+            this.renderer = 'canvas';
+        },
 
         initialize: function(options){
+            this.defaults();
             if(!_.isUndefined(options)){
                 if(!_.isUndefined(options.id)){
                     this.id = options.id;
