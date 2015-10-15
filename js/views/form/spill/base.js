@@ -573,23 +573,7 @@ define([
                 this.renderSpillFeature();
                 this.tabStatusSetter();
             }
-
-            if (!_.isUndefined(this.modifyInteraction)) {
-                var modifyInteract = this.modifyInteraction;
-                this.spillMapView.map.removeInteraction(modifyInteract);
-            }
-
-            var features = new ol.Collection(this.source.getFeatures());
-
-            var modify = new ol.interaction.Modify({
-                features: features,
-                deleteCondition: _.bind(function(e) {
-                    return ol.events.condition.singleClick(e);
-                }, this)
-            });
-            this.spillMapView.map.addInteraction(modify);
-            this.modifyInteraction = modify;
-            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
+            
         },
 
         modifyEndCallback: function(e) {
@@ -597,22 +581,25 @@ define([
             var featureType = this.featureType;
 
             if (featureType === 'Point') {
-                coordsObj = this.transformPointCoords(e.features.array_[0].getGeometry().getCoordinates());
+                coordsObj = this.transformPointCoords(e.features.getArray()[0].getGeometry().getCoordinates());
             } else if (featureType === 'LineString') {
-                coordsObj = this.transformLineStringCoords(e.features.array_[0].getGeometry().getCoordinates());
+                coordsObj = this.transformLineStringCoords(e.features.getArray()[0].getGeometry().getCoordinates());
             }
             var coordsCopy = coordsObj;
             var coordsAreValid = this.checkForShoreline(coordsCopy);
 
             var convertedCoords = this.convertCoordObj(coordsObj);
 
+            console.log(coordsAreValid);
+
             if (this.spillPlacementAllowed && coordsAreValid) {
                 this.model.get('release').set('start_position', convertedCoords.start);
                 this.model.get('release').set('end_position', convertedCoords.end);
                 this.setManualFields();
-                this.renderSpillFeature();
                 this.tabStatusSetter();
             }
+
+            this.renderSpillFeature();
         },
 
         convertCoordObj: function(obj){
@@ -682,6 +669,23 @@ define([
             if (!_.isUndefined(featureStyle)) feature.setStyle(featureStyle);
             this.source.clear();
             this.source.addFeature(feature);
+
+            if (!_.isUndefined(this.modifyInteraction)) {
+                var modifyInteract = this.modifyInteraction;
+                this.spillMapView.map.removeInteraction(modifyInteract);
+            }
+
+            var features = new ol.Collection(this.source.getFeatures());
+
+            var modify = new ol.interaction.Modify({
+                features: features,
+                deleteCondition: _.bind(function(e) {
+                    return ol.events.condition.singleClick(e);
+                }, this)
+            });
+            this.spillMapView.map.addInteraction(modify);
+            this.modifyInteraction = modify;
+            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
         },
 
         addPointSpill: function(e){
