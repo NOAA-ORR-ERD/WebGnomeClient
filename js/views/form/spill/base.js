@@ -526,7 +526,6 @@ define([
                     this.$('.fixed').removeClass('on');
                 }
             } else if (!_.isUndefined(this.renderedFeature)) {
-                console.log(this.renderedFeature);
                 featureType = this.renderedFeature;
                 if (featureType === 'Point') {
                     this.$('.fixed').addClass('on');
