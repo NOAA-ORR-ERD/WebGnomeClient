@@ -159,8 +159,24 @@ define([
             this.trigger('change', this);
         },
 
-        toggleWeatherers: function() {
+        spillHasSubstance: function() {
+            var hasSubstance = false;
+            var spills = this.get('spills');
 
+            if (spills.length > 0 && !_.isNull(spills.at(0).get('element_type').get('substance'))) {
+                hasSubstance = true;
+            }
+
+            return hasSubstance;
+        },
+
+        toggleWeatherers: function(spillChild) {
+            var hasSubstance = this.spillHasSubstance();
+            var weatherers = this.get('weatherers');
+            
+            for (var i = 0; i < weatherers.models.length; i++) {
+                weatherers.at(i).set('on', hasSubstance);
+            }
         },
 
         validateSpills: function() {
