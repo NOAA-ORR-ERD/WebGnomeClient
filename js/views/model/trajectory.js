@@ -120,8 +120,23 @@ define([
             currents: function(feature, resolution){
                 if(!_.has(webgnome.styleCache, 'currents')){
                     webgnome.styleCache.currents = {};
+                    webgnome.styleCache.currents['0,0'] = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            stroke: new ol.style.Stroke({
+                                color: [171, 37, 184, 0.75],
+                                width: 1
+                            }),
+                            radius: 1
+                        }),
+                        text: new ol.style.Text({
+                            text: '0, 0',
+                            fill: new ol.style.Fill({
+                                color: '#000'
+                            })
+                        })
+                    });
                 }
-                // TODO: should add cache for generated style
+
                 var features = feature.get('features');
 
                 var v_x = 0;
