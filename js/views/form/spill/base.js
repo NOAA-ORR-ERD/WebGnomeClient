@@ -525,16 +525,6 @@ define([
                     this.$('.moving').addClass('on');
                     this.$('.fixed').removeClass('on');
                 }
-            } else if (!_.isUndefined(this.renderedFeature)) {
-                featureType = this.renderedFeature;
-                if (featureType === 'Point') {
-                    this.$('.fixed').addClass('on');
-                } else {
-                    this.$('.moving').addClass('on');
-                }
-            } else {
-                featureType = 'Point';
-                this.$('.fixed').addClass('on');
             }
 
             this.featureType = featureType;
@@ -544,20 +534,22 @@ define([
             this.getFeatureType(e);
             var featureType = this.featureType;
 
-            if (!_.isUndefined(this.drawInteraction)) {
-                var drawInteract = this.drawInteraction;
-                this.spillMapView.map.removeInteraction(drawInteract);
+            if (!_.isUndefined(featureType)) {
+                if (!_.isUndefined(this.drawInteraction)) {
+                    var drawInteract = this.drawInteraction;
+                    this.spillMapView.map.removeInteraction(drawInteract);
+                }
+
+                var draw = new ol.interaction.Draw({
+                    type: featureType
+                });
+                this.spillMapView.map.addInteraction(draw);
+                this.drawInteraction = draw;
+
+                this.drawInteraction.on('drawend', _.bind(this.drawEndCallback, this));
+                this.renderSpillFeature();
+                this.update();
             }
-
-            var draw = new ol.interaction.Draw({
-                type: featureType
-            });
-            this.spillMapView.map.addInteraction(draw);
-            this.drawInteraction = draw;
-
-            this.drawInteraction.on('drawend', _.bind(this.drawEndCallback, this));
-            this.renderSpillFeature();
-            this.update();
         },
 
         drawEndCallback: function(e) {
@@ -580,7 +572,10 @@ define([
                 this.renderSpillFeature();
                 this.tabStatusSetter();
             }
-            
+
+            var draw = this.drawInteraction;
+            this.spillMapView.map.removeInteraction(draw);
+            this.$('.ol-has-tooltip').removeClass('on');
         },
 
         modifyEndCallback: function(e) {
