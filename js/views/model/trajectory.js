@@ -118,6 +118,10 @@ define([
                 })
             }),
             currents: function(feature, resolution){
+                // the only thing we can cache for styles right now is the 0,0 vectors
+                // every other style has the lat lon geometry tied to it causing
+                // the style for the point to render positioned where the first feature with that 
+                // uv data
                 if(!_.has(webgnome.styleCache, 'currents')){
                     webgnome.styleCache.currents = {};
                     webgnome.styleCache.currents['0,0'] = new ol.style.Style({
@@ -127,12 +131,6 @@ define([
                                 width: 1
                             }),
                             radius: 1
-                        }),
-                        text: new ol.style.Text({
-                            text: '0, 0',
-                            fill: new ol.style.Fill({
-                                color: '#000'
-                            })
                         })
                     });
                 }
@@ -160,8 +158,8 @@ define([
                 var x = shifted[0] - coords[0];
                 var y = shifted[1] - coords[1];
 
-                if(_.has(webgnome.styleCache.currents, x + ',' + y)){
-                    return [webgnome.styleCache.currents[x+','+y]];
+                if(_.has(webgnome.styleCache.currents, v_x + ',' + v_y)){
+                    return [webgnome.styleCache.currents[v_x+','+v_y]];
                 }
 
                 var geom;
@@ -205,7 +203,6 @@ define([
                         width: width
                     })
                 });
-                webgnome.styleCache.currents[x+','+y] = style;
 
                 return [style];
             },
