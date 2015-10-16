@@ -13,7 +13,7 @@
     "requirejs-text": "2.0.12",
     "bootstrap": "3.*.*",
     "datetimepicker": "2.2.9",
-    "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git#3.7.0",
+    "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git#3.10.1",
     "jquery-file-upload": "9.10.1",
     "respond": "1.4.2",
     "compass-rose-ui": "1.0.*",
