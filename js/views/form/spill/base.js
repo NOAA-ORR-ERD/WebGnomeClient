@@ -525,6 +525,9 @@ define([
                     this.$('.moving').addClass('on');
                     this.$('.fixed').removeClass('on');
                 }
+            } else if (this.model.isNew()) {
+                featureType = "Point";
+                this.$('.fixed').addClass('on');
             }
 
             this.featureType = featureType;
