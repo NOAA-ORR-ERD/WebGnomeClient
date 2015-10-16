@@ -18,8 +18,7 @@ define([
             }, FormModal.prototype.events);
         },
 
-        initialize: function(options, model){
-            this.model = model;
+        initialize: function(options){
             FormModal.prototype.initialize.call(this, options);
         },
 

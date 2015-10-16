@@ -993,7 +993,7 @@ define([
         },
 
         clickMap: function(){
-            var mapForm = new MapTypeForm(null, webgnome.model.get('map'));
+            var mapForm = new MapTypeForm();
             mapForm.on('hidden', mapForm.close);
             // mapForm.on('realLocation', _.bind(function(){
             //     var location = new LocationForm();
