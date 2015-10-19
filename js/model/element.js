@@ -29,6 +29,15 @@ define([
             ]
         },
 
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            this.on('change:substance', this.substanceChange, this);
+        },
+
+        substanceChange: function() {
+            this.trigger('change', this);
+        },
+
         validate: function(attrs, options){
             if (attrs.substance && !attrs.substance.isValid()){
                 return attrs.substance.validationError;

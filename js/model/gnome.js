@@ -152,14 +152,6 @@ define([
             this.childChange('outputters', child);
         },
 
-        childChange: function(attr, child){
-            if(!_.isObject(this.changed[attr])){
-                this.changed[attr] = {};
-            }
-            this.changed[attr][child.get('id')] = child.changed;
-            this.trigger('change', this);
-        },
-
         spillHasSubstance: function() {
             var hasSubstance = false;
             var spills = this.get('spills');
