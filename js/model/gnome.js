@@ -152,7 +152,7 @@ define([
             this.childChange('outputters', child);
         },
 
-        spillHasSubstance: function() {
+        configureWeatherers: function() {
             var hasSubstance = false;
             var spills = this.get('spills');
 
@@ -164,7 +164,7 @@ define([
         },
 
         toggleWeatherers: function(spillChild) {
-            var hasSubstance = this.spillHasSubstance();
+            var hasSubstance = this.configureWeatherers();
             var weatherers = this.get('weatherers');
 
             for (var i = 0; i < weatherers.models.length; i++) {
