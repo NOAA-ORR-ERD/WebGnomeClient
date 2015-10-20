@@ -29,7 +29,6 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
-            console.log(this.get('element_type'));
             this.on('change:element_type', this.addListeners, this);
         },
 
