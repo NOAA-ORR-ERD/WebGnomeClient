@@ -89,6 +89,10 @@ define([
         },
 
         childChange: function(attr, child){
+            if (!_.isString(attr) || !_.isObject(child)) {
+                return;
+            }
+
             if(!_.isObject(this.changed[attr])){
                 this.changed[attr] = {};
             }

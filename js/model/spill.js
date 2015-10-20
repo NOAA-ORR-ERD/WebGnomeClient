@@ -27,6 +27,11 @@ define([
             element_type: GnomeElement
         },
 
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            this.get('element_type').on('change', this.childChange, this);
+        },
+
         validate: function(attrs, options){
             var massUnits = ['kg', 'ton', 'metric ton'];
             

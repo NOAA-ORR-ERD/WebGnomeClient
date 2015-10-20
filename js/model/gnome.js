@@ -168,7 +168,9 @@ define([
             var weatherers = this.get('weatherers');
 
             for (var i = 0; i < weatherers.models.length; i++) {
-                weatherers.at(i).set('on', hasSubstance);
+                if (weatherers.at(i).get('on') !== hasSubstance) {
+                    weatherers.at(i).set('on', hasSubstance).save();
+                }
             }
         },
 
