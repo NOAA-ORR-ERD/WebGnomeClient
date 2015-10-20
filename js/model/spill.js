@@ -29,7 +29,16 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
-            this.get('element_type').on('change', this.childChange, this);
+            console.log(this.get('element_type'));
+            this.on('change:element_type', this.addListeners, this);
+        },
+
+        addListeners: function(){
+            this.get('element_type').on('change', this.elementTypeChange, this);
+        },
+
+        elementTypeChange: function(element_type){
+            this.childChange('element_type', element_type);
         },
 
         validate: function(attrs, options){

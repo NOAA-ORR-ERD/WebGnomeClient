@@ -88,11 +88,10 @@ define([
             return obj;
         },
 
+        // child change shouldn't be mapped directly to an event
+        // rather it should be manually envoked through a maped event
+        // see gnome model for example.
         childChange: function(attr, child){
-            if (!_.isString(attr) || !_.isObject(child)) {
-                return;
-            }
-
             if(!_.isObject(this.changed[attr])){
                 this.changed[attr] = {};
             }
