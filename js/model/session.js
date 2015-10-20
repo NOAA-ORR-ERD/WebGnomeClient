@@ -14,6 +14,7 @@ define([
             this.save(null, {
                 success: function(model){
                     localStorage.setItem('session', model.id);
+                    localStorage.setItem('user_prefs', JSON.stringify({time: "datetime"}));
                     callback();
                 },
                 error: this.error
