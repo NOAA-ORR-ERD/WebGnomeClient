@@ -92,6 +92,10 @@ define([
             webgnome.cache.on('rewind', this.reset, this);
         },
 
+        checkUserTimePrefs: function() {
+            return JSON.parse(localStorage.getItem('user_prefs')).time;
+        },
+
         load: function(){
             if(webgnome.cache.length > 0){
                 // incase trajectory triggered a /step but it hasn't returned yet
@@ -121,7 +125,7 @@ define([
                     webgnome.cache.on('step:recieved', this.buildDataset, this);
                     webgnome.cache.step();
                 }
-            }     
+            }
         },
 
         reset: function(){
@@ -414,7 +418,7 @@ define([
         pieFloating: function(data){
             for(var i = 0; i < data.length; i++){
                 if(data[i].label === 'Floating'){
-                    return data[i].data;                   
+                    return data[i].data;
                 }
             }
         },

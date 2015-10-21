@@ -360,7 +360,7 @@ define([
                     var windMover = new WindMover({wind: wind});
                     this.get('movers').add(windMover, {merge: true});
                 }
-                this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));    
+                this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
             }
         },
 
