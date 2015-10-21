@@ -86,13 +86,26 @@ define([
 
         initialize: function(options){
             this.module = module;
+            this.formatXaxisLabel();
             BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
         },
 
-        checkUserTimePrefs: function() {
+        formatXaxisLabel: function() {
+            if (this.getUserTimePrefs() === 'datetime') { return; }
+            var xaxisOpts = this.defaultChartOptions.xaxis;
+            xaxisOpts.tickFormatter = this.xaxisTickFormatter;
+        },
+
+        xaxisTickFormatter: function(val, axis) {
+            var start = axis.min;
+            var current = val;
+            return moment(start).from(moment(current), true);
+        },
+
+        getUserTimePrefs: function() {
             return JSON.parse(localStorage.getItem('user_prefs')).time;
         },
 
