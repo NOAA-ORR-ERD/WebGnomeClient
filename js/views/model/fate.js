@@ -332,8 +332,8 @@ define([
             }
         },
 
-        renderBreakdown: function(dataset, pos){
-            var dataset = this.pruneDataset(dataset, [
+        renderBreakdown: function(datasetparam, pos){
+            var dataset = this.pruneDataset(datasetparam, [
                 'avg_density',
                 'avg_viscosity',
                 'step_num',
@@ -1137,7 +1137,7 @@ define([
         runIterator: function(set){
             return (function(run){
                 if (!_.isNull(run)){
-                    return run['floating'];
+                    return run.floating;
                 }
             });
         },
