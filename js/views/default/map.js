@@ -21,7 +21,8 @@ define([
                         }
                     },
                     undefinedHTML: 'Mouse out of bounds'
-                })
+                }),
+                new ol.control.ScaleLine()
             ]);
             this.layers = [
                 new ol.layer.Tile({
