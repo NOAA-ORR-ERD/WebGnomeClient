@@ -94,7 +94,7 @@ define([
         },
 
         formatXaxisLabel: function() {
-            if (this.getUserTimePrefs() === 'datetime') { return; }
+            if (this.getUserTimePrefs() !== 'datetime') { return; }
             var xaxisOpts = this.defaultChartOptions.xaxis;
             xaxisOpts.tickFormatter = this.xaxisTickFormatter;
         },
@@ -102,7 +102,7 @@ define([
         xaxisTickFormatter: function(val, axis) {
             var start = axis.min;
             var current = val;
-            return moment(start).from(moment(current), true);
+            return moment(current).diff(moment(start), 'h') + ' hours';
         },
 
         getUserTimePrefs: function() {
