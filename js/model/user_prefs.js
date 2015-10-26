@@ -4,7 +4,7 @@ define([
     'model/base'
 ], function(_, Backbone, BaseModel){
     'use strict';
-    var gnomeStep = BaseModel.extend({
+    var userPrefs = BaseModel.extend({
         url: '/',
 
         defaults: {
@@ -12,22 +12,22 @@ define([
         },
 
         initialize: function(options){
-            
+            this.save();
         },
-
 
         // Overwriting the base model's restful methods so the model isn't sent to the API
         save: function() {
-
+            var jsonModel = this.toJSON();
+            localStorage.setItem('user_prefs', JSON.stringify(jsonModel));
         },
 
         fetch: function() {
-
+            return JSON.parse(localStorage.getItem('user_prefs'));
         },
 
         destroy: function() {
 
         }
     });
-    return gnomeStep;
+    return userPrefs;
 });

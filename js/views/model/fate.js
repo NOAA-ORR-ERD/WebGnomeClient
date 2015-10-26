@@ -106,7 +106,7 @@ define([
         },
 
         getUserTimePrefs: function() {
-            return JSON.parse(localStorage.getItem('user_prefs')).time;
+            return webgnome.user_prefs.get('time');
         },
 
         load: function(){
@@ -333,6 +333,7 @@ define([
         },
 
         renderBreakdown: function(datasetparam, pos){
+            console.log(datasetparam);
             var dataset = this.pruneDataset(datasetparam, [
                 'avg_density',
                 'avg_viscosity',

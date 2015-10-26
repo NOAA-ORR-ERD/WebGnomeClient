@@ -28,12 +28,14 @@ define([
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
-    'model/weatherers/weathering_data'
+    'model/weatherers/weathering_data',
+    'model/user_prefs'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -106,6 +108,7 @@ define([
             webgnome.cache = new Cache(null, this);
             webgnome.obj_ref = {};
             this.addListeners();
+            webgnome.user_prefs = new UserPrefs();
         },
 
         addListeners: function(){

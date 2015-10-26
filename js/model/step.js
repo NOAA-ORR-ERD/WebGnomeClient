@@ -9,6 +9,6 @@ define([
         initialize: function(options){
             // no op initialization because base model has a model rewind listener
         }
-    }); 
+    });
     return gnomeStep;
 });
