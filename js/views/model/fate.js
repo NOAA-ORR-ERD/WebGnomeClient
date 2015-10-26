@@ -333,7 +333,6 @@ define([
         },
 
         renderBreakdown: function(datasetparam, pos){
-            console.log(datasetparam);
             var dataset = this.pruneDataset(datasetparam, [
                 'avg_density',
                 'avg_viscosity',
