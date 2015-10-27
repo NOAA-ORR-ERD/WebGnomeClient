@@ -94,7 +94,7 @@ define([
         },
 
         formatXaxisLabel: function() {
-            if (this.getUserTimePrefs() !== 'datetime') { return; }
+            if (this.getUserTimePrefs() === 'datetime') { return; }
             var xaxisOpts = this.defaultChartOptions.xaxis;
             xaxisOpts.tickFormatter = this.xaxisTickFormatter;
         },
