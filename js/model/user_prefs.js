@@ -12,7 +12,7 @@ define([
         },
 
         initialize: function(options){
-            this.save();
+            this.fetch();
         },
 
         // Overwriting the base model's restful methods so the model isn't sent to the API

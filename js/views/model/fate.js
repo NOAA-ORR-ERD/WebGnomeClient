@@ -94,7 +94,7 @@ define([
         },
 
         formatXaxisLabel: function() {
-            if (this.getUserTimePrefs() === 'datetime') { return; }
+            if (this.getUserTimePrefs() !== 'datetime') { return; }
             var xaxisOpts = this.defaultChartOptions.xaxis;
             xaxisOpts.tickFormatter = this.xaxisTickFormatter;
         },
@@ -102,7 +102,9 @@ define([
         xaxisTickFormatter: function(val, axis) {
             var start = axis.min;
             var current = val;
-            return moment(current).diff(moment(start), 'h') + ' hours';
+            var modelDuration = webgnome.model.get('duration');
+            var diffInFractHours = (modelDuration < 43200) ? (moment(current).diff(moment(start), 'm') / 60.0).toFixed(2) : moment(current).diff(moment(start), 'h');
+            return diffInFractHours + ' hours';
         },
 
         getUserTimePrefs: function() {
