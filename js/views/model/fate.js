@@ -102,13 +102,18 @@ define([
         xaxisTickFormatter: function(val, axis) {
             var start = axis.min;
             var current = val;
-            var modelDuration = webgnome.model.get('duration');
-            var diffInFractHours = (modelDuration < 43200) ? (moment(current).diff(moment(start), 'm') / 60.0).toFixed(2) : moment(current).diff(moment(start), 'h');
+            var timeDiff = (moment(current).diff(moment(start), 'm') / 60.0).toFixed(2);
+            var currentTimeDiffisWhole = (parseFloat(timeDiff) === parseInt(timeDiff, 10));
+            var diffInFractHours = (!currentTimeDiffisWhole) ? timeDiff : moment(current).diff(moment(start), 'h');
             return diffInFractHours + ' hours';
         },
 
         getUserTimePrefs: function() {
             return webgnome.user_prefs.get('time');
+        },
+
+        getXaxisLabel: function() {
+            return 'Time (' + this.getUserTimePrefs() + ')';
         },
 
         load: function(){
@@ -162,6 +167,7 @@ define([
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             var wind_speed;
+            var time = this.getXaxisLabel();
             if(_.isUndefined(wind)){
                 wind_speed = '';
             } else if (wind.get('timeseries').length === 1) {
@@ -206,7 +212,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    time: time
                 });
             } else {
                 compiled = _.template(FateTemplate, {
@@ -219,7 +226,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    time: time
                 });
             }
             
