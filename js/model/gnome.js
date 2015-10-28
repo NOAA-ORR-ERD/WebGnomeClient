@@ -28,12 +28,14 @@ define([
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
-    'model/weatherers/weathering_data'
+    'model/weatherers/weathering_data',
+    'model/user_prefs'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer, NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData){
+    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -104,6 +106,7 @@ define([
         initialize: function(options){
             // BaseModel.prototype.initialize.call(this, options);
             webgnome.cache = new Cache(null, this);
+            webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};
             this.addListeners();
         },
@@ -360,7 +363,7 @@ define([
                     var windMover = new WindMover({wind: wind});
                     this.get('movers').add(windMover, {merge: true});
                 }
-                this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));    
+                this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
             }
         },
 

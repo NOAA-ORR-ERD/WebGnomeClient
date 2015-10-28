@@ -86,10 +86,34 @@ define([
 
         initialize: function(options){
             this.module = module;
+            this.formatXaxisLabel();
             BaseView.prototype.initialize.call(this, options);
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
+        },
+
+        formatXaxisLabel: function() {
+            if (this.getUserTimePrefs() === 'datetime') { return; }
+            var xaxisOpts = this.defaultChartOptions.xaxis;
+            xaxisOpts.tickFormatter = this.xaxisTickFormatter;
+        },
+
+        xaxisTickFormatter: function(val, axis) {
+            var start = axis.min;
+            var current = val;
+            var timeDiff = (moment(current).diff(moment(start), 'm') / 60.0).toFixed(2);
+            var currentTimeDiffisWhole = (parseFloat(timeDiff) === parseInt(timeDiff, 10));
+            var diffInFractHours = (!currentTimeDiffisWhole) ? timeDiff : moment(current).diff(moment(start), 'h');
+            return diffInFractHours + ' hours';
+        },
+
+        getUserTimePrefs: function() {
+            return webgnome.user_prefs.get('time');
+        },
+
+        getXaxisLabel: function() {
+            return 'Time (' + this.getUserTimePrefs() + ')';
         },
 
         load: function(){
@@ -121,7 +145,7 @@ define([
                     webgnome.cache.on('step:recieved', this.buildDataset, this);
                     webgnome.cache.step();
                 }
-            }     
+            }
         },
 
         reset: function(){
@@ -143,6 +167,7 @@ define([
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             var wind_speed;
+            var time = this.getXaxisLabel();
             if(_.isUndefined(wind)){
                 wind_speed = '';
             } else if (wind.get('timeseries').length === 1) {
@@ -187,7 +212,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    time: time
                 });
             } else {
                 compiled = _.template(FateTemplate, {
@@ -200,7 +226,8 @@ define([
                     release_time: moment(init_release, 'X').format(webgnome.config.date_format.moment),
                     total_released: total_released,
                     units: spills.at(0).get('units'),
-                    buttons: buttonsTemplate
+                    buttons: buttonsTemplate,
+                    time: time
                 });
             }
             
@@ -315,8 +342,8 @@ define([
             }
         },
 
-        renderBreakdown: function(dataset, pos){
-            var dataset = this.pruneDataset(dataset, [
+        renderBreakdown: function(datasetparam, pos){
+            var dataset = this.pruneDataset(datasetparam, [
                 'avg_density',
                 'avg_viscosity',
                 'step_num',
@@ -414,7 +441,7 @@ define([
         pieFloating: function(data){
             for(var i = 0; i < data.length; i++){
                 if(data[i].label === 'Floating'){
-                    return data[i].data;                   
+                    return data[i].data;
                 }
             }
         },
