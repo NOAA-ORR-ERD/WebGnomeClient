@@ -12,11 +12,12 @@ define([
     'views/form/text',
     'views/form/model',
     'views/form/wind',
+    'views/form/custom',
     'views/modal/loading'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
     TrajectoryOutputter,
-    TextForm, ModelForm, WindForm, LoadingModal){
+    TextForm, ModelForm, WindForm, CustomForm, LoadingModal){
     'use strict';
     var locationWizardView = BaseWizard.extend({
         steps: [],
@@ -90,6 +91,16 @@ define([
                     }, this));
 
                     this.steps.push(windform);
+                } else if (el.type ==='custom'){
+                    var customForm = new CustomForm({
+                        title: el.title,
+                        body: el.body,
+                        buttons: el.buttons,
+                        module: el.module,
+                        functions: el.functions
+                    });
+
+                    this.steps.push(customForm);
                 } else if (el.type === 'finish') {
                     if (!el.title){
                         title[0] = 'Finalize Model';
