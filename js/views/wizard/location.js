@@ -100,6 +100,8 @@ define([
                         functions: el.functions
                     });
 
+                    //customForm.on('save', el.functions.save);
+
                     this.steps.push(customForm);
                 } else if (el.type === 'finish') {
                     if (!el.title){
