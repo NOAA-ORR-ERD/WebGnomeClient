@@ -22,7 +22,10 @@ define([
         },
 
         fetch: function() {
-            return JSON.parse(localStorage.getItem('user_prefs'));
+            var obj = JSON.parse(localStorage.getItem('user_prefs'));
+            for (var key in obj) {
+                this.set(key, obj[key]);
+            }
         },
 
         destroy: function() {
