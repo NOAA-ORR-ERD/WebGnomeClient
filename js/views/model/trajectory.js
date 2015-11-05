@@ -745,7 +745,7 @@ define([
                 }
             });
             
-            if (_.isUndefined(gridLayer)){
+            if (_.isUndefined(gridLayer) && id !== 'none-grid'){
                 var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
                 current.getGrid(_.bind(function(geojson){
                     if (geojson){
@@ -756,6 +756,7 @@ define([
 
                         gridLayer = new ol.layer.Image({
                             id: id,
+                            type: 'grid',
                             source: new ol.source.ImageVector({
                                 source: gridSource,
                                 style: this.styles.currents_grid
@@ -764,19 +765,15 @@ define([
                         this.ol.map.getLayers().insertAt(3, gridLayer);
                     }
                 }, this));
-            } else if (!checked && !_.isUndefined(gridLayer)) {
-                this.ol.map.getLayers().forEach(_.bind(function(layer){
-                    if (layer.get('id') === id){
-                        layer.setVisible(false);
-                    }
-                }, this));
-            } else {
-                this.ol.map.getLayers().forEach(function(layer){
-                    if (layer.get('id') === id){
-                        layer.setVisible(true);
-                    }
-                });
-            }
+            } 
+
+            this.ol.map.getLayers().forEach(function(layer){
+                if (layer.get('id') === id && layer.get('type') === 'grid'){
+                    layer.setVisible(true);
+                } else if(layer.get('id') !== id && layer.get('type') === 'grid' || id === 'none-grid' && layer.get('type') === 'grid'){
+                    layer.setVisible(false);
+                }
+            });
         },
 
         toggleUV: function(e){

@@ -52,10 +52,16 @@
             <div class="panel-body">
                 {% if(currents.length > 0){ %}
                     <form role="form" class="form-horizontal checkboxes current-grid">
+                        <div class="radio">
+                            <label for="none-grid" class="curLabel">
+                                <input type="radio" class="currents" name="grid" id="none-grid" checked>
+                                None
+                            </label>
+                        </div>
                         {% for (var i = 0; i < currents.length; i++){ %}
-                            <div class="checkbox">
+                            <div class="radio">
                                 <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
-                                    <input type="checkbox" class="currents" id="grid-{{ currents[i].get('id') }}">
+                                    <input type="radio" name="grid" class="grid" id="grid-{{ currents[i].get('id') }}">
                                     {{ currents[i].get('name') }}
                                 </label>
                             </div>
@@ -66,9 +72,9 @@
                 {% if(ice.length > 0){ %}
                     <form role="form" class="form-horizontal checkboxes ice-grid">
                         {% for (var i = 0; i < ice.length; i++){ %}
-                            <div class="checkbox">
+                            <div class="radio">
                                 <label for="grid-{{ ice[i].get('id') }}" class="curLabel">
-                                    <input type="checkbox" class="ice" id="grid-{{ ice[i].get('id') }}">
+                                    <input type="radio" class="ice" name="grid" id="grid-{{ ice[i].get('id') }}">
                                     {{ ice[i].get('name') }}
                                 </label>
                             </div>
@@ -92,10 +98,16 @@
             <div class="panel-body">
                 {% if(currents.length > 0){ %}
                     <form role="form" class="form-horizontal checkboxes current-uv">
+                        <div class="radio">
+                            <label for="none-uv" class="curLabel">
+                                <input type="radio" class="currents" name="uv" id="none-uv" checked>
+                                None
+                            </label>
+                        </div>
                         {% for (var i = 0; i < currents.length; i++){ %}
-                            <div class="checkbox">
+                            <div class="radio">
                                 <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
-                                    <input type="checkbox" class="currents" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
+                                    <input type="radio" class="currents" name="uv" id="uv-{{ currents[i].get('id') }}" {{ active_currents.indexOf(currents[i].get('id')) !== -1 ? 'checked' : '' }}>
                                     {{ currents[i].get('name') }}
                                 </label>
                             </div>
@@ -106,9 +118,9 @@
                 {% if(ice.length > 0){ %}
                     <form role="form" class="form-horizontal checkboxes ice-uv">
                         {% for (var i = 0; i < ice.length; i++){ %}
-                            <div class="checkbox">
+                            <div class="radio">
                                 <label for="uv-{{ ice[i].get('id') }}" class="curLabel">
-                                    <input type="checkbox" class="ice" id="uv-{{ ice[i].get('id') }}" {{ active_currents.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
+                                    <input type="radio" class="ice" name="uv" id="uv-{{ ice[i].get('id') }}" {{ active_currents.indexOf(ice[i].get('id')) !== -1 ? 'checked' : '' }}>
                                     {{ ice[i].get('name') }}
                                 </label>
                             </div>
