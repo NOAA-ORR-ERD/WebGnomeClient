@@ -11,17 +11,23 @@ define([
     'use strict';
     var loadView = Backbone.View.extend({
         className: 'page load',
-        initialize: function(){
-
-            this.render();
+        initialize: function(options){
+            if(_.isUndefined(options)){ options = {}; }
+            _.defaults(options, {
+                simple: false
+            });
+            this.render(options);
         },
 
-        render: function(){
-            var template = _.template(LoadTemplate);
+        render: function(options){
+            var template = _.template(LoadTemplate, {
+                simple: options.simple
+            });
 
             this.$el.html(template);
-
-            $('body').append(this.$el);
+            if(!options.simple){
+                $('body').append(this.$el); 
+            }
 
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/upload',
@@ -45,7 +51,7 @@ define([
             setTimeout(_.bind(function(){
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 2000);
+            }, this), 10000);
         },
 
         progress: function(e, percent){
