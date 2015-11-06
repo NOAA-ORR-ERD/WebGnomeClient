@@ -1,11 +1,15 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Upload Save File</h1>
-            <p>
-                Only up to date and valid py_gnome objects and data types will be loaded.
-            </p>
-            <div class="dropzone"></div>
+{% if(simple) { %}
+    <div class="dropzone"></div>
+{% } else { %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Upload Save File</h1>
+                <p>
+                    Only up to date and valid py_gnome objects and data types will be loaded.
+                </p>
+                <div class="dropzone"></div>
+            </div>
         </div>
     </div>
-</div>
+{% } %}

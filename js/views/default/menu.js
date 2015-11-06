@@ -106,7 +106,6 @@ define([
                         success: _.bind(function(){
                             this.contextualize();
                             webgnome.router.navigate('', true);
-                            webgnome.router.navigate('config', true);
                         }, this)
                     });
                 }

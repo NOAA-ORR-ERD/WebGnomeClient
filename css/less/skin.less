@@ -503,10 +503,6 @@ nav.navbar{
 }
 
 .page.home{
-    .container{
-        padding-top: 30px;
-        padding-bottom: 30px;
-    }
     img{
         border-radius: 3px;
     }
@@ -530,9 +526,34 @@ nav.navbar{
         }
         .main{
             padding-top: 10px;
-            .make-md-column(8);
+            .make-md-column(12);
         }
+        h2, h4{
+            text-align: center;
+        }
+        h4{
+            margin: 0;
+        }
+        .dropzone{
+            border-color: #6B6B6B;
+            .dz-message{
+                padding: 15px 10px;
+                color: #6B6B6B;
+            }
+            .dz-preview{
+                min-height: 75px;
+                padding: 15px 10px;
+                .dz-error-message{
+                    span{
+                        padding: 15px 10px;
+                    }
+                }
+            }
+            .spinner{
+                margin: 24px auto;
+            }
 
+        }
         .app-menu{
             .clearfix;
             padding: 0 0 10px;
