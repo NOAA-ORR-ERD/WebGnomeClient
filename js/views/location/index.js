@@ -86,13 +86,7 @@ define([
 
         clickPin: function(feature){
             this.popup.setPosition(feature.getGeometry().getCoordinates());
-            var content;
-            if (this.dom_target.indexOf('.modal') > -1) {
-                content = '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>';
-            } else {
-                content = '<button class="btn btn-primary load" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Merge</button>' +
-                        '<button class="btn btn-primary setup pull-right" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">New Model</button>';
-            }
+            var content = '<button class="btn btn-primary setup btn-block" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
             this.$('.popup').popover({
                 placement: 'top',
                 html: true,
@@ -113,30 +107,20 @@ define([
                 }, this));
 
                 this.$('.setup').on('click', _.bind(function(){
-                    var slug = this.$('.load').data('slug');
-                    var name = this.$('.load').data('name');
-                    swal({
-                        title: 'Create a new Model?',
-                        text: 'Doing this will overwrite any settings or data on your currently active model',
-                        type: 'warning',
-                        showCancelButton: true
-                    }, _.bind(function(isConfirm){
-                        if(isConfirm){
-                            localStorage.setItem('prediction', 'both');
-                            webgnome.model = new GnomeModel();
-                            if(_.has(webgnome, 'cache')){
-                                webgnome.cache.rewind();
-                            }
-                            webgnome.model.save(null, {
-                                validate: false,
-                                success: _.bind(function(){
-                                    this.wizard({slug: slug, name: name});
-                                    this.$('.popup').popover('destroy');
-                                }, this)
-                            });
-                        }
-                    }, this));
-                    
+                    var slug = this.$('.setup').data('slug');
+                    var name = this.$('.setup').data('name');
+                    webgnome.model = new GnomeModel();
+                    if(_.has(webgnome, 'cache')){
+                        webgnome.cache.rewind();
+                    }
+                    webgnome.model.save(null, {
+                        validate: false,
+                        success: _.bind(function(){
+                            this.wizard({slug: slug, name: name});
+                            this.$('.popup').popover('destroy');
+                        }, this)
+                    });
+                
                 }, this));
             }, this));
 
