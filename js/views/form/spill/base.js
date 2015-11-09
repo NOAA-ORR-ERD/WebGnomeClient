@@ -445,16 +445,19 @@ define([
                 coordsObj[key].pop();
                 var convertedCoords = new ol.proj.transform(coordsObj[key], 'EPSG:4326', 'EPSG:3857');
                 var pixel = map.getPixelFromCoordinate(convertedCoords);
-                var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                    if (feature.get('name') === 'Shoreline') {
-                        return feature;
-                    }
-                });
+                var feature = map.forEachFeatureAtPixel(pixel, _.bind(this.isShoreline, this));
+                    
                 if (!_.isUndefined(feature)){
                     return false;
                 }
             }
             return true;
+        },
+
+        isShoreline: function(feature, layer){
+            if (feature.get('name') === 'Shoreline') {
+                return feature;
+            }
         },
 
         toggleMapHover: function(){
