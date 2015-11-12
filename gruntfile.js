@@ -136,16 +136,8 @@ module.exports = function(grunt){
             }
         },
         webdriver:{
-            options: {
-                desiredCapabilities: {
-                    browserName: 'chrome'
-                }
-            },
-            all: {
-                tests: ['tests/**/*.js']
-            },
-            demos: {
-                tests: ['tests/demos.js']
+            all:{
+                configFile: './wdio.conf.js'
             }
         }
     });

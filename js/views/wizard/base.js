@@ -19,21 +19,25 @@ define([
         },
 
         next: function(){
-            this.step++;
-            if(this.steps[this.step].rendered_){
-                this.steps[this.step].show();
-            } else {
-                this.steps[this.step].render();
-            }
+            this.steps[this.step].once('hidden', _.bind(function(){
+                this.step++;
+                if(this.steps[this.step].rendered_){
+                    this.steps[this.step].show();
+                } else {
+                    this.steps[this.step].render();
+                }
+            }, this));
         },
 
         prev: function(){
-            this.step--;
-             if(this.steps[this.step].rendered_){
-                this.steps[this.step].show();
-            } else {
-                this.steps[this.step].render();
-            }
+            this.steps[this.step].once('hidden', _.bind(function(){
+                this.step--;
+                 if(this.steps[this.step].rendered_){
+                    this.steps[this.step].show();
+                } else {
+                    this.steps[this.step].render();
+                }
+            }, this));
         },
 
         goto: function(step){
