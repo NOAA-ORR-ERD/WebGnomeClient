@@ -53,7 +53,7 @@ define([
                     title: 'Select Spill Type <span class="sub-title">ADIOS Wizard</span>'
                 }).on('select', _.bind(function(form){
                     form.title += '<span class="sub-title">ADIOS Wizard</span>';
-                    form.name = 'step5';
+                    form.name = 'step4';
                     form.$el.addClass('adios');
                     form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
                     this.register(form);
