@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'views/modal/form',
+    'views/form/map/goods',
     'text!templates/form/map/mapSelect.html'
-], function($, _, Backbone, FormModal, SelectTemplate){
+], function($, _, Backbone, FormModal, GoodsMapForm, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
@@ -37,7 +38,7 @@ define([
         },
 
         realLocation: function(e){
-            this.hide();
+            this.trigger('select', new GoodsMapForm());
         }
 
     });
