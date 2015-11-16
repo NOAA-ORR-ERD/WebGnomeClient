@@ -19,25 +19,45 @@ define([
         },
 
         next: function(){
-            this.steps[this.step].once('hidden', _.bind(function(){
-                this.step++;
-                if(this.steps[this.step].rendered_){
-                    this.steps[this.step].show();
-                } else {
-                    this.steps[this.step].render();
-                }
-            }, this));
+            if(this.steps[this.step].$el.is(':hidden')){
+                $('body').one('hidden.bs.modal', _.bind(function(){
+                    this.prev_();
+                }, this));
+            } else {
+                this.steps[this.step].once('hidden', _.bind(function(){
+                    this.next_();
+                }, this));    
+            }
+        },
+
+        next_: function(){
+            this.step++;
+            if(this.steps[this.step].rendered_){
+                this.steps[this.step].show();
+            } else {
+                this.steps[this.step].render();
+            }
         },
 
         prev: function(){
-            this.steps[this.step].once('hidden', _.bind(function(){
-                this.step--;
-                 if(this.steps[this.step].rendered_){
-                    this.steps[this.step].show();
-                } else {
-                    this.steps[this.step].render();
-                }
-            }, this));
+            if(this.steps[this.step].$el.is(':hidden')){
+                $('body').one('hidden.bs.modal', _.bind(function(){
+                    this.prev_();
+                }, this));
+            } else {
+                this.steps[this.step].once('hidden', _.bind(function(){
+                    this.prev_();    
+                }, this));    
+            }
+        },
+
+        prev_: function(){
+            this.step--;
+            if(this.steps[this.step].rendered_){
+                this.steps[this.step].show();
+            } else {
+                this.steps[this.step].render();
+            }
         },
 
         goto: function(step){
@@ -50,9 +70,10 @@ define([
         },
 
         register: function(step){
-            step.on('next', this.next, this);
+            step.on('save', this.next, this);
             step.on('back', this.prev, this);
             step.on('wizardclose', this.close, this);
+            step.on('finish', this.close, this);
         },
 
         close: function(){

@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'views/default/load',
-    'text!templates/default/index.html'
-], function($, _, Backbone, LoadView, IndexTemplate){
+    'text!templates/default/index.html',
+    'views/wizard/adios'
+], function($, _, Backbone, LoadView, IndexTemplate, AdiosWizard){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -12,7 +13,8 @@ define([
         events: {
             'click .setup': 'setup',
             'click .advanced': 'setup',
-            'click .location': 'location'
+            'click .location': 'location',
+            'click .adios-wizard': 'adios'
         },
 
         initialize: function(){
@@ -33,6 +35,11 @@ define([
         location: function(e){
             e.preventDefault();
             webgnome.router.navigate('locations', true);
+        },
+
+        adios: function(e){
+            e.preventDefault();
+            var wiz = new AdiosWizard();
         },
 
         close: function(){
