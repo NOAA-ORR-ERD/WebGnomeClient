@@ -4,8 +4,9 @@ define([
     'backbone',
     'views/default/load',
     'text!templates/default/index.html',
-    'views/wizard/adios'
-], function($, _, Backbone, LoadView, IndexTemplate, AdiosWizard){
+    'views/wizard/adios',
+    'views/wizard/gnome'
+], function($, _, Backbone, LoadView, IndexTemplate, AdiosWizard, GnomeWizard){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -14,7 +15,8 @@ define([
             'click .setup': 'setup',
             'click .advanced': 'setup',
             'click .location': 'location',
-            'click .adios-wizard': 'adios'
+            'click .adios-wizard': 'adios',
+            'click .gnome-wizard': 'gnome'
         },
 
         initialize: function(){
@@ -40,6 +42,11 @@ define([
         adios: function(e){
             e.preventDefault();
             var wiz = new AdiosWizard();
+        },
+
+        gnome: function(e){
+            e.preventDefault();
+            var wiz = new GnomeWizard();
         },
 
         close: function(){
