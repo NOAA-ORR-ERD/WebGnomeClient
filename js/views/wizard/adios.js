@@ -16,7 +16,7 @@ define([
         GnomeModel, GnomeWind, GnomeWater){
     var adiosWizard = BaseWizard.extend({
         initialize: function(){
-            webgnome.model = new GnomeModel();
+            webgnome.model = new GnomeModel({name: 'ADIOS Model'});
             webgnome.model.save(null, {
                 validate: false,
                 error: this.fail,
