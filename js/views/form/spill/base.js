@@ -5,6 +5,7 @@ define([
 	'views/modal/form',
 	'views/form/oil/library',
 	'views/default/map',
+    'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
     'text!templates/form/spill/map/controls.html',
@@ -15,7 +16,7 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
@@ -36,7 +37,8 @@ define([
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill'
+                'click .spill-button .moving': 'toggleSpill',
+                'click .oil-info': 'initOilInfo'
             }, FormModal.prototype.events);
         },
 
@@ -322,6 +324,12 @@ define([
             } else {
                 this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }
+            this.hide();
+        },
+
+        initOilInfo: function(){
+            this.oilInfoView = new OilInfoView({containerClass: '.oil-info'}, this.model.get('element_type').get('substance'));
+            this.oilInfoView.on('hidden', _.bind(this.show, this));
             this.hide();
         },
 

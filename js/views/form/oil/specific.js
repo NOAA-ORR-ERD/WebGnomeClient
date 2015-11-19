@@ -9,14 +9,35 @@ define([
 	var specificOil = Backbone.View.extend({
 		id: 'specificOilContainer',
 
-		initialize: function(){
-			this.render();
+		initialize: function(options){
+            if (!_.isUndefined(options.containerClass)) {
+                this.containerClass = options.containerClass;
+                this.viewName = 'oilInfo';
+            } else {
+                this.viewName = 'oilLib';
+            }
+            if (!_.isUndefined(options.infoMode)) {
+                options.model.fetch({
+                    success: _.bind(function(model){
+                        this.model = model;
+                        this.render(options);
+                    }, this)
+                });
+            } else {
+                this.render(options);
+            }
 		},
 
-		render: function(){
+		render: function(options){
 			var data = this.dataParse(this.model.attributes);
-			var compiled = _.template(SpecificOilTemplate, {data: data});
-			$('.oil-form .modal-body').append(this.$el.html(compiled));
+            var viewName = this.viewName;
+			var compiled = _.template(SpecificOilTemplate, {data: data, viewName: viewName});
+            if (!_.isUndefined(this.containerClass)) {
+                var containerClass = this.containerClass;
+                $(containerClass + ' .modal-body').append(this.$el.html(compiled));
+            } else {
+                $('.oil-form .modal-body').append(this.$el.html(compiled));
+            }
 		},
 
         cToF: function(c){
@@ -46,7 +67,8 @@ define([
             
         },
 
-		dataParse: function(oil){
+		dataParse: function(oilParam){
+            var oil = $.extend(true, {}, oilParam);
             for (var attr in oil){
                 // When value of oil attribute is null
                 if (!oil[attr] && this.tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
