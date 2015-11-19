@@ -1012,6 +1012,12 @@ define([
                     mapForm.hide();
                 });
             });
+            mapForm.on('select', function(form){
+                mapForm.on('hidden', function(){
+                    form.render();
+                    form.on('hidden', form.close);
+                });
+            });
             mapForm.render();
         },
 
