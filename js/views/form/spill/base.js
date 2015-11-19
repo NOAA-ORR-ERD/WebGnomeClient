@@ -22,6 +22,7 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 		mapShown: false,
         spillToggle: false,
+        gnomeMode: true,
 
         events: function(){
             return _.defaults({
@@ -241,6 +242,8 @@ define([
             }
             var cachedOilArray = this.updateCachedOils(substance);
             var oilExists = !_.isNull(substance);
+            var gnomeMode = this.gnomeMode;
+            console.log(gnomeMode);
             if (oilExists){
                 compiled = _.template(SubstanceTemplate, {
                     name: substance.get('name'),
@@ -250,7 +253,8 @@ define([
                     enabled: enabled,
                     emuls: substance.get('emulsion_water_fraction_max'),
                     bullwinkle: substance.get('bullwinkle_fraction'),
-                    oilCache: cachedOilArray
+                    oilCache: cachedOilArray,
+                    gnomeMode: gnomeMode
                 });
             } else {
                 compiled = _.template(SubstanceNullTemplate, {
