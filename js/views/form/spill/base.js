@@ -243,7 +243,6 @@ define([
             var cachedOilArray = this.updateCachedOils(substance);
             var oilExists = !_.isNull(substance);
             var gnomeMode = this.gnomeMode;
-            console.log(gnomeMode);
             if (oilExists){
                 compiled = _.template(SubstanceTemplate, {
                     name: substance.get('name'),
