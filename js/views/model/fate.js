@@ -51,7 +51,8 @@ define([
             'click #ics209 .export a.print': 'printTableICS',
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
-            'click .print-graph': 'printGraphImage'
+            'click .print-graph': 'printGraphImage',
+            'click .export-csv': 'exportCSV'
         },
         dataPrecision: 3,
 
@@ -82,6 +83,15 @@ define([
             legend: {
                 position: 'nw'
             }
+        },
+
+        tabToLabelMap: {
+            'dispersion': 'natural_dispersion',
+            'viscosity': 'avg_viscosity',
+            'evaporation': 'evaporated',
+            'sedimentation': 'sedimentation',
+            'density': 'avg_density',
+            'emulsification': 'water_content'
         },
 
         initialize: function(options){
@@ -998,6 +1008,14 @@ define([
                 });
             }
             return csv.join('\r\n');
+        },
+
+        exportCSV: function() {
+            var tabName = this.$('.tab-pane.active').attr('id');
+            var dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
+            var datasetName = this.tabToLabelMap[tabName];
+            var dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+            var dataArr = dataset.data;
         },
 
         tableToHTML: function(table, header){
