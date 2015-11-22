@@ -1938,8 +1938,8 @@ nav.navbar{
         }
         &.error {
             .logs{
-                :not(.error){
-                    display: none;
+                :not(.error) {
+                        display: none;
                 }
             }
         }
@@ -1947,6 +1947,14 @@ nav.navbar{
             .logs {
                 :not(.warni) {
                     display: none;
+                }
+            }
+        }
+
+        &.error.warni {
+            .logs {
+                .error, .warni {
+                    display: block;
                 }
             }
         }

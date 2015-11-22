@@ -13,11 +13,12 @@ define([
     'views/form/model',
     'views/form/wind',
     'views/form/custom',
-    'views/modal/loading'
+    'views/modal/loading',
+    'views/form/spill/type-wizcompat'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
     TrajectoryOutputter,
-    TextForm, ModelForm, WindForm, CustomForm, LoadingModal){
+    TextForm, ModelForm, WindForm, CustomForm, LoadingModal, SpillTypeWizForm){
     'use strict';
     var locationWizardView = BaseWizard.extend({
         steps: [],
@@ -114,7 +115,7 @@ define([
                     finishForm.on('finish', function(){
                         webgnome.model.fetch();
                         webgnome.router.navigate('config', true);
-                        $('.spill .add').click();
+                        var spillTypeWizForm = new SpillTypeWizForm().render();
                         finishForm.trigger('wizardclose');
                     });
 

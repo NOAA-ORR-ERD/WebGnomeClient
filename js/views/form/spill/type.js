@@ -37,37 +37,32 @@ define([
             FormModal.prototype.render.call(this, options);
         },
 
+        spillHiddenCB: function(spillForm) {
+            spillForm.render();
+            spillForm.on('wizardclose', spillForm.close);
+            spillForm.on('save', function(){
+                webgnome.model.get('spills').add(spillForm.model);
+                webgnome.model.save(null, {validate: false});
+                spillForm.on('hidden', function(){
+                    spillForm.trigger('wizardclose');
+                });
+                webgnome.router.views[1].updateSpill();
+            });
+        },
+
         instant: function(){
             var spill = new SpillModel();
+            var spillForm = new SpillInstantForm(null, spill);
             this.on('hidden', _.bind(function(){
-                var spillForm = new SpillInstantForm(null, spill);
-                spillForm.render();
-                spillForm.on('wizardclose', spillForm.close);
-                spillForm.on('save', function(){
-                    webgnome.model.get('spills').add(spill);
-                    webgnome.model.save(null, {validate: false});
-                    spillForm.on('hidden', function(){
-                        spillForm.trigger('wizardclose');
-                    });
-                    webgnome.router.views[1].updateSpill();
-                });
+                this.spillHiddenCB(spillForm);
             }, this));
         },
 
         continue: function(){
             var spill = new SpillModel();
+            var spillForm = new SpillContinueForm(null, spill);
             this.on('hidden', _.bind(function(){
-                var spillForm = new SpillContinueForm(null, spill);
-                spillForm.render();
-                spillForm.on('wizardclose', spillForm.close);
-                spillForm.on('save', function(){
-                    webgnome.model.get('spills').add(spill);
-                    webgnome.model.save(null, {validate: false});
-                    spillForm.on('hidden', function(){
-                        spillForm.trigger('wizardclose');
-                    });
-                    webgnome.router.views[1].updateSpill();
-                });
+                this.spillHiddenCB(spillForm);
             }, this));
         },
 

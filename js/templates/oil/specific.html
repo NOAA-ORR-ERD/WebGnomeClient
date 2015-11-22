@@ -8,21 +8,21 @@
 
     	<ul class="nav nav-tabs" id="oiltabs">
     	    <li class="generalinfo active">
-    	        <a href="#generalinfo-oil" data-toggle="tab">General Info</a>
+    	        <a href="#generalinfo-oil_{{ viewName }}" data-toggle="tab">General Info</a>
     	    </li>
     	    <li class="properties">
-    	        <a href="#properties" data-toggle="tab">Properties</a>
+    	        <a href="#properties_{{ viewName }}" data-toggle="tab">Properties</a>
     	    </li>
     	    <li class="distillation">
-    	        <a href="#distillation" data-toggle="tab">Distillation</a>
+    	        <a href="#distillation_{{ viewName }}" data-toggle="tab">Distillation</a>
     	    </li>
     	    <li class="moreproperties">
-    	    	<a href="#moreproperties" data-toggle="tab">More Properties</a>
+    	    	<a href="#moreproperties_{{ viewName }}" data-toggle="tab">More Properties</a>
     	    </li>
     	</ul>
 
     	<div class="tab-content">
-    		<div class="tab-pane active" id="generalinfo-oil">
+    		<div class="tab-pane active" id="generalinfo-oil_{{ viewName }}">
     			<div class="row">
     				<div class="col-md-12">
     					<div><label>Product Type:</label> {{ data.imported.product_type }}</div>
@@ -60,7 +60,7 @@
     			</div>
     		</div>
 
-    		<div class="tab-pane" id="properties">
+    		<div class="tab-pane" id="properties_{{ viewName }}">
     			<div class="row">
     				<div class="col-md-12">
     					<div><label>API:</label> {{ data.api }}</div>
@@ -136,7 +136,7 @@
     			</div>
     		</div>
 
-    		<div class="tab-pane" id="distillation">
+    		<div class="tab-pane" id="distillation_{{ viewName }}">
     			<div class="row">
                     <div class="col-md-12">
         				<h4>Distillation Cuts</h4>
@@ -166,7 +166,7 @@
     			</div>
     		</div>
 
-    		<div class="tab-pane" id="moreproperties">
+    		<div class="tab-pane" id="moreproperties_{{ viewName }}">
     			<div class="row">
 					<div class="col-md-6"><label>Flash Point:</label> {{ data.flash_point_min_k }} {{data.flash_point_max_k }} </div>
 					<div class="col-md-6"><label>Emulsification Constant:</label> {{ data.bullwinkle_fraction }}</div>

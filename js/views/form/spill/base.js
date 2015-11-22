@@ -5,6 +5,7 @@ define([
 	'views/modal/form',
 	'views/form/oil/library',
 	'views/default/map',
+    'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
     'text!templates/form/spill/map/controls.html',
@@ -15,13 +16,14 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 		mapShown: false,
         spillToggle: false,
+        gnomeMode: true,
 
         events: function(){
             return _.defaults({
@@ -35,7 +37,8 @@ define([
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill'
+                'click .spill-button .moving': 'toggleSpill',
+                'click .oil-info': 'initOilInfo'
             }, FormModal.prototype.events);
         },
 
@@ -241,6 +244,7 @@ define([
             }
             var cachedOilArray = this.updateCachedOils(substance);
             var oilExists = !_.isNull(substance);
+            var gnomeMode = this.gnomeMode;
             if (oilExists){
                 compiled = _.template(SubstanceTemplate, {
                     name: substance.get('name'),
@@ -250,7 +254,8 @@ define([
                     enabled: enabled,
                     emuls: substance.get('emulsion_water_fraction_max'),
                     bullwinkle: substance.get('bullwinkle_fraction'),
-                    oilCache: cachedOilArray
+                    oilCache: cachedOilArray,
+                    gnomeMode: gnomeMode
                 });
             } else {
                 compiled = _.template(SubstanceNullTemplate, {
@@ -319,6 +324,12 @@ define([
             } else {
                 this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }
+            this.hide();
+        },
+
+        initOilInfo: function(){
+            this.oilInfoView = new OilInfoView({containerClass: '.oil-info'}, this.model.get('element_type').get('substance'));
+            this.oilInfoView.on('hidden', _.bind(this.show, this));
             this.hide();
         },
 
