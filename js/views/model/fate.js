@@ -1010,12 +1010,37 @@ define([
             return csv.join('\r\n');
         },
 
+        convertUnixToDateTimeCSV: function(datarow) {
+            var datarowcp = datarow.slice();
+            var unix = datarow[0] / 1000;
+            var date = moment.unix(unix).toISOString();
+            datarowcp[0] = date;
+            return datarowcp;
+        },
+
         exportCSV: function() {
             var tabName = this.$('.tab-pane.active').attr('id');
             var dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
             var datasetName = this.tabToLabelMap[tabName];
             var dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
             var dataArr = dataset.data;
+            var filename = webgnome.model.get('name') + '_' + tabName;
+            var header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
+            var csv = [header];
+
+            for (var i = 0; i < dataArr.length; i++) {
+                var datasetrow = this.convertUnixToDateTimeCSV(dataArr[i]);
+                datasetrow.splice(2,1);
+                var row = datasetrow.join(",");
+                csv.push(row);
+            }
+
+            csv = encodeURI('data:text/csv;charset=utf-8,' + csv.join('\r\n'));
+
+            var pom = document.createElement('a');
+            pom.setAttribute('href', csv);
+            pom.setAttribute('download', filename + '.csv');
+            pom.click();
         },
 
         tableToHTML: function(table, header){
