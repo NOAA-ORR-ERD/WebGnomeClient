@@ -8,7 +8,7 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models.
 * [Node.js](http://nodejs.org/)
 * [npm](http://www.npmjs.org/)
 * grunt-cli
-* Some form of http server, webroot set to `./build` and directory index set to `build.html` (created after running `grunt build`)
+* Some form of http server, webroot set to `./dist/build` and directory index set to `build.html` (created after running `grunt build`)
 
 ## Commands
 `npm install`

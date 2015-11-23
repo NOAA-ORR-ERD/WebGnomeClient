@@ -4,7 +4,7 @@ define([
     'backbone',
     'views/modal/form',
     'views/form/map/goods',
-    'text!templates/form/map/mapSelect.html'
+    'text!templates/form/map/type.html'
 ], function($, _, Backbone, FormModal, GoodsMapForm, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
