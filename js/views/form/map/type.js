@@ -4,8 +4,9 @@ define([
     'backbone',
     'views/modal/form',
     'views/form/map/goods',
+    'views/form/map/upload',
     'text!templates/form/map/type.html'
-], function($, _, Backbone, FormModal, GoodsMapForm, SelectTemplate){
+], function($, _, Backbone, FormModal, GoodsMapForm, MapUploadForm, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
@@ -15,7 +16,8 @@ define([
             return _.defaults({
                 'click .waterWorld': 'waterWorld',
                 'click .parameterized': 'parameterized',
-                'click .realLocation': 'realLocation'
+                'click .realLocation': 'realLocation',
+                'click .upload': 'upload'
             }, FormModal.prototype.events);
         },
 
@@ -35,6 +37,10 @@ define([
 
         parameterized: function(e){
             
+        },
+
+        upload: function(){
+            this.trigger('select', new MapUploadForm());
         },
 
         realLocation: function(e){
