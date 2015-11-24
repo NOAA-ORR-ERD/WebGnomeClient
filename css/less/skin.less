@@ -1638,6 +1638,10 @@ nav.navbar{
                     }    
                 }    
             }
+
+            .export-csv {
+                display: none;
+            }
             
             .breakdown{
                 padding: 15px 15px 0 15px;                
@@ -1939,7 +1943,7 @@ nav.navbar{
         &.error {
             .logs{
                 :not(.error) {
-                        display: none;
+                    display: none;
                 }
             }
         }
@@ -2483,6 +2487,9 @@ nav.navbar{
     &.continuespill-form, &.instantspill-form {
         &.adios{
             .mapspill{
+                display: none;
+            }
+            .null-substance {
                 display: none;
             }
         }

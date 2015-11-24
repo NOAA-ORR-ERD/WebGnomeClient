@@ -115,7 +115,6 @@ define([
                     finishForm.on('finish', function(){
                         webgnome.model.fetch();
                         webgnome.router.navigate('config', true);
-                        var spillTypeWizForm = new SpillTypeWizForm().render();
                         finishForm.trigger('wizardclose');
                     });
 
@@ -123,6 +122,26 @@ define([
                 }
 
             }, this));
+
+            var stepLength = this.steps.length;
+            var spillWizForm = new SpillTypeWizForm({
+                    name: 'step' + (stepLength - 2),
+                    title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
+                }).on('select', _.bind(function(form){
+                    form.title += '<span class="sub-title">GNOME Wizard</span>';
+                    form.name = 'step' + (stepLength - 2);
+                    form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+                    this.register(form);
+                    this.steps[this.step].on('hidden', _.bind(function(){
+                        this.close();
+                    }, this.steps[this.step]));
+                    this.steps[this.step] = form;
+                    form.on('save', function(){
+                        webgnome.model.get('spills').add(form.model);
+                    });
+                }, this));
+
+            this.steps.splice(stepLength - 2, 0, spillWizForm);
 
             this.start();
         },
