@@ -1,7 +1,7 @@
 define([
-    'model/base'
-], function(BaseModel){
-    var mapBnaModel = BaseModel.extend({
+    'model/map/base'
+], function(BaseMap){
+    var mapBnaModel = BaseMap.extend({
 
     });
 
