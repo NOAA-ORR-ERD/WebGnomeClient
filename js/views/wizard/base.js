@@ -10,12 +10,7 @@ define([
 
         start: function(){
             this.steps[this.step].render();
-            _.each(this.steps, function(el){
-                el.on('save', this.next, this);
-                el.on('back', this.prev, this);
-                el.on('wizardclose', this.close, this);
-                el.on('finish', this.close, this);
-            }, this);
+            _.each(this.steps, this.register, this);
         },
 
         next: function(){
