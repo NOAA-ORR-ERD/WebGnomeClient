@@ -244,6 +244,7 @@ define([
                         spills.at(i).get('element_type').set('substance', model);
                     }
                     this.hide();
+                    this.trigger('save');
                 }, this)
             });
         },

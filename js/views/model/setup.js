@@ -26,6 +26,7 @@ define([
     'text!templates/panel/spill.html',
     'views/form/spill/continue',
     'views/form/spill/instant',
+    'views/form/oil/library',
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
@@ -52,7 +53,7 @@ define([
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
-    SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
+    SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
     'use strict';
@@ -69,6 +70,7 @@ define([
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
+                'click .substance-info': 'renderOilLibrary',
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
                 'click .location': 'clickLocation',
@@ -651,6 +653,17 @@ define([
             spillView.on('wizardclose', spillView.close);
 
             spillView.render();
+        },
+
+        renderOilLibrary: function() {
+            var element_type = webgnome.model.get('spills').at(0).get('element_type');
+            var oilLib = new OilLibraryView({}, element_type);
+            oilLib.on('save wizardclose', _.bind(function(){
+                this.updateSpill();
+                webgnome.model.save();
+                oilLib.on('hidden', oilLib.close);
+            }, this));
+            oilLib.render();
         },
 
         calculateSpillAmount: function(){
