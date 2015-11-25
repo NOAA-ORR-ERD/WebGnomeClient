@@ -141,7 +141,8 @@ define([
                     this.steps[this.step] = form;
                     form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
-                        if (!_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+                        var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+                        if (!_.isNull(substance)){
                             var waterForm = this.addWaterForm();
                             this.steps.splice(stepLength - 1, 0, waterForm);
                         }

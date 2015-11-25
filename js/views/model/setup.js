@@ -67,6 +67,7 @@ define([
                 'click .spill .add': 'clickSpill',
                 'click .map .add': 'clickMap',
                 'click .spill .single .edit': 'loadSpill',
+                'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
@@ -631,6 +632,7 @@ define([
         },
 
         loadSpill: function(e){
+            e.stopPropagation();
             var spillId = $(e.target).parents('.single').data('id');
             var spill = webgnome.model.get('spills').get(spillId);
             var spillView;
@@ -835,6 +837,7 @@ define([
         },
 
         deleteSpill: function(e){
+            e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
             var spill = webgnome.model.get('spills').get(id);
             swal({
