@@ -117,7 +117,7 @@ define([
                     });
                     finishForm.on('finish', function(){
                         webgnome.model.fetch();
-                        webgnome.router.navigate('config', true);
+                        webgnome.router.navigate('model', true);
                         finishForm.trigger('wizardclose');
                     });
 
