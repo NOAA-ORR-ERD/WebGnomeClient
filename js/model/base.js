@@ -66,6 +66,8 @@ define([
                                 }
                             }
                         }
+                    } else if (_.isObject(embeddedClass) && !_.isFunction(embeddedClass)) {
+                        response[key] = this.setChild(embeddedClass[embeddedData.obj_type], embeddedData);
                     } else {
                         // this is where the majority of all children are defined ex. spill's releaes and element_type object
                         response[key] = this.setChild(embeddedClass, embeddedData);
