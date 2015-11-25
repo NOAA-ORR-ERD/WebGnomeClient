@@ -26,7 +26,7 @@ define([
             } else {
                 this.steps[this.step].once('hidden', _.bind(function(){
                     this.next_();
-                }, this));    
+                }, this));
             }
         },
 

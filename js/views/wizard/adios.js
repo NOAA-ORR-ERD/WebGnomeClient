@@ -76,7 +76,7 @@ define([
                 }).on('finish', function(){
                     webgnome.model.save().always(function(){
                         localStorage.setItem('view', 'fate');
-                        webgnome.router.navigate('model', true);    
+                        webgnome.router.navigate('model', true);
                     });
                 })
             ];

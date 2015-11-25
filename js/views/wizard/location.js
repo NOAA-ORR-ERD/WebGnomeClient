@@ -9,16 +9,19 @@ define([
     'model/environment/wind',
     'model/movers/wind',
     'model/outputters/trajectory',
+    'model/environment/water',
     'views/form/text',
     'views/form/model',
     'views/form/wind',
     'views/form/custom',
     'views/modal/loading',
-    'views/form/spill/type-wizcompat'
+    'views/form/spill/type-wizcompat',
+    'views/form/water'
 ], function($, _, Backbone, swal, BaseWizard, GnomeModel,
     GnomeLocation, GnomeWind, GnomeWindMover,
-    TrajectoryOutputter,
-    TextForm, ModelForm, WindForm, CustomForm, LoadingModal, SpillTypeWizForm){
+    TrajectoryOutputter, GnomeWater,
+    TextForm, ModelForm, WindForm, CustomForm,
+    LoadingModal, SpillTypeWizForm, WaterForm){
     'use strict';
     var locationWizardView = BaseWizard.extend({
         steps: [],
@@ -124,6 +127,13 @@ define([
             }, this));
 
             var stepLength = this.steps.length;
+            var water = new GnomeWater();
+            var waterForm = new WaterForm({
+                    title: 'Water Properties <span class="sub-title">GNOME Wizard</span>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                }, water).on('save', function(){
+                    webgnome.model.get('environment').add(water);
+            });
             var spillWizForm = new SpillTypeWizForm({
                     name: 'step' + (stepLength - 2),
                     title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
@@ -136,9 +146,16 @@ define([
                         this.close();
                     }, this.steps[this.step]));
                     this.steps[this.step] = form;
-                    form.on('save', function(){
+                    form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
-                    });
+                        if (!_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+                            waterForm.on('save', this.next, this);
+                            waterForm.on('back', this.prev, this);
+                            waterForm.on('wizardclose', this.close, this);
+                            waterForm.on('finish', this.close, this);
+                            this.steps.splice(stepLength - 1, 0, waterForm);
+                        }
+                    }, this));
                 }, this));
 
             this.steps.splice(stepLength - 2, 0, spillWizForm);
