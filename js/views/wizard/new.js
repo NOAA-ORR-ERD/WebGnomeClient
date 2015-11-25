@@ -9,7 +9,7 @@ define([
     'views/form/environment',
     'views/form/random',
     'model/gnome',
-    'model/map',
+    'model/map/map',
     'collection/spills',
 ], function($, _, Backbone, BaseWizard, ModelForm, MapForm, SpillForm, EnvironmentForm, RandomForm, GnomeModel, GnomeMap, GnomeSpills){
     'use strict';

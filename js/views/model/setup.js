@@ -15,7 +15,7 @@ define([
     'model/movers/wind',
     'views/form/wind',
     'text!templates/panel/wind.html',
-    'model/map',
+    'model/map/map',
     'views/form/map/type',
     'text!templates/panel/map.html',
     'model/environment/water',

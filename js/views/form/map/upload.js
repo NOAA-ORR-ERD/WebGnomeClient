@@ -4,8 +4,8 @@ define([
     'text!templates/form/map/upload.html',
     'dropzone',
     'text!templates/default/dropzone.html',
-    'model/map'
-], function(_, FormModal, UploadTemplate, Dropzone, DropzoneTemplate, MapModel){
+    'model/map/bna'
+], function(_, FormModal, UploadTemplate, Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
@@ -50,7 +50,7 @@ define([
         },
 
         loaded: function(e, response){
-            var map = new MapModel(JSON.parse(response));
+            var map = new MapBNAModel(JSON.parse(response));
             this.trigger('save', map);
             this.hide();
         }
