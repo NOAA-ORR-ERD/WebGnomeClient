@@ -1004,20 +1004,24 @@ define([
             //     }, this));
             //     location.render();
             // }, this));
-            mapForm.on('waterWorld', function(){
-                webgnome.model.resetLocation(function(){
-                    webgnome.router.views[1].updateLocation();
-                    webgnome.router.views[1].updateCurrent();
-                    webgnome.router.views[1].mason.layout();
+            mapForm.on('waterWorld', _.bind(function(){
+                webgnome.model.resetLocation(_.bind(function(){
+                    this.updateLocation();
+                    this.updateCurrent();
                     mapForm.hide();
-                });
-            });
-            mapForm.on('select', function(form){
-                mapForm.on('hidden', function(){
+                }, this));
+            }, this));
+            mapForm.on('select', _.bind(function(form){
+                mapForm.on('hidden', _.bind(function(){
                     form.render();
                     form.on('hidden', form.close);
-                });
-            });
+                    form.on('save', _.bind(function(map){
+                        webgnome.model.set('map', map);
+                        webgnome.model.save();
+                       this.updateLocation();
+                    }, this));
+                }, this));
+            }, this));
             mapForm.render();
         },
 

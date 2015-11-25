@@ -11,8 +11,10 @@ define([
     'use strict';
     var modelView = Backbone.View.extend({
         className: 'page model',
+        switch: true,
 
         initialize: function(){
+            this.contextualize();
             this.render();
             $(window).on('resize', _.bind(function(){
                 this.updateHeight();
@@ -24,6 +26,18 @@ define([
             'click .view-toggle label': 'switchView'
         },
 
+        contextualize: function(){
+            // fate view should only be selected/active if there's
+            // a weatherable substance and water added to the model
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var sub = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+
+            if(!water || !sub){
+                localStorage.setItem('view', 'trajectory');
+                this.switch = false;
+            }
+        },
+
         render: function(){
             this.$el.append(IndexTemplate);
             $('body').append(this.$el);
@@ -33,6 +47,9 @@ define([
                 view = 'fate';
             }
             
+            if(!this.switch){
+                this.$('.view-toggle').css('visibility', 'hidden');
+            }
             this.$('.switch').addClass(view);
             localStorage.setItem('view', view);
 

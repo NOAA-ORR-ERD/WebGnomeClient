@@ -105,7 +105,6 @@ define([
                 success: _.bind(function(model, response, options){
                     var map = model.get('map');
                     var spills = model.get('spills').models;
-                    var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
 
                     var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
                     var spillGeo = true;
@@ -168,11 +167,17 @@ define([
                                         webgnome.model.get('weatherers').add(weathererModel);
                                     }
                                 }
-                                webgnome.model.save();
+                                var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+                                var wind = model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+
+                                webgnome.model.toggleWeatherers();
+                                webgnome.model.save(null, {validate: false});
                                 webgnome.router.navigate('config', true);
+
                             }
                         });
                     } else {
+                        webgnome.model.toggleWeatherers();
                         webgnome.router.navigate('config', true);
                     }
                 }, this)

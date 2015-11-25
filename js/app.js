@@ -54,11 +54,8 @@ define([
                                                 title: 'Application Error!',
                                                 text: 'An error in the application has occured, if this problem persists please contact support.<br /><br /><code>' + req.responseText + '</code>',
                                                 type: 'error',
-                                                confirmButtonText: 'Refresh'
+                                                confirmButtonText: 'Ok'
                                             }, function(isConfirm){
-                                                if(isConfirm){
-                                                    window.location.reload();
-                                                }
                                             });
                                         }
                                     }
