@@ -127,13 +127,6 @@ define([
             }, this));
 
             var stepLength = this.steps.length;
-            var water = new GnomeWater();
-            var waterForm = new WaterForm({
-                    title: 'Water Properties <span class="sub-title">GNOME Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
-                }, water).on('save', function(){
-                    webgnome.model.get('environment').add(water);
-            });
             var spillWizForm = new SpillTypeWizForm({
                     name: 'step' + (stepLength - 2),
                     title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
@@ -149,10 +142,7 @@ define([
                     form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
                         if (!_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
-                            waterForm.on('save', this.next, this);
-                            waterForm.on('back', this.prev, this);
-                            waterForm.on('wizardclose', this.close, this);
-                            waterForm.on('finish', this.close, this);
+                            var waterForm = this.addWaterForm();
                             this.steps.splice(stepLength - 1, 0, waterForm);
                         }
                     }, this));
@@ -161,6 +151,22 @@ define([
             this.steps.splice(stepLength - 2, 0, spillWizForm);
 
             this.start();
+        },
+
+        addWaterForm: function() {
+            var water = new GnomeWater();
+            var waterForm = new WaterForm({
+                    title: 'Water Properties <span class="sub-title">GNOME Wizard</span>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                }, water).on('save', function(){
+                    webgnome.model.get('environment').add(water);
+            });
+            waterForm.on('save', this.next, this);
+            waterForm.on('back', this.prev, this);
+            waterForm.on('wizardclose', this.close, this);
+            waterForm.on('finish', this.close, this);
+
+            return waterForm;
         },
 
         notfound: function(){
