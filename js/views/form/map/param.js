@@ -14,9 +14,21 @@ define([
 
         render: function(){
             this.body = _.template(ParamTemplate, {
-                bearing: this.model.get('bearing')
+                bearing: this.model.get('bearing'),
+                distance: this.model.get('distance'),
+                center: this.model.get('center')[0] + ',' + this.model.get('center')[1]
             });
             FormModal.prototype.render.call(this);
+            this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
+        },
+        
+        update: function(){
+            this.model.set('distance', this.$('input[name="distance"]').val());
+            this.model.set('units', this.$('select[name="units"]').val());
+            this.model.set('bearing', this.$('input[name="bearing"]').val());
+            var center = this.$('input[name="center"]').val().split(',');
+            center.push(0);
+            this.model.set('center', center);
         }
     });
 
