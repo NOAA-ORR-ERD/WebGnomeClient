@@ -113,7 +113,7 @@ define([
                 this.model.save(null, {
                     success: _.bind(function(){
                         this.hide();
-                        this.trigger('save', [this.model]);
+                        this.trigger('save', this.model);
                         if(_.isFunction(callback)) { callback(); }
                     }, this),
                     error: _.bind(function(model, response){
@@ -126,7 +126,7 @@ define([
                 }
             } else {
                 this.hide();
-                this.trigger('save', [this.model]);
+                this.trigger('save', this.model);
                 if(_.isFunction(callback)){ callback(); }
             }
         },
