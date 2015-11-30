@@ -116,8 +116,10 @@ define([
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finalize Model</button>"
                     });
                     finishForm.on('finish', function(){
-                        webgnome.model.fetch();
-                        webgnome.router.navigate('model', true);
+                        webgnome.model.save().always(function(){
+                            localStorage.setItem('view', 'trajectory');
+                            webgnome.router.navigate('model', true);
+                        });
                         finishForm.trigger('wizardclose');
                     });
 
