@@ -1057,11 +1057,16 @@ define([
         },
 
         editMap: function(){
+            // only able to "edit" param right now and even behind the scenes it just
+            // creates a new map object anyway.
             var map = webgnome.model.get('map');
             var form = new ParamMapForm({map: map});
             form.render();
             form.on('hidden', form.close);
-            form.on('save', map.resetRequest, map);
+            form.on('save', _.bind(function(map){
+                webgnome.model.set('map', map);
+                webgnome.model.save();
+            }, this));
             form.on('save', this.updateLocation, this);
         },
 
