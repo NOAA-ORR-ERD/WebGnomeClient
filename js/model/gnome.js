@@ -5,7 +5,9 @@ define([
     'moment',
     'model/base',
     'model/cache',
-    'model/map',
+    'model/map/map',
+    'model/map/param',
+    'model/map/bna',
     'model/spill',
     'model/environment/tide',
     'model/environment/wind',
@@ -31,7 +33,7 @@ define([
     'model/weatherers/weathering_data',
     'model/user_prefs'
 ], function(_, $, Backbone, moment,
-    BaseModel, Cache, MapModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
+    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
@@ -45,7 +47,11 @@ define([
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
             },
-            map: MapModel,
+            map: {
+                'gnome.map.GnomeMap': MapModel,
+                'gnome.map.ParamMap': ParamMapModel,
+                'gnome.map.MapFromBNA': MapBnaModel
+            },
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,

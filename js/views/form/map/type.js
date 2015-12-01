@@ -5,8 +5,9 @@ define([
     'views/modal/form',
     'views/form/map/goods',
     'views/form/map/upload',
+    'views/form/map/param',
     'text!templates/form/map/type.html'
-], function($, _, Backbone, FormModal, GoodsMapForm, MapUploadForm, SelectTemplate){
+], function($, _, Backbone, FormModal, GoodsMapForm, MapUploadForm, ParamMapForm, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
@@ -36,7 +37,7 @@ define([
         },
 
         parameterized: function(e){
-            
+            this.trigger('select', new ParamMapForm());
         },
 
         upload: function(){
