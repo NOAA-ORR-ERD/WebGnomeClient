@@ -475,7 +475,9 @@ define([
 
         load: function(){
             this.updateProgress();
-            this.play();
+            if(webgnome.model.get('messages').length < 1){
+                this.play();
+            }
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
         },
