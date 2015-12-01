@@ -423,8 +423,8 @@ define([
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
 
-                        this.ol.map.on('pointermove', this.spillHover, this);
-                        this.ol.map.on('click', this.spillClick, this);
+                        // this.ol.map.on('pointermove', this.spillHover, this);
+                        // this.ol.map.on('click', this.spillClick, this);
                     }
                     if(this.ol.redraw === false){
                         this.renderSpills();
@@ -438,8 +438,8 @@ define([
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
-                        this.ol.map.on('pointermove', this.spillHover, this);
-                        this.ol.map.on('click', this.spillClick, this);
+                        // this.ol.map.on('pointermove', this.spillHover, this);
+                        // this.ol.map.on('click', this.spillClick, this);
                     }
                     if(this.ol.redraw === false){
                         this.renderSpills();
