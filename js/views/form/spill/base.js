@@ -430,7 +430,8 @@ define([
                     center: [-128.6, 42.7],
                     layers: [
                         new ol.layer.Tile({
-                            source: new ol.source.MapQuest({layer: 'osm'})
+                            source: new ol.source.MapQuest({layer: 'osm'}),
+                            visible: webgnome.model.get('map').geographical
                         }),
                         this.layer
                     ]

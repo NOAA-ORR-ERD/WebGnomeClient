@@ -920,14 +920,6 @@ define([
                             })
                         }),
                     });
-
-                    // only show a base layer if map object is geographically sensative
-                    var visible;
-                    if(webgnome.model.get('map').get('obj_type').indexOf('ParamMap') === -1){
-                        visible = true;
-                    } else {
-                        visible = false;
-                    }
                     
                     var locationMap = new OlMapView({
                         id: 'mini-locmap',
@@ -935,7 +927,7 @@ define([
                         layers: [
                             new ol.layer.Tile({
                                 source: new ol.source.MapQuest({layer: 'osm'}),
-                                visible: visible
+                                visible: webgnome.model.get('map').geographical
                             }),
                             shorelineLayer
                         ],

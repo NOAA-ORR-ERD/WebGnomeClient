@@ -7,6 +7,7 @@ define([
         requesting: false,
         requested: false,
         geo_json: '',
+        geographical: false,
         
         getExtent: function(){
             var extent;
