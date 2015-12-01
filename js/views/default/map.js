@@ -57,7 +57,8 @@ define([
                                     }
                                 },
                                 undefinedHTML: 'Mouse out of bounds'
-                            })
+                            }),
+                            new ol.control.ScaleLine()
                         ]);
                     } else {
                         this.controls = options.controls;
