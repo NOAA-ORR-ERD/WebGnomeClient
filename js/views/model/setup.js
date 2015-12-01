@@ -1056,9 +1056,11 @@ define([
         },
 
         editMap: function(){
-            var form = new ParamMapForm({map: webgnome.model.get('map')});
+            var map = webgnome.model.get('map');
+            var form = new ParamMapForm({map: map});
             form.render();
             form.on('hidden', form.close);
+            form.on('save', map.resetRequest, map);
             form.on('save', this.updateLocation, this);
         },
 
