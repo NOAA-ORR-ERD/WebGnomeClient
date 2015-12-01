@@ -1921,10 +1921,12 @@ nav.navbar{
 
                 &.error, .criti{
                     background: #FFB3B3;
+                    display: none !important;
                 }
 
                 &.warni{
-                    background: #FFF2B3;;
+                    background: #FFF2B3;
+                    display: none !important;
                 }
             }
         }
@@ -1952,26 +1954,19 @@ nav.navbar{
         }
         &.error {
             .logs{
-                :not(.error) {
-                    display: none;
+                li.error {
+                    display: block !important;
                 }
             }
         }
         &.warni {
             .logs {
-                :not(.warni) {
-                    display: none;
+                li.warni{
+                    display: block !important;
                 }
             }
         }
 
-        &.error.warni {
-            .logs {
-                .error, .warni {
-                    display: block;
-                }
-            }
-        }
     }
 }
 
