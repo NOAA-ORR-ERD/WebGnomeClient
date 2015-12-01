@@ -126,7 +126,7 @@ define([
                 }
             } else {
                 this.hide();
-                this.trigger('save', this.model);
+                this.trigger('save', this.$('form'));
                 if(_.isFunction(callback)){ callback(); }
             }
         },
