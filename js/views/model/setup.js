@@ -17,6 +17,7 @@ define([
     'text!templates/panel/wind.html',
     'model/map/map',
     'views/form/map/type',
+    'views/form/map/param',
     'text!templates/panel/map.html',
     'model/environment/water',
     'views/form/water',
@@ -50,7 +51,7 @@ define([
     'flotnavigate'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
-    MapModel, MapTypeForm, MapPanelTemplate,
+    MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
@@ -65,7 +66,8 @@ define([
                 'click .wind .add': 'clickWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
-                'click .map .add': 'clickMap',
+                'click .map .perm-add': 'clickMap',
+                'click .map .add': 'editMap',
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
                 'mouseover .spill .single': 'hoverSpill',
@@ -413,6 +415,12 @@ define([
                 show: 500,
                 hide: 100
             };
+
+            if(webgnome.model.get('map').get('obj_type').indexOf('ParamMap') !== -1){
+                this.$('.map.object .add').show();
+            } else {
+                this.$('.map.object .add').hide();
+            }
 
             $('.panel-heading .add').tooltip({
                 title: function(){
@@ -1008,6 +1016,7 @@ define([
                 webgnome.model.resetLocation(_.bind(function(){
                     this.updateLocation();
                     this.updateCurrent();
+                    this.$('.map.object .add').hide();
                     mapForm.hide();
                 }, this));
             }, this));
@@ -1018,11 +1027,23 @@ define([
                     form.on('save', _.bind(function(map){
                         webgnome.model.set('map', map);
                         webgnome.model.save();
-                       this.updateLocation();
+                        this.updateLocation();
+                        if(map.get('obj_type').indexOf('ParamMap') !== -1){
+                            this.$('.object.map .add').show();
+                        } else {
+                            this.$('.object.map .add').hide();
+                        }
                     }, this));
                 }, this));
             }, this));
             mapForm.render();
+        },
+
+        editMap: function(){
+            var form = new ParamMapForm({map: webgnome.model.get('map')});
+            form.render();
+            form.on('hidden', form.close);
+            form.on('save', this.updateLocation, this);
         },
 
         clickResponse: function(){

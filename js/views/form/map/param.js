@@ -8,7 +8,11 @@ define([
         title: 'Parameterized Shoreline',
 
         initialize: function(options){
-            this.model = new ParamMap();
+            if(options && _.has(options, 'map')){
+                this.model = options.map;
+            } else {
+                this.model = new ParamMap();
+            }
             FormModal.prototype.initialize.call(this, options); 
         },
 
