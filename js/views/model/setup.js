@@ -487,6 +487,7 @@ define([
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
                 this.updateWind();
+                this.renderTimeline();
             }, this));
             windForm.render();
         },
