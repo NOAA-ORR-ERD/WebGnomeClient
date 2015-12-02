@@ -151,7 +151,7 @@ define([
                     }, this));
                 }, this));
 
-            this.steps.splice(stepLength - 2, 0, spillWizForm);
+            this.steps.splice(stepLength - 1, 0, spillWizForm);
 
             this.start();
         },

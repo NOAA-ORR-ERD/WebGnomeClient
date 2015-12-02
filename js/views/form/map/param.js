@@ -9,7 +9,9 @@ define([
 
         initialize: function(options){
             if(options && _.has(options, 'map')){
-                this.model = options.map;
+                var json = options.map.toJSON();
+                delete json.id;
+                this.model = new ParamMap(json);
             } else {
                 this.model = new ParamMap();
             }

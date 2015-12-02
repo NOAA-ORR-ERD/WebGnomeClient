@@ -7,6 +7,11 @@ define([
     var nwsWind = Backbone.Model.extend({
         fetching: false,
 
+        initialize: function(options){
+            Backbone.Model.prototype.initialize.call(this, options);
+            this.on('sync error', this.resetFetch, this);
+        },
+
         url: function(){
             // http://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?latitude=47&longitude=-125.5&format=JSON
             return 'https://gnome.orr.noaa.gov/goods/winds/NWS_point/point_forecast?format=JSON';
@@ -37,10 +42,9 @@ define([
             }
         },
 
-        parse: function(options){
+        resetFetch: function(){
             this.fetching = false;
-            return Backbone.Model.prototype.parse.call(this, options);
-        },
+        }
     });
 
     return nwsWind;

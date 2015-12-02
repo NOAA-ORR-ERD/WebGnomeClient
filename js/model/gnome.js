@@ -378,9 +378,20 @@ define([
 
             var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
             var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
+            var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
+            var fay_gravity_viscous = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.spreading.FayGravityViscous'});
+
             if(evaporation){
                 evaporation.set('water', water);
             }
+            if(natural_dispersion){
+                natural_dispersion.set('water', water);
+            }
+
+            if(fay_gravity_viscous){
+                fay_gravity_viscous.set('water', water);
+            }
+
             this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
         },
 
