@@ -174,6 +174,11 @@ define([
             var index = e.target.parentElement.parentElement.dataset.tsindex;
             this.model.get('timeseries').splice(index, 1);
             this.renderTimeseries();
+        },
+
+        close: function(){
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.close.call(this);
         }
 
     });
