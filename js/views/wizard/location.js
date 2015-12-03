@@ -130,30 +130,45 @@ define([
 
             var stepLength = this.steps.length;
             var spillWizForm = new SpillTypeWizForm({
-                    name: 'step' + (stepLength - 2),
-                    title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
-                }).on('select', _.bind(function(form){
-                    form.title += '<span class="sub-title">GNOME Wizard</span>';
-                    form.name = 'step' + (stepLength - 2);
-                    form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
-                    this.register(form);
-                    this.steps[this.step].on('hidden', _.bind(function(){
-                        this.close();
-                    }, this.steps[this.step]));
-                    this.steps[this.step] = form;
-                    form.on('save', _.bind(function(){
-                        webgnome.model.get('spills').add(form.model);
-                        var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-                        if (!_.isNull(substance)){
-                            var waterForm = this.addWaterForm();
-                            this.steps.splice(stepLength - 1, 0, waterForm);
-                        }
-                    }, this));
+                name: 'step' + (stepLength - 2),
+                title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
+            }).on('select', _.bind(function(form){
+                form.title += '<span class="sub-title">GNOME Wizard</span>';
+                form.name = 'step' + (stepLength - 2);
+                form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+
+                // dynamically add the water form to the wizard if the substance is weatherable
+                form.$el.on('show.bs.modal', _.bind(function(){
+                    form.model.get('element_type').once('change:substance', this.dynamicWaterListener, this);
                 }, this));
+
+                form.on('save', _.bind(function(){
+                    form.model.get('element_type').off('change:substance', this.dynamicWaterListener, this);
+                }, this));
+                
+                this.register(form);
+                this.steps[this.step].on('hidden', _.bind(function(){
+                    this.close();
+                }, this.steps[this.step]));
+
+                this.steps[this.step] = form;
+
+                form.on('save', _.bind(function(){
+                    webgnome.model.get('spills').add(form.model);
+                }, this));
+            }, this));
 
             this.steps.splice(stepLength - 1, 0, spillWizForm);
 
             this.start();
+        },
+
+        dynamicWaterListener: function(model, substance){
+            if (!_.isNull(substance)){
+                console.log('water form added');
+                var waterForm = this.addWaterForm();
+                this.steps.splice(this.steps.length - 1, 0, waterForm);
+            }
         },
 
         addWaterForm: function() {
