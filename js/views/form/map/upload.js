@@ -53,6 +53,12 @@ define([
             var map = new MapBNAModel(JSON.parse(response));
             this.trigger('save', map);
             this.hide();
+        },
+
+        close: function(){
+            this.dropzone.disable();
+            $('input.dz-hidden-input').remove();
+            Backbone.View.prototype.close.call(this);
         }
     });
 
