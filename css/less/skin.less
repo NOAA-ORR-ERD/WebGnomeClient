@@ -1135,9 +1135,33 @@ nav.navbar{
         .make-md-column(8);
     }
     .map{
-        .make-md-column(12);
         overflow: hidden;
         height: 700px;
+    }
+    .location-list{
+        width: 240px;
+        float: right;
+        height: 700px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        border-left: 0;
+
+        .item{
+            padding: 10px 15px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            &:hover{
+                background-color: #F0F0F0;
+                a{
+                    display: inline;
+                }
+            }
+
+            a{
+                .pull-right;
+                display: none;
+            }
+        }
     }
 }
 

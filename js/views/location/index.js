@@ -8,13 +8,19 @@ define([
     'model/gnome',
     'sweetalert',
     'text!templates/location/index.html',
+    'text!templates/location/list.html',
     'views/wizard/location'
-], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, LocationWizard){
+], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard){
     'use strict';
     var locationsView = Backbone.View.extend({
         className: 'page locations',
         mapView: null,
         popup: null,
+
+        events: {
+            'click .item': 'highlightLoc',
+            'click .item a': 'setupLocation'
+        },
 
         /**
          * @todo decomp the popover into a new view? How else to get load click event?
@@ -25,63 +31,20 @@ define([
             } else {
                 this.dom_target = 'body';
             }
-
+                    
             this.mapView = new OlMapView({
                 controls: [],
                 id: 'locations-map',
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
-                    }),
-                    new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            format: new ol.format.GeoJSON(),
-                            url: webgnome.config.api + '/location',
-                        }),
-                        style: new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        })
                     })
                 ]
             });
             this.render();
-
-            // change mouse to pointer when hovering over a feature.
-            this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
-                    return true;
-                });
-                if(pointer){
-                    this.getViewport().style.cursor = 'pointer';
-                } else {
-                    this.getViewport().style.cursor = '';
-                }
-            }, this.mapView.map));
-
-            // clicking a location creates a popover with it's related information displayed
-            this.mapView.map.on('click', function(e){
-                var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                    return feature;
-                });
-                if(feature){
-                    if(this.$('.popover').length === 0){
-                        this.clickPin(feature);
-                    } else {
-                        this.$('.popup').one('hidden.bs.popover', _.bind(function(){
-                            setTimeout(_.bind(function(){
-                                this.clickPin(feature);
-                            }, this), 1);
-                        }, this));
-                        this.$('.popup').popover('destroy');
-                    }
-                } else {
-                    this.$('.popup').popover('destroy');
-                }
-            }, this);
+            $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                console.log('Error retrieving location files.');
+            });
         },
 
         clickPin: function(feature){
@@ -106,28 +69,30 @@ define([
                     }, this));
                 }, this));
 
-                this.$('.setup').on('click', _.bind(function(){
-                    var slug = this.$('.setup').data('slug');
-                    var name = this.$('.setup').data('name');
-                    webgnome.model = new GnomeModel();
-                    if(_.has(webgnome, 'cache')){
-                        webgnome.cache.rewind();
-                    }
-                    webgnome.model.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.wizard({slug: slug, name: name});
-                            this.$('.popup').popover('destroy');
-                        }, this)
-                    });
-                
-                }, this));
+                this.$('.setup').on('click', _.bind(this.setupLocation, this));
             }, this));
 
             this.$('.popup').one('hide.bs.popover', _.bind(function(){
                 this.$('.load').off('click');
                 this.$('.setup').off('click');
             }, this));
+        },
+
+        setupLocation: function(e){
+            e.stopPropagation();
+            var slug = e.target.dataset.slug;
+            var name = e.target.dataset.name;
+            webgnome.model = new GnomeModel();
+            if(_.has(webgnome, 'cache')){
+                webgnome.cache.rewind();
+            }
+            webgnome.model.save(null, {
+                validate: false,
+                success: _.bind(function(){
+                    this.wizard({slug: slug, name: name});
+                    this.$('.popup').popover('destroy');
+                }, this)
+            });
         },
 
         load: function(options){
@@ -153,7 +118,7 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(LocationsTemplate);
+            var compiled = _.template(LocationsTemplate);            
             $(this.dom_target).append(this.$el.html(compiled));
 
             this.popup = new ol.Overlay({
@@ -167,6 +132,82 @@ define([
             this.mapView.render();
             this.mapView.map.addOverlay(this.popup);
 
+            this.registerMapEvents();
+        },
+
+        ajax_render: function(geojson){
+             this.layer = new ol.layer.Vector({
+                source: new ol.source.Vector({
+                    features: (new ol.format.GeoJSON()).readFeatures(geojson,  {featureProjection: 'EPSG:3857'}),
+                }),
+                style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [0.5, 1.0],
+                        src: '/img/map-pin.png',
+                        size: [32, 40]
+                    })
+                })
+            });
+
+            this.mapView.map.addLayer(this.layer);
+
+            var list = _.template(ListTemplate, {
+                locations: geojson.features
+            });
+            this.$('.location-list').append(list);
+
+        },
+
+        registerMapEvents: function(){
+            // change mouse to pointer when hovering over a feature.
+
+            this.mapView.map.on('pointermove', _.bind(function(e){
+                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
+                    return true;
+                });
+                if(pointer){
+                    this.getViewport().style.cursor = 'pointer';
+                } else {
+                    this.getViewport().style.cursor = '';
+                }
+            }, this.mapView.map));
+
+            // clicking a location creates a popover with it's related information displayed
+            this.mapView.map.on('click', this.mapClickEvent, this);
+        },
+
+        highlightLoc: function(e){
+            var loc = e.currentTarget;
+            var coords = loc.dataset.coords.split(',');
+            coords = ol.proj.transform([parseFloat(coords[0]), parseFloat(coords[1])], 'EPSG:4326', 'EPSG:3857');
+            this.mapView.map.getView().setCenter(coords);
+            this.mapView.map.getView().setZoom(24);
+
+            setTimeout(_.bind(function(){
+                e.pixel = this.mapView.map.getPixelFromCoordinate(coords);
+                this.mapClickEvent(e);
+            }, this), 200);
+        },
+
+        mapClickEvent: function(e){
+            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                return feature;
+            });
+
+            if(feature){
+                if(this.$('.popover').length === 0){
+                    this.clickPin(feature);
+                } else {
+                    this.$('.popup').one('hidden.bs.popover', _.bind(function(){
+                        setTimeout(_.bind(function(){
+                            this.clickPin(feature);
+                        }, this), 1);
+                    }, this));
+                    this.$('.popup').popover('destroy');
+                }
+            } else {
+                this.$('.popup').popover('destroy');
+            }
         },
 
         close: function(){

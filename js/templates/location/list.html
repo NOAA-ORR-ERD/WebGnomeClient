@@ -1,0 +1,6 @@
+{% for(loc in locations){ %}
+    <div class="item" data-coords="{{ locations[loc].geometry.coordinates }}">
+        {{ locations[loc].properties.title }}
+        <a class="btn btn-primary btn-xs" data-slug="{{ locations[loc].properties.slug }}" data-name="{{ locations[loc].properties.title }}">Load</a>
+    </div>
+{% } %}
