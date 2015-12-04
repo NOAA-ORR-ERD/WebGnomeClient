@@ -7,7 +7,7 @@ define([
 ], function(FormModal, ol, MapView, GoodsTemplate, ShorelineResource){
     var goodsMapForm = FormModal.extend({
         title: 'GOODS Map Generator',
-        className: 'modal fade form-modal goods-map',
+        className: 'modal form-modal goods-map',
 
         initialize: function(options){
             FormModal.prototype.initialize.call(this, options);

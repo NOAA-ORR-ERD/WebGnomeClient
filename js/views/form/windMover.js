@@ -9,7 +9,7 @@ define([
     'use strict';
 	var windMoverForm = FormModal.extend({
 		title: 'Wind Mover Settings',
-		className: 'modal fade form-modal wind-form',
+		className: 'modal form-modal wind-form',
 		events: function(){
 			return _.defaults({
 				'click .windObj': 'renderWindForm'

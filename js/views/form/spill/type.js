@@ -15,7 +15,7 @@ define([
     'use strict';
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
-        className: 'modal fade form-modal spilltype-form',
+        className: 'modal form-modal spilltype-form',
 
         events: function(){
             return _.defaults({

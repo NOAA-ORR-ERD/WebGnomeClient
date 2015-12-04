@@ -21,7 +21,7 @@ define([
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
-        className: 'modal fade form-modal wind-form',
+        className: 'modal form-modal wind-form',
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -80,7 +80,6 @@ define([
                     this.layer
                 ]
             });
-            this.on('ready', this.rendered, this);
         },
 
         render: function(options){
@@ -89,7 +88,6 @@ define([
                 unit: this.model.get('units')
             });
             FormModal.prototype.render.call(this, options);
-            this.trigger('show');
 
             this.form = {};
             this.form.constant = {};
@@ -100,6 +98,7 @@ define([
             this.form.variable.direction = this.$('#variable-direction');
             this.form.variable.datetime = this.$('#datetime');
             this.form.variable.increment = this.$('#incrementCount');
+            this.trigger('show');
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
@@ -143,6 +142,7 @@ define([
             }, this), 1);
             $('.modal').on('scroll', this.variableWindStickyHeader);
 
+            this.rendered();
         },
 
         rendered: function(){

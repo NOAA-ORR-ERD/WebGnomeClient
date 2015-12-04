@@ -8,7 +8,7 @@ define([
      'use strict';
 	   var randomForm = FormModal.extend({
       title: 'Diffusion Settings',
-      className: 'modal fade form-modal',
+      className: 'modal form-modal',
       events: function(){
           return _.defaults({
 

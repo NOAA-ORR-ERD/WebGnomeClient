@@ -8,7 +8,7 @@ define([
 ], function($, _, Backbone, bs, ModalTemplate, Mousetrap){
     'use strict';
     var baseModal = Backbone.View.extend({
-        className: 'modal fade',
+        className: 'modal',
         name: 'default',
         title: 'Default Modal',
         body: '',
@@ -16,7 +16,7 @@ define([
         rendered_: false,
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         options: {
-            backdrop: 'static',
+            backdrop: false,
             keyboard: false,
             show: true,
             remote: false
@@ -47,7 +47,7 @@ define([
         },
 
         events: {
-            'hidden.bs.modal': 'close'
+            'hide.bs.modal': 'close',
         },
 
         show: function(){

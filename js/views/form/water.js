@@ -10,7 +10,7 @@ define([
 ], function($, _, Backbone, module, nucos, FormModal, WaterTemplate){
     'use strict';
     var waterForm = FormModal.extend({
-        className: 'modal fade form-modal model-form',
+        className: 'modal form-modal model-form',
         title: 'Water Properties',
 
         events: function(){

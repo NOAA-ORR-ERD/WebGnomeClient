@@ -8,13 +8,15 @@ define([
 ], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
     'use strict';
     var formModal = BaseModal.extend({
-        className: 'modal fade form-modal',
+        className: 'modal form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],
 
         events: {
             'click .next': 'save',
             'click .back': 'back',
+            'show.bs.modal': 'triggerShown',
+            'hide.bs.modal': 'triggerHidden',
             'shown.bs.modal': 'ready',
             'hidden.bs.modal': 'hidden',
             'click .modal-header>.close': 'wizardclose',
@@ -112,9 +114,9 @@ define([
             if(this.model){
                 this.model.save(null, {
                     success: _.bind(function(){
-                        this.hide();
                         this.trigger('save', this.model);
                         if(_.isFunction(callback)) { callback(); }
+                        this.hide();
                     }, this),
                     error: _.bind(function(model, response){
                         this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
@@ -125,9 +127,9 @@ define([
                     this.$el.scrollTop(0);
                 }
             } else {
-                this.hide();
                 this.trigger('save', this.$('form'));
                 if(_.isFunction(callback)){ callback(); }
+                this.hide();
             }
         },
 
@@ -177,6 +179,14 @@ define([
                 this.model.fetch();
             }
             this.trigger('wizardclose');
+        },
+
+        triggerHidden: function(){
+            this.trigger('hidden.bs.modal');
+        },
+
+        triggerShown: function(){
+            this.trigger('shown.bs.modal');
         },
 
         close: function(){

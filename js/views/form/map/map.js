@@ -8,7 +8,7 @@ define([
 ], function(_, $, Backbone, ol, FormModal, FormTemplate){
     'use strict';
     var mapForm = FormModal.extend({
-        className: 'modal fade form-modal map-form',
+        className: 'modal form-modal map-form',
         name: 'map',
         title: 'Map',
 

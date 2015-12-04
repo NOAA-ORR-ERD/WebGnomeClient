@@ -10,7 +10,7 @@ define([
 ], function($, _, Backbone, FormModal, LocationView, LoadingModal, GnomeLocation, GnomeModel){
     'use strict';
     var locationModal = FormModal.extend({
-        className: 'modal fade form-modal location-form',
+        className: 'modal form-modal location-form',
         size: 'lg',
         title: 'Select a Location',
 

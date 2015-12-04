@@ -9,7 +9,7 @@ define([
 ], function($, _, Backbone, OilLib, FormModal, SpecificOilView, OilInfoTemplate){
     'use strict';
     var oilInfo = FormModal.extend({
-       className: 'modal fade form-modal oil-info',
+       className: 'modal form-modal oil-info',
        name: 'oilinfo',
        title: 'Oil Information',
        size: 'lg',

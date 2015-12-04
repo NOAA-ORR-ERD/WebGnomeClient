@@ -40,7 +40,7 @@ define([
                 new MapTypeForm({
                     name: 'step3',
                     title: 'Select Map Type <span class="sub-title">GNOME Wizard</span>',
-                    className: 'modal fade form-modal shorelinetype-form gnome'
+                    className: 'modal form-modal shorelinetype-form gnome'
                 }).on('select', _.bind(function(form){
                     form.title += '<span class="sub-title">ADIOS Wizard</span>';
                     form.name = 'step3';

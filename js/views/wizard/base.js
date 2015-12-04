@@ -15,13 +15,9 @@ define([
 
         next: function(){
             if(this.steps[this.step].$el.is(':hidden')){
-                $('body').one('hidden.bs.modal', _.bind(function(){
-                    this.prev_();
-                }, this));
+                this.next_();
             } else {
-                this.steps[this.step].once('hidden', _.bind(function(){
-                    this.next_();
-                }, this));
+                this.next_();
             }
         },
 
@@ -36,13 +32,9 @@ define([
 
         prev: function(){
             if(this.steps[this.step].$el.is(':hidden')){
-                $('body').one('hidden.bs.modal', _.bind(function(){
-                    this.prev_();
-                }, this));
+                this.prev_();
             } else {
-                this.steps[this.step].once('hidden', _.bind(function(){
-                    this.prev_();    
-                }, this));    
+                this.prev_();    
             }
         },
 

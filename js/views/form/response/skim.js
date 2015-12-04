@@ -13,7 +13,7 @@ define([
     'use strict';
     var skimForm = ResponseFormModal.extend({
         title: 'Skim Response',
-        className: 'modal response fade form-modal skim-form',
+        className: 'modal response form-modal skim-form',
 
         events: function(){
             return _.defaults({

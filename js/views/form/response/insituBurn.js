@@ -14,7 +14,7 @@ define([
     'use strict';
     var inSituBurnForm = ResponseFormModal.extend({
         title: 'In-Situ Burn Response',
-        className: 'modal response fade form-modal insituburn-form',
+        className: 'modal response form-modal insituburn-form',
 
         initialize: function(options, burnModel){
             this.module = module;

@@ -13,7 +13,7 @@ define([
     'use strict';
     var disperseForm = ResponseFormModal.extend({
         title: 'Disperse Response',
-        className: 'modal response fade form-modal disperse-form',
+        className: 'modal response form-modal disperse-form',
 
         initialize: function(options, disperseModel){
             this.module = module;

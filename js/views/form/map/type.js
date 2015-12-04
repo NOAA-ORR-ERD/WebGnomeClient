@@ -11,7 +11,7 @@ define([
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
-        className: 'modal fade form-modal shorelinetype-form',
+        className: 'modal form-modal shorelinetype-form',
 
         events: function(){
             return _.defaults({

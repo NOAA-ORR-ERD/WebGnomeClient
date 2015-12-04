@@ -8,7 +8,7 @@ define([
     'use strict';
 	var catsForm = FormModal.extend({
 		title: 'Current Mover Settings',
-		className: 'modal fade form-modal',
+		className: 'modal form-modal',
 
 		initialize: function(options, GnomeTide){
 			FormModal.prototype.initialize.call(this, options);

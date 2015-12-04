@@ -16,7 +16,7 @@ define([
     'use strict';
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
-        className: 'modal fade form-modal responsetype-form',
+        className: 'modal form-modal responsetype-form',
 
         events: function(){
             return _.defaults({

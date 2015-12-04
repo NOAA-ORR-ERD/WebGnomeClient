@@ -1044,7 +1044,7 @@ define([
                     form.on('hidden', form.close);
                     form.on('save', _.bind(function(map){
                         webgnome.model.set('map', map);
-                        webgnome.model.save();
+                        webgnome.model.save(null, {validate: false});
                         this.updateLocation();
                         if(map.get('obj_type').indexOf('ParamMap') !== -1){
                             this.$('.object.map .add').show();
