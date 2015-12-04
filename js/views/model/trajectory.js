@@ -463,6 +463,7 @@ define([
         },
 
         contextualize: function(){
+            this.enableUI();
             // set the slider to the correct number of steps
             this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
         },
