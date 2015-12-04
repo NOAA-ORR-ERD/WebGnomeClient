@@ -51,6 +51,9 @@ define([
         },
 
         load_location: function(){
+            webgnome.model.set('uncertain', true);
+            webgnome.model.save(null, {validate: false});
+
             // clear any previously loaded steps
             _.each(this.steps, function(el){
                 el.close();
@@ -165,7 +168,6 @@ define([
 
         dynamicWaterListener: function(model, substance){
             if (!_.isNull(substance)){
-                console.log('water form added');
                 var waterForm = this.addWaterForm();
                 this.steps.splice(this.steps.length - 1, 0, waterForm);
             }
