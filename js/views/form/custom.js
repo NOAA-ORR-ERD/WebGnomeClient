@@ -15,18 +15,27 @@ define([
 
         initialize: function(options){
             FormModal.prototype.initialize.call(this, options);
-            var form = this.$('form');
             var modal = this.el;
             var modaljq = this.$el;
-
-            this.on('save', function(){
-                eval(options.functions.save);
-            }, this);
 
             this.on('ready', function(){
                 eval(options.functions.setup);
             }, this);
 
+            this.savefunc = options.functions.save;
+
+        },
+
+        save: function(options) {
+            var form = this.$('form');
+            var save = eval(this.savefunc);
+
+            if (save) {
+                this.error(save);
+            } else {
+                this.clearError();
+                FormModal.prototype.save.call(this, options);
+            }
         }
     });
 
