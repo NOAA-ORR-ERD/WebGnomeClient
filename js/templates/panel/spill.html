@@ -7,7 +7,14 @@
     <div class="row">
         <div class="substance-info col-sm-12">
             <div class="row">
-                <div class="col-sm-12"><label>Substance</label></div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <label class="left">Substance</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="edit" title="Edit Substance"></span>
+                    </div>
+                </div>
                 <div class="col-sm-6 substance-data">
                     <label>Name: </label>
                     {{ substance.get('name') }}
@@ -32,7 +39,14 @@
     <div class="row">
         <div class="substance-info error col-sm-12">
             <div class="row">
-                <div class="col-sm-12"><label>Substance</label></div>
+                <div class="col-sm-12">
+                    <div class="col-sm-10">
+                        <label class="left">Substance</label>
+                    </div>
+                    <div class="col-sm-2">
+                        <span class="edit" title="Edit Substance"></span>
+                    </div>
+                </div>
                 <div class="col-sm-6 substance-data">
                     <label>Name: </label>
                     Non-weathering substance
