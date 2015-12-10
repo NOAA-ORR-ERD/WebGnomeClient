@@ -96,6 +96,9 @@ define([
                 showCancelButton: true,
             }, _.bind(function(isConfirm){
                 if(isConfirm){
+                    localStorage.setItem('prediction', null);
+                    webgnome.riskCalc.destroy();
+                    webgnome.riskCalc = undefined;
                     webgnome.model = new GnomeModel();
 
                     if(_.has(webgnome, 'cache')){

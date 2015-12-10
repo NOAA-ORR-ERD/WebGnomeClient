@@ -1,0 +1,13 @@
+<table class="relImpTable">
+	{% for (var key in data){ %}
+		<tr>
+			<td>
+				<div class="swatch" style="background-color: {{ data[key].color }};"></div>{{ key }}:
+			</td>
+			{% var roundedData = Math.round(data[key].data); %}
+			<td>	
+				{{ roundedData }}%
+			</td>
+		</tr>
+	{% } %}
+</table>

@@ -10,6 +10,8 @@ define([
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
+    'model/risk/risk',
+    'views/wizard/risk',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'html2canvas',
@@ -21,7 +23,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, ButtonsTemplate, BreakdownTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, html2canvas){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -42,6 +44,7 @@ define([
 
         events: {
             'shown.bs.tab': 'renderGraphs',
+            'click a.run-risk': 'clickRisk',
             'change #budget-table select': 'renderTableOilBudget',
             'click #budget-table .export a.download': 'downloadTableOilBudget',
             'click #budget-table .export a.print': 'printTableOilBudget',
@@ -101,6 +104,11 @@ define([
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
+            webgnome.cache.on('step:failed', this.enableRAC, this);
+        },
+
+        enableRAC: function(){
+            this.$('.run-risk').removeClass('disabled');
         },
 
         formatXaxisLabel: function() {
@@ -196,6 +204,8 @@ define([
                 wave_height = water.get('fetch') + ' ' + water.get('units').fetch;
             }
 
+            var cleanup = this.checkForCleanup();
+
             var init_release = this.findInitialRelease(spills);
 
             var buttonsTemplate = _.template(ButtonsTemplate, {});
@@ -262,6 +272,21 @@ define([
                 container: 'body'
             });
             this.load();
+        },
+
+        checkForCleanup: function(){
+            var weatherers = webgnome.model.get('weatherers');
+            for (var i = 0; i < weatherers.length; i++){
+                if (weatherers.at(i).get('obj_type').indexOf('cleanup') > -1){
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        clickRisk: function(){
+            var riskWizard = new RiskFormWizard();
+            riskWizard.render();
         },
 
         renderLoop: function(){

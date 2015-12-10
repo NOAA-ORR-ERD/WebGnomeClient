@@ -1,0 +1,41 @@
+<form class="form-horizontal tuning" role="form">
+    <div class="row">
+        <div class="col-md-5 inset">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label class="control-label">Efficiencies:</label>
+                </div>
+                <div class="sliders-container col-sm-12"></div>
+            </div>
+        </div>
+        <div class="col-md-7 main">
+            <div class="container">
+                <div class="col-sm-12">
+                    <label for="assessmenttime">Assessment Time:</label>
+                </div>
+                <div class="col-sm-12 assess-time">
+                    <div>{{ assessmentTime }}</div>
+                </div>
+                <div class="col-sm-12">
+                    <label for="benefit">Benefit Gauge:</label>
+                </div>
+            	<div class="col-md-6">
+            		<div class="gauge-container col-md-1">
+            			<google-chart 
+                            type='gauge'
+                            options='{"height": 200, "width": 200, "title": "Benefit Gauge", "redFrom": 0, "redTo": 25, "yellowFrom": 25, "yellowTo": 75, "greenFrom": 75, "greenTo": 100, "minorTicks": 5}'
+                            data='[["Label", "Value"], ["Benefit", 50]]'>
+                        </google-chart>
+            		</div>
+            	</div>
+                <div class="col-sm-12">
+                    <label for="importance">Relative Importance:</label>
+                </div>
+                <div class="col-sm-12">
+                    <canvas id="importance" height="225" width="225"></canvas>
+                    <div class="col-sm-6 relative-importance"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

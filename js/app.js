@@ -9,8 +9,9 @@ define([
     'text!../config.json',
     'model/session',
     'model/gnome',
+    'model/risk/risk',
     'views/default/loading'
-], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, LoadingView) {
+], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, RiskModel, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
@@ -100,6 +101,7 @@ define([
                             webgnome.model.isValid();
                         }
                         webgnome.styleCache = {};
+                        webgnome.riskCalc = new RiskModel();
                         Backbone.history.start();
                     },
                     error: function(){
@@ -212,7 +214,7 @@ define([
                         for (var i = 0; i < el.length; i++){
                             var arrayString = '[' + el[i] + ']';
                             var arrayObj = {title: arrayString};
-                            arrayOfStrings.push(arrayObj);    
+                            arrayOfStrings.push(arrayObj);
                         }
                         if (el.length > 0){
                             children.push({title: key + ': [...]', expanded: false, children: arrayOfStrings});

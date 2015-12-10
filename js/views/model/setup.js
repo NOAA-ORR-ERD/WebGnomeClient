@@ -1219,6 +1219,8 @@ define([
                 responseView.on('hidden', responseView.close);
             });
             responseView.on('save', _.bind(function(){
+                var eff = response.get('efficiency');
+                response.cascadeEfficiencies(eff);
                 webgnome.model.save(null, {validate: false});
                 setTimeout(_.bind(function(){
                     responseView.close();

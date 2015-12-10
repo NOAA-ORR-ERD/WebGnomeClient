@@ -34,7 +34,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.prev_();
             } else {
-                this.prev_();    
+                this.prev_();
             }
         },
 
@@ -63,11 +63,11 @@ define([
             step.on('finish', this.close, this);
         },
 
-        close: function(){
+        wizardclose: function(){
             _.each(this.steps, function(el){
-                el.close();
+                el.on('hidden', el.close, el);
+                el.hide();
             });
-
             this.unbind();
             this.remove();
         }

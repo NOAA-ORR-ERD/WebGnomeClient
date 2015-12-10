@@ -31,13 +31,14 @@ define([
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/weathering_data',
-    'model/user_prefs'
+    'model/user_prefs',
+    'model/risk/risk'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs){
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -56,7 +57,7 @@ define([
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
                 'gnome.environment.environment.Water': WaterModel,
-                'gnome.environment.waves.Waves': WavesModel
+                'gnome.environment.waves.Waves': WavesModel,
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,

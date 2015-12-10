@@ -1,0 +1,85 @@
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label class="control-label col-sm-5" for="water-selection">Pick Water Body Metric:</label>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="water-select">
+				<option value="area">Area</option>
+				<option value="diameter">Diameter</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group area">
+		<label class="control-label col-sm-5" for="water-area">Water Area:</label>
+		<div class="col-sm-2">
+			<input type="text" id="water-area" class="form-control" value="{{ area }}" />
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="area-units">
+				<option value="km^2">sq. km</option>
+				<option value="sq miles">sq. miles</option>
+				<option value="hectares">hectares</option>
+				<option value="acres">acres</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group diameter">
+		<label class="control-label col-sm-5" for="water-diameter">Water Diameter:</label>
+		<div class="col-sm-2">
+			<input type="text" id="water-diameter" class="form-control" value="{{ diameter }}" />
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="diameter-units">
+				<option value="km">km</option>
+				<option value="miles">miles</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-5" for="distance-from-shore">Spill Distance from Shore:</label>
+		<div class="col-sm-2">
+			<input type="text" id="distance-from-shore" class="form-control" value="{{ distance }}" />
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="distance-units">
+				<option value="km">km</option>
+				<option value="miles">miles</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-5" for="average-water-depth">Average Water Depth:</label>
+		<div class="col-sm-2">
+			<input type="text" id="average-water-depth" class="form-control" value="{{ depth }}" />
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="depth-units">
+				<option value="m">m</option>
+				<option value="ft">ft</option>
+				<option value="yards">yards</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-5" for="direction-from-shore">Direction To Shore:</label>
+		<div class="col-sm-2">
+			<input type="number" min="0" max="360" id="direction-from-shore" class="form-control" value="{{ direction }}" />
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control col-sm-3" id="direction-units">
+				<option value="degree">degrees</option>
+				<option value="radian">radians</option>
+			</select>
+		</div>
+	</div>
+	<!-- <div class="form-group">
+		<label class="control-label col-sm-5" for="assessment-time">Assessment Time:</label>
+		<div class="col-sm-5">
+			<div class="input-group date">
+				<input type="text" id="datetime" class="form-control" value="">
+				<span class="input-group-addon" id="datepick">
+					<i></i>
+				</span>
+			</div>
+		</div>
+	</div> -->
+</form>
