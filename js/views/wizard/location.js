@@ -100,7 +100,7 @@ define([
                     this.steps.push(windform);
                 } else if (el.type ==='custom'){
                     var customForm = new CustomForm({
-                        title: el.title,
+                        title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons,
                         module: el.module,
