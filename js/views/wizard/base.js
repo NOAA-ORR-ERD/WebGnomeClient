@@ -63,10 +63,9 @@ define([
             step.on('finish', this.close, this);
         },
 
-        wizardclose: function(){
+        close: function(){
             _.each(this.steps, function(el){
-                el.on('hidden', el.close, el);
-                el.hide();
+                el.close();
             });
             this.unbind();
             this.remove();
