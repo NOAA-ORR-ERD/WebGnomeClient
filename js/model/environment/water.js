@@ -41,6 +41,10 @@ define([
                 return 'Salinity must be a number greater than or equal to zero!';
             }
 
+            if (attrs.salinity > 43){
+                return 'Salinity must be a number less than or equal to 42!';
+            }
+
             if (attrs.sediment < 0 || attrs.sediment === ''){
                 return 'Sediment load must be a number greater than or equal to zero!';
             }
