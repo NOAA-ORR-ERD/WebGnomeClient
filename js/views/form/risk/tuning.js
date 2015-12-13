@@ -16,12 +16,6 @@ define([
         title: 'Environmental Risk Assessment Input',
         effChanged: false,
 
-        events: function(){
-            return _.defaults({
-                'shown.bs.modal': 'renderRelativeImportance'
-            }, FormModal.prototype.events);
-        },
-
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
@@ -55,13 +49,17 @@ define([
             if (showBurn){
                 this.createSlider('Burn', parseInt(this.model.get('efficiency').Burn * 100, 10));
             }
-            this.relativeImp = new RelativeImportance('importance',
-                {   sideLength: 150,
-                    point1: {label: 'Subsurface'},
-                    point2: {label: 'Surface'},
-                    point3: {label: 'Shoreline'},
-                    callback: _.bind(this.relativeImportancePercent, this)
-                });
+            this.relativeImp = new RelativeImportance('importance',{   
+                sideLength: 150,
+                point1: {label: 'Subsurface'},
+                point2: {label: 'Surface'},
+                point3: {label: 'Shoreline'},
+                callback: _.bind(this.relativeImportancePercent, this)
+            });
+
+            setTimeout(_.bind(function(){
+                this.renderRelativeImportance();
+            }, this), 25);
         },
 
         renderRelativeImportance: function(){
