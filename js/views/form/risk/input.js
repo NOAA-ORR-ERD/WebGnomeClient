@@ -9,7 +9,7 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, moment, FormModal, RiskTemplate, nucos) {
     var riskForm = FormModal.extend({
-        className: 'modal fade form-modal risk-form',
+        className: 'modal form-modal risk-form',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
 

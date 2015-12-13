@@ -11,7 +11,7 @@ define([
     'relativeimportance'
 ], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
-        className: 'modal fade form-modal risk-form tuning',
+        className: 'modal form-modal risk-form tuning',
         name: 'risk',
         title: 'Environmental Risk Assessment Input',
         effChanged: false,
