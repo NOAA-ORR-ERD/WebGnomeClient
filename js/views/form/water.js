@@ -15,7 +15,10 @@ define([
 
         events: function(){
             return _.defaults({
-                'change select': 'revealManualInputs',
+                'change select': function(e){
+                    this.revealManualInputs(e);
+                    this.update(e);
+                }
             }, FormModal.prototype.events);
         },
 
