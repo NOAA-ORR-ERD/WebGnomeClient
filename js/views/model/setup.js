@@ -78,6 +78,7 @@ define([
                 'click .location': 'clickLocation',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
+                'click .response .single': 'loadResponse',
                 'click .response .single .trash': 'deleteResponse',
                 'mouseover .response .single': 'hoverResponse',
                 'mouseout .response .response-list': 'unhoverResponse',
@@ -1200,6 +1201,7 @@ define([
         },
 
         loadResponse: function(e){
+            e.stopPropagation();
             var responseId = $(e.target).parents('.single').data('id');
             var response = webgnome.model.get('weatherers').get(responseId);
             var responseView;
@@ -1231,6 +1233,7 @@ define([
         },
 
         deleteResponse: function(e){
+            e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
             var response = webgnome.model.get('weatherers').get(id);
             swal({
