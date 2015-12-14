@@ -126,25 +126,24 @@ define([
         },
 
         tabStatusSetter: function(){
-            var activeTab = this.$('li.active');
-            if (activeTab.hasClass('generalinfo') && this.model.validateRelease()){
+            if (this.model.validateAmount()){
                 this.$('#info').removeClass('ok');
                 this.$('#info').addClass('error');
-            } else if (activeTab.hasClass('generalinfo')){
+            } else {
                 this.$('#info').removeClass('error');
                 this.$('#info').addClass('ok');
             }
-            if (activeTab.hasClass('substanceinfo') && this.model.validateSubstance()){
+            if (this.model.validateSubstance()){
                 this.$('#substance').removeClass('ok');
                 this.$('#substance').addClass('error');
-            } else if (activeTab.hasClass('substanceinfo')){
+            } else {
                 this.$('#substance').removeClass('error');
                 this.$('#substance').addClass('ok');
             }
-            if (activeTab.hasClass('mapspill') && this.model.validateLocation()){
+            if (this.model.validateLocation()){
                 this.$('#map-status').removeClass('ok');
                 this.$('#map-status').addClass('error');
-            } else if (activeTab.hasClass('mapspill')){
+            } else {
                 this.$('#map-status').removeClass('error');
                 this.$('#map-status').addClass('ok');
             }
@@ -318,6 +317,7 @@ define([
                 this.oilLibraryView.render();
                 this.oilLibraryView.on('hidden', _.bind(this.show, this));
                 this.oilLibraryView.on('hidden', this.reloadOil, this);
+                this.oilLibraryView.on('hidden', this.tabStatusSetter, this);
             } else {
                 this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
             }
