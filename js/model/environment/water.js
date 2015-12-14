@@ -58,7 +58,7 @@ define([
             }
 
             if (nucos.convert('Length', attrs.units.wave_height, 'm', attrs.wave_height) > 15.5){
-                var upperBound = Math.round(nucos.convert('Length', 'm', attrs.units.wave_height, 15.5));
+                var upperBound = Math.round(nucos.convert('Length', 'm', attrs.units.wave_height, 15.5) * 10)/10;
                 return 'Wave height cannot be greater than ' + upperBound + ' ' + attrs.units.wave_height + '!';
             }
 
