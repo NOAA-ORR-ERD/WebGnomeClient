@@ -47,10 +47,9 @@ define([
 
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
-                this.findAssessmentTimeBounds();
-                webgnome.model.on('change:duration', this.setAssessmentTime, this);
-                webgnome.model.on('change:weatherers', this.setAssessmentTime, this);
-                this.setAssessmentTime();
+                webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
+                webgnome.model.on('change:weatherers', this.deriveAssessmentTime, this);
+                this.deriveAssessmentTime();
                 // if (_.isUndefined(this.assessmentTime)){
                 //     this.deriveAssessmentTime();
                 // }
@@ -241,26 +240,6 @@ define([
                 high: 100,
                 low: 1
             }
-        },
-
-        findAssessmentTimeBounds: function(){
-            var start_time = moment(webgnome.model.get('start_time'));
-            var duration = webgnome.model.get('duration');
-            var model_end_time = moment(start_time.add(duration, 's')).unix() * 1000;
-            var lowerBound = 0;
-            var weatherers = webgnome.model.get('weatherers');
-            weatherers.each(function(weatherer){
-                if (weatherer.get('obj_type').indexOf('cleanup') > -1){
-                    var end_time = moment(weatherer.get('active_stop')).unix() * 1000;
-                    if (end_time > lowerBound){
-                        lowerBound = end_time;
-                    }
-                }
-            });
-            this.assessmentBounds = {};
-            this.gnomeEndTime = model_end_time;
-            this.assessmentBounds.lower = lowerBound;
-            this.assessmentBounds.upper = model_end_time;
         },
 
         validate: function(attrs, options){
