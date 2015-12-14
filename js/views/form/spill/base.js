@@ -163,7 +163,7 @@ define([
             // } else {
             //     this.$('#substance').addClass('ok');
             // }
-            if (this.model.validateRelease(this.model.attributes)){
+            if (this.model.validateAmount(this.model.attributes)){
                 this.$('#info').addClass('error');
             } else {
                 this.$('#info').addClass('ok');

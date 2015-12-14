@@ -41,33 +41,16 @@ define([
         },
 
         validate: function(attrs, options){
-            var massUnits = ['kg', 'ton', 'metric ton'];
             
             if ($.trim(attrs.name) === ''){
                 this.validationContext = 'spill';
                 return 'A spill name is required!';
             }
 
-            if(isNaN(attrs.amount)){
-                this.validationContext = 'info';
-                return 'Amount must be a number';
-            } else if (attrs.amount <= 0) {
-                this.validationContext = 'info';
-                return 'Amount must be a positive number';
-            }
 
-            if (!attrs.units) {
-                this.validationContext = 'info';
-                return 'You must select a unit for the spill amount!';
-            }
-
-            if (massUnits.indexOf(attrs.units) === -1 && attrs.element_type.get('substance') === null){
-                this.validationContext = 'info';
-                return 'Amount released must use units of mass when using non-weathering substance!';
-            }
-
-            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
-                return 'You must either select a weathering substance or use mass units for amount!';
+            var amount = this.validateAmount(attrs); 
+            if(amount){
+                return amount;
             }
 
             if(!attrs.release.isValid()){
@@ -85,12 +68,14 @@ define([
 
         validateSections: function(){
             var attrs = this.attributes;
-            this.validateRelease(attrs);
+            this.validateAmount(attrs);
             //this.validateSubstance(attrs);
             this.validateLocation(attrs);
         },
 
-        validateRelease: function(attrs){
+        validateAmount: function(attrs){
+            var massUnits = ['kg', 'ton', 'metric ton'];
+            
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
@@ -104,6 +89,13 @@ define([
                 this.validationContext = 'info';
                 return 'A unit for amount must be selected';
             }
+
+            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
+                this.validationContext = 'info'
+                return 'Amount released must use units of mass when using non-weathering substance!';
+            }
+
+            // if(nucos.convert)
         },
 
         validateLocation: function(attrs){
