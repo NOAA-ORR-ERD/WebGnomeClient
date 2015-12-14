@@ -4,8 +4,9 @@ define([
     'backbone',
     'model/base',
     'model/release',
-    'model/element'
-], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement){
+    'model/element',
+    'nucos'
+], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement, nucos){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
@@ -47,7 +48,6 @@ define([
                 return 'A spill name is required!';
             }
 
-
             var amount = this.validateAmount(attrs); 
             if(amount){
                 return amount;
@@ -82,16 +82,25 @@ define([
             if(isNaN(attrs.amount)){
                 this.validationContext = 'info';
                 return 'Amount must be a number';
-            } else if (attrs.amount <= 0) {
-                this.validationContext = 'info';
-                return 'Amount must be a positive number';
             } else if (!attrs.units) {
                 this.validationContext = 'info';
                 return 'A unit for amount must be selected';
             }
 
-            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(attrs.element_type.get('substance'))){
-                this.validationContext = 'info'
+            var substance = attrs.element_type.get('substance');
+            if(!_.isNull(substance) && attrs.amount > 0){
+                // if there is a substance and an amount is defined it should be greater than 1 bbl
+                var oilConverter = new nucos.OilQuantityConverter();
+                var bbl = oilConverter.Convert(attrs.amount, attrs.units, substance.api, 'API Degree', 'bbl');
+                if(bbl < 1){
+                    return 'Amount must be greater than 1 bbl when using a weatherable substance';
+                }
+            } else if(attrs.amount <= 0) {
+                return 'Amount must be 0 or greater';
+            }
+
+            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(substance)){
+                this.validationContext = 'info';
                 return 'Amount released must use units of mass when using non-weathering substance!';
             }
 
