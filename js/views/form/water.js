@@ -17,7 +17,6 @@ define([
             return _.defaults({
                 'change select': function(e){
                     this.revealManualInputs(e);
-                    this.update(e);
                 }
             }, FormModal.prototype.events);
         },
@@ -81,11 +80,6 @@ define([
             return temp;
         },
 
-        ready: function(){
-            FormModal.prototype.ready.call(this);
-            this.triggerInputs();
-        },
-
         triggerInputs: function(){
             this.$('#data-source').trigger('change');
         },
@@ -125,8 +119,10 @@ define([
         revealManualInputs: function(e){
             var value = e.currentTarget.value;
 
-            // special case for when a user selects selinity/sediment number in select
-            if(value.match(/\d*/)[0] !== '' || ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1){
+            // special case for when a user selects selinity/sediment number in select or units for temp
+            if(value.match(/\d*/)[0] !== '' || 
+                ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1 ||
+                ['K', 'C', 'F'].indexOf(value) !== -1){
                 this.update(e);
             }
 
