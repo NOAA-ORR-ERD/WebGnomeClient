@@ -41,7 +41,7 @@ define([
                 return 'Salinity must be a number greater than or equal to zero!';
             }
 
-            if (attrs.salinity > 43){
+            if (attrs.salinity > 42){
                 return 'Salinity must be a number less than or equal to 42!';
             }
 

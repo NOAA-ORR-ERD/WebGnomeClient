@@ -30,11 +30,11 @@ define([
 
         render: function(options){
             this.body = _.template(WaterTemplate, {
-                water_temp: this.model.get('temperature')
+                water_temp: this.model.get('temperature'),
+                salinity: this.model.get('salinity')
             });
 
             FormModal.prototype.render.call(this, options);
-
             this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
             this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
             this.$('#fetch-units option[value="' + this.model.get('units').fetch + '"]').attr('selected', 'selected');
