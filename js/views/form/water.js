@@ -122,7 +122,8 @@ define([
             // special case for when a user selects selinity/sediment number in select or units for temp
             if(value.match(/\d*/)[0] !== '' || 
                 ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1 ||
-                ['K', 'C', 'F'].indexOf(value) !== -1){
+                ['K', 'C', 'F'].indexOf(value) !== -1 ||
+                $(e.currentTarget).hasClass('sediment-units')){
                 this.update(e);
             }
 
