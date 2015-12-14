@@ -41,10 +41,12 @@ define([
             if (!_.isNull(this.model.get('fetch'))){
                 this.$('#data-source').val('fetch');
                 this.$('#fetch').val(this.model.get('fetch'));
+                this.$('.fetch').removeClass('hide');
             }
             if (!_.isNull(this.model.get('wave_height'))){
                 this.$('#data-source').val('specified');
                 this.$('#height').val(this.model.get('wave_height'));
+                this.$('.specified').removeClass('hide');
             }
 
             if ([0, 15, 32].indexOf(this.model.get('salinity')) === -1){
