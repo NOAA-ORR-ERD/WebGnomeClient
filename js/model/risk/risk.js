@@ -47,12 +47,7 @@ define([
 
             if (!_.isUndefined(webgnome.model)){
                 this.updateEfficiencies();
-                webgnome.model.on('change:duration', this.deriveAssessmentTime, this);
-                webgnome.model.on('change:weatherers', this.deriveAssessmentTime, this);
                 this.deriveAssessmentTime();
-                // if (_.isUndefined(this.assessmentTime)){
-                //     this.deriveAssessmentTime();
-                // }
             }
         },
 
@@ -73,17 +68,7 @@ define([
             var end_time = moment(start_time.add(duration, 's'));
 
             this.set('assessmentTime', end_time.format(webgnome.config.date_format.moment));
-        },
-
-        setAssessmentTime: function(){
-            var beachingTime;
-            var lastCleanupEndTime = this.assessmentBounds.lower;
-
-            if (!_.isUndefined(beachingTime) && (beachingTime > lastCleanupEndTime)){
-                this.set('assessmentTime', moment(beachingTime).format(webgnome.config.date_format.moment));
-            } else {
-                this.set('assessmentTime', moment(lastCleanupEndTime).format(webgnome.config.date_format.moment));
-            }
+            this.save();
         },
 
         updateEfficiencies: function(){
