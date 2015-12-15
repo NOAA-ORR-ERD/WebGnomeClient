@@ -464,7 +464,7 @@ define([
         },
 
         isShoreline: function(feature, layer){
-            if (feature.get('name') === 'Shoreline') {
+            if (feature.get('name') === 'Shoreline Polys') {
                 return feature;
             }
         },
