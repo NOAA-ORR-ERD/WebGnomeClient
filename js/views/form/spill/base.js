@@ -474,7 +474,7 @@ define([
             this.$(map.getViewport()).on('mousemove', _.bind(function(e){
                 var pixel = map.getEventPixel(e.originalEvent);
                 var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                    if (feature.get('name') === 'Shoreline'){
+                    if (feature.get('name') === 'Shoreline Polys'){
                         return feature;
                     }
                 });
