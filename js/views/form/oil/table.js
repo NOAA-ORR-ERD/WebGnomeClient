@@ -20,8 +20,9 @@ define([
         sortDnIcon: '&#9660;',
         activeIcon: null,
 
-        initialize: function(){
+        initialize: function(elementModel){
             this.oilLib = new OilLib();
+            this.model = elementModel;
             this.oilLib.on('ready', this.sortTable, this);
             this.oilLib.once('ready', this.setReady, this);
             this.on('sort', this.sortTable);
@@ -35,6 +36,10 @@ define([
         sortTable: function(){
             var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
+            var substance = this.model.get('substance');
+            if (substance && substance.get('adios_oil_id')){
+                this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
+            }
             this.updateCaret();
             this.trigger('renderTable');
         },

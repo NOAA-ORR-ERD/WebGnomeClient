@@ -36,7 +36,7 @@ define([
         
         initialize: function(options, elementModel){
             this.module = module;
-            this.oilTable = new OilTable();
+            this.oilTable = new OilTable(elementModel);
             this.model = elementModel;
             this.oilCache = localStorage.getItem('oil_cache');
             var oilCacheJson = JSON.parse(this.oilCache);
@@ -72,7 +72,6 @@ define([
 
                 FormModal.prototype.render.call(this, options);
 
-                this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
 
                 
@@ -104,11 +103,6 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
-
-            var substance = this.model.get('substance');
-            if (substance && substance.get('adios_oil_id')){
-                this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
-            }
         },
 
         triggerTableResize: function(){
@@ -204,12 +198,11 @@ define([
 
         oilSelect: function(e){
             this.$('tr').removeClass('select');
-            this.$(e.currentTarget).parent().addClass('select');
-            this.$('.oilInfo').show();
+            this.$(e.currentTarget).parents('tr').addClass('select');
         },
 
-        viewSpecificOil: function(){
-            this.oilId = this.$('.select').data('id');
+        viewSpecificOil: function(e){
+            this.oilId = $(e.currentTarget).parents('tr').data('id');
             if (this.oilId) {
                 this.$('.oilContainer').hide();
                 this.oilTable.oilLib.fetchOil(this.oilId, _.bind(function(model){

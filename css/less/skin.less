@@ -2065,6 +2065,8 @@ nav.navbar{
 
     .sticky-modal-footer {
         z-index: 20;
+        margin-left: 1px;
+        margin-right: 1px;
     }
 
     .modal-body{
@@ -2763,6 +2765,10 @@ nav.navbar{
 
 .oilContainer {
 
+    form{
+        margin-bottom: 30px;
+    }
+
     .slider-tip {
         opacity:1;
         top: 100%;
@@ -2821,9 +2827,25 @@ nav.navbar{
             font-size: 10px;
             padding-left: 5px;
         }
+        .oilInfo{
+            display: none;
+        }
+
         tr:hover {
             cursor: pointer;
+
+            .oilInfo{
+                display: inline;
+            }
+
         }
+
+        td{
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
     }
 
     #tableContainer {
@@ -2831,8 +2853,9 @@ nav.navbar{
             table-layout: fixed;
         }
         #dataTable {
-            overflow-y: auto;
-            height: 300px;
+            table{
+                margin-bottom: 0;
+            }
         }
     }
 }
