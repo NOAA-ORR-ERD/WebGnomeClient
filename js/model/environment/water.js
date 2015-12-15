@@ -65,9 +65,9 @@ define([
             if (!_.isNull(attrs.fetch) && (parseFloat(attrs.fetch) < 0 || attrs.fetch.length === 0)){
                 return 'Fetch must be a number greater than or equal to zero!';
             }
-
-            if (attrs.sediment > 1000){
-                return 'Sediment cannot exceed 1000 milligrams per liter!';
+            var kgm3 = nucos.convert('Density', attrs.units.sediment, 'kg/m^3', attrs.sediment);
+            if (kgm3 > 1){
+                return 'Sediment cannot exceed 1 kg/m3!';
             }
 
         },
