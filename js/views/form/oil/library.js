@@ -72,7 +72,6 @@ define([
 
                 FormModal.prototype.render.call(this, options);
 
-                this.$('.oilInfo').hide();
                 this.$('.backOil').hide();
 
                 
