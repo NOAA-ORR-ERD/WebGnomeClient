@@ -203,12 +203,11 @@ define([
 
         oilSelect: function(e){
             this.$('tr').removeClass('select');
-            this.$(e.currentTarget).parent().addClass('select');
-            this.$('.oilInfo').show();
+            this.$(e.currentTarget).parents('tr').addClass('select');
         },
 
-        viewSpecificOil: function(){
-            this.oilId = this.$('.select').data('id');
+        viewSpecificOil: function(e){
+            this.oilId = $(e.currentTarget).parents('tr').data('id');
             if (this.oilId) {
                 this.$('.oilContainer').hide();
                 this.oilTable.oilLib.fetchOil(this.oilId, _.bind(function(model){
