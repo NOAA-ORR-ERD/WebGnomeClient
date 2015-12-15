@@ -38,6 +38,7 @@ define([
             } else {
                 $('.oil-form .modal-body').append(this.$el.html(compiled));
             }
+            $('label').tooltip();
 		},
 
         cToF: function(c){
