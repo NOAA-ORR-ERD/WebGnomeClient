@@ -159,10 +159,10 @@ define([
             e.preventDefault();
             this.model.save();
             FormModal.prototype.wizardclose.call(this);
-            if (this.effChanged){
-                webgnome.cache.rewind();
-                webgnome.router.navigate('model', true);
-            }
+            // if (this.effChanged){
+            //     webgnome.cache.rewind();
+            //     webgnome.router.navigate('model', true);
+            // }
         }
 
     });
