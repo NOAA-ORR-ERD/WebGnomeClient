@@ -23,9 +23,7 @@ define([
 
        initialize: function(options, substanceModel) {
           var containerClass = options.containerClass;
-          this.on('ready', _.bind(function(){
-             this.specificOilView = new SpecificOilView({infoMode: true, containerClass: containerClass, model: substanceModel});
-          }, this));
+          this.specificOilView = new SpecificOilView({infoMode: true, containerClass: containerClass, model: substanceModel});
           this.on('wizardclose', this.hide, this);
           this.render();
        },
