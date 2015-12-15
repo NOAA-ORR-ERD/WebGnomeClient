@@ -36,7 +36,7 @@ define([
         
         initialize: function(options, elementModel){
             this.module = module;
-            this.oilTable = new OilTable();
+            this.oilTable = new OilTable(elementModel);
             this.model = elementModel;
             this.oilCache = localStorage.getItem('oil_cache');
             var oilCacheJson = JSON.parse(this.oilCache);
@@ -103,11 +103,6 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
-
-            var substance = this.model.get('substance');
-            if (substance && substance.get('adios_oil_id')){
-                this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
-            }
         },
 
         triggerTableResize: function(){
