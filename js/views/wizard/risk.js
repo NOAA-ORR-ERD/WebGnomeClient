@@ -3,11 +3,11 @@ define([
     'underscore',
     'backbone',
     'views/wizard/base',
-    'views/form/risk/input',
+    'views/form/map/param',
     'views/form/risk/tuning',
     'model/risk/risk',
     'model/gnome',
-], function($, _, Backbone, BaseWizard, InputForm, TuningForm, RiskModel, GnomeModel){
+], function($, _, Backbone, BaseWizard, ParamMapForm, TuningForm, RiskModel, GnomeModel){
     var riskWizardView = BaseWizard.extend({
         initialize: function(){
             if(_.isUndefined(webgnome.riskCalc)){
@@ -18,11 +18,7 @@ define([
 
         setup: function(riskModel){
             this.steps = [
-                new InputForm({
-                    name: 'step1',
-                    title: 'Environmental Risk Assessment <span class="sub-title">Input</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
-                }, riskModel),
+                new ParamMapForm(),
                 new TuningForm({
                     name: 'step2',
                     title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
