@@ -31,6 +31,7 @@ define([
             formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
             formModalHash.ready = 'triggerTableResize';
+            formModalHash['show.bs.modal'] = 'scrollToSelect';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
         
@@ -201,6 +202,17 @@ define([
             this.$(e.currentTarget).parents('tr').addClass('select');
         },
 
+        scrollToSelect: function(){
+            if(this.$('.select').length > 0){
+                setTimeout(_.bind(function(){
+                    var offset = this.$('.select').offset();
+                    console.log(offset);
+                    this.$el.animate({scrollTop: offset.top - 200});
+                }, this), 25);
+                
+            }
+        },
+
         viewSpecificOil: function(e){
             this.oilId = $(e.currentTarget).parents('tr').data('id');
             if (this.oilId) {
@@ -300,6 +312,7 @@ define([
             this.$('.backOil').hide();
             this.$('.cancel').show();
             this.$('.oilContainer').show();
+            this.scrollToSelect();
         }
     });
 
