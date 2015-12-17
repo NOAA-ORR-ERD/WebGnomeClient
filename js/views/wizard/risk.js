@@ -26,7 +26,11 @@ define([
             ];
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
                 this.steps[0].buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>';
-                this.steps.unshift(new ParamMapForm());
+                var paramMap = new ParamMapForm();
+                paramMap.on('save', function(model){
+                    webgnome.model.set('map', model);
+                });
+                this.steps.unshift(paramMap);
             }
             this.start();
         },
