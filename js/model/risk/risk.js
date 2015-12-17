@@ -31,10 +31,7 @@ define([
                 'distance': 'km',
                 'depth': 'm',
                 'direction': 'degree'
-            },
-
-            shorelineType: null,
-            waterBodyMetric: 'area'
+            }
         },
 
         initialize: function(options){
@@ -91,6 +88,22 @@ define([
             this.set('efficiency', eff);
         },
 
+        convertMass: function(quantity) {
+            var unit = webgnome.model.get('spills').at(0).get('units');
+            var volumeUnits = ['bbl', 'gal', 'm^3'];
+            var mass;
+
+            if (volumeUnits.indexOf(unit) > -1) {
+                var oilConverter = new nucos.OilQuantityConverter();
+                var api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+                mass = oilConverter.Convert(quantity, unit, api, "API degree", "kg");
+            } else {
+                mass = nucos.convert("Mass", unit, "kg", quantity);
+            }
+
+            return mass;
+        },
+
         getMasses: function(){
             var naturalDispersion = 0;
             var chemicalDispersion = 0;
@@ -99,46 +112,31 @@ define([
                 shoreline: 0,
                 column: 0
             };
-            var last_time_index = webgnome.model.get('num_time_steps') - 1;
-            _.each(webgnome.mass_balance, function(mass, idx) {
-                var data = mass.data[last_time_index];
-                if (mass.name.toUpperCase() === 'FLOATING') {
-                    masses.surface = data[1];
+            var balance = webgnome.mass_balance;
+            for (var i = 0; i < balance.length; i++) {
+                var balanceIndex = balance[i].data.length - 1;
+                var data = balance[i].data[balanceIndex];
+                if (balance[i].name.toUpperCase() === 'FLOATING') {
+                    masses.surface = this.convertMass(data[1]);
                 }
-                else if (mass.name.toUpperCase() === 'BEACHED' || mass.name.toUpperCase() === 'OBSERVED_BEACHED') {
-                    masses.shoreline = data[1];
+                else if (balance[i].name.toUpperCase() === 'BEACHED' || balance[i].name.toUpperCase() === 'OBSERVED_BEACHED') {
+                    masses.shoreline = this.convertMass(data[1]);
                 }
-                else if (mass.name.toUpperCase() === 'CHEMICAL_DISPERSION') {
-                    chemicalDispersion = data[1];
+                else if (balance[i].name.toUpperCase() === 'CHEMICAL_DISPERSION') {
+                    chemicalDispersion = this.convertMass(data[1]);
                 }
-                else if (mass.name.toUpperCase() === 'NATURAL_DISPERSION'){
-                    naturalDispersion = data[1];
+                else if (balance[i].name.toUpperCase() === 'NATURAL_DISPERSION'){
+                    naturalDispersion = this.convertMass(data[1]);
                 }
-            });
+            }
 
             masses.column = naturalDispersion + chemicalDispersion;
             return masses;
         },
 
-        deriveAreaDiameter: function(){
-            var area, diameter;
-            var units = this.get('units');
-            if (this.get('waterBodyMetric') === 'diameter'){
-                diameter = nucos.convert('Length', units.diameter, 'm', this.get('diameter'));
-                area = nucos.convert('Area', 'm^2', units.area, Math.pow((diameter / 2), 2) * Math.PI);
-                this.set('area', area);
-            } else {
-                area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
-                diameter = nucos.convert('Length', 'm', units.diameter, 2 * Math.sqrt(area / Math.PI));
-                this.set('diameter', diameter);
-            }
-        },
-
         assessment: function(){
-            this.deriveAreaDiameter();
             var units = this.get('units');
             var area = nucos.convert('Area', units.area, 'm^2', this.get('area'));
-            var distance = nucos.convert('Length', units.distance, 'm', this.get('distance'));
             var masses = this.getMasses();
 
             this.calculateShorelineFract(masses, units);
