@@ -22,12 +22,12 @@ define([
                 new InputForm({
                     name: 'step1',
                     title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>'
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>'
                 }, riskModel),
                 new TuningForm({
                     name: 'step2',
                     title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>',
                 }, riskModel)
             ];
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
@@ -39,7 +39,7 @@ define([
                 this.steps.unshift(paramMap);
             }
             this.start();
-        },
+        }
 
     });
 
