@@ -13,7 +13,7 @@ define([
             } else {
                 this.model = new ParamMap();
             }
-            FormModal.prototype.initialize.call(this, options); 
+            FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(){

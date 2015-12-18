@@ -197,28 +197,7 @@ define([
             return bound + ' ' + toUnits + '!';
         },
 
-        deriveAreaBounds: function(){
-            var upperDiameter = this.boundsDict.diameter.high;
-            var lowerDiameter = this.boundsDict.diameter.low;
-
-            var upperArea = Math.round(Math.pow((upperDiameter / 2), 2) * Math.PI);
-            var lowerArea = Math.round(Math.pow((lowerDiameter / 2), 2) * Math.PI);
-
-            this.boundsDict.area = {};
-
-            this.boundsDict.area.high = upperArea;
-            this.boundsDict.area.low = lowerArea;
-        },
-
         boundsDict: {
-            diameter: {
-                high: 20000,
-                low: 100
-            },
-            distance: {
-                high: Math.pow(10, 6),
-                low: 100
-            },
             depth: {
                 high: 100,
                 low: 1
@@ -226,43 +205,13 @@ define([
         },
 
         validate: function(attrs, options){
-            var distance = nucos.convert('Length', attrs.units.distance, 'm', attrs.distance);
-            var diameter = nucos.convert('Length', attrs.units.diameter, 'm', attrs.diameter);
-            var area = nucos.convert('Area', attrs.units.area, 'm^2', attrs.area);
             var depth = nucos.convert('Length', attrs.units.depth, 'm', attrs.depth);
             var assessment_time = moment(attrs.assessmentTime).unix();
-            if (area < this.boundsDict.area.low || attrs.area === ''){
-                return 'Water area must be greater than ' + this.validateMessageGenerator(this.boundsDict.area.low, 'm^2', attrs.units.area);
-            }
-            if (area > this.boundsDict.area.high) {
-                return 'Water area cannot be larger than ' + this.validateMessageGenerator(this.boundsDict.area.high, 'm^2', attrs.units.area);
-            }
-            if (diameter < this.boundsDict.diameter.low || attrs.diameter === ''){
-                return 'Water diameter must be greater than ' + this.validateMessageGenerator(this.boundsDict.diameter.low, 'm', attrs.units.diameter);
-            }
-            if (diameter > this.boundsDict.diameter.high){
-                return 'Water diameter cannot be longer than ' + this.validateMessageGenerator(this.boundsDict.diameter.high, 'm', attrs.units.diameter);
-            }
-            if (distance < this.boundsDict.distance.low || attrs.distance === ''){
-                return 'Distance from shore must be greater than ' + this.validateMessageGenerator(this.boundsDict.distance.low, 'm', attrs.units.distance);
-            }
-            if (distance > this.boundsDict.distance.high){
-                return 'Distance cannot be longer than ' + this.validateMessageGenerator(this.boundsDict.distance.high, 'm', attrs.units.distance);
-            }
             if (depth < this.boundsDict.depth.low || attrs.depth === ''){
                 return 'Average water depth must be greater than ' + this.validateMessageGenerator(this.boundsDict.depth.low, 'm', attrs.units.depth);
             }
             if (depth > this.boundsDict.depth.high){
                 return 'Average water depth must be smaller than ' + this.validateMessageGenerator(this.boundsDict.depth.high, 'm', attrs.units.depth);
-            }
-            if (distance > diameter){
-                return 'Distance from shore cannot be greater than the diameter of the bay!';
-            }
-            if (attrs.units.direction === 'degree' && (attrs.direction > 360 || attrs.direction < 0)){
-                return 'Direction to shore must be between 0 and 360 degrees!';
-            }
-            if (attrs.units.direction === 'radian' && (attrs.direction > 2 * Math.PI || attrs.direction < 0)){
-                return 'Direction to shore must be between 0 and 2\u03C0 radians!';
             }
         },
 
