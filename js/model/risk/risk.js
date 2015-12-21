@@ -167,7 +167,7 @@ define([
                     surfaceBenefit = this.get('surface') * (values[key].data / 100);
                 }
             }
-            console.log(subsurfaceBenefit, shorelineBenefit, surfaceBenefit);
+
             netERA = 1 - (subsurfaceBenefit + shorelineBenefit + surfaceBenefit);
 
             return netERA;
