@@ -8,11 +8,7 @@ define([
         url: '/',
 
         defaults: {
-            'area': 0,
-            'diameter': 0,
-            'distance': 0,
             'depth': 0,
-            'direction': 0,
             'assessmentTime': 0,
 
             efficiency: {
@@ -26,11 +22,7 @@ define([
             'shoreline': 1/3,
 
             units: {
-                'area': 'sq km',
-                'diameter': 'km',
-                'distance': 'km',
-                'depth': 'm',
-                'direction': 'degree'
+                'depth': 'm'
             }
         },
 
