@@ -46,17 +46,6 @@ define([
             }
         },
 
-        convertBearing: function(deg){
-            var units = this.get('units').direction;
-            var angle;
-            if (units === 'degree'){
-                angle = deg * (Math.PI / 180);
-            } else {
-                angle = deg;
-            }
-            return angle;
-        },
-
         deriveAssessmentTime: function(){
             var start_time = moment(webgnome.model.get('start_time'));
             var duration = webgnome.model.get('duration');
