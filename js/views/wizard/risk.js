@@ -21,7 +21,7 @@ define([
             this.steps = [
                 new InputForm({
                     name: 'step1',
-                    title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
+                    title: 'Environmental Risk Assessment <span class="sub-title">Water Depth</span>',
                     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>'
                 }, riskModel),
                 new TuningForm({
