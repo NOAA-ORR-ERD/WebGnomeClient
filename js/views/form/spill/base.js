@@ -118,11 +118,13 @@ define([
         reloadOil: function(e){
             //e.preventDefault();
             var substance = this.model.get('element_type').get('substance');
-            substance.fetch({
-                success: _.bind(function(model, res, options){
-                    this.renderSubstanceInfo(null, model);
-                }, this)
-            });
+            if(substance){
+                substance.fetch({
+                    success: _.bind(function(model, res, options){
+                        this.renderSubstanceInfo(null, model);
+                    }, this)
+                });    
+            }
         },
 
         tabStatusSetter: function(){
