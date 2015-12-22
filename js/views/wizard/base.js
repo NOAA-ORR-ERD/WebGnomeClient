@@ -17,7 +17,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.next_();
             } else {
-                this.next_();
+                this.steps[this.step].on('hidden', this.next_, this);
             }
         },
 
@@ -34,7 +34,7 @@ define([
             if(this.steps[this.step].$el.is(':hidden')){
                 this.prev_();
             } else {
-                this.prev_();
+                this.steps[this.step].on('hidden', this.prev_, this);
             }
         },
 
