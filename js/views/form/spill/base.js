@@ -119,6 +119,7 @@ define([
             //e.preventDefault();
             var substance = this.model.get('element_type').get('substance');
             if(substance){
+                this.clearError();
                 substance.fetch({
                     success: _.bind(function(model, res, options){
                         this.renderSubstanceInfo(null, model);
