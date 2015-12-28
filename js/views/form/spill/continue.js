@@ -26,7 +26,7 @@ define([
                 'blur #spill-rate': 'updateAmount',
                 'blur #rate-units': 'updateAmount',
                 'click #amount': 'updateAmountTooltip',
-                'click #constant': 'updateRateTooltip'
+                'click #constant-rate': 'updateRateTooltip'
             }, BaseSpillForm.prototype.events());
         },
 
@@ -95,12 +95,12 @@ define([
                     }, this)
                 });
 
-                this.$('#constant .slider').slider({
+                this.$('#constant-rate .slider').slider({
                     min: 0,
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
+                        this.$('#constant-rate .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateRateSlide(ui);
@@ -109,7 +109,7 @@ define([
 
                 if (!this.model.isNew()){
                     this.$('#amount .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
-                    this.$('#constant .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
+                    this.$('#constant-rate .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
                     this.updateAmount();
                     this.updateRate();
                     this.updateAmountSlide();
@@ -252,7 +252,7 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#constant .slider').slider('value');
+                value = this.$('#constant-rate .slider').slider('value');
             }
             if(!_.isUndefined(this.rate)){
                 var amount = this.rate ? this.rate : 0;
