@@ -97,7 +97,9 @@ define([
             }, _.bind(function(isConfirm){
                 if(isConfirm){
                     localStorage.setItem('prediction', null);
-                    webgnome.riskCalc.destroy();
+                    if (!_.isUndefined(webgnome.riskCalc)) {
+                        webgnome.riskCalc.destroy();
+                    }
                     webgnome.riskCalc = undefined;
                     webgnome.model = new GnomeModel();
 
