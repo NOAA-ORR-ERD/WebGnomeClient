@@ -206,7 +206,6 @@ define([
             if(this.$('.select').length > 0){
                 setTimeout(_.bind(function(){
                     var offset = this.$('.select').offset();
-                    console.log(offset);
                     this.$el.animate({scrollTop: offset.top - 200});
                 }, this), 25);
                 

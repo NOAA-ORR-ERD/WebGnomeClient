@@ -99,6 +99,9 @@ define([
                 this.scrollEvent = this.$el.on('scroll', _.bind(this.stickyFooter, this));
             }
             this.stickyFooter();
+            $(window).on('resize', _.bind(function(){
+                this.stickyFooter();
+            }, this));
         },
 
         windowResize: function(){
@@ -107,6 +110,7 @@ define([
         },
 
         hidden: function() {
+            $(window).off('resize');
             this.trigger('hidden');
         },
 
@@ -190,6 +194,7 @@ define([
         },
 
         close: function(){
+            $(window).off('resize');
             this.remove();
             this.unbind();
             this.$el.off('scroll');

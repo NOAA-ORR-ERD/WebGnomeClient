@@ -935,7 +935,8 @@ define([
                         ],
                         interactions: ol.interaction.defaults({
                             mouseWheelZoom: false,
-                            dragPan: false
+                            dragPan: false,
+                            doubleClickZoom: false
                         }),
                     });
                     
@@ -972,7 +973,8 @@ define([
                     layers: this.current_layers,
                     interactions: ol.interaction.defaults({
                         mouseWheelZoom: false,
-                        dragPan: false
+                        dragPan: false,
+                        doubleClickZoom: false
                     }),
                 });
                 currentMap.render();
