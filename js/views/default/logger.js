@@ -30,8 +30,7 @@ define([
             var compiled = _.template(LoggerTemplate);
             this.$el.append(LoggerTemplate);
             $('body').append(this.$el);
-
-            if(localStorage.getItem('logger') != 'null' && !_.isUndefined(localStorage.getItem('logger'))){
+            if(localStorage.getItem('logger') != 'null' && !_.isNull(localStorage.getItem('logger'))){
                 this.toggle();
             }
         },
