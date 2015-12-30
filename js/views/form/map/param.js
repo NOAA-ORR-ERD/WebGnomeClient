@@ -6,8 +6,14 @@ define([
 ], function(_, FormModal, ParamTemplate, ParamMap){
     var paramMapForm = FormModal.extend({
         title: 'Parameterized Shoreline',
+        riskAssess: false,
 
         initialize: function(options){
+            if (options && _.has(options, 'riskAssess')) {
+                this.riskAssess = options.riskAssess;
+            }
+
+
             if(options && _.has(options, 'map')){
                 this.model = options.map;
             } else {
@@ -33,6 +39,14 @@ define([
             var center = this.$('input[name="center"]').val().split(',');
             center.push(0);
             this.model.set('center', center);
+        },
+
+        wizardclose: function() {
+            if (this.riskAssess) {
+                this.trigger('wizardclose');
+            } else {
+                FormModal.prototype.wizardclose.call(this);
+            }
         }
     });
 
