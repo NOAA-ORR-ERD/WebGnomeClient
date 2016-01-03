@@ -526,6 +526,7 @@ define([
             this.pause();
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
+            this.renderStep({step: 0});
             this.frame = 0;
         },
 
