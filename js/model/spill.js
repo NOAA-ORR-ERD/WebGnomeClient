@@ -64,12 +64,17 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
+            var substance = attrs.element_type.get('substance');
+            var massUnits = ['kg', 'ton', 'metric ton'];
+            if(_.isNull(substance) && massUnits.indexOf(attrs.units) === -1){
+                return 'Amount released must use units of mass when using non-weathering substance!';
+            }
         },
 
         validateSections: function(){
             var attrs = this.attributes;
             this.validateAmount(attrs);
-            //this.validateSubstance(attrs);
+            this.validateSubstance(attrs);
             this.validateLocation(attrs);
         },
 
