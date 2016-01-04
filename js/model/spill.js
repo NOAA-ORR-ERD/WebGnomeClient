@@ -33,6 +33,20 @@ define([
             this.on('change:element_type', this.addListeners, this);
         },
 
+        spillType: function() {
+            var start_time = this.get('release').get('release_time');
+            var end_time = this.get('release').get('end_release_time');
+            var str;
+
+            if (start_time === end_time) {
+                str = "instant";
+            } else {
+                str = "continuous";
+            }
+
+            return str;
+        },
+
         addListeners: function(){
             this.get('element_type').on('change', this.elementTypeChange, this);
         },
@@ -48,7 +62,7 @@ define([
                 return 'A spill name is required!';
             }
 
-            var amount = this.validateAmount(attrs); 
+            var amount = this.validateAmount(attrs);
             if(amount){
                 return amount;
             }
