@@ -99,7 +99,7 @@ define([
                 this.setEmulsificationOverride();
             }
 
-            this.initTabStatus();
+            this.tabStatusSetter();
 		},
 
         setEmulsificationOverride: function(){
@@ -149,26 +149,6 @@ define([
             } else {
                 this.$('#map-status').removeClass('error');
                 this.$('#map-status').addClass('ok');
-            }
-        },
-
-        initTabStatus: function(){
-            this.$('.status').removeClass('ok').removeClass('error');
-            var release = this.model.get('release');
-            if (release.validateLocation(release.attributes)){
-                this.$('#map-status').addClass('error');
-            } else {
-                this.$('#map-status').addClass('ok');
-            }
-            // if (this.model.validateSubstance(this.model.attributes)){
-            //     this.$('#substance').addClass('error');
-            // } else {
-            //     this.$('#substance').addClass('ok');
-            // }
-            if (this.model.validateAmount(this.model.attributes)){
-                this.$('#info').addClass('error');
-            } else {
-                this.$('#info').addClass('ok');
             }
         },
 
@@ -377,6 +357,7 @@ define([
                             element_type.set('substance', null);
                         }
                         this.renderSubstanceInfo();
+                        this.tabStatusSetter();
                     }
                 }, this));
             }
