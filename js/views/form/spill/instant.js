@@ -42,6 +42,7 @@ define([
             var startPosition = this.model.get('release').get('start_position');
             var endPosition = this.model.get('release').get('end_position');
             var disabled = this.oilSelectDisabled();
+            var cid = this.model.cid;
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 amount: this.model.get('amount'),
@@ -50,7 +51,8 @@ define([
                 showSubstance: this.showSubstance,
                 start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                 end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                disabled: disabled
+                disabled: disabled,
+                cid: cid
             });
             BaseSpillForm.prototype.render.call(this, options);
             this.$('.slider').slider({

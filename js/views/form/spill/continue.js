@@ -52,6 +52,7 @@ define([
                 var units = this.model.get('units');
                 var oil = this.oilDetails.get('substance') ? this.oilDetails.get('substance') : '';
                 var disabled = this.oilSelectDisabled();
+                var cid = this.model.cid;
                 this.body = _.template(FormTemplate, {
                     name: this.model.get('name'),
                     amount: amount,
@@ -61,7 +62,8 @@ define([
                     showSubstance: this.showSubstance,
                     start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
                     end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
-                    disabled: disabled
+                    disabled: disabled,
+                    cid: cid
                 });
                 BaseSpillForm.prototype.render.call(this, options);
 

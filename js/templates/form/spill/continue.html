@@ -7,22 +7,22 @@
 	</div>
 	<ul class="nav nav-tabs">
 	    <li class="generalinfo active">
-	        <a href="#generalinfo-spill" data-toggle="tab">General<span id="info" class="status"></span></a>
+	        <a href="#generalinfo-spill-{{ cid }}" data-toggle="tab">General<span id="info" class="status"></span></a>
 	    </li>
 	    {% if (showSubstance){ %}
 		    <li class="substanceinfo">
-		        <a href="#substanceinfo" data-toggle="tab">Substance<span id="substance" class="status"></span></a>
+		        <a href="#substanceinfo-{{ cid }}" data-toggle="tab">Substance<span id="substance" class="status"></span></a>
 		    </li>
 		{% } %}
 	    {% if (showGeo){ %}
 		    <li class="mapspill">
-		    	<a href="#mapspill" data-toggle="tab">Location<span id="map-status" class="status"></span></a>
+		    	<a href="#mapspill-{{ cid }}" data-toggle="tab">Location<span id="map-status" class="status"></span></a>
 		    </li>
 		{% } %}
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane active" id="generalinfo-spill">
+		<div class="tab-pane active" id="generalinfo-spill-{{ cid }}">
 			<div class="form-group">
 				<label class="col-sm-4 control-label" for="datetime">Time of Release:</label>
 				<div class="col-sm-5">
@@ -171,12 +171,12 @@
 			</div>
 		</div>
 
-		<div class="tab-pane" id="substanceinfo">
+		<div class="tab-pane" id="substanceinfo-{{ cid }}">
 			<div id="oilInfo"></div>
 		</div>
 
-		<div class="tab-pane" id="mapspill">
-			<div id="spill-form-map" class="map"></div>
+		<div class="tab-pane" id="mapspill-{{ cid }}">
+			<div id="spill-form-map-{{ cid }}" class="map"></div>
 			<div class="form-group">
 		        <label class="col-sm-3 control-label">Start Position</label>
 		        <div class="col-sm-9">

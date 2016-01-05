@@ -408,8 +408,9 @@ define([
                 this.layer = new ol.layer.Vector({
                     source: this.source
                 });
+                var id = 'spill-form-map-' + this.model.cid;
                 this.spillMapView = new SpillMapView({
-                    id: 'spill-form-map',
+                    id: id,
                     zoom: 2,
                     center: [-128.6, 42.7],
                     layers: [
