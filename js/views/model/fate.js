@@ -15,6 +15,7 @@ define([
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'html2canvas',
+    'sweetalert',
     'flot',
     'flottime',
     'flotresize',
@@ -23,7 +24,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, html2canvas){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate',
@@ -285,8 +286,25 @@ define([
         },
 
         clickRisk: function(){
-            var riskWizard = new RiskFormWizard();
-            riskWizard.render();
+            var spills = webgnome.model.get('spills');
+            if (spills.length === 1){
+                var riskWizard = new RiskFormWizard();
+                riskWizard.render();
+            } else {
+                swal({
+                    title: "Too many spills on the model!",
+                    text: "Risk assessment only supports one spill. Delete the other spills to run the risk assessment tool.",
+                    type: "warning",
+                    confirmButtonText: "Edit Model",
+                    closeOnConfirm: true,
+                    showCancelButton: true
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                        webgnome.router.navigate('config', true);
+                    }
+                });
+            }
         },
 
         renderLoop: function(){
