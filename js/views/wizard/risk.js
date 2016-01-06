@@ -22,13 +22,21 @@ define([
         setup: function(riskModel){
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
                 var paramMap = new ParamMapForm({
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="finish">Re-run Model</button>',
+                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" data-dismiss="modal" class="finish">Re-run Model</button>',
                     riskAssess: true
                 });
-                paramMap.on('finish', function(){
-                    var model = paramMap.model;
-                    webgnome.model.set('map', model);
-                });
+                paramMap.on('finish', _.bind(function(){
+                    var spills = webgnome.model.get('spills');
+                    var center = spills.at(0).get('release').get('start_position');
+                    paramMap.model.set('center', center);
+                    paramMap.model.save(null, {
+                        success: _.bind(function(model) {
+                            webgnome.model.set('map', model);
+                            webgnome.model.save(null, {validate: false});
+                            webgnome.cache.rewind();
+                        }, this)
+                    });
+                }, this));
                 this.steps = [
                     new FormModal({
                         name: 'step1',
@@ -47,10 +55,11 @@ define([
                     new TuningForm({
                         name: 'step2',
                         title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
-                        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Save</button>',
+                        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="save">Re-run model</button>',
                     }, riskModel)
                 ];
             }
+            console.log(this.steps);
             this.start();
         }
 
