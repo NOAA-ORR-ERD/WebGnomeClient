@@ -127,22 +127,22 @@ define([
 
         calculateShorelineFract: function(masses, units){
             var massShorelineFract = masses.shoreline;
-            var shorelineBadness = 0.56;
-            var fractOfContaminatedSh = massShorelineFract * shorelineBadness;
+            var shorelineLOC = 0.56;
+            var fractOfContaminatedSh = massShorelineFract / shorelineLOC;
             this.set('shoreline', fractOfContaminatedSh);
         },
 
         calculateWaterSurfaceFract: function(masses, units){
             var massOnWaterSurfaceFract = masses.surface;
-            var surfaceBadness = 0.01;
-            var fractOfContaminatedWs = massOnWaterSurfaceFract * surfaceBadness;
+            var surfaceLOC = 0.01;
+            var fractOfContaminatedWs = massOnWaterSurfaceFract / surfaceLOC;
             this.set('surface', fractOfContaminatedWs);
         },
 
         calculateWaterColumnFract: function(masses, units){
             var massInWaterColumnFract = masses.column;
-            var waterColumnBadness = 0.001;
-            var fractOfContaminatedWc = massInWaterColumnFract * waterColumnBadness;
+            var waterColumnLOC = 0.001;
+            var fractOfContaminatedWc = massInWaterColumnFract / waterColumnLOC;
             this.set('column', fractOfContaminatedWc);
         },
 
@@ -159,7 +159,16 @@ define([
                 }
             }
 
-            netERA = 1 - (subsurfaceBenefit + shorelineBenefit + surfaceBenefit);
+            var totalEvenBadness = (this.get('column') + this.get('shoreline') + this.get('surface')) * 0.33;
+            var currentBadness = subsurfaceBenefit + shorelineBenefit + surfaceBenefit;
+
+            if (totalEvenBadness === currentBadness) {
+                netERA = 0.50;
+            } else if (totalEvenBadness > currentBadness) {
+                netERA = 0.80;
+            } else if (totalEvenBadness < currentBadness) {
+                netERA = 0.20;
+            }
 
             return netERA;
         },
