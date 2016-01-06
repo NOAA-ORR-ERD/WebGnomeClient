@@ -8,7 +8,7 @@ define([
         url: '/',
 
         defaults: {
-            'depth': 0,
+            'depth': 20,
             'assessmentTime': 0,
 
             efficiency: {
@@ -29,7 +29,6 @@ define([
         initialize: function(options){
             Backbone.Model.prototype.initialize.call(this, options);
             this.fetch();
-            this.on('change', this.save, this);
             var attrs = this.attributes;
 
             if (!_.isUndefined(webgnome.model)){
@@ -128,7 +127,7 @@ define([
 
         calculateShorelineFract: function(masses, units){
             var massShorelineFract = masses.shoreline;
-            var shorelineBadness = 0.5;
+            var shorelineBadness = 0.56;
             var fractOfContaminatedSh = massShorelineFract * shorelineBadness;
             this.set('shoreline', fractOfContaminatedSh);
         },
@@ -178,7 +177,7 @@ define([
 
         boundsDict: {
             depth: {
-                high: 100,
+                high: 20,
                 low: 1
             }
         },
