@@ -52,10 +52,12 @@ define([
         },
 
         update: function(e){
-            this.model.set('depth', this.$('#average-water-depth').val());
+            var inputtedDepth = parseFloat(this.$('#average-water-depth').val());
 
             var units = this.model.get('units');
             units.depth = this.$('#depth-units').val();
+            
+            this.model.set('depth', inputtedDepth);
 
             this.model.set('units', units);
 
