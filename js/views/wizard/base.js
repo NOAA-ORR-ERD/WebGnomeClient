@@ -64,8 +64,13 @@ define([
         },
 
         close: function(){
-            _.each(this.steps, function(el){
-                el.close();
+            _.each(this.steps, function(step){
+                if(step.$el.is(':hidden')){
+                    step.close();
+                } else {
+                    step.once('hidden', step.close, step);
+                    step.hide();
+                }
             });
             this.unbind();
             this.remove();
