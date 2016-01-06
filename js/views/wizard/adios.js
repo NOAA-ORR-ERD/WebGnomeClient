@@ -14,6 +14,7 @@ define([
 ], function($, _, Backbone, BaseWizard,
         ModelForm, WaterForm, WindForm, SpillTypeForm, TextForm,
         GnomeModel, GnomeWind, GnomeWater){
+    'use strict';
     var adiosWizard = BaseWizard.extend({
         initialize: function(){
             webgnome.model = new GnomeModel({
