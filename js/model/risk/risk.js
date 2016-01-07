@@ -159,15 +159,20 @@ define([
                 }
             }
 
-            var totalEvenBadness = (this.get('column') + this.get('shoreline') + this.get('surface')) * 0.33;
             var currentBadness = subsurfaceBenefit + shorelineBenefit + surfaceBenefit;
 
-            if (totalEvenBadness === currentBadness) {
+            if (_.isUndefined(this.totalEvenBadness)) {
+                this.totalEvenBadness = currentBadness;
+            }
+
+            var ratioDiff = (currentBadness - this.totalEvenBadness) / this.totalEvenBadness;
+
+            if (ratioDiff > 0) {
+                netERA = ratioDiff;
+            } else if (ratioDiff < 0) {
+                netERA = Math.abs(ratioDiff);
+            } else {
                 netERA = 0.50;
-            } else if (totalEvenBadness > currentBadness) {
-                netERA = 0.80;
-            } else if (totalEvenBadness < currentBadness) {
-                netERA = 0.20;
             }
 
             return netERA;
