@@ -69,7 +69,6 @@ define([
                     step.close();
                 } else {
                     step.once('hidden', step.close, step);
-                    step.hide();
                 }
             });
             this.unbind();
