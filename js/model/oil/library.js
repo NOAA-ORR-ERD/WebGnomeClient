@@ -100,13 +100,15 @@ define([
             if (obj.text.length > 1){
                 var options = {keys: ['attributes.name',
                                       'attributes.field_name',
-                                      'attributes.location'
+                                      'attributes.location',
+                                      'attributes.synonyms'
                                      ],
                                threshold: 0.3
                                };
                 var f = new Fuse(this.models, options);
                 var result = f.search(obj.text);
                 this.models = result;
+                console.log(result);
             }
             if (obj.category.child !== '' && obj.category.child !== 'All'){
                 categoryCollection = this.filterCollection(obj.category, {type: 'categories'});
