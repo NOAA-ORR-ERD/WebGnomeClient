@@ -105,11 +105,11 @@ define([
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
-            webgnome.cache.on('step:failed', this.enableRAC, this);
+            webgnome.cache.on('step:failed', this.toggleRAC, this);
         },
 
-        enableRAC: function(){
-            this.$('.run-risk').removeClass('disabled');
+        toggleRAC: function(){
+            this.$('.run-risk').toggleClass('disabled');
         },
 
         formatXaxisLabel: function() {
@@ -177,6 +177,7 @@ define([
                 this.frame = 0;
                 this.renderLoop();
             }
+            this.toggleRAC();
         },
 
         render: function(){
