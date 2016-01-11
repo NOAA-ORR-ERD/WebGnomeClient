@@ -32,14 +32,11 @@ define([
         },
 
         update: function(){
-            ResponseFormModal.prototype.update.call(this);
-
-            //this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
-
             var sprayedOilPercent = this.$('#oilsprayed').val();
             var dispersedOilPercent = this.$('#oildispersed').val();
 
             this.model.set('fraction_sprayed', sprayedOilPercent / 100);
+            ResponseFormModal.prototype.update.call(this);
         }
     });
 
