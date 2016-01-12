@@ -49,7 +49,6 @@ define([
             _.each(relevantColl, function(el, inx, list){
                 el.set('efficiency', eff);
             });
-            webgnome.model.save();
         }
 	});
 
