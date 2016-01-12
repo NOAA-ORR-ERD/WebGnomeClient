@@ -143,7 +143,7 @@ define([
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + selector}).get('efficiency') * 100;
             }
 
-            if (gnomeEff !== sliderEff){
+            if (Math.floor(gnomeEff) !== sliderEff){
                 this.$('#' + selector + ' p').removeClass('hide');
                 this.effChanged = true;
             } else {
@@ -157,8 +157,13 @@ define([
 
         save: function(e){
             e.preventDefault();
+            var effChanged = this.effChanged ? this.effChanged : false;
             this.model.save();
-            FormModal.prototype.wizardclose.call(this);
+            //FormModal.prototype.wizardclose.call(this);
+            if (this.effChanged) {
+                webgnome.cache.rewind();
+            }
+            this.hide();
         }
 
     });

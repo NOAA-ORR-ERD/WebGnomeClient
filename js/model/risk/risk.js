@@ -233,6 +233,10 @@ define([
         save: function(attributes, options) {
             localStorage.setItem('risk_calculator', JSON.stringify(this.toJSON()));
             this.writeGnomeEff();
+
+            if (!_.isUndefined(options) && _.isFunction(options.success)) {
+                options.success();
+            }
         },
 
         destroy: function(options) {

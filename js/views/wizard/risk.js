@@ -57,7 +57,13 @@ define([
                         title: 'Environmental Risk Assessment <span class="sub-title">Tuning</span>',
                         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" data-dismiss="modal" class="finish">Re-run model</button>',
                     }, riskModel).on('finish', function(){
-                        riskModel.save();
+                        riskModel.save(null, {
+                            success: function(){
+                                webgnome.model.save(null, {validate: false});
+                                webgnome.cache.rewind();
+                            }
+                        });
+
                     })
                 ];
             }
