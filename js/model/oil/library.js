@@ -98,9 +98,10 @@ define([
             var viscosityCollection = this.filterCollection(obj.viscosity, {type: 'viscosity'});
             var pour_pointCollection = this.filterCollection(obj.pour_point, {type: 'pour_point'});
             if (obj.text.length > 1){
-                var options = {keys: ['attributes.name',
-                                      'attributes.field_name',
+                var options = {keys: [
+                                      'attributes.name',
                                       'attributes.location',
+                                      'attributes.categories_str',
                                       'attributes.synonyms'
                                      ],
                                threshold: 0.3
@@ -108,7 +109,6 @@ define([
                 var f = new Fuse(this.models, options);
                 var result = f.search(obj.text);
                 this.models = result;
-                console.log(result);
             }
             if (obj.category.child !== '' && obj.category.child !== 'All'){
                 categoryCollection = this.filterCollection(obj.category, {type: 'categories'});
