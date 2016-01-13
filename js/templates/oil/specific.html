@@ -71,7 +71,7 @@
     				<div class="col-md-6">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-    					       Kinematic Viscosity
+    					       <span class="info" title="A measure of a fluid's resistance to flow. An oil with large viscosity resists motion because of internal friction. There are two related viscosity values, kinematic viscosity, measured in Stokes, and dynamic viscosity, measured in Poise. Dynamic viscosity equals the kinematic viscosity multiplied by the fluid density. Water has a kinematic viscosity on 1 centistoke (cSt) and a dynamic viscosity of one centipoise.  Oil viscosities are larger.">Kinematic Viscosity <span class="glyphicon glyphicon-info-sign"></span></span>
                             </div>
                             <div class="panel-body">
             					{% if (!data.kvis){ %}
@@ -139,7 +139,7 @@
     		<div class="tab-pane" id="distillation_{{ viewName }}">
     			<div class="row">
                     <div class="col-md-12">
-        				<h4>Distillation Cuts</h4>
+        				<h4 class="info pull-left" title="Oil is a mixture of molecules that boil at different temperatures and pressures.  The table displays the cumulative mass fraction of the oil that boils off at atmospheric pressure for a specific liquid temperature of the boiling oil and its corresponding produced vapor temperature.">Distillation Cuts <span class="glyphicon glyphicon-info-sign"></span></h4>
         				{% if (!data.cuts){ %}
         					<div>No Distillation Cuts on Record.</div>
         				{% } else { %}
@@ -168,14 +168,31 @@
 
     		<div class="tab-pane" id="moreproperties_{{ viewName }}">
     			<div class="row">
-					<div class="col-md-6"><label>Flash Point:</label> {{ data.flash_point_min_k }} {{data.flash_point_max_k }} </div>
-					<div class="col-md-6"><label>Emulsification Constant:</label> {{ data.bullwinkle_fraction }}</div>
-    				<div class="col-md-12"><label>Adhesion:</label> {{ data.adhesion_kg_m_2 }}</div>
-
+					<div class="col-md-6">
+                        <label class="info" title="At a certain temperature,  vaporizing oil or oil product may reach  a vapor  concentration large enough to  sustain combustion. This temperature is called the flash point.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Flash Point:
+                        </label>
+                        {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
+                    </div>
+					<div class="col-md-6">
+                        <label class="info" title="Some oils will only form a stable emulsion when a certain ratio of aromatic  fraction to asphaltene fraction is present in the spilled oil. The aromatic /asphaltene fraction changes as the aromatics evaporate. The emulsion constant records the fraction of the oil that must evaporate before the oil emulsifies.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
+                        </label>
+                        {{ data.bullwinkle_fraction }}
+                    </div>
+    				<div class="col-md-12">
+                        <label class="info" title="Beached oil will have different levels of stickiness on the shoreline.  This dimensionless measure is called adhesion.  Adhesion equals zero if the oil will not stick at all and 1 if it adheres completely.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Adhesion:
+                        </label>
+                         {{ data.adhesion_kg_m_2 }}
+                    </div>
                     <div class="col-md-12">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-                                Interfacial Tension (Dynes/cm)
+                                <span class="info" title="The attractive force exerted upon the surface molecules of a liquid by the molecules beneath to make the liquid have the least  interfacial surface area. A typical oil-water surface tension is 30 dynes/cm. Chemical dispersants reduce surface tension.">
+                                    Interfacial Tension (Dynes/cm) 
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </span>
                             </div>
                             <div class="panel-body">
             					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension_n_m }}</div>
@@ -200,13 +217,35 @@
                                 Group Analysis (weight %)
                             </div>
                             <div class="panel-body">
-                                <div class="col-md-6"><label>Saturates:</label> {{ data.saturates_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> Saturates:
+                                    </label> 
+                                    {{ data.saturates_fraction }}
+                                </div>
                                 <div class="col-md-6"><label>Polars:</label> {{ data.polars_fraction }}</div>
-            					<div class="col-md-6"><label>Aromatics:</label> {{ data.aromatics_fraction }}</div>
+            					<div class="col-md-6">
+                                    <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        Aromatics:
+                                    </label> 
+                                    {{ data.aromatics_fraction }}
+                                </div>
                                 <div class="col-md-6"><label>Benzene:</label> {{ data.benzene_fraction }}</div>
-                                <div class="col-md-6"><label>Resins:</label> {{ data.resins_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        Resins:
+                                    </label> 
+                                    {{ data.resins_fraction }}
+                                </div>
                                 <div class="col-md-6"><label>Sulfur:</label> {{ data.sulphur_fraction }}</div>
-                                <div class="col-md-6"><label>Asphaltenes:</label> {{ data.asphaltenes_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        Asphaltenes:
+                                    </label> 
+                                    {{ data.asphaltenes_fraction }}</div>
                                 <div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins_fraction }}</div>
                                 <div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content_fraction }}</div>
                             </div>

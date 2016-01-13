@@ -9,6 +9,10 @@ define([
 	var specificOil = Backbone.View.extend({
 		id: 'specificOilContainer',
 
+        events: {
+            'shown.bs.tab': 'tabRender'
+        },
+
 		initialize: function(options){
             if (!_.isUndefined(options.containerClass)) {
                 this.containerClass = options.containerClass;
@@ -38,8 +42,13 @@ define([
             } else {
                 $('.oil-form .modal-body').append(this.$el.html(compiled));
             }
-            $('label').tooltip();
 		},
+
+        tabRender: function(){
+            this.$('.info:visible').tooltip({
+                container: '.modal'
+            });
+        },
 
         cToF: function(c){
             return (((c * (9/5)) + 32).toFixed(1));
