@@ -50,7 +50,7 @@
 				<div class="form-group">
 					<label class="col-sm-4 control-label" for="recovery-rate">Recovery Rate:</label>
 					<div class="col-sm-4">
-						<input type="number" id="recovery-rate" class="form-control" value="">
+						<input type="number" min="0" id="recovery-rate" class="form-control" value="">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control" id="rate-units">
@@ -80,7 +80,7 @@
 				<div class="form-group">
 					<label class="col-sm-4 control-label" for="recovery-amount">Recovery Amount:</label>
 					<div class="col-sm-4">
-						<input type="number" id="recovery-amount" class="form-control" value="{{ amount }}">
+						<input type="number" min="0" id="recovery-amount" class="form-control" value="{{ amount }}">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control" id="amount-units" value="{{ units }}">
