@@ -38,6 +38,7 @@ require.config({
         eventie: 'lib/eventie/',
         'doc-ready': 'lib/doc-ready/',
         eventEmitter: 'lib/eventEmitter/',
+        'ev-emitter': 'lib/ev-emitter',
         'get-style-property': 'lib/get-style-property/',
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
