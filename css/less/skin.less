@@ -365,6 +365,35 @@ img{
         bottom: 20px;
     }
 }
+.option{
+    background: #efefef;
+    height: 90px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+
+    &:last-of-type{
+        margin-bottom: 0;
+    }
+
+    .icon{
+        width: 90px;
+        height: 90px;
+        background: #428bca;
+        float: left;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+    .title{
+        font-size: 15px;
+        padding: 15px 15px 10px 105px;
+    }
+    p{
+        padding-left: 105px;
+        font-size: 11px;
+    }
+}
 
 nav.navbar{
     border-radius: 0;
@@ -640,6 +669,40 @@ nav.navbar{
     .side{
         .make-md-column(4);
         margin-top: 30px;
+    }
+}
+
+.page.adios{
+    .input{
+        margin: 30px 0;
+
+        .option{
+            .icon{
+                position: relative;
+                font-size: 37px;
+                color: white;
+                background: #57CA42;
+
+                &:before{
+                    content: "\e013";
+                    line-height: 1;
+                    font-family: "Glyphicons Halflings";
+                    display: inline-block;
+                    position: absolute;
+                    width: 100%;
+                    text-align: center;
+                    top: 50%;
+                    margin-top: -18.5px;
+                }
+
+                &.missing{
+                    background: #CA4242;
+                    &:before{
+                        content: "\e014";
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -2485,34 +2548,6 @@ nav.navbar{
 
     &.spilltype-form, &.responsetype-form, &.shorelinetype-form{
         .option{
-            background: #efefef;
-            height: 90px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            overflow: hidden;
-
-            &:last-of-type{
-                margin-bottom: 0;
-            }
-
-            .icon{
-                width: 90px;
-                height: 90px;
-                background: #428bca;
-                float: left;
-                background-position: center center;
-                background-repeat: no-repeat;
-            }
-            .title{
-                font-size: 15px;
-                padding: 15px 15px 10px 105px;
-            }
-            p{
-                padding-left: 105px;
-                font-size: 11px;
-            }
-
             &.instant .icon{
                 background-image: url(/img/spill-instantaneous.png);
             }
