@@ -71,7 +71,7 @@ define([
 
         adios: function(e){
             e.preventDefault();
-            var wiz = new AdiosWizard();
+            webgnome.router.navigate('adios', true);
         },
 
         gnome: function(e){

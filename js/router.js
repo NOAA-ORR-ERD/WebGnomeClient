@@ -24,6 +24,7 @@ define([
             '': 'index',
             'locations': 'locations',
             'config': 'config',
+            'adios': 'adios',
             'model': 'model',
             'overview': 'overview',
             'faq': 'faq',
@@ -58,6 +59,11 @@ define([
         locations: function(){
             this.views.push(new MenuView());
             this.views.push(new LocationsView());
+        },
+
+        adios: function(){
+            this.views.push(new MenuView());
+            this.views.push(new AdiosView());
         },
 
         model: function(){
