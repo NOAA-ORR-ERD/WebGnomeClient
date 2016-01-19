@@ -124,7 +124,7 @@ define([
                     success: _.bind(function(model, res, options){
                         this.renderSubstanceInfo(null, model);
                     }, this)
-                });    
+                });
             }
         },
 
