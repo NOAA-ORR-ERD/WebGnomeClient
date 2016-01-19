@@ -107,7 +107,7 @@ define([
             var bullwinkle_fraction = substance.get('bullwinkle_fraction');
             var bullwinkle_time = substance.get('bullwinkle_time');
             if (_.isNull(bullwinkle_time)){
-                this.$('.manual').val(bullwinkle_fraction * 100);
+                this.$('.manual').val(Math.round(bullwinkle_fraction * 100));
                 this.$('#units-bullwinkle').val('percent');
             } else {
                 this.$('.manual').val(bullwinkle_time);
@@ -124,7 +124,7 @@ define([
                     success: _.bind(function(model, res, options){
                         this.renderSubstanceInfo(null, model);
                     }, this)
-                });    
+                });
             }
         },
 

@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'nucos',
     'model/base'
-], function(_, Backbone, moment, BaseModel){
+], function(_, Backbone, moment, nucos, BaseModel){
     'use strict';
     var windModel = BaseModel.extend({
         urlRoot: '/environment/',
@@ -15,15 +16,30 @@ define([
             speed_uncertainty_scale: 0
         },
 
+        speedLimit: {
+            mag: 50,
+            units: 'knots'
+        },
+
+        checkWindSpeed: function() {
+            var timeseries = this.get('timeseries');
+            for (var i = 0; i < timeseries.length; i++) {
+                
+            }
+        },
+
         validate: function(attrs, options){
             if(!_.isUndefined(attrs.timeseries)) {
                 var msg;
+                attrs.speedLimit = this.speedLimit;
+                var upperLimit = Math.floor(nucos.convert("Velocity", attrs.speedLimit.units, attrs.units, attrs.speedLimit.mag));
                 _.each(attrs.timeseries, function(el, ind, arr){
-                    if(el[1][0] < 0){
-                        msg = 'Speed must be greater than or equal to 0';
+                    var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
+                    if(speed < 0){
+                        msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '!';
                     }
-                    if(el[1][0] > 50){
-                        msg = 'Speed must be less than or equal to 50';
+                    if(speed > attrs.speedLimit.mag){
+                        msg = 'Speed must be less than or equal to ' + upperLimit + ' ' + attrs.units + '!';
                     }
 
                     if(el[1][1] < 0 || el[1][1] > 360){
