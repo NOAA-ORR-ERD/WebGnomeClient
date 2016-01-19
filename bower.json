@@ -26,7 +26,7 @@
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin/archive/master.zip",
     "flotextents": "git://github.com/NOAA-ORR-ERD/flot-extents.git",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
-    "masonry": "*",
+    "masonry": "3.3.2",
     "nucos": "1.*.*",
     "sweetalert": "0.4.*",
     "dropzone": "4.0.*",
@@ -34,7 +34,6 @@
     "localforage": "~1.2.3",
     "html2canvas": "~0.4.1",
     "relativeimportance": "*",
-    "google-chart": "GoogleWebComponents/google-chart#~1.0.2",
-    "eventEmitter": "~4.3.0"
+    "google-chart": "GoogleWebComponents/google-chart#~1.0.2"
   }
 }
