@@ -34,7 +34,6 @@ define([
                 attrs.speedLimit = this.speedLimit;
                 var upperLimit = Math.floor(nucos.convert("Velocity", attrs.speedLimit.units, attrs.units, attrs.speedLimit.mag));
                 _.each(attrs.timeseries, function(el, ind, arr){
-                    console.log(attrs);
                     var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
                     if(speed < 0){
                         msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '!';
