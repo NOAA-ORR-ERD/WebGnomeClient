@@ -367,11 +367,12 @@ img{
 }
 .option{
     background: #efefef;
-    height: 90px;
+    min-height: 90px;
     margin-bottom: 20px;
     border-radius: 4px;
     cursor: pointer;
     overflow: hidden;
+    position: relative;
 
     &:last-of-type{
         margin-bottom: 0;
@@ -379,11 +380,14 @@ img{
 
     .icon{
         width: 90px;
-        height: 90px;
         background: #428bca;
+        position: absolute;
         float: left;
         background-position: center center;
         background-repeat: no-repeat;
+        border-radius: 4px 0 0 4px;
+        top: 0px;
+        bottom: 0px;
     }
     .title{
         font-size: 15px;
@@ -678,7 +682,6 @@ nav.navbar{
 
         .option{
             .icon{
-                position: relative;
                 font-size: 37px;
                 color: white;
                 background: #57CA42;
@@ -699,6 +702,12 @@ nav.navbar{
                     background: #CA4242;
                     &:before{
                         content: "\e014";
+                    }
+                }
+                &.optional{
+                    background: #428bca;
+                    &:before{
+                        content: "\e031";
                     }
                 }
             }
