@@ -373,20 +373,9 @@ define([
             } else {
                 this.clearError();
                 FormModal.prototype.save.call(this, _.bind(function(){
-                    var oilSubstance = this.model.get('element_type').get('substance');
-                    var spills = webgnome.model.get('spills');
-                    if (spills.length > 1){
-                        spills.forEach(function(spill){
-                            var spillSubstance = spill.get('element_type').get('substance');
-                            if(_.isNull(oilSubstance) && !_.isNull(spillSubstance) ||
-                                !_.isNull(oilSubstance) && !_.isNull(spillSubstance) && oilSubstance.get('name') !== spillSubstance.get('name')){
-                                    spill.get('element_type').set('substance', oilSubstance);
-                                    spill.save();
-                            }
-                        });
-                    }
-                }, this)
-                );
+                    webgnome.model.updateElementType(this.model.get('element_type'));
+                    webgnome.model.save();
+                }, this));
             }
         },
 

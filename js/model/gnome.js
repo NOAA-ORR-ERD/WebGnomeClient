@@ -457,6 +457,15 @@ define([
             }
         },
 
+        updateElementType: function(element_type){
+            var spills = this.get('spills');
+            if (spills.length > 1){
+                spills.forEach(function(spill){
+                    spill.set('element_type', element_type);
+                });
+            }
+        },
+
         updateBurn: function(){
             
         },
