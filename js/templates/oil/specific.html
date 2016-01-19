@@ -51,6 +51,15 @@
                             {% } %}
     					</div>
     				</div>
+                    <div class="col-md-12">
+                        <div><label>Categories:</label>
+                            {% if (data.categories){ %}
+                                {% for (var i = 0; i < data.categories.length; i++){ %}
+                                    <div class="label label-warning">{{ data.categories[i] }}</div>
+                                {% } %}
+                            {% } %}
+                        </div>
+                    </div>
     				<div class="col-md-12">
     					<div><label>Reference:</label> {{ data.imported.reference }}</div>
     				</div>

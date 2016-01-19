@@ -34,6 +34,7 @@ define([
 
 		render: function(options){
 			var data = this.dataParse(this.model.attributes);
+            console.log(data);
             var viewName = this.viewName;
 			var compiled = _.template(SpecificOilTemplate, {data: data, viewName: viewName});
             if (!_.isUndefined(this.containerClass)) {
@@ -106,6 +107,12 @@ define([
                 } else if (attr === 'adhesion_kg_m_2'){
                     if (oil.estimated[attr]){
                         oil[attr] = '<code>' + oil[attr] + '</code>';
+                    }
+                } else if (attr === 'categories') {
+                    for (var i = 0; i < oil[attr].length; i++) {
+                        var parentCategory = oil[attr][i].parent.name;
+                        var childCategory = oil[attr][i].name;
+                        oil[attr][i] = parentCategory + '-' + childCategory;
                     }
                 }
                 this.parseTemperatureData(oil, attr);
