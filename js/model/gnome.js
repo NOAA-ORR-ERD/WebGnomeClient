@@ -463,11 +463,11 @@ define([
 
         getSubstance: function(){
             if(this.get('spills').length > 0){
-                return this.get('spills').at(0).get('element_type');
+                return this.get('spills').at(0).get('element_type').get('substance');
             } else {
                 for(var i in webgnome.obj_ref){
                     if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.elements.element_type.ElementType'){
-                        return webgnome.obj_ref[i];
+                        return webgnome.obj_ref[i].get('substance');
                     }
                 }
             }
