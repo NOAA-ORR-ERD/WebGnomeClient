@@ -20,10 +20,10 @@ define([
             var pourPointF = (pourPointC * (9 / 5)) + 32;
 
             return {
-                    'pour_point_max_c': pourPointC.toFixed(3),
-                    'pour_point_max_f': pourPointF.toFixed(3),
-                    'flash_point_max_c': flashPointC.toFixed(3),
-                    'flash_point_max_f': flashPointF.toFixed(3)
+                    'pour_point_max_c': pourPointC.toFixed(1),
+                    'pour_point_max_f': pourPointF.toFixed(1),
+                    'flash_point_max_c': flashPointC.toFixed(1),
+                    'flash_point_max_f': flashPointF.toFixed(1)
                    };
         },
 
