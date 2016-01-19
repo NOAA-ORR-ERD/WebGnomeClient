@@ -62,8 +62,12 @@ define([
         },
 
         adios: function(){
-            this.views.push(new MenuView());
-            this.views.push(new AdiosView());
+            if(webgnome.hasModel()){
+                this.views.push(new MenuView());
+                this.views.push(new AdiosView());
+            } else {
+                this.navigate('', true);
+            }
         },
 
         model: function(){
