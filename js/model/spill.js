@@ -30,6 +30,9 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
+            if(webgnome.hasModel() && webgnome.model.getElementType()){
+                this.set('element_type', webgnome.model.getElementType());
+            }
             this.on('change:element_type', this.addListeners, this);
         },
 
