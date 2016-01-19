@@ -672,7 +672,7 @@ define([
                 webgnome.model.updateElementType(element_type);
                 webgnome.model.save();
                 this.updateSpill();
-                oilLib.on('hidden', oilLib.close);
+                oilLib.close();
             }, this));
             oilLib.render();
         },
