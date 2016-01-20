@@ -7,15 +7,20 @@ define([
     'views/form/spill/type-wizcompat',
     'views/form/spill/instant',
     'views/form/spill/continue',
-    'model/element'
-], function($, _, Backbone, AdiosTemplate, OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, ElementType){
+    'views/form/water',
+    'model/element',
+    'model/environment/water'
+], function($, _, Backbone, AdiosTemplate,
+        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm,
+        ElementType, Water){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
 
         events: {
             'click .substance': 'clickSubstance',
-            'click .spill': 'clickSpill'
+            'click .spill': 'clickSpill',
+            'click .water': 'clickWater'
         },
 
         initialize: function(){
@@ -103,6 +108,20 @@ define([
                     }, this));
                 }, this));
             }
+        },
+
+        clickWater: function(){
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            if(!water){
+                water = new Water();
+            }
+            var form = new WaterForm({}, water);
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(water, {merge:true});
+                this.render();
+            }, this));
+            form.render();
         },
 
         close: function(){

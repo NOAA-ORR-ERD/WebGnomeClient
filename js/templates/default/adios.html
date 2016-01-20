@@ -62,12 +62,41 @@
                     <div class="col-sm-12"><p>Click to set the amount of oil released.</p></div>
                 {% } %}
             </div>
-            <div class="option">
-                <div class="icon missing"></div>
+            <div class="option water">
+                <div class="icon {% if(!water){ %}missing {% } %}"></div>
                 <div class="title">Water</div>
-                <div class="col-sm-12"><p>Click to set water conditions</p></div>
+                {% if(water){ %}
+                    <div class="col-md-12">
+                        <div class="item">
+                            <div class="col-md-6">
+                                <label>Temperature: </label> 
+                                {{ water.get('temperature') }} 
+                                {% if (water.get('units').temperature !== 'K'){ %}
+                                    &deg;
+                                {% } %}
+                                {{ water.get('units').temperature }}
+                            </div>
+                            <div class="col-md-6">
+                                <label>Salinity: </label>
+                                {{ water.get('salinity') }} {{ water.get('units').salinity }}
+                            </div>
+                            <div class="col-md-6">
+                                <label>Sediment Load: </label>
+                                {{ water.get('sediment') }} {{ water.get('units').sediment }}
+                            </div>
+                            {% if (!_.isNull(water.get('wave_height'))){  %}
+                                <div class="col-md-6"><label>Wave Height: </label> {{ water.get('wave_height') }} {{ water.get('units').wave_height }}</div>
+                            {% } %}
+                            {% if (!_.isNull(water.get('fetch'))){ %}
+                                <div class="col-md-6"><label>Fetch: </label> {{ water.get('fetch') }} {{ water.get('units').fetch }}</div>
+                            {% } %}
+                        </div>
+                    </div>
+                {% } else { %}
+                    <div class="col-sm-12"><p>Click to set water conditions</p></div>
+                {% } %}
             </div>
-            <div class="option">
+            <div class="option wind">
                 <div class="icon missing"></div>
                 <div class="title">Wind</div>
                 <div class="col-sm-12"><p>Click to set wind speed and direction</p></div>
