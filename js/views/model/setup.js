@@ -92,9 +92,13 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            $('body').append(this.$el);
             if(webgnome.hasModel()){
-                this.render();
+                if(webgnome.model.get('name') === 'ADIOS Model'){
+                    webgnome.router.navigate('/adios', true);
+                } else {
+                    $('body').append(this.$el);
+                    this.render();
+                }
             } else {
                 if(_.has(webgnome, 'cache')){
                     webgnome.cache.rewind();
@@ -103,6 +107,7 @@ define([
                 webgnome.model.save(null, {
                     validate: false,
                     success: _.bind(function(){
+                        $('body').append(this.$el);
                         this.render();
                     }, this)
                 });
