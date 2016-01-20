@@ -2,17 +2,20 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'text!templates/default/adios.html',
     'views/form/oil/library',
     'views/form/spill/type-wizcompat',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/water',
+    'views/form/wind',
     'model/element',
-    'model/environment/water'
-], function($, _, Backbone, AdiosTemplate,
-        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm,
-        ElementType, Water){
+    'model/environment/water',
+    'model/environment/wind'
+], function($, _, Backbone, moment, AdiosTemplate,
+        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm,
+        ElementType, Water, Wind){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
@@ -20,7 +23,8 @@ define([
         events: {
             'click .substance': 'clickSubstance',
             'click .spill': 'clickSpill',
-            'click .water': 'clickWater'
+            'click .water': 'clickWater',
+            'click .wind': 'clickWind'
         },
 
         initialize: function(){
@@ -42,6 +46,8 @@ define([
                 substance: substance,
                 spills: spills,
                 wind: wind,
+                wind_from: wind ? moment(wind.get('timeseries')[0][0]).format('MM-DD-YYYY H:mm') : null,
+                wind_to: wind ? moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('MM-DD-YYYY H:mm') : null,
                 water: water
             });
             if($('body').find(this.$el).length == 0){
@@ -119,6 +125,20 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
+                this.render();
+            }, this));
+            form.render();
+        },
+
+        clickWind: function(){
+            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            if(!wind){
+                wind = new Wind();
+            }
+            var form = new WindForm({}, wind);
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(wind, {merge:true});
                 this.render();
             }, this));
             form.render();

@@ -97,9 +97,31 @@
                 {% } %}
             </div>
             <div class="option wind">
-                <div class="icon missing"></div>
+                <div class="icon {% if(!wind){ %}missing {% } %}"></div>
                 <div class="title">Wind</div>
-                <div class="col-sm-12"><p>Click to set wind speed and direction</p></div>
+                {% if(wind){ %}
+                    <div class="col-md-12">
+                        <div class="item">
+                            {% if(wind.get('timeseries').length > 1){ %}
+                                <div class="col-md-12">
+                                    <label>Timeseries:</label>
+                                    {{ wind_from }} to {{ wind_to }}
+                                </div>
+                            {% } else { %}
+                                <div class="col-md-6">
+                                    <label>Speed</label>
+                                    {{ wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]) }} {{ wind.get('units') }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Direction</label>
+                                    {{ wind.get('timeseries')[0][1][1] }} &deg;
+                                </div>
+                            {% } %}
+                        </div>
+                    </div>
+                {% } else { %}
+                    <div class="col-sm-12"><p>Click to set wind speed and direction</p></div>
+                {% } %}
             </div>
         </div>
     </div>
