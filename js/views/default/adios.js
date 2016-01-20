@@ -24,7 +24,8 @@ define([
             'click .substance': 'clickSubstance',
             'click .spill': 'clickSpill',
             'click .water': 'clickWater',
-            'click .wind': 'clickWind'
+            'click .wind': 'clickWind',
+            'click .solve:not(.disabled)': 'solve'
         },
 
         initialize: function(){
@@ -142,6 +143,10 @@ define([
                 this.render();
             }, this));
             form.render();
+        },
+
+        solve: function(){
+            webgnome.router.navigate('/model', true);
         },
 
         close: function(){
