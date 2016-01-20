@@ -672,7 +672,11 @@ define([
                 webgnome.model.updateElementType(element_type);
                 webgnome.model.save();
                 this.updateSpill();
-                oilLib.close();
+                if(oilLib.$el.is(':hidden')){
+                    oilLib.close();
+                } else {
+                    oilLib.once('hidden', oilLib.close, oilLib);
+                }
             }, this));
             oilLib.render();
         },
