@@ -13,9 +13,7 @@ define([
     var riskWizardView = BaseWizard.extend({
 
         initialize: function(){
-            if(_.isUndefined(webgnome.riskCalc)){
-                webgnome.riskCalc = new RiskModel();
-            }
+            webgnome.riskCalc = new RiskModel();
             this.setup(webgnome.riskCalc);
         },
 
@@ -60,10 +58,8 @@ define([
                         riskModel.save(null, {
                             success: function(){
                                 webgnome.model.save(null, {validate: false});
-                                webgnome.cache.rewind();
                             }
                         });
-
                     })
                 ];
             }

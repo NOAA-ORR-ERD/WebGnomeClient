@@ -23,6 +23,12 @@ define([
 
             units: {
                 'depth': 'm'
+            },
+
+            slopes : {
+                'Skimming': null,
+                'Dispersion': null,
+                'Burn': null
             }
         },
 
@@ -31,9 +37,11 @@ define([
             this.fetch();
             var attrs = this.attributes;
 
-            if (!_.isUndefined(webgnome.model)){
+            if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.mass_balance)){
                 this.updateEfficiencies();
                 this.deriveAssessmentTime();
+                var masses = this.getMasses();
+                this.setSlopes(masses);
             }
         },
 
@@ -89,8 +97,12 @@ define([
                 surface: 0,
                 shoreline: 0,
                 column: 0,
-                total: 0
+                remaining: 0,
+                naturalDispersion: 0,
+                chemicalDispersion: 0
             };
+
+            var eff = this.get('efficiency');
             var balance = webgnome.mass_balance;
             for (var i = 0; i < balance.length; i++) {
                 var balanceIndex = balance[i].data.length - 1;
@@ -101,19 +113,91 @@ define([
                 else if (balance[i].name.toUpperCase() === 'BEACHED' || balance[i].name.toUpperCase() === 'OBSERVED_BEACHED') {
                     masses.shoreline = this.convertMass(data[1]);
                 }
-                else if (balance[i].name.toUpperCase() === 'CHEMICAL_DISPERSION') {
-                    chemicalDispersion = this.convertMass(data[1]);
+                else if (balance[i].name.toUpperCase() === 'CHEM_DISPERSED') {
+                    masses.chemicalDispersion = this.convertMass(data[1]);
                 }
                 else if (balance[i].name.toUpperCase() === 'NATURAL_DISPERSION'){
-                    naturalDispersion = this.convertMass(data[1]);
+                    masses.naturalDispersion = this.convertMass(data[1]);
                 }
-                else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED') {
-                    masses.total = this.convertMass(data[1]);
+                else if (balance[i].name.toUpperCase() === 'SKIMMED'){
+                    masses.skimmed = this.convertMass(data[1]);
+                }
+                else if (balance[i].name.toUpperCase() === 'BURNED'){
+                    masses.burned = this.convertMass(data[1]);
                 }
             }
 
-            masses.column = naturalDispersion + chemicalDispersion;
+            masses.column = masses.naturalDispersion + masses.chemicalDispersion;
+
+            if (Object.keys(this.get('slopes')).length !== 0) {
+                var slopes = this.get('slopes');
+
+                if (slopes.Skimming) {
+                    var skimmedRemoved = eff.Skimming * slopes.Skimming - masses.skimmed;
+
+                    if (skimmedRemoved > 0) {
+                        if (masses.surface > skimmedRemoved) {
+                            masses.surface -= skimmedRemoved;
+                        } else {
+                            masses.shoreline -= skimmedRemoved;
+                        }
+                    } else {
+                        masses.surface += Math.abs(skimmedRemoved);
+                    }
+                    masses.skimmed += skimmedRemoved;
+                }
+
+                if (slopes.Dispersion) {
+                    var dispersionRemoved = eff.Dispersion * slopes.Dispersion - masses.chemicalDispersion;
+
+                    if (dispersionRemoved > 0) {
+                        if (masses.surface > dispersionRemoved) {
+                            masses.surface -= dispersionRemoved;
+                        } else {
+                            masses.shoreline -= dispersionRemoved;
+                        }
+                    } else {
+                        masses.surface += Math.abs(dispersionRemoved);
+                    }
+                    masses.chemicalDispersion += dispersionRemoved;
+                }
+
+                if (slopes.Burn) {
+                    var burnRemoved = eff.Burn * slopes.Burn - masses.burned;
+
+                    if (burnRemoved > 0) {
+                        if (masses.surface > burnRemoved) {
+                            masses.surface -= burnRemoved;
+                        } else {
+                            masses.shoreline -= burnRemoved;
+                        }
+                    } else {
+                        masses.surface += Math.abs(burnRemoved);
+                    }
+                    masses.burned += burnRemoved;
+                }
+            }
+
             return masses;
+        },
+
+        setSlopes: function(masses) {
+            var eff = this.get('efficiency');
+            var slopes = {};
+
+            if (eff.Skimming) {
+                slopes.Skimming = masses.skimmed / eff.Skimming;
+            }
+
+            if (eff.Dispersion) {
+                slopes.Dispersion = masses.chemicalDispersion / eff.Dispersion;
+            }
+
+            if (eff.Burn) {
+                slopes.Burn = masses.burned / eff.Burn;
+            }
+
+            this.set('slopes', slopes);
         },
 
         assessment: function(){

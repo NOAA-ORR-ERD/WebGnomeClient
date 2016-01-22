@@ -98,6 +98,7 @@ define([
 
         updateBenefit: function(){
             var benefit = Math.round(this.model.calculateBenefit() * 100);
+            console.log(benefit);
             this.$('google-chart').attr('data', '[["Label", "Value"], ["Benefit", ' + benefit + ']]');
         },
 
@@ -153,6 +154,8 @@ define([
 
             // assess model
             this.model.assessment();
+
+            this.updateBenefit();
         },
 
         save: function(e){
