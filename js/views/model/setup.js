@@ -92,9 +92,13 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            $('body').append(this.$el);
             if(webgnome.hasModel()){
-                this.render();
+                if(webgnome.model.get('name') === 'ADIOS Model'){
+                    webgnome.router.navigate('/adios', true);
+                } else {
+                    $('body').append(this.$el);
+                    this.render();
+                }
             } else {
                 if(_.has(webgnome, 'cache')){
                     webgnome.cache.rewind();
@@ -103,6 +107,7 @@ define([
                 webgnome.model.save(null, {
                     validate: false,
                     success: _.bind(function(){
+                        $('body').append(this.$el);
                         this.render();
                     }, this)
                 });
@@ -493,16 +498,6 @@ define([
             windForm.render();
         },
 
-        // TODO: Change it so that we don't have to use a hard-coded value for the 
-        // max uncertainty value
-        windSpeedParse: function(wind){
-            var uncertainty = wind.get('speed_uncertainty_scale');
-            var speed = wind.get('timeseries')[0][1][0];
-
-            var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
-            return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
-        },
-
         updateWind: function(){
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(!_.isUndefined(wind)){
@@ -513,7 +508,7 @@ define([
                     if (wind.get('speed_uncertainty_scale') === 0) {
                         windSpeed = wind.get('timeseries')[0][1][0];
                     } else {
-                        windSpeed = this.windSpeedParse(wind);
+                        windSpeed = wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]);
                     }
                     compiled = _.template(WindPanelTemplate, {
                         speed: windSpeed,
@@ -672,7 +667,11 @@ define([
                 webgnome.model.updateElementType(element_type);
                 webgnome.model.save();
                 this.updateSpill();
-                oilLib.on('hidden', oilLib.close);
+                if(oilLib.$el.is(':hidden')){
+                    oilLib.close();
+                } else {
+                    oilLib.once('hidden', oilLib.close, oilLib);
+                }
             }, this));
             oilLib.render();
         },

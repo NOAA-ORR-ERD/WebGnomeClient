@@ -7,8 +7,9 @@ define([
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
-    'views/default/map'
-], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView){
+    'views/default/map',
+    'model/gnome'
+], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -71,7 +72,13 @@ define([
 
         adios: function(e){
             e.preventDefault();
-            webgnome.router.navigate('adios', true);
+            webgnome.model = new GnomeModel({name: 'ADIOS Model'});
+            webgnome.model.save(null, {
+                validate: false,
+                success: function(){
+                    webgnome.router.navigate('adios', true);
+                }
+            });
         },
 
         gnome: function(e){

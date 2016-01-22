@@ -157,13 +157,6 @@ img{
     }
 }
 
-.info{
-    span{
-        color: #CCCCCC;
-        font-size: 14px;
-    }
-}
-
 .help-content{
     font-size: 12px;
 
@@ -372,6 +365,7 @@ img{
     border-radius: 4px;
     cursor: pointer;
     overflow: hidden;
+    padding-left: 90px;
     position: relative;
 
     &:last-of-type{
@@ -388,14 +382,15 @@ img{
         border-radius: 4px 0 0 4px;
         top: 0px;
         bottom: 0px;
+        left: 0px;
     }
     .title{
         font-size: 15px;
-        padding: 15px 15px 10px 105px;
+        padding: 15px 15px 10px 15px;
     }
     p{
-        padding-left: 105px;
         font-size: 11px;
+        padding-left: 15px;
     }
 }
 
@@ -710,6 +705,25 @@ nav.navbar{
                         content: "\e031";
                     }
                 }
+            }
+
+            .item{
+                .clearfix;
+                background: #d2d2d2;
+                margin-bottom: 15px;
+                border-radius: 4px;
+                padding: 5px 0;
+            }
+
+            label{
+                margin-bottom: 0;
+                margin-top: 2px;
+                display: block;
+                font-size: 10px;
+            }
+
+            p{
+                padding-left: 0;
             }
         }
     }
@@ -2810,6 +2824,15 @@ nav.navbar{
                 float: left;
                 margin-left: -18px;
             }
+        }
+    }
+}
+
+.oil-form{
+    .info{
+        span{
+            color: #CCCCCC;
+            font-size: 14px;
         }
     }
 }

@@ -28,6 +28,14 @@ define([
             }
         },
 
+        applySpeedUncertainty: function(wind){
+            var uncertainty = this.get('speed_uncertainty_scale');
+            var speed = this.get('timeseries')[0][1][0];
+
+            var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
+            return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
+        },
+
         validate: function(attrs, options){
             if(!_.isUndefined(attrs.timeseries)) {
                 var msg;
