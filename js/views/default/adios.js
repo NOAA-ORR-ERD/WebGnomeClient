@@ -71,8 +71,6 @@ define([
                 element_type.save().always(_.bind(function(){
                     webgnome.obj_ref[element_type.id] = element_type;
                     this.render();
-                    webgnome.model.updateElementType(element_type);
-                    webgnome.model.save();
                 }, this));
                 oilLib.close();
             }, this));
