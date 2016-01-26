@@ -373,7 +373,6 @@ define([
             } else {
                 this.clearError();
                 FormModal.prototype.save.call(this, _.bind(function(){
-                    webgnome.model.updateElementType(this.model.get('element_type'));
                     webgnome.model.save();
                 }, this));
             }

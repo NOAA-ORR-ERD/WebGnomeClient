@@ -7,7 +7,7 @@ define([
 ], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
     'use strict';
     var gnomeElement = BaseModel.extend({
-        url: '/element_type',
+        urlRoot: '/element_type/',
 
         model: {
             substance: GnomeSubstance

@@ -71,8 +71,6 @@ define([
                 element_type.save().always(_.bind(function(){
                     webgnome.obj_ref[element_type.id] = element_type;
                     this.render();
-                    webgnome.model.updateElementType(element_type);
-                    webgnome.model.save();
                 }, this));
                 oilLib.close();
             }, this));
@@ -104,7 +102,8 @@ define([
                 spillTypeForm.on('hidden', spillTypeForm.close);
                 spillTypeForm.on('select', _.bind(function(form){
                     form.$el.addClass('adios');
-                    form.on('save wizardclose', _.bind(function(){
+                    form.on('wizardclose', form.close);
+                    form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
                         this.render();
                         if(form.$el.is(':hidden')){
