@@ -8,7 +8,7 @@ define([
         url: function(){
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
-
+        
         parseTemperatures: function(){
             var flashPointK = this.get('flash_point_max_k');
             var pourPointK = this.get('pour_point_max_k');
