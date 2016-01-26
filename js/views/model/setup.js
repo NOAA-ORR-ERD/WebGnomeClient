@@ -93,7 +93,7 @@ define([
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
             if(webgnome.hasModel()){
-                if(webgnome.model.get('name') === 'ADIOS Model'){
+                if(webgnome.model.get('name') === 'ADIOS Model_'){
                     webgnome.router.navigate('/adios', true);
                 } else {
                     $('body').append(this.$el);

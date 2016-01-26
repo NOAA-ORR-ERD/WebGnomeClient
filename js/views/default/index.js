@@ -72,7 +72,11 @@ define([
 
         adios: function(e){
             e.preventDefault();
-            webgnome.model = new GnomeModel({name: 'ADIOS Model'});
+            webgnome.model = new GnomeModel({
+                name: 'ADIOS Model_',
+                duration: 432000,
+                time_step: 3600,
+            });
             webgnome.model.save(null, {
                 validate: false,
                 success: function(){
