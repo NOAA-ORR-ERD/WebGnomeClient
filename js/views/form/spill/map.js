@@ -17,7 +17,8 @@ define([
         events: function() {
             return _.defaults({
                 'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill'
+                'click .spill-button .moving': 'toggleSpill',
+                'shown.bs.modal': 'locationSelect',
             }, FormModal.prototype.events);
         },
 
@@ -32,39 +33,41 @@ define([
         },
 
         render: function(options) {
-            var cid = this.model.cid;
-            this.body = _.template(MapViewTemplate, {
-                cid: cid
-            });
+            if (!this.mapShown) {
+                var cid = this.model.cid;
+                this.body = _.template(MapViewTemplate, {
+                    cid: cid
+                });
 
-            FormModal.prototype.render.call(this, options);
-            this.source = new ol.source.Vector();
-            this.layer = new ol.layer.Vector({
-                source: this.source
-            });
-            var id = 'spill-form-map-' + this.model.cid;
-            this.spillMapView = new SpillMapView({
-                id: id,
-                zoom: 2,
-                center: [-128.6, 42.7],
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'}),
-                        visible: webgnome.model.get('map').geographical
-                    }),
-                    this.layer
-                ]
-            });
-            this.spillMapView.render();
-            this.toggleMapHover();
-            this.addMapControls();
-            this.mapShown = true;
-            this.locationSelect();
-            setTimeout(_.bind(function(){
-                this.spillMapView.map.updateSize();
-            }, this), 250);
-            this.renderSpillFeature();
-            this.toggleSpill();
+                FormModal.prototype.render.call(this, options);
+
+                this.source = new ol.source.Vector();
+                this.layer = new ol.layer.Vector({
+                    source: this.source
+                });
+                var id = 'spill-form-map-' + this.model.cid;
+                this.spillMapView = new SpillMapView({
+                    id: id,
+                    zoom: 2,
+                    center: [-128.6, 42.7],
+                    layers: [
+                        new ol.layer.Tile({
+                            source: new ol.source.MapQuest({layer: 'osm'}),
+                            visible: webgnome.model.get('map').geographical
+                        }),
+                        this.layer
+                    ]
+                });
+                this.spillMapView.render();
+                this.toggleMapHover();
+                this.addMapControls();
+                this.mapShown = true;
+                setTimeout(_.bind(function(){
+                    this.spillMapView.map.updateSize();
+                }, this), 250);
+                this.renderSpillFeature();
+                this.toggleSpill();
+            }
         },
 
         checkForShoreline: function(coordsObj) {
@@ -315,7 +318,6 @@ define([
 
                 this.drawInteraction.on('drawend', _.bind(this.drawEndCallback, this));
                 this.renderSpillFeature();
-                //this.update();
             }
         },
 
@@ -335,7 +337,7 @@ define([
 
         locationSelect: function(){
             if (!this.mapShown){
-                this.mapRender();
+                this.render();
                 var map = webgnome.model.get('map');
                 if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
                     map.getGeoJSON(_.bind(function(data){
@@ -361,6 +363,15 @@ define([
                         }
                     }, this));
                 }
+            }
+        },
+
+        save: function() {
+            var err = this.model.validateLocation();
+            if (err) {
+                this.error("Placement error!", err);
+            } else {
+                this.clearError();
             }
         }
     });

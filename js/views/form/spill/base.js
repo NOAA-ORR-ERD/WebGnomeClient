@@ -31,7 +31,6 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'shown.bs.tab .mapspill': 'locationSelect',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .oil-info': 'initOilInfo',
@@ -380,13 +379,6 @@ define([
         show: function(){
             this.update();
             FormModal.prototype.show.call(this);
-        },
-
-        mapRender: function(){
-            if (!this.mapShown){
-                this.$('.map').show();
-                
-            }
         },
 
         initMapModal: function() {
