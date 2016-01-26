@@ -9,6 +9,11 @@ define([
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
 
+        parse: function(attrs){
+            attrs.id = attrs.adios_oil_id;
+            return attrs;
+        },
+
         parseTemperatures: function(){
             var flashPointK = this.get('flash_point_max_k');
             var pourPointK = this.get('pour_point_max_k');
