@@ -210,10 +210,6 @@ define([
 
             if (!isNaN(attrs.time_step)){
 
-                if(attrs.time_step % 60 !== 0){
-                    return 'Time step must be a whole number.';
-                }
-
                 if(attrs.time_step <= 0){
                     return 'Time step must be a positive number.';
                 }
