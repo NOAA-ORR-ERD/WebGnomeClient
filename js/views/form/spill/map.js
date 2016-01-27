@@ -21,13 +21,13 @@ define([
             }, FormModal.prototype.events);
         },
 
-        initialize: function(options, spill) {
+        initialize: function(options, release) {
             FormModal.prototype.initialize.call(this, options);
 
             if (!_.isUndefined(options.model)) {
                 this.model = options.model;
             } else {
-                this.model = spill;
+                this.model = release;
             }
 
             this.source = new ol.source.Vector();
@@ -72,7 +72,6 @@ define([
             this.toggleSpill();
             this.locationSelect();
             this.addMapControls();
-            console.trace();
         },
 
         checkForShoreline: function(coordsObj) {
@@ -134,8 +133,8 @@ define([
                 var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 coord.push(0);
 
-                this.model.get('release').set('start_position', coord);
-                this.model.get('release').set('end_position', coord);
+                this.model.set('start_position', coord);
+                this.model.set('end_position', coord);
 
                 this.toggleSpill(e);
                 this.renderSpillFeature();
@@ -167,7 +166,7 @@ define([
             if (this.spillPlacementAllowed){
                 var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 end_position.push(0);
-                this.model.get('release').set('end_position', end_position);
+                this.model.set('end_position', end_position);
                 this.toggleSpill(e);
                 this.renderSpillFeature();
             } else {
@@ -179,8 +178,8 @@ define([
             if (this.spillPlacementAllowed){
                 var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
                 start_position.push(0);
-                this.model.get('release').set('start_position', start_position);
-                this.model.get('release').set('end_position', start_position);
+                this.model.set('start_position', start_position);
+                this.model.set('end_position', start_position);
                 this.renderSpillFeature();
                 this.spillMapView.map.once('click', this.endPointPlacement, this);
             } else {
@@ -189,8 +188,8 @@ define([
         },
 
         renderSpillFeature: function(){
-            var start_position = this.model.get('release').get('start_position');
-            var end_position = this.model.get('release').get('end_position');
+            var start_position = this.model.get('start_position');
+            var end_position = this.model.get('end_position');
             var geom, featureStyle;
             if(start_position[0] === end_position[0] && start_position[1] === end_position[1]){
                 start_position = [start_position[0], start_position[1]];
@@ -250,8 +249,9 @@ define([
             var convertedCoords = this.convertCoordObj(coordsObj);
 
             if (this.spillPlacementAllowed && coordsAreValid) {
-                this.model.get('release').set('start_position', convertedCoords.start);
-                this.model.get('release').set('end_position', convertedCoords.end);
+                this.model.set('start_position', convertedCoords.start);
+                this.model.set('end_position', convertedCoords.end);
+                console.trace();
             }
 
             this.renderSpillFeature();
@@ -271,8 +271,8 @@ define([
             var convertedCoords = this.convertCoordObj(coordsObj);
 
             if (this.spillPlacementAllowed && coordsAreValid) {
-                this.model.get('release').set('start_position', convertedCoords.start);
-                this.model.get('release').set('end_position', convertedCoords.end);
+                this.model.set('start_position', convertedCoords.start);
+                this.model.set('end_position', convertedCoords.end);
                 this.renderSpillFeature();
             }
 
@@ -336,7 +336,6 @@ define([
 
         addMapControls: function(){
             var controls = _.template(MapControlsTemplate, {});
-            console.log(controls);
             this.$('.ol-viewport').append(controls);
             this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
         },
@@ -375,9 +374,7 @@ define([
                 this.error("Placement error!", err);
             } else {
                 this.clearError();
-                this.trigger('save');
-                console.log(this.model);
-                this.hide();
+                FormModal.prototype.save.call(this);
             }
         }
     });

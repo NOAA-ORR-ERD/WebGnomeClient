@@ -383,9 +383,9 @@ define([
 
         initMapModal: function() {
             if(_.isUndefined(this.mapModal)){
-                this.mapModal = new MapFormView({}, this.model);
+                this.mapModal = new MapFormView({}, this.model.get('release'));
                 this.mapModal.render();
-                this.mapModal.on('hidden save', _.bind(this.show, this));
+                this.mapModal.on('hidden', _.bind(this.show, this));
                 this.mapModal.on('save', this.setManualFields, this);
             } else {
                 this.once('hidden', this.mapModal.show, this.mapModal);
