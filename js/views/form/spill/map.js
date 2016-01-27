@@ -17,8 +17,7 @@ define([
         events: function() {
             return _.defaults({
                 'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill',
-                'shown.bs.modal': 'locationSelect',
+                'click .spill-button .moving': 'toggleSpill'
             }, FormModal.prototype.events);
         },
 
@@ -30,6 +29,24 @@ define([
             } else {
                 this.model = spill;
             }
+
+            this.source = new ol.source.Vector();
+            this.layer = new ol.layer.Vector({
+                source: this.source
+            });
+            var id = 'spill-form-map-' + this.model.cid;
+            this.spillMapView = new SpillMapView({
+                id: id,
+                zoom: 2,
+                center: [-128.6, 42.7],
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.MapQuest({layer: 'osm'}),
+                        visible: webgnome.model.get('map').geographical
+                    }),
+                    this.layer
+                ]
+            });
         },
 
         render: function(options) {
@@ -40,34 +57,22 @@ define([
                 });
 
                 FormModal.prototype.render.call(this, options);
-
-                this.source = new ol.source.Vector();
-                this.layer = new ol.layer.Vector({
-                    source: this.source
-                });
-                var id = 'spill-form-map-' + this.model.cid;
-                this.spillMapView = new SpillMapView({
-                    id: id,
-                    zoom: 2,
-                    center: [-128.6, 42.7],
-                    layers: [
-                        new ol.layer.Tile({
-                            source: new ol.source.MapQuest({layer: 'osm'}),
-                            visible: webgnome.model.get('map').geographical
-                        }),
-                        this.layer
-                    ]
-                });
-                this.spillMapView.render();
-                this.toggleMapHover();
-                this.addMapControls();
-                this.mapShown = true;
-                setTimeout(_.bind(function(){
-                    this.spillMapView.map.updateSize();
-                }, this), 250);
-                this.renderSpillFeature();
-                this.toggleSpill();
+                this.mapRender();
             }
+        },
+
+        mapRender: function() {
+            this.spillMapView.render();
+            this.toggleMapHover();
+            this.mapShown = true;
+            setTimeout(_.bind(function(){
+                this.spillMapView.map.updateSize();
+            }, this), 250);
+            this.renderSpillFeature();
+            this.toggleSpill();
+            this.locationSelect();
+            this.addMapControls();
+            console.trace();
         },
 
         checkForShoreline: function(coordsObj) {
@@ -331,38 +336,36 @@ define([
 
         addMapControls: function(){
             var controls = _.template(MapControlsTemplate, {});
+            console.log(controls);
             this.$('.ol-viewport').append(controls);
             this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
         },
 
         locationSelect: function(){
-            if (!this.mapShown){
-                this.render();
-                var map = webgnome.model.get('map');
-                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                    map.getGeoJSON(_.bind(function(data){
-                        this.shorelineSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
-                        });
-                        this.shorelineLayer = new ol.layer.Vector({
-                            name: 'shoreline',
-                            source: this.shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
+            var map = webgnome.model.get('map');
+            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
+                map.getGeoJSON(_.bind(function(data){
+                    this.shorelineSource = new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
+                    });
+                    this.shorelineLayer = new ol.layer.Vector({
+                        name: 'shoreline',
+                        source: this.shorelineSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
                             })
-                        });
-                        if(this.spillMapView.map){
-                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            this.spillMapView.setMapOrientation();
-                        }
-                    }, this));
-                }
+                        })
+                    });
+                    if(this.spillMapView.map){
+                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
+                        this.spillMapView.setMapOrientation();
+                    }
+                }, this));
             }
         },
 
@@ -372,6 +375,9 @@ define([
                 this.error("Placement error!", err);
             } else {
                 this.clearError();
+                this.trigger('save');
+                console.log(this.model);
+                this.hide();
             }
         }
     });
