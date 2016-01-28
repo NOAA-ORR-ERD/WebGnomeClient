@@ -80,8 +80,8 @@ define([
 
         setupLocation: function(e){
             e.stopPropagation();
-            var slug = e.target.dataset.slug;
-            var name = e.target.dataset.name;
+            var slug = $(e.target).data('slug');
+            var name = $(e.target).data('name');
             webgnome.model = new GnomeModel();
             if(_.has(webgnome, 'cache')){
                 webgnome.cache.rewind();
@@ -178,7 +178,7 @@ define([
 
         highlightLoc: function(e){
             var loc = e.currentTarget;
-            var coords = loc.dataset.coords.split(',');
+            var coords = $(loc).data('coords').split(',');
             coords = ol.proj.transform([parseFloat(coords[0]), parseFloat(coords[1])], 'EPSG:4326', 'EPSG:3857');
             this.mapView.map.getView().setCenter(coords);
             this.mapView.map.getView().setZoom(24);
