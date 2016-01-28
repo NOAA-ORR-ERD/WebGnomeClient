@@ -388,7 +388,7 @@ define([
                 this.mapModal.on('hidden', _.bind(this.show, this));
                 this.mapModal.on('save', this.setManualFields, this);
             } else {
-                this.once('hidden', this.mapModal.show, this.mapModal);
+                this.once('hidden', this.mapModal.show, this);
             }
             this.hide();
         },
