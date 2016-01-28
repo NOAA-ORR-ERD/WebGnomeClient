@@ -375,6 +375,8 @@ define([
             } else {
                 this.clearError();
                 FormModal.prototype.save.call(this);
+                this.hide();
+                this.trigger('save');
             }
         }
     });
