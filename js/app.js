@@ -33,6 +33,8 @@ define([
                 // Filter json requestions to redirect them to the api server
                 if(options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1){
                     options.url = webgnome.config.api + options.url;
+                    // add a little cache busting so IE doesn't cache everything...
+                    options.url += '?' + (Math.random()*10000000000000000);
                 } else {
                     // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
                     delete options.xhrFields.withCredentials;
