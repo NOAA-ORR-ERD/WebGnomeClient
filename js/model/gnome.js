@@ -358,6 +358,13 @@ define([
                     evaporation.set('wind', wind);
                 }
 
+                var burns = this.get('weatherers').where({obj_type: 'gnome.weatherers.cleanup.Burn'});
+                if(burns){
+                    for(var b = 0; b < burns.length; b++){
+                        burns[b].set('wind', wind);
+                    }
+                }
+
                 // this will need to be updated when/if we want to support multiple winds.
                 // right now it just assumes the first wind mover it finds/only wind mover it finds is the one
                 // the wind needs to be associated with.
