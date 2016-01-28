@@ -160,8 +160,9 @@ define([
                         masses.surface += Math.abs(dispersionRemoved);
                     }
                     masses.chemicalDispersion += dispersionRemoved;
+                    masses.column += dispersionRemoved;
                 }
-
+ 
                 if (slopes.Burn) {
                     var burnRemoved = eff.Burn * slopes.Burn - masses.burned;
 
@@ -175,6 +176,12 @@ define([
                         masses.surface += Math.abs(burnRemoved);
                     }
                     masses.burned += burnRemoved;
+                }
+            }
+
+            for (var key in masses) {
+                if (masses[key] < 0.01) {
+                    masses[key] = 0;
                 }
             }
 
@@ -250,6 +257,12 @@ define([
             }
 
             var ratioDiff = (currentBadness - this.totalEvenBadness) / this.totalEvenBadness;
+
+            if (ratioDiff > 1) {
+                ratioDiff = 1;
+            } else if (ratioDiff < -1) {
+                ratioDiff = -1;
+            }
 
             if (ratioDiff > 0) {
                 netERA = ratioDiff;

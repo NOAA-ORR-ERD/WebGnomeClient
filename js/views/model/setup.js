@@ -664,8 +664,6 @@ define([
             var element_type = webgnome.model.get('spills').at(0).get('element_type');
             var oilLib = new OilLibraryView({}, element_type);
             oilLib.on('save wizardclose', _.bind(function(){
-                webgnome.model.updateElementType(element_type);
-                webgnome.model.save();
                 this.updateSpill();
                 if(oilLib.$el.is(':hidden')){
                     oilLib.close();
