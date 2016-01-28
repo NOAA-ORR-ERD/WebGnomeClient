@@ -48,7 +48,6 @@ define([
                     inSituBurnForm.on('hidden', function(){
                         inSituBurnForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -68,7 +67,6 @@ define([
                     disperseForm.on('hidden', function(){
                         disperseForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -86,7 +84,6 @@ define([
                     skimForm.on('hidden', function(){
                         skimForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         }
