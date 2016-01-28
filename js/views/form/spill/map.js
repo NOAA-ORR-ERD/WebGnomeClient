@@ -375,9 +375,17 @@ define([
             } else {
                 this.clearError();
                 FormModal.prototype.save.call(this);
-                this.hide();
                 this.trigger('save');
+                this.hide();
             }
+        },
+
+        close: function(){
+            if (!_.isUndefined(this.spillMapView)){
+                this.spillMapView.close();
+            }
+            
+            FormModal.prototype.close.call(this);
         }
     });
 

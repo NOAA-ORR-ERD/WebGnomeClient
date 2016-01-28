@@ -387,7 +387,7 @@ define([
                 this.mapModal.on('hidden', _.bind(this.show, this));
                 this.mapModal.on('save', this.setManualFields, this);
             } else {
-                this.once('hidden', this.mapModal.show, this);
+                this.once('hidden', this.mapModal.show, this.mapModal);
             }
             this.hide();
         },
@@ -454,8 +454,8 @@ define([
 
 		close: function(){
 			$('.xdsoft_datetimepicker:last').remove();
-            if (!_.isUndefined(this.spillMapView)){
-                this.spillMapView.close();
+            if (!_.isUndefined(this.mapModal)){
+                this.mapModal.close();
             }
             
             if (!_.isUndefined(this.oilLibraryView)){
