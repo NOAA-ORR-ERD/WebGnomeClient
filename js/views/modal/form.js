@@ -58,12 +58,12 @@ define([
                 this.$('.modal-footer:last').addClass('sticky-modal-footer');
                 this.$('.modal-footer:last button').addClass('btn-sm btn');
                 bottom = (modal_height - top - $(window).height());
-                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+                this.$('.sticky-modal-footer').css('bottom', bottom + 29 + 'px');
             } else if (footer_offset.top < 0 && this.$('.sticky-modal-footer').length > 0){
                 this.$('.sticky-modal-footer').remove();
             } else {
                 bottom = (modal_height - top - $(window).height());
-                this.$('.sticky-modal-footer').css('bottom', bottom + 30 + 'px');
+                this.$('.sticky-modal-footer').css('bottom', bottom + 29 + 'px');
             }
         },
 
