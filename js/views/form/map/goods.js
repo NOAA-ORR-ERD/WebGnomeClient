@@ -1,10 +1,11 @@
 define([
+    'underscore',
     'views/modal/form',
     'ol',
     'views/default/map',
     'text!templates/form/map/goods.html',
     'model/resources/shorelines'
-], function(FormModal, ol, MapView, GoodsTemplate, ShorelineResource){
+], function(_, FormModal, ol, MapView, GoodsTemplate, ShorelineResource){
     var goodsMapForm = FormModal.extend({
         title: 'GOODS Map Generator',
         className: 'modal form-modal goods-map',

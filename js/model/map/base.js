@@ -1,7 +1,9 @@
 define([
+    'underscore',
+    'jquery',
     'model/base',
     'ol'
-], function(BaseModel, ol){
+], function(_, $, BaseModel, ol){
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
