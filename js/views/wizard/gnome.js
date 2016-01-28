@@ -1,4 +1,5 @@
 define([
+    'underscore',
     'views/wizard/base',
     'views/form/model',
     'views/form/water',
@@ -9,7 +10,7 @@ define([
     'model/gnome',
     'model/environment/wind',
     'model/environment/water'
-], function(BaseWizard, ModelForm, WaterForm, WindForm, MapTypeForm, SpillTypeForm, TextForm,
+], function(_, BaseWizard, ModelForm, WaterForm, WindForm, MapTypeForm, SpillTypeForm, TextForm,
         GnomeModel, WindModel){
     var gnomeWizard = BaseWizard.extend({
         initialize: function(){

@@ -1,7 +1,8 @@
 define([
+    'underscore',
     'backbone',
     'model/map/base'
-], function(Backbon, BaseMap){
+], function(_, Backbone, BaseMap){
     'use strict';
     var gnomeMap = BaseMap.extend({
         defaults: {

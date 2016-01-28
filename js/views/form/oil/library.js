@@ -243,8 +243,13 @@ define([
             this.model.get('substance').fetch({
                 success: _.bind(function(model){
                     this.model.set('substance', model);
-                    this.hide();
-                    this.trigger('save');
+                    this.model.save(null, {
+                        success: _.bind(function(){
+                            this.hide();
+                            this.trigger('save');
+                        }, this)
+                    });
+                    
                 }, this)
             });
         },

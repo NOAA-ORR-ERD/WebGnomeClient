@@ -70,7 +70,7 @@ define([
                 target = e.target;
             }
 
-            var ishelpful = target.dataset.helpful;
+            var ishelpful = $(target).data('helpful');
 
             this.$('.helpful a').removeClass('selected');
             this.$(target).addClass('selected');

@@ -41,6 +41,12 @@ define([
                 this.set('end_release_time', end_time.format('YYYY-MM-DDTHH:00:00'));
             }
 
+            if(webgnome.hasModel()){
+                if(webgnome.model.get('name') === 'ADIOS Model_'){
+                    this.set('num_elements', 100);
+                }
+            }
+
             BaseModel.prototype.initialize.call(this, options);
         },
 

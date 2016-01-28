@@ -360,7 +360,7 @@ define([
             if (this.$('.input-speed').length === 0 && editClassExists){
                 e.preventDefault();
                 var row = this.$(e.target).parents('tr')[0];
-                var index = row.dataset.tsindex;
+                var index = $(row).data('tsindex');
                 var entry = this.model.get('timeseries')[index];
                 var date = moment(entry[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarInputTemplate);
@@ -425,7 +425,7 @@ define([
         enterTimeseriesEntry: function(e){
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
+            var index = $(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
@@ -448,7 +448,7 @@ define([
         cancelTimeseriesEntry: function(e){
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
+            var index = $(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             this.renderTimeseries();
             this.$('.additional-wind-compass').compassRoseUI('update', {
@@ -463,7 +463,7 @@ define([
             if (this.$('.input-speed').length === 0){
                 e.preventDefault();
                 e.stopPropagation();
-                var index = e.target.parentElement.parentElement.dataset.tsindex;
+                var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
                 this.renderTimeseries();
             }

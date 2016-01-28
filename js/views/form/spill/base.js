@@ -159,7 +159,7 @@ define([
                 closeOnConfirm: true
             }, _.bind(function(isConfirm){
                 if (isConfirm){
-                    var oilId = e.target.dataset.adiosId;
+                    var oilId = $(e.target).data('adiosId');
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
                     var substanceModel;
                     for (var i = 0; i < cachedOils.length; i++){

@@ -507,7 +507,7 @@ define([
         },
 
         play: function(){
-            if($('.modal').length === 0){
+            if($('.modal:visible').length === 0){
                 this.state = 'play';
                 this.controls.play.addClass('pause').removeClass('play');
                 this.loop();
@@ -515,7 +515,7 @@ define([
         },
 
         pause: function(){
-            if($('.modal').length === 0){
+            if($('.modal:visible').length === 0){
                 this.state = 'pause';
                 this.controls.play.addClass('play').removeClass('pause');
                 // this.controls.progress.removeClass('active progress-bar-striped');

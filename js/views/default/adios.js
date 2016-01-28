@@ -51,7 +51,7 @@ define([
                 wind_to: wind ? moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('MM-DD-YYYY H:mm') : null,
                 water: water
             });
-            if($('body').find(this.$el).length == 0){
+            if($('body').find(this.$el).length === 0){
                 $('body').append(this.$el.append(compiled));
             } else {
                 this.$el.html(compiled);

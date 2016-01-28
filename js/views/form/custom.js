@@ -19,7 +19,7 @@ define([
             var modaljq = this.$el;
 
             this.on('ready', function(){
-                eval(options.functions.setup);
+                eval(options.functions.setup); // jshint ignore:line
             }, this);
 
             this.savefunc = options.functions.save;
@@ -28,7 +28,7 @@ define([
 
         save: function(options) {
             var form = this.$('form');
-            var save = eval(this.savefunc);
+            var save = eval(this.savefunc); // jshint ignore:line
 
             if (save) {
                 this.error(save);

@@ -1,11 +1,13 @@
 define([
     'underscore',
+    'jquery', 
+    'backbone',
     'views/modal/form',
     'text!templates/form/map/upload.html',
     'dropzone',
     'text!templates/default/dropzone.html',
     'model/map/bna'
-], function(_, FormModal, UploadTemplate, Dropzone, DropzoneTemplate, MapBNAModel){
+], function(_, $, Backbone, FormModal, UploadTemplate, Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',

@@ -162,7 +162,7 @@ define([
         cancelTimeseriesEntry: function(e){
             e.preventDefault();
             var row = this.$(e.target).parents('tr')[0];
-            var index = row.dataset.tsindex;
+            var index = $(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             this.renderTimeseries();
             this.$(row).removeClass('edit');
@@ -171,7 +171,7 @@ define([
         removeTimeseriesEntry: function(e){
             e.preventDefault();
             e.stopPropagation();
-            var index = e.target.parentElement.parentElement.dataset.tsindex;
+            var index = $(e.target.parentElement.parentElement).data('tsindex');
             this.model.get('timeseries').splice(index, 1);
             this.renderTimeseries();
         },
