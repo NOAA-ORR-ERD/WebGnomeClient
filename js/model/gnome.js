@@ -180,7 +180,7 @@ define([
             var hasSubstance = false;
             var spills = this.get('spills');
 
-            if (this.getElementType()) {
+            if (this.getElementType() && this.getElementType().get('substance') !== null && this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'})) {
                 hasSubstance = true;
             }
 
