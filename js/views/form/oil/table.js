@@ -34,7 +34,6 @@ define([
         },
 
         sortTable: function(){
-            this.processCategory();
             var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
             var substance = this.model.get('substance');
@@ -42,6 +41,7 @@ define([
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }
             this.updateCaret();
+            this.processCategory();
             this.trigger('renderTable');
         },
 
@@ -55,13 +55,10 @@ define([
         },
 
         processCategory: function() {
-            for (var i = 0; i < this.oilLib.length; i++) {
-                var categories = this.oilLib.at(i).get('categories');
-                for (var k = 0; k < categories.length; k++) {
-                    var str = categories[k].replace('Crude-', 'Crude: ').replace('Refined-', '');
-                    categories[k] = str;
-                }
-                this.oilLib.at(i).set('categories', categories);
+            var categoryLabels = this.$('.label-warning');
+            for (var i = 0; i < categoryLabels.length; i++) {
+                var htmlStr = this.$(categoryLabels[i]).html();
+                this.$(categoryLabels[i]).html(htmlStr.replace('Crude-', 'Crude: ').replace('Refined-', '').replace('Other-', 'Other: '));
             }
         },
 
