@@ -156,6 +156,20 @@ define([
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
+
+            if(child.get('obj_type').indexOf('cleanup') !== -1){
+                child.cascadeEfficiencies(child.get('efficiency'));
+            }
+
+            if(child.get('obj_type') === 'gnome.weatherers.cleanup.Burn'){
+                var wind = this.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+                child.set('wind', wind);
+            }
+
+            if(child.get('obj_type') === 'gnome.wewatherers.cleanup.ChemicalDispersion'){
+                var waves = this.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
+                child.set('waves', waves);
+            }
         },
 
         outputtersChange: function(child){
