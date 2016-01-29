@@ -99,7 +99,8 @@ define([
                 column: 0,
                 remaining: 0,
                 naturalDispersion: 0,
-                chemicalDispersion: 0
+                chemicalDispersion: 0,
+                total: 0
             };
 
             var eff = this.get('efficiency');
@@ -124,6 +125,10 @@ define([
                 }
                 else if (balance[i].name.toUpperCase() === 'BURNED'){
                     masses.burned = this.convertMass(data[1]);
+                } else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED'){
+                    var mass = this.convertMass(data[1]);
+                    console.log(mass);
+                    this.set('total', mass);
                 }
             }
 
@@ -251,26 +256,17 @@ define([
             }
 
             var currentBadness = subsurfaceBenefit + shorelineBenefit + surfaceBenefit;
+            var total = this.get('column') + this.get('shoreline') + this.get('surface');
 
-            if (_.isUndefined(this.totalEvenBadness)) {
-                this.totalEvenBadness = currentBadness;
-            }
+            netERA = currentBadness / total;
 
-            var ratioDiff = (currentBadness - this.totalEvenBadness) / this.totalEvenBadness;
-
-            if (ratioDiff > 1) {
-                ratioDiff = 1;
-            } else if (ratioDiff < -1) {
-                ratioDiff = -1;
-            }
-
-            if (ratioDiff > 0) {
-                netERA = ratioDiff;
-            } else if (ratioDiff < 0) {
-                netERA = Math.abs(ratioDiff);
-            } else {
-                netERA = 0.50;
-            }
+            // if (ratioDiff > 0) {
+            //     netERA = ratioDiff;
+            // } else if (ratioDiff < 0) {
+            //     netERA = Math.abs(ratioDiff);
+            // } else {
+            //     netERA = 0.50;
+            // }
 
             return netERA;
         },
