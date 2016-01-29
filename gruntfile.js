@@ -168,7 +168,7 @@ module.exports = function(grunt){
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'vulcanize:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
