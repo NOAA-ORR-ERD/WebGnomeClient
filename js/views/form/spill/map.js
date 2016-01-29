@@ -13,6 +13,7 @@ define([
 
         mapShown: false,
         title: 'Place Spill',
+        className: 'modal form-modal map-modal-form',
 
         events: function() {
             return _.defaults({
