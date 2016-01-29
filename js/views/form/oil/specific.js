@@ -34,7 +34,6 @@ define([
 
 		render: function(options){
 			var data = this.dataParse(this.model.attributes);
-            console.log(data);
             var viewName = this.viewName;
 			var compiled = _.template(SpecificOilTemplate, {data: data, viewName: viewName});
             if (!_.isUndefined(this.containerClass)) {
