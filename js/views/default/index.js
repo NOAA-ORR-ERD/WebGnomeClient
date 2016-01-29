@@ -83,6 +83,7 @@ define([
                     webgnome.router.navigate('adios', true);
                 }
             });
+            localStorage.setItem('view', 'fate');
         },
 
         gnome: function(e){
