@@ -1217,18 +1217,12 @@ define([
                     responseView = new ResponseSkimView(null, response);
                     break;
             }
-            responseView.on('wizardclose', function(){
-                responseView.on('hidden', responseView.close);
-            });
+
             responseView.on('save', _.bind(function(){
-                var eff = response.get('efficiency');
-                response.cascadeEfficiencies(eff);
                 webgnome.model.save(null, {validate: false});
-                setTimeout(_.bind(function(){
-                    responseView.close();
-                    this.updateResponse();
-                }, this), 750);
+                responseView.on('hidden', responseView.close);
             }, this));
+            responseView.on('wizardclose', responseView.close);
             responseView.render();
         },
 
@@ -1246,10 +1240,7 @@ define([
             }, _.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('weatherers').remove(id);
-                    webgnome.model.save({
-                        success: _.bind(function(){
-                            this.updateResponse();
-                        }, this),
+                    webgnome.model.save(null, {
                         validate: false
                     });
                 }

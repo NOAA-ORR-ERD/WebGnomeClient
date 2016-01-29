@@ -31,6 +31,9 @@ define([
         applySpeedUncertainty: function(wind){
             var uncertainty = this.get('speed_uncertainty_scale');
             var speed = this.get('timeseries')[0][1][0];
+            if(uncertainty === 0){
+                return speed;
+            }
 
             var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
             return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));

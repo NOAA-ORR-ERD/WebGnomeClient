@@ -41,14 +41,10 @@ define([
                 inSituBurnForm.on('wizardclose', inSituBurnForm.close);
                 inSituBurnForm.on('save', function(){
                     webgnome.model.get('weatherers').add(insituBurn);
-                    insituBurn.cascadeEfficiencies(insituBurn.get('efficiency'));
-                    var wind = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
-                    insituBurn.set('wind', wind);
                     webgnome.model.save(null, {validate: false});
                     inSituBurnForm.on('hidden', function(){
                         inSituBurnForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -61,14 +57,10 @@ define([
                 disperseForm.on('wizardclose', disperseForm.close);
                 disperseForm.on('save', function(){
                     webgnome.model.get('weatherers').add(disperse);
-                    disperse.cascadeEfficiencies(disperse.get('efficiency'));
-                    var waves = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
-                    disperse.set('waves', waves);
                     webgnome.model.save(null, {validate: false});
                     disperseForm.on('hidden', function(){
                         disperseForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         },
@@ -81,12 +73,10 @@ define([
                 skimForm.on('wizardclose', skimForm.close);
                 skimForm.on('save', function(){
                     webgnome.model.get('weatherers').add(skim);
-                    skim.cascadeEfficiencies(skim.get('efficiency'));
                     webgnome.model.save(null, {validate: false});
                     skimForm.on('hidden', function(){
                         skimForm.trigger('wizardclose');
                     });
-                    webgnome.router.views[1].updateResponse();
                 });
             }, this));
         }

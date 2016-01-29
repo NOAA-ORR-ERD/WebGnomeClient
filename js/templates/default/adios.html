@@ -8,7 +8,7 @@
     </div>
     <div class="row input">
         <div class="col-md-6 col-md-offset-3">
-            <div class="option substance">
+            <div class="option substance" title="Click to select the oil to release.">
                 <div class="icon {% if(!substance){ %}missing {% } %}"></div>
                 <div class="title">Oil</div>
                 {% if(substance){ %}
@@ -28,7 +28,7 @@
                     <div class="col-sm-12"><p>Click to select the oil to release.</p></div>
                 {% } %}
             </div>
-            <div class="option spill">
+            <div class="option spill" title="Click to set/edit the amount of oil released.">
                 <div class="icon {% if(!spills.length > 0){ %}missing {% } %}"></div>
                 <div class="title">Spill</div>
                 {% if(spills.length > 0){ %}
@@ -62,7 +62,7 @@
                     <div class="col-sm-12"><p>Click to set the amount of oil released.</p></div>
                 {% } %}
             </div>
-            <div class="option water">
+            <div class="option water" title="Click to set/edit water conditions.">
                 <div class="icon {% if(!water){ %}missing {% } %}"></div>
                 <div class="title">Water</div>
                 {% if(water){ %}
@@ -96,7 +96,7 @@
                     <div class="col-sm-12"><p>Click to set water conditions</p></div>
                 {% } %}
             </div>
-            <div class="option wind">
+            <div class="option wind" title="Click to set/edit wind speed and direction.">
                 <div class="icon {% if(!wind){ %}missing {% } %}"></div>
                 <div class="title">Wind</div>
                 {% if(wind){ %}
@@ -132,10 +132,45 @@
     </div>
     <div class="row input">
         <div class="col-md-6 col-md-offset-3">
-            <div class="option disabled">
+            <div class="option response" title="Click to add a response option for oil removal/recovery.">
                 <div class="icon optional"></div>
-                <div class="title">Response Options (coming soon)</div>
-                <div class="col-sm-12"><p>Click to add a response option for oil removal/recovery.</p></div>
+                <div class="title">Response Options</div>
+                {% if(responses.length > 0){ %}
+                    <div class="col-md-12">
+                        {% for(var r = 0; r < responses.length; r++){ %}
+                            <div class="item" data-id="{{ responses[r].get('id') }}" title="Click to edit {{ responses[r].get('name') }}">
+                                <div class="col-md-6">
+                                    <label>Name: </label>
+                                    {{ responses[r].get('name') }}
+                                </div>
+                                {% if(responses[r].get('obj_type').indexOf('Dispersion') !== -1){ %}
+                                    <div class="col-md-6">
+                                        <label>Percent Sprayed: </label>
+                                        {{ responses[r].get('fraction_sprayed') * 100 }} %
+                                    </div>
+                                {% } %}
+                                {% if(responses[r].get('obj_type').indexOf('Burn') !== -1){ %}
+                                    <div class="col-md-3">
+                                        <label>Thickness: </label>
+                                        {{ responses[r].get('thickness')}} {{ responses[r].get('thickness_units') }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Area: </label>
+                                        {{ responses[r].get('area') }} {{ responses[r].get('area_units') }}
+                                    </div>
+                                {% } %}
+                                {% if(responses[r].get('obj_type').indexOf('Skim') !== -1){ %}
+                                    <div class="col-md-6">
+                                        <label>Rate: </label>
+                                        {{ responses[r].get('amount')}} {{ responses[r].get('units') }}
+                                    </div>
+                                {% } %}
+                            </div>
+                        {% } %}
+                    </div>
+                {% }  else { %}
+                    <div class="col-sm-12"><p>Click to add a response option for oil removal/recovery.</p></div>
+                {% } %}
             </div>
         </div>
     </div>

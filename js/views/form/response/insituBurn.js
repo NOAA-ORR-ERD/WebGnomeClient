@@ -53,8 +53,15 @@ define([
             var start_time = this.startTime;
 
             var thicknessInMeters = nucos.convert('Length', boomedThicknessUnits, 'm', boomedOilThickness);
-            var waterFract = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('emulsion_water_fraction_max');
-            var burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
+            var element_type = webgnome.model.getElementType();
+            var burnDuration;
+            if(element_type){
+                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
+                burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
+            } else {
+                burnDuration = webgnome.model.get('time_step');
+            }
+
 
             this.model.set('active_start', this.startTime.format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('active_stop', start_time.add(burnDuration, 's').format('YYYY-MM-DDTHH:mm:ss'));

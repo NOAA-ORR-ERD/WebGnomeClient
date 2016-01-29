@@ -4,15 +4,17 @@ define([
 	'backbone',
 	'views/modal/form',
 	'moment',
+    'sweetalert',
 	'jqueryDatetimepicker',
     'jqueryui/slider'
-], function($, _, Backbone, FormModal, moment){
+], function($, _, Backbone, FormModal, moment, swal){
     'use strict';
 	var baseResponseForm = FormModal.extend({
-
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
         events: function(){
             return _.defaults({
-                'click .slidertoggle': 'toggleEfficiencySlider'
+                'click .slidertoggle': 'toggleEfficiencySlider',
+                'click .delete': 'deleteResponse'
             }, FormModal.prototype.events);
         },
 
@@ -139,6 +141,27 @@ define([
                 this.$('.slider').slider('value', 20);
                 this.toggleEfficiencySlider();
             }
+        },
+
+        deleteResponse: function(){
+            var id = this.model.get('id');
+            swal({
+                title: 'Delete "' + this.model.get('name') + '"',
+                text: 'Are you sure you want to delete this response?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('weatherers').remove(id);
+                    webgnome.model.save();
+                    this.on('hidden', _.bind(function(){
+                        this.trigger('wizardclose');
+                    }, this));
+                    this.hide();
+                }
+            }, this));
         },
 
         close: function(){
