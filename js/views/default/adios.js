@@ -77,6 +77,9 @@ define([
             } else {
                 this.$el.html(compiled);
             }
+            this.$('.option, .item').tooltip({
+                container: 'body'
+            });
         },
 
         clickSubstance: function(){
