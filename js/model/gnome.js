@@ -180,7 +180,7 @@ define([
             var hasSubstance = false;
             var spills = this.get('spills');
 
-            if (spills.length > 0 && !_.isNull(spills.at(0).get('element_type').get('substance'))) {
+            if (this.getElementType()) {
                 hasSubstance = true;
             }
 
