@@ -445,6 +445,11 @@ define([
                         }
                         natural_dispersion.set('waves', waves);
 
+                        var chemical_dis = this.get('weatherers').where({obj_type: 'gnome.weatherers.cleanup.ChemicalDispersion'});
+                        for(var d = 0; d < chemical_dis.length; d++){
+                            chemical_dis[d].set('waves', waves);
+                        }
+
                         cb();
                     }, this)
                 });
