@@ -127,7 +127,6 @@ define([
                     masses.burned = this.convertMass(data[1]);
                 } else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED'){
                     var mass = this.convertMass(data[1]);
-                    console.log(mass);
                     this.set('total', mass);
                 }
             }
