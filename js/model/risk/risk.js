@@ -100,7 +100,8 @@ define([
                 remaining: 0,
                 naturalDispersion: 0,
                 chemicalDispersion: 0,
-                total: 0
+                total: 0,
+                netRemoved: 0
             };
 
             var eff = this.get('efficiency');
@@ -122,16 +123,26 @@ define([
                 }
                 else if (balance[i].name.toUpperCase() === 'SKIMMED'){
                     masses.skimmed = this.convertMass(data[1]);
+                    masses.netRemoved += masses.skimmed;
                 }
                 else if (balance[i].name.toUpperCase() === 'BURNED'){
                     masses.burned = this.convertMass(data[1]);
-                } else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED'){
+                    masses.netRemoved += masses.burned;
+                }
+                else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED'){
                     var mass = this.convertMass(data[1]);
                     this.set('total', mass);
+                    masses.total = mass;
+                }
+                else if (balance[i].name.toUpperCase() === 'EVAPORATED') {
+                    masses.evaporated = this.convertMass(data[1]);
+                    masses.netRemoved += masses.evaporated;
                 }
             }
 
             masses.column = masses.naturalDispersion + masses.chemicalDispersion;
+
+            var total = (masses.shoreline + masses.surface + masses.column + masses.netRemoved) / masses.total;
 
             if (Object.keys(this.get('slopes')).length !== 0) {
                 var slopes = this.get('slopes');
@@ -283,8 +294,8 @@ define([
 
         boundsDict: {
             depth: {
-                high: 20,
-                low: 1
+                high: 100,
+                low: 5
             }
         },
 
