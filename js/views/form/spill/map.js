@@ -31,6 +31,8 @@ define([
                 this.model = release;
             }
 
+            this.origModel = this.model;
+
             this.source = new ol.source.Vector();
             this.layer = new ol.layer.Vector({
                 source: this.source
@@ -252,7 +254,6 @@ define([
             if (this.spillPlacementAllowed && coordsAreValid) {
                 this.model.set('start_position', convertedCoords.start);
                 this.model.set('end_position', convertedCoords.end);
-                console.trace();
             }
 
             this.renderSpillFeature();
@@ -379,6 +380,11 @@ define([
                 this.trigger('save');
                 this.hide();
             }
+        },
+
+        wizardclose: function() {
+            this.model = this.origModel;
+            this.trigger('wizardclose');
         },
 
         close: function(){

@@ -381,14 +381,13 @@ define([
         },
 
         initMapModal: function() {
-            if(_.isUndefined(this.mapModal)){
-                this.mapModal = new MapFormView({}, this.model.get('release'));
-                this.mapModal.render();
-                this.mapModal.on('hidden', _.bind(this.show, this));
-                this.mapModal.on('save', this.setManualFields, this);
-            } else {
-                this.once('hidden', this.mapModal.show, this.mapModal);
-            }
+            this.mapModal = new MapFormView({}, this.model.get('release'));
+            this.mapModal.render();
+            this.mapModal.on('hidden', _.bind(function() {
+                this.show();
+                this.mapModal.close();
+            }, this));
+            this.mapModal.on('save', this.setManualFields, this);
             this.hide();
         },
 
@@ -456,6 +455,10 @@ define([
 			$('.xdsoft_datetimepicker:last').remove();
             if (!_.isUndefined(this.mapModal)){
                 this.mapModal.close();
+            }
+
+            if (!_.isUndefined(this.oilInfoView)) {
+                this.oilInfoView.close();
             }
             
             if (!_.isUndefined(this.oilLibraryView)){
