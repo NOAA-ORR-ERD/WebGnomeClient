@@ -8,9 +8,11 @@ define([
         url: '/',
 
         defaults: {
-            'depth': 20,
             'assessmentTime': 0,
+            'depth': 20,
             'distance': 5,
+            'depth_d': 20,
+            'distance_d': 5,
 
             efficiency: {
                 'Skimming': null,
