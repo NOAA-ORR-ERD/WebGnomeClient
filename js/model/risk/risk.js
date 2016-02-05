@@ -10,6 +10,7 @@ define([
         defaults: {
             'depth': 20,
             'assessmentTime': 0,
+            'distance': 5,
 
             efficiency: {
                 'Skimming': null,
@@ -22,7 +23,8 @@ define([
             'shoreline': 1/3,
 
             units: {
-                'depth': 'm'
+                'depth': 'm',
+                'distance': 'km'
             },
 
             slopes : {
