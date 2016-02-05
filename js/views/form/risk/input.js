@@ -87,7 +87,6 @@ define([
         update: function(e){
             var depth = this.$('#depth .slider').slider('value');
             var distance = this.$('#distance .slider').slider('value');
-            console.log(depth);
             
             this.model.set('depth', depth);
             this.model.set('distance', distance);
