@@ -236,51 +236,36 @@ define([
         },
 
         calculateShorelineFract: function(masses, units){
-            var massShorelineFract = masses.shoreline;
-            var shorelineLOC = 0.56;
-            var fractOfContaminatedSh = massShorelineFract / shorelineLOC;
-            this.set('shoreline', fractOfContaminatedSh);
+            this.set('shoreline', masses.shoreline);
         },
 
         calculateWaterSurfaceFract: function(masses, units){
-            var massOnWaterSurfaceFract = masses.surface;
-            var surfaceLOC = 0.01;
-            var fractOfContaminatedWs = massOnWaterSurfaceFract / surfaceLOC;
-            this.set('surface', fractOfContaminatedWs);
+            this.set('surface', masses.surface);
         },
 
         calculateWaterColumnFract: function(masses, units){
-            var massInWaterColumnFract = masses.column;
-            var waterColumnLOC = 0.001;
-            var fractOfContaminatedWc = massInWaterColumnFract / waterColumnLOC;
-            this.set('column', fractOfContaminatedWc);
+            this.set('column', masses.column);
         },
 
         calculateBenefit: function(){
             var values = this.get('relativeImportance');
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
+
+            var BAD1 = 1;
+            var BAD2 = this.get('distance_d') / this.get('distance');
+            var BAD3 = BAD2 / (this.get('depth') / this.get('depth_d'));
+
             for (var key in values){
                 if (key === 'Subsurface'){
-                    subsurfaceBenefit = this.get('column') * (values[key].data / 100);
+                    subsurfaceBenefit = (this.get('column') / this.get('total')) * BAD3 * (values[key].data / 100);
                 } else if (key === 'Shoreline'){
-                    shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
+                    shorelineBenefit = (this.get('shoreline') / this.get('total')) * BAD1 * (values[key].data / 100);
                 } else if (key === 'Surface'){
-                    surfaceBenefit = this.get('surface') * (values[key].data / 100);
+                    surfaceBenefit = (this.get('surface') / this.get('total')) * BAD2 * (values[key].data / 100);
                 }
             }
 
-            var currentBadness = subsurfaceBenefit + shorelineBenefit + surfaceBenefit;
-            var total = this.get('column') + this.get('shoreline') + this.get('surface');
-
-            netERA = currentBadness / total;
-
-            // if (ratioDiff > 0) {
-            //     netERA = ratioDiff;
-            // } else if (ratioDiff < 0) {
-            //     netERA = Math.abs(ratioDiff);
-            // } else {
-            //     netERA = 0.50;
-            // }
+            netERA = 1 - (shorelineBenefit + subsurfaceBenefit + surfaceBenefit);
 
             return netERA;
         },
