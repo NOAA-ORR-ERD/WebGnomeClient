@@ -97,6 +97,9 @@ define([
             }
 
             this.tabStatusSetter();
+            this.on('show.bs.modal', _.bind(function(){
+                this.update();
+            }, this));
 		},
 
         setEmulsificationOverride: function(){
@@ -374,11 +377,6 @@ define([
                     webgnome.model.save();
                 }, this));
             }
-        },
-
-        show: function(){
-            this.update();
-            FormModal.prototype.show.call(this);
         },
 
         initMapModal: function() {
