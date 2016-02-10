@@ -2247,9 +2247,6 @@ nav.navbar{
 
         &:hover{
             .panel-heading{
-                > div{
-                    color: #a1a1a1;
-                }
 
                 .add:hover{
                     color: #666;
@@ -2267,18 +2264,6 @@ nav.navbar{
             padding-right: 10px;
             background: #efefef;
 
-            > div{
-                .glyphicon;
-                top: 0;
-                font-size: 17px;
-                height: 20px;
-                width: 20px;
-                color: #BEBEBE;
-                float: right;
-                .transition(all .2s);
-                text-align: center;
-            }
-            
             .locked {
                 .pull-right;
                 .label;
@@ -2650,6 +2635,48 @@ nav.navbar{
             }
             margin-left: 5px;
             margin-top: 5px;
+        }
+        .panel{
+            margin-bottom: 0;
+        }
+        .position{
+            .position-header{
+                text-align: center;
+                margin-top: 15px;
+                margin-bottom: 0 !important;
+                &:first-of-type{
+                    margin-top: 0;
+                }
+            }
+        }
+        .position, #oilInfo{
+            .panel-body{
+                label{
+                    font-size: 10px;
+                    display: block;
+                    margin-bottom: 0;
+                    margin-top: 2px;
+                }
+                .row > div{
+                    margin-bottom: 5px;
+                }
+            }
+        }
+        #oilInfo{
+            .panel-heading{
+                .null-substance{
+                    margin-right: 5px;
+                }
+            }
+            .panel-body{
+                .more{
+                    margin: 10px 0 !important;
+                    text-align: center;
+                }
+                .reset{
+                    text-align: center;
+                }
+            }    
         }
 
         .map {

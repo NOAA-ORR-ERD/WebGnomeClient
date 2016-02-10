@@ -151,31 +151,44 @@
 			</div>
 		</div>
 	</div>
-	<div id="oilInfo"></div>
-	<div class="form-group">
-        <label class="col-sm-3 control-label">Start Position</label>
-        <div class="col-sm-9">
-            <label for="start-lat" class="col-sm-2 control-label">Lat.</label>
-            <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}"></div>
-            <label for="start-lng" class="col-sm-2 control-label">Long.</label>
-            <div class="col-sm-4"><input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}"></div>
-        </div>
-	</div>
-
-    <div class="form-group end-position">
-        <label class="col-sm-3 control-label">End Position</label>
-        <div class="col-sm-9">
-            <label for="end-lat" class="col-sm-2 control-label">Lat.</label>
-            <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}"></div>
-            <label for="end-lng" class="col-sm-2 control-label">Long.</label>
-            <div class="col-sm-4"><input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}"></div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-4">
-            <a class="btn btn-primary map-modal">
-                Place on Map
-            </a>
+    <div class="row">
+    	<div id="oilInfo" class="col-md-6"></div>
+        <div class="col-md-6 position">
+            <div class="panel panel-default complete">
+                <div class="panel-heading">
+                    <a class="btn btn-primary btn-xs map-modal pull-right">Place on Map</a>
+                    <div class="panel-title">
+                        Position
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12 position-header">
+                            Start
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="start-lat">Latitude</label>
+                            <input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="start-lng">Longitude</label>
+                            <input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}">
+                        </div>
+                        
+                        <div class="col-md-12 position-header">
+                            End
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end-lat">Latitude</label>
+                            <input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end-lng">Longitude</label>
+                            <input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>
