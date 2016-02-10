@@ -65,6 +65,11 @@ define([
             }, this), 25);
         },
 
+        show: function() {
+            FormModal.prototype.show.call(this);
+            this.updateBenefit();
+        },
+
         renderRelativeImportance: function(){
             this.relativeImp.draw();
 

@@ -65,9 +65,9 @@ define([
             if (!_.isNull(attrs.fetch) && (parseFloat(attrs.fetch) < 0 || attrs.fetch.length === 0)){
                 return 'Fetch must be a number greater than or equal to zero!';
             }
-            var kgm3 = nucos.convert('Density', attrs.units.sediment, 'kg/m^3', attrs.sediment);
-            if (kgm3 > 1){
-                return 'Sediment cannot exceed 1 kg/m3!';
+            var concentUpperBound = nucos.convert('Concentration In Water', 'kg/m^3', attrs.units.sediment, 1);
+            if (attrs.sediment > concentUpperBound){
+                return 'Sediment cannot exceed ' + concentUpperBound + ' ' + attrs.units.sediment + '!';
             }
 
         },

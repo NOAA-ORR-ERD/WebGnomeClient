@@ -47,9 +47,7 @@ require.config({
         relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
-        localforage: 'lib/localforage/dist/localforage',
-        async: 'lib/requirejs-plugins/src/async',
-        goog: 'lib/requirejs-plugins/src/goog'
+        localforage: 'lib/localforage/dist/localforage'
     },
     shim: {
         jquery: {

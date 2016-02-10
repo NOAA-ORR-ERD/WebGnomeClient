@@ -156,6 +156,20 @@ define([
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
+
+            if(child.get('obj_type').indexOf('cleanup') !== -1){
+                child.cascadeEfficiencies(child.get('efficiency'));
+            }
+
+            if(child.get('obj_type') === 'gnome.weatherers.cleanup.Burn'){
+                var wind = this.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+                child.set('wind', wind);
+            }
+
+            if(child.get('obj_type') === 'gnome.wewatherers.cleanup.ChemicalDispersion'){
+                var waves = this.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
+                child.set('waves', waves);
+            }
         },
 
         outputtersChange: function(child){
@@ -166,7 +180,7 @@ define([
             var hasSubstance = false;
             var spills = this.get('spills');
 
-            if (spills.length > 0 && !_.isNull(spills.at(0).get('element_type').get('substance'))) {
+            if (this.getElementType() && this.getElementType().get('substance') !== null && this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'})) {
                 hasSubstance = true;
             }
 
@@ -358,6 +372,13 @@ define([
                     evaporation.set('wind', wind);
                 }
 
+                var burns = this.get('weatherers').where({obj_type: 'gnome.weatherers.cleanup.Burn'});
+                if(burns){
+                    for(var b = 0; b < burns.length; b++){
+                        burns[b].set('wind', wind);
+                    }
+                }
+
                 // this will need to be updated when/if we want to support multiple winds.
                 // right now it just assumes the first wind mover it finds/only wind mover it finds is the one
                 // the wind needs to be associated with.
@@ -423,6 +444,11 @@ define([
                             this.get('weatherers').add(natural_dispersion);
                         }
                         natural_dispersion.set('waves', waves);
+
+                        var chemical_dis = this.get('weatherers').where({obj_type: 'gnome.weatherers.cleanup.ChemicalDispersion'});
+                        for(var d = 0; d < chemical_dis.length; d++){
+                            chemical_dis[d].set('waves', waves);
+                        }
 
                         cb();
                     }, this)

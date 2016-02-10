@@ -3,11 +3,13 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'jqueryui/core',
     'views/modal/form',
     'text!templates/risk/input.html',
+    'text!templates/risk/slider_input.html',
     'nucos',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, FormModal, RiskTemplate, nucos) {
+], function($, _, Backbone, moment, jqueryui, FormModal, RiskTemplate, SliderTemplate, nucos) {
     var riskForm = FormModal.extend({
         className: 'modal form-modal risk-form',
         name: 'risk',
@@ -31,10 +33,41 @@ define([
             FormModal.prototype.render.call(this, options);
             this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
 
+            this.createSlider('distance', 'Distance From Shore (km):', this.model.get('distance'), 1, 20);
+            this.createSlider('depth', 'Average Water Depth (m):', this.model.get('depth'), 5, 100);
+
             if (!webgnome.validModel()) {
                 this.$('.next').addClass('disabled');
             }
 
+        },
+
+        createSlider: function(selector, selectorName, value, min, max){
+            var sliderTemplate = _.template(SliderTemplate, {
+                'selector': selector,
+                'selectorName': selectorName,
+                'max': max,
+                'min': min
+            });
+
+            this.$('.sliders-container').append(sliderTemplate);
+            
+            this.$('#' + selector + ' .slider').slider({
+                    max: max,
+                    min: min,
+                    value: value,
+                    create: _.bind(function(e, ui){
+                           this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + value + '</div></div>');
+                           this.updateTooltipWidth();
+                        }, this),
+                    slide: _.bind(function(e, ui){
+                           this.$('#' + selector + ' .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-inner">' + ui.value + '</div></div>');
+                           this.updateTooltipWidth();
+                        }, this),
+                    stop: _.bind(function(e, ui){
+                            this.update();
+                        }, this)
+            });
         },
 
         // overide the 'Next' button event method
@@ -52,14 +85,11 @@ define([
         },
 
         update: function(e){
-            var inputtedDepth = parseFloat(this.$('#average-water-depth').val());
-
-            var units = this.model.get('units');
-            units.depth = this.$('#depth-units').val();
+            var depth = this.$('#depth .slider').slider('value');
+            var distance = this.$('#distance .slider').slider('value');
             
-            this.model.set('depth', inputtedDepth);
-
-            this.model.set('units', units);
+            this.model.set('depth', depth);
+            this.model.set('distance', distance);
 
             if(this.model.isValid()){
                 this.$('.next').removeClass('disabled');

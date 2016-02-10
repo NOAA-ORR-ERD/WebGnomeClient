@@ -278,28 +278,43 @@ define([
 
         checkForCleanup: function(){
             var weatherers = webgnome.model.get('weatherers');
+            var total = 0;
             for (var i = 0; i < weatherers.length; i++){
                 if (weatherers.at(i).get('obj_type').indexOf('cleanup') > -1){
-                    return true;
+                    total++;
                 }
             }
-            return false;
+            return total;
         },
 
         clickRisk: function(){
             var spills = webgnome.model.get('spills');
-            if (spills.length === 1){
+            var numOfCleanups = this.checkForCleanup();
+            if (spills.length === 1 && numOfCleanups > 0){
                 var riskWizard = new RiskFormWizard();
                 riskWizard.render();
             } else {
-                swal({
-                    title: "Too many spills on the model!",
-                    text: "Risk assessment only supports one spill. Delete the other spills to run the risk assessment tool.",
-                    type: "warning",
-                    confirmButtonText: "Edit Model",
-                    closeOnConfirm: true,
-                    showCancelButton: true
-                },
+                var swalObj;
+                if (spills.length > 1) {
+                    swalObj = {
+                        title: "Too many spills on the model!",
+                        text: "Risk assessment only supports one spill. Delete the other spills to run the risk assessment tool.",
+                        type: "warning",
+                        confirmButtonText: "Edit Model",
+                        closeOnConfirm: true,
+                        showCancelButton: true
+                    };
+                } else if (numOfCleanups <= 0) {
+                    swalObj = {
+                        title: "Cleanup operations needed!",
+                        text: "Risk assessment needs at least one cleanup option.",
+                        type: "warning",
+                        confirmButtonText: "Edit Model",
+                        closeOnConfirm: true,
+                        showCancelButton: true
+                    };
+                }
+                swal(swalObj,
                 function(isConfirm){
                     if (isConfirm) {
                         webgnome.router.navigate('config', true);

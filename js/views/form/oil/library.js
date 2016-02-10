@@ -71,31 +71,30 @@ define([
                     this.loadingGif.hide();
                 }
 
+                $('body').one('shown.bs.modal', _.bind(function(){
+                    this.$('.backOil').hide();
+                    // Initialize the select menus of class chosen-select to use the chosen jquery plugin
+
+                    this.populateSelect();
+
+                    // Grabbing the minimum and maximum api, and viscosity values from the fetched collection
+                    // so the slider only covers the range of relevant values when rendered
+                    
+                    this.findMinMax(['api', 'viscosity', 'pour_point']);
+
+                    if (this.viscosity_max.toString().length > 3){
+                        this.viscosity_max = this.viscosity_max.toExponential();
+                    }
+
+                    // Use the jquery-ui slider to enable sliders so the user can select the range of API,
+                    // viscosity, and/or pour point values they would want to search for
+                    this.createSliders(this.api_min, this.api_max, '.slider-api');
+                    this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
+                    this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
+                    this.updateTooltipWidth();
+                }, this));
+
                 FormModal.prototype.render.call(this, options);
-
-                this.$('.backOil').hide();
-
-                
-
-                // Initialize the select menus of class chosen-select to use the chosen jquery plugin
-
-                this.populateSelect();
-
-                // Grabbing the minimum and maximum api, and viscosity values from the fetched collection
-                // so the slider only covers the range of relevant values when rendered
-                
-                this.findMinMax(['api', 'viscosity', 'pour_point']);
-
-                if (this.viscosity_max.toString().length > 3){
-                    this.viscosity_max = this.viscosity_max.toExponential();
-                }
-
-                // Use the jquery-ui slider to enable sliders so the user can select the range of API,
-                // viscosity, and/or pour point values they would want to search for
-                this.createSliders(this.api_min, this.api_max, '.slider-api');
-                this.createSliders(this.viscosity_min, this.viscosity_max, '.slider-viscosity');
-                this.createSliders(this.pour_point_min, this.pour_point_max, '.slider-pourpoint');
-                this.updateTooltipWidth();
             } else {
                 this.oilTable.on('ready', this.render, this);
             }

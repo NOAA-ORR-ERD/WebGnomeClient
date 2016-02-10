@@ -112,7 +112,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.get('timeseries')[0][1][0] + '</div></div>');
+                        this.$('#constant .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.model.applySpeedUncertainty(this.model.get('timeseries')[0][1][0]) + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateConstantSlide(ui);
@@ -121,6 +121,8 @@ define([
 
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
                 this.$('#constant .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
+                this.updateTooltipWidth();
+
             }, this), 1);
 
             setTimeout(_.bind(function(){
@@ -139,6 +141,8 @@ define([
                 var variableSliderMax = this.$('#variable .slider').slider("option", "max");
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
+                this.updateTooltipWidth();
+                
             }, this), 1);
             $('.modal').on('scroll', this.variableWindStickyHeader);
 
@@ -552,6 +556,7 @@ define([
 
         save: function(){
             if(_.isUndefined(this.nws) || !this.nws.fetching){
+                this.update();
                 FormModal.prototype.save.call(this);
             }
         },

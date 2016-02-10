@@ -64,7 +64,7 @@ module.exports = function(grunt){
                 tag: '',
             },
             build: {
-                src: 'build-template.html',
+                src: 'dist/build/build.html',
                 dest: 'dist/build/build.html'
             }
         },
@@ -139,6 +139,17 @@ module.exports = function(grunt){
             all:{
                 configFile: './wdio.conf.js'
             }
+        },
+        vulcanize:{
+            build: {
+                options: {
+                    inlineScripts: true,
+                    inlineCss: true
+                },
+                files:{
+                    'dist/build/build.html': 'build-template.html'
+                }
+            }
         }
     });
     
@@ -152,11 +163,12 @@ module.exports = function(grunt){
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-inline');
+    grunt.loadNpmTasks('grunt-vulcanize');
 
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'vulcanize:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);

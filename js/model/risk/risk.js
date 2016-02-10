@@ -8,8 +8,11 @@ define([
         url: '/',
 
         defaults: {
-            'depth': 20,
             'assessmentTime': 0,
+            'depth': 20,
+            'distance': 5,
+            'depth_d': 20,
+            'distance_d': 5,
 
             efficiency: {
                 'Skimming': null,
@@ -22,7 +25,8 @@ define([
             'shoreline': 1/3,
 
             units: {
-                'depth': 'm'
+                'depth': 'm',
+                'distance': 'km'
             },
 
             slopes : {
@@ -74,8 +78,13 @@ define([
             this.set('efficiency', eff);
         },
 
-        convertMass: function(quantity) {
-            var unit = webgnome.model.get('spills').at(0).get('units');
+        convertMass: function(quantity, units) {
+            var unit;
+            if (_.isUndefined(unit)) {
+                unit = webgnome.model.get('spills').at(0).get('units');
+            } else {
+                unit = units;
+            }
             var volumeUnits = ['bbl', 'gal', 'm^3'];
             var mass;
 
@@ -99,7 +108,9 @@ define([
                 column: 0,
                 remaining: 0,
                 naturalDispersion: 0,
-                chemicalDispersion: 0
+                chemicalDispersion: 0,
+                total: 0,
+                netRemoved: 0
             };
 
             var eff = this.get('efficiency');
@@ -121,13 +132,26 @@ define([
                 }
                 else if (balance[i].name.toUpperCase() === 'SKIMMED'){
                     masses.skimmed = this.convertMass(data[1]);
+                    masses.netRemoved += masses.skimmed;
                 }
                 else if (balance[i].name.toUpperCase() === 'BURNED'){
                     masses.burned = this.convertMass(data[1]);
+                    masses.netRemoved += masses.burned;
+                }
+                else if (balance[i].name.toUpperCase() === 'AMOUNT_RELEASED'){
+                    var mass = this.convertMass(data[1]);
+                    this.set('total', mass);
+                    masses.total = mass;
+                }
+                else if (balance[i].name.toUpperCase() === 'EVAPORATED') {
+                    masses.evaporated = this.convertMass(data[1]);
+                    masses.netRemoved += masses.evaporated;
                 }
             }
 
             masses.column = masses.naturalDispersion + masses.chemicalDispersion;
+
+            var total = (masses.shoreline + masses.surface + masses.column + masses.netRemoved) / masses.total;
 
             if (Object.keys(this.get('slopes')).length !== 0) {
                 var slopes = this.get('slopes');
@@ -188,20 +212,42 @@ define([
             return masses;
         },
 
+        getMaxCleanup: function() {
+            var maxes = {
+                'Skimmer': 0,
+                'Burn': 0,
+                'ChemicalDispersion': 0
+            };
+            var cleanups = webgnome.model.get('weatherers').filter(function(model) {
+                if (model.get('obj_type').indexOf('cleanup') > -1) {
+                    return true;
+                }
+                return false;
+            });
+
+            for (var i = 0; i < cleanups.length; i++) {
+                var str = cleanups[i].parseObjType();
+                maxes[str] += this.convertMass(cleanups[i].get('amount'), cleanups[i].get('units'));
+            }
+
+            return maxes;
+        },
+
         setSlopes: function(masses) {
             var eff = this.get('efficiency');
             var slopes = {};
+            var maxes = this.getMaxCleanup();
 
             if (eff.Skimming) {
-                slopes.Skimming = masses.skimmed / eff.Skimming;
+                slopes.Skimming = maxes.Skimmer;
             }
 
             if (eff.Dispersion) {
-                slopes.Dispersion = masses.chemicalDispersion / eff.Dispersion;
+                slopes.Dispersion = maxes.ChemicalDispersion;
             }
 
             if (eff.Burn) {
-                slopes.Burn = masses.burned / eff.Burn;
+                slopes.Burn = maxes.Burn;
             }
 
             this.set('slopes', slopes);
@@ -217,60 +263,36 @@ define([
         },
 
         calculateShorelineFract: function(masses, units){
-            var massShorelineFract = masses.shoreline;
-            var shorelineLOC = 0.56;
-            var fractOfContaminatedSh = massShorelineFract / shorelineLOC;
-            this.set('shoreline', fractOfContaminatedSh);
+            this.set('shoreline', masses.shoreline);
         },
 
         calculateWaterSurfaceFract: function(masses, units){
-            var massOnWaterSurfaceFract = masses.surface;
-            var surfaceLOC = 0.01;
-            var fractOfContaminatedWs = massOnWaterSurfaceFract / surfaceLOC;
-            this.set('surface', fractOfContaminatedWs);
+            this.set('surface', masses.surface);
         },
 
         calculateWaterColumnFract: function(masses, units){
-            var massInWaterColumnFract = masses.column;
-            var waterColumnLOC = 0.001;
-            var fractOfContaminatedWc = massInWaterColumnFract / waterColumnLOC;
-            this.set('column', fractOfContaminatedWc);
+            this.set('column', masses.column);
         },
 
         calculateBenefit: function(){
             var values = this.get('relativeImportance');
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
+
+            var BAD1 = 1;
+            var BAD2 = this.get('distance_d') / this.get('distance');
+            var BAD3 = BAD2 / (this.get('depth') / this.get('depth_d'));
+
             for (var key in values){
                 if (key === 'Subsurface'){
-                    subsurfaceBenefit = this.get('column') * (values[key].data / 100);
+                    subsurfaceBenefit = (this.get('column') / this.get('total')) * BAD3 * (values[key].data / 100);
                 } else if (key === 'Shoreline'){
-                    shorelineBenefit = this.get('shoreline') * (values[key].data / 100);
+                    shorelineBenefit = (this.get('shoreline') / this.get('total')) * BAD1 * (values[key].data / 100);
                 } else if (key === 'Surface'){
-                    surfaceBenefit = this.get('surface') * (values[key].data / 100);
+                    surfaceBenefit = (this.get('surface') / this.get('total')) * BAD2 * (values[key].data / 100);
                 }
             }
 
-            var currentBadness = subsurfaceBenefit + shorelineBenefit + surfaceBenefit;
-
-            if (_.isUndefined(this.totalEvenBadness)) {
-                this.totalEvenBadness = currentBadness;
-            }
-
-            var ratioDiff = (currentBadness - this.totalEvenBadness) / this.totalEvenBadness;
-
-            if (ratioDiff > 1) {
-                ratioDiff = 1;
-            } else if (ratioDiff < -1) {
-                ratioDiff = -1;
-            }
-
-            if (ratioDiff > 0) {
-                netERA = ratioDiff;
-            } else if (ratioDiff < 0) {
-                netERA = Math.abs(ratioDiff);
-            } else {
-                netERA = 0.50;
-            }
+            netERA = 1 - (shorelineBenefit + subsurfaceBenefit + surfaceBenefit);
 
             return netERA;
         },
@@ -288,8 +310,8 @@ define([
 
         boundsDict: {
             depth: {
-                high: 20,
-                low: 1
+                high: 100,
+                low: 5
             }
         },
 
