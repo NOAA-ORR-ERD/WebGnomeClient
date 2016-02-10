@@ -369,6 +369,7 @@ define([
                 this.error('Error!', validSubstance);
             } else {
                 this.clearError();
+                this.update();
                 FormModal.prototype.save.call(this, _.bind(function(){
                     webgnome.model.save();
                 }, this));
