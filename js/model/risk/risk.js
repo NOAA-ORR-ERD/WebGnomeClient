@@ -78,8 +78,13 @@ define([
             this.set('efficiency', eff);
         },
 
-        convertMass: function(quantity) {
-            var unit = webgnome.model.get('spills').at(0).get('units');
+        convertMass: function(quantity, units) {
+            var unit;
+            if (_.isUndefined(unit)) {
+                unit = webgnome.model.get('spills').at(0).get('units');
+            } else {
+                unit = units;
+            }
             var volumeUnits = ['bbl', 'gal', 'm^3'];
             var mass;
 
@@ -207,20 +212,42 @@ define([
             return masses;
         },
 
+        getMaxCleanup: function() {
+            var maxes = {
+                'Skimmer': 0,
+                'Burn': 0,
+                'ChemicalDispersion': 0
+            };
+            var cleanups = webgnome.model.get('weatherers').filter(function(model) {
+                if (model.get('obj_type').indexOf('cleanup') > -1) {
+                    return true;
+                }
+                return false;
+            });
+
+            for (var i = 0; i < cleanups.length; i++) {
+                var str = cleanups[i].parseObjType();
+                maxes[str] += this.convertMass(cleanups[i].get('amount'), cleanups[i].get('units'));
+            }
+
+            return maxes;
+        },
+
         setSlopes: function(masses) {
             var eff = this.get('efficiency');
             var slopes = {};
+            var maxes = this.getMaxCleanup();
 
             if (eff.Skimming) {
-                slopes.Skimming = masses.skimmed / eff.Skimming;
+                slopes.Skimming = maxes.Skimmer;
             }
 
             if (eff.Dispersion) {
-                slopes.Dispersion = masses.chemicalDispersion / eff.Dispersion;
+                slopes.Dispersion = maxes.ChemicalDispersion;
             }
 
             if (eff.Burn) {
-                slopes.Burn = masses.burned / eff.Burn;
+                slopes.Burn = maxes.Burn;
             }
 
             this.set('slopes', slopes);
