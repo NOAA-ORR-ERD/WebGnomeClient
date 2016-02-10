@@ -100,6 +100,9 @@ define([
             }
 
             this.tabStatusSetter();
+            this.on('show.bs.modal', _.bind(function(){
+                this.update();
+            }, this));
 		},
 
         setEmulsificationOverride: function(){
@@ -378,88 +381,12 @@ define([
             }
         },
 
-        show: function(){
-            this.update();
-            FormModal.prototype.show.call(this);
-        },
-
-        addMapControls: function(){
-            var controls = _.template(MapControlsTemplate, {});
-            this.$('.ol-viewport').append(controls);
-            this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
-        },
-
-        mapRender: function(){
-            if (!this.mapShown){
-                this.$('.map').show();
-                this.source = new ol.source.Vector();
-                this.layer = new ol.layer.Vector({
-                    source: this.source
-                });
-                var id = 'spill-form-map-' + this.model.cid;
-                this.spillMapView = new SpillMapView({
-                    id: id,
-                    zoom: 2,
-                    center: [-128.6, 42.7],
-                    layers: [
-                        new ol.layer.Tile({
-                            source: new ol.source.MapQuest({layer: 'osm'}),
-                            visible: webgnome.model.get('map').geographical
-                        }),
-                        this.layer
-                    ]
-                });
-                this.spillMapView.render();
-                this.toggleMapHover();
-                this.addMapControls();
-                this.mapShown = true;
-                setTimeout(_.bind(function(){
-                    this.spillMapView.map.updateSize();
-                }, this), 250);
-                this.renderSpillFeature();
-                this.toggleSpill();
-            }
-        },
-
-        checkForShoreline: function(coordsObj) {
-            var map = this.spillMapView.map;
-            for (var key in coordsObj) {
-                coordsObj[key].pop();
-                var convertedCoords = new ol.proj.transform(coordsObj[key], 'EPSG:4326', 'EPSG:3857');
-                var pixel = map.getPixelFromCoordinate(convertedCoords);
-                var feature = map.forEachFeatureAtPixel(pixel, _.bind(this.isShoreline, this));
-                    
-                if (!_.isUndefined(feature)){
-                    return false;
-                }
-            }
-            return true;
-        },
-
-        isShoreline: function(feature, layer){
-            if (feature.get('name') === 'Shoreline Polys') {
-                return feature;
-            }
-        },
-
-        toggleMapHover: function(){
-            var map = this.spillMapView.map;
-            this.$(map.getViewport()).on('mousemove', _.bind(function(e){
-                var pixel = map.getEventPixel(e.originalEvent);
-                var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer){
-                    if (feature.get('name') === 'Shoreline Polys'){
-                        return feature;
-                    }
-                });
-                this.spillPlacementAllowed = true;
-                if (!_.isUndefined(feature)){
-                    this.$el.css('cursor', 'not-allowed');
-                    this.spillPlacementAllowed = false;
-                } else if (this.spillToggle){
-                    this.$el.css('cursor', 'crosshair');
-                } else {
-                    this.$el.css('cursor', '');
-                }
+        initMapModal: function() {
+            this.mapModal = new MapFormView({}, this.model.get('release'));
+            this.mapModal.render();
+            this.mapModal.on('hidden', _.bind(function() {
+                this.show();
+                this.mapModal.close();
             }, this));
         },
 
