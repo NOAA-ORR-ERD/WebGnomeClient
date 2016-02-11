@@ -27,7 +27,7 @@ define([
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
-            formModalHash['change input:not(.chosen-search input)'] = 'update';
+            formModalHash['input:not(.chosen-search input)'] = 'update';
             formModalHash['keyup input:not(.chosen-search input)'] = 'update';
             formModalHash['click .nav-tabs a'] = 'rendered';
             formModalHash.ready = 'triggerTableResize';
@@ -168,6 +168,7 @@ define([
         },
 
         update: function(){
+            console.trace();
             var search = {
                 text: $.trim(this.$('#search').val()),
                 category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'),
@@ -197,6 +198,7 @@ define([
         },
 
         oilSelect: function(e){
+            e.preventDefault();
             this.$('tr').removeClass('select');
             this.$(e.currentTarget).parents('tr').addClass('select');
         },
