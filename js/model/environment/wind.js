@@ -9,11 +9,19 @@ define([
     var windModel = BaseModel.extend({
         urlRoot: '/environment/',
 
-        defaults: {
-            timeseries: [['2014-07-07T12:00:00', [0, 0]]],
-            units: 'knots',
-            obj_type: 'gnome.environment.wind.Wind',
-            speed_uncertainty_scale: 0
+        defaults: function(){
+            var default_date;
+            if(webgnome.hasModel()){
+                default_date = webgnome.model.get('start_time');
+            } else {
+                default_date = moment().format('YYYY-MM-DDTHH:mm:00')
+            }
+            return {
+                timeseries: [[default_date, [0, 0]]],
+                units: 'knots',
+                obj_type: 'gnome.environment.wind.Wind',
+                speed_uncertainty_scale: 0
+            }
         },
 
         speedLimit: {
