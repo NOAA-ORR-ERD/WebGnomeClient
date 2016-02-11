@@ -7,7 +7,7 @@ define([
 ], function(_, Backbone, ol, BaseModel, moment){
     'use strict';
     var gnomeRelease = BaseModel.extend({
-        url: '/release',
+        urlRoot: '/release/',
 
         defaults: {
             'json_': 'webapi',
@@ -79,7 +79,7 @@ define([
 
         isReleaseInGeom: function(geom){
             if(!_.isArray(geom)){
-                geom = [geom];                
+                geom = [geom];
             }
             
             var start = [this.get('start_position')[0], this.get('start_position')[1]];

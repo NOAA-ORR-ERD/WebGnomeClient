@@ -640,7 +640,13 @@ define([
 
         loadSpill: function(e){
             e.stopPropagation();
-            var spillId = $(e.target).parents('.single').data('id');
+            var spillId;
+            if($(e.target).hasClass('single')){
+                spillId = $(e.target).data('id');
+            } else {
+                spillId = $(e.target).parents('.single').data('id');  
+            }
+
             var spill = webgnome.model.get('spills').get(spillId);
             var spillView;
             if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){

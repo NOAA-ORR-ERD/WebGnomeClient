@@ -4,11 +4,10 @@ define([
 	'backbone',
 	'views/modal/form',
 	'views/form/oil/library',
-	'views/default/map',
+	'views/form/spill/map',
     'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
-    'text!templates/form/spill/map/controls.html',
     'model/substance',
 	'nucos',
 	'ol',
@@ -16,7 +15,7 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, SpillMapView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, MapControlsTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, MapFormView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
@@ -32,12 +31,10 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
-                'shown.bs.tab .mapspill': 'locationSelect',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
-                'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill',
-                'click .oil-info': 'initOilInfo'
+                'click .oil-info': 'initOilInfo',
+                'click .map-modal': 'initMapModal'
             }, FormModal.prototype.events);
         },
 
@@ -375,6 +372,7 @@ define([
                 this.error('Error!', validSubstance);
             } else {
                 this.clearError();
+                this.update();
                 FormModal.prototype.save.call(this, _.bind(function(){
                     webgnome.model.save();
                 }, this));
@@ -388,236 +386,8 @@ define([
                 this.show();
                 this.mapModal.close();
             }, this));
-        },
-
-        locationSelect: function(){
-            if (!this.mapShown){
-                this.mapRender();
-                var map = webgnome.model.get('map');
-                if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                    map.getGeoJSON(_.bind(function(data){
-                        this.shorelineSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
-                        });
-                        this.shorelineLayer = new ol.layer.Vector({
-                            name: 'shoreline',
-                            source: this.shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
-                        });
-                        if(this.spillMapView.map){
-                            this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                            this.spillMapView.setMapOrientation();
-                        }
-                    }, this));
-                }
-            }
-        },
-
-        getFeatureType: function(e){
-            var featureType;
-
-            if (!_.isUndefined(e)) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                if (this.$(e.target).hasClass('fixed')) {
-                    featureType = 'Point';
-                    this.$('.fixed').addClass('on');
-                    this.$('.moving').removeClass('on');
-                } else if (this.$(e.target).hasClass('moving')) {
-                    featureType = 'LineString';
-                    this.$('.moving').addClass('on');
-                    this.$('.fixed').removeClass('on');
-                }
-            } else if (this.model.isNew()) {
-                featureType = "Point";
-                this.$('.fixed').addClass('on');
-            }
-
-            this.featureType = featureType;
-        },
-
-        toggleSpill: function(e){
-            this.getFeatureType(e);
-            var featureType = this.featureType;
-
-            if (!_.isUndefined(featureType)) {
-                if (!_.isUndefined(this.drawInteraction)) {
-                    var drawInteract = this.drawInteraction;
-                    this.spillMapView.map.removeInteraction(drawInteract);
-                }
-
-                var draw = new ol.interaction.Draw({
-                    type: featureType
-                });
-                this.spillMapView.map.addInteraction(draw);
-                this.drawInteraction = draw;
-
-                this.drawInteraction.on('drawend', _.bind(this.drawEndCallback, this));
-                this.renderSpillFeature();
-                this.update();
-            }
-        },
-
-        drawEndCallback: function(e) {
-            var coordsObj;
-            var featureType = this.featureType;
-            if (featureType === 'Point') {
-                coordsObj = this.transformPointCoords(e.feature.getGeometry().getCoordinates());
-            } else if (featureType === 'LineString') {
-                coordsObj = this.transformLineStringCoords(e.feature.getGeometry().getCoordinates());
-            }
-            var coordsCopy = coordsObj;
-            var coordsAreValid = this.checkForShoreline(coordsCopy);
-
-            var convertedCoords = this.convertCoordObj(coordsObj);
-
-            if (this.spillPlacementAllowed && coordsAreValid) {
-                this.model.get('release').set('start_position', convertedCoords.start);
-                this.model.get('release').set('end_position', convertedCoords.end);
-                this.setManualFields();
-                this.renderSpillFeature();
-                this.tabStatusSetter();
-            }
-
-            var draw = this.drawInteraction;
-            this.spillMapView.map.removeInteraction(draw);
-            this.$('.ol-has-tooltip').removeClass('on');
-        },
-
-        modifyEndCallback: function(e) {
-            var coordsObj;
-            var featureType = this.renderedFeature;
-
-            if (featureType === 'Point') {
-                coordsObj = this.transformPointCoords(e.features.getArray()[0].getGeometry().getCoordinates());
-            } else if (featureType === 'LineString') {
-                coordsObj = this.transformLineStringCoords(e.features.getArray()[0].getGeometry().getCoordinates());
-            }
-            var coordsCopy = coordsObj;
-            var coordsAreValid = this.checkForShoreline(coordsCopy);
-
-            var convertedCoords = this.convertCoordObj(coordsObj);
-
-            if (this.spillPlacementAllowed && coordsAreValid) {
-                this.model.get('release').set('start_position', convertedCoords.start);
-                this.model.get('release').set('end_position', convertedCoords.end);
-                this.setManualFields();
-                this.tabStatusSetter();
-            }
-
-            this.renderSpillFeature();
-        },
-
-        convertCoordObj: function(obj){
-            for (var key in obj) {
-                obj[key].push(0);
-            }
-
-            return obj;
-        },
-
-        transformPointCoords: function(coordsArr){
-            var outputArr = [];
-            var points;
-            for (var i = 0; i < coordsArr.length; i++){
-                outputArr[i] = new ol.proj.transform(coordsArr, 'EPSG:3857', 'EPSG:4326');
-                outputArr[i].push(0);
-            }
-
-            return {
-                start: outputArr[0],
-                end: outputArr[outputArr.length - 1]
-            };
-        },
-
-        transformLineStringCoords: function(coordsArr){
-            var outputArr = [];
-            var points;
-            for (var i = 0; i < coordsArr.length; i++){
-                var pointsArr = [];
-                outputArr[i] = [];
-                for (var k = 0; k < coordsArr[i].length; k++){
-                    var point = new ol.proj.transform(coordsArr[k], 'EPSG:3857', 'EPSG:4326');
-                    point.push(0);
-                    pointsArr.push(point);
-                }
-                outputArr[i].push(pointsArr);
-            }
-            
-            var endIndex = outputArr[0][0].length - 1;
-
-            return {start: outputArr[0][0][0], end: outputArr[0][0][endIndex]};
-        },
-
-        renderSpillFeature: function(){
-            var start_position = this.model.get('release').get('start_position');
-            var end_position = this.model.get('release').get('end_position');
-            var geom, featureStyle;
-            if(start_position[0] === end_position[0] && start_position[1] === end_position[1]){
-                start_position = [start_position[0], start_position[1]];
-                geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()));
-                featureStyle = new ol.style.Style({
-                            image: new ol.style.Icon({
-                                anchor: [0.5, 1.0],
-                                src: '/img/map-pin.png',
-                                size: [32, 40]
-                            })
-                        });
-                this.renderedFeature = 'Point';
-            } else {
-                start_position = [start_position[0], start_position[1]];
-                end_position = [end_position[0], end_position[1]];
-                geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.spillMapView.map.getView().getProjection())]);
-                this.renderedFeature = 'LineString';
-            }
-            var feature = new ol.Feature({
-                geometry: geom,
-                spill: this.model.get('id')
-            });
-            if (!_.isUndefined(featureStyle)) { feature.setStyle(featureStyle); }
-            this.source.clear();
-            this.source.addFeature(feature);
-
-            if (!_.isUndefined(this.modifyInteraction)) {
-                var modifyInteract = this.modifyInteraction;
-                this.spillMapView.map.removeInteraction(modifyInteract);
-            }
-
-            var features = new ol.Collection(this.source.getFeatures());
-
-            var modify = new ol.interaction.Modify({
-                features: features,
-                deleteCondition: _.bind(function(e) {
-                    return ol.events.condition.singleClick(e);
-                }, this)
-            });
-            this.spillMapView.map.addInteraction(modify);
-            this.modifyInteraction = modify;
-            this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
-        },
-
-        addPointSpill: function(e){
-            if (this.spillPlacementAllowed){
-                var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-                coord.push(0);
-
-                this.model.get('release').set('start_position', coord);
-                this.model.get('release').set('end_position', coord);
-
-                this.setManualFields();
-
-                this.toggleSpill(e);
-                this.renderSpillFeature();
-            }
+            this.mapModal.on('save', this.setManualFields, this);
+            this.hide();
         },
 
         setManualFields: function(){
@@ -630,50 +400,13 @@ define([
             this.$('#end-lon').val(endPoint[0]);
         },
 
-        endPointPlacement: function(e){
-            if (this.spillPlacementAllowed){
-                var end_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-                end_position.push(0);
-                this.model.get('release').set('end_position', end_position);
-                this.setManualFields();
-                this.toggleSpill(e);
-                this.renderSpillFeature();
-            } else {
-                this.spillMapView.map.once('click', this.endPointPlacement, this);
-            }
-        },
-
-        addLineSpill: function(e){
-            if (this.spillPlacementAllowed){
-                var start_position = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-                start_position.push(0);
-                this.model.get('release').set('start_position', start_position);
-                this.model.get('release').set('end_position', start_position);
-                this.setManualFields();
-                this.renderSpillFeature();
-                this.spillMapView.map.once('click', this.endPointPlacement, this);
-            } else {
-                this.spillMapView.map.once('click', this.addLineSpill, this);
-            }
-        },
-
         manualMapInput: function(){
-            this.mapRender();
-            var feature = this.source.forEachFeature(_.bind(function(feature){
-                        return feature;
-                    }, this));
-            if (feature){
-                this.source.removeFeature(feature);
-            }
             var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
             var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
             this.model.get('release').set('end_position', endPosition);
-            this.renderSpillFeature();
-            this.spillMapView.map.getView().setCenter(startCoords);
-            this.spillMapView.map.getView().setZoom(15);
         },
 
         coordsParse: function(coordsArray){
@@ -719,8 +452,12 @@ define([
 
 		close: function(){
 			$('.xdsoft_datetimepicker:last').remove();
-            if (!_.isUndefined(this.spillMapView)){
-                this.spillMapView.close();
+            if (!_.isUndefined(this.mapModal)){
+                this.mapModal.close();
+            }
+
+            if (!_.isUndefined(this.oilInfoView)) {
+                this.oilInfoView.close();
             }
             
             if (!_.isUndefined(this.oilLibraryView)){

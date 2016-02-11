@@ -25,17 +25,13 @@ define([
           var containerClass = options.containerClass;
           this.specificOilView = new SpecificOilView({infoMode: true, containerClass: containerClass, model: substanceModel});
           this.on('wizardclose', this.hide, this);
+          this.on('hidden', this.close, this);
           this.render();
        },
 
        render: function(options) {
           this.body = _.template(OilInfoTemplate);
           FormModal.prototype.render.call(this, options);
-       },
-
-       hide: function() {
-          this.on('hidden', this.close, this);
-          FormModal.prototype.hide.call(this);
        }
 
     });
