@@ -14,14 +14,14 @@ define([
             if(webgnome.hasModel()){
                 default_date = webgnome.model.get('start_time');
             } else {
-                default_date = moment().format('YYYY-MM-DDTHH:mm:00')
+                default_date = moment().format('YYYY-MM-DDTHH:mm:00');
             }
             return {
                 timeseries: [[default_date, [0, 0]]],
                 units: 'knots',
                 obj_type: 'gnome.environment.wind.Wind',
                 speed_uncertainty_scale: 0
-            }
+            };
         },
 
         speedLimit: {
