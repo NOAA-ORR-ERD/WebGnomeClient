@@ -141,12 +141,8 @@ define([
                 form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
 
                 // dynamically add the water form to the wizard if the substance is weatherable
-                form.$el.on('show.bs.modal', _.bind(function(){
-                    form.model.get('element_type').once('change:substance', this.dynamicWaterListener, this);
-                }, this));
-
                 form.on('save', _.bind(function(){
-                    form.model.get('element_type').off('change:substance', this.dynamicWaterListener, this);
+                    this.dynamicWaterListener(form.model.get('element_type').get('substance'));
                 }, this));
                 
                 this.register(form);
@@ -166,8 +162,9 @@ define([
             this.start();
         },
 
-        dynamicWaterListener: function(model, substance){
-            if (!_.isNull(substance)){
+        dynamicWaterListener: function(substance){
+            var waterExists = this.steps[this.steps.length - 2].className.indexOf('water-form') > -1;
+            if (!_.isNull(substance) && !waterExists){
                 var waterForm = this.addWaterForm();
                 this.steps.splice(this.steps.length - 1, 0, waterForm);
             }
