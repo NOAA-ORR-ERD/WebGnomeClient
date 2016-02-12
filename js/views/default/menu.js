@@ -22,7 +22,7 @@ define([
 
     var menuView = Backbone.View.extend({
         tagName: 'nav',
-        className: 'navbar navbar-default',
+        className: 'navbar navbar-default navbar-fixed-top',
 
         initialize: function() {
             this.render();
@@ -39,7 +39,7 @@ define([
             'click .save': 'save',
             'click a.debugView': 'debugView',
 
-            // 'click .run': 'run',
+            'click .run': 'run',
             // 'click .step': 'step',
             // 'click .rununtil': 'rununtil',
 
@@ -85,6 +85,10 @@ define([
         home: function(event){
             event.preventDefault();
             webgnome.router.navigate('', true);
+        },
+
+        run: function(){
+            webgnome.router.navigate('model', true);
         },
 
         newModel: function(event){

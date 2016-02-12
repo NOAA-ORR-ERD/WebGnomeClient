@@ -31,6 +31,7 @@ body{
     -moz-osx-font-smoothing: grayscale;
     font-family: 'Droid Sans';
     background: #2c2c2e;
+    padding-top: 50px;
 
     &.logger-open{
         padding-bottom: 200px;
@@ -511,6 +512,12 @@ nav.navbar{
             }
         }
     }
+
+    .run{
+        float: right;
+        margin-right: 15px;
+        margin-top: 8px;
+    }
     
     .debugView {
         &:hover {
@@ -537,6 +544,8 @@ nav.navbar{
 }
 
 .page.home{
+    margin-top: -50px;
+
     img{
         border-radius: 3px;
     }
@@ -1286,13 +1295,9 @@ nav.navbar{
         position: absolute;
         right: 0px;
         top: -37px;
-        width: 310px;
-        .edit{
-            .btn;
-            .btn-success;
-            margin-left: 20px;
-            margin-top: -7px;
-        }
+        width: 205px;
+        z-index: 99999;
+
         .view-toggle{
             label{
                 float:left;
