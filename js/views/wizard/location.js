@@ -172,7 +172,6 @@ define([
 
         dynamicWaterListener: function(model, substance){
             if (!_.isNull(substance)){
-                console.log('water added');
                 var waterForm = this.addWaterForm();
                 this.steps.splice(this.steps.length - 1, 0, waterForm);
             }
