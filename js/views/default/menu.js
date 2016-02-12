@@ -196,9 +196,12 @@ define([
 
             if(window.location.href.indexOf('model') !== -1){
                 this.enableMenuItem('debugView');
+                this.disableMenuItem('run');
             } else {
                 this.disableMenuItem('debugView');
+                this.enableMenuItem('run');
             }
+
         },
 
         render: function(){
