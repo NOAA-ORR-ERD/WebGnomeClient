@@ -140,13 +140,9 @@ define([
                 form.name = 'step' + (stepLength - 2);
                 form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
 
-                var count = 0;
                 // dynamically add the water form to the wizard if the substance is weatherable
                 form.$el.on('show.bs.modal', _.bind(function(){
-                    if (count === 0) {
-                        form.model.get('element_type').once('change:substance', this.dynamicWaterListener, this);
-                        count++;
-                    }
+                    form.model.get('element_type').once('change:substance', this.dynamicWaterListener, this);
                 }, this));
 
                 form.on('save', _.bind(function(){
