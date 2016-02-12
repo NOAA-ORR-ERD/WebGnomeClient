@@ -40,6 +40,7 @@ define([
             'click a.debugView': 'debugView',
 
             'click .run': 'run',
+            'click .rewind': 'rewind',
             // 'click .step': 'step',
             // 'click .rununtil': 'rununtil',
 
@@ -89,6 +90,11 @@ define([
 
         run: function(){
             webgnome.router.navigate('model', true);
+        },
+
+        rewind: function(){
+            webgnome.cache.rewind();
+            this.contextualize();
         },
 
         newModel: function(event){
@@ -202,6 +208,11 @@ define([
                 this.enableMenuItem('run');
             }
 
+            if(webgnome.cache.length > 0){
+                this.enableMenuItem('rewind');
+            } else {
+                this.disableMenuItem('rewind');
+            }
         },
 
         render: function(){
