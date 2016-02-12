@@ -428,7 +428,7 @@ define([
             var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
             if(data.length > 0){
                 var con_width = this.$('.breakdown').width() - (15 * (data.length - 2));
-                var width = con_width / (data.length - 1);
+                var width = Math.floor(con_width / (data.length - 1));
                 var compiled = '';
                 var units = webgnome.model.get('spills').at(0).get('units');
                 for(var i = 0; i < data.length; i++){
@@ -663,6 +663,9 @@ define([
                 }
             }
             this.$('#budget-table table:first').html(table);
+            if($('.container.sticky').length > 0){
+                $('.container.sticky table:first').html(table);
+            }
         },
 
         tableOilBudgetStickyHeader: function(e){
