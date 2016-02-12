@@ -663,6 +663,9 @@ define([
                 }
             }
             this.$('#budget-table table:first').html(table);
+            if($('.container.sticky').length > 0){
+                $('.container.sticky table:first').html(table);
+            }
         },
 
         tableOilBudgetStickyHeader: function(e){
