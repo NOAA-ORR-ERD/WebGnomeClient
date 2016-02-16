@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'nucos'
-], function(_, Backbone, moment, nucos){
+    'nucos',
+    'model/no_cleanup_step'
+], function(_, Backbone, moment, nucos, NoCleanupStep){
     var risk = Backbone.Model.extend({
         url: '/',
 
@@ -46,7 +47,20 @@ define([
                 this.deriveAssessmentTime();
                 var masses = this.getMasses();
                 this.setSlopes(masses);
+                this.fetchNoCleanupData();
             }
+        },
+
+        fetchNoCleanupData: function(){
+            var cleanupData = new NoCleanupStep();
+            cleanupData.fetch({
+                success: _.bind(function(model) {
+                    var noCleanupMasses = model.get('WeatheringOutput').nominal;
+                    this.set('column_noclean', noCleanupMasses.natural_dispersion);
+                    this.set('surface_noclean', noCleanupMasses.floating);
+                    this.set('shoreline_noclean', noCleanupMasses.beached);
+                }, this)
+            });
         },
 
         deriveAssessmentTime: function(){
@@ -277,6 +291,7 @@ define([
         calculateBenefit: function(){
             var values = this.get('relativeImportance');
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
+            var subsurfaceBenefit_noclean, surfaceBenefit_noclean, shorelineBenefit_noclean, netERA_clean, netERA_noclean;
 
             var BAD1 = 1;
             var BAD2 = this.get('distance_d') / this.get('distance');
@@ -284,15 +299,24 @@ define([
 
             for (var key in values){
                 if (key === 'Subsurface'){
-                    subsurfaceBenefit = (this.get('column') / this.get('total')) * BAD3 * (values[key].data / 100);
+                    var subSurfaceFactor = BAD3 * (values[key].data / 100);
+                    subsurfaceBenefit = (this.get('column') / this.get('total')) * subSurfaceFactor;
+                    subsurfaceBenefit_noclean = (this.get('column_noclean') / this.get('total')) * subSurfaceFactor;
                 } else if (key === 'Shoreline'){
-                    shorelineBenefit = (this.get('shoreline') / this.get('total')) * BAD1 * (values[key].data / 100);
+                    var shoreFactor = BAD1 * (values[key].data / 100);
+                    shorelineBenefit = (this.get('shoreline') / this.get('total')) * shoreFactor;
+                    shorelineBenefit_noclean = (this.get('shoreline_noclean') / this.get('total')) * shoreFactor;
                 } else if (key === 'Surface'){
-                    surfaceBenefit = (this.get('surface') / this.get('total')) * BAD2 * (values[key].data / 100);
+                    var surfaceFactor = BAD2 * (values[key].data / 100);
+                    surfaceBenefit = (this.get('surface') / this.get('total')) * surfaceFactor;
+                    surfaceBenefit_noclean = (this.get('surface_noclean') / this.get('total')) * surfaceFactor;
                 }
             }
 
-            netERA = 1 - (shorelineBenefit + subsurfaceBenefit + surfaceBenefit);
+            netERA_clean = 1 - (shorelineBenefit + subsurfaceBenefit + surfaceBenefit);
+            netERA_noclean = 1 - (shorelineBenefit_noclean + subsurfaceBenefit_noclean + surfaceBenefit_noclean);
+
+            netERA = (netERA_clean - netERA_noclean + 1) / 2;
 
             return netERA;
         },
