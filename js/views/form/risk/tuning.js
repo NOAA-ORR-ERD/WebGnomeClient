@@ -8,8 +8,9 @@ define([
     'text!templates/risk/relativeimportance.html',
     'text!templates/risk/slider.html',
     'text!templates/risk/relativeimportancetable.html',
-    'relativeimportance'
-], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance) {
+    'relativeimportance',
+    'webcomponents'
+], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance, webcomponents) {
     var riskForm = FormModal.extend({
         className: 'modal form-modal risk-form tuning',
         name: 'risk',

@@ -34,6 +34,7 @@
     "localforage": "~1.2.3",
     "html2canvas": "~0.4.1",
     "relativeimportance": "*",
-    "google-chart": "GoogleWebComponents/google-chart#~1.0.2"
+    "google-chart": "GoogleWebComponents/google-chart#~1.0.2",
+    "webcomponentsjs": "^0.7.20"
   }
 }
