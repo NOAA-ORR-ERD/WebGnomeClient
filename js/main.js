@@ -98,6 +98,6 @@ require.config({
         localforage: {
             exports: 'localforage'
         }
-    },
+    }
 });
 
