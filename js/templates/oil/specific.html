@@ -93,7 +93,7 @@
             								<th>Weathering (%)</th>
             							</tr>
             						{% for (var i = 0; i < data.kvis.length; i++){ %}
-            							{% var centiStokes = parseInt(data.kvis[i].m_2_s * 1000000, 10); %}
+            							{% var centiStokes = parseFloat(data.kvis[i].m_2_s * 1000000).toFixed(2); %}
                                         {% if (_.isNumber(data.kvis[i].weathering)) { %}
                                             {% var viscosityWeather = (data.kvis[i].weathering * 100).toFixed(3); %}
                                         {% } else { %}
