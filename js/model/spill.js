@@ -118,7 +118,7 @@ define([
                     return 'Amount must be greater than 1 bbl when using a weatherable substance';
                 }
             } else if(attrs.amount <= 0) {
-                return 'Amount must be 0 or greater';
+                return 'Amount must be greater than 0';
             }
 
             if (massUnits.indexOf(attrs.units) === -1 && _.isNull(substance)){

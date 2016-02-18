@@ -76,7 +76,7 @@ define([
         update: function(){
             var name = this.$('#name').val();
             this.model.set('name', name);
-            var amount = parseInt(this.$('#spill-amount').val(), 10);
+            var amount = parseFloat(this.$('#spill-amount').val());
             var units = this.$('#units').val();
             var release = this.model.get('release');
             var startPosition = release.get('start_position');
