@@ -53,7 +53,7 @@ define([
         },
 
         getGeoJSON: function(callback){
-            var url = webgnome.config.api + this.urlRoot + this.get('id') + '/geojson';
+            var url = this.urlRoot + this.get('id') + '/geojson';
             if(!this.requesting && !this.requested){
                 this.requesting = true;
                 $.get(url, null, _.bind(function(geo_json){

@@ -30,8 +30,7 @@ define([
             this.monitor = {};
             this.monitor.requests = [];
 
-            $.ajaxPrefilter('json', _.bind(function(options, originalOptions, jqxhr){
-                // Filter json requestions to redirect them to the api server
+            $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr){
                 if(options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1){
                     options.url = webgnome.config.api + options.url;
                     // add a little cache busting so IE doesn't cache everything...
