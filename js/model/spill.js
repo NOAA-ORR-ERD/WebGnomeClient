@@ -32,6 +32,11 @@ define([
             BaseModel.prototype.initialize.call(this, options);
             if(webgnome.hasModel() && webgnome.model.getElementType()){
                 this.set('element_type', webgnome.model.getElementType());
+                if (!_.isNull(this.get('element_type').get('substance'))) {
+                    this.set('units', 'bbl');
+                }
+            } else {
+                this.set('units', 'kg');
             }
             this.on('change:element_type', this.addListeners, this);
         },
