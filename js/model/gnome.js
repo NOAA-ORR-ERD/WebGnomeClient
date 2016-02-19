@@ -18,6 +18,7 @@ define([
     'model/movers/cats',
     'model/movers/ice',
     'model/movers/grid_current',
+    'model/movers/current_cycle',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
@@ -35,7 +36,7 @@ define([
     'model/risk/risk'
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover,
+    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
@@ -65,6 +66,7 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
+                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
