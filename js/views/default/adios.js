@@ -77,6 +77,7 @@ define([
             } else {
                 this.$el.html(compiled);
             }
+            $('.tooltip').remove();
             this.$('.option, .item').tooltip({
                 container: 'body'
             });
