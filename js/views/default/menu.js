@@ -200,19 +200,22 @@ define([
                 this.disableMenuItem('edit');
             }
 
-            if(window.location.href.indexOf('model') !== -1){
-                this.enableMenuItem('debugView');
-                this.disableMenuItem('run');
-            } else {
-                this.disableMenuItem('debugView');
-                this.enableMenuItem('run');
-            }
-
             if(webgnome.cache.length > 0){
                 this.enableMenuItem('rewind');
             } else {
                 this.disableMenuItem('rewind');
             }
+
+            if(window.location.href.indexOf('model') !== -1){
+                this.enableMenuItem('debugView');
+                this.disableMenuItem('run');
+                this.disableMenuItem('rewind');
+            } else {
+                this.disableMenuItem('debugView');
+                this.enableMenuItem('run');
+            }
+
+            
         },
 
         render: function(){
