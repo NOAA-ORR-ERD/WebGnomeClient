@@ -11,8 +11,7 @@ define([
     'model/gnome',
     'model/risk/risk',
     'views/default/loading',
-    'webcomponents'
-], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, RiskModel, LoadingView, webcomponents) {
+], function($, _, Backbone, Router, moment, swal, config, SessionModel, GnomeModel, RiskModel, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
