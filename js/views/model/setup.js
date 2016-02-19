@@ -104,10 +104,10 @@ define([
                     webgnome.cache.rewind();
                 }
                 webgnome.model = new GnomeModel();
+                $('body').append(this.$el);
                 webgnome.model.save(null, {
                     validate: false,
                     success: _.bind(function(){
-                        $('body').append(this.$el);
                         this.render();
                     }, this)
                 });
