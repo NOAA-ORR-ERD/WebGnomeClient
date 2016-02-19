@@ -52,7 +52,7 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
+            this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
 
             this.renderTimeseries();
 

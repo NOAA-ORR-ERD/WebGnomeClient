@@ -29,7 +29,7 @@ define([
                 center: this.model.get('center')[0] + ',' + this.model.get('center')[1]
             });
             FormModal.prototype.render.call(this);
-            this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
+            this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');
         },
         
         update: function(){

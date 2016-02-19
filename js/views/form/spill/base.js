@@ -74,7 +74,7 @@ define([
             var units = this.model.get('units');
             FormModal.prototype.render.call(this, options);
 
-            this.$('#units option[value="' + units + '"]').attr('selected', 'selected');
+            this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
 			if (!this.showGeo) {
 				this.$('.map').hide();

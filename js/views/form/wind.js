@@ -105,7 +105,7 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('#datetime').datetimepicker('show');
             }, this));
-            this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').attr('selected', 'selected');
+            this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
                     min: 0,

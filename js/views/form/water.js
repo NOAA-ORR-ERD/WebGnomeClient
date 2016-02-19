@@ -34,9 +34,9 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-            this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').attr('selected', 'selected');
-            this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').attr('selected', 'selected');
-            this.$('#fetch-units option[value="' + this.model.get('units').fetch + '"]').attr('selected', 'selected');
+            this.$('#tempunits option[value="' + this.model.get('units').temperature + '"]').prop('selected', 'selected');
+            this.$('#wave_height-units option[value="' + this.model.get('units').wave_height + '"]').prop('selected', 'selected');
+            this.$('#fetch-units option[value="' + this.model.get('units').fetch + '"]').prop('selected', 'selected');
 
             if (!_.isNull(this.model.get('fetch'))){
                 this.$('#data-source').val('fetch');
@@ -55,7 +55,7 @@ define([
                 this.$('.salinity-input').removeClass('hide');
                 this.$('.salinity-input input').val(this.model.get('salinity'));
             } else {
-                this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').attr('selected', 'selected');
+                this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').prop('selected', 'selected');
             }
 
             var unitsAreMgPerLiter = this.model.get('units').sediment === 'mg/l';
@@ -64,9 +64,9 @@ define([
                 this.$('.sediment-select').parent().hide();
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));
-                this.$('.sediment-units option[value="' + this.model.get('units').sediment + '"]').attr('selected', 'selected');
+                this.$('.sediment-units option[value="' + this.model.get('units').sediment + '"]').prop('selected', 'selected');
             } else {
-                this.$('.sediment-select option[value="' + this.model.get('sediment') + '"]').attr('selected', 'selected');
+                this.$('.sediment-select option[value="' + this.model.get('sediment') + '"]').prop('selected', 'selected');
             }
         },
 

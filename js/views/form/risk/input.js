@@ -31,7 +31,7 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-            this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').attr('selected', 'selected');
+            this.$('#depth-units option[value="' + this.model.get('units').depth + '"]').prop('selected', 'selected');
 
             this.createSlider('distance', 'Distance From Shore (km):', this.model.get('distance'), 1, 20);
             this.createSlider('depth', 'Average Water Depth (m):', this.model.get('depth'), 5, 100);
