@@ -62,7 +62,9 @@ define([
 
         setup: function(e){
             e.preventDefault();
-            webgnome.model.save({'name': 'Model'});
+            if(webgnome.hasModel()){
+                webgnome.model.save({'name': 'Model'});
+            }
             webgnome.router.navigate('config', true);
         },
 
