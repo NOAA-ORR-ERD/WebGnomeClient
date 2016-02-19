@@ -669,7 +669,7 @@ define([
         },
 
         tableOilBudgetStickyHeader: function(e){
-            if(this.$('#budget-table').length > 0){
+            if(this.$('#budget-table:visible').length > 0){
                 var top = $(window).scrollTop() + 50;
                 var offset = this.$('#budget-table table:first').offset();
 
