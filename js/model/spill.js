@@ -34,6 +34,8 @@ define([
                 this.set('element_type', webgnome.model.getElementType());
                 if (!_.isNull(this.get('element_type').get('substance'))) {
                     this.set('units', 'bbl');
+                } else {
+                    this.set('units', 'kg');
                 }
             } else {
                 this.set('units', 'kg');
