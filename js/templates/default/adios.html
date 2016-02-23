@@ -11,7 +11,7 @@
             <div class="option substance" title="Click to select the oil to release.">
                 <div class="icon {% if(!substance){ %}missing {% } %}"></div>
                 <div class="title">Oil</div>
-                {% if(substance){ %}
+                {% if(substance && substance.get('api')){ %}
                     <div class="info col-sm-12">
                         <div class="item">
                             <div class="col-sm-6">
