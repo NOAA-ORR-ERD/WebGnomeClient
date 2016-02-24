@@ -23,7 +23,16 @@
 		</div>
 
 	</form>
-	<sup class="resultsLength">Number of results: {{ results }}</sup>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-9 generic-label">
+				<sup><div class="swatch" style="background-color: #FDED90"></div>Generic Oils</sup>
+			</div>
+			<div class="col-sm-3 pull-right">
+				<sup class="resultsLength">Number of results: {{ results }}</sup>
+			</div>
+		</div>
+	</div>
 	<div class="panel panel-default oilTable">
 		{{ oilTable }}
 	</div>

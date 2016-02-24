@@ -40,6 +40,7 @@ define([
             if (substance && substance.get('adios_oil_id')){
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }
+            this.$('tr[data-generic="true"]').addClass('generic');
             this.updateCaret();
             this.processCategory();
             this.trigger('renderTable');

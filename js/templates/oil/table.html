@@ -17,7 +17,8 @@
                 {% } %}
                 {% for (var i = 0; i < data.length; i++){ %}
                     {% var api = data.at(i).get('api').toFixed(1) %}
-                    <tr data-id="{{ data.at(i).get('adios_oil_id') }}" data-name="{{ data.at(i).get('name') }}">
+                    {% var isGeneric = data.at(i).get('categories').indexOf('Other-Generic') > -1 %}
+                    <tr data-generic="{{ isGeneric }}" data-id="{{ data.at(i).get('adios_oil_id') }}" data-name="{{ data.at(i).get('name') }}">
                         <td style="width: 25%">
                             {{ data.at(i).get('name') }}
                         </td>
