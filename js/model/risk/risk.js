@@ -59,6 +59,7 @@ define([
                     this.set('column_noclean', noCleanupMasses.natural_dispersion);
                     this.set('surface_noclean', noCleanupMasses.floating);
                     this.set('shoreline_noclean', noCleanupMasses.beached);
+                    this.trigger('loaded');
                 }, this)
             });
         },

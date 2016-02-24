@@ -14,6 +14,7 @@ define([
         initialize: function(){
             webgnome.riskCalc = new RiskModel();
             this.setup(webgnome.riskCalc);
+            webgnome.riskCalc.on('loaded', this.start, this);
         },
 
         setup: function(riskModel){
@@ -35,7 +36,6 @@ define([
                     });
                 })
             ];
-            this.start();
         }
 
     });
