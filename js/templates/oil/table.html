@@ -28,7 +28,7 @@
                         <td style="width: 10%">{{ api }}</td>
                         <td style="width: 20%">
                             {% var categories = data.at(i).get('categories') %}
-                            {% for (var k = 0; k < categories.length; k++){ %}
+                            {% for (var k = categories.length - 1; k >= 0; k--){ %}
                                 <span class="label label-warning">{{ categories[k] }}</span>
                             {% } %}
                             <a class="btn btn-primary btn-xs oilInfo">More Info</a>

@@ -59,7 +59,7 @@ define([
             var categoryLabels = this.$('.label-warning');
             for (var i = 0; i < categoryLabels.length; i++) {
                 var htmlStr = this.$(categoryLabels[i]).html();
-                this.$(categoryLabels[i]).html(htmlStr.replace('Crude-', 'Crude: ').replace('Refined-', '').replace('Other-', 'Other: '));
+                this.$(categoryLabels[i]).html(htmlStr.replace('Crude-', 'Crude: ').replace('Refined-', '').replace('Other-', ''));
             }
         },
 
