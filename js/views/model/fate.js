@@ -947,16 +947,17 @@ define([
             var units = this.$('#ics209 .vol-units').val();
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
-                dispersed: 0,
+                chem_dispersed: 0,
                 burned: 0,
                 skimmed: 0,
                 floating: 0,
                 amount_released: 0,
                 natural_dispersion: 0,
+                other_natural: 0,
                 sedimentation: 0,
                 dissolution: 0,
                 beached: 0
@@ -968,45 +969,39 @@ define([
             for(var set in dataset){
                 for(var step in dataset[set].data){
                     if(dataset[set].data[step][0] >= start && dataset[set].data[step][0] <= end){
-                        report[dataset[set].name] += parseInt(dataset[set].data[step][1], 10);
+                        var previous = 0;
+                        if(dataset[set].data[step - 1]){
+                            previous = Math.round(parseFloat(dataset[set].data[step - 1][1]));
+                        }
+                        var current = Math.round(parseFloat(dataset[set].data[step][1]));
+                        report[dataset[set].name] += current - previous;
                     }
                 }
                 for(var step2 in dataset[set].data){
                     if(dataset[set].data[step2][0] <= end){
-                        cumulative[dataset[set].name] += parseInt(dataset[set].data[step2][1], 10);
+                        cumulative[dataset[set].name] = Math.round(parseFloat(dataset[set].data[step2][1]));
                     }
                 }
                 for(var step3 in dataset[set].low){
                     if(dataset[set].low[step3][0] <= end){
-                        low[dataset[set].name] += parseInt(dataset[set].low[step3][1], 10);
+                        low[dataset[set].name] = Math.round(parseFloat(dataset[set].low[step3][1]));
                     }
                 }
                 for(var step4 in dataset[set].high){
                     if(dataset[set].high[step4][0] <= end){
-                        high[dataset[set].name] += parseInt(dataset[set].high[step4][1], 10);
+                        high[dataset[set].name] = Math.round(parseFloat(dataset[set].high[step4][1]));
                     }
                 }
-                
             }
 
-            cumulative.natural_dispersion += cumulative.sedimentation;
-            cumulative.natural_dispersion += cumulative.dissolution;
-            low.natural_dispersion += low.sedimentation;
-            low.natural_dispersion += low.dissolution;
-            high.natural_dispersion += high.sedimentation;
-            high.natural_dispersion += high.dissolution;
-            report.natural_dispersion += report.sedimentation;
-            report.natural_dispersion += report.dissolution;
-
-            var converter = new nucos.OilQuantityConverter();
-            for(var value in report){
-                report[value] = Math.round(converter.Convert(report[value], 'kg', api, 'API degree', units));
-            }
-            for(var value2 in cumulative){
-                cumulative[value2] = Math.round(converter.Convert(cumulative[value2], 'kg', api, 'API degree', units));
-                low[value2] = Math.round(converter.Convert(low[value2], 'kg', api, 'API degree', units));
-                high[value2] = Math.round(converter.Convert(high[value2], 'kg', api, 'API degree', units));
-            }
+            cumulative.other_natural += cumulative.sedimentation;
+            cumulative.other_natural += cumulative.dissolution;
+            low.other_natural += low.sedimentation;
+            low.other_natural += low.dissolution;
+            high.other_natural += high.sedimentation;
+            high.other_natural += high.dissolution;
+            report.other_natural += report.sedimentation;
+            report.other_natural += report.dissolution;
             
             var compiled = _.template(ICSTemplate, {
                 report: report,
