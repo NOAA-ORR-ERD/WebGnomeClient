@@ -169,7 +169,6 @@ define([
         },
 
         update: function(){
-            console.trace();
             var search = {
                 text: $.trim(this.$('#search').val()),
                 category: {'parent': this.$('select.chosen-select option:selected').parent().attr('label'),
