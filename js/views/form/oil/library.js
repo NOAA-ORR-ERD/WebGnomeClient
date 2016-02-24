@@ -12,8 +12,9 @@ define([
     'views/form/oil/table',
     'views/modal/loading',
     'views/form/oil/specific',
-    'text!templates/form/oil.html'
-], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate){
+    'text!templates/form/oil.html',
+    'sweetalert'
+], function($, _, Backbone, module, chosen, moment, jqueryui, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate, swal){
     'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',
@@ -248,9 +249,17 @@ define([
                         success: _.bind(function(){
                             this.hide();
                             this.trigger('save');
+                        }, this),
+                        error: _.bind(function(){
+                            swal({
+                                title: 'Failed to load selected Oil',
+                                text: this.model.get('substance').get('name') + ' data quality is poor and will not work properly if applied to the model.',
+                                type: 'error',
+                                confirmButtonText: 'Ok',
+                                closeOnConfirm: true
+                            });
                         }, this)
                     });
-                    
                 }, this)
             });
         },

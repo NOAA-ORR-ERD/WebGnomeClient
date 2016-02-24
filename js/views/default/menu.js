@@ -27,7 +27,8 @@ define([
         initialize: function() {
             this.render();
             this.contextualize();
-            //webgnome.model.on('change', this.contextualize, this);
+            // webgnome.model.on('change', this.contextualize, this);
+            webgnome.cache.on('reset', this.contextualize, this);
         },
 
         events: {
@@ -94,7 +95,6 @@ define([
 
         rewind: function(){
             webgnome.cache.rewind();
-            this.contextualize();
         },
 
         newModel: function(event){
