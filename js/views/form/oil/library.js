@@ -72,7 +72,7 @@ define([
                     this.loadingGif.hide();
                 }
 
-                $('body').one('shown.bs.modal', _.bind(function(){
+                this.$el.one('shown.bs.modal', _.bind(function(){
                     this.$('.backOil').hide();
                     // Initialize the select menus of class chosen-select to use the chosen jquery plugin
 
