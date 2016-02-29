@@ -60,7 +60,7 @@ define([
         },
 
         render: function(options){
-            if(this.oilTable.ready){
+            if(this.oilTable.ready && this.oilDistinct.ready){
                 // Template in oilTable's html to oilLib's template prior to render call
 
                 this.body = _.template(OilTemplate, {
@@ -98,6 +98,7 @@ define([
                 FormModal.prototype.render.call(this, options);
             } else {
                 this.oilTable.on('ready', this.render, this);
+                this.oilDistinct.on('ready', this.render, this);
             }
         },
 
