@@ -19,7 +19,7 @@ define([
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',
         name: 'oillib',
-        title: 'Oil Query Form',
+        title: 'Oil Library',
         size: 'lg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
         
