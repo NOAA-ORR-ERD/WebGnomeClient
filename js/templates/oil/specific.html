@@ -16,9 +16,6 @@
     	    <li class="distillation">
     	        <a href="#distillation_{{ viewName }}" data-toggle="tab">Distillation</a>
     	    </li>
-    	    <li class="moreproperties">
-    	    	<a href="#moreproperties_{{ viewName }}" data-toggle="tab">More Properties</a>
-    	    </li>
     	</ul>
 
     	<div class="tab-content">
@@ -71,12 +68,30 @@
 
     		<div class="tab-pane" id="properties_{{ viewName }}">
     			<div class="row">
-    				<div class="col-md-12">
+    				<div class="col-md-6">
     					<div><label>API:</label> {{ data.api }}</div>
     				</div>
-    				<div class="col-md-12">
+    				<div class="col-md-6">
     					<div><label>Pour Point:</label> {{ data.pour_point_min_k }} {{ data.pour_point_max_k }} </div>
     				</div>
+                    <div class="col-md-6">
+                        <label class="info" title="At a certain temperature,  vaporizing oil or oil product may reach  a vapor  concentration large enough to  sustain combustion. This temperature is called the flash point.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Flash Point:
+                        </label>
+                        {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="info" title="Some oils will only form a stable emulsion when a certain ratio of aromatic  fraction to asphaltene fraction is present in the spilled oil. The aromatic /asphaltene fraction changes as the aromatics evaporate. The emulsion constant records the fraction of the oil that must evaporate before the oil emulsifies.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
+                        </label>
+                        {{ data.bullwinkle_fraction }}
+                    </div>
+                    <div class="col-md-12">
+                        <label class="info" title="Beached oil will have different levels of stickiness on the shoreline.  This dimensionless measure is called adhesion.  Adhesion equals zero if the oil will not stick at all and 1 if it adheres completely.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Adhesion:
+                        </label>
+                         {{ data.adhesion_kg_m_2 }}
+                    </div>
     				<div class="col-md-6">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
@@ -142,6 +157,71 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+                                <span class="info" title="The attractive force exerted upon the surface molecules of a liquid by the molecules beneath to make the liquid have the least  interfacial surface area. A typical oil-water surface tension is 30 dynes/cm. Chemical dispersants reduce surface tension.">
+                                    Interfacial Tension (Dynes/cm) 
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension_n_m }}</div>
+                                <div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension_n_m }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+                                Metals (ppm)
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-6"><label>Nickel:</label> {{ data.nickel_ppm }}</div>
+                                <div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium_ppm }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+                                Group Analysis (weight %)
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-6">
+                                    <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> Saturates:
+                                    </label> 
+                                    {{ data.saturates_fraction }}
+                                </div>
+                                <div class="col-md-6"><label>Polars:</label> {{ data.polars_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        Aromatics:
+                                    </label> 
+                                    {{ data.aromatics_fraction }}
+                                </div>
+                                <div class="col-md-6"><label>Benzene:</label> {{ data.benzene_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        Resins:
+                                    </label> 
+                                    {{ data.resins_fraction }}
+                                </div>
+                                <div class="col-md-6"><label>Sulfur:</label> {{ data.sulphur_fraction }}</div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        Asphaltenes:
+                                    </label> 
+                                    {{ data.asphaltenes_fraction }}</div>
+                                <div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins_fraction }}</div>
+                                <div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content_fraction }}</div>
+                            </div>
+                        </div>
+                    </div>
     			</div>
     		</div>
 
@@ -173,94 +253,6 @@
         				{% } %}
                     </div>
     			</div>
-    		</div>
-
-    		<div class="tab-pane" id="moreproperties_{{ viewName }}">
-    			<div class="row">
-					<div class="col-md-6">
-                        <label class="info" title="At a certain temperature,  vaporizing oil or oil product may reach  a vapor  concentration large enough to  sustain combustion. This temperature is called the flash point.">
-                            <span class="glyphicon glyphicon-info-sign"></span> Flash Point:
-                        </label>
-                        {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
-                    </div>
-					<div class="col-md-6">
-                        <label class="info" title="Some oils will only form a stable emulsion when a certain ratio of aromatic  fraction to asphaltene fraction is present in the spilled oil. The aromatic /asphaltene fraction changes as the aromatics evaporate. The emulsion constant records the fraction of the oil that must evaporate before the oil emulsifies.">
-                            <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
-                        </label>
-                        {{ data.bullwinkle_fraction }}
-                    </div>
-    				<div class="col-md-12">
-                        <label class="info" title="Beached oil will have different levels of stickiness on the shoreline.  This dimensionless measure is called adhesion.  Adhesion equals zero if the oil will not stick at all and 1 if it adheres completely.">
-                            <span class="glyphicon glyphicon-info-sign"></span> Adhesion:
-                        </label>
-                         {{ data.adhesion_kg_m_2 }}
-                    </div>
-                    <div class="col-md-12">
-                        <div class="panel complete panel-default">
-                            <div class="panel-heading">
-                                <span class="info" title="The attractive force exerted upon the surface molecules of a liquid by the molecules beneath to make the liquid have the least  interfacial surface area. A typical oil-water surface tension is 30 dynes/cm. Chemical dispersants reduce surface tension.">
-                                    Interfacial Tension (Dynes/cm) 
-                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                </span>
-                            </div>
-                            <div class="panel-body">
-            					<div class="col-md-6"><label>Oil-Water:</label> {{ data.oil_water_interfacial_tension_n_m }}</div>
-            					<div class="col-md-6"><label>Oil-Seawater:</label> {{ data.oil_seawater_interfacial_tension_n_m }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-    					<div class="panel complete panel-default">
-                            <div class="panel-heading">
-                                Metals (ppm)
-                            </div>
-                            <div class="panel-body">
-            					<div class="col-md-6"><label>Nickel:</label> {{ data.nickel_ppm }}</div>
-            					<div class="col-md-6"><label>Vanadium:</label> {{ data.vanadium_ppm }}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-    					<div class="panel complete panel-default">
-                            <div class="panel-heading">
-                                Group Analysis (weight %)
-                            </div>
-                            <div class="panel-body">
-                                <div class="col-md-6">
-                                    <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> Saturates:
-                                    </label> 
-                                    {{ data.saturates_fraction }}
-                                </div>
-                                <div class="col-md-6"><label>Polars:</label> {{ data.polars_fraction }}</div>
-            					<div class="col-md-6">
-                                    <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> 
-                                        Aromatics:
-                                    </label> 
-                                    {{ data.aromatics_fraction }}
-                                </div>
-                                <div class="col-md-6"><label>Benzene:</label> {{ data.benzene_fraction }}</div>
-                                <div class="col-md-6">
-                                    <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
-                                        <span class="glyphicon glyphicon-info-sign"></span>
-                                        Resins:
-                                    </label> 
-                                    {{ data.resins_fraction }}
-                                </div>
-                                <div class="col-md-6"><label>Sulfur:</label> {{ data.sulphur_fraction }}</div>
-                                <div class="col-md-6">
-                                    <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> 
-                                        Asphaltenes:
-                                    </label> 
-                                    {{ data.asphaltenes_fraction }}</div>
-                                <div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins_fraction }}</div>
-                                <div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content_fraction }}</div>
-                            </div>
-                        </div>
-                    </div>
-        		</div>
     		</div>
     	</div>
         <div class="pull-right">
