@@ -8,12 +8,17 @@ define([
     var oilDistinct = Backbone.Collection.extend({
         initialize: function(cb){
             this.fetch({
-                success: cb
+                success: _.bind(this.setReady, this)
             });
         },
         
         url: function(){
             return webgnome.config.oil_api + '/distinct';
+        },
+
+        setReady: function(){
+            this.ready = true;
+            this.trigger('ready');
         },
 
         sync: function(method, model, options){

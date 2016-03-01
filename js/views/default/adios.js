@@ -86,17 +86,15 @@ define([
         clickSubstance: function(){
             var spills = webgnome.model.get('spills');
             var element_type;
-            if(spills.length > 0){
+            if(webgnome.model.getElementType()){
                 element_type = webgnome.model.getElementType();
             } else {
                 element_type = new ElementType();
             }
             var oilLib = new OilLibraryView({}, element_type);
             oilLib.on('save wizardclose', _.bind(function(){
-                element_type.save().always(_.bind(function(){
-                    webgnome.obj_ref[element_type.id] = element_type;
-                    this.render();
-                }, this));
+                webgnome.obj_ref[element_type.id] = element_type;
+                this.render();
                 oilLib.close();
             }, this));
             oilLib.render();
