@@ -570,6 +570,11 @@ define([
         close: function(){
             $('.xdsoft_datetimepicker:last').remove();
             $('.modal').off('scroll', this.variableWindStickyHeader);
+            
+            if(this.nws){
+                this.nws.cancel();
+            }
+
             this.ol.close();
             FormModal.prototype.close.call(this);
         },
