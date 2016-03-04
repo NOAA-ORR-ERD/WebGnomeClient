@@ -38,7 +38,14 @@ define([
                     options.data.longitude = this.get('lon');
                 }
                 this.fetching = true;
-                Backbone.Model.prototype.fetch.call(this, options);
+                this.request = Backbone.Model.prototype.fetch.call(this, options);
+            }
+        },
+
+        cancel: function(){
+            if(this.fetching && this.request){
+                this.request.abort();
+                this.resetFetch();
             }
         },
 

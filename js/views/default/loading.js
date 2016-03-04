@@ -12,7 +12,7 @@ define([
 
         render: function(){
             if($('.app-state.loading').length === 0 && $('.loading-modal').length === 0){
-                this.$el.append('Loading...');
+                this.$el.append('<div class="spinner"></div>Loading');
                 $('body').append(this.$el);
             }
         }
