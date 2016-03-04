@@ -54,6 +54,10 @@ define([
                 // TODO: should use a cache for generated styles.
                 // total of 4 unique styles can be returned.
                 // red "x" | black "x" | red "o" | black "o"
+                // 
+                if(!_.has(webgnome.styleCache, 'elements')){
+                    webgnome.styleCache.elements = {};
+                }
 
                 var color = 'rgba(0, 0, 0, 1)';
                 if(feature.get('sc_type') === 'uncertain'){
@@ -64,35 +68,44 @@ define([
                 if(feature.get('status_code') === 3){
                     // 3 = on land
                     // x
-                    style = new ol.style.Style({
-                        image: new ol.style.RegularShape({
-                            fill: new ol.style.Fill({
-                                color: color
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: color,
-                                width: 2
-                            }),
-                            points: 4,
-                            radius: 4,
-                            radius2: 0,
-                            angle: Math.PI / 4
-                        })
-                    });
+                    if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_land')){
+                        webgnome.styleCache.elements[feature.get('sc_type') + '_land'] = style = new ol.style.Style({
+                            image: new ol.style.RegularShape({
+                                fill: new ol.style.Fill({
+                                    color: color
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: color,
+                                    width: 2
+                                }),
+                                points: 4,
+                                radius: 4,
+                                radius2: 0,
+                                angle: Math.PI / 4
+                            })
+                        });
+                    } else {
+                        style = webgnome.styleCache.elements[feature.get('sc_type') + '_land'];
+                    }
                 } else {
                     // everything else should be visualized as a dot.
                     // o
-                    style = new ol.style.Style({
-                        image: new ol.style.Circle({
-                            fill: new ol.style.Fill({
-                                color: 'rgba(0, 0, 0, .75)'
-                            }),
-                            radius: 1,
-                            stroke: new ol.style.Stroke({
-                                color: color
+                    if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_dot')){
+                        webgnome.styleCache.elements[feature.get('sc_type') + '_dot'] = style = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(0, 0, 0, .75)'
+                                }),
+                                radius: 1,
+                                stroke: new ol.style.Stroke({
+                                    color: color
+                                })
                             })
-                        })
-                    });
+                        });
+                    } else {
+                        style = webgnome.styleCache.elements[feature.get('sc_type') + '_dot'];
+                    }
+                    
                 }
 
                 return [style];
