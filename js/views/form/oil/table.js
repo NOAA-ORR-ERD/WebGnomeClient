@@ -23,7 +23,7 @@ define([
         initialize: function(elementModel){
             this.oilLib = new OilLib();
             this.model = elementModel;
-            this.oilLib.on('ready', this.sortTable, this);
+            this.oilLib.once('ready', this.sortTable, this);
             this.oilLib.once('ready', this.setReady, this);
             this.on('sort', this.sortTable);
         },
