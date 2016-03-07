@@ -14,7 +14,7 @@ define([
             'area_units': 'm^2',
             'thickness_units': 'cm',
             'wind': null,
-            'efficiency': null
+            'efficiency': 0.20
         },
 
         model: {

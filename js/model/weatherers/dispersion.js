@@ -10,7 +10,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',
-            'efficiency': null,
+            'efficiency': 0.20,
             'fraction_sprayed': 0
         },
 
