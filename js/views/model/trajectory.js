@@ -320,7 +320,30 @@ define([
                 style: this.styles.elements
             });
 
-            
+            var coords = webgnome.model.get('map').get('spillable_area');
+            var feature = new ol.Feature({
+                geometry: new ol.geom.MultiPolygon([coords]).transform('EPSG:4326', 'EPSG:3857')
+            });
+            this.spillableAreaSource = new ol.source.Vector({
+                features: [feature]
+            });
+
+            this.SpillableArea = new ol.layer.Image({
+                name: 'spillableArea',
+                source: new ol.source.ImageVector({
+                        source: this.spillableAreaSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [175, 224, 230, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [175, 238, 238, 0.75],
+                                width: 1
+                            })
+                        })
+                    })
+            });
+
             this.CurrentLayer = new ol.layer.Image({
                 name: 'currents',
                 source: new ol.source.ImageVector({
@@ -445,6 +468,7 @@ define([
                         this.ol.map.addLayer(this.IceLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
+                        this.ol.map.addLayer(this.SpillableArea);
 
                         // this.ol.map.on('pointermove', this.spillHover, this);
                         // this.ol.map.on('click', this.spillClick, this);
