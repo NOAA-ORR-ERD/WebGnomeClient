@@ -74,6 +74,7 @@ define([
             this.renderSpillFeature();
             this.toggleSpill();
             this.locationSelect();
+            this.renderSpillableArea();
             this.addMapControls();
         },
 
@@ -235,6 +236,38 @@ define([
             this.spillMapView.map.addInteraction(modify);
             this.modifyInteraction = modify;
             this.modifyInteraction.on('modifyend', _.bind(this.modifyEndCallback, this));
+        },
+
+        renderSpillableArea: function(e) {
+            if (['gnome.map.MapFromBNA', 'gnome.map.ParamMap'].indexOf(webgnome.model.get('map').get('obj_type')) !== -1) {
+                var coords = webgnome.model.get('map').get('spillable_area');
+                var feature = new ol.Feature({
+                    geometry: new ol.geom.MultiPolygon([coords]).transform('EPSG:4326', 'EPSG:3857')
+                });
+                this.spillableAreaSource = new ol.source.Vector({
+                    features: [feature]
+                });
+
+                this.spillableAreaLayer = new ol.layer.Image({
+                    name: 'spillableArea',
+                    source: new ol.source.ImageVector({
+                        source: this.spillableAreaSource,
+                        style: new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [175, 224, 230, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [175, 238, 238, 0.75],
+                                width: 1
+                            })
+                        })
+                    })
+                });
+
+                if (this.spillMapView.map) {
+                    this.spillMapView.map.getLayers().insertAt(1, this.spillableAreaLayer);
+                }
+            }
         },
 
         modifyEndCallback: function(e) {
