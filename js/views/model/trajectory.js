@@ -277,7 +277,7 @@ define([
 
             this.ol = new OlMapView({
                 controls: 'full',
-                renderer: 'canvas',
+                renderer: 'webgl',
                 layers: [
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'}),
@@ -320,9 +320,13 @@ define([
                 style: this.styles.elements
             });
 
-            this.CurrentLayer = new ol.layer.Vector({
+            
+            this.CurrentLayer = new ol.layer.Image({
                 name: 'currents',
-                style: this.styles.currents
+                source: new ol.source.ImageVector({
+                    source: new ol.source.Vector(),
+                    style: this.styles.currents
+                })
             });
 
             this.IceLayer = new ol.layer.Image();
@@ -658,7 +662,12 @@ define([
                 distance: 30
             });
 
-            this.CurrentLayer.setSource(cur_cluster);
+            var cur_image = new ol.source.ImageVector({
+                source: cur_cluster,
+                style: this.styles.currents
+            });
+
+            this.CurrentLayer.setSource(cur_image);
         },
 
         renderIce: function(step){
