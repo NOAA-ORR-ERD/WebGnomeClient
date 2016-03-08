@@ -96,9 +96,13 @@ define([
                 }, this));
 
                 FormModal.prototype.render.call(this, options);
+            } else if (!this.oilTable.ready) {
+                this.oilTable.once('ready', this.render, this);
+            } else if (!this.oilDistinct.ready) {
+                this.oilDistinct.once('ready', this.render, this);
             } else {
-                this.oilTable.on('ready', this.render, this);
-                this.oilDistinct.on('ready', this.render, this);
+                this.oilTable.once('ready', this.render, this);
+                this.oilDistinct.once('ready', this.render, this);
             }
         },
 

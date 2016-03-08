@@ -13,7 +13,6 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
         events: function(){
             return _.defaults({
-                'click .slidertoggle': 'toggleEfficiencySlider',
                 'click .delete': 'deleteResponse'
             }, FormModal.prototype.events);
         },
@@ -42,6 +41,7 @@ define([
             if (commonWeatherers.length > 0){
                 value = commonWeatherers[0].get('efficiency');
                 this.model.set('efficiency', value);
+                value *= 100;
             } else {
                 value = 20;
             }
@@ -61,13 +61,13 @@ define([
                 }, this)
             });
 
-            if (_.isNull(this.model.get('efficiency'))){
-                this.$('.slidertoggle')[0].checked = true;
-                this.toggleEfficiencySlider();
+            if (this.model.get('efficiency') === 0.20){
+                //this.$('.slidertoggle')[0].checked = true;
+                //this.toggleEfficiencySlider();
             }
 
             this.updateEfficiency();
-            this.setEfficiencySlider();
+            //this.setEfficiencySlider();
         },
 
         update: function(){
@@ -119,28 +119,6 @@ define([
             this.$('#rate-tooltip').text(value);
             this.updateTooltipWidth();
             this.model.set('efficiency', value / 100);
-        },
-
-        toggleEfficiencySlider: function(){
-            if (this.$('.slidertoggle').is(':checked')){
-                this.$('.slider').slider({disabled: true});
-                this.model.set('efficiency', null);
-            } else {
-                this.$('.slider').slider({disabled: false});
-                this.model.set('efficiency', parseFloat(this.$('.slider').slider('value')) / 100);
-            }
-        },
-
-        setEfficiencySlider: function(){
-            if (!_.isNull(this.model.get('efficiency'))){
-                var val = parseInt(this.model.get('efficiency') * 100, 10);
-                this.$('.slider').slider('value', val);
-                this.$('#rate-tooltip').text(val);
-            } else {
-                this.$('.slidertoggle').prop('checked', true);
-                this.$('.slider').slider('value', 20);
-                this.toggleEfficiencySlider();
-            }
         },
 
         deleteResponse: function(){
