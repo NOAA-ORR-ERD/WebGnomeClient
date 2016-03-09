@@ -331,17 +331,19 @@ define([
             this.SpillableArea = new ol.layer.Image({
                 name: 'spillableArea',
                 source: new ol.source.ImageVector({
-                        source: this.spillableAreaSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [175, 224, 230, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [175, 238, 238, 0.75],
-                                width: 1
-                            })
+                    source: this.spillableAreaSource,
+                    style: new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: [175, 224, 230, 0.6]
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: [175, 238, 238, 0.75],
+                            width: 1
                         })
                     })
+                }),
+                visible: false
+
             });
 
             this.CurrentLayer = new ol.layer.Image({
