@@ -55,7 +55,7 @@ define([
             if(this.attributes){
                 this.attributes.remove();
             }
-            this.attributes = new AttributesView({model: this.model});
+            this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
             this.$('.modal-body').append(this.attributes.$el);
         },
 
