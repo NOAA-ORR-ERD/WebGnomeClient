@@ -10,23 +10,19 @@ define([
         urlRoot: '/element_type/',
 
         model: {
-            substance: GnomeSubstance
+            substance: GnomeSubstance,
+            initializers: {
+                'gnome.spill.elements.initializers.InitWindages': GnomeWindages
+            }
         },
 
         defaults: {
             'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
             'substance': null,
-            'initializers': [
-                {
-                    'windage_range': [
-                         0.01,
-                         0.04
-                    ],
-                    'obj_type': 'gnome.spill.elements.InitWindages',
-                    'windage_persist': 900
-                }
-            ]
+            'initializers': new Backbone.Collection([
+                new GnomeWindages()
+            ])
         },
         
         validate: function(attrs, options){
