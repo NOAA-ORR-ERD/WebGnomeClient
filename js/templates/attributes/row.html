@@ -3,6 +3,13 @@
         <label class="control-label">{{ name }}</label>
     </td>
     <td>
-        <input type="text" data-attribute="{{ name }}" value="{{ value }}" class="form-control input-sm" />
+        {% if(type === 'number' || type === 'text') { %}
+            <input type="{{ type }}" data-attribute="{{ name }}" value="{{ value }}" class="form-control input-sm" />
+        {% } else { %}
+            <select data-attribute="{{ name }}" class="form-control input-sm">
+                <option>{{ value }}</option>
+                <option>{{ value ? 'false' : 'true' }}</option>
+            </select>
+        {% } %}
     </td>
 </tr>

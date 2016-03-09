@@ -9,7 +9,7 @@ define([
         className: 'table table-condensed table-striped',
 
         events: {
-            'change input': 'update'
+            'change input,select': 'update',
         },
 
         initialize: function(options){
@@ -40,15 +40,26 @@ define([
                 if(ignore.indexOf(attr) === -1 &&
                     !_.isObject(this.model.attributes[attr]) &&
                     !_.isArray(this.model.attributes[attr])){
+
+                    var type = 'text';
                     var value = this.model.attributes[attr];
-                    this.$el.append(_.template(RowTemplate, {name: attr, value: value}));
+                    if(_.isNumber(value)){
+                        type = 'number';
+                    } else if (_.isBoolean(value)){
+                        type = 'boolean';
+                    }
+                    this.$el.append(_.template(RowTemplate, {name: attr, value: value, type: type}));
                 }
             }
         },
 
         update: function(e){
-            var attribute = $(e.currentTarget).data('attribute');
-            var value = $(e.currentTarget).val();
+            var attribute = this.$(e.currentTarget).data('attribute');
+            var value = this.$(e.currentTarget).val();
+            var type = this.$(e.currentTarget).attr('type');
+            if(type === 'number'){
+                value = parseFloat(value);
+            }
             this.model.set(attribute, value, {silent: true});
         }
     });
