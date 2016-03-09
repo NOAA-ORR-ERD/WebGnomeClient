@@ -133,6 +133,7 @@ define([
                 this.updateWater();
                 this.updateSpill();
                 this.updateCurrent();
+                this.updateDiffusion();
                 this.updateObjects();
             }, this), 1);
 
@@ -727,6 +728,17 @@ define([
             return data;
         },
 
+        updateDiffusion: function() {
+            var diffusion = webgnome.model.get('movers').filter(function(model){
+                return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
+            });
+            
+            if (diffusion.length > 0) {
+                this.$('.diffusion .panel').addClass('complete');
+            }
+
+        },
+        
         updateSpill: function(){
             var spills = webgnome.model.get('spills');
             spills.forEach(function(spill){

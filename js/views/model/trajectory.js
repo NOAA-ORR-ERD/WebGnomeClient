@@ -459,6 +459,7 @@ define([
                         });
 
                         if(this.ol.map){
+                            this.ol.map.addLayer(this.SpillableArea);
                             this.ol.map.addLayer(this.shorelineLayer);
                             this.ol.setMapOrientation();
                         }
@@ -468,7 +469,7 @@ define([
                         this.ol.map.addLayer(this.IceLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
-                        this.ol.map.addLayer(this.SpillableArea);
+                        
 
                         // this.ol.map.on('pointermove', this.spillHover, this);
                         // this.ol.map.on('click', this.spillClick, this);
