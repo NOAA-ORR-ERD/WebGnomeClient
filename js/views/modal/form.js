@@ -4,8 +4,9 @@ define([
     'backbone',
     'views/modal/base',
     'text!templates/default/alert-danger.html',
-    'views/default/help'
-], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView){
+    'views/default/help',
+    'views/attributes/attributes',
+], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView, AttributesView){
     'use strict';
     var formModal = BaseModal.extend({
         className: 'modal form-modal',
@@ -40,6 +41,22 @@ define([
         selectContents: function(e){
             e.preventDefault();
             this.$(e.target).select();
+        },
+
+        render: function(){
+            BaseModal.prototype.render.call(this);
+            if(this.model){
+                this.renderAttributes();
+                this.model.on('change', this.renderAttributes, this);
+            }
+        },
+
+        renderAttributes: function(){
+            if(this.attributes){
+                this.attributes.remove();
+            }
+            this.attributes = new AttributesView({model: this.model});
+            this.$('.modal-body').append(this.attributes.$el);
         },
 
         stickyFooter: function(){
@@ -198,6 +215,9 @@ define([
             this.remove();
             this.unbind();
             this.$el.off('scroll');
+            if(this.model){
+                this.model.off('change', this.renderAttributes, this);
+            }
         }
     });
 
