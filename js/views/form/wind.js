@@ -508,7 +508,7 @@ define([
                 });
                 html = html + template;
             });
-            this.$('table tbody').html(html);
+            this.$('table:first tbody').html(html);
         },
 
         variableFormValidation: function(entry){
