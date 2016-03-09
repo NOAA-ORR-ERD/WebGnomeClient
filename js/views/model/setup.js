@@ -23,6 +23,7 @@ define([
     'model/environment/water',
     'views/form/water',
     'text!templates/panel/water.html',
+    'text!templates/panel/diffusion.html',
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spill.html',
@@ -54,7 +55,7 @@ define([
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel, GnomeForm,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
-    WaterModel, WaterForm, WaterPanelTemplate,
+    WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
@@ -750,9 +751,22 @@ define([
             var diffusion = webgnome.model.get('movers').filter(function(model){
                 return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
             });
+            var compiled;
+
+            console.log(diffusion);
             
             if (diffusion.length > 0) {
                 this.$('.diffusion .panel').addClass('complete');
+                compiled = _.template(DiffusionPanelTemplate, {
+                    diffusion: diffusion
+                });
+                this.$('.diffusion').removeClass('col-md-3').addClass('col-md-5');
+                this.$('.diffusion .panel-body').html(compiled);
+                this.$('.diffusion .panel-body').show();
+            } else {
+                this.$('.diffusion').removeClass('col-md-5').addClass('col-md-3');
+                this.$('.diffusion .panel-body').html('');
+                this.$('.diffusion .panel-body').hide();
             }
 
         },

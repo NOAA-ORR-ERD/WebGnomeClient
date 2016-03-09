@@ -1,3 +1,14 @@
 <div class="diffusion-list">
 {% for (var i = 0; i < diffusion.length; i++){ %}
 	<div class="single row" data-id="{{ diffusion[i].get('id') }}">
+		<div class="col-sm-10">
+			<h5>{{ diffusion[i].get('name') }}</h5>
+			<span class="label label-default amount">{{ diffusion[i].get('diffusion_coef') }} cm^2 / s</span>
+		</div>
+		<div class="col-sm-2">
+            <span class="trash" title="Remove {{ diffusion[i].get('name') }}"></span>
+            <span class="edit" title="Edit {{ diffusion[i].get('name') }}"></span>
+        </div>
+    </div>
+{% } %}
+</div>
