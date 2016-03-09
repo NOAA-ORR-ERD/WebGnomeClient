@@ -254,7 +254,7 @@ define([
                         source: this.spillableAreaSource,
                         style: new ol.style.Style({
                             fill: new ol.style.Fill({
-                                color: [175, 224, 230, 0.6]
+                                color: [175, 224, 230, 0.1]
                             }),
                             stroke: new ol.style.Stroke({
                                 color: [65, 105, 225, 0.75],

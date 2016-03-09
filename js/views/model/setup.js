@@ -753,19 +753,17 @@ define([
                 return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
             });
             var compiled;
-
-            console.log(diffusion);
             
             if (diffusion.length > 0) {
                 this.$('.diffusion .panel').addClass('complete');
                 compiled = _.template(DiffusionPanelTemplate, {
                     diffusion: diffusion
                 });
-                this.$('.diffusion').removeClass('col-md-3').addClass('col-md-5');
+                this.$('.diffusion').removeClass('col-md-3').addClass('col-md-6');
                 this.$('.diffusion .panel-body').html(compiled);
                 this.$('.diffusion .panel-body').show();
             } else {
-                this.$('.diffusion').removeClass('col-md-5').addClass('col-md-3');
+                this.$('.diffusion').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.diffusion .panel-body').html('');
                 this.$('.diffusion .panel-body').hide();
             }
