@@ -5,11 +5,13 @@
     <td>
         {% if(type === 'number' || type === 'text') { %}
             <input type="{{ type }}" data-attribute="{{ name }}" value="{{ value }}" class="form-control input-sm" />
-        {% } else { %}
+        {% } else if (type === 'boolean') { %}
             <select data-attribute="{{ name }}" class="form-control input-sm">
                 <option>{{ value }}</option>
                 <option>{{ value ? 'false' : 'true' }}</option>
             </select>
+        {% } else if(type === 'array'){ %}
+            <input type="{{ type }}" data-attribute="{{ name }}" class="form-control input-sm" value="{{ value }}" />
         {% } %}
     </td>
 </tr>

@@ -38,8 +38,9 @@ define([
 
             for(var attr in this.model.attributes){
                 if(ignore.indexOf(attr) === -1 &&
-                    !_.isObject(this.model.attributes[attr]) &&
-                    !_.isArray(this.model.attributes[attr])){
+                    !_.isObject(this.model.attributes[attr]) ||
+                    ignore.indexOf(attr) === -1 &&
+                    _.isArray(this.model.attributes[attr])){
 
                     var type = 'text';
                     var value = this.model.attributes[attr];
@@ -47,6 +48,8 @@ define([
                         type = 'number';
                     } else if (_.isBoolean(value)){
                         type = 'boolean';
+                    } else if(_.isArray(value)){
+                        type = 'array';
                     }
                     this.$el.append(_.template(RowTemplate, {name: attr, value: value, type: type}));
                 }
@@ -59,6 +62,8 @@ define([
             var type = this.$(e.currentTarget).attr('type');
             if(type === 'number'){
                 value = parseFloat(value);
+            } else if (type === 'array'){
+                value = JSON.parse('[' + value + ']');
             }
             this.model.set(attribute, value, {silent: true});
         }
