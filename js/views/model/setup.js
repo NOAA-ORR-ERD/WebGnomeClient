@@ -11,6 +11,7 @@ define([
     'nucos',
     'text!templates/model/setup.html',
     'model/gnome',
+    'views/form/model',
     'model/environment/wind',
     'model/movers/wind',
     'views/form/wind',
@@ -50,7 +51,7 @@ define([
     'flotgantt',
     'flotextents',
     'flotnavigate'
-], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel,
+], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel, GnomeForm,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate,
@@ -85,7 +86,8 @@ define([
                 'blur input': 'updateModel',
                 'click .eval': 'evalModel',
                 'click .rewind': 'rewindClick',
-                'click .beached .add': 'clickBeached'
+                'click .beached .add': 'clickBeached',
+                'click .advanced-edit': 'clickModel'
             }, BaseView.prototype.events);
         },
 
@@ -316,6 +318,16 @@ define([
             this.$('h2:first .gnome-help').tooltip();
         },
 
+        clickModel: function(){
+            var form = new GnomeForm(null, webgnome.model);
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                this.$el.html('');
+                this.render();
+            }, this));
+            form.render();
+        },
+
         clickDate: function(){
             this.$('.datetime').trigger('click');
         },
@@ -442,6 +454,12 @@ define([
                         return 'Create ' + object;
                     }
                 },
+                delay: delay,
+                container: 'body'
+            });
+
+            $('.panel-heading .advanced-edit').tooltip({
+                title: 'Advanced Edit',
                 delay: delay,
                 container: 'body'
             });
