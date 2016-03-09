@@ -20,13 +20,29 @@ define([
         },
 
         render: function(){
+            var ignore = [
+                'obj_type',
+                'id',
+                'map',
+                'outputter',
+                'spills',
+                'weatherers',
+                'environment',
+                'json_', 
+                'outputters',
+                'movers'
+            ];
             if(this.title){
                 this.$el.append('<h4>' + this.title + '</h4>');
             }
 
             for(var attr in this.model.attributes){
-                var value = this.model.attributes[attr];
-                this.$el.append(_.template(RowTemplate, {name: attr, value: value}));
+                if(ignore.indexOf(attr) === -1 &&
+                    !_.isObject(this.model.attributes[attr]) &&
+                    !_.isArray(this.model.attributes[attr])){
+                    var value = this.model.attributes[attr];
+                    this.$el.append(_.template(RowTemplate, {name: attr, value: value}));
+                }
             }
         },
 
