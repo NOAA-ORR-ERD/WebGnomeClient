@@ -74,6 +74,7 @@ define([
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
+                'click .diffusion .single .trash': 'deleteDiffusion',
                 'click .substance-info': 'renderOilLibrary',
                 'mouseover .spill .single': 'hoverSpill',
                 'mouseout .spill .spill-list': 'unhoverSpill',
@@ -769,6 +770,30 @@ define([
                 this.$('.diffusion .panel-body').hide();
             }
 
+        },
+
+        deleteDiffusion: function(e) {
+            e.stopPropagation();
+            var id = $(e.target).parents('.single').data('id');
+            var diffusion = webgnome.model.get('movers').get(id);
+            swal({
+                title: 'Delete "' + diffusion.get('name') + '"',
+                text: 'Are you sure you want to delete this diffusion?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if (isConfirmed) {
+                    webgnome.model.get('movers').remove(id);
+                    webgnome.model.save(null, {
+                        success: _.bind(function(){
+                            this.updateDiffusion();
+                        }, this),
+                        validate: false
+                    });
+                }
+            }, this));
         },
         
         updateSpill: function(){
