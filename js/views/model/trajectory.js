@@ -337,7 +337,7 @@ define([
                             color: [175, 224, 230, 0.6]
                         }),
                         stroke: new ol.style.Stroke({
-                            color: [175, 238, 238, 0.75],
+                            color: [65, 105, 225, 0.75],
                             width: 1
                         })
                     })
