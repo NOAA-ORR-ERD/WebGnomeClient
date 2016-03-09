@@ -10,7 +10,7 @@ define([
         className: 'attributes',
 
         events: {
-            'click .expand': 'expand'
+            'click .panel-heading': 'expand'
         },
 
         initialize: function(options){
