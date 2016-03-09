@@ -168,7 +168,7 @@ define([
                 child.set('wind', wind);
             }
 
-            if(child.get('obj_type') === 'gnome.wewatherers.cleanup.ChemicalDispersion'){
+            if(child.get('obj_type') === 'gnome.weatherers.cleanup.ChemicalDispersion'){
                 var waves = this.get('environment').findWhere({'obj_type': 'gnome.environment.waves.Waves'});
                 child.set('waves', waves);
             }
