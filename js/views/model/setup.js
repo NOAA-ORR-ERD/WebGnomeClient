@@ -767,7 +767,6 @@ define([
                 this.$('.diffusion .panel-body').html('');
                 this.$('.diffusion .panel-body').hide();
             }
-
         },
 
         deleteDiffusion: function(e) {
