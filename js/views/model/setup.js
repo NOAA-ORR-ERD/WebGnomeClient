@@ -10,6 +10,7 @@ define([
     'sweetalert',
     'nucos',
     'text!templates/model/setup.html',
+    'views/modal/form',
     'model/gnome',
     'views/form/model',
     'model/environment/wind',
@@ -52,7 +53,7 @@ define([
     'flotgantt',
     'flotextents',
     'flotnavigate'
-], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, GnomeModel, GnomeForm,
+], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate,
@@ -439,12 +440,6 @@ define([
                 show: 500,
                 hide: 100
             };
-
-            if(webgnome.model.get('map').get('obj_type').indexOf('ParamMap') !== -1){
-                this.$('.map.object .add').show();
-            } else {
-                this.$('.map.object .add').hide();
-            }
 
             $('.panel-heading .add').tooltip({
                 title: function(){
@@ -1034,9 +1029,11 @@ define([
         },
 
         updateCurrent: function(){
-            // for right now only visualize cats mover grids
             var currents = webgnome.model.get('movers').filter(function(mover){
-                return ['gnome.movers.current_movers.CatsMover', 'gnome.movers.current_movers.GridCurrentMover'].indexOf(mover.get('obj_type')) !== -1;
+                return [
+                    'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.GridCurrentMover'
+                ].indexOf(mover.get('obj_type')) !== -1;
             });
 
             if(currents.length > 0){
@@ -1064,8 +1061,12 @@ define([
                     currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
                 if(webgnome.model.get('map')){
-                    var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                    currentMap.map.getView().fit(extent, currentMap.map.getSize());
+                    if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
+                        var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
+                        currentMap.map.getView().fit(extent, currentMap.map.getSize());
+                    } else {
+                        currentMap.map.getView().setZoom(3);
+                    }
                 }
                 this.mason.layout();
             } else {
@@ -1114,12 +1115,14 @@ define([
             //     location.render();
             // }, this));
             mapForm.on('waterWorld', _.bind(function(){
-                webgnome.model.resetLocation(_.bind(function(){
-                    this.updateLocation();
-                    this.updateCurrent();
-                    this.$('.map.object .add').hide();
-                    mapForm.hide();
-                }, this));
+                webgnome.model.save({map: new MapModel()}, {
+                    validate: false,
+                    success: _.bind(function(){
+                        this.updateLocation();
+                        this.updateCurrent();
+                        mapForm.hide();
+                    }, this)
+                });
             }, this));
             mapForm.on('select', _.bind(function(form){
                 mapForm.on('hidden', _.bind(function(){
@@ -1129,11 +1132,7 @@ define([
                         webgnome.model.set('map', map);
                         webgnome.model.save(null, {validate: false});
                         this.updateLocation();
-                        if(map.get('obj_type').indexOf('ParamMap') !== -1){
-                            this.$('.object.map .add').show();
-                        } else {
-                            this.$('.object.map .add').hide();
-                        }
+                        this.updateCurrent();
                     }, this));
                 }, this));
             }, this));
@@ -1142,7 +1141,13 @@ define([
 
         editMap: function(){
             var map = webgnome.model.get('map');
-            var form = new ParamMapForm({map: map});
+            var form;
+            if(map.get('obj_type') === 'gnome.map.ParamMap'){
+                form = new ParamMapForm({map: map});
+            } else {
+                form = new FormModal({title: 'Edit Map', model: map});
+            }
+
             form.render();
             form.on('hidden', form.close);
             form.on('save', map.resetRequest, map);
