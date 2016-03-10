@@ -460,6 +460,15 @@ define([
                 container: 'body'
             });
 
+            $('.panel-heading .perm-add').tooltip({
+                title: function(){
+                    var object = $(this).parents('.panel-heading').text().trim();
+                    return 'Create ' + object;
+                },
+                delay: delay,
+                container: 'body'
+            });
+
             $('.panel-heading .advanced-edit').tooltip({
                 title: 'Advanced Edit',
                 delay: delay,
