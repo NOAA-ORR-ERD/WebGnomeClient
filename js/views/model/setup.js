@@ -79,6 +79,7 @@ define([
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
+                'click .diffusion .add': 'clickDiffusion',
                 'click .diffusion .single .edit': 'loadDiffusion',
                 'click .diffusion .single': 'loadDiffusion',
                 'click .current .add': 'clickCurrent',
@@ -763,7 +764,20 @@ define([
         },
 
         clickDiffusion: function(e) {
-            var diffusionForm = new DiffusionFormView();
+            var diffusionView = new DiffusionFormView();
+
+            diffusionView.on('wizardclose', _.bind(function(){
+                this.updateDiffusion();
+            }, this));
+            diffusionView.on('save', _.bind(function(){
+                webgnome.model.get('movers').add(diffusionView.model, {merge: true});
+                webgnome.model.save(null, {validate: false});
+                diffusionView.on('hidden', diffusionView.close);
+                this.updateDiffusion();
+            }, this));
+            diffusionView.on('wizardclose', diffusionView.close);
+
+            diffusionView.render();
         },
 
         loadDiffusion: function(e) {
