@@ -1125,7 +1125,7 @@ nav.navbar{
             }
         }
 
-        .spill, .response, .diffusion{
+        .spill, .response, .diffusion, .current{
             .panel{
                 cursor: default;
 
@@ -1175,7 +1175,7 @@ nav.navbar{
                 }
 
 
-                .spill-list, .response-list, .diffusion-list{
+                .spill-list, .response-list, .diffusion-list, .current-list{
                     h5{
                         font-weight: bold;
                         float: left;
@@ -1201,6 +1201,14 @@ nav.navbar{
                             top: 2px;
                             line-height: auto;
                         }
+                    }
+
+                    h5{
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        width: 100%;
+                        margin-right: 0;
                     }
                     
                     .edit{
@@ -1267,6 +1275,9 @@ nav.navbar{
             .add{
                 display: none;
             }
+        }
+        .current-list{
+            padding: 0 15px;
         }
     }
     
@@ -2628,7 +2639,7 @@ nav.navbar{
         }
     }
 
-    &.spilltype-form, &.responsetype-form, &.shorelinetype-form{
+    &.spilltype-form, &.responsetype-form, &.shorelinetype-form, &.current-form{
         .option{
             &.instant .icon{
                 background-image: url(/img/spill-instantaneous.png);
