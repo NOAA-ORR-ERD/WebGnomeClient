@@ -803,7 +803,6 @@ define([
                         layer.setVisible(false);
                     }
                 } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
-                    console.log('visibility fired');
                     layer.setVisible(true);
                 } else if (_.isUndefined(layer.get('id'))){
                     layer.setVisible(false);
