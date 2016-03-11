@@ -62,7 +62,7 @@
     {% if (spillValid === 'map') rowClass += 'single row error-map';  %}
     {% if (spillValid === 'info') rowClass = 'single row error-gen'; %}
 	<div class="{{ rowClass }}" data-id="{{ spills[i].get('id') }}">
-		<div class="col-sm-10">
+		<div class="col-sm-4">
             <h5>{{ spills[i].get('name') }}</h5>
             {% var amount = spills[i].get('amount'); %}
             {%     if(spills[i].get('amount_uncertainty_scale') > 0){ %}
@@ -77,6 +77,8 @@
             {%    var units = spills[i].get('units'); %}
             {%    var info = amount + ' ' + units; %}
             {% if (spillValid === 'info') info += ' (invalid amount or units)'; %}
+        </div>
+        <div class="col-sm-6">
             <span class="label label-default amount">{{ info }}</span>
             {% if (spills[i].get('release').get('start_position')){ %}
                 {% var lon = Math.round(spills[i].get('release').get('start_position')[0] * 100) / 100 %}
@@ -88,7 +90,7 @@
                 {% if (start === end ){ %}
                     {% pos = start %}
                 {% } else{ %}
-                    {% pos = start + ' - ' + end %}
+                    {% pos = start + ' to ' + end %}
                 {% } %}
                 {% if (spillValid === 'map'){ %}
                     {% pos += ' (out of map bounds)' %}

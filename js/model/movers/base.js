@@ -21,7 +21,7 @@ define([
 
         getGrid: function(callback){
             var url = this.urlRoot + this.id + '/grid';
-            if(!this.requesting && !this.requested || this.requested && this.hasChanged()){
+            if(!this.requesting && !this.requested){
                 this.requesting = true;
                 $.get(url, null, _.bind(function(geo_json){
                     this.requesting = false;

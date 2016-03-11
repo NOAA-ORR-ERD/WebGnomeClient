@@ -21,6 +21,8 @@ define([
     'views/form/map/type',
     'views/form/map/param',
     'text!templates/panel/map.html',
+    'views/form/mover/create',
+    'text!templates/panel/current.html',
     'model/environment/water',
     'views/form/water',
     'text!templates/panel/water.html',
@@ -57,6 +59,7 @@ define([
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
+    CreateMoverForm, CurrentPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate, DiffusionFormView,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
@@ -78,6 +81,10 @@ define([
                 'click .spill .single .trash': 'deleteSpill',
                 'click .diffusion .single .edit': 'loadDiffusion',
                 'click .diffusion .single': 'loadDiffusion',
+                'click .current .add': 'clickCurrent',
+                'click .current .single .edit': 'loadCurrent',
+                'click .current .single': 'loadCurrent',
+                'click .current .single .trash': 'deleteCurrent',
                 'click .diffusion .single .trash': 'deleteDiffusion',
                 'click .substance-info': 'renderOilLibrary',
                 'mouseover .spill .single': 'hoverSpill',
@@ -1057,6 +1064,65 @@ define([
             }
         },
 
+        deleteCurrent: function(e){
+            e.stopPropagation();
+            var id = $(e.target).parents('.single').data('id');
+            var spill = webgnome.model.get('movers').get(id);
+            swal({
+                title: 'Delete "' + spill.get('name') + '"',
+                text: 'Are you sure you want to delete this current?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    webgnome.model.get('movers').remove(id);
+                    webgnome.model.save(null, {
+                        success: _.bind(function(){
+                            this.updateCurrent();
+                        }, this),
+                        validate: false
+                    });
+                }
+            }, this));
+        },
+
+        clickCurrent: function(){
+            var form = new CreateMoverForm();
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(mover){
+                webgnome.model.get('movers').add(mover);
+                webgnome.model.save(null, {validate: false});
+                this.updateCurrent();
+            }, this));
+            form.render();
+        },
+
+        loadCurrent: function(e){
+            e.stopPropagation();
+            var currentId;
+            if($(e.target).hasClass('single')){
+                currentId = $(e.target).data('id');
+            } else {
+                currentId = $(e.target).parents('.single').data('id');  
+            }
+
+            var current = webgnome.model.get('movers').get(currentId);
+            var currentView = new FormModal({title: 'Edit Current', model: current});
+            
+            currentView.on('save wizardclose', _.bind(function(){
+                this.updateSpill();
+                this.renderTimeline();
+            }, this));
+            currentView.on('save', function(){
+                currentView.on('hidden', currentView.close);
+            });
+            currentView.on('wizardclose', currentView.close);
+
+            currentView.render();
+        },
+
         updateCurrent: function(){
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
@@ -1066,7 +1132,10 @@ define([
             });
 
             if(currents.length > 0){
-                this.$('.current .panel-body').show().html('<div class="map" id="mini-currentmap"></div>');
+                var compiled = _.template(CurrentPanelTemplate, {
+                    currents: currents
+                });
+                this.$('.current .panel-body').show().html(compiled);
                 this.current_layers = new ol.Collection([
                     new ol.layer.Tile({
                         source: new ol.source.MapQuest({layer: 'osm'})
