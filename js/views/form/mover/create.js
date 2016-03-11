@@ -90,8 +90,10 @@ define([
         },
 
         close: function(){
-            this.dropzone.disable();
-            $('input.dz-hidden-input').remove();
+            if(this.dropzone){
+                this.dropzone.disable();
+                $('input.dz-hidden-input').remove();
+            }
             Backbone.View.prototype.close.call(this);
         }
     });
