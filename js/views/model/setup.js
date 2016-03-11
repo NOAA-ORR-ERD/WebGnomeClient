@@ -1112,7 +1112,7 @@ define([
             var currentView = new FormModal({title: 'Edit Current', model: current});
             
             currentView.on('save wizardclose', _.bind(function(){
-                this.updateSpill();
+                this.updateCurrent();
                 this.renderTimeline();
             }, this));
             currentView.on('save', function(){
