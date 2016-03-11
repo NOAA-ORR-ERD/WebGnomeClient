@@ -9,7 +9,7 @@ define([
 
         defaults: {
             obj_type: 'gnome.movers.random_movers.RandomMover',
-            name: 'RandomMover',
+            name: 'Diffusion',
             diffusion_coef: 100000
         },
 
