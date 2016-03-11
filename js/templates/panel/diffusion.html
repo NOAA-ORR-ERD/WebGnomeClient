@@ -5,8 +5,10 @@
 		{% if (name === 'RandomMover'){ %}
 		   {% name = 'Diffusion #' + (i + 1); %}
 		{% } %}
-		<div class="col-sm-10">
+		<div class="col-sm-4">
 			<h5>{{ name }}</h5>
+		</div>
+		<div class="col-sm-6">
 			<span class="label label-default amount">{{ diffusion[i].get('diffusion_coef') }} cm^2 / s</span>
 		</div>
 		<div class="col-sm-2">
