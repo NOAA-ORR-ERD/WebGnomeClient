@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'model/movers/random',
     'views/modal/form',
     'text!templates/form/diffusion.html'
-], function($, _, Backbone, FormModal, DiffusionTemplate){
+], function($, _, Backbone, DiffusionModel, FormModal, DiffusionTemplate){
 	'use strict';
 	var diffusionForm = FormModal.extend({
 
@@ -14,10 +15,10 @@ define([
 
         initialize: function(options, diffusionModel) {
             FormModal.prototype.initialize.call(this, options);
-            if (!_.isUndefined(options.model)){
-                this.model = options.model;
-            } else {
+            if (!_.isUndefined(diffusionModel)){
                 this.model = diffusionModel;
+            } else {
+                this.model = new DiffusionModel();
             }
         },
 
