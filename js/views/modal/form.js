@@ -197,9 +197,12 @@ define([
 
         wizardclose: function(){
             if(this.model){
-                this.model.fetch();
+                this.model.fetch().always(_.bind(function(){
+                    this.trigger('wizardclose');
+                }, this));
+            } else {
+                this.trigger('wizardclose');
             }
-            this.trigger('wizardclose');
         },
 
         triggerHidden: function(){
