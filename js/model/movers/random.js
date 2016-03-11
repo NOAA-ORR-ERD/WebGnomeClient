@@ -8,7 +8,9 @@ define([
         urlRoot: '/mover/',
 
         defaults: {
-            obj_type: 'gnome.movers.random_movers.RandomMover'
+            obj_type: 'gnome.movers.random_movers.RandomMover',
+            name: 'RandomMover',
+            diffusion_coef: 100000
         },
 
         validate: function(attrs, options) {
