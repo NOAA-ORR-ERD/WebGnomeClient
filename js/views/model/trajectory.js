@@ -320,12 +320,12 @@ define([
                 style: this.styles.elements
             });
 
-            var coords = webgnome.model.get('map').get('spillable_area');
-            var feature = new ol.Feature({
-                geometry: new ol.geom.MultiPolygon([coords]).transform('EPSG:4326', 'EPSG:3857')
+            var spill_coords = webgnome.model.get('map').get('spillable_area');
+            var spill_feature = new ol.Feature({
+                geometry: new ol.geom.MultiPolygon([spill_coords]).transform('EPSG:4326', 'EPSG:3857')
             });
             this.spillableAreaSource = new ol.source.Vector({
-                features: [feature]
+                features: [spill_feature]
             });
 
             this.SpillableArea = new ol.layer.Image({
@@ -344,6 +344,31 @@ define([
                 }),
                 visible: false
 
+            });
+
+            var map_bounds = webgnome.model.get('map').get('map_bounds');
+            var map_feature = new ol.Feature({
+                geometry: new ol.geom.Polygon([map_bounds]).transform('EPSG:4326', 'EPSG:3857')
+            });
+            this.mapBoundsSource = new ol.source.Vector({
+                features: [map_feature]
+            });
+
+            this.MapBounds = new ol.layer.Image({
+                name: 'map_bounds',
+                source: new ol.source.ImageVector({
+                    source: this.mapBoundsSource,
+                    style: new ol.style.Style({
+                        fill: new ol.style.Fill({
+                            color: [255, 160, 122, 0.1]
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: [233, 150, 122, 0.75],
+                            width: 1
+                        })
+                    })
+                }),
+                visible: false
             });
 
             this.CurrentLayer = new ol.layer.Image({
@@ -461,6 +486,7 @@ define([
                         });
 
                         if(this.ol.map){
+                            this.ol.map.addLayer(this.MapBounds);
                             this.ol.map.addLayer(this.SpillableArea);
                             this.ol.map.addLayer(this.shorelineLayer);
                             this.ol.setMapOrientation();
@@ -777,6 +803,7 @@ define([
                         layer.setVisible(false);
                     }
                 } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
+                    console.log('visibility fired');
                     layer.setVisible(true);
                 } else if (_.isUndefined(layer.get('id'))){
                     layer.setVisible(false);
