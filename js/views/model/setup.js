@@ -27,6 +27,7 @@ define([
     'views/form/water',
     'text!templates/panel/water.html',
     'text!templates/panel/diffusion.html',
+    'views/form/diffusion',
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spill.html',
@@ -59,7 +60,7 @@ define([
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     CreateMoverForm, CurrentPanelTemplate,
-    WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate,
+    WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate, DiffusionFormView,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
@@ -78,6 +79,8 @@ define([
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
+                'click .diffusion .single .edit': 'loadDiffusion',
+                'click .diffusion .single': 'loadDiffusion',
                 'click .current .add': 'clickCurrent',
                 'click .current .single .edit': 'loadCurrent',
                 'click .current .single': 'loadCurrent',
@@ -676,7 +679,7 @@ define([
             if($(e.target).hasClass('single')){
                 spillId = $(e.target).data('id');
             } else {
-                spillId = $(e.target).parents('.single').data('id');  
+                spillId = $(e.target).parents('.single').data('id');
             }
 
             var spill = webgnome.model.get('spills').get(spillId);
@@ -757,6 +760,33 @@ define([
                 data[j] = amountArray;
             }
             return data;
+        },
+
+        clickDiffusion: function(e) {
+            var diffusionForm = new DiffusionFormView();
+        },
+
+        loadDiffusion: function(e) {
+            e.stopPropagation();
+            var diffusionId;
+            if ($(e.target).hasClass('single')) {
+                diffusionId = $(e.target).data('id');
+            } else {
+                diffusionId = $(e.target).parents('.single').data('id');
+            }
+
+            var diffusion = webgnome.model.get('movers').get(diffusionId);
+            var diffusionView = new DiffusionFormView(null, diffusion);
+
+            diffusionView.on('save wizardclose', _.bind(function(){
+                this.updateDiffusion();
+            }, this));
+            diffusionView.on('save', function(){
+                diffusionView.on('hidden', diffusionView.close);
+            });
+            diffusionView.on('wizardclose', diffusionView.close);
+
+            diffusionView.render();
         },
 
         updateDiffusion: function() {
