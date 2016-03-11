@@ -498,7 +498,7 @@ define([
                     velocity = low + ' - ' + high;
                 }
 
-                var date = moment(el[0]).format(webgnome.config.date_format.moment);
+                var date = moment.utc(el[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarStaticTemplate);
                 var template = compiled({
                     tsindex: index,
