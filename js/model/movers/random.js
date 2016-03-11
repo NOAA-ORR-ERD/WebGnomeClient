@@ -49,7 +49,7 @@ define([
             tree = attrs.concat(tree);
 
             return tree;
-        }  
+        }
     });
 
     return randomMover;

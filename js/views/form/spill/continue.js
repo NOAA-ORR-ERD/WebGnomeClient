@@ -114,9 +114,10 @@ define([
                     this.$('#constant-rate .slider').slider("option", "value", this.model.get('amount_uncertainty_scale') * 5);
                     this.updateAmount();
                     this.updateRate();
-                    this.updateAmountSlide();
-                    this.updateRateSlide();
                 }
+
+                this.updateAmountSlide();
+                this.updateRateSlide();
 
             } else {
                 this.model.on('ready', this.render, this);
@@ -170,8 +171,6 @@ define([
             this.model.set('amount', amount);
             this.model.set('release', release);
             BaseSpillForm.prototype.update.call(this);
-            this.updateAmountSlide();
-            this.updateRateSlide();
         },
 
         updateRate: function(){
