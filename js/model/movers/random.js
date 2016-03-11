@@ -10,7 +10,8 @@ define([
         defaults: {
             obj_type: 'gnome.movers.random_movers.RandomMover',
             name: 'Diffusion',
-            diffusion_coef: 100000
+            diffusion_coef: 100000,
+            uncertain_factor: 2
         },
 
         validate: function(attrs, options) {
