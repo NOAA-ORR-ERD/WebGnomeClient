@@ -44,7 +44,7 @@
 				<div class="form-group">
 					<label class="col-sm-5 control-label" for="amount">Amount Spilled:</label>
 					<div class="col-sm-3">
-						<input type="number" id="spill-amount" class="form-control" value="{{ amount }}">
+						<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control" id="units">
@@ -100,7 +100,7 @@
 				<div class="form-group">
 					<label class="col-sm-5 control-label" for="constant">Spill Rate:</label>
 					<div class="col-sm-3">
-						<input type="text" id="spill-rate" class="form-control">
+						<input type="number" min="0" id="spill-rate" class="form-control">
 					</div>
 					<div class="col-sm-3">
 						<select class="form-control" id="rate-units">
