@@ -5,8 +5,9 @@ define([
     'model/base',
     'model/release',
     'model/element',
-    'nucos'
-], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement, nucos){
+    'nucos',
+    'moment'
+], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement, nucos, moment){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
@@ -41,6 +42,22 @@ define([
                 this.set('units', 'kg');
             }
             this.on('change:element_type', this.addListeners, this);
+        },
+
+        parseDuration: function(){
+            var start = this.get('release').get('release_time');
+            var end = this.get('release').get('end_release_time');
+            var duration = (moment(end).unix() - moment(start).unix()) * 1000;
+            var days = 0;
+            var hours = 0;
+            if (!_.isUndefined(duration)){
+                hours = moment.duration(duration).asHours();
+                if (hours >= 24){
+                    days = parseInt(moment.duration(duration).asDays(), 10);
+                }
+                hours = hours - (days * 24);
+            }
+            return {'days': days, 'hours': hours};
         },
 
         spillType: function() {

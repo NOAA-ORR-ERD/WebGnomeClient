@@ -48,7 +48,7 @@ define([
                 var startPosition = this.model.get('release').get('start_position');
                 var endPosition = this.model.get('release').get('end_position');
                 var amount = this.model.get('amount');
-                var duration = this.parseDuration(this.model.get('release').get('release_time'), this.model.get('release').get('end_release_time'));
+                var duration = this.model.parseDuration();
                 var units = this.model.get('units');
                 var oil = this.oilDetails.get('substance') ? this.oilDetails.get('substance') : '';
                 var disabled = this.oilSelectDisabled();
@@ -210,20 +210,6 @@ define([
                 this.updateAmountSlide();
                 this.updateRateSlide();
             }
-        },
-
-        parseDuration: function(start, end){
-            var duration = (moment(end).unix() - moment(start).unix()) * 1000;
-            var days = 0;
-            var hours = 0;
-            if (!_.isUndefined(duration)){
-                hours = moment.duration(duration).asHours();
-                if (hours >= 24){
-                    days = parseInt(moment.duration(duration).asDays(), 10);
-                }
-                hours = hours - (days * 24);
-            }
-            return {'days': days, 'hours': hours};
         },
 
         updateAmountSlide: function(ui){

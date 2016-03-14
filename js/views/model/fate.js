@@ -212,6 +212,8 @@ define([
 
             var buttonsTemplate = _.template(ButtonsTemplate, {});
 
+            var templateObj;
+
             if (!_.isNull(substance)){
                 var pour_point;
                 var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
@@ -224,7 +226,7 @@ define([
                     pour_point = pp_min + pp_max;
                 }
 
-                compiled = _.template(FateTemplate, {
+                templateObj = {
                     name: substance.get('name'),
                     api: substance.get('api'),
                     wind_speed: wind_speed,
@@ -236,9 +238,10 @@ define([
                     units: spills.at(0).get('units'),
                     buttons: buttonsTemplate,
                     time: time
-                });
+                };
+
             } else {
-                compiled = _.template(FateTemplate, {
+                templateObj = {
                     name: 'Non-weathering substance',
                     api: 'N/A',
                     wind_speed: wind_speed,
@@ -250,9 +253,22 @@ define([
                     units: spills.at(0).get('units'),
                     buttons: buttonsTemplate,
                     time: time
-                });
+                };
+            }
+
+            templateObj['rate_exposed'] = false;
+
+            if (spills.length === 1 && spills.at(0).spillType() === 'continuous') {
+                var spill = spills.at(0);
+                var durationObj = spill.parseDuration();
+                var hours = durationObj.days * 24 + durationObj.hours;
+                templateObj['duration'] = hours + ' hours';
+                templateObj['spill_rate'] = (spill.get('amount') / hours).toFixed(2) + ' ' + spill.get('units') + '/hour';
+                templateObj['rate_exposed'] = true;
             }
             
+            compiled = _.template(FateTemplate, templateObj);
+
             this.$el.html(compiled);
             this.rendered = true;
 
