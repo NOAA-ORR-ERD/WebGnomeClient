@@ -133,8 +133,8 @@
                     <div><label>Time of Initial Release:</label> {{ release_time }}</div>
                     <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
                     {% if (rate_exposed){ %}
-                        <div><label>Spill Rate:</label>{{ spill_rate }}</div>
-                        <div><label>Spill Duration:</label>{{ duration }}</div>
+                        <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
+                        <div><label>Spill Duration:</label> {{ duration }}</div>
                     {% } %}
                 </div>
             </div>

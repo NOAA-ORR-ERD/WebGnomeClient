@@ -596,7 +596,11 @@ define([
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
-            this.$('#budget-table .info .amount-released').text(Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit)) + ' ' + to_unit);
+            var converted_amount = Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit));
+            this.$('#budget-table .info .amount-released').text(converted_amount + ' ' + to_unit);
+            var spillDurationObj = spill.parseDuration();
+            var spillDurationHrs = spillDurationObj.days * 24 + spillDurationObj.hours;
+            this.$('#budget-table .info .rate-released').text((converted_amount / spillDurationHrs).toFixed(2) + ' ' + to_unit + '/hour');
 
             table.html('');
             table = '';
