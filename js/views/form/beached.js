@@ -57,7 +57,8 @@ define([
             this.renderTimeseries();
 
             this.$('#datetime').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times
             });
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('#datetime').datetimepicker('show');

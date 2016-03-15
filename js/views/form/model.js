@@ -30,7 +30,8 @@ define([
             FormModal.prototype.render.call(this, options);
 
             this.$('#start_time').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times
             });
         },
 

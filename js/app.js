@@ -26,6 +26,9 @@ define([
 
             this.config = this.getConfig();
             this.configure();
+
+            this.config.date_format.half_hour_times = this.generateHalfHourTimesArray();
+
             this.monitor = {};
             this.monitor.requests = [];
 
@@ -112,6 +115,17 @@ define([
                     silent: true
                 });
             });
+        },
+
+        generateHalfHourTimesArray: function() {
+            var times = [];
+
+            for (var i = 0; i < 24; i++) {
+                times.push(i + ":00");
+                times.push(i + ":30");
+            }
+
+            return times;
         },
 
         // is it possible to move this config step out of the app?
