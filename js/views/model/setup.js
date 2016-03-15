@@ -72,6 +72,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .wind .add': 'clickWind',
+                'click .wind .single': 'loadWind',
                 'click .wind .single .edit': 'loadWind',
                 'click .wind .single .trash': 'deleteWind',
                 'click .water .add': 'clickWater',
@@ -537,7 +538,7 @@ define([
             windForm.render();
         },
 
-        loadWind: function(){
+        loadWind: function(e){
             var id;
             if(this.$(e.target).hasClass('single')){
                 id = this.$(e.target).data('id');
@@ -545,7 +546,17 @@ define([
                 id = this.$(e.target).parents('.single').data('id');
             }
 
-            var wind = webgnome.model.get('environment')
+            var wind = webgnome.model.get('environment').get(id);
+            var windForm = new WindForm(null, wind);
+            windForm.on('hidden', windForm.close);
+            windForm.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(wind, {merge:true});
+                this.updateWind();
+                this.renderTimeline();
+            }, this));
+            windForm.render();
+        },
+
         deleteWind: function(e){
             e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
