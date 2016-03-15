@@ -1,2 +1,13 @@
-<div><label>Speed: </label> {{ speed }} {{ units }}</div>
-<div><label>Direction: </label> {{ direction }}&deg;</div>
+<div class="wind-list">
+    {% for (var i = 0; i < winds.length; i++){ %}
+        <div class="single row" data-id="{{ winds[i].get('id') }}">
+            <div class="col-sm-8">
+                <h5>{{ winds[i].get('name') }}</h5>
+            </div>
+            <div class="col-sm-4">
+                <span class="trash" title="Remove {{ winds[i].get('name') }}"></span>
+                <span class="edit" title="Edit {{ winds[i].get('name') }}"></span>
+            </div>
+        </div>
+    {% } %}
+</div>

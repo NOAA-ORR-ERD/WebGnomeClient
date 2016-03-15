@@ -72,6 +72,8 @@ define([
         events: function(){
             return _.defaults({
                 'click .wind .add': 'clickWind',
+                'click .wind .single .edit': 'loadWind',
+                'click .wind .single .trash': 'deleteWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
                 'click .map .perm-add': 'clickMap',
@@ -456,7 +458,7 @@ define([
                 title: function(){
                     var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill, .wind').length === 0){
                         return 'Edit ' + object;
                     } else {
                         return 'Create ' + object;
@@ -518,7 +520,8 @@ define([
             this.mason.layout();
         },
 
-        clickWind: function(){
+        clickWind: function(e){
+            var id = this.$(e.currentTarget).data('id');
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             if(_.isUndefined(wind) || wind.length === 0){
                 wind = new WindModel();
@@ -534,97 +537,119 @@ define([
             windForm.render();
         },
 
+        loadWind: function(){
+            var id;
+            if(this.$(e.target).hasClass('single')){
+                id = this.$(e.target).data('id');
+            } else {
+                id = this.$(e.target).parents('.single').data('id');
+            }
+
+            var wind = webgnome.model.get('environment')
+
+        },
+
         updateWind: function(){
-            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            if(!_.isUndefined(wind)){
-                var compiled, dataset;
-                this.$('.wind .panel').addClass('complete');
-                if(wind.get('timeseries').length === 1){
-                    var windSpeed;
-                    if (wind.get('speed_uncertainty_scale') === 0) {
-                        windSpeed = wind.get('timeseries')[0][1][0];
-                    } else {
-                        windSpeed = wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]);
-                    }
-                    compiled = _.template(WindPanelTemplate, {
-                        speed: windSpeed,
-                        direction: wind.get('timeseries')[0][1][1],
-                        units: wind.get('units')
-                    });
-                    this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
-                } else {
-                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
-                    var ts = wind.get('timeseries');
-                    var data = [];
-                    var raw_data = [];
-                    var rate = Math.round(ts.length / 24);
+            var winds = _.union(
+                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}),
+                webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
+            );
+
+            if(winds.length > 0){
+                // var compiled, dataset;
+                // this.$('.wind .panel').addClass('complete');
+                // if(wind.get('timeseries').length === 1){
+                //     var windSpeed;
+                //     if (wind.get('speed_uncertainty_scale') === 0) {
+                //         windSpeed = wind.get('timeseries')[0][1][0];
+                //     } else {
+                //         windSpeed = wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]);
+                //     }
+                //     compiled = _.template(WindPanelTemplate, {
+                //         speed: windSpeed,
+                //         direction: wind.get('timeseries')[0][1][1],
+                //         units: wind.get('units')
+                //     });
+                //     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
+                // } else {
+                //     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
+                //     var ts = wind.get('timeseries');
+                //     var data = [];
+                //     var raw_data = [];
+                //     var rate = Math.round(ts.length / 24);
                     
-                    for (var entry in ts){
-                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                        if(rate === 0 ||  entry % rate === 0){
-                            data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
-                        }
-                        raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
-                    }
+                //     for (var entry in ts){
+                //         var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                //         if(rate === 0 ||  entry % rate === 0){
+                //             data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
+                //         }
+                //         raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
+                //     }
 
-                    dataset = [{
-                        data: data,
-                        color: 'rgba(151,187,205,1)',
-                        hoverable: true,
-                        shadowSize: 0,
-                        lines: {
-                            show: false,
-                            lineWidth: 2
-                        },
-                        direction: {
-                            show: true,
-                            openAngle: 40,
-                            color: '#7a7a7a',
-                            fillColor: '#7a7a7a',
-                            arrawLength: 5
-                        }
-                    }];
+                //     dataset = [{
+                //         data: data,
+                //         color: 'rgba(151,187,205,1)',
+                //         hoverable: true,
+                //         shadowSize: 0,
+                //         lines: {
+                //             show: false,
+                //             lineWidth: 2
+                //         },
+                //         direction: {
+                //             show: true,
+                //             openAngle: 40,
+                //             color: '#7a7a7a',
+                //             fillColor: '#7a7a7a',
+                //             arrawLength: 5
+                //         }
+                //     }];
 
-                    if (ts.length > 24){
-                        dataset.push({
-                            data: raw_data,
-                            color: 'rgba(151,187,205,1)',
-                            hoverable: true,
-                            shadowSize: 0,
-                            lines: {
-                                show: true,
-                                lineWidth: 2
-                            },
-                            direction: {
-                                show: false
-                            }
-                        });
-                    }
+                //     if (ts.length > 24){
+                //         dataset.push({
+                //             data: raw_data,
+                //             color: 'rgba(151,187,205,1)',
+                //             hoverable: true,
+                //             shadowSize: 0,
+                //             lines: {
+                //                 show: true,
+                //                 lineWidth: 2
+                //             },
+                //             direction: {
+                //                 show: false
+                //             }
+                //         });
+                //     }
 
-                    this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
-                }
+                //     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
+                // }
+
+                // if(dataset){
+                //     // set a time out to wait for the box to finish expanding or animating before drawing
+                //     setTimeout(_.bind(function(){
+                //         this.windPlot = $.plot('.wind .chart .canvas', dataset, {
+                //             grid: {
+                //                 borderWidth: 1,
+                //                 borderColor: '#ddd'
+                //             },
+                //             xaxis: {
+                //                 mode: 'time',
+                //                 timezone: 'browser',
+                //                 tickColor: '#ddd'
+                //             },
+                //             yaxis: {
+                //                 tickColor: '#ddd'
+                //             }
+                //         });
+                //     }, this), 2);
+                // }
+                
+                var compiled = _.template(WindPanelTemplate, {
+                    winds: winds
+                });
+
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
 
-                if(dataset){
-                    // set a time out to wait for the box to finish expanding or animating before drawing
-                    setTimeout(_.bind(function(){
-                        this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                            grid: {
-                                borderWidth: 1,
-                                borderColor: '#ddd'
-                            },
-                            xaxis: {
-                                mode: 'time',
-                                timezone: 'browser',
-                                tickColor: '#ddd'
-                            },
-                            yaxis: {
-                                tickColor: '#ddd'
-                            }
-                        });
-                    }, this), 2);
-                }
                 this.mason.layout();
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
