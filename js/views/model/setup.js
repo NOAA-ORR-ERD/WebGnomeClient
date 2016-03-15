@@ -546,7 +546,37 @@ define([
             }
 
             var wind = webgnome.model.get('environment')
+        deleteWind: function(e){
+            e.stopPropagation();
+            var id = $(e.target).parents('.single').data('id');
+            var wind = webgnome.model.get('environment').get(id);
 
+            swal({
+                title: 'Delete "' + wind.get('name') + '"',
+                text: 'Are you sure you want to delete this wind?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    var movers = webgnome.model.get('movers').filter(function(model){
+                        if(model.get('wind') && model.get('wind').get('id') === id){
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    webgnome.model.get('movers').remove(movers);
+                    webgnome.model.get('environment').remove(id);
+                    webgnome.model.save(null, {
+                        success: _.bind(function(){
+                            this.updateWind();
+                        }, this),
+                        validate: false
+                    });
+                }
+            }, this));
         },
 
         updateWind: function(){
@@ -649,6 +679,7 @@ define([
 
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
+                this.renderTimeline();
 
                 this.mason.layout();
             } else {
