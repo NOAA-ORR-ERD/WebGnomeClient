@@ -645,13 +645,13 @@ define([
                         to_unit = display.released;
                         var color = '';
 
-                        if(dataset[set].name !== 'amount_released'){
+                        if(dataset[set].name !== 'floating'){
                             color = this.colors[set];
                             color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
                         }
 
                         if (row === 0) {
-                            if (dataset[set].name === 'amount_released' || display.other === 'same') {
+                            if (dataset[set].name === 'floating' || display.other === 'same') {
                                 row_html +='<th style="background: ' + color + ';">' + dataset[set].label + ' (' + to_unit + ')</th>';
                             } else {
                                 row_html += '<th style="background: ' + color + ';">' + dataset[set].label + ' (' + display.other + ')</th>';
@@ -1161,12 +1161,12 @@ define([
                 delete titles.beached;
                 delete titles.off_maps;
                 var keys = Object.keys(titles);
-                keys.unshift('evaporated', 'natural_dispersion');
+                keys.unshift('amount_released', 'evaporated', 'natural_dispersion');
                 // maybe add a check to see if the map is not a gnome map aka water world.
                 // beach and off_maps wouldn't apply then.
                 keys.push('beached', 'off_maps');
 
-                keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'amount_released');
+                keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
 
                 for(var type in keys){
                     this.dataset.push({
