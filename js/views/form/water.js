@@ -128,6 +128,7 @@ define([
             this.$(e.currentTarget).siblings('div').toggleClass('hide');
             this.$(e.currentTarget).addClass('hide');
             this.$(e.currentTarget).siblings().children('select').prop("selectedIndex", 0);
+            this.update();
         },
 
         revealManualInputs: function(e){
