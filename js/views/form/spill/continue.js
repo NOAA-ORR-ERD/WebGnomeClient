@@ -21,12 +21,11 @@ define([
 
         events: function(){
             return _.defaults({
-                'blur #spill-amount': 'updateRate',
-                'blur #units': 'updateRate',
-                'blur #spill-rate': 'updateAmount',
-                'blur #rate-units': 'updateAmount',
-                'click #amount': 'updateAmountTooltip',
-                'click #constant-rate': 'updateRateTooltip'
+                'change #spill-amount': 'updateRate',
+                'change #units': 'updateRate',
+                'change #spill-rate': 'updateAmount',
+                'change #rate-units': 'updateAmount',
+                'click .slider': 'updateAmountTooltip'
             }, BaseSpillForm.prototype.events());
         },
 
@@ -85,27 +84,15 @@ define([
                     this.$('#rate-units').val(amountUnits + '/hr');
                 }
 
-                this.$('#amount .slider').slider({
+                this.$('.slider').slider({
                     min: 0,
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#amount .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
+                        this.$('.ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="amount-tooltip" class="tooltip-inner">' + this.model.get('amount') + '</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateAmountSlide(ui);
-                    }, this)
-                });
-
-                this.$('#constant-rate .slider').slider({
-                    min: 0,
-                    max: 5,
-                    value: 0,
-                    create: _.bind(function(){
-                        this.$('#constant-rate .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div id="rate-tooltip" class="tooltip-inner">' + 0 + '</div></div>');
-                    }, this),
-                    slide: _.bind(function(e, ui){
-                        this.updateRateSlide(ui);
                     }, this)
                 });
 
@@ -117,7 +104,6 @@ define([
                 }
 
                 this.updateAmountSlide();
-                this.updateRateSlide();
 
             } else {
                 this.model.on('ready', this.render, this);
@@ -187,8 +173,7 @@ define([
                 this.$('#spill-rate').val(this.rate);
                 this.$('#rate-units').val(units + '/hr');
             }
-            
-            this.updateRateSlide();
+            this.update();
             this.updateAmountSlide();
         },
 
@@ -207,8 +192,8 @@ define([
                 this.$('#spill-amount').val(amount);
                 var units = this.$('#rate-units').val().split('/')[0];
                 this.$('#units').val(units);
+                this.update();
                 this.updateAmountSlide();
-                this.updateRateSlide();
             }
         },
 
@@ -217,7 +202,7 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#amount .slider').slider('value');
+                value = this.$('.slider').slider('value');
             }
             if(this.model.get('amount') !== 0){
                 var amount = this.model.get('amount');
@@ -230,30 +215,6 @@ define([
                     }
                     var top = parseInt(Math.round((amount * (1 + ((value / 25.0) * 5)))), 10);
                     this.$('#amount-tooltip').text(bottom + ' - ' + top);
-                }
-            }
-            this.model.set('amount_uncertainty_scale', value / 5);
-            this.updateTooltipWidth();
-        },
-
-        updateRateSlide: function(ui){
-            var value;
-            if(!_.isUndefined(ui)){
-                value = ui.value;
-            } else {
-                value = this.$('#constant-rate .slider').slider('value');
-            }
-            if(!_.isUndefined(this.rate)){
-                var amount = this.rate ? this.rate : 0;
-                if(value === 0){
-                    this.$('#rate-tooltip').text(amount);
-                } else {
-                    var bottom = parseInt(Math.round((amount * (1 - ((value / 25.0) * 5)))), 10);
-                    if (bottom < 0) {
-                        bottom = 0;
-                    }
-                    var top = parseInt(Math.round((amount * (1 + ((value / 25.0) * 5)))), 10);
-                    this.$('#rate-tooltip').text(bottom + ' - ' + top);
                 }
             }
             this.model.set('amount_uncertainty_scale', value / 5);
