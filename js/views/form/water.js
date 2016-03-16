@@ -52,9 +52,10 @@ define([
 
             if ([0, 15, 32].indexOf(this.model.get('salinity')) === -1){
                 // one of the drop down options was not selected.
-                this.$('.salinity-select').parent().hide();
+                this.$('.salinity-select').parent().addClass('hide');
                 this.$('.salinity-input').removeClass('hide');
                 this.$('.salinity-input input').val(this.model.get('salinity'));
+                this.$('.salinity-reset').removeClass('hide');
             } else {
                 this.$('.salinity-select option[value="' + this.model.get('salinity') + '"]').prop('selected', 'selected');
             }
@@ -62,10 +63,11 @@ define([
             var unitsAreMgPerLiter = this.model.get('units').sediment === 'mg/l';
 
             if ([5, 50, 500].indexOf(this.model.get('sediment')) === -1 || !unitsAreMgPerLiter){
-                this.$('.sediment-select').parent().hide();
+                this.$('.sediment-select').parent().addClass('hide');
                 this.$('.sediment-input').removeClass('hide');
                 this.$('.sediment-input input').val(this.model.get('sediment'));
                 this.$('.sediment-units option[value="' + this.model.get('units').sediment + '"]').prop('selected', 'selected');
+                this.$('.sediment-reset').removeClass('hide');
             } else {
                 this.$('.sediment-select option[value="' + this.model.get('sediment') + '"]').prop('selected', 'selected');
             }
