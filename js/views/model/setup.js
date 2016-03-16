@@ -539,6 +539,7 @@ define([
         },
 
         loadWind: function(e){
+            e.stopPropagation();
             var id;
             if(this.$(e.target).hasClass('single')){
                 id = this.$(e.target).data('id');
