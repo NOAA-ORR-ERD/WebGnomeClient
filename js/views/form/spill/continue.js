@@ -161,10 +161,11 @@ define([
         inputFieldUpdate: function(e) {
             var rateChanged = this.$(e.currentTarget).is('#spill-rate') || this.$(e.currentTarget).is('#rate-units');
             var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
+            var durationChanged = this.$(e.currentTarget).is('#days') || this.$(e.currentTarget).is('#hours');
 
             if (rateChanged) {
                 this.updateAmount();
-            } else if (amountChanged) {
+            } else if (amountChanged || durationChanged) {
                 this.updateRate();
             }
             this.updateAmountTooltip();
