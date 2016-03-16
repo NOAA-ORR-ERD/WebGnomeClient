@@ -660,41 +660,41 @@ define([
                             id: wind.get('id')
                         });
                     }
-
-                    this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
-
-                    if(dataset){
-                        // set a time out to wait for the box to finish expanding or animating before drawing
-                        this.windDataset = dataset;                        
-                        setTimeout(_.bind(function(){
-                            this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                                grid: {
-                                    borderWidth: 1,
-                                    borderColor: '#ddd'
-                                },
-                                xaxis: {
-                                    mode: 'time',
-                                    timezone: 'browser',
-                                    tickColor: '#ddd'
-                                },
-                                yaxis: {
-                                    tickColor: '#ddd'
-                                }
-                            });
-                        }, this), 2);
-                    }
-                    
-                    var compiled = _.template(WindPanelTemplate, {
-                        winds: winds,
-                        units: winds[0].get('units')
-                    });
-
-                    this.$('.wind .panel-body').html(compiled);
-                    this.$('.wind .panel-body').show();
-                    this.renderTimeline();
-
-                    this.mason.layout();
                 }
+
+                this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
+
+                if(dataset){
+                    // set a time out to wait for the box to finish expanding or animating before drawing
+                    this.windDataset = dataset;                        
+                    setTimeout(_.bind(function(){
+                        this.windPlot = $.plot('.wind .chart .canvas', dataset, {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#ddd'
+                            },
+                            xaxis: {
+                                mode: 'time',
+                                timezone: 'browser',
+                                tickColor: '#ddd'
+                            },
+                            yaxis: {
+                                tickColor: '#ddd'
+                            }
+                        });
+                    }, this), 2);
+                }
+                
+                var compiled = _.template(WindPanelTemplate, {
+                    winds: winds,
+                    units: winds[0].get('units')
+                });
+
+                this.$('.wind .panel-body').html(compiled);
+                this.$('.wind .panel-body').show();
+                this.renderTimeline();
+
+                this.mason.layout();
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.wind .panel').removeClass('complete');
