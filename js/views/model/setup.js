@@ -75,6 +75,8 @@ define([
                 'click .wind .single': 'loadWind',
                 'click .wind .single .edit': 'loadWind',
                 'click .wind .single .trash': 'deleteWind',
+                'mouseover .wind .single': 'hoverWind',
+                'mouseout .wind .wind-list': 'unhoverWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
                 'click .map .perm-add': 'clickMap',
@@ -592,112 +594,136 @@ define([
 
         updateWind: function(){
             var winds = _.union(
-                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}),
-                webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
+                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
+                // webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
             );
 
+
             if(winds.length > 0){
-                // var compiled, dataset;
-                // this.$('.wind .panel').addClass('complete');
-                // if(wind.get('timeseries').length === 1){
-                //     var windSpeed;
-                //     if (wind.get('speed_uncertainty_scale') === 0) {
-                //         windSpeed = wind.get('timeseries')[0][1][0];
-                //     } else {
-                //         windSpeed = wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]);
-                //     }
-                //     compiled = _.template(WindPanelTemplate, {
-                //         speed: windSpeed,
-                //         direction: wind.get('timeseries')[0][1][1],
-                //         units: wind.get('units')
-                //     });
-                //     this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
-                // } else {
-                //     compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
-                //     var ts = wind.get('timeseries');
-                //     var data = [];
-                //     var raw_data = [];
-                //     var rate = Math.round(ts.length / 24);
+                var dataset = [];
+                var unit = winds[0].get('units');
+                for(var w in winds){
+                    var wind = winds[w];
+                    var ts = wind.get('timeseries');
+                    var data = [];
+                    var raw_data = [];
+                    var rate = Math.round(ts.length / 24);
                     
-                //     for (var entry in ts){
-                //         var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                //         if(rate === 0 ||  entry % rate === 0){
-                //             data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
-                //         }
-                //         raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
-                //     }
+                    for (var entry in ts){
+                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                        var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[entry][1][0]));
 
-                //     dataset = [{
-                //         data: data,
-                //         color: 'rgba(151,187,205,1)',
-                //         hoverable: true,
-                //         shadowSize: 0,
-                //         lines: {
-                //             show: false,
-                //             lineWidth: 2
-                //         },
-                //         direction: {
-                //             show: true,
-                //             openAngle: 40,
-                //             color: '#7a7a7a',
-                //             fillColor: '#7a7a7a',
-                //             arrawLength: 5
-                //         }
-                //     }];
+                        if(rate === 0 ||  entry % rate === 0){
+                            data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
+                        }
+                        raw_data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
+                    }
 
-                //     if (ts.length > 24){
-                //         dataset.push({
-                //             data: raw_data,
-                //             color: 'rgba(151,187,205,1)',
-                //             hoverable: true,
-                //             shadowSize: 0,
-                //             lines: {
-                //                 show: true,
-                //                 lineWidth: 2
-                //             },
-                //             direction: {
-                //                 show: false
-                //             }
-                //         });
-                //     }
+                    var lines = true;
+                    if (ts.length > 24){
+                        lines = false;
+                    }
 
-                //     this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
-                // }
+                    dataset.push({
+                        data: data,
+                        color: 'rgba(151,187,205,1)',
+                        hoverable: true,
+                        shadowSize: 0,
+                        lines: {
+                            show: lines,
+                            lineWidth: 2
+                        },
+                        direction: {
+                            show: true,
+                            openAngle: 40,
+                            color: '#7a7a7a',
+                            fillColor: '#7a7a7a',
+                            arrawLength: 5
+                        },
+                        id: wind.get('id')
+                    });
 
-                // if(dataset){
-                //     // set a time out to wait for the box to finish expanding or animating before drawing
-                //     setTimeout(_.bind(function(){
-                //         this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                //             grid: {
-                //                 borderWidth: 1,
-                //                 borderColor: '#ddd'
-                //             },
-                //             xaxis: {
-                //                 mode: 'time',
-                //                 timezone: 'browser',
-                //                 tickColor: '#ddd'
-                //             },
-                //             yaxis: {
-                //                 tickColor: '#ddd'
-                //             }
-                //         });
-                //     }, this), 2);
-                // }
-                
-                var compiled = _.template(WindPanelTemplate, {
-                    winds: winds
-                });
+                    if (ts.length > 24){
+                        dataset.push({
+                            data: raw_data,
+                            color: 'rgba(151,187,205,1)',
+                            hoverable: true,
+                            shadowSize: 0,
+                            lines: {
+                                show: true,
+                                lineWidth: 2
+                            },
+                            direction: {
+                                show: false
+                            },
+                            id: wind.get('id')
+                        });
+                    }
 
-                this.$('.wind .panel-body').html(compiled);
-                this.$('.wind .panel-body').show();
-                this.renderTimeline();
+                    this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
 
-                this.mason.layout();
+                    if(dataset){
+                        // set a time out to wait for the box to finish expanding or animating before drawing
+                        this.windDataset = dataset;                        
+                        setTimeout(_.bind(function(){
+                            this.windPlot = $.plot('.wind .chart .canvas', dataset, {
+                                grid: {
+                                    borderWidth: 1,
+                                    borderColor: '#ddd'
+                                },
+                                xaxis: {
+                                    mode: 'time',
+                                    timezone: 'browser',
+                                    tickColor: '#ddd'
+                                },
+                                yaxis: {
+                                    tickColor: '#ddd'
+                                }
+                            });
+                        }, this), 2);
+                    }
+                    
+                    var compiled = _.template(WindPanelTemplate, {
+                        winds: winds,
+                        units: winds[0].get('units')
+                    });
+
+                    this.$('.wind .panel-body').html(compiled);
+                    this.$('.wind .panel-body').show();
+                    this.renderTimeline();
+
+                    this.mason.layout();
+                }
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.wind .panel').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');
             }
+        },
+
+        hoverWind: function(e){
+            var id = $(e.target).data('id');
+            if (_.isUndefined(id)){
+                id = $(e.target).parents('.single').data('id');
+            }
+            var coloredSet = [];
+            for(var dataset in this.windDataset){
+                var ds = $.extend(true, {}, this.windDataset[dataset]);
+                if (this.windDataset[dataset].id !== id){
+                    ds.color = '#ddd';
+                    ds.direction.fillColor = '#ddd';
+                    ds.direction.color = '#ddd';
+                }
+
+                coloredSet.push(ds);
+            }
+            this.windPlot.setData(coloredSet);
+            this.windPlot.draw();
+        },
+
+        unhoverWind: function(){
+            this.windPlot.setData(this.windDataset);
+            this.windPlot.draw();
         },
 
         clickWater: function(){

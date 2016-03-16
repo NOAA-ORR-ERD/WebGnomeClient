@@ -95,6 +95,7 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate, {
+                constant_datetime: moment(this.model.get('timeseries')[0][0]).format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
                 name: this.model.get('name')
@@ -105,18 +106,17 @@ define([
             this.form.constant = {};
             this.form.constant.speed = this.$('#constant-speed');
             this.form.constant.direction = this.$('#constant-direction');
+            this.form.constant.datetime = this.$('#constant-datetime');
             this.form.variable = {};
             this.form.variable.speed = this.$('#variable-speed');
             this.form.variable.direction = this.$('#variable-direction');
-            this.form.variable.datetime = this.$('#datetime');
+            this.form.variable.datetime = this.$('#variable-datetime');
             this.form.variable.increment = this.$('#incrementCount');
             this.trigger('show');
-            this.$('#datetime').datetimepicker({
+            this.$('#variable-datetime, #constant-datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker
             });
-            this.$('#datepick').on('click', _.bind(function(){
-                this.$('#datetime').datetimepicker('show');
-            }, this));
+
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
@@ -304,15 +304,9 @@ define([
 
             if(active === 'constant'){
                 // if the constant wind pain is active a timeseries needs to be generated for the values provided
-                this.model.set('timeseries', [['2013-02-13T09:00:00', [speed, direction]]]);
-            }
-
-            if (active === 'variable' && this.model.get('timeseries')[0][0] === '2013-02-13T09:00:00' && this.model.get('timeseries').length <= 1){
-                speed = this.form.constant.speed.val();
-                direction = this.form.constant.direction.val();
-                this.form.variable.datetime.val(moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment));
-                this.model.set('timeseries', [[gnomeStart, [speed, direction]]]);
-                this.renderTimeseries();
+                var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
+                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                this.model.set('timeseries', [[date, [speed, direction]]]);
             }
 
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
@@ -629,6 +623,7 @@ define([
         },
 
         close: function(){
+            $('.xdsoft_datetimepicker:last').remove();
             $('.xdsoft_datetimepicker:last').remove();
             $('.modal').off('scroll', this.variableWindStickyHeader);
             
