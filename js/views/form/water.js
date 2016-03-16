@@ -17,7 +17,8 @@ define([
             return _.defaults({
                 'change select': function(e){
                     this.revealManualInputs(e);
-                }
+                },
+                'click .reset': 'resetSelect'
             }, FormModal.prototype.events);
         },
 
@@ -118,11 +119,20 @@ define([
             }
         },
 
+        resetSelect: function(e) {
+            if (this.$(e.currentTarget).is('a')) {
+                e.currenttarget = this.$(e.currentTarget).parent();
+            }
+            this.$(e.currentTarget).siblings('div').toggleClass('hide');
+            this.$(e.currentTarget).addClass('hide');
+            this.$(e.currentTarget).siblings().children('select').prop("selectedIndex", 0);
+        },
+
         revealManualInputs: function(e){
             var value = e.currentTarget.value;
 
             // special case for when a user selects selinity/sediment number in select or units for temp
-            if(value.match(/\d*/)[0] !== '' || 
+            if(value.match(/\d*/)[0] !== '' ||
                 ['km', 'mi', 'ft', 'm'].indexOf(value) !== -1 ||
                 ['K', 'C', 'F'].indexOf(value) !== -1 ||
                 $(e.currentTarget).hasClass('sediment-units')){

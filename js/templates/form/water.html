@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="form-group">
-					<label class="control-label col-sm-5" for="temp">Temperature:</label>
+					<label class="control-label col-sm-3" for="temp">Temperature:</label>
 					<div class="col-sm-4">
 						<input class="form-control" type="number" id="temp" value="{{ water_temp }}">
 					</div>
@@ -15,7 +15,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<div class="col-sm-offset-5 col-md-6">
+					<div class="col-sm-offset-3 col-md-6">
 						Example Temperature:
 						<table class="table table-condensed">
 							<thead>
@@ -41,7 +41,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-sm-5" for="salinity">Salinity (psu):</label>
+					<label class="control-label col-sm-3" for="salinity">Salinity (psu):</label>
 					<div class="col-sm-4">
 						<select class="form-control salinity-select salinity">
 							<option value="0">0 (fresh water)</option>
@@ -51,9 +51,10 @@
 						</select>
 					</div>
 					<div class="col-sm-3 salinity-input hide"><input type="number" min="0" class="form-control salinity" value="{{ salinity }}"></div>
+					<div class="col-sm-2 reset hide"><a class="control-label">Reset</a></div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-sm-5" for="sediment">Water Sediment Load:</label>
+					<label class="control-label col-sm-3" for="sediment">Water Sediment Load:</label>
 					<div class="col-sm-4">
 						<select class="form-control sediment-select sediment">
 							<option value="5">5 mg/l (ocean)</option>
@@ -72,9 +73,10 @@
 							<option value="ppm">ppm</option>
 						</select>
 					</div>
+					<div class="col-sm-2 reset hide"><a class="control-label">Reset</a></div>
 				</div>
 				<div class="form-group" id="sea-state">
-					<label class="control-label col-sm-5" for="sea-height">Wave Height:</label>
+					<label class="control-label col-sm-3" for="sea-height">Wave Height:</label>
 					<div class="col-sm-6">
 						<select class="form-control" id="data-source">
 							<option value="windcalc">Compute from wind</option>
@@ -84,7 +86,7 @@
 					</div>
 				</div>
 				<div class="form-group fetch hide">
-					<label class="control-label col-sm-5" for="#fetch">Fetch</label>
+					<label class="control-label col-sm-3" for="#fetch">Fetch</label>
 					<div class="col-sm-2">
 						<input type="number" min="0" class="form-control" id="fetch">
 					</div>
@@ -96,7 +98,7 @@
 					</div>
 				</div>
 				<div class="form-group specified hide">
-					<label class="control-label col-sm-5" for="height">Height</label>
+					<label class="control-label col-sm-3" for="height">Height</label>
 					<div class="col-sm-2">
 						<input type="number" min="0" id="height" class="form-control">
 					</div>
