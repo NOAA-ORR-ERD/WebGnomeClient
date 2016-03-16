@@ -380,15 +380,6 @@ define([
                         burns[b].set('wind', wind);
                     }
                 }
-
-                // this will need to be updated when/if we want to support multiple winds.
-                // right now it just assumes the first wind mover it finds/only wind mover it finds is the one
-                // the wind needs to be associated with.
-                var mover = this.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
-                if(_.isUndefined(mover) || mover.get('wind').get('id') !== wind.get('id')){
-                    var windMover = new WindMover({wind: wind});
-                    this.get('movers').add(windMover, {merge: true});
-                }
                 this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
             }
         },

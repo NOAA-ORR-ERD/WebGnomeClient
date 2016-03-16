@@ -522,16 +522,15 @@ define([
         },
 
         clickWind: function(e){
-            var id = this.$(e.currentTarget).data('id');
-            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            if(_.isUndefined(wind) || wind.length === 0){
-                wind = new WindModel();
-            }
-
+            var wind = new WindModel();
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
-                webgnome.model.get('environment').add(wind, {merge:true});
+                var windMover = new WindMoverModel({wind: wind});
+
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.get('environment').add(wind);
+
                 this.updateWind();
                 this.renderTimeline();
             }, this));
