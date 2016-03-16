@@ -21,10 +21,6 @@ define([
 
         events: function(){
             return _.defaults({
-                'change #spill-amount': 'updateRate',
-                'change #units': 'updateRate',
-                'change #spill-rate': 'updateAmount',
-                'change #rate-units': 'updateAmount',
                 'click .slider': 'updateAmountTooltip'
             }, BaseSpillForm.prototype.events());
         },
@@ -110,7 +106,7 @@ define([
             }
         },
 
-        update: function(){
+        update: function(e){
             var name = this.$('#name').val();
             this.model.set('name', name);
             if (name === 'Spill'){
@@ -157,6 +153,21 @@ define([
             this.model.set('amount', amount);
             this.model.set('release', release);
             BaseSpillForm.prototype.update.call(this);
+            if (!_.isUndefined(e)) {
+                this.inputFieldUpdate(e);
+            }
+        },
+
+        inputFieldUpdate: function(e) {
+            var rateChanged = this.$(e.currentTarget).is('#spill-rate') || this.$(e.currentTarget).is('#rate-units');
+            var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
+
+            if (rateChanged) {
+                this.updateAmount();
+            } else if (amountChanged) {
+                this.updateRate();
+            }
+            this.updateAmountTooltip();
         },
 
         updateRate: function(){
@@ -173,7 +184,6 @@ define([
                 this.$('#spill-rate').val(this.rate);
                 this.$('#rate-units').val(units + '/hr');
             }
-            this.update();
             this.updateAmountSlide();
         },
 
@@ -192,7 +202,6 @@ define([
                 this.$('#spill-amount').val(amount);
                 var units = this.$('#rate-units').val().split('/')[0];
                 this.$('#units').val(units);
-                this.update();
                 this.updateAmountSlide();
             }
         },
@@ -224,11 +233,6 @@ define([
         updateAmountTooltip: function(){
             this.update();
             this.updateAmountSlide();
-        },
-
-        updateRateTooltip: function(){
-            this.update();
-            this.updateRateSlide();
         },
 
         close: function(){
