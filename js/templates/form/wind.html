@@ -1,3 +1,14 @@
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label for="name" class="control-label col-sm-3">Name:</label>
+        <div class="col-md-5">
+            <input type="text" id="name" value="{{ name }}" class="form-control">
+        </div>
+    </div>
+</div>
+
+
 <ul class="nav nav-tabs">
     <li class="constant">
         <a href="#constant" data-toggle="tab">Constant Wind</a>
@@ -8,6 +19,9 @@
     <li class="nws">
         <a href="#nws" data-toggle="tab">NWS Forecast</a>
     </li>
+    <!--<li class="upload">
+        <a href="#upload" data-toggle="tab">Upload File</a>
+    </li>-->
 </ul>
 
 <div class="tab-content">
@@ -16,11 +30,22 @@
             <div class="col-sm-7">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-5"><label for="constant-direction" class="control-label">Wind Direction:</label></div>
+                        <label for="constant-datetime" class="control-label col-md-5">Date &amp; Time:</label>                        
+                        <div class="col-sm-7">
+                            <div class="input-group date">
+                                <input type="text" id="constant-datetime" class="form-control" value="{{constant_datetime}}">
+                                <span class="input-group-addon" id="datepick">
+                                    <i></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="constant-direction" class="control-label col-md-5">Wind Direction:</label>
                         <div class="col-sm-4"><input type="text" id="constant-direction" value="{{timeseries[0][1][1]}}" class="form-control"></div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-2"><label class="control-label" for="constant-speed">Speed:</label></div>
+                        <label class="control-label col-md-2" for="constant-speed">Speed:</label>
                         <div class="col-sm-4"><input type="number" min="1" id="constant-speed" class="form-control col-xs-3" value="{{timeseries[0][1][0]}}"></div>
                         <div class="col-sm-6">
                             <select name="units" class="form-control col-xs-3">
@@ -102,11 +127,11 @@
                 <div class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-5">
-                            <label for="datetime" class="control-label pull-right">Date &amp; Time:</label>                        
+                            <label for="variable-datetime" class="control-label pull-right">Date &amp; Time:</label>                        
                         </div>
                         <div class="col-sm-7">
                             <div class="input-group date">
-                                <input type="text" id="datetime" class="form-control" value="">
+                                <input type="text" id="variable-datetime" class="form-control" value="">
                                 <span class="input-group-addon" id="datepick">
                                     <i></i>
                                 </span>
@@ -137,5 +162,8 @@
     <div class="tab-pane" id="nws">
         <p>Retrieve forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
         <div id="wind-form-map" class="map"></div>
+    </div>
+    <div class="tab-pane" id="upload">
+        <div class="dropzone"></div>
     </div>
 </div>
