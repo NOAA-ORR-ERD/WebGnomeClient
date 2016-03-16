@@ -13,7 +13,7 @@ define([
         },
 
         initialize: function(options){
-            if(!_.has(options, 'model')) return null;
+            if(!_.has(options, 'model')){ return null; }
             this.model = options.model;
             this.render();
 

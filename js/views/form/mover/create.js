@@ -1,11 +1,13 @@
 define([
+    'underscore',
+    'jquery',
     'views/modal/form',
     'model/movers/cats',
     'model/movers/grid_current',
     'text!templates/form/mover/create.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -94,7 +96,7 @@ define([
                 this.dropzone.disable();
                 $('input.dz-hidden-input').remove();
             }
-            Backbone.View.prototype.close.call(this);
+            FormModal.View.prototype.close.call(this);
         }
     });
     return createMoverForm;
