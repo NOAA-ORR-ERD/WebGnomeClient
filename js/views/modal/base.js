@@ -44,6 +44,8 @@ define([
                     this.buttons = options.buttons;
                 }
             }
+
+            webgnome.router.on('route', this.close, this);
         },
 
         events: {
@@ -141,6 +143,11 @@ define([
                     marginLeft: '-' + margin + 'px'
                 });
             });
+        },
+
+        close: function(){
+            webgnome.router.off('route', this.close, this);
+            Backbone.View.prototype.close.call(this);
         }
     });
 
