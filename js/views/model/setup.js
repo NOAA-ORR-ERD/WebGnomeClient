@@ -55,7 +55,8 @@ define([
     'flotstack',
     'flotgantt',
     'flotextents',
-    'flotnavigate'
+    'flotnavigate',
+    'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
     WindModel, WindMoverModel, WindForm, WindPanelTemplate,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
@@ -692,6 +693,11 @@ define([
 
                 this.$('.wind .panel-body').html(compiled);
                 this.$('.wind .panel-body').show();
+
+                this.$('.wind .panel-body .wind-list').sortable({
+                    update: _.bind(this.orderWind, this)
+                });
+                this.$('.wind .panel-body .wind-list').disableSelection();
                 this.renderTimeline();
 
                 this.mason.layout();
@@ -700,6 +706,18 @@ define([
                 this.$('.wind .panel').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');
             }
+        },
+
+        orderWind: function(){
+            // simple find first wind after sort and move it to the top of the environment list
+            // doesn't support full sorting of all wind objects.
+            var collection = webgnome.model.get('environment');
+            var first_id = this.$('.wind .panel-body .wind-list .single:first').data('id');
+
+            var wind = collection.get(first_id);
+            collection.remove(wind, {silent: true});
+            collection.unshift(wind);
+            webgnome.model.save();
         },
 
         hoverWind: function(e){
