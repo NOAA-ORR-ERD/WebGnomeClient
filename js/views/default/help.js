@@ -78,7 +78,7 @@ define([
             this.help.set('helpful', ishelpful);
             this.help.save(null, {
                 success: _.bind(function(){
-                    if(this.help.get('helpful') === 'false'){
+                    if(this.help.get('helpful') === false){
                         this.showResponse();
                     }
                 }, this)
