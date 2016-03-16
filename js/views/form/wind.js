@@ -49,6 +49,14 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = GnomeWind;
+            
+            if(!this.model.get('name')){
+                var count = webgnome.model.get('environment').where({obj_type: this.model.get('obj_type')});
+                count = !count ? 1 : count.length + 1;
+                this.model.set('name', 'Wind #' + count);
+            }
+            
+            this.title = this.model.get('name');
             this.source = new ol.source.Vector();
             this.layer = new ol.layer.Vector({
                 source: this.source,
@@ -88,7 +96,8 @@ define([
         render: function(options){
             this.body = _.template(FormTemplate, {
                 timeseries: this.model.get('timeseries'),
-                unit: this.model.get('units')
+                unit: this.model.get('units'),
+                name: this.model.get('name')
             });
             FormModal.prototype.render.call(this, options);
 
@@ -307,6 +316,7 @@ define([
             }
 
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
+            this.model.set('name', this.$('#name').val());
             
             this.updateConstantSlide();
             this.updateVariableSlide();
