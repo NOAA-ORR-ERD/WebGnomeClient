@@ -307,14 +307,15 @@ define([
                 var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
                 var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
                 this.model.set('timeseries', [[date, [speed, direction]]]);
+                this.updateConstantSlide();
+            } else {
+                this.updateVariableSlide();
             }
 
             this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             this.model.set('name', this.$('#name').val());
             
-            this.updateConstantSlide();
-            this.updateVariableSlide();
-
+            
             this.$('.additional-wind-compass').remove();
 
             if(!this.model.isValid()){
