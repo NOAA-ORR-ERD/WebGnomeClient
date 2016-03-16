@@ -256,15 +256,15 @@ define([
                 };
             }
 
-            templateObj['rate_exposed'] = false;
+            templateObj.rate_exposed = false;
 
             if (spills.length === 1 && spills.at(0).spillType() === 'continuous') {
                 var spill = spills.at(0);
                 var durationObj = spill.parseDuration();
                 var hours = durationObj.days * 24 + durationObj.hours;
-                templateObj['duration'] = hours + ' hours';
-                templateObj['spill_rate'] = (spill.get('amount') / hours).toFixed(2) + ' ' + spill.get('units') + '/hour';
-                templateObj['rate_exposed'] = true;
+                templateObj.duration = hours + ' hours';
+                templateObj.spill_rate = (spill.get('amount') / hours).toFixed(2) + ' ' + spill.get('units') + '/hour';
+                templateObj.rate_exposed = true;
             }
             
             compiled = _.template(FateTemplate, templateObj);

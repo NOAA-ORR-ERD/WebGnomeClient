@@ -72,6 +72,11 @@ define([
         events: function(){
             return _.defaults({
                 'click .wind .add': 'clickWind',
+                'click .wind .single': 'loadWind',
+                'click .wind .single .edit': 'loadWind',
+                'click .wind .single .trash': 'deleteWind',
+                'mouseover .wind .single': 'hoverWind',
+                'mouseout .wind .wind-list': 'unhoverWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
                 'click .map .perm-add': 'clickMap',
@@ -457,7 +462,7 @@ define([
                 title: function(){
                     var object = $(this).parents('.panel-heading').text().trim();
 
-                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill').length === 0){
+                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill, .wind').length === 0){
                         return 'Edit ' + object;
                     } else {
                         return 'Create ' + object;
@@ -519,12 +524,32 @@ define([
             this.mason.layout();
         },
 
-        clickWind: function(){
-            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            if(_.isUndefined(wind) || wind.length === 0){
-                wind = new WindModel();
+        clickWind: function(e){
+            var wind = new WindModel();
+            var windForm = new WindForm(null, wind);
+            windForm.on('hidden', windForm.close);
+            windForm.on('save', _.bind(function(){
+                var windMover = new WindMoverModel({wind: wind});
+
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.get('environment').add(wind);
+
+                this.updateWind();
+                this.renderTimeline();
+            }, this));
+            windForm.render();
+        },
+
+        loadWind: function(e){
+            e.stopPropagation();
+            var id;
+            if(this.$(e.target).hasClass('single')){
+                id = this.$(e.target).data('id');
+            } else {
+                id = this.$(e.target).parents('.single').data('id');
             }
 
+            var wind = webgnome.model.get('environment').get(id);
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
@@ -535,26 +560,51 @@ define([
             windForm.render();
         },
 
-        updateWind: function(){
-            var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            if(!_.isUndefined(wind)){
-                var compiled, dataset;
-                this.$('.wind .panel').addClass('complete');
-                if(wind.get('timeseries').length === 1){
-                    var windSpeed;
-                    if (wind.get('speed_uncertainty_scale') === 0) {
-                        windSpeed = wind.get('timeseries')[0][1][0];
-                    } else {
-                        windSpeed = wind.applySpeedUncertainty(wind.get('timeseries')[0][1][0]);
-                    }
-                    compiled = _.template(WindPanelTemplate, {
-                        speed: windSpeed,
-                        direction: wind.get('timeseries')[0][1][1],
-                        units: wind.get('units')
+        deleteWind: function(e){
+            e.stopPropagation();
+            var id = $(e.target).parents('.single').data('id');
+            var wind = webgnome.model.get('environment').get(id);
+
+            swal({
+                title: 'Delete "' + wind.get('name') + '"',
+                text: 'Are you sure you want to delete this wind?',
+                type: 'warning',
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#d9534f',
+                showCancelButton: true
+            }, _.bind(function(isConfirmed){
+                if(isConfirmed){
+                    var movers = webgnome.model.get('movers').filter(function(model){
+                        if(model.get('wind') && model.get('wind').get('id') === id){
+                            return true;
+                        }
+                        return false;
                     });
-                    this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
-                } else {
-                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + wind.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
+
+                    webgnome.model.get('movers').remove(movers);
+                    webgnome.model.get('environment').remove(id);
+                    webgnome.model.save(null, {
+                        success: _.bind(function(){
+                            this.updateWind();
+                        }, this),
+                        validate: false
+                    });
+                }
+            }, this));
+        },
+
+        updateWind: function(){
+            var winds = _.union(
+                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
+                // webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
+            );
+
+
+            if(winds.length > 0){
+                var dataset = [];
+                var unit = winds[0].get('units');
+                for(var w in winds){
+                    var wind = winds[w];
                     var ts = wind.get('timeseries');
                     var data = [];
                     var raw_data = [];
@@ -562,19 +612,26 @@ define([
                     
                     for (var entry in ts){
                         var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                        var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[entry][1][0]));
+
                         if(rate === 0 ||  entry % rate === 0){
-                            data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
+                            data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
                         }
-                        raw_data.push([parseInt(date, 10), parseFloat(ts[entry][1][0]), parseInt(ts[entry][1][1], 10) - 180]);
+                        raw_data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
                     }
 
-                    dataset = [{
+                    var lines = true;
+                    if (ts.length > 24){
+                        lines = false;
+                    }
+
+                    dataset.push({
                         data: data,
                         color: 'rgba(151,187,205,1)',
                         hoverable: true,
                         shadowSize: 0,
                         lines: {
-                            show: false,
+                            show: lines,
                             lineWidth: 2
                         },
                         direction: {
@@ -583,8 +640,9 @@ define([
                             color: '#7a7a7a',
                             fillColor: '#7a7a7a',
                             arrawLength: 5
-                        }
-                    }];
+                        },
+                        id: wind.get('id')
+                    });
 
                     if (ts.length > 24){
                         dataset.push({
@@ -598,17 +656,17 @@ define([
                             },
                             direction: {
                                 show: false
-                            }
+                            },
+                            id: wind.get('id')
                         });
                     }
-
-                    this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
                 }
-                this.$('.wind .panel-body').html(compiled);
-                this.$('.wind .panel-body').show();
+
+                this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
 
                 if(dataset){
                     // set a time out to wait for the box to finish expanding or animating before drawing
+                    this.windDataset = dataset;                        
                     setTimeout(_.bind(function(){
                         this.windPlot = $.plot('.wind .chart .canvas', dataset, {
                             grid: {
@@ -626,12 +684,47 @@ define([
                         });
                     }, this), 2);
                 }
+                
+                var compiled = _.template(WindPanelTemplate, {
+                    winds: winds,
+                    units: winds[0].get('units')
+                });
+
+                this.$('.wind .panel-body').html(compiled);
+                this.$('.wind .panel-body').show();
+                this.renderTimeline();
+
                 this.mason.layout();
             } else {
                 this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
                 this.$('.wind .panel').removeClass('complete');
                 this.$('.wind .panel-body').hide().html('');
             }
+        },
+
+        hoverWind: function(e){
+            var id = $(e.target).data('id');
+            if (_.isUndefined(id)){
+                id = $(e.target).parents('.single').data('id');
+            }
+            var coloredSet = [];
+            for(var dataset in this.windDataset){
+                var ds = $.extend(true, {}, this.windDataset[dataset]);
+                if (this.windDataset[dataset].id !== id){
+                    ds.color = '#ddd';
+                    ds.direction.fillColor = '#ddd';
+                    ds.direction.color = '#ddd';
+                }
+
+                coloredSet.push(ds);
+            }
+            this.windPlot.setData(coloredSet);
+            this.windPlot.draw();
+        },
+
+        unhoverWind: function(){
+            this.windPlot.setData(this.windDataset);
+            this.windPlot.draw();
         },
 
         clickWater: function(){

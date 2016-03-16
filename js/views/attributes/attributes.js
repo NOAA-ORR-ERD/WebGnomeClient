@@ -6,7 +6,7 @@ define([
     'text!templates/attributes/panel.html'
 ], function($, _, Backbone, AttributesTable, PanelTemplate){
     'use strict';
-    var attributesView = Backbone.View.extend({
+    var AttributesView = Backbone.View.extend({
         className: 'attributes',
 
         events: {
@@ -14,7 +14,7 @@ define([
         },
 
         initialize: function(options){
-            if(!_.has(options, 'model')) return null;
+            if(!_.has(options, 'model')){ return null; }
             this.model = options.model;
             if(options.name){
                 this.name = options.name;
@@ -31,7 +31,7 @@ define([
 
                 if(this.model.length > 0){
                     this.model.forEach(_.bind(function(model){
-                        this.$('.panel-body:first').append(new attributesView({name: model.get('obj_type') + ' | ' + model.get('name'), model: model}).$el);
+                        this.$('.panel-body:first').append(new AttributesView({name: model.get('obj_type') + ' | ' + model.get('name'), model: model}).$el);
                     }, this));
                 } else {
                     this.$('.panel-body').append(new AttributesTable({model: this.model}).$el);
@@ -45,7 +45,7 @@ define([
                     } else {
                         name = submodels[key];
                     }
-                    this.$('.panel-body:first').append(new attributesView({
+                    this.$('.panel-body:first').append(new AttributesView({
                         model: this.model.get(submodels[key]),
                         name: name
                     }).$el);
@@ -57,5 +57,5 @@ define([
             this.$(e.currentTarget).parents('.attributes:first').find('.collapse:first').collapse('toggle');
         }
     });
-    return attributesView;
+    return AttributesView;
 });
