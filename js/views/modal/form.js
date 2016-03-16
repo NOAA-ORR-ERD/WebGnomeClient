@@ -215,12 +215,11 @@ define([
 
         close: function(){
             $(window).off('resize');
-            this.remove();
-            this.unbind();
             this.$el.off('scroll');
             if(this.model){
                 this.model.off('change', this.renderAttributes, this);
             }
+            BaseModal.prototype.close.call(this);
         }
     });
 
