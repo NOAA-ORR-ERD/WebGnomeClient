@@ -29,128 +29,103 @@
             </div>
         </div>
 	</div>
-	<ul class="nav nav-tabs">
-	    <li class="amount active">
-	        <a href="#amount" data-toggle="tab">Amount Spilled</a>
-	    </li>
-	    <li class="constant">
-	        <a href="#constant-rate" data-toggle="tab">Constant Spill Rate</a>
-	    </li>
-	</ul>
-
-	<div class="tab-content">
-		<div class="tab-pane active" id="amount">
-			<div class="form-horizontal">
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="amount">Amount Spilled:</label>
-					<div class="col-sm-3">
-						<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}">
-					</div>
-					<div class="col-sm-3">
-						<select class="form-control" id="units">
-							{% if (showSubstance){ %}
-								<option selected="selected" value="" />
-								<option value="m^3">
-									cu. m.
-								</option>
-								<option value="gal">
-									gal
-								</option>
-								<option value="bbl">
-									bbl
-								</option>
-								<option value="ton">
-									tons
-								</option>
-								<option value="metric ton">
-									metric tons
-								</option>
-								<option value="kg">
-									kilograms
-								</option>
-							{% } else { %}
-								<option selected="selected" value="" />
-								<option value="ton">
-									tons
-								</option>
-								<option value="metric ton">
-									metric tons
-								</option>
-								<option value="kg">
-									kilograms
-								</option>
-							{% } %}
-						</select>
-					</div>
-				</div>
-
-				<div class="form-group">
-                    <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
-                    <div class="col-sm-6">
-                        <div class="slider"></div>
-                    </div>
-                    <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
-                    <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div>
-           		</div>
-			</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label" for="amount">Amount Spilled:</label>
+		<div class="col-sm-3">
+			<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}">
 		</div>
-
-		<div class="tab-pane" id="constant-rate">
-			<div class="form-horizontal">
-				<div class="form-group">
-					<label class="col-sm-5 control-label" for="constant">Spill Rate:</label>
-					<div class="col-sm-3">
-						<input type="number" min="0" id="spill-rate" class="form-control">
-					</div>
-					<div class="col-sm-3">
-						<select class="form-control" id="rate-units">
-							{% if (showSubstance){ %}
-								<option value="bbl/hr">
-									bbl/hr
-								</option>
-								<option value="bbl/day">
-									bbl/day
-								</option>
-								<option value="gal/hr">
-									gal/hr
-								</option>
-									<!--<option value="gal/min">
-									gal/min
-								</option> -->
-								<option value="m^3/hr">
-									m^3/hr
-								</option>
-								<option value="ton/hr">
-									tons/hr
-								</option>
-								<option value="metric ton/hr">
-									metric tons/hr
-								</option>
-							{% } else { %}
-								<option value="ton/hr">
-									tons/hr
-								</option>
-								<option value="metric ton/hr">
-									metric tons/hr
-								</option>
-								<option value="kg/hr">
-									kg/hr
-								</option>
-							{% } %}
-						</select>
-					</div>
-				</div>
-				<div class="form-group">
-	                <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
-                    <div class="col-sm-6">
-                        <div class="slider"></div>
-                    </div>
-                    <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
-                    <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div>
-            	</div>
-			</div>
+		<div class="col-sm-3">
+			<select class="form-control" id="units">
+				{% if (showSubstance){ %}
+					<option selected="selected" value="" />
+					<option value="m^3">
+						cu. m.
+					</option>
+					<option value="gal">
+						gal
+					</option>
+					<option value="bbl">
+						bbl
+					</option>
+					<option value="ton">
+						tons
+					</option>
+					<option value="metric ton">
+						metric tons
+					</option>
+					<option value="kg">
+						kilograms
+					</option>
+				{% } else { %}
+					<option selected="selected" value="" />
+					<option value="ton">
+						tons
+					</option>
+					<option value="metric ton">
+						metric tons
+					</option>
+					<option value="kg">
+						kilograms
+					</option>
+				{% } %}
+			</select>
 		</div>
 	</div>
+    <div class="form-group">
+		<label class="col-sm-4 control-label" for="constant">Spill Rate:</label>
+		<div class="col-sm-3">
+			<input type="number" min="0" id="spill-rate" class="form-control">
+		</div>
+		<div class="col-sm-3">
+			<select class="form-control" id="rate-units">
+				{% if (showSubstance){ %}
+					<option value="bbl/hr">
+						bbl/hr
+					</option>
+					<option value="bbl/day">
+						bbl/day
+					</option>
+					<option value="gal/hr">
+						gal/hr
+					</option>
+						<!--<option value="gal/min">
+						gal/min
+					</option> -->
+					<option value="m^3/hr">
+						cu. m./hr
+					</option>
+					<option value="ton/hr">
+						tons/hr
+					</option>
+					<option value="metric ton/hr">
+						metric tons/hr
+					</option>
+					<option value="kg/hr">
+						kg/hr
+					</option>
+				{% } else { %}
+					<option value="ton/hr">
+						tons/hr
+					</option>
+					<option value="metric ton/hr">
+						metric tons/hr
+					</option>
+					<option value="kg/hr">
+						kg/hr
+					</option>
+				{% } %}
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+        <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
+        <div class="col-sm-6">
+            <div class="slider"></div>
+        </div>
+        <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div>
+        <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div>
+    </div>
+
     <div class="row">
     	<div id="oilInfo" class="col-md-6"></div>
         <div class="col-md-6 position">
