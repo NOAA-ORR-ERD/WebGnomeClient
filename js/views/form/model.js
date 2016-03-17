@@ -31,7 +31,8 @@ define([
 
             this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
             });
         },
 

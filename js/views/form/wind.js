@@ -115,7 +115,8 @@ define([
             this.trigger('show');
             this.$('#variable-datetime, #constant-datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
             });
 
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');

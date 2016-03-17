@@ -274,7 +274,8 @@ define([
 
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
             });
             this.$('#datepick_start').on('click', _.bind(function(){
                 this.$('#start_time').datetimepicker('show');

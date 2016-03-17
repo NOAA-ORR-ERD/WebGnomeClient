@@ -164,7 +164,8 @@ define([
             });
             this.$('.datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
             });
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('.datetime').datetimepicker('show');
@@ -173,8 +174,8 @@ define([
         },
 
         renderTimeline: function(){
-            var start = parseInt(moment(webgnome.model.get('start_time')).format('x'));
-            var end = parseInt(start + (webgnome.model.get('duration') * 1000));
+            var start = parseInt(moment(webgnome.model.get('start_time')).format('x'), 10);
+            var end = parseInt(start + (webgnome.model.get('duration') * 1000), 10);
             var offset = (webgnome.model.get('duration') / 12) * 1000;
             var baseline = {label: "empty", data: [[start - offset, 0],[end + offset, 0]]};
 

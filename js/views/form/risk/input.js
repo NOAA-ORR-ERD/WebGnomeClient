@@ -7,8 +7,7 @@ define([
     'views/modal/form',
     'text!templates/risk/input.html',
     'text!templates/risk/slider_input.html',
-    'nucos',
-    'jqueryDatetimepicker'
+    'nucos'
 ], function($, _, Backbone, moment, jqueryui, FormModal, RiskTemplate, SliderTemplate, nucos) {
     var riskForm = FormModal.extend({
         className: 'modal form-modal risk-form',

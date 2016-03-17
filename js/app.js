@@ -28,6 +28,7 @@ define([
             this.configure();
 
             this.config.date_format.half_hour_times = this.generateHalfHourTimesArray();
+            this.config.date_format.time_step = 30;
 
             this.monitor = {};
             this.monitor.requests = [];
