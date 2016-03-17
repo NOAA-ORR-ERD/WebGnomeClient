@@ -96,7 +96,7 @@ define([
                 this.dropzone.disable();
                 $('input.dz-hidden-input').remove();
             }
-            FormModal.View.prototype.close.call(this);
+            FormModal.prototype.close.call(this);
         }
     });
     return createMoverForm;

@@ -56,38 +56,38 @@
         </div>
         <div class="panel-collapse collapse" id="grids">
             <div class="panel-body">
+                <form role="form" class="form-horizontal checkboxes current-grid">
+                {% if(ice.length !== 0 || currents.length !== 0){ %}
+                    <div class="radio">
+                        <label for="none-grid" class="curLabel">
+                            <input type="radio" class="currents" name="grid" id="none-grid" checked>
+                            None
+                        </label>
+                    </div>
+                {% } %}
+
                 {% if(currents.length > 0){ %}
-                    <form role="form" class="form-horizontal checkboxes current-grid">
+                    {% for (var i = 0; i < currents.length; i++){ %}
                         <div class="radio">
-                            <label for="none-grid" class="curLabel">
-                                <input type="radio" class="currents" name="grid" id="none-grid" checked>
-                                None
+                            <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
+                                <input type="radio" name="grid" class="grid" id="grid-{{ currents[i].get('id') }}">
+                                {{ currents[i].get('name') }}
                             </label>
                         </div>
-                        {% for (var i = 0; i < currents.length; i++){ %}
-                            <div class="radio">
-                                <label for="grid-{{ currents[i].get('id') }}" class="curLabel">
-                                    <input type="radio" name="grid" class="grid" id="grid-{{ currents[i].get('id') }}">
-                                    {{ currents[i].get('name') }}
-                                </label>
-                            </div>
-                        {% } %}
-                    </form>
+                    {% } %}
                 {% } %}
 
                 {% if(ice.length > 0){ %}
-                    <form role="form" class="form-horizontal checkboxes ice-grid">
-                        {% for (var i = 0; i < ice.length; i++){ %}
-                            <div class="radio">
-                                <label for="grid-{{ ice[i].get('id') }}" class="curLabel">
-                                    <input type="radio" class="ice" name="grid" id="grid-{{ ice[i].get('id') }}">
-                                    {{ ice[i].get('name') }}
-                                </label>
-                            </div>
-                        {% } %}
-                    </form>
+                    {% for (var i = 0; i < ice.length; i++){ %}
+                        <div class="radio">
+                            <label for="grid-{{ ice[i].get('id') }}" class="curLabel">
+                                <input type="radio" class="ice" name="grid" id="grid-{{ ice[i].get('id') }}">
+                                {{ ice[i].get('name') }}
+                            </label>
+                        </div>
+                    {% } %}
                 {% } %}
-
+                </form>
 
                 {% if(ice.length === 0 && currents.length === 0){ %}
                     No grids available for visualization
@@ -102,14 +102,18 @@
         </div>
         <div class="panel-collapse collapse" id="uv">
             <div class="panel-body">
-                {% if(currents.length > 0){ %}
-                    <form role="form" class="form-horizontal checkboxes current-uv">
+                <form role="form" class="form-horizontal checkboxes current-uv">
+
+                    {% if(ice.length !== 0 || currents.length !== 0){ %}
                         <div class="radio">
                             <label for="none-uv" class="curLabel">
-                                <input type="radio" class="currents" name="uv" id="none-uv" checked>
+                                <input type="radio" class="ice" name="uv" id="none-uv" checked>
                                 None
                             </label>
                         </div>
+                    {% } %}
+
+                    {% if(currents.length > 0){ %}
                         {% for (var i = 0; i < currents.length; i++){ %}
                             <div class="radio">
                                 <label for="uv-{{ currents[i].get('id') }}" class="curLabel">
@@ -118,11 +122,9 @@
                                 </label>
                             </div>
                         {% } %}
-                    </form>
-                {% } %}
-    
-                {% if(ice.length > 0){ %}
-                    <form role="form" class="form-horizontal checkboxes ice-uv">
+                    {% } %}
+        
+                    {% if(ice.length > 0){ %}
                         {% for (var i = 0; i < ice.length; i++){ %}
                             <div class="radio">
                                 <label for="uv-{{ ice[i].get('id') }}" class="curLabel">
@@ -131,9 +133,8 @@
                                 </label>
                             </div>
                         {% } %}
-                    </form>
-                {% } %}
-
+                    {% } %}
+                </form>
                 {% if(ice.length === 0 && currents.length === 0){ %}
                     No U&amp;V available for visualization
                 {% } %}
