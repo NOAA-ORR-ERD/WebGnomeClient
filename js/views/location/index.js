@@ -139,6 +139,7 @@ define([
              this.layer = new ol.layer.Vector({
                 source: new ol.source.Vector({
                     features: (new ol.format.GeoJSON()).readFeatures(geojson,  {featureProjection: 'EPSG:3857'}),
+                    wrapX: false
                 }),
                 style: new ol.style.Style({
                     image: new ol.style.Icon({
