@@ -27,6 +27,10 @@ define([
 
         toTree: function(){
             return '';
+        },
+                
+        rewindModel: function(){
+            // no op on rewind because current_movers can be added and removed on the fly
         }
     });
 
