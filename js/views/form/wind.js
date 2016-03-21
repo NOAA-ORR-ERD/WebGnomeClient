@@ -633,7 +633,10 @@ define([
                 this.nws.cancel();
             }
 
-            this.dropzone.disable();
+            if (this.dropzone){
+                this.dropzone.disable();
+            }
+            
             $('input.dz-hidden-input').remove();
 
             this.ol.close();
