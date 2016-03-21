@@ -152,8 +152,14 @@ define([
 
             this.mapView.map.addLayer(this.layer);
 
+            var sortedLocations = geojson.features.sort(function(a, b) {
+                var textA = a.properties.title.toUpperCase();
+                var textB = b.properties.title.toUpperCase();
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            });
+
             var list = _.template(ListTemplate, {
-                locations: geojson.features
+                locations: sortedLocations
             });
             this.$('.location-list').append(list);
 
