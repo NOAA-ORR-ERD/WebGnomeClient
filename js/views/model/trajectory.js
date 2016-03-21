@@ -912,7 +912,6 @@ define([
                 this.checked_currents = [];
             }
             this.renderStep({step: this.frame});
-            console.log(current_outputter);
 
             current_outputter.save();
         },
@@ -983,7 +982,6 @@ define([
             }
 
             this.renderStep({step: this.frame});
-            console.log(current_outputter);
             current_outputter.save();
         },
 
