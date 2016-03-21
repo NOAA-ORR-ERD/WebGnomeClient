@@ -379,7 +379,12 @@ define([
                 })
             });
 
-            this.IceLayer = new ol.layer.Image();
+            this.IceLayer = new ol.layer.Image({
+                name: 'ice'
+            });
+            this.IceImageLayer = new ol.layer.Image({
+                name: 'ice'
+            });
             
             this.graticule = new ol.Graticule({
                 maxLines: 50,
@@ -417,13 +422,11 @@ define([
                 var ice = webgnome.model.get('movers').filter(function(mover){
                     return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
                 });
-                var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+                var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
                 var tc_ice = [];
-                if(ice_tc_outputter.get('on')){
-                    ice_tc_outputter.get('ice_movers').forEach(function(mover){
-                        tc_ice.push(mover.get('id'));
-                    });
-                }
+                ice_tc_outputter.get('ice_movers').forEach(function(mover){
+                    tc_ice.push(mover.get('id'));
+                });
                 this.tc_ice = tc_ice;
 
                 var compiled = _.template(ControlsTemplate, {
@@ -495,9 +498,10 @@ define([
                         this.graticule.setMap(this.ol.map);
                         this.ol.map.addLayer(this.CurrentLayer);
                         this.ol.map.addLayer(this.IceLayer);
+                        this.ol.map.addLayer(this.IceImageLayer);
                         this.ol.map.addLayer(this.SpillIndexLayer);
                         this.ol.map.addLayer(this.SpillLayer);
-                        
+
 
                         // this.ol.map.on('pointermove', this.spillHover, this);
                         // this.ol.map.on('click', this.spillClick, this);
@@ -661,7 +665,7 @@ define([
             if(!step){ return; }
             this.renderSpill(step);
             this.renderCurrent(step);
-            this.renderIce(step);
+            this.renderIceImage(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
             this.frame = step.get('step_num');
@@ -721,6 +725,40 @@ define([
             });
 
             this.CurrentLayer.setSource(cur_image);
+        },
+
+        renderIceImage: function(step){
+            var source;
+            var ice_data = this.$('.ice-tc input[type="radio"]:checked').val();
+
+            if(step && step.get('IceImageOutput') && this.tc_ice && this.tc_ice.length > 0){
+                var image = step.get('IceImageOutput')[ice_data + '_image'];
+                var bb = step.get('IceImageOutput').bounding_box;
+                var coords = [[bb[0], [bb[0][0], bb[1][1]], bb[1], [bb[1][0], bb[0][1]]]];
+                var poly = new ol.geom.Polygon(coords).transform('EPSG:4326', 'EPSG:3857');
+                source = new ol.source.ImageStatic({
+                    url: image,
+                    imageSize: [1000, 1000],
+                    imageExtent: poly.getExtent(),
+                    projection: step.get('IceImageOutput').projection,
+                    imageLoadFunction: function(imageTile, src){
+                        var imageElement = imageTile.getImage();
+                        imageElement.src = src;
+                    }
+                });
+            } else {
+                source = new ol.source.ImageStatic({
+                    url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                    imageSize: [1, 1],
+                    imageExtent: [-20000000000, -2000000000, 2000000000, 20000000],
+                    imageLoadFunction: function(imageTile, src){
+                        var imageElement = imageTile.getImage();
+                        imageElement.src = src;
+                    }
+                });
+            }
+
+            this.IceImageLayer.setSource(source);
         },
 
         renderIce: function(step){
@@ -874,6 +912,7 @@ define([
                 this.checked_currents = [];
             }
             this.renderStep({step: this.frame});
+            console.log(current_outputter);
 
             current_outputter.save();
         },
@@ -925,13 +964,14 @@ define([
 
         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input:checked');
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
-
+            // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
+            console.log(this.tc_ice);
             if (checked.length > 0){
                 current_outputter.get('ice_movers').reset();
                 this.tc_ice = [];
 
-                this.$('.ice-tc input:checked').each(_.bind(function(i, input){
+                this.$('.ice-tc input[type="checkbox"]:checked').each(_.bind(function(i, input){
                     var id = input.id.replace('tc-', '');
                     var current = webgnome.model.get('movers').get(id);
                     this.tc_ice.push(id);
@@ -943,7 +983,7 @@ define([
             }
 
             this.renderStep({step: this.frame});
-
+            console.log(current_outputter);
             current_outputter.save();
         },
 
