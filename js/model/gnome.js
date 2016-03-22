@@ -22,7 +22,8 @@ define([
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
-    'model/outputters/ice',
+    'model/outputters/ice_geo',
+    'model/outputters/ice_image',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -37,7 +38,7 @@ define([
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
     'use strict';
@@ -72,7 +73,8 @@ define([
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
-                'gnome.outputters.geo_json.IceGeoJsonOutput': IceOutputter
+                'gnome.outputters.geo_json.IceGeoJsonOutput': IceGeoOutputter,
+                'gnome.outputters.image.IceImageOutput': IceImageOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -98,7 +100,8 @@ define([
                     new TrajectoryOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceOutputter()
+                    new IceGeoOutputter(),
+                    new IceImageOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer(),
