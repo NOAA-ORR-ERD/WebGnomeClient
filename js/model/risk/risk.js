@@ -372,7 +372,7 @@ define([
         // OVERRIDES for local storage of model
         fetch: function() {
             this.set(JSON.parse(localStorage.getItem('risk_calculator')));
-            return Promise.resolve();
+            return new Promise(function(res, rej){ res(); });
         },
 
         save: function(attributes, options) {
