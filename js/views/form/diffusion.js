@@ -25,7 +25,7 @@ define([
         render: function(options) {
             this.body = _.template(DiffusionTemplate, {
                 name: this.model.get('name'),
-                coeff: this.model.get('diffusion_coef'),
+                coeff: this.model.get('diffusion_coef').toExponential(2),
                 uncertain: this.model.get('uncertain_factor')
             });
             FormModal.prototype.render.call(this, options);
@@ -33,8 +33,8 @@ define([
 
         update: function() {
             var name = this.$('#name').val();
-            var coeff = this.$('#coeff').val();
-            var uncertain_factor = this.$('#uncertain').val();
+            var coeff = parseFloat(this.$('#coeff').val());
+            var uncertain_factor = parseFloat(this.$('#uncertain').val());
 
             this.model.set('name', name);
             this.model.set('diffusion_coef', coeff);

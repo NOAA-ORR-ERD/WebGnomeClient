@@ -9,7 +9,7 @@
 			<h5>{{ name }}</h5>
 		</div>
 		<div class="col-sm-6">
-			<span class="label label-default amount">{{ diffusion[i].get('diffusion_coef') }} cm^2 / s</span>
+			<span class="label label-default amount">{{ diffusion[i].get('diffusion_coef').toExponential(2) }} cm^2 / s</span>
 		</div>
 		<div class="col-sm-2">
             <span class="trash" title="Remove {{ diffusion[i].get('name') }}"></span>
