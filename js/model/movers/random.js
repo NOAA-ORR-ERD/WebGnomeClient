@@ -27,6 +27,9 @@ define([
                 if (attrs.diffusion_coef > 100000000000) {
                     return 'Diffusion coefficient must be less than 1e11!';
                 }
+                if (uncertain > 1000) {
+                    return 'Uncertain factor needs to be equal to or less than 1000!';
+                }
             } else {
                 if (diffuse === '' || uncertain === ''){
                     return 'That field cannot be blank!';
