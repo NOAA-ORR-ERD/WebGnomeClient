@@ -647,8 +647,10 @@ define([
                         to_unit = display.released;
                         var color = '';
 
-                        color = this.colors[set];
-                        color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
+                        if (dataset[set].label !== 'Amount released') {
+                            color = this.colors[set];
+                            color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
+                        }
 
                         if (row === 0) {
                             if (dataset[set].name === 'floating' || display.other === 'same') {
