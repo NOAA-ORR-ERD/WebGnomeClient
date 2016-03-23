@@ -647,10 +647,8 @@ define([
                         to_unit = display.released;
                         var color = '';
 
-                        if(dataset[set].name !== 'floating'){
-                            color = this.colors[set];
-                            color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
-                        }
+                        color = this.colors[set];
+                        color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
 
                         if (row === 0) {
                             if (dataset[set].name === 'floating' || display.other === 'same') {
