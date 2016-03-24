@@ -400,6 +400,7 @@ define([
             for(var i = 0; i < cloneset.length; i++){
                 cloneset[i].data = cloneset[i][selection];
             }
+
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.grid.autoHighlight = false;
@@ -451,8 +452,9 @@ define([
                 var units = webgnome.model.get('spills').at(0).get('units');
                 for(var i = 0; i < data.length; i++){
                     if(data[i].label !== 'Amount released'){
+                        var k = i - 1;
                         compiled += _.template(BreakdownTemplate, {
-                            color: this.colors[i],
+                            color: this.colors[k],
                             width: width,
                             label: data[i].label,
                             value: Math.round(data[i].data) + ' ' + units
@@ -648,7 +650,8 @@ define([
                         var color = '';
 
                         if (dataset[set].label !== 'Amount released') {
-                            color = this.colors[set];
+                            var offByOne = set - 1;
+                            color = this.colors[offByOne];
                             color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
                         }
 
