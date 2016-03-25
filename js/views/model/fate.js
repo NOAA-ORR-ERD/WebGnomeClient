@@ -969,7 +969,9 @@ define([
 
             var start = selection.xaxis.from;
             var end = selection.xaxis.to;
-            var units = this.$('#ics209 .vol-units').val();
+            var from_units = webgnome.model.get('spills').at(0).get('units');
+            var to_units = this.$('#ics209 .vol-units').val() === null ? from_units : this.$('#ics209 .vol-units').val();
+            var converter = new nucos.OilQuantityConverter();
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
             var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
@@ -996,25 +998,25 @@ define([
                     if(dataset[set].data[step][0] >= start && dataset[set].data[step][0] <= end){
                         var previous = 0;
                         if(dataset[set].data[step - 1]){
-                            previous = Math.round(parseFloat(dataset[set].data[step - 1][1]));
+                            previous = Math.round(parseFloat(converter.Convert(dataset[set].data[step - 1][1], from_units, api, 'API Degree', to_units)));
                         }
-                        var current = Math.round(parseFloat(dataset[set].data[step][1]));
+                        var current = Math.round(parseFloat(converter.Convert(dataset[set].data[step][1], from_units, api, 'API Degree', to_units)));
                         report[dataset[set].name] += current - previous;
                     }
                 }
                 for(var step2 in dataset[set].data){
                     if(dataset[set].data[step2][0] <= end){
-                        cumulative[dataset[set].name] = Math.round(parseFloat(dataset[set].data[step2][1]));
+                        cumulative[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].data[step2][1], from_units, api, 'API Degree', to_units)));
                     }
                 }
                 for(var step3 in dataset[set].low){
                     if(dataset[set].low[step3][0] <= end){
-                        low[dataset[set].name] = Math.round(parseFloat(dataset[set].low[step3][1]));
+                        low[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].low[step3][1], from_units, api, 'API Degree', to_units)));
                     }
                 }
                 for(var step4 in dataset[set].high){
                     if(dataset[set].high[step4][0] <= end){
-                        high[dataset[set].name] = Math.round(parseFloat(dataset[set].high[step4][1]));
+                        high[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].high[step4][1], from_units, api, 'API Degree', to_units)));
                     }
                 }
             }
@@ -1033,7 +1035,7 @@ define([
                 cumulative: cumulative,
                 low: low,
                 high: high,
-                units: units
+                units: to_units
             });
 
             this.$('#ics209 .ics-table').html(compiled);
