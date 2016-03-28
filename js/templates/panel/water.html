@@ -1,18 +1,29 @@
-<div>
-	<label>
-		Temperature: 
-	</label> 
-	{{ temperature }} 
-	{% if (units.temperature !== 'K'){ %}
-		&deg;
-	{% } %}
-	{{ units.temperature }}
+<div class="panel panel-default">
+	<div class="panel-heading">
+	    <div class="add"></div>
+	    <div class="state"></div>
+	    Water
+	</div>
+	<div class="panel-body">
+		{% if(water){ %}
+			<div>
+				<label>
+					Temperature: 
+				</label> 
+				{{ temperature }} 
+				{% if (units.temperature !== 'K'){ %}
+					&deg;
+				{% } %}
+				{{ units.temperature }}
+			</div>
+			<div><label>Salinity: </label> {{ salinity }} {{ units.salinity }}</div>
+			<div><label>Sediment Load: </label> {{ sediment }} {{ units.sediment }}</div>
+			{% if (!_.isNull(wave_height)){  %}
+				<div><label>Wave Height: </label> {{ wave_height }} {{ units.wave_height }}</div>
+			{% } %}
+			{% if (!_.isNull(fetch)){ %}
+				<div><label>Fetch: </label> {{ fetch }} {{ units.fetch }}</div>
+			{% } %}
+		{% } %}
+	</div>
 </div>
-<div><label>Salinity: </label> {{ salinity }} {{ units.salinity }}</div>
-<div><label>Sediment Load: </label> {{ sediment }} {{ units.sediment }}</div>
-{% if (!_.isNull(wave_height)){  %}
-	<div><label>Wave Height: </label> {{ wave_height }} {{ units.wave_height }}</div>
-{% } %}
-{% if (!_.isNull(fetch)){ %}
-	<div><label>Fetch: </label> {{ fetch }} {{ units.fetch }}</div>
-{% } %}

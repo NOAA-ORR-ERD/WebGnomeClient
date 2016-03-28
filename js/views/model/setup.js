@@ -14,15 +14,13 @@ define([
     'model/gnome',
     'views/form/model',
     'views/panel/wind',
+    'views/panel/water',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
     'text!templates/panel/map.html',
     'views/form/mover/create',
     'text!templates/panel/current.html',
-    'model/environment/water',
-    'views/form/water',
-    'text!templates/panel/water.html',
     'text!templates/panel/diffusion.html',
     'views/form/diffusion',
     'model/spill',
@@ -55,10 +53,10 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel,
+    WindPanel, WaterPanel,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     CreateMoverForm, CurrentPanelTemplate,
-    WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate, DiffusionFormView,
+    DiffusionPanelTemplate, DiffusionFormView,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
@@ -69,7 +67,6 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
                 'click .map .perm-add': 'clickMap',
                 'click .map .add': 'editMap',
@@ -135,15 +132,14 @@ define([
             });
             this.$el.append(compiled);
             BaseView.prototype.render.call(this);
-            this.windPanel = new WindPanel();
-            this.$('.model-objects').append(this.windPanel.$el);
+            this.$('.model-objects').append(new WindPanel().$el);
+            this.$('.model-objects').append(new WaterPanel().$el);
             this.initMason();
 
             setTimeout(_.bind(function(){
                 webgnome.model.on('sync', this.updateObjects, this);
                 //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateLocation();
-                this.updateWater();
                 this.updateSpill();
                 this.updateCurrent();
                 this.updateDiffusion();
@@ -433,41 +429,6 @@ define([
 
             this.renderTimeline();
             this.mason.layout();
-        },
-
-        clickWater: function(){
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-            if(_.isUndefined(water) || water.length === 0){
-                water = new WaterModel();
-            }
-            var waterForm = new WaterForm(null, water);
-            waterForm.on('hidden', waterForm.close);
-            waterForm.on('save', _.bind(function(){
-                webgnome.model.get('environment').add(water, {merge:true});
-                this.updateWater();
-            }, this));
-            waterForm.render();
-        },
-
-        updateWater: function(){
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-            if (!_.isUndefined(water)){
-                var compiled;
-                this.$('.water .panel').addClass('complete');
-                compiled = _.template(WaterPanelTemplate, {
-                    temperature: water.get('temperature'),
-                    salinity: water.get('salinity'),
-                    sediment: water.get('sediment'),
-                    wave_height: water.get('wave_height'),
-                    fetch: water.get('fetch'),
-                    units: water.get('units')
-                });
-                this.$('.water .panel-body').html(compiled);
-                this.$('.water .panel-body').show();
-            } else {
-                this.$('.water .panel').removeClass('complete');
-                this.$('.water .panel-body').hide().html('');
-            }
         },
 
         clickSpill: function(){
