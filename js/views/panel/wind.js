@@ -19,10 +19,6 @@ define([
     var windPanel = BasePanel.extend({
         className: 'col-md-3 wind panel-view object',
 
-        initialize: function(){
-            this.render();
-        },
-
         new: function(){
             var wind = new WindModel();
             var windForm = new WindForm(null, wind);
