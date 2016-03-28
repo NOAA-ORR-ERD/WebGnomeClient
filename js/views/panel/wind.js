@@ -102,7 +102,7 @@ define([
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
             }
-            this.trigger('render');
+            BasePanel.prototype.render.call(this);            
         },
 
         delete: function(e){

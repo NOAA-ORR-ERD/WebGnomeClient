@@ -37,11 +37,67 @@ define([
             }
         },
 
+        render: function(){
+            this.setupTooltips();
+            this.trigger('render');
+        },
+
         unhover: function(){
             if(this.dataset && this.plot){
                 this.plot.setData(this.dataset);
                 this.plot.draw();
             }
+        },
+
+        setupTooltips: function(){
+            var delay = {
+                show: 500,
+                hide: 100
+            };
+
+            this.$('.panel-heading .add').tooltip({
+                title: _.bind(function(){
+                    var object = this.$('.panel-heading').text().trim();
+
+                    if(this.$('.panel').hasClass('complete') && this.$('.list .single').length === 0){
+                        return 'Edit ' + object;
+                    } else {
+                        return 'Create ' + object;
+                    }
+                }, this),
+                delay: delay,
+                container: 'body'
+            });
+
+            this.$('.panel-heading .perm-add').tooltip({
+                title: function(){
+                    var object = this.$('.panel-heading').text().trim();
+                    return 'Create ' + object;
+                },
+                delay: delay,
+                container: 'body'
+            });
+
+            this.$('.trash, .edit').tooltip({
+                container: 'body',
+                delay: delay
+            });
+
+            this.$('.panel-heading .state').tooltip({
+                title: function(){
+                    var object = this.$('.panel-heading').text().trim();
+
+                    if(this.$('.panel').hasClass('complete')){
+                        return object + ' requirement met';
+                    } else if(this.$('.panel').hasClass('optional')){
+                        return object + ' optional';
+                    } else {
+                        return object + ' required';
+                    }
+                },
+                container: 'body',
+                delay: delay
+            });
         },
 
         getID: function(e){

@@ -125,7 +125,6 @@ define([
                     }, this)
                 });
             }
-            webgnome.cache.on('rewind', this.rewind, this);
         },
 
         render: function(){
@@ -136,6 +135,8 @@ define([
             });
             this.$el.append(compiled);
             BaseView.prototype.render.call(this);
+            this.windPanel = new WindPanel();
+            this.$('.model-objects').append(this.windPanel.$el);
             this.initMason();
 
             setTimeout(_.bind(function(){
@@ -146,8 +147,6 @@ define([
                 this.updateSpill();
                 this.updateCurrent();
                 this.updateDiffusion();
-                this.windPanel = new WindPanel();
-                this.$('.model-objects').append(this.windPanel.$el);
                 this.updateObjects();
             }, this), 1);
 
@@ -382,10 +381,6 @@ define([
             webgnome.cache.rewind();
         },
 
-        rewind: function(){
-            this.$('.stage-4').hide();
-        },
-
         updateModel: function(){
             var name = this.$('#name').val();
             webgnome.model.set('name', name);
@@ -424,101 +419,21 @@ define([
             this.$('#hours').val(durationAttrs.hours);
         },
 
-        showFateObjects: function(){
-            this.$('.model-objects > div').hide().addClass('disabled');
-            this.$('.wind').show().removeClass('disabled');
-            this.$('.water').show().removeClass('disabled');
-            this.$('.spill').show().removeClass('disabled');
-            this.$('.beached').show().removeClass('disabled');
-        },
-
-        showAllObjects: function(){
-            this.$('.object').show().removeClass('disabled');
-            this.$('.beached').hide().addClass('disabled');
-        },
-
-        showTrajectoryObjects: function(){
-            this.$('.model-objects > div').hide().addClass('disabled');
-            this.$('.wind').show().removeClass('disabled');
-            this.$('.spill').show().removeClass('disabled');
-            this.$('.map.object').show().removeClass('disabled');
-            this.$('.current').show().removeClass('disabled');
-            this.$('.beached').hide().addClass('disabled');
-        },
-
         updateObjects: function(){
             var delay = {
                 show: 500,
                 hide: 100
             };
 
-            $('.panel-heading .add').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
-
-                    if($(this).parents('.panel').hasClass('complete') && $(this).parents('.spill, .wind').length === 0){
-                        return 'Edit ' + object;
-                    } else {
-                        return 'Create ' + object;
-                    }
-                },
-                delay: delay,
-                container: 'body'
-            });
-
-            $('.panel-heading .perm-add').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
-                    return 'Create ' + object;
-                },
-                delay: delay,
-                container: 'body'
-            });
-
-            $('.panel-heading .advanced-edit').tooltip({
+            this.$('.panel-heading .advanced-edit').tooltip({
                 title: 'Advanced Edit',
                 delay: delay,
                 container: 'body'
             });
 
-            $('.panel-heading .state').tooltip({
-                title: function(){
-                    var object = $(this).parents('.panel-heading').text().trim();
-
-                    if($(this).parents('.panel').hasClass('complete')){
-                        return object + ' requirement met';
-                    } else if($(this).parents('.panel').hasClass('optional')){
-                        return object + ' optional';
-                    } else {
-                        return object + ' required';
-                    }
-                },
-                container: 'body',
-                delay: delay
-            });
-
-            $('.spill .trash, .spill .edit').tooltip({
-                container: 'body',
-                delay: delay
-            });
-
-            if(this.$('.stage-2 .panel:visible').length === this.$('.stage-2 .panel.complete:visible').length){
-                this.$('.stage-3').show();
-                this.updateResponse();
-                if(this.$('.beached.object:visible').length > 0){
-                    this.updateBeached();
-                }
-                if(webgnome.cache.length > 0){
-                    this.$('.stage-4').show();
-                }
-            } else {
-                this.$('.stage-3').hide();
-            }
             this.renderTimeline();
             this.mason.layout();
         },
-
-
 
         clickWater: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
