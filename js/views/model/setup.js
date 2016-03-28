@@ -15,10 +15,7 @@ define([
     'views/form/model',
     'views/panel/wind',
     'views/panel/water',
-    'model/map/map',
-    'views/form/map/type',
-    'views/form/map/param',
-    'text!templates/panel/map.html',
+    'views/panel/map',
     'views/form/mover/create',
     'text!templates/panel/current.html',
     'text!templates/panel/diffusion.html',
@@ -53,8 +50,8 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel,
-    MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
+    WindPanel, WaterPanel, MapPanel,
+    
     CreateMoverForm, CurrentPanelTemplate,
     DiffusionPanelTemplate, DiffusionFormView,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
@@ -68,8 +65,6 @@ define([
         events: function(){
             return _.defaults({
                 'click .spill .add': 'clickSpill',
-                'click .map .perm-add': 'clickMap',
-                'click .map .add': 'editMap',
                 'click .spill .single .edit': 'loadSpill',
                 'click .spill .single': 'loadSpill',
                 'click .spill .single .trash': 'deleteSpill',
@@ -134,12 +129,12 @@ define([
             BaseView.prototype.render.call(this);
             this.$('.model-objects').append(new WindPanel().$el);
             this.$('.model-objects').append(new WaterPanel().$el);
+            this.$('.model-objects').append(new MapPanel().$el);
             this.initMason();
 
             setTimeout(_.bind(function(){
                 webgnome.model.on('sync', this.updateObjects, this);
                 //webgnome.model.on('sync', this.updateSpill, this);
-                this.updateLocation();
                 this.updateSpill();
                 this.updateCurrent();
                 this.updateDiffusion();
@@ -771,76 +766,6 @@ define([
             }, this));
         },
 
-        clickLocation: function(){
-            var locationForm = new LocationForm();
-            locationForm.on('loaded', _.bind(function(){
-                locationForm.hide();
-                this.updateLocation();
-                this.updateCurrent();
-                this.updateSpill();
-                this.updateModelValues();
-            }, this));
-            locationForm.render();
-        },
-
-        updateLocation: function(){
-            var map = webgnome.model.get('map');
-            if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                this.$('.map .panel').addClass('complete');
-                map.getGeoJSON(_.bind(function(geojson){
-                    this.$('.map .panel-body').removeClass('text');
-                    this.$('.map .panel-body').addClass('map').show().html('<div class="map" id="mini-locmap"></div>');
-
-                    var shorelineSource = new ol.source.Vector({
-                        features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
-                    });
-
-                    var shorelineLayer = new ol.layer.Image({
-                        name: 'modelmap',
-                        source: new ol.source.ImageVector({
-                            source: shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
-                        }),
-                    });
-                    
-                    var locationMap = new OlMapView({
-                        id: 'mini-locmap',
-                        controls: [],
-                        layers: [
-                            new ol.layer.Tile({
-                                source: new ol.source.MapQuest({layer: 'osm'}),
-                                visible: webgnome.model.get('map').geographical
-                            }),
-                            shorelineLayer
-                        ],
-                        interactions: ol.interaction.defaults({
-                            mouseWheelZoom: false,
-                            dragPan: false,
-                            doubleClickZoom: false
-                        }),
-                    });
-                    
-                    locationMap.render();
-                    var extent = shorelineSource.getExtent();
-                    locationMap.map.getView().fit(extent, locationMap.map.getSize());
-                    this.mason.layout();
-                }, this));
-            } else {
-                this.$('.map .panel').addClass('complete');
-                this.$('.map .panel-body').addClass('text').show().html('<div><label>Type:</label> Infinite Ocean</div>');
-                this.$('.map .panel-body').removeClass('map');
-                this.mason.layout();
-            }
-        },
-
         deleteCurrent: function(e){
             e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
@@ -975,58 +900,6 @@ define([
                     this.current_extents.push(extentSum);
                 }
             }
-        },
-
-        clickMap: function(){
-            var mapForm = new MapTypeForm();
-            mapForm.on('hidden', mapForm.close);
-            // mapForm.on('realLocation', _.bind(function(){
-            //     var location = new LocationForm();
-            //     location.on('loaded', _.bind(function(){
-            //         this.updateLocation();
-            //         this.updateCurrent();
-            //         this.mason.layout();
-            //     }, this));
-            //     location.render();
-            // }, this));
-            mapForm.on('waterWorld', _.bind(function(){
-                webgnome.model.save({map: new MapModel()}, {
-                    validate: false,
-                    success: _.bind(function(){
-                        this.updateLocation();
-                        this.updateCurrent();
-                        mapForm.hide();
-                    }, this)
-                });
-            }, this));
-            mapForm.on('select', _.bind(function(form){
-                mapForm.on('hidden', _.bind(function(){
-                    form.render();
-                    form.on('hidden', form.close);
-                    form.on('save', _.bind(function(map){
-                        webgnome.model.set('map', map);
-                        webgnome.model.save(null, {validate: false});
-                        this.updateLocation();
-                        this.updateCurrent();
-                    }, this));
-                }, this));
-            }, this));
-            mapForm.render();
-        },
-
-        editMap: function(){
-            var map = webgnome.model.get('map');
-            var form;
-            if(map.get('obj_type') === 'gnome.map.ParamMap'){
-                form = new ParamMapForm({map: map});
-            } else {
-                form = new FormModal({title: 'Edit Map', model: map});
-            }
-
-            form.render();
-            form.on('hidden', form.close);
-            form.on('save', map.resetRequest, map);
-            form.on('save', this.updateLocation, this);
         },
 
         clickResponse: function(){
