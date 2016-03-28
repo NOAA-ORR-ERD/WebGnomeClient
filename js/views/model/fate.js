@@ -56,7 +56,8 @@ define([
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
-            'click .export-csv': 'exportCSV'
+            'click .export-csv': 'exportCSV',
+            'change .vol-units': 'renderGraphICS'
         },
         dataPrecision: 3,
 
@@ -836,6 +837,30 @@ define([
             dataset[0].fillArea = null;
         },
 
+        convertDataset: function(d, to_unit){
+            var dataset = $.extend(true, [], d);
+            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var api = (!_.isNull(substance)) ? substance.get('api') : 10;
+            var from_unit = webgnome.model.get('spills').at(0).get('units');
+            var converter = new nucos.OilQuantityConverter();
+
+            if (to_unit === from_unit) {
+                return dataset;
+            }
+
+            for (var set in dataset) {
+                var data = dataset[set].data;
+                for (var i = 0; i < data.length; i++) {
+                    var arr = data[i];
+                    for (var k = 1; k < arr.length; k++) {
+                        arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
+                    }
+                }
+            }
+
+            return dataset;
+        },
+
         renderGraphICS: function(dataset){
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
@@ -852,6 +877,9 @@ define([
                 'dispersibility_difficult',
                 'dispersibility_unlikely'
                 ]);
+            var icsUnits = this.$('.vol-units').val();
+            dataset = this.convertDataset(dataset, icsUnits);
+            this.$('#ics209 .yaxisLabel').text(icsUnits);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
                 
