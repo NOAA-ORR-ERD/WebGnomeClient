@@ -1,0 +1,57 @@
+define([
+    'jquery',
+    'underscore',
+    'backbone',
+    'views/base'
+], function($, _, Backbone, BaseView){
+    var panelBase = BaseView.extend({
+
+        events: {
+            'click .new, .add': 'new',
+            'click .edit,.single': 'edit',
+            'click .delete': 'delete',
+            'mouseover .single': 'hover',
+            'mouseout .list': 'unhover'
+        },
+
+        initialize: function(options){
+            BaseView.prototype.initialize.call(this, options);
+        },
+
+        hover: function(e){
+            if(this.dataset && this.plot){
+                var id = this.getID(e);
+                var coloredSet = [];
+                for(var dataset in this.dataset){
+                    var ds = $.extend(true, {}, this.dataset[dataset]);
+                    if (this.dataset[dataset].id !== id){
+                        ds.color = '#ddd';
+                        ds.direction.fillColor = '#ddd';
+                        ds.direction.color = '#ddd';
+                    }
+
+                    coloredSet.push(ds);
+                }
+                this.plot.setData(coloredSet);
+                this.plot.draw();
+            }
+        },
+
+        unhover: function(){
+            if(this.dataset && this.plot){
+                this.plot.setData(this.dataset);
+                this.plot.draw();
+            }
+        },
+
+        getID: function(e){
+            if(this.$(e.target).hasClass('single')){
+                return this.$(e.target).data('id');
+            } else {
+                return this.$(e.target).parents('.single').data('id');
+            }
+        }
+    });
+
+    return panelBase;
+});

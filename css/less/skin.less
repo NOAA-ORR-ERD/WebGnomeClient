@@ -923,6 +923,270 @@ nav.navbar{
 
 }
 
+.panel-view{
+    .panel{
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        background: #efefef;
+
+        &.complete{
+            .panel-heading{
+                .add{
+                    .glyphicon-pencil;
+                }
+
+                .state{
+                    .glyphicon-ok;
+                }
+            }
+
+            &:hover{
+                .panel-heading{
+                    .state{
+                        color: rgba(18, 129, 0, 0.57);
+                    }
+                }
+            }
+        }
+
+        &.optional{
+            &:hover{
+                .panel-heading{
+                    .state{
+                        color: rgba(0, 147, 200, 0.57);
+                    }
+                }
+            }
+        }
+
+        &:hover{
+            .panel-heading{
+                > div{
+                    color: #a1a1a1;
+                }
+                
+                .add{
+                    color: #337ab7;
+                }
+
+                .perm-add{
+                    color: #337ab7;
+                }
+
+                .state{
+                    color: rgba(176, 13, 0, 0.57);
+                }
+            }
+        }
+
+        .panel-heading{
+            border-radius: 0;
+            padding-right: 10px;
+            background: #efefef;
+
+            > div{
+                .glyphicon;
+                top: 0;
+                font-size: 17px;
+                height: 20px;
+                width: 20px;
+                color: #BEBEBE;
+                float: right;
+                .transition(all .2s);
+                text-align: center;
+            }
+
+            .add{
+                .glyphicon-plus;
+                color: #7a7a7a;
+                cursor: pointer;
+            }
+
+            .perm-add{
+                .add;
+                margin-left: 10px;
+            }
+
+            .state{
+                .glyphicon-warning-sign;
+                margin-right: 10px;
+                display: none;
+                
+                &.complete{
+                    .glyphicon-ok-sign;
+                    color: green;
+                }
+
+                &.optional{
+                    .glyphicon-info-sign;
+                    color: #bebebe;   
+                    padding-top: 1px;               
+                }
+            }
+        }
+        .panel-body{
+            display: none;
+
+            .chart{
+                height: 215px;
+            }
+        }
+    }
+
+    .object-title{
+        color: #7a7a7a;
+    }
+
+    &.wind{
+        .chart{
+            margin: 15px 0;
+        }
+    }
+
+    &.spill, &.response, &.diffusion, &.current, &.wind{
+        .panel{
+            cursor: default;
+
+            &.complete{
+                .panel-heading{
+                    .add{
+                        .glyphicon-plus;
+                    }
+                }
+            }
+
+            .substance-info{
+                background: rgba(252, 219, 102, 0.5);
+                margin-top: 20px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                cursor: pointer;
+
+                .edit{
+                    .glyphicon;
+                    .glyphicon-pencil;
+                    position: absolute;
+                    right: 0px;
+                    top: 0px;
+                }
+
+                label.left{
+                    position: absolute;
+                    left: 0px;
+                }
+
+                .label-container {
+                    margin-bottom: 25px;
+                }
+
+                .substance-data{
+                    font-size: 12px;
+                    label{
+                        font-weight: normal;
+                    }
+                }
+
+                &.error {
+                    color: white;
+                    background: rgba(217, 83, 79, 0.75);
+                }
+            }
+
+
+            .spill-list, .response-list, .diffusion-list, .current-list, .list{
+                h5{
+                    font-weight: bold;
+                    float: left;
+                    margin: 0 15px 0 0;
+                    line-height: 25px;
+                }
+            }
+
+            .response-list {
+                margin-top: 20px;
+            }
+
+            .single {
+                padding: 8px 0;
+                border-top: 1px solid #f7f7f7;
+                cursor: pointer;
+                    
+                &:hover {
+                    background: #428bca;
+                    color: white;
+                    .edit, .trash{
+                        display: block;
+                        top: 2px;
+                        line-height: auto;
+                    }
+                }
+
+                h5{
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 100%;
+                    margin-right: 0;
+                }
+                
+                .edit{
+                    .glyphicon;
+                    .glyphicon-pencil;
+                    padding: 2px;
+                    float: right;
+                    margin-right: 10px;
+                }
+
+                .trash{
+                    .glyphicon;
+                    .glyphicon-trash;
+                    padding: 2px;
+                    float:right;
+                }
+                .coords{
+                    .label;
+                    .label-info;
+                }
+            }
+
+            .error-gen {
+                .amount {
+                    .label-danger;
+                }
+            }
+
+            .error-map {
+                .coords{
+                    .label-danger;
+                }
+            }
+
+            .panel-body{
+                padding-bottom: 0;
+            }
+        }
+
+        .plus-sign{
+            .pull-right;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-top: -2px;
+            color: #47a447;
+            font-size: 20px;
+        }
+        .spill-info{
+            cursor: pointer;
+        }
+    }
+
+    &.diffusion, &.wind {
+        .panel-body {
+            padding-top: 0;
+        }
+    }
+}
+
 .page.setup{
     h2{
         margin-bottom: 20px;
@@ -992,121 +1256,11 @@ nav.navbar{
     }
 
     .model-objects, .response-objects{
-        > div {
-            .panel{
-                border: 0;
-                border-radius: 0;
-                box-shadow: none;
-                background: #efefef;
-
-                &.complete{
-                    .panel-heading{
-                        .add{
-                            .glyphicon-pencil;
-                        }
-
-                        .state{
-                            .glyphicon-ok;
-                        }
-                    }
-
-                    &:hover{
-                        .panel-heading{
-                            .state{
-                                color: rgba(18, 129, 0, 0.57);
-                            }
-                        }
-                    }
-                }
-
-                &.optional{
-                    &:hover{
-                        .panel-heading{
-                            .state{
-                                color: rgba(0, 147, 200, 0.57);
-                            }
-                        }
-                    }
-                }
-
-                &:hover{
-                    .panel-heading{
-                        > div{
-                            color: #a1a1a1;
-                        }
-                        
-                        .add{
-                            color: #337ab7;
-                        }
-
-                        .perm-add{
-                            color: #337ab7;
-                        }
-
-                        .state{
-                            color: rgba(176, 13, 0, 0.57);
-                        }
-                    }
-                }
-
-                .panel-heading{
-                    border-radius: 0;
-                    padding-right: 10px;
-                    background: #efefef;
-
-                    > div{
-                        .glyphicon;
-                        top: 0;
-                        font-size: 17px;
-                        height: 20px;
-                        width: 20px;
-                        color: #BEBEBE;
-                        float: right;
-                        .transition(all .2s);
-                        text-align: center;
-                    }
-
-                    .add{
-                        .glyphicon-plus;
-                        color: #7a7a7a;
-                        cursor: pointer;
-                    }
-
-                    .perm-add{
-                        .add;
-                        margin-left: 10px;
-                    }
-
-                    .state{
-                        .glyphicon-warning-sign;
-                        margin-right: 10px;
-                        display: none;
-                        
-                        &.complete{
-                            .glyphicon-ok-sign;
-                            color: green;
-                        }
-
-                        &.optional{
-                            .glyphicon-info-sign;
-                            color: #bebebe;   
-                            padding-top: 1px;               
-                        }
-                    }
-                }
-                .panel-body{
-                    display: none;
-                }
-            }
-
-            .object-title{
-                color: #7a7a7a;
-            }
-        }
         .model{
             .panel{
                 .panel-heading{
                     .advanced-edit{
+                        float: right;
                         .glyphicon-pencil;
                         .glyphicon;
                         cursor: pointer;
@@ -1120,180 +1274,6 @@ nav.navbar{
         }
         .wind, .spill, .response, .beached{
             position: relative;
-
-            .chart{
-                height: 215px;
-            }
-        }
-        .wind{
-            .chart{
-                margin: 15px 0;
-            }
-        }
-
-        .spill, .response, .diffusion, .current, .wind{
-            .panel{
-                cursor: default;
-
-                &.complete{
-                    .panel-heading{
-                        .add{
-                            .glyphicon-plus;
-                        }
-                    }
-                }
-
-                .substance-info{
-                    background: rgba(252, 219, 102, 0.5);
-                    margin-top: 20px;
-                    padding-top: 8px;
-                    padding-bottom: 8px;
-                    cursor: pointer;
-
-                    .edit{
-                        .glyphicon;
-                        .glyphicon-pencil;
-                        position: absolute;
-                        right: 0px;
-                        top: 0px;
-                    }
-
-                    label.left{
-                        position: absolute;
-                        left: 0px;
-                    }
-
-                    .label-container {
-                        margin-bottom: 25px;
-                    }
-
-                    .substance-data{
-                        font-size: 12px;
-                        label{
-                            font-weight: normal;
-                        }
-                    }
-
-                    &.error {
-                        color: white;
-                        background: rgba(217, 83, 79, 0.75);
-                    }
-                }
-
-
-                .spill-list, .wind-list, .response-list, .diffusion-list, .current-list{
-                    h5{
-                        font-weight: bold;
-                        float: left;
-                        margin: 0 15px 0 0;
-                        line-height: 25px;
-                    }
-                }
-
-                .response-list {
-                    margin-top: 20px;
-                }
-
-                .single {
-                    padding: 8px 0;
-                    border-top: 1px solid #f7f7f7;
-                    cursor: pointer;
-                        
-                    &:hover {
-                        background: #428bca;
-                        color: white;
-                        .edit, .trash{
-                            display: block;
-                            top: 2px;
-                            line-height: auto;
-                        }
-                    }
-
-                    h5{
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        width: 100%;
-                        margin-right: 0;
-                    }
-                    
-                    .edit{
-                        .glyphicon;
-                        .glyphicon-pencil;
-                        padding: 2px;
-                        float: right;
-                        margin-right: 10px;
-                    }
-
-                    .trash{
-                        .glyphicon;
-                        .glyphicon-trash;
-                        padding: 2px;
-                        float:right;
-                    }
-                    .coords{
-                        .label;
-                        .label-info;
-                    }
-                }
-
-                .error-gen {
-                    .amount {
-                        .label-danger;
-                    }
-                }
-
-                .error-map {
-                    .coords{
-                        .label-danger;
-                    }
-                }
-
-                .panel-body{
-                    padding-bottom: 0;
-                }
-            }
-
-            .plus-sign{
-                .pull-right;
-                cursor: pointer;
-                margin-right: 10px;
-                margin-top: -2px;
-                color: #47a447;
-                font-size: 20px;
-            }
-            .spill-info{
-                cursor: pointer;
-            }
-        }
-
-        .diffusion, .wind {
-            .panel-body {
-                padding-top: 0;
-            }
-        }
-    }
-
-    .current{
-        .panel-heading{
-            .add{
-                display: none;
-            }
-        }
-        .current-list{
-            padding: 0 15px;
-        }
-    }
-    
-    .map, .current{
-        .panel-body{
-            padding: 0;
-            &.text{
-                padding: 15px;
-            }
-        }
-        .map{
-            height: 200px;
         }
     }
 }

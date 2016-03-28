@@ -13,10 +13,7 @@ define([
     'views/modal/form',
     'model/gnome',
     'views/form/model',
-    'model/environment/wind',
-    'model/movers/wind',
-    'views/form/wind',
-    'text!templates/panel/wind.html',
+    'views/panel/wind',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
@@ -58,7 +55,7 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindModel, WindMoverModel, WindForm, WindPanelTemplate,
+    WindPanel,
     MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate,
     CreateMoverForm, CurrentPanelTemplate,
     WaterModel, WaterForm, WaterPanelTemplate, DiffusionPanelTemplate, DiffusionFormView,
@@ -72,12 +69,6 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .wind .add': 'clickWind',
-                'click .wind .single': 'loadWind',
-                'click .wind .single .edit': 'loadWind',
-                'click .wind .single .trash': 'deleteWind',
-                'mouseover .wind .single': 'hoverWind',
-                'mouseout .wind .wind-list': 'unhoverWind',
                 'click .water .add': 'clickWater',
                 'click .spill .add': 'clickSpill',
                 'click .map .perm-add': 'clickMap',
@@ -150,12 +141,13 @@ define([
             setTimeout(_.bind(function(){
                 webgnome.model.on('sync', this.updateObjects, this);
                 //webgnome.model.on('sync', this.updateSpill, this);
-                this.updateWind();
                 this.updateLocation();
                 this.updateWater();
                 this.updateSpill();
                 this.updateCurrent();
                 this.updateDiffusion();
+                this.windPanel = new WindPanel();
+                this.$('.model-objects').append(this.windPanel.$el);
                 this.updateObjects();
             }, this), 1);
 
@@ -526,225 +518,7 @@ define([
             this.mason.layout();
         },
 
-        clickWind: function(e){
-            var wind = new WindModel();
-            var windForm = new WindForm(null, wind);
-            windForm.on('hidden', windForm.close);
-            windForm.on('save', _.bind(function(){
-                var windMover = new WindMoverModel({wind: wind});
 
-                webgnome.model.get('movers').add(windMover);
-                webgnome.model.get('environment').add(wind);
-
-                this.updateWind();
-                this.renderTimeline();
-            }, this));
-            windForm.render();
-        },
-
-        loadWind: function(e){
-            e.stopPropagation();
-            var id;
-            if(this.$(e.target).hasClass('single')){
-                id = this.$(e.target).data('id');
-            } else {
-                id = this.$(e.target).parents('.single').data('id');
-            }
-
-            var wind = webgnome.model.get('environment').get(id);
-            var windForm = new WindForm(null, wind);
-            windForm.on('hidden', windForm.close);
-            windForm.on('save', _.bind(function(){
-                webgnome.model.get('environment').add(wind, {merge:true});
-                this.updateWind();
-                this.renderTimeline();
-            }, this));
-            windForm.render();
-        },
-
-        deleteWind: function(e){
-            e.stopPropagation();
-            var id = $(e.target).parents('.single').data('id');
-            var wind = webgnome.model.get('environment').get(id);
-
-            swal({
-                title: 'Delete "' + wind.get('name') + '"',
-                text: 'Are you sure you want to delete this wind?',
-                type: 'warning',
-                confirmButtonText: 'Delete',
-                confirmButtonColor: '#d9534f',
-                showCancelButton: true
-            }, _.bind(function(isConfirmed){
-                if(isConfirmed){
-                    var movers = webgnome.model.get('movers').filter(function(model){
-                        if(model.get('wind') && model.get('wind').get('id') === id){
-                            return true;
-                        }
-                        return false;
-                    });
-
-                    webgnome.model.get('movers').remove(movers);
-                    webgnome.model.get('environment').remove(id);
-                    webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.updateWind();
-                        }, this),
-                        validate: false
-                    });
-                }
-            }, this));
-        },
-
-        updateWind: function(){
-            var winds = _.union(
-                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
-                // webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
-            );
-
-
-            if(winds.length > 0){
-                var dataset = [];
-                var unit = winds[0].get('units');
-                for(var w in winds){
-                    var wind = winds[w];
-                    var ts = wind.get('timeseries');
-                    var data = [];
-                    var raw_data = [];
-                    var rate = Math.round(ts.length / 24);
-                    
-                    for (var entry in ts){
-                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                        var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[entry][1][0]));
-
-                        if(rate === 0 ||  entry % rate === 0){
-                            data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
-                        }
-                        raw_data.push([parseInt(date, 10), speed, parseInt(ts[entry][1][1], 10) - 180]);
-                    }
-
-                    var lines = true;
-                    if (ts.length > 24){
-                        lines = false;
-                    }
-
-                    dataset.push({
-                        data: data,
-                        color: 'rgba(151,187,205,1)',
-                        hoverable: true,
-                        shadowSize: 0,
-                        lines: {
-                            show: lines,
-                            lineWidth: 2
-                        },
-                        direction: {
-                            show: true,
-                            openAngle: 40,
-                            color: '#7a7a7a',
-                            fillColor: '#7a7a7a',
-                            arrawLength: 5
-                        },
-                        id: wind.get('id')
-                    });
-
-                    if (ts.length > 24){
-                        dataset.push({
-                            data: raw_data,
-                            color: 'rgba(151,187,205,1)',
-                            hoverable: true,
-                            shadowSize: 0,
-                            lines: {
-                                show: true,
-                                lineWidth: 2
-                            },
-                            direction: {
-                                show: false
-                            },
-                            id: wind.get('id')
-                        });
-                    }
-                }
-
-                this.$('.wind').removeClass('col-md-3').addClass('col-md-6');
-
-                if(dataset){
-                    // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.windDataset = dataset;                        
-                    setTimeout(_.bind(function(){
-                        this.windPlot = $.plot('.wind .chart .canvas', dataset, {
-                            grid: {
-                                borderWidth: 1,
-                                borderColor: '#ddd'
-                            },
-                            xaxis: {
-                                mode: 'time',
-                                timezone: 'browser',
-                                tickColor: '#ddd'
-                            },
-                            yaxis: {
-                                tickColor: '#ddd'
-                            }
-                        });
-                    }, this), 2);
-                }
-                
-                var compiled = _.template(WindPanelTemplate, {
-                    winds: winds,
-                    units: winds[0].get('units')
-                });
-
-                this.$('.wind .panel-body').html(compiled);
-                this.$('.wind .panel-body').show();
-
-                this.$('.wind .panel-body .wind-list').sortable({
-                    update: _.bind(this.orderWind, this)
-                });
-                this.$('.wind .panel-body .wind-list').disableSelection();
-                this.renderTimeline();
-
-                this.mason.layout();
-            } else {
-                this.$('.wind').removeClass('col-md-6').addClass('col-md-3');
-                this.$('.wind .panel').removeClass('complete');
-                this.$('.wind .panel-body').hide().html('');
-            }
-        },
-
-        orderWind: function(){
-            // simple find first wind after sort and move it to the top of the environment list
-            // doesn't support full sorting of all wind objects.
-            var collection = webgnome.model.get('environment');
-            var first_id = this.$('.wind .panel-body .wind-list .single:first').data('id');
-
-            var wind = collection.get(first_id);
-            collection.remove(wind, {silent: true});
-            collection.unshift(wind);
-            webgnome.model.save();
-        },
-
-        hoverWind: function(e){
-            var id = $(e.target).data('id');
-            if (_.isUndefined(id)){
-                id = $(e.target).parents('.single').data('id');
-            }
-            var coloredSet = [];
-            for(var dataset in this.windDataset){
-                var ds = $.extend(true, {}, this.windDataset[dataset]);
-                if (this.windDataset[dataset].id !== id){
-                    ds.color = '#ddd';
-                    ds.direction.fillColor = '#ddd';
-                    ds.direction.color = '#ddd';
-                }
-
-                coloredSet.push(ds);
-            }
-            this.windPlot.setData(coloredSet);
-            this.windPlot.draw();
-        },
-
-        unhoverWind: function(){
-            this.windPlot.setData(this.windDataset);
-            this.windPlot.draw();
-        },
 
         clickWater: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});

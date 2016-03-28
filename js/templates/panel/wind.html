@@ -1,22 +1,30 @@
-<div class="chart"><div class="axisLabel yaxisLabel">{{ units }}</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>
-
-<div class="wind-list">
-    {% for (var i = 0; i < winds.length; i++){ %}
-        <div class="single row" data-id="{{ winds[i].get('id') }}">
-            <div class="col-sm-7">
-                <h5>{{ winds[i].get('name') }}</h5>
-            </div>
-            <div class="col-sm-2">
-                {% if(winds[i].get('timeseries').length > 1) { %}
-                    <span class="label label-info">Variable</span>
-                {% } else { %}
-                    <span class="label label-info">Constant</span>
-                {% } %}
-            </div>
-            <div class="col-sm-3">
-                <span class="trash" title="Remove {{ winds[i].get('name') }}"></span>
-                <span class="edit" title="Edit {{ winds[i].get('name') }}"></span>
-            </div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="add"></div>
+        <div class="state"></div>
+        Wind
+    </div>
+    <div class="panel-body">
+        <div class="chart"><div class="axisLabel yaxisLabel">{{ units }}</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>
+        <div class="list">
+            {% for (var i = 0; i < winds.length; i++){ %}
+                <div class="single row" data-id="{{ winds[i].get('id') }}">
+                    <div class="col-sm-7">
+                        <h5>{{ winds[i].get('name') }}</h5>
+                    </div>
+                    <div class="col-sm-2">
+                        {% if(winds[i].get('timeseries').length > 1) { %}
+                            <span class="label label-info">Variable</span>
+                        {% } else { %}
+                            <span class="label label-info">Constant</span>
+                        {% } %}
+                    </div>
+                    <div class="col-sm-3">
+                        <span class="trash delete" title="Remove {{ winds[i].get('name') }}"></span>
+                        <span class="edit" title="Edit {{ winds[i].get('name') }}"></span>
+                    </div>
+                </div>
+            {% } %}
         </div>
-    {% } %}
+    </div>
 </div>
