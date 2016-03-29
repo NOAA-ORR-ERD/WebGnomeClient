@@ -18,17 +18,13 @@ define([
             waves: WavesModel
         },
 
-        initialize: function() {
-            BaseModel.prototype.initialize.call(this);
-            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)) {
-                this.resetEndTime();
-            }
-            this.on('change:active_start', this.resetEndTime, this);
-        },
-
         validate: function(attrs, options){
             if (attrs.fraction_sprayed <= 0){
                 return 'Percent of oil sprayed must be greater than zero!';
+            }
+
+            if (attrs.active_start === attrs.active_stop) {
+                return 'Duration must be a inputted!';
             }
         },
 
