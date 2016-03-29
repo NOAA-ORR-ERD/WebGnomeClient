@@ -51,9 +51,8 @@ define([
                             })
                         }),
                     });
-                    
                     var locationMap = new OlMapView({
-                        id: 'mini-locmap',
+                        el: this.$('#mini-locmap'),
                         controls: [],
                         layers: [
                             new ol.layer.Tile({
@@ -70,8 +69,11 @@ define([
                     });
                     
                     locationMap.render();
-                    var extent = shorelineSource.getExtent();
-                    locationMap.map.getView().fit(extent, locationMap.map.getSize());
+                    locationMap.map.on('postcompose', _.bind(function(){
+                        var extent = shorelineSource.getExtent();
+                        locationMap.map.getView().fit(extent, locationMap.map.getSize());
+                    }, this));
+                    
                 }, this));
             } else {
                 this.$el.html(_.template(MapPanelTemplate, {
