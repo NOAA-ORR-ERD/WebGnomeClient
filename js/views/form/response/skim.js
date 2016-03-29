@@ -37,10 +37,16 @@ define([
         },
 
         render: function(options){
+            var duration = this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'));
+
+            if (this.model.isNew()) {
+                duration = '';
+            }
+
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
-                duration: this.parseDuration(this.model.get('active_start'), this.model.get('active_stop')),
+                duration: duration,
                 amount: this.model.get('amount'),
                 units: this.model.get('units')
             });
@@ -49,6 +55,7 @@ define([
             this.$('.slider').slider('value', this.model.get('efficiency') * 100);
             this.setUnitSelects();
             this.updateEfficiency();
+            this.update();
         },
 
         setUnitSelects: function(){
@@ -82,9 +89,7 @@ define([
         },
 
         update: function(){
-
             ResponseFormModal.prototype.update.call(this);
-
             var duration = parseFloat(this.$('#duration').val());
             var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
             var recoveryRate = this.$('#recovery-rate').val();
