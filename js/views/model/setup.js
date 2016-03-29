@@ -17,9 +17,7 @@ define([
     'views/panel/water',
     'views/panel/map',
     'views/panel/diffusion-h',
-    'views/form/mover/create',
-    'text!templates/panel/current.html',
-
+    'views/panel/current',
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spill.html',
@@ -50,9 +48,9 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel,
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel,
     
-    CreateMoverForm, CurrentPanelTemplate,
+
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
@@ -130,7 +128,8 @@ define([
                 new WindPanel().$el,
                 new WaterPanel().$el,
                 new MapPanel().$el,
-                new DiffusionPanel().$el
+                new DiffusionPanel().$el,
+                new CurrentPanel().$el
             );
             this.initMason();
 
@@ -138,7 +137,6 @@ define([
                 webgnome.model.on('sync', this.updateObjects, this);
                 //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateSpill();
-                this.updateCurrent();
                 this.updateObjects();
             }, this), 1);
 
@@ -680,142 +678,6 @@ define([
                     });
                 }
             }, this));
-        },
-
-        deleteCurrent: function(e){
-            e.stopPropagation();
-            var id = $(e.target).parents('.single').data('id');
-            var spill = webgnome.model.get('movers').get(id);
-            swal({
-                title: 'Delete "' + spill.get('name') + '"',
-                text: 'Are you sure you want to delete this current?',
-                type: 'warning',
-                confirmButtonText: 'Delete',
-                confirmButtonColor: '#d9534f',
-                showCancelButton: true
-            }, _.bind(function(isConfirmed){
-                if(isConfirmed){
-                    webgnome.model.get('movers').remove(id);
-                    webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.updateCurrent();
-                        }, this),
-                        validate: false
-                    });
-                }
-            }, this));
-        },
-
-        clickCurrent: function(){
-            var form = new CreateMoverForm();
-            form.on('hidden', form.close);
-            form.on('save', _.bind(function(mover){
-                webgnome.model.get('movers').add(mover);
-                webgnome.model.save(null, {validate: false});
-                this.updateCurrent();
-            }, this));
-            form.render();
-        },
-
-        loadCurrent: function(e){
-            e.stopPropagation();
-            var currentId;
-            if($(e.target).hasClass('single')){
-                currentId = $(e.target).data('id');
-            } else {
-                currentId = $(e.target).parents('.single').data('id');  
-            }
-
-            var current = webgnome.model.get('movers').get(currentId);
-            var currentView = new FormModal({title: 'Edit Current', model: current});
-            
-            currentView.on('save wizardclose', _.bind(function(){
-                this.updateCurrent();
-                this.renderTimeline();
-            }, this));
-            currentView.on('save', function(){
-                currentView.on('hidden', currentView.close);
-            });
-            currentView.on('wizardclose', currentView.close);
-
-            currentView.render();
-        },
-
-        updateCurrent: function(){
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover'
-                ].indexOf(mover.get('obj_type')) !== -1;
-            });
-
-            if(currents.length > 0){
-                var compiled = _.template(CurrentPanelTemplate, {
-                    currents: currents
-                });
-                this.$('.current .panel-body').show().html(compiled);
-                this.current_layers = new ol.Collection([
-                    new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'})
-                    })
-                ]);
-
-                var currentMap = new OlMapView({
-                    id: 'mini-currentmap',
-                    controls: [],
-                    layers: this.current_layers,
-                    interactions: ol.interaction.defaults({
-                        mouseWheelZoom: false,
-                        dragPan: false,
-                        doubleClickZoom: false
-                    }),
-                });
-                currentMap.render();
-
-                this.current_extents = [];
-                for(var c = 0; c < currents.length; c++){
-                    currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
-                }
-                if(webgnome.model.get('map')){
-                    if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                        var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                        currentMap.map.getView().fit(extent, currentMap.map.getSize());
-                    } else {
-                        currentMap.map.getView().setZoom(3);
-                    }
-                }
-                this.mason.layout();
-            } else {
-                this.current_extents = [];
-                this.$('.current .panel-body').hide().html('');
-            }
-        },
-
-        addCurrentToPanel: function(geojson){
-            if(geojson){
-                var gridSource = new ol.source.Vector({
-                    features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
-                });
-                var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
-
-                var gridLayer = new ol.layer.Image({
-                    name: 'modelcurrent',
-                    source: new ol.source.ImageVector({
-                        source: gridSource,
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: [171, 37, 184, 0.75],
-                                width: 1
-                            })
-                        })
-                    })
-                });
-
-                if(!_.contains(this.current_extents, extentSum)){
-                    this.current_layers.push(gridLayer);
-                    this.current_extents.push(extentSum);
-                }
-            }
         },
 
         clickResponse: function(){

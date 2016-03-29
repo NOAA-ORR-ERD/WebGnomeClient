@@ -1,14 +1,23 @@
-<div class="map" id="mini-currentmap"></div>
-<div class="current-list">
-    {% for (var i = 0; i < currents.length; i++){ %}
-        <div class="single row" data-id="{{ currents[i].get('id') }}">
-            <div class="col-sm-8">
-                <h5>{{ currents[i].get('name') }}</h5>
-            </div>
-            <div class="col-sm-4">
-                <span class="trash" title="Remove {{ currents[i].get('name') }}"></span>
-                <span class="edit" title="Edit {{ currents[i].get('name') }}"></span>
-            </div>
-        </div>
-    {% } %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="add"></div>
+        <div class="state"></div>
+        Current
+    </div>
+    <div class="panel-body">
+        <div class="map" id="mini-currentmap"></div>
+        <div class="list">
+            {% for (var i = 0; i < currents.length; i++){ %}
+                <div class="single row" data-id="{{ currents[i].get('id') }}">
+                    <div class="col-sm-8">
+                        <h5>{{ currents[i].get('name') }}</h5>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="trash delete" title="Remove {{ currents[i].get('name') }}"></span>
+                        <span class="edit" title="Edit {{ currents[i].get('name') }}"></span>
+                    </div>
+                </div>
+            {% } %}
+        </div>            
+    </div>
 </div>
