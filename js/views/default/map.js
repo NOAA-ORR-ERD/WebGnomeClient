@@ -123,7 +123,6 @@ define([
         },
 
         delayedRender: function(){
-            console.log('delayed render queued', this.map.getSize());
             setTimeout(_.bind(function(){
                 this.map.updateSize();
                 if(_.isNaN(this.map.getSize()[0]) && this.timeout < 2500){
