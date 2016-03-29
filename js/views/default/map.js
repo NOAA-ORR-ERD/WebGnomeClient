@@ -42,6 +42,8 @@ define([
             if(!_.isUndefined(options)){
                 if(!_.isUndefined(options.id)){
                     this.id = options.id;
+                } else {
+                    this.id = this.$el[0];
                 }
 
                 if(!_.isUndefined(options.controls)){

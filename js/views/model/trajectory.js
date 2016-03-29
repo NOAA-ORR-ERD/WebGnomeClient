@@ -276,6 +276,7 @@ define([
             BaseView.prototype.render.call(this);
 
             this.ol = new OlMapView({
+                id: 'map',
                 controls: 'full',
                 renderer: 'webgl',
                 layers: [
