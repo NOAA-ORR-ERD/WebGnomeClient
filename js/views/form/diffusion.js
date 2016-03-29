@@ -8,6 +8,7 @@ define([
 ], function($, _, Backbone, DiffusionModel, FormModal, DiffusionTemplate){
 	'use strict';
 	var diffusionForm = FormModal.extend({
+        title: 'Horizontal Diffusion',
 
 		events: function() {
             return _.defaults({}, FormModal.prototype.events);
