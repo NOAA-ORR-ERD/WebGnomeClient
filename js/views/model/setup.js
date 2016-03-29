@@ -16,10 +16,10 @@ define([
     'views/panel/wind',
     'views/panel/water',
     'views/panel/map',
+    'views/panel/diffusion-h',
     'views/form/mover/create',
     'text!templates/panel/current.html',
-    'text!templates/panel/diffusion.html',
-    'views/form/diffusion',
+
     'model/spill',
     'views/form/spill/type',
     'text!templates/panel/spill.html',
@@ -50,10 +50,9 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel, MapPanel,
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel,
     
     CreateMoverForm, CurrentPanelTemplate,
-    DiffusionPanelTemplate, DiffusionFormView,
     SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
@@ -130,7 +129,8 @@ define([
             this.$('.model-objects').append(
                 new WindPanel().$el,
                 new WaterPanel().$el,
-                new MapPanel().$el
+                new MapPanel().$el,
+                new DiffusionPanel().$el
             );
             this.initMason();
 
@@ -139,7 +139,6 @@ define([
                 //webgnome.model.on('sync', this.updateSpill, this);
                 this.updateSpill();
                 this.updateCurrent();
-                this.updateDiffusion();
                 this.updateObjects();
             }, this), 1);
 
@@ -521,91 +520,6 @@ define([
                 data[j] = amountArray;
             }
             return data;
-        },
-
-        clickDiffusion: function(e) {
-            var diffusionView = new DiffusionFormView();
-
-            diffusionView.on('wizardclose', _.bind(function(){
-                this.updateDiffusion();
-            }, this));
-            diffusionView.on('save', _.bind(function(){
-                webgnome.model.get('movers').add(diffusionView.model, {merge: true});
-                webgnome.model.save(null, {validate: false});
-                diffusionView.on('hidden', diffusionView.close);
-                this.updateDiffusion();
-            }, this));
-            diffusionView.on('wizardclose', diffusionView.close);
-
-            diffusionView.render();
-        },
-
-        loadDiffusion: function(e) {
-            e.stopPropagation();
-            var diffusionId;
-            if ($(e.target).hasClass('single')) {
-                diffusionId = $(e.target).data('id');
-            } else {
-                diffusionId = $(e.target).parents('.single').data('id');
-            }
-
-            var diffusion = webgnome.model.get('movers').get(diffusionId);
-            var diffusionView = new DiffusionFormView(null, diffusion);
-
-            diffusionView.on('save wizardclose', _.bind(function(){
-                this.updateDiffusion();
-            }, this));
-            diffusionView.on('save', function(){
-                diffusionView.on('hidden', diffusionView.close);
-            });
-            diffusionView.on('wizardclose', diffusionView.close);
-
-            diffusionView.render();
-        },
-
-        updateDiffusion: function() {
-            var diffusion = webgnome.model.get('movers').filter(function(model){
-                return model.get('obj_type') === 'gnome.movers.random_movers.RandomMover';
-            });
-            var compiled;
-            
-            if (diffusion.length > 0) {
-                this.$('.diffusion .panel').addClass('complete');
-                compiled = _.template(DiffusionPanelTemplate, {
-                    diffusion: diffusion
-                });
-                this.$('.diffusion').removeClass('col-md-3').addClass('col-md-6');
-                this.$('.diffusion .panel-body').html(compiled);
-                this.$('.diffusion .panel-body').show();
-            } else {
-                this.$('.diffusion').removeClass('col-md-6').addClass('col-md-3');
-                this.$('.diffusion .panel-body').html('');
-                this.$('.diffusion .panel-body').hide();
-            }
-        },
-
-        deleteDiffusion: function(e) {
-            e.stopPropagation();
-            var id = $(e.target).parents('.single').data('id');
-            var diffusion = webgnome.model.get('movers').get(id);
-            swal({
-                title: 'Delete "' + diffusion.get('name') + '"',
-                text: 'Are you sure you want to delete this diffusion?',
-                type: 'warning',
-                confirmButtonText: 'Delete',
-                confirmButtonColor: '#d9534f',
-                showCancelButton: true
-            }, _.bind(function(isConfirmed){
-                if (isConfirmed) {
-                    webgnome.model.get('movers').remove(id);
-                    webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.updateDiffusion();
-                        }, this),
-                        validate: false
-                    });
-                }
-            }, this));
         },
         
         updateSpill: function(){
