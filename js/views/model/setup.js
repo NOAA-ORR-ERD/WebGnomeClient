@@ -127,9 +127,11 @@ define([
             });
             this.$el.append(compiled);
             BaseView.prototype.render.call(this);
-            this.$('.model-objects').append(new WindPanel().$el);
-            this.$('.model-objects').append(new WaterPanel().$el);
-            this.$('.model-objects').append(new MapPanel().$el);
+            this.$('.model-objects').append(
+                new WindPanel().$el,
+                new WaterPanel().$el,
+                new MapPanel().$el
+            );
             this.initMason();
 
             setTimeout(_.bind(function(){
