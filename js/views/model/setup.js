@@ -18,12 +18,8 @@ define([
     'views/panel/map',
     'views/panel/diffusion-h',
     'views/panel/current',
-    'model/spill',
-    'views/form/spill/type',
-    'text!templates/panel/spill.html',
-    'views/form/spill/continue',
-    'views/form/spill/instant',
-    'views/form/oil/library',
+    'views/panel/spill',
+
     'views/form/location',
     'views/default/map',
     'views/form/response/type',
@@ -48,10 +44,7 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel,
-    
-
-    SpillModel, SpillTypeForm, SpillPanelTemplate, SpillContinueView, SpillInstantView, OilLibraryView,
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel,
     LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
     'use strict';
@@ -61,22 +54,6 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .spill .add': 'clickSpill',
-                'click .spill .single .edit': 'loadSpill',
-                'click .spill .single': 'loadSpill',
-                'click .spill .single .trash': 'deleteSpill',
-                'click .diffusion .add': 'clickDiffusion',
-                'click .diffusion .single .edit': 'loadDiffusion',
-                'click .diffusion .single': 'loadDiffusion',
-                'click .current .add': 'clickCurrent',
-                'click .current .single .edit': 'loadCurrent',
-                'click .current .single': 'loadCurrent',
-                'click .current .single .trash': 'deleteCurrent',
-                'click .diffusion .single .trash': 'deleteDiffusion',
-                'click .substance-info': 'renderOilLibrary',
-                'mouseover .spill .single': 'hoverSpill',
-                'mouseout .spill .spill-list': 'unhoverSpill',
-                'click .location': 'clickLocation',
                 'click .response .add': 'clickResponse',
                 'click .response .single .edit': 'loadResponse',
                 'click .response .single': 'loadResponse',
@@ -129,16 +106,13 @@ define([
                 new WaterPanel().$el,
                 new MapPanel().$el,
                 new DiffusionPanel().$el,
-                new CurrentPanel().$el
+                new CurrentPanel().$el,
+                new SpillPanel().$el
             );
             this.initMason();
 
-            setTimeout(_.bind(function(){
-                webgnome.model.on('sync', this.updateObjects, this);
-                //webgnome.model.on('sync', this.updateSpill, this);
-                this.updateSpill();
-                this.updateObjects();
-            }, this), 1);
+            webgnome.model.on('sync', this.updateObjects, this);
+            this.updateObjects();
 
             this.$('.icon').tooltip({
                 placement: 'bottom'
@@ -421,263 +395,7 @@ define([
                 container: 'body'
             });
 
-            this.renderTimeline();
             this.mason.layout();
-        },
-
-        clickSpill: function(){
-            var spillTypeForm = new SpillTypeForm();
-            spillTypeForm.render();
-            spillTypeForm.on('hidden', spillTypeForm.close);
-        },
-
-        loadSpill: function(e){
-            e.stopPropagation();
-            var spillId;
-            if($(e.target).hasClass('single')){
-                spillId = $(e.target).data('id');
-            } else {
-                spillId = $(e.target).parents('.single').data('id');
-            }
-
-            var spill = webgnome.model.get('spills').get(spillId);
-            var spillView;
-            if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
-                spillView = new SpillContinueView(null, spill);
-            } else {
-                spillView = new SpillInstantView(null, spill);
-            }
-            spillView.on('save wizardclose', _.bind(function(){
-                this.updateSpill();
-                this.renderTimeline();
-            }, this));
-            spillView.on('save', function(){
-                spillView.on('hidden', spillView.close);
-            });
-            spillView.on('wizardclose', spillView.close);
-
-            spillView.render();
-        },
-
-        renderOilLibrary: function() {
-            var element_type = webgnome.model.get('spills').at(0).get('element_type');
-            var oilLib = new OilLibraryView({}, element_type);
-            oilLib.on('save wizardclose', _.bind(function(){
-                this.updateSpill();
-                if(oilLib.$el.is(':hidden')){
-                    oilLib.close();
-                } else {
-                    oilLib.once('hidden', oilLib.close, oilLib);
-                }
-            }, this));
-            oilLib.render();
-        },
-
-        calculateSpillAmount: function(){
-            var oilAPI;
-            var oilconvert = new nucos.OilQuantityConverter();
-            var spills = webgnome.model.get('spills');
-            if (spills.length > 0 && spills.at(0).get('element_type').get('substance')){
-                oilAPI = spills.at(0).get('element_type').get('substance').api;
-            }
-            oilAPI = oilAPI ? oilAPI : 10;
-            var units = spills.models.length ? spills.at(0).get('units') : '';
-            var timeStep = webgnome.model.get('time_step');
-            var numOfTimeSteps = webgnome.model.get('num_time_steps');
-            var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
-            var data = {};
-            for (var j = 0; j < spills.models.length; j++){
-                var releaseTime = moment(spills.models[j].get('release').get('release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-                var endReleaseTime = moment(spills.models[j].get('release').get('end_release_time'), 'YYYY-MM-DDTHH:mm:ss').unix();
-                var timeDiff = endReleaseTime - releaseTime;
-                var spillUnits = spills.models[j].get('units');
-                var amount = 0;
-                var amountArray = [];
-                for (var i = 0; i < numOfTimeSteps; i++){
-                    var upperBound = moment(start_time).add(i * timeStep, 's').unix();
-                    var lowerBound = upperBound - timeStep;
-                    if (releaseTime >= lowerBound && endReleaseTime < upperBound && timeDiff <= timeStep && i < numOfTimeSteps){
-                        amount += spills.models[j].get('amount');
-                    } else if (timeDiff > timeStep) {
-                        var rateOfRelease = spills.models[j].get('amount') / timeDiff;
-                        if (releaseTime >= lowerBound && endReleaseTime >= upperBound && releaseTime <= upperBound){
-                            var head = (upperBound - releaseTime);
-                            amount += rateOfRelease * head;
-                        } else if (releaseTime <= lowerBound && endReleaseTime >= upperBound){
-                            amount += rateOfRelease * timeStep;
-                        } else if (releaseTime <= lowerBound && endReleaseTime <= upperBound && endReleaseTime >= lowerBound){
-                            var tail = endReleaseTime - lowerBound;
-                            amount += rateOfRelease * tail;
-                        }
-                    }
-                    amountArray.push(amount);
-                }
-                for (var o = 0; o < amountArray.length; o++){
-                    amountArray[o] = oilconvert.Convert(amountArray[o], spillUnits, oilAPI, "API degree", units);
-                }
-                data[j] = amountArray;
-            }
-            return data;
-        },
-        
-        updateSpill: function(){
-            var spills = webgnome.model.get('spills');
-            spills.forEach(function(spill){
-                spill.isValid();
-            });
-            var spillArray = this.calculateSpillAmount();
-            var compiled;
-
-            var numOfTimeSteps = webgnome.model.get('num_time_steps');
-            var timeStep = webgnome.model.get('time_step');
-
-            if(spills.models.length > 0){
-                this.$('.spill .panel').addClass('complete');
-                var substance = spills.at(0).get('element_type').get('substance');
-                if (!_.isNull(substance)){
-                    compiled = _.template(SpillPanelTemplate, {
-                        spills: spills.models,
-                        substance: substance,
-                        categories: substance.parseCategories(),
-                    });
-                } else {
-                    compiled = _.template(SpillPanelTemplate, {
-                        spills: spills.models,
-                        substance: false,
-                        categories: [],
-                    });
-                }
-
-                var dataset = [];
-                for (var spill in spills.models){
-                    if (!_.isNull(spills.models[spill].validationError)){ continue; }
-                    var data = [];
-                    var start_time = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss');
-                    for (var i = 0; i < numOfTimeSteps; i++){
-                        var date = start_time.add(timeStep, 's').unix() * 1000;
-                        var amount = spillArray[spill][i];
-                        data.push([parseInt(date, 10), parseInt(amount, 10)]);
-                    }
-
-                    dataset.push({
-                        data: data,
-                        color: '#9CD1FF',
-                        hoverable: true,
-                        lines: {
-                            show: true,
-                            fill: true
-                        },
-                        points: {
-                            show: false
-                        },
-                        id: spills.models[spill].get('id')
-                    });
-                }
-
-                this.$('.spill').removeClass('col-md-3').addClass('col-md-6');
-                this.$('.spill .panel-body').html(compiled);
-                this.$('.spill .panel-body').show();
-
-                if(!_.isUndefined(dataset)){
-                    this.spillDataset = dataset;
-                    setTimeout(_.bind(function(){
-                        this.renderSpillRelease(dataset);
-                    }, this), 1);
-                }
-                
-            } else {
-                this.$('.spill .panel').removeClass('complete');
-                this.$('.spill .panel-body').hide().html('');
-                this.$('.spill').removeClass('col-md-6').addClass('col-md-3');
-            }
-            this.mason.layout();
-        },
-
-        renderSpillRelease: function(dataset){
-            this.spillPlot = $.plot('.spill .chart .canvas', dataset, {
-                grid: {
-                    borderWidth: 1,
-                    borderColor: '#ddd',
-                    hoverable: true
-                },
-                xaxis: {
-                    mode: 'time',
-                    timezone: 'browser',
-                    tickColor: '#ddd'
-                },
-                yaxis: {
-                    tickColor: '#ddd'
-                },
-                tooltip: false,
-                tooltipOpts: {
-                    content: function(label, x, y, flotItem){ return "Time: " + moment(x).calendar() + "<br>Amount: " + y ;}
-                },
-                shifts: {
-                    x: -30,
-                    y: -50
-                },
-                series: {
-                    stack: true,
-                    group: true,
-                    groupInterval: 1,
-                    lines: {
-                        show: true,
-                        fill: true,
-                        lineWidth: 2
-                    },
-                    shadowSize: 0
-                },
-                needle: false
-            });
-        },
-
-        hoverSpill: function(e){
-            if ($(e.target).attr('id') !== 'substanceInfo'){
-                var id = $(e.target).data('id');
-                if (_.isUndefined(id)){
-                    id = $(e.target).parents('.single').data('id');
-                }
-                var coloredSet = [];
-                for(var dataset in this.spillDataset){
-                    var ds = _.clone(this.spillDataset[dataset]);
-                    if (this.spillDataset[dataset].id !== id){
-                        ds.color = '#ddd';
-                    }
-
-                    coloredSet.push(ds);
-                }
-                this.spillPlot.setData(coloredSet);
-                this.spillPlot.draw();
-            }
-        },
-
-        unhoverSpill: function(){
-            this.spillPlot.setData(this.spillDataset);
-            this.spillPlot.draw();
-        },
-
-        deleteSpill: function(e){
-            e.stopPropagation();
-            var id = $(e.target).parents('.single').data('id');
-            var spill = webgnome.model.get('spills').get(id);
-            swal({
-                title: 'Delete "' + spill.get('name') + '"',
-                text: 'Are you sure you want to delete this spill?',
-                type: 'warning',
-                confirmButtonText: 'Delete',
-                confirmButtonColor: '#d9534f',
-                showCancelButton: true
-            }, _.bind(function(isConfirmed){
-                if(isConfirmed){
-                    webgnome.model.get('spills').remove(id);
-                    webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.updateSpill();
-                        }, this),
-                        validate: false
-                    });
-                }
-            }, this));
         },
 
         clickResponse: function(){
