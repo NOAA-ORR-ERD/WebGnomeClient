@@ -16,7 +16,6 @@ define([
 
         initialize: function(options){
             BaseView.prototype.initialize.call(this, options);
-            this.render();
         },
 
         hover: function(e){

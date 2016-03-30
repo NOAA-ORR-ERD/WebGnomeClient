@@ -19,17 +19,10 @@ define([
     'views/panel/diffusion-h',
     'views/panel/current',
     'views/panel/spill',
-
-    'views/form/location',
-    'views/default/map',
-    'views/form/response/type',
+    'views/panel/response',
     'model/weatherers/manual_beaching',
     'views/form/beached',
     'text!templates/panel/beached.html',
-    'text!templates/panel/response.html',
-    'views/form/response/disperse',
-    'views/form/response/insituBurn',
-    'views/form/response/skim',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/weatherers/evaporation',
@@ -44,8 +37,8 @@ define([
     'flotnavigate',
     'jqueryui/sortable'
 ], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel,
-    LocationForm, OlMapView, ResponseTypeForm, BeachedModel, BeachedForm, BeachedPanelTemplate, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel, ResponsePanel,
+    BeachedModel, BeachedForm, BeachedPanelTemplate,
     TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
     'use strict';
     var adiosSetupView = BaseView.extend({
@@ -100,19 +93,39 @@ define([
                 name: !_.isUndefined(webgnome.model.get('name')) ? webgnome.model.get('name') : ''
             });
             this.$el.append(compiled);
+
             BaseView.prototype.render.call(this);
+
+            this.children = [
+                this.wind = new WindPanel(),
+                this.water = new WaterPanel(),
+                this.map = new MapPanel(),
+                this.diffusion = new DiffusionPanel(),
+                this.current = new CurrentPanel(),
+                this.spill = new SpillPanel(),
+                this.response = new ResponsePanel()
+            ];
+
             this.$('.model-objects').append(
-                new WindPanel().$el,
-                new WaterPanel().$el,
-                new MapPanel().$el,
-                new DiffusionPanel().$el,
-                new CurrentPanel().$el,
-                new SpillPanel().$el
+                this.wind.$el,
+                this.water.$el,
+                this.map.$el,
+                this.diffusion.$el,
+                this.current.$el,
+                this.spill.$el
             );
+
+            this.$('.response-objects').append(
+                this.response.$el
+            );
+
             this.initMason();
 
-            webgnome.model.on('sync', this.updateObjects, this);
-            this.updateObjects();
+            var layoutfn = _.debounce(_.bind(this.layout, this), 100);
+            for(var child in this.children){
+                this.listenTo(this.children[child], 'render', layoutfn);
+                this.children[child].render();
+            }
 
             this.$('.icon').tooltip({
                 placement: 'bottom'
@@ -126,6 +139,21 @@ define([
                 this.$('.datetime').datetimepicker('show');
             }, this));
             this.renderTimeline();
+
+            var delay = {
+                show: 500,
+                hide: 100
+            };
+
+            this.$('.panel-heading .advanced-edit').tooltip({
+                title: 'Advanced Edit',
+                delay: delay,
+                container: 'body'
+            });
+        },
+
+        layout: function(){
+            this.mason.layout();
         },
 
         renderTimeline: function(){
@@ -325,26 +353,6 @@ define([
             });
         },
 
-        evalModel: function(e){
-            e.preventDefault();
-            if (!webgnome.model.isValid()){
-                var spillNames = webgnome.model.validationError;
-                swal({
-                    html: true,
-                    title: "Spill(s) are outside map bounds!",
-                    text: "These spill(s) originate outside of the map bounds: <br />" + spillNames,
-                    type: 'error',
-                });
-            } else {
-                webgnome.router.navigate('model', true);
-            }
-        },
-
-        rewindClick: function(e){
-            if(e){ e.preventDefault();}
-            webgnome.cache.rewind();
-        },
-
         updateModel: function(){
             var name = this.$('#name').val();
             webgnome.model.set('name', name);
@@ -356,19 +364,8 @@ define([
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             webgnome.model.set('duration', duration);
 
-            webgnome.model.get('weatherers').forEach(function(weatherer){
-                if(weatherer.get('obj_type').indexOf('cleanup') === -1){
-                    weatherer.set('active_start', webgnome.model.get('start_time'));
-                    weatherer.set('active_stop', moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY-MM-DDTHH:mm:ss'));
-                }
-            });
-
             webgnome.model.save(null, {
                 validate: false,
-                success: _.bind(function(){
-                    this.updateSpill();
-                    this.updateResponse();
-                }, this)
             });
         },
 
@@ -381,21 +378,6 @@ define([
             this.$('#start_time').val(start_time);
             this.$('#days').val(durationAttrs.days);
             this.$('#hours').val(durationAttrs.hours);
-        },
-
-        updateObjects: function(){
-            var delay = {
-                show: 500,
-                hide: 100
-            };
-
-            this.$('.panel-heading .advanced-edit').tooltip({
-                title: 'Advanced Edit',
-                delay: delay,
-                container: 'body'
-            });
-
-            this.mason.layout();
         },
 
         clickBeached: function(){
@@ -503,11 +485,9 @@ define([
         
         close: function(){
             $('.xdsoft_datetimepicker').remove();
-            if(!_.isUndefined(this.windPlot)){
-                this.windPlot.shutdown();
-            }
-            if(webgnome.model){
-                webgnome.model.off('sync', this.updateObjects, this);
+
+            for(var child in this.children){
+                this.children[child].close();
             }
 
             webgnome.cache.off('rewind', this.rewind, this);
