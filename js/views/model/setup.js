@@ -5,10 +5,7 @@ define([
     'views/base',
     'module',
     'moment',
-    'ol',
     'masonry',
-    'sweetalert',
-    'nucos',
     'text!templates/model/setup.html',
     'views/modal/form',
     'model/gnome',
@@ -20,26 +17,16 @@ define([
     'views/panel/current',
     'views/panel/spill',
     'views/panel/response',
-    'model/weatherers/manual_beaching',
-    'views/form/beached',
-    'text!templates/panel/beached.html',
-    'model/outputters/trajectory',
-    'model/outputters/weathering',
-    'model/weatherers/evaporation',
+    'views/panel/beached',
     'jqueryDatetimepicker',
     'flot',
     'flottime',
     'flotresize',
-    'flotdirection',
-    'flotstack',
-    'flotgantt',
     'flotextents',
     'flotnavigate',
     'jqueryui/sortable'
-], function($, _, Backbone, BaseView, module, moment, ol, Masonry, swal, nucos, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel, ResponsePanel,
-    BeachedModel, BeachedForm, BeachedPanelTemplate,
-    TrajectoryOutputter, WeatheringOutputter, EvaporationModel){
+], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel, ResponsePanel, BeachedPanel){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -103,7 +90,8 @@ define([
                 this.diffusion = new DiffusionPanel(),
                 this.current = new CurrentPanel(),
                 this.spill = new SpillPanel(),
-                this.response = new ResponsePanel()
+                this.response = new ResponsePanel(),
+                this.beached = new BeachedPanel()
             ];
 
             this.$('.model-objects').append(
@@ -116,7 +104,8 @@ define([
             );
 
             this.$('.response-objects').append(
-                this.response.$el
+                this.response.$el,
+                this.beached.$el
             );
 
             this.initMason();
@@ -380,109 +369,6 @@ define([
             this.$('#hours').val(durationAttrs.hours);
         },
 
-        clickBeached: function(){
-            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            if (_.isUndefined(beached) || beached.length === 0){
-                beached = new BeachedModel();
-            }
-            var beachedForm = new BeachedForm({}, beached);
-            beachedForm.on('hidden', beachedForm.close);
-            beachedForm.on('save', _.bind(function(){
-                if(beached.get('timeseries').length === 0){
-                    webgnome.model.get('weatherers').remove(beached);
-                } else {
-                    webgnome.model.get('weatherers').add(beached, {merge: true});
-                }
-                
-                webgnome.model.save({
-                    success: _.bind(function(){
-                        this.updateBeached();
-                    }, this)
-                });
-                    
-            }, this));
-            beachedForm.render();
-        },
-
-        updateBeached: function(){
-            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            if (!_.isUndefined(beached) && beached.get('timeseries').length > 0){
-                var compiled, dataset;
-                this.$('.beached .panel').addClass('complete');
-                if (beached.get('timeseries').length === 1){
-                    var amountBeached = beached.get('timeseries')[0][1];
-                    var singleDate = moment(beached.get('timeseries')[0][0]).format(webgnome.config.date_format.moment);
-                    compiled = _.template( BeachedPanelTemplate, {
-                        amount: amountBeached,
-                        units: beached.get('units'),
-                        date: singleDate
-                    });
-                    this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
-                } else if (beached.get('timeseries').length > 1) {
-                    compiled = '<div class="chart"><div class="axisLabel yaxisLabel">' + beached.get('units') + '</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>';
-
-                    var ts = beached.get('timeseries');
-                    var data = [];
-
-                    for (var entry in ts){
-                        var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
-                        data.push([parseInt(date, 10), parseInt(ts[entry][1], 10)]);
-                    }
-
-                    dataset = [{
-                        data: data,
-                        color: '#9CD1FF',
-                        hoverable: true,
-                        lines: {
-                            show: true,
-                            fill: true
-                        },
-                        points: {
-                            show: false
-                        },
-                        direction: {
-                            show: false
-                        }
-                    }];
-
-                    this.$('.beached').removeClass('col-md-3').addClass('col-md-6');
-                }
-                this.$('.beached .panel-body').html(compiled);
-                this.$('.beached .panel-body').show();
-
-                if (dataset) {
-                    setTimeout(_.bind(function(){
-                        this.beachedPlot = $.plot('.beached .chart .canvas', dataset, {
-                            grid: {
-                                borderWidth: 1,
-                                borderColor: '#ddd'
-                            },
-                            xaxis: {
-                                mode: 'time',
-                                timezone: 'browser',
-                                tickColor: '#ddd'
-                            },
-                            series: {
-                                stack: true,
-                                group: true,
-                                groupInterval: 1,
-                                lines: {
-                                    show: true,
-                                    fill: true,
-                                    lineWidth: 2
-                                },
-                                shadowSize: 0
-                            }
-                        });
-                    }, this), 1);
-                }
-            } else {
-                this.$('.beached').removeClass('col-md-6').addClass('col-md-3');
-                this.$('.beached .panel').removeClass('complete');
-                this.$('.beached .panel-body').hide().html('');
-            }
-        },
-        
         close: function(){
             $('.xdsoft_datetimepicker').remove();
 
