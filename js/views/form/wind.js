@@ -224,6 +224,15 @@ define([
                             error: _.bind(this.nwsError, this)
                         });
                     }, this));
+                    var spill = webgnome.model.get('spills').at(0);
+
+                    if (spill) {
+                        var lat = spill.get('release').get('start_position')[1];
+                        var lon = spill.get('release').get('start_position')[0];
+
+                        this.$('#nws #lat').val(lat);
+                        this.$('#nws #lon').val(lon);
+                    }
                 }
             }
             $(window).trigger('resize');
