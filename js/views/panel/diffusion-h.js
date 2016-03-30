@@ -59,6 +59,7 @@ define([
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel-body').hide();
             }
+            BasePanel.prototype.render.call(this);
         },
 
         delete: function(e) {

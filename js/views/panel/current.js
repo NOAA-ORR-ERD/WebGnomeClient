@@ -93,6 +93,7 @@ define([
                 this.current_extents = [];
                 this.$('.panel-body').hide();
             }
+            BasePanel.prototype.render.call(this);
         },
 
         addCurrentToPanel: function(geojson){

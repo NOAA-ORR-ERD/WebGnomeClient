@@ -83,6 +83,7 @@ define([
                 this.$('.panel-body').addClass('text').show().html();
                 this.$('.panel-body').removeClass('map');
             }
+            BasePanel.prototype.render.call(this);
         },
 
         new: function(){
