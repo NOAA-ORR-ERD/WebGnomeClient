@@ -41,7 +41,8 @@ define([
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered',
-                'click .clear-winds': 'clearTimeseries'
+                'click .clear-winds': 'clearTimeseries',
+                'click .nws-manual': 'nwsSubmit'
             }, formModalHash);
         },
 
@@ -217,16 +218,40 @@ define([
                         var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
-                        this.nws = new NwsWind({lat: coords[1], lon: coords[0]});
+                        var coordObj = {lat: coords[1], lon: coords[0]};
+                        this.nwsFetch(coordObj);
                         this.$('.save').addClass('disabled');
-                        this.nws.fetch({
-                            success: _.bind(this.nwsLoad, this),
-                            error: _.bind(this.nwsError, this)
-                        });
                     }, this));
+
+                    var spill = webgnome.model.get('spills').at(0);
+                    if (spill) {
+                        var lat = spill.get('release').get('start_position')[1];
+                        var lon = spill.get('release').get('start_position')[0];
+
+                        this.$('#nws #lat').val(lat);
+                        this.$('#nws #lon').val(lon);
+                    }
                 }
             }
             $(window).trigger('resize');
+        },
+
+        nwsSubmit: function(e) {
+            e.preventDefault();
+
+            var coords = {};
+            coords.lat = parseFloat(this.$('#nws #lat').val());
+            coords.lon = parseFloat(this.$('#nws #lon').val());
+
+            this.nwsFetch(coords);
+        },
+
+        nwsFetch: function(coords) {
+            this.nws = new NwsWind(coords);
+            this.nws.fetch({
+                success: _.bind(this.nwsLoad, this),
+                error: _.bind(this.nwsError, this)
+            });
         },
 
         setupUpload: function(){
