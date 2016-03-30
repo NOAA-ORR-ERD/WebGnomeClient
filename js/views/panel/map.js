@@ -73,7 +73,7 @@ define([
                         var extent = shorelineSource.getExtent();
                         locationMap.map.getView().fit(extent, locationMap.map.getSize());
                     }, this));
-                    
+                    this.trigger('render');
                 }, this));
             } else {
                 this.$el.html(_.template(MapPanelTemplate, {
