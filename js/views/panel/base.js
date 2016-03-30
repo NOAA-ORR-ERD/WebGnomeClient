@@ -18,6 +18,16 @@ define([
             BaseView.prototype.initialize.call(this, options);
         },
 
+        rerender: function(model, xhr){
+            if(this.models){
+                if(this.models.indexOf(model.get('obj_type')) !== -1){
+                    this.render();
+                }
+            } else {
+                this.render();
+            }
+        },
+
         hover: function(e){
             if(this.dataset && this.plot){
                 var id = this.getID(e);
