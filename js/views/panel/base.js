@@ -71,10 +71,10 @@ define([
             });
 
             this.$('.panel-heading .perm-add').tooltip({
-                title: function(){
+                title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();
                     return 'Create ' + object;
-                },
+                }, this),
                 delay: delay,
                 container: 'body'
             });
@@ -85,7 +85,7 @@ define([
             });
 
             this.$('.panel-heading .state').tooltip({
-                title: function(){
+                title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();
 
                     if(this.$('.panel').hasClass('complete')){
@@ -95,7 +95,7 @@ define([
                     } else {
                         return object + ' required';
                     }
-                },
+                }, this),
                 container: 'body',
                 delay: delay
             });
