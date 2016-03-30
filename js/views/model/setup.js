@@ -34,16 +34,7 @@ define([
 
         events: function(){
             return _.defaults({
-                'click .response .add': 'clickResponse',
-                'click .response .single .edit': 'loadResponse',
-                'click .response .single': 'loadResponse',
-                'click .response .single .trash': 'deleteResponse',
-                'mouseover .response .single': 'hoverResponse',
-                'mouseout .response .response-list': 'unhoverResponse',
                 'blur input': 'updateModel',
-                'click .eval': 'evalModel',
-                'click .rewind': 'rewindClick',
-                'click .beached .add': 'clickBeached',
                 'click .advanced-edit': 'clickModel'
             }, BaseView.prototype.events);
         },
