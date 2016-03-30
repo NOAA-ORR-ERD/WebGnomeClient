@@ -162,6 +162,29 @@
     <div class="tab-pane" id="nws">
         <p>Retrieve forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
         <div id="wind-form-map" class="map"></div>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-3">
+                    <label for="lat" class="control-label">Latitude:</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="lat" id="lat" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3">
+                    <label for="lon" class="control-label">Longitude:</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="lon" id="lon" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-4 col-sm-offset-8">
+                    <a class="btn btn-success pull-right">Submit</a>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="tab-pane" id="upload">
         <div class="dropzone"></div>
