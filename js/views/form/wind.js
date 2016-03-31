@@ -59,13 +59,28 @@ define([
             
             this.title = this.model.get('name');
             this.source = new ol.source.Vector();
-            this.layer = new ol.layer.Vector({
+            this.spillSource = new ol.source.Vector();
+            this.windLayer = new ol.layer.Vector({
                 source: this.source,
                 style: new ol.style.Style({
                     image: new ol.style.Icon({
                         anchor: [0.5, 1.0],
                         src: '/img/map-pin.png',
                         size: [32, 40]
+                    })
+                })
+            });
+            this.spillLayer = new ol.layer.Vector({
+                source: this.spillSource,
+                style: new ol.style.Style({
+                    image: new ol.style.Icon({
+                    anchor: [0.5, 1.0],
+                    src: '/img/spill-pin.png',
+                    size: [32, 40]
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#3399CC',
+                        width: 1.25
                     })
                 })
             });
@@ -89,7 +104,8 @@ define([
                             })
                         })
                     }),
-                    this.layer
+                    this.windLayer,
+                    this.spillLayer
                 ]
             });
         },
@@ -214,7 +230,6 @@ define([
                         this.source.forEachFeature(function(feature){
                             this.source.removeFeature(feature);
                         }, this);
-
                         var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
                         var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
                         this.source.addFeature(feature);
@@ -231,9 +246,32 @@ define([
                         this.$('#nws #lat').val(lat);
                         this.$('#nws #lon').val(lon);
                     }
+                    this.renderSpills();
                 }
             }
             $(window).trigger('resize');
+        },
+
+        renderSpills: function() {
+            var spills = webgnome.model.get('spills');
+            spills.forEach(function(spill){
+                var start_position = spill.get('release').get('start_position');
+                var end_position = spill.get('release').get('end_position');
+                var geom;
+                if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
+                    start_position = [start_position[0], start_position[1]];
+                    geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+                } else {
+                    start_position = [start_position[0], start_position[1]];
+                    end_position = [end_position[0], end_position[1]];
+                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
+                }
+                var feature = new ol.Feature({
+                    geometry: geom,
+                    spill: spill.get('id')
+                });
+                this.spillSource.addFeature(feature);
+            }, this);
         },
 
         nwsSubmit: function(e) {
