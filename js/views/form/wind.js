@@ -252,6 +252,8 @@ define([
                 success: _.bind(this.nwsLoad, this),
                 error: _.bind(this.nwsError, this)
             });
+            this.$('#nws #lat').val(coords.lat);
+            this.$('#nws #lon').val(coords.lon);
         },
 
         setupUpload: function(){
