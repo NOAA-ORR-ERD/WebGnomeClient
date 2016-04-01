@@ -39,6 +39,70 @@ define([
 
         initialize: function(options){
             this.defaults();
+            if (options.trajectory) {
+                    options.controls = 'full',
+                    this.renderer = 'webgl',
+                    this.layers = [
+                        new ol.layer.Tile({
+                            source: new ol.source.MapQuest({layer: 'osm'}),
+                            name: 'mapquest',
+                            type: 'base',
+                            visible: false
+                        }),
+                        new ol.layer.Tile({
+                            name: 'usgs',
+                            source: new ol.source.TileWMS({
+                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                params: {'LAYERS': '0', 'TILED': true}
+                            }),
+                            visible: false,
+                            type: 'base'
+                        }),
+                        new ol.layer.Tile({
+                            name: 'noaanavcharts',
+                            source: new ol.source.TileWMS({
+                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                                params: {'LAYERS': '1', 'TILED': true}
+                            }),
+                            opacity: 0.5,
+                            visible: false
+                        })
+                    ];
+                    this.styles = {
+                        ice_grid: new ol.style.Style({
+                                stroke: new ol.style.Stroke({
+                                color: [36, 36, 227, 0.75],
+                                width: 1
+                            })
+                        }),
+                        spill: new ol.style.Style({
+                            image: new ol.style.Icon({
+                                anchor: [0.5, 1.0],
+                                src: '/img/spill-pin.png',
+                                size: [32, 40]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: '#3399CC',
+                                width: 1.25
+                            })
+                        }),
+                        shoreline: new ol.style.Style({
+                                fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                        stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
+                            })
+                        }),
+                        currents_grid: new ol.style.Style({
+                            stroke: new ol.style.Stroke({
+                                color: [171, 37, 184, 0.75],
+                                width: 1
+                            })
+                        })
+                    };
+            }
             if(!_.isUndefined(options)){
                 if(!_.isUndefined(options.id)){
                     this.id = options.id;
