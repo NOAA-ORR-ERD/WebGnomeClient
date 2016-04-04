@@ -97,7 +97,8 @@ define([
 
         setChild: function(Cls, data){
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
-                return webgnome.obj_ref[data.id];
+                var cached_obj = webgnome.obj_ref[data.id];
+                return cached_obj.set(cached_obj.parse(data));
             }
             if(_.isUndefined(data)){
                 data = {};
