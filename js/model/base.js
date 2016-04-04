@@ -77,6 +77,24 @@ define([
             return response;
         },
 
+
+        // override default sync method to add a promise that will register objects with webgnome.obj_ref
+        // if it's avilable and the object actually has an id.
+        // 
+        // This is needed because when creating an object and then adding it to the main model
+        // to build a reference the original javascript object is lost and a new one is recreated with 
+        // the old ones data.
+        sync: function(method, model, options){
+            var xhr = Backbone.Model.prototype.sync.call(this, method, model, options);
+            
+            xhr.always(function(){
+                if(webgnome && webgnome.obj_ref && model.get('id')){
+                    webgnome.obj_ref[model.get('id')] = model;
+                }    
+            });
+            return xhr;
+        },
+
         setChild: function(Cls, data){
             if(!_.isUndefined(data) && _.has(webgnome.obj_ref, data.id)){
                 return webgnome.obj_ref[data.id];
