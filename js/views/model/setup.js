@@ -1584,8 +1584,8 @@ define([
                 beachedForm.render();
             } else {
                 swal({
-                    title: "There is a map on the model!",
-                    text: "Observed beaching is used to enter in beaching information when a map does not exist for the model.",
+                    title: "A shoreline is defined for the model",
+                    text: "Observed beaching is used to enter in beaching information when a shoreline map has not been defined for the model. If a shoreline has been defined, the model will compute the beached oil. You can remove the map if you want to manually set observed beaching.",
                     type: "error"
                 });
             }
