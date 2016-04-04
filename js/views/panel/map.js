@@ -19,6 +19,24 @@ define([
             'click .add': 'load',
         },
 
+        models: [
+            'gnome.model.Model',
+            'gnome.map.GnomeMap',
+            'gnome.map.ParamMap',
+            'gnome.map.MapFromBNA'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model, 'change:map', this.rerender);
+            this.listenTo(webgnome.model, 'change:map', this.setupMapListener);
+            this.setupMapListener();
+        },
+
+        setupMapListener: function(){
+            this.listenTo(webgnome.model.get('map'), 'sync', this.rerender);
+        },
+
         render: function(){
             var map = webgnome.model.get('map');
 
@@ -93,7 +111,6 @@ define([
                 webgnome.model.save({map: new MapModel()}, {
                     validate: false,
                     success: _.bind(function(){
-                        this.render();
                         mapForm.hide();
                     }, this)
                 });
@@ -105,7 +122,6 @@ define([
                     form.on('save', _.bind(function(map){
                         webgnome.model.set('map', map);
                         webgnome.model.save(null, {validate: false});
-                        this.render();
                     }, this));
                 }, this));
             }, this));
@@ -124,7 +140,6 @@ define([
             form.render();
             form.on('hidden', form.close);
             form.on('save', map.resetRequest, map);
-            form.on('save', this.render, this);
         }
     });
 

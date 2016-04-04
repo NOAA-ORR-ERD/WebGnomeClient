@@ -24,20 +24,29 @@ define([
             'click .substance-info': 'renderOilLibrary',
         }, BasePanel.prototype.events),
 
+        models: [
+            'gnome.spill.spill.Spill'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('spills'), 'add remove change', this.rerender);
+        },
+
         new: function(){
             var spillTypeForm = new SpillTypeForm();
             spillTypeForm.render();
             spillTypeForm.on('hidden', spillTypeForm.close);
             spillTypeForm.on('select', _.bind(function(form){
                 form.on('wizardclose', form.close);
-                form.on('save', _.bind(function(){
+                form.on('save', _.bind(function(model){
                     webgnome.model.get('spills').add(form.model);
+                    webgnome.model.save(null, {validate: false});
                     if(form.$el.is(':hidden')){
                         form.close();
                     } else {
                         form.once('hidden', form.close, form);
                     }
-                    this.render();
                 }, this));
             }, this));
         },
@@ -53,7 +62,6 @@ define([
             } else {
                 spillView = new SpillInstantView(null, spill);
             }
-            spillView.on('save wizardclose', _.bind(this.render, this));
             spillView.on('save', function(){
                 spillView.on('hidden', spillView.close);
             });
@@ -175,10 +183,9 @@ define([
         },
 
         renderOilLibrary: function() {
-            var element_type = webgnome.model.get('spills').at(0).get('element_type');
+            var element_type = webgnome.model.getElementType();
             var oilLib = new OilLibraryView({}, element_type);
             oilLib.on('save wizardclose', _.bind(function(){
-                this.render();
                 if(oilLib.$el.is(':hidden')){
                     oilLib.close();
                 } else {
@@ -275,9 +282,6 @@ define([
                 if(isConfirmed){
                     webgnome.model.get('spills').remove(id);
                     webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.render();
-                        }, this),
                         validate: false
                     });
                 }

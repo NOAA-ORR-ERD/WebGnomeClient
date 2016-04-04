@@ -11,6 +11,15 @@ define([
     var beachedPanel = BasePanel.extend({
         className: 'col-md-3 beached object panel-view',
 
+        models: [
+            'gnome.weatherers.manual_beaching.Beaching'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('weatherers'), 'add change remove', this.rerender);
+        },
+
         new: function(){
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
             if (_.isUndefined(beached) || beached.length === 0){

@@ -10,6 +10,15 @@ define([
     var waterPanel = BasePanel.extend({
         className: 'col-md-3 water object panel-view',
 
+        models: [
+            'gnome.environment.environment.Water'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.rerender);
+        },
+
         render: function(){
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
             var compiled;
@@ -46,7 +55,6 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
-                this.render();
             }, this));
             waterForm.render();
         }

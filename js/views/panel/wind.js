@@ -19,17 +19,23 @@ define([
     var windPanel = BasePanel.extend({
         className: 'col-md-3 wind panel-view object',
 
+        models: [
+            'gnome.environment.wind.Wind'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.rerender);
+        },
+
         new: function(){
             var wind = new WindModel();
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
                 var windMover = new WindMoverModel({wind: wind});
-
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(wind);
-
-                this.render();
             }, this));
             windForm.render();
         },
@@ -41,10 +47,7 @@ define([
             var wind = webgnome.model.get('environment').get(id);
             var windForm = new WindForm(null, wind);
             windForm.on('hidden', windForm.close);
-            windForm.on('save', _.bind(function(){
-                webgnome.model.get('environment').add(wind, {merge:true});
-                this.render();
-            }, this));
+
             windForm.render();
         },
 
@@ -125,9 +128,6 @@ define([
                     webgnome.model.get('movers').remove(movers);
                     webgnome.model.get('environment').remove(id);
                     webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.render();
-                        }, this),
                         validate: false
                     });
                 }

@@ -10,6 +10,15 @@ define([
     var diffusionPanel = BasePanel.extend({
         className: 'col-md-3 diffusion object panel-view',
 
+        models: [
+            'gnome.movers.random_movers.RandomMover'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('movers'), 'change add remove', this.rerender);
+        },
+
         new: function(e) {
             var form = new DiffusionFormView();
 
@@ -18,7 +27,6 @@ define([
                 webgnome.model.get('movers').add(form.model, {merge: true});
                 webgnome.model.save(null, {validate: false});
                 form.on('hidden', form.close);
-                this.render();
             }, this));
             form.on('wizardclose', form.close);
 
@@ -32,7 +40,6 @@ define([
             var diffusion = webgnome.model.get('movers').get(id);
             var form = new DiffusionFormView(null, diffusion);
 
-            form.on('save wizardclose', _.bind(this.render, this));
             form.on('save', function(){
                 form.on('hidden', form.close);
             });
@@ -78,7 +85,6 @@ define([
                 if (isConfirmed) {
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {
-                        success: _.bind(this.render, this),
                         validate: false
                     });
                 }

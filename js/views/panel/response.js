@@ -16,10 +16,17 @@ define([
     var responsePanel = BasePanel.extend({
         className: 'col-md-3 response panel-view',
 
+        models: [
+            'gnome.model.Model',
+            'gnome.weatherers.cleanup.Burn',
+            'gnome.weatherers.cleanup.ChemicalDispersion',
+            'gnome.weatherers.cleanup.Skimmer'
+        ],
+
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('weatherers'), 'change add new', this.render);
-            this.listenTo(webgnome.model, 'change', this.render);
+            this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.rerender);
+            this.listenTo(webgnome.model, 'change:start_time change:duration', this.rerender);
         },
 
         new: function(){
@@ -28,7 +35,7 @@ define([
             typeForm.on('hidden', typeForm.close);
         },
 
-        render: function(weatherers){
+        render: function(){
             weatherers = webgnome.model.get('weatherers').models;
             this.filter(weatherers);
 

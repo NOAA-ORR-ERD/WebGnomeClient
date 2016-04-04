@@ -13,13 +13,22 @@ define([
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
+        models: [
+            'gnome.movers.current_movers.CatsMover',
+            'gnome.movers.current_movers.GridCurrentMover'
+        ],
+
+        initialize: function(options){
+            BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model.get('movers'), 'add change remove', this.rerender);
+        },
+
         new: function(){
             var form = new CreateMoverForm();
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 webgnome.model.get('movers').add(mover);
                 webgnome.model.save(null, {validate: false});
-                this.render();
             }, this));
             form.render();
         },
@@ -30,15 +39,10 @@ define([
 
             var current = webgnome.model.get('movers').get(id);
             var currentView = new FormModal({title: 'Edit Current', model: current});
-            
-            currentView.on('save wizardclose', _.bind(function(){
-                this.render();
-            }, this));
             currentView.on('save', function(){
                 currentView.on('hidden', currentView.close);
             });
             currentView.on('wizardclose', currentView.close);
-
             currentView.render();
         },
 
@@ -138,9 +142,6 @@ define([
                 if(isConfirmed){
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {
-                        success: _.bind(function(){
-                            this.render();
-                        }, this),
                         validate: false
                     });
                 }
