@@ -17,7 +17,7 @@ define([
                 'on': true,
                 'obj_type': 'gnome.spill.spill.Spill',
                 'release': new GnomeRelease(),
-                'element_type': new GnomeElement(),
+                'element_type': this.getElementType(),
                 'name': 'Spill',
                 'amount': 0,
                 'units': ''
@@ -42,6 +42,7 @@ define([
                 this.set('units', 'kg');
             }
             this.on('change:element_type', this.addListeners, this);
+            this.addListeners();
         },
 
         parseDuration: function(){
@@ -74,12 +75,25 @@ define([
             return str;
         },
 
+        resetListeners:function(){
+            this.stopListening();
+            this.addListeners();
+        },
+
         addListeners: function(){
-            this.get('element_type').on('change', this.elementTypeChange, this);
+            this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
         },
 
         elementTypeChange: function(element_type){
             this.childChange('element_type', element_type);
+        },
+
+        getElementType: function(){
+            if(webgnome.hasModel() && webgnome.model.getElementType()){
+                return webgnome.model.getElementType();
+            } else {
+                return new GnomeElement();
+            }
         },
 
         validate: function(attrs, options){
