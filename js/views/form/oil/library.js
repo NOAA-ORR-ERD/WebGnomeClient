@@ -245,10 +245,10 @@ define([
         save: function(){
             var oilName = this.$('.select').data('name');
             var oilId = this.$('.select').data('id');
-            this.model.set('substance', new SubstanceModel({adios_oil_id: oilId, name: oilName}));
-            this.model.get('substance').fetch({
+            var substance = new SubstanceModel({adios_oil_id: oilId, name: oilName});
+            substance.fetch({
                 success: _.bind(function(model){
-                    this.model.set('substance', model);
+                    this.model.set('substance', substance);
                     this.model.save(null, {
                         success: _.bind(function(){
                             this.hide();
