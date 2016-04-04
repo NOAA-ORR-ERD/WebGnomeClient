@@ -1560,27 +1560,35 @@ define([
         },
 
         clickBeached: function(){
-            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            if (_.isUndefined(beached) || beached.length === 0){
-                beached = new BeachedModel();
-            }
-            var beachedForm = new BeachedForm({}, beached);
-            beachedForm.on('hidden', beachedForm.close);
-            beachedForm.on('save', _.bind(function(){
-                if(beached.get('timeseries').length === 0){
-                    webgnome.model.get('weatherers').remove(beached);
-                } else {
-                    webgnome.model.get('weatherers').add(beached, {merge: true});
+            if (webgnome.model.get('map').get('name') === 'GnomeMap') {
+                var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+                if (_.isUndefined(beached) || beached.length === 0){
+                    beached = new BeachedModel();
                 }
-                
-                webgnome.model.save({
-                    success: _.bind(function(){
-                        this.updateBeached();
-                    }, this)
-                });
+                var beachedForm = new BeachedForm({}, beached);
+                beachedForm.on('hidden', beachedForm.close);
+                beachedForm.on('save', _.bind(function(){
+                    if(beached.get('timeseries').length === 0){
+                        webgnome.model.get('weatherers').remove(beached);
+                    } else {
+                        webgnome.model.get('weatherers').add(beached, {merge: true});
+                    }
                     
-            }, this));
-            beachedForm.render();
+                    webgnome.model.save({
+                        success: _.bind(function(){
+                            this.updateBeached();
+                        }, this)
+                    });
+                        
+                }, this));
+                beachedForm.render();
+            } else {
+                swal({
+                    title: "There is a map on the model!",
+                    text: "Observed beaching is used to enter in beaching information when a map does not exist for the model.",
+                    type: "warning"
+                });
+            }
         },
 
         updateBeached: function(){
