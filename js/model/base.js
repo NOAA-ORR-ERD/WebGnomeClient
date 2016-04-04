@@ -4,26 +4,8 @@ define([
 ], function(_, Backbone){
     'use strict';
     var baseModel = Backbone.Model.extend({
-        initialize: function(options){
-            Backbone.Model.prototype.initialize.call(this, options);
-            // for(var key in this.model){
-            //     // general object hydration 
-            //     // loads the objects described in the defaults and model spec
-            //     var embeddedClass = this.model[key];
-
-            //     if(_.isNull(this.get(key))){
-            //         this.set(key, this.setChild(embeddedClass));
-            //     } else if(_.isArray(this.get(key)) && _.isEmpty(this.get(key))){
-            //         // get the collection from webgnome's default creation
-            //         var collection = this.get(key);
-            //         if(!_.isNull(embeddedClass)){
-            //             collection.add(this.setChild(embeddedClass));
-            //         }
-                    
-            //         this.set(key, collection, {silent: true});
-            //     }
-            // }
-
+        initialize: function(attrs, options){
+            Backbone.Model.prototype.initialize.call(this, attrs, options);
             this.on('sync', this.rewindModel, this);
         },
 
@@ -43,7 +25,11 @@ define([
                     if(_.isArray(embeddedData)){
                         // maintain the existing collection but reset it so it doesn't
                         // keep objects from the default notation on the model
-                        response[key] = this.get(key);
+                        if(this.get(key)){
+                            response[key] = this.get(key);
+                        } else {
+                            response[key] = new Backbone.Collection();
+                        }
                         response[key].reset([], {silent: true});
 
                         if(!_.isObject(embeddedClass)){
@@ -103,8 +89,7 @@ define([
             if(_.isUndefined(data)){
                 data = {};
             }
-            var obj = new Cls();
-            obj.set(obj.parse(data));
+            var obj = new Cls(data, {parse: true});
             webgnome.obj_ref[data.id] = obj;
             return obj;
         },
