@@ -1586,7 +1586,7 @@ define([
                 swal({
                     title: "There is a map on the model!",
                     text: "Observed beaching is used to enter in beaching information when a map does not exist for the model.",
-                    type: "warning"
+                    type: "error"
                 });
             }
         },
