@@ -28,6 +28,10 @@ define([
             }
         },
 
+        why: function(model){
+            console.log('Rerendering', this.$el, 'because', model.changed);
+        },
+
         hover: function(e){
             if(this.dataset && this.plot){
                 var id = this.getID(e);
