@@ -116,7 +116,7 @@ define([
         },
 
         initialize: function(options){
-            // BaseModel.prototype.initialize.call(this, options);
+            BaseModel.prototype.initialize.call(this, options);
             webgnome.cache = new Cache(null, this);
             webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};

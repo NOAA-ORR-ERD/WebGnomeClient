@@ -1,20 +1,29 @@
-<div class="diffusion-list">
-{% for (var i = 0; i < diffusion.length; i++){ %}
-	<div class="single row" data-id="{{ diffusion[i].get('id') }}">
-		{% var name = diffusion[i].get('name'); %}
-		{% if (name === 'Diffusion' || name === 'RandomMover'){ %}
-		   {% name = 'Diffusion #' + (i + 1); %}
-		{% } %}
-		<div class="col-sm-4">
-			<h5>{{ name }}</h5>
-		</div>
-		<div class="col-sm-6">
-			<span class="label label-default amount">{{ diffusion[i].get('diffusion_coef').toExponential(2) }} cm^2 / s</span>
-		</div>
-		<div class="col-sm-2">
-            <span class="trash" title="Remove {{ diffusion[i].get('name') }}"></span>
-            <span class="edit" title="Edit {{ diffusion[i].get('name') }}"></span>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="add"></div>
+        <div class="state"></div>
+        Horizontal Diffusion
+    </div>
+    <div class="panel-body">
+        <div class="list">
+            {% for (var i = 0; i < diffusion.length; i++){ %}
+                <div class="single row" data-id="{{ diffusion[i].get('id') }}">
+                    {% var name = diffusion[i].get('name'); %}
+                    {% if (name === 'Diffusion' || name === 'RandomMover'){ %}
+                       {% name = 'Diffusion #' + (i + 1); %}
+                    {% } %}
+                    <div class="col-sm-4">
+                        <h5>{{ name }}</h5>
+                    </div>
+                    <div class="col-sm-6">
+                        <span class="label label-default amount">{{ diffusion[i].get('diffusion_coef').toExponential(2) }} cm^2 / s</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span class="trash delete" title="Remove {{ diffusion[i].get('name') }}"></span>
+                        <span class="edit" title="Edit {{ diffusion[i].get('name') }}"></span>
+                    </div>
+                </div>
+            {% } %}
         </div>
     </div>
-{% } %}
 </div>

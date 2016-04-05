@@ -24,7 +24,6 @@ define([
 
         initialize: function(options){
             BaseMap.prototype.initialize.call(this, options);
-            this.on('change', this.resetRequest, this);
         },
 
         validate: function(attrs, options){

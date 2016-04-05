@@ -375,9 +375,7 @@ define([
             } else {
                 this.clearError();
                 this.update();
-                FormModal.prototype.save.call(this, _.bind(function(){
-                    webgnome.model.save();
-                }, this));
+                FormModal.prototype.save.call(this);
             }
         },
 

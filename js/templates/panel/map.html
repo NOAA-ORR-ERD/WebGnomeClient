@@ -1,1 +1,15 @@
-<div></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="perm-add"></div>
+        <div class="add"></div>
+        <div class="state"></div>
+        Map
+    </div>
+    <div class="panel-body">
+        {% if(map){ %}
+            <div class="map" id="mini-locmap"></div>
+        {% } else { %}
+            <div><label>Type:</label> Infinite Ocean</div>
+        {% } %}
+    </div>
+</div>

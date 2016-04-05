@@ -106,6 +106,8 @@ define([
             if(!_.isUndefined(options)){
                 if(!_.isUndefined(options.id)){
                     this.id = options.id;
+                } else {
+                    this.id = this.$el[0];
                 }
 
                 if(!_.isUndefined(options.controls)){
@@ -174,7 +176,24 @@ define([
                     extent: this.extent
                 })
             });
+            if(_.isNaN(this.map.getSize()[0])){
+                // the map was told to render but for some reason there isn't a physical size to it.
+                // so we're going to start a loop to check if it has a physical size with an increasing
+                // timeout
+                this.timeout = 100;
+                this.delayedRender();
+            }
             this.redraw = false;
+        },
+
+        delayedRender: function(){
+            setTimeout(_.bind(function(){
+                this.map.updateSize();
+                if(_.isNaN(this.map.getSize()[0]) && this.timeout < 2500){
+                    this.timeout = this.timeout * 5;
+                    this.delayedRender();
+                }
+            }, this), this.timeout);
         },
 
         setMapOrientation: function(){

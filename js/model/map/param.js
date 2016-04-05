@@ -10,6 +10,12 @@ define([
             center: [0, 0, 0]
         },
 
+
+        initialize: function(options){
+            BaseMap.prototype.initialize.call(this, options);
+            this.on('change', this.resetRequest);
+        },
+
         validate: function(attributes){
             if(attributes.center.length !== 3){
                 return 'Invalid center coordinate, pattern must be "x,y".';

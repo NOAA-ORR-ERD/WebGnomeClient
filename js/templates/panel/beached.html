@@ -1,2 +1,19 @@
-<div><label>Amount Beached: </label> {{ amount }} {{ units }}</div>
-<div><label>Date: </label> {{ date }}</div>
+<div class="panel panel-default optional">
+    <div class="panel-heading">
+        <div class="add"></div>
+        <div class="state optional"></div>
+        Observed Beached Oil
+    </div>
+    <div class="panel-body">
+        {% if(timeseries.length < 2){ %}
+            <div><label>Amount Beached: </label> {{ amount }} {{ units }}</div>
+            <div><label>Date: </label> {{ date }}</div>
+        {% } else { %}
+            <div class="chart">
+                <div class="axisLabel yaxisLabel">{{ units }}</div>
+                <div class="axisLabel xaxisLabel">Time</div>
+                <div class="canvas"></div>
+            </div>
+        {% } %}
+    </div>
+</div>
