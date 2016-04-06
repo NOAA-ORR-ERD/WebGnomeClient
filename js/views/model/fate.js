@@ -1199,7 +1199,9 @@ define([
                 keys.unshift('amount_released', 'evaporated', 'natural_dispersion');
                 // maybe add a check to see if the map is not a gnome map aka water world.
                 // beach and off_maps wouldn't apply then.
-                keys.push('beached', 'off_maps');
+                if (webgnome.model.get('mode') !== 'adios'){
+                    keys.push('beached', 'off_maps');
+                }
 
                 keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
 
