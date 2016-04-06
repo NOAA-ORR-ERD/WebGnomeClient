@@ -156,7 +156,7 @@ define([
         },
 
         loadStep: function(err, step){
-           this.formatDataset(new GnomeStep(step));
+           this.formatStep(new GnomeStep(step));
 
             // on the last step render the graph and if there are more steps start the steping.
             if(step.step_num === webgnome.cache.length - 1){
@@ -1165,18 +1165,36 @@ define([
             return _.template(ExportTemplate, {body: header.replace(/°/g, '') + '<table class="table table-striped">' + table.html() + '</table>'});
         },
 
+        validateDataset: function() {
+            if (this.dataset) {
+                return this.dataset[0].data.length === webgnome.cache.length;
+            }
+            return true;
+        },
+
         buildDataset: function(step){
             if(_.has(step.get('WeatheringOutput'), 'nominal')){
-                if(this.frame <= webgnome.model.get('num_time_steps') && this.rendered){
+                this.formatStep(step);
+                if(this.validateDataset()){
                     webgnome.cache.step();
                     this.frame++;
-                    this.formatDataset(step);
-                    this.renderGraphs();
+                    this.renderGraphs();    
+                } else {
+                    webgnome.cache.off('step:recieved', this.buildDataset, this);
+                    delete this.dataset;
+                    this.frame = 0;
+                    this.load();   
                 }
+            } else {
+                swal({
+                    title: 'Model Output Error',
+                    text: 'No weathering output was found for step #' + step.get('step_num'),
+                    type: 'error'
+                });
             }
         },
 
-        formatDataset: function(step){
+        formatStep: function(step){
             var nominal = step.get('WeatheringOutput').nominal;
 
             this.uncertainityExists = !_.isNull(step.get('WeatheringOutput').high);
