@@ -52,6 +52,7 @@ define([
             }
 
             var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
+            var durationStr = webgnome.model.durationString("Model will run for ");
             var spills = webgnome.model.get('spills').models;
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
@@ -68,6 +69,7 @@ define([
             var compiled = _.template(AdiosTemplate, {
                 model: webgnome.model,
                 start_time: start_time,
+                durationStr: durationStr,
                 substance: substance,
                 spills: spills,
                 wind: wind,

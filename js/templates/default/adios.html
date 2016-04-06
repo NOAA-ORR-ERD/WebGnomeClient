@@ -14,19 +14,16 @@
                 {% if (model.get('name') !== 'ADIOS Model_'){ %}
                     <div class="info col-sm-12">
                         <div class="item">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <label>Name: </label>
                                 {{ model.get('name') }}
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
                                 <label>Start Time: </label>
                                 {{ start_time }}
                             </div>
                             <div class="col-sm-12">
-                                <label>Duration: </label>
-                                {% var durationObj =  model.formatDuration() %}
-                                {% if (durationObj.days) { %} Days: {{durationObj.days}} {% } %}
-                                {% if (durationObj.hours) { %} Hours: {{durationObj.hours}} {% } %}
+                                {{ durationStr }}
                             </div>
                         </div>
                     </div>
