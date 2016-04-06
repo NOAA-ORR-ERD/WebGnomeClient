@@ -4,6 +4,7 @@ define([
     'backbone',
     'moment',
     'text!templates/default/adios.html',
+    'views/form/model',
     'views/form/oil/library',
     'views/form/spill/type-wizcompat',
     'views/form/spill/instant',
@@ -17,7 +18,7 @@ define([
     'model/element',
     'model/environment/water',
     'model/environment/wind'
-], function($, _, Backbone, moment, AdiosTemplate,
+], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
         ElementType, Water, Wind){
     'use strict';
@@ -25,6 +26,7 @@ define([
         className: 'page adios',
 
         events: {
+            'click .name': 'clickName',
             'click .substance': 'clickSubstance',
             'click .spill': 'clickSpill',
             'click .water': 'clickWater',
@@ -49,6 +51,7 @@ define([
                 substance = element_type.get('substance');
             }
 
+            var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
             var spills = webgnome.model.get('spills').models;
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
@@ -63,6 +66,8 @@ define([
             }
 
             var compiled = _.template(AdiosTemplate, {
+                model: webgnome.model,
+                start_time: start_time,
                 substance: substance,
                 spills: spills,
                 wind: wind,
@@ -81,6 +86,14 @@ define([
             this.$('.option, .item').tooltip({
                 container: 'body'
             });
+        },
+
+        clickName: function() {
+            var modelForm = new ModelForm({}, webgnome.model);
+            modelForm.on('save wizardclose', _.bind(function(){
+                this.render();
+            }, this));
+            modelForm.render();
         },
 
         clickSubstance: function(){

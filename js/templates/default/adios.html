@@ -8,6 +8,32 @@
     </div>
     <div class="row input">
         <div class="col-md-6 col-md-offset-3">
+            <div class="option name" title="Click to edit the scenario name">
+                <div class="icon {% if(!(model.get('name') !== 'ADIOS Model_')){ %}missing {% } %}"></div>
+                <div class="title">Scenario Name</div>
+                {% if (model.get('name') !== 'ADIOS Model_'){ %}
+                    <div class="info col-sm-12">
+                        <div class="item">
+                            <div class="col-sm-12">
+                                <label>Name: </label>
+                                {{ model.get('name') }}
+                            </div>
+                            <div class="col-sm-12">
+                                <label>Start Time: </label>
+                                {{ start_time }}
+                            </div>
+                            <div class="col-sm-12">
+                                <label>Duration: </label>
+                                {% var durationObj =  model.formatDuration() %}
+                                {% if (durationObj.days) { %} Days: {{durationObj.days}} {% } %}
+                                {% if (durationObj.hours) { %} Hours: {{durationObj.hours}} {% } %}
+                            </div>
+                        </div>
+                    </div>
+                {% } else { %}
+                    <div class="col-sm-12"><p>Click to enter the scenario name.</p></div>
+                {% } %}
+            </div>
             <div class="option substance" title="Click to select the oil to release.">
                 <div class="icon {% if(!substance){ %}missing {% } %}"></div>
                 <div class="title">Oil</div>

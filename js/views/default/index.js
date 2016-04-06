@@ -79,6 +79,7 @@ define([
                 name: 'ADIOS Model_',
                 duration: 432000,
                 time_step: 3600,
+                mode: 'adios'
             });
             webgnome.model.save(null, {
                 validate: false,

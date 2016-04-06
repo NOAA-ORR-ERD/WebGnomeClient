@@ -19,6 +19,9 @@ define([
         },
 
         render: function(options){
+            if (this.model.get('name') === 'ADIOS Model_') {
+                this.model.set('name', '');
+            }
             this.body = _.template(FormTemplate, {
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),

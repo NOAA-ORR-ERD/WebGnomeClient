@@ -219,6 +219,10 @@ define([
             //     return 'Duration values should be numbers only and greater than 0.';
             // }
 
+            if (attrs.name === '') {
+                return 'Model name must be entered.';
+            }
+
             if(attrs.duration <= 0){
                 return 'Duration values should be positive values.';
             }
