@@ -59,7 +59,6 @@ define([
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-            console.log(beached);
             var beached_units = (!_.isUndefined(beached)) ? beached.get('units') : false;
             var beached_ts = (!_.isUndefined(beached)) ? beached.displayTimeseries() : false;
 
