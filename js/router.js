@@ -48,22 +48,23 @@ define([
         },
 
         index: function(){
+            this.menu('remove');
             this.views.push(new IndexView());
         },
 
         config: function(){
-            this.views.push(new MenuView());
+            this.menu('add');
             this.views.push(new SetupView());
         },
 
         locations: function(){
-            this.views.push(new MenuView());
+            this.menu('add');
             this.views.push(new LocationsView());
         },
 
         adios: function(){
             if(webgnome.hasModel()){
-                this.views.push(new MenuView());
+                this.menu('add');
                 this.views.push(new AdiosView());
             } else {
                 this.navigate('', true);
@@ -72,7 +73,7 @@ define([
 
         model: function(){
             if(webgnome.hasModel()){
-                this.views.push(new MenuView());
+                this.menu('add');
                 this.views.push(new ModelView());
             } else {
                 this.navigate('', true);
@@ -80,12 +81,12 @@ define([
         },
 
         overview: function(){
-            this.views.push(new MenuView());
+            this.menu('add');
             this.views.push(new OverviewView());
         },
 
         faq: function(title){
-            this.views.push(new MenuView());
+            this.menu('add');
             if (!_.isUndefined(title)){
                 this.views.push(new FAQView({topic: title}));
             } else {
@@ -94,14 +95,30 @@ define([
         },
 
         load: function(){
-            this.views.push(new MenuView());
+            this.menu('add');
             this.views.push(new LoadView());
         },
 
         notfound: function(actions){
-            this.views.push(new MenuView());
+            this.menu('add');
             this.views.push(new NotFoundView());
             console.log('Not found:', actions);
+        },
+
+        menu: function(action){
+            switch (action){
+                case 'add':
+                    if (!this.menuView) {
+                        this.menuView = new MenuView();
+                    }
+                    break;
+                case 'remove':
+                    if (this.menuView) {
+                        this.menuView.remove();
+                        delete this.menuView;
+                    }
+                    break;
+            }
         }
     });
 
