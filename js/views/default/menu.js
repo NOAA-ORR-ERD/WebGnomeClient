@@ -29,6 +29,7 @@ define([
             this.contextualize();
             // webgnome.model.on('change', this.contextualize, this);
             webgnome.cache.on('reset', this.contextualize, this);
+            this.listenTo(webgnome.router, 'route', this.contextualize);
         },
 
         events: {
@@ -65,7 +66,7 @@ define([
                 var view = this.$(e.target).attr('class').replace('view ', '');
                 this.$('.view-toggle .switch').attr('class', 'switch ' + view);
 
-                webgnome.router.navigate(view, true);    
+                webgnome.router.navigate(view, true);
             } else {
                 this.$('.view-toggle .switch').attr('class', 'switch ' + e);
             }
