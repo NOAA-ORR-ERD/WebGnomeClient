@@ -16,7 +16,7 @@ define([
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
-        className: 'map',
+        className: 'trajectory-view map',
         id: 'map',
         spillToggle: false,
         spillCoords: [],
@@ -254,6 +254,7 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            this.$el.appendTo('body');
             if(webgnome.hasModel()){
                 this.modelListeners();
             }

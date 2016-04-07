@@ -27,7 +27,7 @@ define([
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
-        className: 'fate',
+        className: 'fate-view',
         frame: 0,
         rendered: false,
         colors: [
@@ -103,6 +103,7 @@ define([
             this.module = module;
             this.formatXaxisLabel();
             BaseView.prototype.initialize.call(this, options);
+            this.$el.appendTo('body');
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);

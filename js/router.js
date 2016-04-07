@@ -9,13 +9,15 @@ define([
     'views/model/setup',
     'views/model/index',
     'views/default/adios',
+    'views/model/trajectory',
+    'views/model/fate',
     'views/default/overview',
     'views/default/faq',
     'views/default/load',
     'views/default/footer',
     'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
         views: [],
@@ -26,6 +28,8 @@ define([
             'config': 'config',
             'adios': 'adios',
             'model': 'model',
+            'trajectory': 'trajectory',
+            'fate': 'fate',
             'overview': 'overview',
             'faq': 'faq',
             'faq/:title': 'faq',
@@ -41,7 +45,9 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            this.views.push(new FooterView());
+            if(window.location.href.indexOf('trajectory') === -1){
+                this.views.push(new FooterView());
+            }
             if(_.isUndefined(this.logger)){
                 this.logger = new LoggerView();
             }
@@ -78,6 +84,16 @@ define([
             } else {
                 this.navigate('', true);
             }
+        },
+
+        trajectory: function(){
+            this.menu('add');
+            this.views.push(new TrajectoryView());
+        },
+
+        fate: function(){
+            this.menu('add');
+            this.views.push(new FateView());
         },
 
         overview: function(){

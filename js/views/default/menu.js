@@ -12,12 +12,12 @@ define([
  ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, swal, GnomeModel) {
     'use strict';
     /*
-     `MenuView` handles the drop-down menus on the top of the page. The object
-     listens for click events on menu items and fires specialized events, like
-     RUN_ITEM_CLICKED, which an `AppView` object listens for.
+        `MenuView` handles the drop-down menus on the top of the page. The object
+        listens for click events on menu items and fires specialized events, like
+        RUN_ITEM_CLICKED, which an `AppView` object listens for.
 
-     Most of these functions exist elsewhere in the application and `AppView`
-     calls the appropriate method for whatever functionality the user invoked.
+        Most of these functions exist elsewhere in the application and `AppView`
+        calls the appropriate method for whatever functionality the user invoked.
      */
 
     var menuView = Backbone.View.extend({
@@ -55,7 +55,21 @@ define([
             'click .home': 'home',
 
             'click .app-menu-link': 'openAppMenu',
-            'click .app-menu-close': 'closeAppMenu'
+            'click .app-menu-close': 'closeAppMenu',
+
+            'click .view-toggle .view': 'toggleView'
+        },
+
+        toggleView: function(e){
+            if(_.isObject(e)){
+                var view = this.$(e.target).attr('class').replace('view ', '');
+                this.$('.view-toggle .switch').attr('class', 'switch ' + view);
+
+                webgnome.router.navigate(view, true);    
+            } else {
+                this.$('.view-toggle .switch').attr('class', 'switch ' + e);
+            }
+
         },
 
         openAppMenu: function(event){
@@ -206,14 +220,17 @@ define([
                 this.disableMenuItem('rewind');
             }
 
-            if(window.location.href.indexOf('model') !== -1){
-                this.enableMenuItem('debugView');
+            if(window.location.href.indexOf('trajectory') !== -1){
                 this.disableMenuItem('run');
                 this.disableMenuItem('rewind');
+                this.toggleView('trajectory');
             } else {
-                this.disableMenuItem('debugView');
                 this.enableMenuItem('run');
             }
+            if(window.location.href.indexOf('fate') !== -1){
+                this.toggleView('fate');
+            }
+
 
             
         },

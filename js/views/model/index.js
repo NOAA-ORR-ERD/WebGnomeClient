@@ -5,9 +5,8 @@ define([
     'model/cache',
     'views/model/trajectory',
     'views/model/fate',
-    'text!templates/model/index.html',
     'sweetalert'
-], function($, _, Backbone, Cache, TrajectoryView, FateView, IndexTemplate, swal){
+], function($, _, Backbone, Cache, TrajectoryView, FateView, swal){
     'use strict';
     var modelView = Backbone.View.extend({
         className: 'page model',
