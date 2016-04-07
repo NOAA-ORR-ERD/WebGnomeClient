@@ -4,17 +4,19 @@ define([
     'backbone',
     'moment',
     'nucos',
+    'sweetalert',
     'views/modal/form',
     'model/weatherers/manual_beaching',
     'text!templates/form/beached.html',
     'text!templates/form/beached/input-static.html',
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, nucos, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+], function($, _, Backbone, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
         title: 'Observed Beached Oil',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
 
         events : function(){
             var formModalHash = FormModal.prototype.events;
@@ -27,7 +29,8 @@ define([
                 'click .trash': 'removeTimeseriesEntry',
                 'click .edit': 'editTimeseriesEntry',
                 'click .ok': 'enterTimeseriesEntry',
-                'click .undo': 'cancelTimeseriesEntry'
+                'click .undo': 'cancelTimeseriesEntry',
+                'click .delete': 'deleteBeaching'
             }, formModalHash);
         },
 
@@ -60,6 +63,10 @@ define([
             this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
 
             this.renderTimeseries();
+
+            if (this.model.isNew()){
+                this.$('.delete').prop('disabled', true);
+            }
 
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
@@ -181,6 +188,36 @@ define([
             var index = $(e.target.parentElement.parentElement).data('tsindex');
             this.model.get('timeseries').splice(index, 1);
             this.renderTimeseries();
+        },
+
+        deleteBeaching: function() {
+            var id = this.model.get('id');
+            swal({
+                title: "Are you sure?",
+                text: "This will delete the beaching weatherer from the model.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Ok",
+                closeOnConfirm: true
+            }, _.bind(function(isConfirm) {
+                webgnome.model.get('weatherers').remove(id);
+                webgnome.model.save();
+                this.on('hidden', _.bind(function(){
+                    this.trigger('wizardclose');
+                }, this));
+                this.hide();
+            }, this));
+        },
+
+        save: function() {
+            if (this.model.get('timeseries').length === 0) {
+                webgnome.model.get('weatherers').remove(this.model.get('id'));
+                webgnome.model.save(null, {validate: false});
+                this.close();
+            } else {
+                FormModal.prototype.save.call(this);
+            }
         },
 
         close: function(){
