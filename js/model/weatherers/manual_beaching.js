@@ -25,6 +25,19 @@ define([
 			return '';
 		},
 
+		displayTimeseries: function() {
+			var events = [];
+			var ts = this.get('timeseries');
+
+			for (var i = 0; i < ts.length; i++) {
+				var time_str = moment(ts[i][0]).format(webgnome.config.date_format.moment);
+				var amount = ts[i][1];
+				events.push({'time': time_str, 'amount': amount});
+			}
+
+			return events;
+		},
+
 		validate: function(attrs, options){
 			var modelStartTime = moment(webgnome.model.get('start_time')).unix();
 			if(!_.isUndefined(attrs.timeseries)){
@@ -35,7 +48,7 @@ define([
 					}
 					var beachedStartTime = moment(el[0]).unix();
 
-					if (beachedStartTime <= modelStartTime){
+					if (beachedStartTime < modelStartTime){
 						msg = 'Beaching events must happen after the gnome model start time!';
 					}
 

@@ -5,11 +5,12 @@ define([
     'moment',
     'nucos',
     'views/modal/form',
+    'model/weatherers/manual_beaching',
     'text!templates/form/beached.html',
     'text!templates/form/beached/input-static.html',
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, nucos, FormModal, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+], function($, _, Backbone, moment, nucos, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
@@ -32,7 +33,11 @@ define([
 
         initialize: function(options, model){
             FormModal.prototype.initialize.call(this, options);
-            this.model = (model ? model : null);
+            if (_.isUndefined(model)) {
+                this.model = new BeachedModel();
+            } else {
+                this.model = model;
+            }
         },
 
         render: function(options){

@@ -15,12 +15,13 @@ define([
     'views/form/response/disperse',
     'views/form/response/insituBurn',
     'views/form/response/skim',
+    'views/form/beached',
     'model/element',
     'model/environment/water',
     'model/environment/wind'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        ElementType, Water, Wind){
+        BeachedView, ElementType, Water, Wind){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
@@ -33,7 +34,8 @@ define([
             'click .wind': 'clickWind',
             'click .solve:not(.disabled)': 'solve',
             'click .response': 'clickResponse',
-            'click .response .item': 'loadResponse'
+            'click .response .item': 'loadResponse',
+            'click .beached': 'clickBeached'
         },
 
         initialize: function(){
@@ -56,6 +58,10 @@ define([
             var spills = webgnome.model.get('spills').models;
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            console.log(beached);
+            var beached_units = (!_.isUndefined(beached)) ? beached.get('units') : false;
+            var beached_ts = (!_.isUndefined(beached)) ? beached.displayTimeseries() : false;
 
             var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
             var responses = [];
@@ -76,7 +82,9 @@ define([
                 wind_from: wind ? moment(wind.get('timeseries')[0][0]).format('MM-DD-YYYY H:mm') : null,
                 wind_to: wind ? moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('MM-DD-YYYY H:mm') : null,
                 water: water,
-                responses: responses
+                responses: responses,
+                beached_units: beached_units,
+                beached_ts: beached_ts
             });
 
             if($('body').find(this.$el).length === 0){
@@ -216,6 +224,17 @@ define([
                 responseView.on('hidden', responseView.close);
             }, this));
             responseView.render();
+        },
+
+        clickBeached: function() {
+            var beached = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.manual_beaching.Beaching'});
+            var form = new BeachedView({}, beached);
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('weatherers').add(form.model, {merge:true});
+                webgnome.model.save(null, {validate: false});
+            }, this));
+            form.render();
         },
 
         close: function(){

@@ -195,6 +195,27 @@
                     <div class="col-sm-12"><p>Click to add a response option for oil removal/recovery.</p></div>
                 {% } %}
             </div>
+            <div class="option beached" title="Click to add oil beaching events.">
+                <div class="icon optional"></div>
+                <div class="title">Observed Beaching</div>
+                {% if (beached_ts){ %}
+                    <div class="col-md-12">
+                        {% for (var i = 0; i < beached_ts.length; i++){ %}
+                            <div class="item">
+                                <div class="col-md-6">
+                                    <label>Time: </label>
+                                    {{ beached_ts[i].time }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label>Amount: </label>
+                                    {{ beached_ts[i].amount }} {{beached_units }}
+                                </div>
+                            </div>
+                        {% } %}
+                {% } else { %}
+                    <div class="col-sm-12"><p>Click to add oil beaching events.</p></div>
+                {% } %}
+            </div>
         </div>
     </div>
 
