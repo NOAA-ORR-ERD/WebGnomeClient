@@ -48,7 +48,7 @@ define([
 					}
 					var beachedStartTime = moment(el[0]).unix();
 
-					if (beachedStartTime < modelStartTime){
+					if (beachedStartTime <= modelStartTime){
 						msg = 'Beaching events must happen after the gnome model start time!';
 					}
 

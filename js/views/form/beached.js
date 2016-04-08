@@ -44,7 +44,7 @@ define([
         },
 
         render: function(options){
-            var date = moment(this.model.get('active_start')).format(webgnome.config.date_format.moment);
+            //var date = moment(this.model.get('active_start')).format(webgnome.config.date_format.moment);
             var units = this.model.get('units');
 
             // Check to see if spills exist and if beached time series is empty if so set the units
@@ -54,9 +54,7 @@ define([
                 this.model.set('units', spillUnits);
             }
 
-            this.body = _.template(BeachedTemplate, {
-                date: date
-            });
+            this.body = _.template(BeachedTemplate);
 
             FormModal.prototype.render.call(this, options);
 
@@ -216,6 +214,11 @@ define([
                 webgnome.model.save(null, {validate: false});
                 this.close();
             } else {
+                if (this.model.get('timeseries').length === 1) {
+                    var time_step = webgnome.model.get('time_step');
+                    var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
+                    this.model.set('active_stop', active_stop);
+                }
                 FormModal.prototype.save.call(this);
             }
         },
