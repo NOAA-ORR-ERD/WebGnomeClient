@@ -14,6 +14,7 @@ define([
     'views/wizard/risk',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
+    'text!templates/model/fate/no_weathering.html',
     'html2canvas',
     'sweetalert',
     'flot',
@@ -24,7 +25,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -100,14 +101,40 @@ define([
         },
 
         initialize: function(options){
-            this.module = module;
-            this.formatXaxisLabel();
-            BaseView.prototype.initialize.call(this, options);
+            if(webgnome.model.validWeathering()){
+                this.module = module;
+                this.formatXaxisLabel();
+                BaseView.prototype.initialize.call(this, options);
+                this.$el.appendTo('body');
+                this.render();
+                $(window).on('scroll', this.tableOilBudgetStickyHeader);
+                webgnome.cache.on('rewind', this.reset, this);
+                webgnome.cache.on('step:failed', this.toggleRAC, this);
+            } else {
+                this.noWeathering();
+            }
+        },
+
+        noWeathering: function(){
             this.$el.appendTo('body');
-            this.render();
-            $(window).on('scroll', this.tableOilBudgetStickyHeader);
-            webgnome.cache.on('rewind', this.reset, this);
-            webgnome.cache.on('step:failed', this.toggleRAC, this);
+            this.$el.html(_.template(NoWeatheringTemplate));
+
+            if(webgnome.model.get('spills').length === 0){
+                this.$('.spill').addClass('missing');
+            }
+
+            if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
+                this.$('.substance').addClass('missing');
+            }
+
+            if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
+                this.$('.water').addClass('missing');
+            }
+
+            if(webgnome.model.get('weatherers').where({on: 'true'}).length === 0){
+                this.$('.weatherers').addClass('missing');
+            }
+
         },
 
         toggleRAC: function(){
