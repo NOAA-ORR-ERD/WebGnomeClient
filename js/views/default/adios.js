@@ -184,7 +184,8 @@ define([
         },
 
         solve: function(){
-            webgnome.router.navigate('/model', true);
+            var view = localStorage.getItem('view');
+            webgnome.router.navigate(view, true);
         },
 
         clickResponse: function(){
