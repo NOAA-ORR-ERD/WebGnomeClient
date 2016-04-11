@@ -356,6 +356,28 @@ define([
             return false;
         },
 
+        validWeathering: function(){
+            // if (this.get('weathering')){
+                // global flag is turned on for the model to be weathering
+                // make sure there is at least one weatherer turned on.
+                var on_weatherers = this.get('weatherers').filter(function(model){
+                    return model.get('on');
+                });
+
+                var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+                var element_type = this.getElementType();
+
+                if (on_weatherers.length > 0 &&
+                    element_type && element_type.get('substance') &&
+                    water && webgnome.model.get('spills').length > 0){
+                    return true;
+                }
+
+            // }
+
+            return false;
+        },
+
         resetLocation: function(cb){
             // clear any location relevant objects from the model.
 
