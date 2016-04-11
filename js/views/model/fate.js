@@ -293,6 +293,11 @@ define([
                 placement: 'bottom',
                 container: 'body'
             });
+
+            if (cleanup === 0) {
+                this.$('.run-risk').hide();
+            }
+            
             this.load();
         },
 
