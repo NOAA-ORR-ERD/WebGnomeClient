@@ -105,7 +105,8 @@ define([
         },
 
         run: function(){
-            webgnome.router.navigate('model', true);
+            var view = localStorage.getItem('view');
+            webgnome.router.navigate(view, true);
         },
 
         rewind: function(){
@@ -225,14 +226,15 @@ define([
                 this.disableMenuItem('run');
                 this.disableMenuItem('rewind');
                 this.toggleView('trajectory');
+            } else if(window.location.href.indexOf('fate') !== -1) {
+                this.disableMenuItem('run');
             } else {
                 this.enableMenuItem('run');
             }
+
             if(window.location.href.indexOf('fate') !== -1){
                 this.toggleView('fate');
             }
-
-
             
         },
 
