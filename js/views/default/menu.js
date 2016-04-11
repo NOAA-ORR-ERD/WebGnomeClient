@@ -30,6 +30,10 @@ define([
             // webgnome.model.on('change', this.contextualize, this);
             webgnome.cache.on('reset', this.contextualize, this);
             this.listenTo(webgnome.router, 'route', this.contextualize);
+
+            if(!localStorage.getItem('view')){
+                localStorage.setItem('view', 'trajectory');
+            }
         },
 
         events: {
