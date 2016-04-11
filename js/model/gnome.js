@@ -104,10 +104,10 @@ define([
                     new IceImageOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
-                    new EvaporationWeatherer(),
-                    new NaturalDispersionWeatherer({name: '_natural'}),
-                    new EmulsificationWeatherer(),
-                    new FayGravityViscous()
+                    new EvaporationWeatherer({on: false}),
+                    new NaturalDispersionWeatherer({name: '_natural', on: false}),
+                    new EmulsificationWeatherer({on: false}),
+                    new FayGravityViscous({on: false})
                 ]),
                 movers: new Backbone.Collection(),
                 environment: new Backbone.Collection(),
