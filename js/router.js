@@ -89,11 +89,13 @@ define([
         trajectory: function(){
             this.menu('add');
             this.views.push(new TrajectoryView());
+            localStorage.setItem('view', 'trajectory');
         },
 
         fate: function(){
             this.menu('add');
             this.views.push(new FateView());
+            localStorage.setItem('view', 'fate');
         },
 
         overview: function(){
