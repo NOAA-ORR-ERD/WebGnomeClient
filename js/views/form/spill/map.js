@@ -18,7 +18,9 @@ define([
         events: function() {
             return _.defaults({
                 'click .spill-button .fixed': 'toggleSpill',
-                'click .spill-button .moving': 'toggleSpill'
+                'click .spill-button .moving': 'toggleSpill',
+                'click .spill-big-button .fixed-big': 'toggleSpill',
+                'click .spill-big-button .moving-big': 'toggleSpill'
             }, FormModal.prototype.events);
         },
 
@@ -323,18 +325,23 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
 
-                if (this.$(e.target).hasClass('fixed')) {
+                if (this.$(e.target).hasClass('fixed') || this.$(e.target).hasClass('fixed-big')) {
                     featureType = 'Point';
                     this.$('.fixed').addClass('on');
+                    this.$('.fixed-big').addClass('on');
                     this.$('.moving').removeClass('on');
-                } else if (this.$(e.target).hasClass('moving')) {
+                    this.$('.moving-big').removeClass('on');
+                } else if (this.$(e.target).hasClass('moving') || this.$(e.target).hasClass('moving-big')) {
                     featureType = 'LineString';
                     this.$('.moving').addClass('on');
+                    this.$('.moving-big').addClass('on');
                     this.$('.fixed').removeClass('on');
+                    this.$('.fixed-big').removeClass('on');
                 }
             } else if (this.model.isNew()) {
                 featureType = "Point";
                 this.$('.fixed').addClass('on');
+                this.$('.fixed-big').addClass('on');
             }
 
             this.featureType = featureType;
