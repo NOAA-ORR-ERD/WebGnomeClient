@@ -210,6 +210,10 @@ define([
 
             var cleanup = this.checkForCleanup();
 
+            if (cleanup === 0) {
+                this.$('.run-risk').hide();
+            }
+
             var init_release = this.findInitialRelease(spills);
 
             var buttonsTemplate = _.template(ButtonsTemplate, {});
