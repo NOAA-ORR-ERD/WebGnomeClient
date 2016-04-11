@@ -121,7 +121,7 @@ define([
                     finishForm.on('finish', function(){
                         webgnome.model.save().always(function(){
                             localStorage.setItem('view', 'trajectory');
-                            webgnome.router.navigate('model', true);
+                            webgnome.router.navigate('trajectory', true);
                         });
                         finishForm.trigger('wizardclose');
                     });
