@@ -686,7 +686,6 @@ define([
                     }
                 }
             }
-            console.log(current_features);
             var cur_source = new ol.source.Vector({
                 features: current_features
             });
