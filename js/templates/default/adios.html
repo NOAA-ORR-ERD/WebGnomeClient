@@ -10,7 +10,7 @@
         <div class="col-md-6 col-md-offset-3">
             <div class="option name" title="Click to edit the scenario name">
                 <div class="icon {% if(!(model.get('name') !== 'ADIOS Model_')){ %}missing {% } %}"></div>
-                <div class="title">Scenario Name</div>
+                <div class="title">Scenario Settings</div>
                 {% if (model.get('name') !== 'ADIOS Model_'){ %}
                     <div class="info col-sm-12">
                         <div class="item">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 {% } else { %}
-                    <div class="col-sm-12"><p>Click to enter the scenario name.</p></div>
+                    <div class="col-sm-12"><p>Click to enter the scenario settings.</p></div>
                 {% } %}
             </div>
             <div class="option substance" title="Click to select the oil to release.">

@@ -74,6 +74,10 @@ define([
             var units = this.model.get('units');
             FormModal.prototype.render.call(this, options);
 
+            if (webgnome.model.get('mode') === 'adios') {
+                this.$('.release-time').hide();
+            }
+
             this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
 			if (!this.showGeo) {
