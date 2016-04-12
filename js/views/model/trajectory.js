@@ -388,9 +388,9 @@ define([
                 name: 'ice'
             });
             
-            this.graticule = new ol.Graticule({
-                maxLines: 50,
-            });
+            // this.graticule = new ol.Graticule({
+            //     maxLines: 50,
+            // });
 
             var date;
             if(webgnome.hasModel()){
@@ -477,7 +477,7 @@ define([
             this.ol.map.addLayer(this.MapBounds);
             this.ol.map.addLayer(this.SpillableArea);
             this.ol.setMapOrientation();
-            this.graticule.setMap(this.ol.map);
+            // this.graticule.setMap(this.ol.map);
             this.ol.map.addLayer(this.CurrentLayer);
             this.ol.map.addLayer(this.IceLayer);
             this.ol.map.addLayer(this.IceImageLayer);
