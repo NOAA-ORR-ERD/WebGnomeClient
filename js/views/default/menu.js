@@ -236,6 +236,13 @@ define([
                 this.enableMenuItem('run');
             }
 
+            if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
+                this.disableMenuItem('run');
+                this.disableMenuItem('view-toggle');
+            } else {
+                this.enableMenuItem('view-toggle');
+            }
+
             if(window.location.href.indexOf('fate') !== -1){
                 this.toggleView('fate');
             }
