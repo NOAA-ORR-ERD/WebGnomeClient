@@ -89,10 +89,11 @@ define([
                 this.spill.$el
             );
 
-            this.$('.response-objects').append(
-                this.response.$el,
-                this.beached.$el
-            );
+            this.$('.response-objects').append(this.response.$el);
+
+            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                this.$('.response-objects').append(this.beached.$el);
+            }
 
             this.initMason();
 
