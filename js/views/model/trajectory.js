@@ -472,61 +472,36 @@ define([
             // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
             // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
             // named modelmap
+            
+            this.ol.render();
+            this.ol.map.addLayer(this.MapBounds);
+            this.ol.map.addLayer(this.SpillableArea);
+            this.ol.setMapOrientation();
+            this.graticule.setMap(this.ol.map);
+            this.ol.map.addLayer(this.CurrentLayer);
+            this.ol.map.addLayer(this.IceLayer);
+            this.ol.map.addLayer(this.IceImageLayer);
+            this.ol.map.addLayer(this.SpillIndexLayer);
+            this.ol.map.addLayer(this.SpillLayer);
+            this.renderSpills();
+            
+
             if (['gnome.map.MapFromBNA', 'gnome.map.ParamMap'].indexOf(webgnome.model.get('map').get('obj_type')) !== -1) {
                 webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                    // the map isn't rendered yet, so draw it before adding the layer.
-                    // but don't draw it agian for a normal render if the map is undefined redraw it.
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
-                        this.ol.render();
-                        this.shorelineSource = new ol.source.Vector({
-                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
-                        });
+                    this.shorelineSource = new ol.source.Vector({
+                        features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
+                    });
+                        
+                    this.shorelineLayer = new ol.layer.Image({
+                        name: 'modelmap',
+                        source: new ol.source.ImageVector({
+                            source: this.shorelineSource,
+                            style: this.styles.shoreline
+                        }),
+                    });
+                    this.ol.map.addLayer(this.shorelineLayer);
 
-                        this.shorelineLayer = new ol.layer.Image({
-                            name: 'modelmap',
-                            source: new ol.source.ImageVector({
-                                source: this.shorelineSource,
-                                style: this.styles.shoreline
-                            }),
-                        });
-
-                        if(this.ol.map){
-                            this.ol.map.addLayer(this.MapBounds);
-                            this.ol.map.addLayer(this.SpillableArea);
-                            this.ol.map.addLayer(this.shorelineLayer);
-                            this.ol.setMapOrientation();
-                        }
-
-                        this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.CurrentLayer);
-                        this.ol.map.addLayer(this.IceLayer);
-                        this.ol.map.addLayer(this.IceImageLayer);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillLayer);
-
-
-                        // this.ol.map.on('pointermove', this.spillHover, this);
-                        // this.ol.map.on('click', this.spillClick, this);
-                    }
-                    if(this.ol.redraw === false){
-                        this.renderSpills();
-                    }
                 }, this));
-            } else {
-                // if the model doens't have a renderable map yet just render the base layer
-                if(webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap'){
-                    if(this.ol.redraw || _.isUndefined(this.ol.map) && this.ol.redraw === false){
-                        this.ol.render();
-                        this.graticule.setMap(this.ol.map);
-                        this.ol.map.addLayer(this.SpillIndexLayer);
-                        this.ol.map.addLayer(this.SpillLayer);
-                        // this.ol.map.on('pointermove', this.spillHover, this);
-                        // this.ol.map.on('click', this.spillClick, this);
-                    }
-                    if(this.ol.redraw === false){
-                        this.renderSpills();
-                    }
-                }
             }
         },
 
@@ -705,13 +680,13 @@ define([
                                 });
                                 f.set('velocity', velocity);
 
-                                current_features.push(f);    
+                                current_features.push(f);  
                             }
                         }
                     }
                 }
             }
-
+            console.log(current_features);
             var cur_source = new ol.source.Vector({
                 features: current_features
             });
