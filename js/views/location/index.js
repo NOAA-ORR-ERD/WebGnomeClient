@@ -121,16 +121,19 @@ define([
             var compiled = _.template(LocationsTemplate);            
             $(this.dom_target).append(this.$el.html(compiled));
 
-            this.popup = new ol.Overlay({
-                position: 'bottom-center',
-                element: this.$('.popup'),
-                stopEvent: true,
-                offsetX: -2,
-                offsetY: -22
-            });
-
             this.mapView.render();
-            this.mapView.map.addOverlay(this.popup);
+            setTimeout(_.bind(function(){
+                this.popup = new ol.Overlay({
+                    position: 'bottom-center',
+                    element: this.$('.popup'),
+                    stopEvent: true,
+                    offsetX: -2,
+                    offsetY: -22
+                });
+                this.mapView.map.addOverlay(this.popup);
+            }, this), 1);
+            
+
 
             this.registerMapEvents();
         },
