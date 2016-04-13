@@ -453,7 +453,13 @@ define([
                     'date': this.$('.controls .position')
                 };
 
-                this.controls.seek.slider();
+                var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
+
+                this.controls.seek.slider({
+                    create: _.bind(function(){
+                        this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
+                    }, this)
+                });
                 this.load();
             }
 
@@ -644,7 +650,9 @@ define([
             this.renderCurrent(step);
             this.renderIceImage(step);
 
-            this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
+            var time = moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+
+            this.controls.date.text(time);
             this.frame = step.get('step_num');
             if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
                 this.drawStepTimeout = setTimeout(_.bind(function(){
@@ -653,6 +661,7 @@ define([
             } else {
                 this.pause();
             }
+            this.$('.tooltip-inner').text(time);
         },
 
         renderSpill: function(step){
