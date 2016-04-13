@@ -25,23 +25,21 @@ define([
         step: function(){
             var step = new StepModel();
             this.trigger('step:sent');
-            if (!this.fetching) {
-                this.fetching = true;
-                step.fetch({
-                    success: _.bind(function(step){
-                        this.add(step, {
-                            success: _.bind(function(){
-                                this.fetching = false;
-                                this.trigger('step:recieved', step);
-                            }, this)
-                        });
-                    }, this),
-                    error: _.bind(function(){
-                        this.fetching = false;
-                        this.trigger('step:failed');
-                    }, this)
-                });
-            }
+            this.fetching = true;
+            step.fetch({
+                success: _.bind(function(step){
+                    this.add(step, {
+                        success: _.bind(function(){
+                            this.fetching = false;
+                        }, this)
+                    });
+                    this.trigger('step:recieved', step);
+                }, this),
+                error: _.bind(function(){
+                    this.fetching = false;
+                    this.trigger('step:failed');
+                }, this)
+            });
         },
 
         rewind: function(override){
@@ -59,15 +57,15 @@ define([
                 for(var m = 0; m < models.length; m++){
                     key = this.length;
                     if(m === models.length - 1){
-                        localforage.setItem(key.toString(), models[m].toJSON(), options.success);
+                       localforage.setItem(key.toString(), models[m].attributes, options.success);
                     } else {
-                        localforage.setItem(key.toString(), models[m].toJSON());
+                        localforage.setItem(key.toString(), models[m].attributes);
                     }
                     this.length++;
                 }
             } else {
                 key = this.length;
-                localforage.setItem(key.toString(), models.toJSON(), options.success);
+                localforage.setItem(key.toString(), models.attributes, options.success);
                 this.length++;
             }
         },
