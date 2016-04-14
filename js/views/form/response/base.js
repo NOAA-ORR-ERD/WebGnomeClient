@@ -48,6 +48,10 @@ define([
                 value = 20;
             }
 
+            if (this.model.isNew()) {
+                this.$('.delete').prop('disabled', true);
+            }
+
             this.$('.slider').slider({
                 min: 0,
                 max: 100,
