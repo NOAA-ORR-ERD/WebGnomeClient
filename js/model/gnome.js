@@ -24,6 +24,7 @@ define([
     'model/outputters/current',
     'model/outputters/ice_geo',
     'model/outputters/ice_image',
+    'model/outputters/ice_raw',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -38,7 +39,7 @@ define([
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter, IceRawOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
     'use strict';
@@ -74,7 +75,8 @@ define([
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
                 'gnome.outputters.geo_json.IceGeoJsonOutput': IceGeoOutputter,
-                'gnome.outputters.image.IceImageOutput': IceImageOutputter
+                'gnome.outputters.image.IceImageOutput': IceImageOutputter,
+                'gnome.outputters.geo_json.IceRawJsonOutput': IceRawOutputter,
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -101,7 +103,8 @@ define([
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
                     new IceGeoOutputter(),
-                    new IceImageOutputter()
+                    new IceImageOutputter(),
+                    new IceRawOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
