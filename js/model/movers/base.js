@@ -3,7 +3,8 @@ define([
     'jquery',
     'backbone',
     'model/base',
-], function(_, $, Backbone, BaseModel){
+    'ol'
+], function(_, $, Backbone, BaseModel, ol){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -23,15 +24,31 @@ define([
             var url = this.urlRoot + this.id + '/grid';
             if(!this.requesting && !this.requested){
                 this.requesting = true;
-                $.get(url, null, _.bind(function(geo_json){
+                $.get(url, null, _.bind(function(grid){
                     this.requesting = false;
                     this.requested = true;
-                    this.geo_json = geo_json;
-                    callback(geo_json);
+                    this.grid = grid;
+                    if(callback){
+                        callback(this.grid);
+                    }
+                    return this.grid;
                 }, this));
-            } else {
-                callback(this.geo_json);
+            } else if(callback) {
+                callback(this.grid);
+                return this.grid;
             }
+        },
+
+        processGrid: function(grid){
+            var features = [];
+            for(var ar = 0; ar < grid.length; ar++){
+                var feature = new ol.Feature();
+                var geom = new ol.geom.Polygon([grid[ar]], 'XY')
+                    .transform('EPSG:4326', 'EPSG:3857');
+                feature.set('geometry', geom, true);
+                features.push(feature);
+            }
+            return features;
         }
     });
 
