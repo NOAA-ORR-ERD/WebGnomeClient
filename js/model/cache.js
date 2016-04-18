@@ -31,9 +31,9 @@ define([
                     this.add(step, {
                         success: _.bind(function(){
                             this.fetching = false;
+                            this.trigger('step:recieved', step);
                         }, this)
                     });
-                    this.trigger('step:recieved', step);
                 }, this),
                 error: _.bind(function(){
                     this.fetching = false;
