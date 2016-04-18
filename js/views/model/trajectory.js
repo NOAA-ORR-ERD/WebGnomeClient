@@ -7,225 +7,23 @@ define([
     'moment',
     'text!templates/model/controls.html',
     'views/default/map',
+    'cesium',
     'ol',
     'model/spill',
     'views/form/spill/continue',
     'model/step',
     'mousetrap',
     'jqueryui/slider'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
-        className: 'trajectory-view map',
+        className: 'trajectory-view map ',
         id: 'map',
         spillToggle: false,
         spillCoords: [],
         state: 'pause',
         frame: 0,
         contracted: false,
-        styles: {
-            ice: {
-                coverage: function(feature, resolution){
-                    var cov = feature.get('coverage');
-                    var alpha = parseFloat(cov);
-                    return [new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(36, 36, 227,' + alpha + ')'
-                        })
-                    })];
-                },
-                thickness: function(feature, resolution){
-                    var thick = feature.get('thickness');
-                    var alpha = thick / 5;
-                    return [new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: 'rgba(36, 36, 227,' + alpha + ')'
-                        })
-                    })];
-                }
-            },
-            ice_grid: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: [36, 36, 227, 0.75],
-                    width: 1
-                })
-            }),
-            elements: function(feature, resolution){
-                // TODO: should use a cache for generated styles.
-                // total of 4 unique styles can be returned.
-                // red "x" | black "x" | red "o" | black "o"
-                // 
-                if(!_.has(webgnome.styleCache, 'elements')){
-                    webgnome.styleCache.elements = {};
-                }
-
-                var color = 'rgba(0, 0, 0, 1)';
-                if(feature.get('sc_type') === 'uncertain'){
-                    color = 'rgba(255, 54, 54, 1)';
-                }
-
-                var style;
-                if(feature.get('status_code') === 3){
-                    // 3 = on land
-                    // x
-                    if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_land')){
-                        webgnome.styleCache.elements[feature.get('sc_type') + '_land'] = style = new ol.style.Style({
-                            image: new ol.style.RegularShape({
-                                fill: new ol.style.Fill({
-                                    color: color
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: color,
-                                    width: 2
-                                }),
-                                points: 4,
-                                radius: 4,
-                                radius2: 0,
-                                angle: Math.PI / 4
-                            })
-                        });
-                    } else {
-                        style = webgnome.styleCache.elements[feature.get('sc_type') + '_land'];
-                    }
-                } else {
-                    // everything else should be visualized as a dot.
-                    // o
-                    if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_dot')){
-                        webgnome.styleCache.elements[feature.get('sc_type') + '_dot'] = style = new ol.style.Style({
-                            image: new ol.style.Circle({
-                                fill: new ol.style.Fill({
-                                    color: 'rgba(0, 0, 0, .75)'
-                                }),
-                                radius: 1,
-                                stroke: new ol.style.Stroke({
-                                    color: color
-                                })
-                            })
-                        });
-                    } else {
-                        style = webgnome.styleCache.elements[feature.get('sc_type') + '_dot'];
-                    }
-                    
-                }
-
-                return [style];
-            },
-            spill: new ol.style.Style({
-                image: new ol.style.Icon({
-                    anchor: [0.5, 1.0],
-                    src: '/img/spill-pin.png',
-                    size: [32, 40]
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#3399CC',
-                    width: 1.25
-                })
-            }),
-            shoreline: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: [228, 195, 140, 0.6]
-                }),
-                stroke: new ol.style.Stroke({
-                    color: [228, 195, 140, 0.75],
-                    width: 1
-                })
-            }),
-            currents: function(feature, resolution){
-                // the only thing we can cache for styles right now is the 0,0 vectors
-                // every other style has the lat lon geometry tied to it causing
-                // the style for the point to render positioned where the first feature with that 
-                // uv data
-                if(!_.has(webgnome.styleCache, 'currents')){
-                    webgnome.styleCache.currents = {};
-                    webgnome.styleCache.currents['0,0'] = new ol.style.Style({
-                        image: new ol.style.Circle({
-                            stroke: new ol.style.Stroke({
-                                color: [171, 37, 184, 0.75],
-                                width: 1
-                            }),
-                            radius: 1
-                        })
-                    });
-                }
-
-                var features = feature.get('features');
-
-                var v_x = 0;
-                var v_y = 0;
-                for(var i = 0; i < features.length; i++){
-                    var f = features[i];
-                    var velocity = f.get('velocity');
-
-                    v_x += velocity[0];
-                    v_y += velocity[1];
-                }
-
-                v_x = v_x / features.length;
-                v_y = v_y / features.length;
-
-                var scale_factor = 50 * resolution;
-                var coords = feature.getGeometry().getCoordinates();
-                var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
-
-                // find the angle between the two points
-                var x = shifted[0] - coords[0];
-                var y = shifted[1] - coords[1];
-
-                if(_.has(webgnome.styleCache.currents, v_x + ',' + v_y)){
-                    return [webgnome.styleCache.currents[v_x+','+v_y]];
-                }
-
-                var geom;
-                var width;
-                var rad;
-
-                if(x === 0){
-                    rad = Math.PI / 2;
-                } else {
-                    rad = Math.atan(Math.abs(y/x));
-                }
-
-                if(x < 0 && y >= 0){
-                    rad = Math.PI - rad;
-                } else if(x < 0 && y < 0){
-                    rad = Math.PI + rad;
-                } else if(x >= 0 && y < 0){
-                    rad = (2 * Math.PI) - rad;
-                }
-
-                var len = Math.sqrt((x * x) + (y * y));
-                len = Math.abs(len / Math.log(len)) * -2;
-
-                var rad_right = 0.785398163; //3.92699082;
-                var rad_left = 0.785398163;
-                            
-                var arr_left;
-                var arr_right;
-
-                arr_left = rad - rad_left;
-                arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
-                arr_right = rad + rad_right;
-                arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
-
-                geom = new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]);
-                width = 2;
-                var style = new ol.style.Style({
-                    geometry: geom,
-                    stroke: new ol.style.Stroke({
-                        color: [171, 37, 184, 0.75],
-                        width: width
-                    })
-                });
-
-                return [style];
-            },
-            currents_grid: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: [171, 37, 184, 0.75],
-                    width: 1
-                })
-            })
-        },
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -243,10 +41,10 @@ define([
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
             'click .base input': 'toggleLayers',
-            'click .current-grid input': 'toggleCurrentGrid',
+            'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
-            'click .ice-grid input[type="radio"]': 'toggleIceGrid',
+            'click .ice-grid input[type="radio"]': 'toggleGrid',
             'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
             'click .ice-tc input[type="radio"]': 'toggleIceData'
         },
@@ -258,9 +56,215 @@ define([
             if(webgnome.hasModel()){
                 this.modelListeners();
             }
-
+            this.createStyles();
             this.render();
             webgnome.cache.on('rewind', this.rewind, this);
+        },
+
+        createStyles: function(){
+            this.styles = {
+                ice: {
+                    coverage: function(feature, resolution){
+                        var cov = feature.get('coverage');
+                        var alpha = parseFloat(cov);
+                        return [new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(36, 36, 227,' + alpha + ')'
+                            })
+                        })];
+                    },
+                    thickness: function(feature, resolution){
+                        var thick = feature.get('thickness');
+                        var alpha = thick / 5;
+                        return [new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: 'rgba(36, 36, 227,' + alpha + ')'
+                            })
+                        })];
+                    }
+                },
+                ice_grid: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: [36, 36, 227, 0.75],
+                        width: 1
+                    })
+                }),
+                elements: function(feature, resolution){
+                    // TODO: should use a cache for generated styles.
+                    // total of 4 unique styles can be returned.
+                    // red "x" | black "x" | red "o" | black "o"
+                    // 
+                    if(!_.has(webgnome.styleCache, 'elements')){
+                        webgnome.styleCache.elements = {};
+                    }
+
+                    var color = 'rgba(0, 0, 0, 1)';
+                    if(feature.get('sc_type') === 'uncertain'){
+                        color = 'rgba(255, 54, 54, 1)';
+                    }
+
+                    var style;
+                    if(feature.get('status_code') === 3){
+                        // 3 = on land
+                        // x
+                        if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_land')){
+                            webgnome.styleCache.elements[feature.get('sc_type') + '_land'] = style = new ol.style.Style({
+                                image: new ol.style.RegularShape({
+                                    fill: new ol.style.Fill({
+                                        color: color
+                                    }),
+                                    stroke: new ol.style.Stroke({
+                                        color: color,
+                                        width: 2
+                                    }),
+                                    points: 4,
+                                    radius: 4,
+                                    radius2: 0,
+                                    angle: Math.PI / 4
+                                })
+                            });
+                        } else {
+                            style = webgnome.styleCache.elements[feature.get('sc_type') + '_land'];
+                        }
+                    } else {
+                        // everything else should be visualized as a dot.
+                        // o
+                        if(!_.has(webgnome.styleCache.elements, feature.get('sc_type') + '_dot')){
+                            webgnome.styleCache.elements[feature.get('sc_type') + '_dot'] = style = new ol.style.Style({
+                                image: new ol.style.Circle({
+                                    fill: new ol.style.Fill({
+                                        color: 'rgba(0, 0, 0, .75)'
+                                    }),
+                                    radius: 1,
+                                    stroke: new ol.style.Stroke({
+                                        color: color
+                                    })
+                                })
+                            });
+                        } else {
+                            style = webgnome.styleCache.elements[feature.get('sc_type') + '_dot'];
+                        }
+                        
+                    }
+
+                    return [style];
+                },
+                spill: new ol.style.Style({
+                    image: new ol.style.Icon({
+                        anchor: [0.5, 1.0],
+                        src: '/img/spill-pin.png',
+                        size: [32, 40]
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#3399CC',
+                        width: 1.25
+                    })
+                }),
+                shoreline: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: [228, 195, 140, 0.6]
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: [228, 195, 140, 0.75],
+                        width: 1
+                    })
+                }),
+                currents: function(feature, resolution){
+                    // the only thing we can cache for styles right now is the 0,0 vectors
+                    // every other style has the lat lon geometry tied to it causing
+                    // the style for the point to render positioned where the first feature with that 
+                    // uv data
+                    if(!_.has(webgnome.styleCache, 'currents')){
+                        webgnome.styleCache.currents = {};
+                        webgnome.styleCache.currents['0,0'] = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                stroke: new ol.style.Stroke({
+                                    color: [171, 37, 184, 0.75],
+                                    width: 1
+                                }),
+                                radius: 1
+                            })
+                        });
+                    }
+
+                    var features = feature.get('features');
+
+                    var v_x = 0;
+                    var v_y = 0;
+                    for(var i = 0; i < features.length; i++){
+                        var f = features[i];
+                        var velocity = f.get('velocity');
+
+                        v_x += velocity[0];
+                        v_y += velocity[1];
+                    }
+
+                    v_x = v_x / features.length;
+                    v_y = v_y / features.length;
+
+                    var scale_factor = 50 * resolution;
+                    var coords = feature.getGeometry().getCoordinates();
+                    var shifted = [(v_x * scale_factor) + coords[0], (v_y * scale_factor) + coords[1]];
+
+                    // find the angle between the two points
+                    var x = shifted[0] - coords[0];
+                    var y = shifted[1] - coords[1];
+
+                    if(_.has(webgnome.styleCache.currents, v_x + ',' + v_y)){
+                        return [webgnome.styleCache.currents[v_x+','+v_y]];
+                    }
+
+                    var geom;
+                    var width;
+                    var rad;
+
+                    if(x === 0){
+                        rad = Math.PI / 2;
+                    } else {
+                        rad = Math.atan(Math.abs(y/x));
+                    }
+
+                    if(x < 0 && y >= 0){
+                        rad = Math.PI - rad;
+                    } else if(x < 0 && y < 0){
+                        rad = Math.PI + rad;
+                    } else if(x >= 0 && y < 0){
+                        rad = (2 * Math.PI) - rad;
+                    }
+
+                    var len = Math.sqrt((x * x) + (y * y));
+                    len = Math.abs(len / Math.log(len)) * -2;
+
+                    var rad_right = 0.785398163; //3.92699082;
+                    var rad_left = 0.785398163;
+                                
+                    var arr_left;
+                    var arr_right;
+
+                    arr_left = rad - rad_left;
+                    arr_left = [(x + len * Math.cos(arr_left)) + coords[0], (y + len * Math.sin(arr_left)) + coords[1]];
+                    arr_right = rad + rad_right;
+                    arr_right = [(x + len * Math.cos(arr_right)) + coords[0] , (y + len * Math.sin(arr_right)) + coords[1]];
+
+                    geom = new ol.geom.LineString([coords, shifted, arr_left, shifted, arr_right]);
+                    width = 2;
+                    var style = new ol.style.Style({
+                        geometry: geom,
+                        stroke: new ol.style.Stroke({
+                            color: [171, 37, 184, 0.75],
+                            width: width
+                        })
+                    });
+
+                    return [style];
+                },
+                currents_grid: new ol.style.Style({
+                    stroke: new ol.style.Stroke({
+                        color: [171, 37, 184, 0.75],
+                        width: 1
+                    }),
+                })
+            };
         },
 
         modelListeners: function(){
@@ -276,6 +280,134 @@ define([
         render: function(){
             BaseView.prototype.render.call(this);
 
+            var date;
+            if(webgnome.hasModel()){
+                date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
+            } else {
+                date = moment().format('M/DD/YYYY HH:mm');
+            }
+
+            // only compile the template if the map isn't drawn yet
+            // or if there is a redraw request because of the map object changing
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return [
+                    'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.current_movers.ComponentMover',
+                    'gnome.movers.current_movers.CurrentCycleMover',
+                    'gnome.movers.wind_movers.GridWindmover'
+                ].indexOf(mover.get('obj_type')) !== -1;
+            });
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+            var active_currents = [];
+            if(current_outputter.get('on')){
+                current_outputter.get('current_movers').forEach(function(mover){
+                    active_currents.push(mover.get('id'));
+                });
+            }
+            this.checked_currents = active_currents;
+
+
+            var ice = webgnome.model.get('movers').filter(function(mover){
+                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
+            });
+            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
+            var tc_ice = [];
+            ice_tc_outputter.get('ice_movers').forEach(function(mover){
+                tc_ice.push(mover.get('id'));
+            });
+            this.tc_ice = tc_ice;
+
+            var compiled = _.template(ControlsTemplate, {
+                date: date,
+                currents: currents,
+                active_currents: active_currents,
+                ice: ice,
+                tc_ice: tc_ice,
+            });
+            this.$el.append(compiled);
+            this.$('.layers .title').click(_.bind(function(){
+                this.$('.layers').toggleClass('expanded');
+            }, this));
+            
+            this.controls = {
+                'play': this.$('.controls .play'),
+                'pause': this.$('.controls .play'),
+                'seek': this.$('.seek > div:first'),
+                'fastforward' : this.$('.controls .fastfoward'),
+                'rewind': this.$('.controls .rewind'),
+                'progress': this.$('.controls .progress-bar'),
+                'date': this.$('.controls .position')
+            };
+            
+            var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
+            this.controls.seek.slider({
+                create: _.bind(function(){
+                    this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
+                }, this)
+            });
+
+            this.contextualize();
+
+            if(localStorage.getItem('advanced') === 'true'){
+                this.toggle();
+            }
+
+            // add a 250ms timeout to the map render to give js time to add the compiled
+            // to the dom before trying to draw the map.
+            setTimeout(_.bind(this.renderCesiumMap, this), 250);
+        },
+
+        renderCesiumMap: function(){
+            var image_providers = Cesium.createDefaultImageryProviderViewModels();
+            var default_image = new Cesium.ProviderViewModel({
+                name: 'Blank',
+                tooltip: '',
+                iconUrl: '/img/globe.png',
+                creationFunction: function(){
+                    return new Cesium.SingleTileImageryProvider({
+                        url: '/img/globe.png'
+                    });
+                },
+            });
+            image_providers.unshift(default_image);
+            this.viewer = new Cesium.Viewer('map', {
+                animation: false,
+                vrButton: false,
+                geocode: false,
+                homeButton: false,
+                timeline: false,
+                navigationHelpButton: false,
+                navigationInstructionsInitiallyVisible: false,
+                skyAtmosphere: false,
+                sceneMode: Cesium.SceneMode.SCENE2D,
+                mapProjection: new Cesium.WebMercatorProjection(),
+                selectedImageryProviderViewModel: default_image,
+                imageryProviderViewModels: image_providers
+            });
+
+            var map = webgnome.model.get('map');
+            var bounds = this.viewer.entities.add({
+                name: 'Map Bounds',
+                polygon: {
+                    hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(map.get('map_bounds'))),
+                    material: Cesium.Color.WHITE.withAlpha(0),
+                    outline: true,
+                    outlineColor: Cesium.Color.BLUE,
+                    show:true
+                }
+            });
+            this.viewer.flyTo(bounds, {
+                duration: 1.0,
+            });
+
+            map.getGeoJSON(_.bind(function(geojson){
+                this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(geojson));
+            }, this));
+            this.load();
+        },
+
+        renderOlMap: function(){
             this.ol = new OlMapView({
                 id: 'map',
                 controls: 'full',
@@ -381,8 +513,10 @@ define([
                 })
             });
 
-            this.IceLayer = new ol.layer.Image({
-                name: 'ice'
+            this.IceLayer = new ol.layer.Vector({
+                name: 'ice',
+                source: new ol.source.Vector(),
+                style: null
             });
             this.IceImageLayer = new ol.layer.Image({
                 name: 'ice'
@@ -392,7 +526,6 @@ define([
             //     maxLines: 50,
             // });
 
-            var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             } else {
@@ -466,9 +599,7 @@ define([
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(this.renderMap, this), 250);
-        },
 
-        renderMap: function(){
             // check if the model has a map, specifically a bna map that has a TrajectorygeojsonOutput output
             // if it does load it's TrajectorygeojsonOutput and put it in a layer on the map
             // named modelmap
@@ -641,8 +772,8 @@ define([
         drawStep: function(step){
             if(!step){ return; }
             this.renderSpill(step);
-            this.renderCurrent(step);
-            this.renderIceImage(step);
+            // this.renderCurrent(step);
+            // this.renderIce(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
             this.frame = step.get('step_num');
@@ -656,11 +787,65 @@ define([
         },
 
         renderSpill: function(step){
-            var traj_source = new ol.source.Vector({
-                features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
-                useSpatialIndex: false
-            });
-            this.SpillLayer.setSource(traj_source);
+            if(!this.certain_spillds){
+                // this is the first time le are being rendered
+                // create a new datasource to handle the entities
+                this.certain_spillds = new Cesium.CustomDataSource('Certain LE');
+                this.uncertain_spillds = new Cesium.CustomDataSource('Uncertain LE');
+                this.viewer.dataSources.add(this.certain_spillds);
+                this.viewer.dataSources.add(this.uncertain_spillds);
+            }
+
+            this.certain_spillds.entities.suspendEvents();
+            this.uncertain_spillds.entities.suspendEvents();
+
+            var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
+            var uncertain_json_features = step.get('TrajectoryGeoJsonOutput').uncertain.features;
+
+            var certain_entities = this.certain_spillds.entities.values;
+            var uncertain_entities = this.uncertain_spillds.entities.values;
+            for(var f = 0; f < certain_json_features.length; f++){
+                if(!certain_entities[f]){
+                    // create a new entity for the point
+                    this.certain_spillds.entities.add({
+                        position: Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]),
+                        point: {
+                            color: Cesium.Color.BLACK,
+                            pixelSize: 2
+                        }
+                    });
+                    this.uncertain_spillds.entities.add({
+                        position: Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]),
+                        point:{
+                            color: Cesium.Color.RED,
+                            pixelSize: 2
+                        }
+                    });
+                } else {
+                    // update the entity w/ the new position and properties.
+                    certain_entities[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
+                    certain_entities[f].point.show = true;
+                    uncertain_entities[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
+                    uncertain_entities[f].point.show = true;
+                }
+            }
+            if(certain_entities.length > certain_json_features.length){
+                // we have entites that were created for a future step but the model is now viewing a previous step
+                // hide the leftover entities
+                for(var l = certain_json_features.length + 1; l < certain_entities.length; l++){
+                    certain_entities[l].point.show = false;
+                    uncertain_entities[l].point.show = false;
+                }
+            }
+
+            this.certain_spillds.entities.resumeEvents();
+            this.uncertain_spillds.entities.resumeEvents();
+
+            // var traj_source = new ol.source.Vector({
+            //     features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
+            //     useSpatialIndex: false
+            // });
+            // this.SpillLayer.setSource(traj_source);
         },
 
         renderCurrent: function(step){
@@ -737,47 +922,80 @@ define([
             this.IceImageLayer.setSource(source);
         },
 
-        renderIce: function(step){
-            var ice_features = [];
-            var ice_data = this.$('input[name=ice_data]:checked').val();
+        /**
+         * Create or update a layers source features (conceptually a grid)
+         * @param {ol.vector.Source} source Vector source you want to project the data on to
+         * @param {Object|GeoJson} grid Geographical representation of where the nodes/cells should be
+         * @param {Object} data Dictionary/Object of parameters you want to apply to the grid
+         */
+        updateGridedData: function(source, grid, data){
+            var properties = _.keys(data);
+            if(source.getFeatures().length > 0){
+                // this data's grid is already set up, just update the data.
 
-            if(step && step.get('IceGeoJsonOutput') && this.tc_ice && this.tc_ice.length > 0){
-                var ice = step.get('IceGeoJsonOutput').feature_collections;
-                for(var t = 0; t < this.tc_ice.length; t++){
-                    var id = this.tc_ice[t];
-                    if(_.has(ice, id)){
-                        var features;
-                        if(ice_data === 'thickness'){
-                            features = ice[id][1].features;
-                        } else {
-                            features = ice[id][0].features;
-                        }
-                        for(var r = 0; r < features.length; r++){
-                            var coords = features[r].geometry.coordinates;
-                            var poly = new ol.geom.MultiPolygon([coords]);
-                            poly.transform('EPSG:4326', 'EPSG:3857');
-                            var properties = {
-                                geometry: poly
-                            };
-                            properties[ice_data] = features[r].properties[ice_data];
-                            
-                            var f = new ol.Feature(properties);
-                            ice_features.push(f);
-                        }
+            } else {
+                // this data's grid isn't setup, set it up and set the data at the same time
+                var new_features = (new ol.format.GeoJSON()).readFeatures(grid, {featureProjection: 'EPSG:3857'});
+                for(var f = 0; f < new_features.length; f++){
+                    for(var p = 0; p < properties.length; p++){
+                        new_features[f].set(properties[p], data[properties[p]][f], true);
                     }
                 }
+                source.addFeatures(new_features);
             }
-            var ice_source = new ol.source.Vector({
-                features: ice_features,
-                useSpatialIndex: false
-            });
+        },
 
-            var ice_image = new ol.source.ImageVector({
-                source: ice_source,
-                style: this.styles.ice[ice_data]
-            });
+        renderIce: function(step){
+            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
+            if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0){
+                var mover = outputter.get('ice_movers').at(0);
+                var data = step.get('IceRawJsonOutput').data[mover.get('id')];
+                mover.getGrid(_.bind(function(grid){
+                    this.updateGridedData(this.IceLayer.getSource(), grid, data);
+                }, this));
+            }
 
-            this.IceLayer.setSource(ice_image);
+
+            // var ice_features = [];
+            // var ice_data = this.$('input[name=ice_data]:checked').val();
+
+            // if(step && step.get('IceGeoJsonOutput') && this.tc_ice && this.tc_ice.length > 0){
+            //     var ice = step.get('IceGeoJsonOutput').feature_collections;
+            //     for(var t = 0; t < this.tc_ice.length; t++){
+            //         var id = this.tc_ice[t];
+            //         if(_.has(ice, id)){
+            //             var features;
+            //             if(ice_data === 'thickness'){
+            //                 features = ice[id][1].features;
+            //             } else {
+            //                 features = ice[id][0].features;
+            //             }
+            //             for(var r = 0; r < features.length; r++){
+            //                 var coords = features[r].geometry.coordinates;
+            //                 var poly = new ol.geom.MultiPolygon([coords]);
+            //                 poly.transform('EPSG:4326', 'EPSG:3857');
+            //                 var properties = {
+            //                     geometry: poly
+            //                 };
+            //                 properties[ice_data] = features[r].properties[ice_data];
+                            
+            //                 var f = new ol.Feature(properties);
+            //                 ice_features.push(f);
+            //             }
+            //         }
+            //     }
+            // }
+            // var ice_source = new ol.source.Vector({
+            //     features: ice_features,
+            //     useSpatialIndex: false
+            // });
+
+            // var ice_image = new ol.source.ImageVector({
+            //     source: ice_source,
+            //     style: this.styles.ice[ice_data]
+            // });
+
+            // this.IceLayer.setSource(ice_image);
         },
 
         disableUI: function(){
@@ -824,49 +1042,57 @@ define([
             });
         },
 
-        toggleCurrentGrid: function(e){
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover';
-            });
+        toggleGrid: function(e){
             var id = this.$(e.currentTarget).attr('id');
             var checked = this.$(e.currentTarget).is(':checked');
-            var gridLayer;
 
-            this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === id){
-                    gridLayer = layer;
+            var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+            current.getGrid(_.bind(function(data){
+                var grid = new Cesium.EntityCollection();
+
+                for(var cell = 0; cell < data.length; cell++){
+                    this.viewer.entities.add({
+                        name: 'grid-' + current.get('id'),
+                        polygon:{
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(data[cell])),
+                            material: Cesium.Color.PINK.withAlpha(0.1),
+                            outlineColor: Cesium.Color.PINK.withAlpha(0.7),
+                            outline: true
+                        }
+                    });
                 }
-            });
+            }, this));
+
+            // this.ol.map.getLayers().forEach(function(layer){
+            //     if (layer.get('id') === id){
+            //         gridLayer = layer;
+            //     }
+            // });
             
-            if (_.isUndefined(gridLayer) && id !== 'none-grid'){
-                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
-                current.getGrid(_.bind(function(geojson){
-                    if (geojson){
-                        var gridSource = new ol.source.Vector({
-                            useSpatialIndex: false,
-                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
-                        });
+            // if (_.isUndefined(gridLayer) && id !== 'none-grid'){
+            //     var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
+            //     current.getGrid(_.bind(function(grid){
+            //         if (grid){
+            //             gridLayer = new ol.layer.Vector({
+            //                 id: id,
+            //                 type: 'grid',
+            //                 source: new ol.source.Vector({
+            //                     features: grid
+            //                 }),
+            //                 style: this.styles.currents_grid
+            //             });
+            //             this.ol.map.getLayers().insertAt(3, gridLayer);
+            //         }
+            //     }, this));
+            // } 
 
-                        gridLayer = new ol.layer.Image({
-                            id: id,
-                            type: 'grid',
-                            source: new ol.source.ImageVector({
-                                source: gridSource,
-                                style: this.styles.currents_grid
-                            })
-                        });
-                        this.ol.map.getLayers().insertAt(3, gridLayer);
-                    }
-                }, this));
-            } 
-
-            this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === id && layer.get('type') === 'grid'){
-                    layer.setVisible(true);
-                } else if(layer.get('id') !== id && layer.get('type') === 'grid' || id === 'none-grid' && layer.get('type') === 'grid'){
-                    layer.setVisible(false);
-                }
-            });
+            // this.ol.map.getLayers().forEach(function(layer){
+            //     if (layer.get('id') === id && layer.get('type') === 'grid'){
+            //         layer.setVisible(true);
+            //     } else if(layer.get('id') !== id && layer.get('type') === 'grid' || id === 'none-grid' && layer.get('type') === 'grid'){
+            //         layer.setVisible(false);
+            //     }
+            // });
         },
 
         toggleUV: function(e){
@@ -892,69 +1118,21 @@ define([
             current_outputter.save();
         },
 
-        toggleIceGrid: function(e){
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
-            });
-            var id = this.$(e.currentTarget).attr('id');
-            var checked = this.$(e.currentTarget).is(':checked');
-            var gridLayer;
-
-            this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === id){
-                    gridLayer = layer;
-                }
-            });
-            
-            if (_.isUndefined(gridLayer) && id !== 'none-grid'){
-                var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
-                current.getGrid(_.bind(function(geojson){
-                    if (geojson){
-                        var gridSource = new ol.source.Vector({
-                            useSpatialIndex: false,
-                            features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'})
-                        });
-
-                        gridLayer = new ol.layer.Image({
-                            id: id,
-                            type: 'grid',
-                            source: new ol.source.ImageVector({
-                                source: gridSource,
-                                style: this.styles.ice_grid
-                            })
-                        });
-                        this.ol.map.getLayers().insertAt(3, gridLayer);
-                    }
-                }, this));
-            } 
-
-            this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('id') === id && layer.get('type') === 'grid'){
-                    layer.setVisible(true);
-                } else if(layer.get('id') !== id && layer.get('type') === 'grid' || id === 'none-grid' && layer.get('type') === 'grid'){
-                    layer.setVisible(false);
-                }
-            });
-        },
-
         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
-            console.log(this.tc_ice);
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
             if (checked.length > 0){
                 current_outputter.get('ice_movers').reset();
-                this.tc_ice = [];
 
                 this.$('.ice-tc input[type="checkbox"]:checked').each(_.bind(function(i, input){
                     var id = input.id.replace('tc-', '');
                     var current = webgnome.model.get('movers').get(id);
-                    this.tc_ice.push(id);
+                    current.getGrid();
                     current_outputter.get('ice_movers').add(current);
                 }, this));
             } else {
                 current_outputter.get('ice_movers').reset();
-                this.tc_ice = [];
             }
 
             this.renderStep({step: this.frame});
@@ -1150,7 +1328,7 @@ define([
             Mousetrap.unbind('left');
             this.remove();
             this.unbind();
-            this.ol.close();
+            // this.ol.close();
         }
     });
 
