@@ -20,6 +20,7 @@ define([
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
             this.model.updateEfficiencies();
+            this.cleanups = webgnome.model.getCleanup();
         },
 
         render: function(options){
@@ -42,15 +43,8 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            if (showSkimming){
-                this.createSlider('Skimming', parseInt(this.model.get('efficiency').Skimming * 100, 10));
-            }
-            if (showDispersant){
-                this.createSlider('Dispersion', parseInt(this.model.get('efficiency').Dispersion * 100, 10));
-            }
-            if (showBurn){
-                this.createSlider('Burn', parseInt(this.model.get('efficiency').Burn * 100, 10));
-            }
+            this.createSlider('response', parseInt(this.model.get('efficiency').Skimming * 100, 10));
+
             this.relativeImp = new RelativeImportance('importance',
             {
                 sideLength: 150,
@@ -59,6 +53,8 @@ define([
                 point3: {label: 'Shoreline'},
                 callback: _.bind(this.relativeImportancePercent, this)
             });
+
+            this.appendRadioButtons();
 
             setTimeout(_.bind(function(){
                 this.renderRelativeImportance();
@@ -104,6 +100,15 @@ define([
         updateBenefit: function(){
             var benefit = Math.round(this.model.calculateBenefit() * 100);
             this.$('google-chart').attr('data', '[["Label", "Value"], ["Benefit", ' + benefit + ']]');
+        },
+
+        appendRadioButtons: function() {
+            var cleanups = this.cleanups;
+            for (var key in cleanups) {
+                if (cleanups[key].length > 0) {
+                    this.$('.radio-buttons').append('<div class="radio"><label><input type="radio" name="cleanup">' + key + '</label></div>');
+                }
+            }
         },
 
         createSlider: function(selector, value){
