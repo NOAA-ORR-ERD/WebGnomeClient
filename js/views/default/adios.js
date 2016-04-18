@@ -147,6 +147,7 @@ define([
                     form.on('wizardclose', form.close);
                     form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
+                        webgnome.model.save(null, {validate: false});
                         if(form.$el.is(':hidden')){
                             form.close();
                         } else {
