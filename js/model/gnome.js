@@ -521,6 +521,23 @@ define([
             
         },
 
+        getCleanup: function() {
+            var payload = {
+                'Skimmer': [],
+                'Burn': [],
+                'ChemicalDispersion': []
+            };
+            var weatherers = this.get('weatherers');
+            for (var i = 0; i < weatherers.length; i++) {
+                var obj_type = weatherers.at(i).parseObjType();
+                if (_.has(payload, obj_type)) {
+                    payload[obj_type].push({id: weatherers.at(i).get('id')});
+                }
+            }
+
+            return payload;
+        },
+
         getElementType: function(){
             if(this.get('spills').length > 0){
                 return this.get('spills').at(0).get('element_type');

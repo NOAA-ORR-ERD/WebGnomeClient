@@ -197,7 +197,7 @@ define([
 
         wizardclose: function(){
             if(this.model){
-                this.model.fetch().always(_.bind(function(){
+                this.model.fetch().then(_.bind(function(){
                     this.trigger('wizardclose');
                 }, this));
             } else {
