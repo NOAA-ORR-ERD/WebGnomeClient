@@ -39,8 +39,11 @@ define([
         },
 
         selectContents: function(e){
-            e.preventDefault();
-            this.$(e.target).select();
+            var type = this.$(e.target).attr('type');
+            if (type === 'number' || type === 'text') {
+                e.preventDefault();
+                this.$(e.target).select();
+            }
         },
 
         render: function(){
