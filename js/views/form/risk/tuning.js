@@ -49,7 +49,9 @@ define([
 
             FormModal.prototype.render.call(this, options);
 
-            this.createSlider('response', parseInt(this.model.get('efficiency').Skimming * 100, 10));
+            var firstEff = this.appendRadioButtons();
+
+            this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10));
 
             this.relativeImp = new RelativeImportance('importance',
             {
@@ -59,8 +61,6 @@ define([
                 point3: {label: 'Shoreline'},
                 callback: _.bind(this.relativeImportancePercent, this)
             });
-
-            this.appendRadioButtons();
 
             setTimeout(_.bind(function(){
                 this.renderRelativeImportance();
@@ -74,7 +74,13 @@ define([
 
         updateEfficiency: function(e) {
             var effType = this.$(e.target).val();
-            
+            var currentEff = parseInt(this.model.get('efficiency')[effType] * 100, 10);
+            this.sliderjq.slider('value', currentEff);
+            this.updateTooltip(currentEff);
+        },
+
+        updateTooltip: function(value) {
+            this.$('.tooltip-inner').text(value);
         },
 
         renderRelativeImportance: function(){
@@ -124,7 +130,11 @@ define([
                     this.$('.radio-buttons').append('<div class="radio"><label><input type="radio" name="cleanup" id="' + key + '" value="' + key + '"/>' + label + '</label></div>');
                 }
             }
-            this.$('.radio-buttons input').first().prop('checked', true);
+
+            var firstRadio = this.$('.radio-buttons input').first();
+            firstRadio.prop('checked', true);
+
+            return firstRadio.val();
         },
 
         createSlider: function(selector, value){
