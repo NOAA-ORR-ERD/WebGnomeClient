@@ -19,11 +19,11 @@ define([
 
         setup: function(riskModel){
             this.steps = [
-                new InputForm({
-                    name: 'step1',
-                    title: 'Response Benefit <span class="sub-title">Input</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>'
-                }, riskModel),
+                // new InputForm({
+                //     name: 'step1',
+                //     title: 'Response Benefit <span class="sub-title">Input</span>',
+                //     buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>'
+                // }, riskModel),
                 new TuningForm({
                     name: 'step2',
                     title: 'Response Benefit <span class="sub-title">Tuning</span>',
