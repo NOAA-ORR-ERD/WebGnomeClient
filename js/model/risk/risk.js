@@ -56,7 +56,6 @@ define([
                 this.setSlopes(masses);
                 this.fetchNoCleanupData();
             }
-            console.log(this);
         },
 
         fetchNoCleanupData: function(){
@@ -83,7 +82,6 @@ define([
 
         cloneEfficiencies: function() {
             var clone = _.clone(this.get('efficiency'));
-            console.log(clone);
             this.set('origEff', clone);
         },
 
@@ -200,7 +198,7 @@ define([
                     masses.skimmed += skimmedRemoved;
                 }
 
-                if (slopes.Dispersion) {
+                if (slopes.ChemicalDispersion) {
                     var dispersionRemoved = eff.ChemicalDispersion * slopes.ChemicalDispersion - masses.chemicalDispersion;
 
                     if (dispersionRemoved > 0) {

@@ -51,7 +51,7 @@ define([
 
             var firstEff = this.appendRadioButtons();
 
-            this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10));
+            this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10), firstEff);
 
             this.relativeImp = new RelativeImportance('importance',
             {
@@ -137,7 +137,7 @@ define([
             return firstRadio.val();
         },
 
-        createSlider: function(selector, value){
+        createSlider: function(selector, value, type){
             var sliderTemplate = _.template(SliderTemplate, {'selector': selector});
 
             this.$('.sliders-container').append(sliderTemplate);
@@ -155,38 +155,38 @@ define([
                            this.updateTooltipWidth();
                         }, this),
                     stop: _.bind(function(e, ui){
-                            this.reassessRisk(selector);
+                            this.reassessRisk(type);
                         }, this)
             });
 
             this.sliderjq = this.$('#' + selector + ' .slider');
         },
 
-        reassessRisk: function(selector){
-            var sliderEff = this.$('#' + selector + ' .slider').slider('value');
+        reassessRisk: function(type){
+            var sliderEff = this.sliderjq.slider('value');
             // set model
             var eff = this.model.get('efficiency');
-            eff[selector] = sliderEff / 100;
+            eff[type] = sliderEff / 100;
 
             this.model.set('efficiency', eff);
 
             var gnomeEff;
 
-            if (selector === 'ChemicalDispersion'){
+            if (type === 'ChemicalDispersion'){
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion'}).get('efficiency') * 100;
-            } else if (selector === 'Skimming'){
+            } else if (type === 'Skimming'){
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Skimmer'}).get('efficiency') * 100;
             } else {
-                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + selector}).get('efficiency') * 100;
+                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + type}).get('efficiency') * 100;
             }
 
-            if (Math.floor(gnomeEff) !== sliderEff){
-                this.$('#' + selector + ' p').removeClass('hide');
-                this.effChanged = true;
-            } else {
-                this.$('#' + selector + ' p').addClass('hide');
-                this.effChanged = false;
-            }
+            // if (Math.floor(gnomeEff) !== sliderEff){
+            //     this.$('#' + selector + ' p').removeClass('hide');
+            //     this.effChanged = true;
+            // } else {
+            //     this.$('#' + selector + ' p').addClass('hide');
+            //     this.effChanged = false;
+            // }
 
             // assess model
             this.model.assessment();
