@@ -50,6 +50,7 @@ define([
 
             if (!_.isUndefined(webgnome.model) && !_.isUndefined(webgnome.mass_balance)){
                 this.updateEfficiencies();
+                this.cloneEfficiencies();
                 this.deriveAssessmentTime();
                 var masses = this.getMasses();
                 this.setSlopes(masses);
@@ -80,32 +81,26 @@ define([
             this.save();
         },
 
+        cloneEfficiencies: function() {
+            var clone = _.clone(this.get('efficiency'));
+            console.log(clone);
+            this.set('origEff', clone);
+        },
+
         updateEfficiencies: function(){
             var eff = {};
-            if (!this.get('origEff').Skimming) {
-                var origEff = {};
-            }
             _.each(webgnome.model.get('weatherers').models, function(el, idx){
                     if (el.get('obj_type') === "gnome.weatherers.cleanup.ChemicalDispersion") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.ChemicalDispersion = el.get('efficiency');
-                            if (origEff) {
-                                origEff.ChemicalDispersion = el.get('efficiency');
-                            }
                         }
                     } else if (el.get('obj_type') === "gnome.weatherers.cleanup.Burn") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.Burn = el.get('efficiency');
-                            if (origEff) {
-                                origEff.Burn = el.get('efficiency');
-                            }
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.Skimming = el.get('efficiency');
-                            if (origEff) {
-                                origEff.Skimming = el.get('efficiency');
-                            }
                         }
                     }
                 });
