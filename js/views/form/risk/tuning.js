@@ -172,9 +172,8 @@ define([
 
             var gnomeEff;
 
-            if (selector === 'Dispersion'){
-                var obj_str = 'Chemical' + selector;
-                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + obj_str}).get('efficiency') * 100;
+            if (selector === 'ChemicalDispersion'){
+                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion'}).get('efficiency') * 100;
             } else if (selector === 'Skimming'){
                 gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Skimmer'}).get('efficiency') * 100;
             } else {
