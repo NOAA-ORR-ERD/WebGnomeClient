@@ -545,14 +545,14 @@ define([
             // possibly rewrite this part to update the data set and redraw the chart
             // might be more effecient than completely reinitalizing
             if(nominalData.length > 0){
-                this.nominalPlot = $.plot('.fate .mean .canvas', nominalData, chartOptions);
+                this.nominalPlot = $.plot('.mean .canvas', nominalData, chartOptions);
                 this.$('.mean .oil-total').html('<span>' + Math.round(this.pieFloating(nominalData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
 
                 if (this.uncertainityExists){
-                    this.highPlot = $.plot('.fate .maximum .canvas', highData, chartOptions);
+                    this.highPlot = $.plot('.maximum .canvas', highData, chartOptions);
                     this.$('.maximum .oil-total').html('<span>' + Math.round(this.pieFloating(highData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
 
-                    this.lowPlot = $.plot('.fate .minimum .canvas', lowData, chartOptions);
+                    this.lowPlot = $.plot('.minimum .canvas', lowData, chartOptions);
                     this.$('.minimum .oil-total').html('<span>' + Math.round(this.pieFloating(lowData)) + ' ' + webgnome.model.get('spills').at(0).get('units') + '</span><br />Floating Oil');
 
                 } else if (this.$('.chart-holder-uncert.invisible').length === 0) {
