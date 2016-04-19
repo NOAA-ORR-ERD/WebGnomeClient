@@ -517,10 +517,6 @@ define([
             }
         },
 
-        updateBurn: function(){
-            
-        },
-
         getCleanup: function() {
             var payload = {
                 'Skimmer': [],

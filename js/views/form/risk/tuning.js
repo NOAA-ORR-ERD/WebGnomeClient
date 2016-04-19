@@ -16,6 +16,12 @@ define([
         title: 'Environmental Risk Assessment Input',
         effChanged: false,
 
+        events: function() {
+            return _.defaults({
+                'click input': 'updateEfficiency'
+            }, FormModal.prototype.events);
+        },
+
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.model = (model ? model : null);
@@ -66,6 +72,11 @@ define([
             this.updateBenefit();
         },
 
+        updateEfficiency: function(e) {
+            var effType = this.$(e.target).val();
+            
+        },
+
         renderRelativeImportance: function(){
             this.relativeImp.draw();
 
@@ -105,10 +116,15 @@ define([
         appendRadioButtons: function() {
             var cleanups = this.cleanups;
             for (var key in cleanups) {
+                var label = key;
+                if (label === 'ChemicalDispersion') {
+                    label = 'Chemical Dispersion';
+                }
                 if (cleanups[key].length > 0) {
-                    this.$('.radio-buttons').append('<div class="radio"><label><input type="radio" name="cleanup">' + key + '</label></div>');
+                    this.$('.radio-buttons').append('<div class="radio"><label><input type="radio" name="cleanup" id="' + key + '" value="' + key + '"/>' + label + '</label></div>');
                 }
             }
+            this.$('.radio-buttons input').first().prop('checked', true);
         },
 
         createSlider: function(selector, value){
@@ -132,6 +148,8 @@ define([
                             this.reassessRisk(selector);
                         }, this)
             });
+
+            this.sliderjq = this.$('#' + selector + ' .slider');
         },
 
         reassessRisk: function(selector){

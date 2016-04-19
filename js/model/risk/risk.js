@@ -17,7 +17,13 @@ define([
 
             efficiency: {
                 'Skimming': null,
-                'Dispersion': null,
+                'ChemicalDispersion': null,
+                'Burn': null
+            },
+
+            origEff: {
+                'Skimming': null,
+                'ChemicalDispersion': null,
                 'Burn': null
             },
 
@@ -32,7 +38,7 @@ define([
 
             slopes : {
                 'Skimming': null,
-                'Dispersion': null,
+                'ChemicalDispersion': null,
                 'Burn': null
             }
         },
@@ -49,6 +55,7 @@ define([
                 this.setSlopes(masses);
                 this.fetchNoCleanupData();
             }
+            console.log(this);
         },
 
         fetchNoCleanupData: function(){
@@ -75,18 +82,30 @@ define([
 
         updateEfficiencies: function(){
             var eff = {};
+            if (!this.get('origEff').Skimming) {
+                var origEff = {};
+            }
             _.each(webgnome.model.get('weatherers').models, function(el, idx){
                     if (el.get('obj_type') === "gnome.weatherers.cleanup.ChemicalDispersion") {
                         if (!_.isUndefined(el.get('efficiency'))){
-                            eff.Dispersion = el.get('efficiency');
+                            eff.ChemicalDispersion = el.get('efficiency');
+                            if (origEff) {
+                                origEff.ChemicalDispersion = el.get('efficiency');
+                            }
                         }
                     } else if (el.get('obj_type') === "gnome.weatherers.cleanup.Burn") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.Burn = el.get('efficiency');
+                            if (origEff) {
+                                origEff.Burn = el.get('efficiency');
+                            }
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
                         if (!_.isUndefined(el.get('efficiency'))){
                             eff.Skimming = el.get('efficiency');
+                            if (origEff) {
+                                origEff.Skimming = el.get('efficiency');
+                            }
                         }
                     }
                 });
@@ -187,7 +206,7 @@ define([
                 }
 
                 if (slopes.Dispersion) {
-                    var dispersionRemoved = eff.Dispersion * slopes.Dispersion - masses.chemicalDispersion;
+                    var dispersionRemoved = eff.ChemicalDispersion * slopes.ChemicalDispersion - masses.chemicalDispersion;
 
                     if (dispersionRemoved > 0) {
                         if (masses.surface > dispersionRemoved) {
@@ -257,8 +276,8 @@ define([
                 slopes.Skimming = maxes.Skimmer;
             }
 
-            if (eff.Dispersion) {
-                slopes.Dispersion = maxes.ChemicalDispersion;
+            if (eff.ChemicalDispersion) {
+                slopes.ChemicalDispersion = maxes.ChemicalDispersion;
             }
 
             if (eff.Burn) {
@@ -355,7 +374,7 @@ define([
             for (var key in this.get('efficiency')){
                 if (!_.isNull(this.get('efficiency')[key])){
                     var weatheringModel;
-                    if (key === 'Dispersion'){
+                    if (key === 'ChemicalDispersion'){
                         weatheringModel = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion'});
                     } else if (key === 'Burn'){
                         weatheringModel = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Burn'});
