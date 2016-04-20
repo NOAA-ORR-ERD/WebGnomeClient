@@ -97,7 +97,7 @@ define([
         },
 
         validate: function(attrs, options){
-            
+
             if ($.trim(attrs.name) === ''){
                 this.validationContext = 'spill';
                 return 'A spill name is required!';
@@ -122,7 +122,7 @@ define([
             var substance = attrs.element_type.get('substance');
             var massUnits = ['kg', 'ton', 'metric ton'];
             if(_.isNull(substance) && massUnits.indexOf(attrs.units) === -1){
-                return 'Amount released must use units of mass when using non-weathering substance!';
+                return 'Amount released must use units of mass when using non-weathering substance!\n\nAcceptable units: kilograms, tons, metric tons';
             }
         },
 
@@ -135,7 +135,7 @@ define([
 
         validateAmount: function(attrs){
             var massUnits = ['kg', 'ton', 'metric ton'];
-            
+
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
@@ -193,5 +193,5 @@ define([
     });
 
     return gnomeSpill;
-    
+
 });
