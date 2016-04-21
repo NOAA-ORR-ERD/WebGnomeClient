@@ -790,59 +790,90 @@ define([
         },
 
         renderSpill: function(step){
-            if(!this.certain_spillds){
+            if(!this.les){
                 // this is the first time le are being rendered
                 // create a new datasource to handle the entities
-                this.certain_spillds = new Cesium.CustomDataSource('Certain LE');
-                this.uncertain_spillds = new Cesium.CustomDataSource('Uncertain LE');
-                this.viewer.dataSources.add(this.certain_spillds);
-                this.viewer.dataSources.add(this.uncertain_spillds);
-            }
+                this.les = new Cesium.BillboardCollection();
+                this.certain_collection = [];
+                this.uncertain_collection = [];
+                this.viewer.scene.primitives.add(this.les);
 
-            this.certain_spillds.entities.suspendEvents();
-            this.uncertain_spillds.entities.suspendEvents();
+                var canvas = document.createElement('canvas');
+                canvas.width = 4;
+                canvas.height = 4;
+                var context2D = canvas.getContext('2d');
+                context2D.beginPath();
+                context2D.arc(2, 2, 2, 0, Cesium.Math.TWO_PI, true);
+                context2D.closePath();
+                context2D.fillStyle = 'rgb(255, 255, 255)';
+                context2D.fill();
+                this.les_point_image = this.les.add({image: canvas, show: false}).image;
+
+                canvas = document.createElement('canvas');
+                canvas.width = 10;
+                canvas.height = 10;
+                context2D = canvas.getContext('2d');
+                context2D.moveTo(0, 0);
+                context2D.lineTo(8, 8);
+                context2D.moveTo(8, 7);
+                context2D.lineTo(1, 0);
+                context2D.moveTo(0, 1);
+                context2D.lineTo(7, 8);
+
+                context2D.moveTo(0, 8);
+                context2D.lineTo(8, 0);
+                context2D.moveTo(7, 0);
+                context2D.lineTo(0, 7);
+                context2D.moveTo(1, 8);
+                context2D.lineTo(8, 1);
+                context2D.stroke();
+                this.les_beached_image = this.les.add({image: canvas, show: false}).image;
+
+            }
 
             var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
             var uncertain_json_features = step.get('TrajectoryGeoJsonOutput').uncertain.features;
 
-            var certain_entities = this.certain_spillds.entities.values;
-            var uncertain_entities = this.uncertain_spillds.entities.values;
             for(var f = 0; f < certain_json_features.length; f++){
-                if(!certain_entities[f]){
-                    // create a new entity for the point
-                    this.certain_spillds.entities.add({
+                if(!this.certain_collection[f]){
+                    // create a new point
+                    this.certain_collection.push(this.les.add({
                         position: Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]),
-                        point: {
-                            color: Cesium.Color.BLACK,
-                            pixelSize: 2
-                        }
-                    });
-                    this.uncertain_spillds.entities.add({
+                        color: Cesium.Color.BLACK,
+                        image: certain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
+                    }));
+                    this.uncertain_collection.push(this.les.add({
                         position: Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]),
-                        point:{
-                            color: Cesium.Color.RED,
-                            pixelSize: 2
-                        }
-                    });
+                        color: Cesium.Color.RED,
+                        image: uncertain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
+                    }));
                 } else {
-                    // update the entity w/ the new position and properties.
-                    certain_entities[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
-                    certain_entities[f].point.show = true;
-                    uncertain_entities[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
-                    uncertain_entities[f].point.show = true;
+                    // update the point
+                    this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
+                    this.certain_collection[f].show = true;
+                    this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
+                    this.uncertain_collection[f].show = true;
+
+                    if(certain_json_features[f].properties.status_code === 3){
+                        this.certain_collection[f].image = this.les_beached_image;
+                    } else {
+                        this.certain_collection[f].image = this.les_point_image;
+                    }
+                    if(uncertain_json_features[f].properties.status_code === 3){
+                        this.uncertain_collection[f].image = this.les_beached_image;
+                    } else {
+                        this.uncertain_collection[f].image = this.les_point_image;
+                    }
                 }
             }
-            if(certain_entities.length > certain_json_features.length){
+            if(this.certain_collection.length > certain_json_features.length){
                 // we have entites that were created for a future step but the model is now viewing a previous step
                 // hide the leftover entities
-                for(var l = certain_json_features.length + 1; l < certain_entities.length; l++){
-                    certain_entities[l].point.show = false;
-                    uncertain_entities[l].point.show = false;
+                for(var l = certain_json_features.length; l < this.certain_collection.length; l++){
+                    this.certain_collection[l].show = false;
+                    this.uncertain_collection[l].show = false;
                 }
             }
-
-            this.certain_spillds.entities.resumeEvents();
-            this.uncertain_spillds.entities.resumeEvents();
 
             // var traj_source = new ol.source.Vector({
             //     features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
