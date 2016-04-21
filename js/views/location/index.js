@@ -31,7 +31,7 @@ define([
             } else {
                 this.dom_target = 'body';
             }
-                    
+
             this.mapView = new OlMapView({
                 controls: [],
                 id: 'locations-map',
@@ -118,11 +118,11 @@ define([
         },
 
         render: function(){
-            var compiled = _.template(LocationsTemplate);            
+            var compiled = _.template(LocationsTemplate);
             $(this.dom_target).append(this.$el.html(compiled));
 
             this.mapView.render();
-            setTimeout(_.bind(function(){
+            var popupAppend = (function() {
                 this.popup = new ol.Overlay({
                     position: 'bottom-center',
                     element: this.$('.popup'),
@@ -131,10 +131,10 @@ define([
                     offsetY: -22
                 });
                 this.mapView.map.addOverlay(this.popup);
-            }, this), 1);
-            
+            }).bind(this);
 
-
+            setTimeout(popupAppend, 3);
+            console.log(this.popup);
             this.registerMapEvents();
         },
 
