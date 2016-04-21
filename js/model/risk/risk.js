@@ -16,13 +16,13 @@ define([
             'distance_d': 5,
 
             efficiency: {
-                'Skimming': null,
+                'Skimmer': null,
                 'ChemicalDispersion': null,
                 'Burn': null
             },
 
             origEff: {
-                'Skimming': null,
+                'Skimmer': null,
                 'ChemicalDispersion': null,
                 'Burn': null
             },
@@ -37,7 +37,7 @@ define([
             },
 
             slopes : {
-                'Skimming': null,
+                'Skimmer': null,
                 'ChemicalDispersion': null,
                 'Burn': null
             }
@@ -98,7 +98,7 @@ define([
                         }
                     } else if (el.attributes.obj_type === "gnome.weatherers.cleanup.Skimmer") {
                         if (!_.isUndefined(el.get('efficiency'))){
-                            eff.Skimming = el.get('efficiency');
+                            eff.Skimmer = el.get('efficiency');
                         }
                     }
                 });
@@ -183,8 +183,8 @@ define([
             if (Object.keys(this.get('slopes')).length !== 0) {
                 var slopes = this.get('slopes');
 
-                if (slopes.Skimming) {
-                    var skimmedRemoved = eff.Skimming * slopes.Skimming - masses.skimmed;
+                if (slopes.Skimmer) {
+                    var skimmedRemoved = eff.Skimmer * slopes.Skimmer - masses.skimmed;
 
                     if (skimmedRemoved > 0) {
                         if (masses.surface > skimmedRemoved) {
@@ -265,8 +265,8 @@ define([
             var slopes = {};
             var maxes = this.getMaxCleanup();
 
-            if (eff.Skimming) {
-                slopes.Skimming = maxes.Skimmer;
+            if (eff.Skimmer) {
+                slopes.Skimmer = maxes.Skimmer;
             }
 
             if (eff.ChemicalDispersion) {
@@ -306,21 +306,17 @@ define([
             var netERA, subsurfaceBenefit, shorelineBenefit, surfaceBenefit;
             var subsurfaceBenefit_noclean, surfaceBenefit_noclean, shorelineBenefit_noclean, netERA_clean, netERA_noclean;
 
-            var BAD1 = 1;
-            var BAD2 = this.get('distance_d') / this.get('distance');
-            var BAD3 = BAD2 / (this.get('depth') / this.get('depth_d'));
-
             for (var key in values){
                 if (key === 'Subsurface'){
-                    var subSurfaceFactor = BAD3 * (values[key].data / 100);
+                    var subSurfaceFactor = values[key].data / 100;
                     subsurfaceBenefit = (this.get('column') / this.get('total')) * subSurfaceFactor;
                     subsurfaceBenefit_noclean = (this.get('column_noclean') / this.get('total')) * subSurfaceFactor;
                 } else if (key === 'Shoreline'){
-                    var shoreFactor = BAD1 * (values[key].data / 100);
+                    var shoreFactor = values[key].data / 100;
                     shorelineBenefit = (this.get('shoreline') / this.get('total')) * shoreFactor;
                     shorelineBenefit_noclean = (this.get('shoreline_noclean') / this.get('total')) * shoreFactor;
                 } else if (key === 'Surface'){
-                    var surfaceFactor = BAD2 * (values[key].data / 100);
+                    var surfaceFactor = values[key].data / 100;
                     surfaceBenefit = (this.get('surface') / this.get('total')) * surfaceFactor;
                     surfaceBenefit_noclean = (this.get('surface_noclean') / this.get('total')) * surfaceFactor;
                 }
@@ -371,7 +367,7 @@ define([
                         weatheringModel = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion'});
                     } else if (key === 'Burn'){
                         weatheringModel = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Burn'});
-                    } else if (key === 'Skimming'){
+                    } else if (key === 'Skimmer'){
                         weatheringModel = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Skimmer'});
                     }
                     if (!_.isUndefined(weatheringModel)){

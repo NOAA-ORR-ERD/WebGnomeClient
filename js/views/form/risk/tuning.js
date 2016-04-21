@@ -155,40 +155,27 @@ define([
                            this.updateTooltipWidth();
                         }, this),
                     stop: _.bind(function(e, ui){
-                            this.reassessRisk(type);
+                            this.reassessRisk();
                         }, this)
             });
 
             this.sliderjq = this.$('#' + selector + ' .slider');
         },
 
-        reassessRisk: function(type){
+        reassessRisk: function(){
             var sliderEff = this.sliderjq.slider('value');
             // set model
             var eff = this.model.get('efficiency');
+            var type = this.$('.radio-buttons input:radio[name=cleanup]:checked').val();
             eff[type] = sliderEff / 100;
 
             this.model.set('efficiency', eff);
 
-            var gnomeEff;
+            var gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + type}).get('efficiency') * 100;
 
-            if (type === 'ChemicalDispersion'){
-                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion'}).get('efficiency') * 100;
-            } else if (type === 'Skimming'){
-                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.Skimmer'}).get('efficiency') * 100;
-            } else {
-                gnomeEff = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.cleanup.' + type}).get('efficiency') * 100;
-            }
+            this.effChanged = Math.floor(gnomeEff) !== sliderEff;
 
-            // if (Math.floor(gnomeEff) !== sliderEff){
-            //     this.$('#' + selector + ' p').removeClass('hide');
-            //     this.effChanged = true;
-            // } else {
-            //     this.$('#' + selector + ' p').addClass('hide');
-            //     this.effChanged = false;
-            // }
-
-            // assess model
+            // // assess model
             this.model.assessment();
 
             this.updateBenefit();
@@ -196,9 +183,7 @@ define([
 
         save: function(e){
             e.preventDefault();
-            var effChanged = this.effChanged ? this.effChanged : false;
             this.model.save();
-            //FormModal.prototype.wizardclose.call(this);
             if (this.effChanged) {
                 webgnome.cache.rewind();
             }
