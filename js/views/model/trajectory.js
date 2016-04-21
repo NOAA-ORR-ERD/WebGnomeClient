@@ -829,6 +829,8 @@ define([
                 context2D.lineTo(0, 7);
                 context2D.moveTo(1, 8);
                 context2D.lineTo(8, 1);
+
+                context2D.strokeStyle = 'rgb(255, 255, 255)';
                 context2D.stroke();
                 this.les_beached_image = this.les.add({image: canvas, show: false}).image;
 
