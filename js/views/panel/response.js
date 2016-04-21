@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
+    'sweetalert',
     'views/panel/base',
     'views/form/response/type',
     'text!templates/panel/response.html',
@@ -12,7 +13,7 @@ define([
     'flot',
     'flottime',
     'flotgantt',
-], function($, _, Backbone, moment, BasePanel, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView){
+], function($, _, Backbone, moment, swal, BasePanel, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView){
     var responsePanel = BasePanel.extend({
         className: 'col-md-3 response panel-view',
 
