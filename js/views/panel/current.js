@@ -66,7 +66,7 @@ define([
                     })
                 ]);
 
-                var currentMap = new OlMapView({
+                this.currentMap = new OlMapView({
                     el: this.$('#mini-currentmap'),
                     controls: [],
                     layers: this.current_layers,
@@ -76,22 +76,22 @@ define([
                         doubleClickZoom: false
                     }),
                 });
-                currentMap.render();
+                this.currentMap.render();
                 this.current_extents = [];
                 for(var c = 0; c < currents.length; c++){
-                    currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
+                    // currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
 
-                currentMap.map.on('postcompose', function(){
+                this.currentMap.map.on('postcompose', _.bind(function(){
                     if(webgnome.model.get('map')){
                         if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
                             var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                            currentMap.map.getView().fit(extent, currentMap.map.getSize());
+                            this.currentMap.map.getView().fit(extent, this.currentMap.map.getSize());
                         } else {
-                            currentMap.map.getView().setZoom(3);
+                            this.currentMap.map.getView().setZoom(3);
                         }
                     }
-                });
+                }, this));
 
             } else {
                 this.current_extents = [];
@@ -146,7 +146,15 @@ define([
                     });
                 }
             }, this));
+        },
+
+        close: function(){
+            if(this.currentMap){
+                this.currentMap.close();
+            }
+            BasePanel.prototype.close.call(this);
         }
+
     });
     return currentPanel;
 });
