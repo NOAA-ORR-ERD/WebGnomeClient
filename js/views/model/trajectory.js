@@ -1367,7 +1367,7 @@ define([
             Mousetrap.unbind('left');
             this.remove();
             this.unbind();
-            // this.ol.close();
+            this.viewer.destroy();
         }
     });
 
