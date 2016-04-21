@@ -122,16 +122,14 @@ define([
             $(this.dom_target).append(this.$el.html(compiled));
 
             this.mapView.render();
-            setTimeout(_.bind(function(){
-                this.popup = new ol.Overlay({
-                    position: 'bottom-center',
-                    element: this.$('.popup'),
-                    stopEvent: true,
-                    offsetX: -2,
-                    offsetY: -22
-                });
-                this.mapView.map.addOverlay(this.popup);
-            }, this), 1);
+            this.popup = new ol.Overlay({
+                position: 'bottom-center',
+                element: this.$('.popup')[0],
+                stopEvent: true,
+                offsetX: -2,
+                offsetY: -22
+            });
+            this.mapView.map.addOverlay(this.popup);
             
 
 
