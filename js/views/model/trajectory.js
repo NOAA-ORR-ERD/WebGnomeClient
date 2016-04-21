@@ -8,13 +8,12 @@ define([
     'text!templates/model/controls.html',
     'views/default/map',
     'cesium',
-    'ol',
     'model/spill',
     'views/form/spill/continue',
     'model/step',
     'mousetrap',
     'jqueryui/slider'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, ol, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: 'trajectory-view map ',
@@ -56,7 +55,7 @@ define([
             if(webgnome.hasModel()){
                 this.modelListeners();
             }
-            this.createStyles();
+            // this.createStyles();
             this.render();
             webgnome.cache.on('rewind', this.rewind, this);
         },
