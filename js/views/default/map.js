@@ -187,8 +187,11 @@ define([
         },
 
         close: function(){
-            this.map.setTarget(null);
-            this.map = null;
+            if (this.map) {
+                this.map.setTarget(null);
+                this.map = null;
+            }
+            
             Backbone.View.prototype.close.call(this);
         },
 
