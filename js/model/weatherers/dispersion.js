@@ -10,8 +10,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',
-            'efficiency': 0.20,
-            'fraction_sprayed': 0
+            'efficiency': 0.20
         },
 
         model: {
@@ -19,7 +18,7 @@ define([
         },
 
         validate: function(attrs, options){
-            if (attrs.fraction_sprayed <= 0){
+            if (_.isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0){
                 return 'Percent of oil sprayed must be greater than zero!';
             }
 
