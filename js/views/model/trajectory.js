@@ -382,7 +382,11 @@ define([
                 sceneMode: Cesium.SceneMode.SCENE2D,
                 mapProjection: new Cesium.WebMercatorProjection(),
                 selectedImageryProviderViewModel: default_image,
-                imageryProviderViewModels: image_providers
+                imageryProviderViewModels: image_providers,
+                clock: new Cesium.Clock({
+                    canAnimate: false,
+                    shouldAnimate: false
+                })
             });
 
             var map = webgnome.model.get('map');
