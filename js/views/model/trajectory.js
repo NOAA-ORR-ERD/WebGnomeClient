@@ -405,7 +405,10 @@ define([
             });
 
             map.getGeoJSON(_.bind(function(geojson){
-                this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(geojson));
+                this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(geojson, {
+                    strokeWidth: 0,
+                    stroke: Cesium.Color.WHITE.withAlpha(0)
+                }));
             }, this));
             this.load();
         },
