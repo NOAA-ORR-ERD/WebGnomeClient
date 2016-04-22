@@ -236,6 +236,8 @@ define([
                 }
             }
 
+            console.log(masses);
+
             return masses;
         },
 

@@ -43,6 +43,8 @@ define([
 
             this.model.deriveAssessmentTime();
 
+            this.model.assessment();
+
             this.body = _.template(RiskTemplate, {
                 assessmentTime: this.model.get('assessmentTime')
             });
@@ -51,7 +53,7 @@ define([
 
             var firstEff = this.appendRadioButtons();
 
-            this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10), firstEff);
+            this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10));
 
             this.relativeImp = new RelativeImportance('importance',
             {
@@ -137,7 +139,7 @@ define([
             return firstRadio.val();
         },
 
-        createSlider: function(selector, value, type){
+        createSlider: function(selector, value){
             var sliderTemplate = _.template(SliderTemplate, {'selector': selector});
 
             this.$('.sliders-container').append(sliderTemplate);
