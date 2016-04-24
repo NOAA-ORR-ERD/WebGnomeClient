@@ -650,51 +650,31 @@ define([
 
             var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
             current.getGrid(_.bind(function(data){
-                var grid = new Cesium.EntityCollection();
-
+                var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
+                var geometryInstances = [];
                 for(var cell = 0; cell < data.length; cell++){
-                    this.viewer.entities.add({
-                        name: 'grid-' + current.get('id'),
-                        polygon:{
-                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(data[cell])),
-                            material: Cesium.Color.PINK.withAlpha(0.1),
-                            outlineColor: Cesium.Color.PINK.withAlpha(0.7),
-                            outline: true
-                        }
-                    });
+                    geometryInstances.push(new Cesium.GeometryInstance({
+                        geometry: new Cesium.SimplePolylineGeometry({
+                            positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
+                        }),
+                        id: 'grid',
+                        attributes: {
+                            color: color
+                        },
+                        allowPicking: false
+                    }));
+                }
+                if(geometryInstances.length > 0){
+                    this.viewer.scene.primitives.add(new Cesium.Primitive({
+                        geometryInstances: geometryInstances,
+                        cull: false,
+                        appearance: new Cesium.PerInstanceColorAppearance({
+                            flat: true,
+                            translucent: false
+                        })
+                    }));
                 }
             }, this));
-
-            // this.ol.map.getLayers().forEach(function(layer){
-            //     if (layer.get('id') === id){
-            //         gridLayer = layer;
-            //     }
-            // });
-            
-            // if (_.isUndefined(gridLayer) && id !== 'none-grid'){
-            //     var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
-            //     current.getGrid(_.bind(function(grid){
-            //         if (grid){
-            //             gridLayer = new ol.layer.Vector({
-            //                 id: id,
-            //                 type: 'grid',
-            //                 source: new ol.source.Vector({
-            //                     features: grid
-            //                 }),
-            //                 style: this.styles.currents_grid
-            //             });
-            //             this.ol.map.getLayers().insertAt(3, gridLayer);
-            //         }
-            //     }, this));
-            // } 
-
-            // this.ol.map.getLayers().forEach(function(layer){
-            //     if (layer.get('id') === id && layer.get('type') === 'grid'){
-            //         layer.setVisible(true);
-            //     } else if(layer.get('id') !== id && layer.get('type') === 'grid' || id === 'none-grid' && layer.get('type') === 'grid'){
-            //         layer.setVisible(false);
-            //     }
-            // });
         },
 
         toggleUV: function(e){
