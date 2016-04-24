@@ -645,36 +645,46 @@ define([
         },
 
         toggleGrid: function(e){
-            var id = this.$(e.currentTarget).attr('id');
-            var checked = this.$(e.currentTarget).is(':checked');
+            if(!this.grids){
+                this.grids = {};
+            }
+            var existing_grids = _.keys(this.grids);
+            for(var grid = 0; grid < existing_grids.length; grid++){
+                this.grids[existing_grids[grid]].show = false;
+            }
 
-            var current = webgnome.model.get('movers').findWhere({id: id.replace('grid-', '')});
-            current.getGrid(_.bind(function(data){
-                var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
-                var geometryInstances = [];
-                for(var cell = 0; cell < data.length; cell++){
-                    geometryInstances.push(new Cesium.GeometryInstance({
-                        geometry: new Cesium.SimplePolylineGeometry({
-                            positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
-                        }),
-                        id: 'grid',
-                        attributes: {
-                            color: color
-                        },
-                        allowPicking: false
-                    }));
-                }
-                if(geometryInstances.length > 0){
-                    this.viewer.scene.primitives.add(new Cesium.Primitive({
-                        geometryInstances: geometryInstances,
-                        cull: false,
-                        appearance: new Cesium.PerInstanceColorAppearance({
-                            flat: true,
-                            translucent: false
-                        })
-                    }));
-                }
-            }, this));
+            var id = this.$(e.currentTarget).attr('id').replace('grid-', '');
+            if(_.has(this.grids, id)){
+                this.grids[id].show = true;
+            } else if(id !== 'none-grid'){
+                var current = webgnome.model.get('movers').findWhere({id: id});
+                current.getGrid(_.bind(function(data){
+                    var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
+                    var geometryInstances = [];
+                    for(var cell = 0; cell < data.length; cell++){
+                        geometryInstances.push(new Cesium.GeometryInstance({
+                            geometry: new Cesium.SimplePolylineGeometry({
+                                positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
+                            }),
+                            id: 'grid',
+                            attributes: {
+                                color: color
+                            },
+                            allowPicking: false
+                        }));
+                    }
+                    if(geometryInstances.length > 0){
+                        this.grids[current.get('id')] = this.viewer.scene.primitives.add(new Cesium.Primitive({
+                            geometryInstances: geometryInstances,
+                            cull: false,
+                            appearance: new Cesium.PerInstanceColorAppearance({
+                                flat: true,
+                                translucent: false
+                            })
+                        }));
+                    }
+                }, this));
+            }
         },
 
         toggleUV: function(e){
