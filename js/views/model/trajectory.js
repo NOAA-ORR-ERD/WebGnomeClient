@@ -443,15 +443,11 @@ define([
                 // hide the leftover entities
                 for(var l = certain_json_features.length; l < this.certain_collection.length; l++){
                     this.certain_collection[l].show = false;
-                    this.uncertain_collection[l].show = false;
+                    if(this.uncertain_collection[l]){
+                        this.uncertain_collection[l].show = false;
+                    }
                 }
             }
-
-            // var traj_source = new ol.source.Vector({
-            //     features: (new ol.format.GeoJSON()).readFeatures(step.get('TrajectoryGeoJsonOutput').feature_collection,  {featureProjection: 'EPSG:3857'}),
-            //     useSpatialIndex: false
-            // });
-            // this.SpillLayer.setSource(traj_source);
         },
 
         renderCurrent: function(step){
