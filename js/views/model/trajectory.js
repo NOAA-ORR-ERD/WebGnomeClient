@@ -408,27 +408,33 @@ define([
                         color: Cesium.Color.BLACK,
                         image: certain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
                     }));
-                    this.uncertain_collection.push(this.les.add({
-                        position: Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]),
-                        color: Cesium.Color.RED,
-                        image: uncertain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
-                    }));
+
+                    if (uncertain_json_features.length > 0) {
+                        this.uncertain_collection.push(this.les.add({
+                            position: Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]),
+                            color: Cesium.Color.RED,
+                            image: uncertain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
+                        }));
+                    }
                 } else {
                     // update the point
                     this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
                     this.certain_collection[f].show = true;
-                    this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
-                    this.uncertain_collection[f].show = true;
-
                     if(certain_json_features[f].properties.status_code === 3){
                         this.certain_collection[f].image = this.les_beached_image;
                     } else {
                         this.certain_collection[f].image = this.les_point_image;
                     }
-                    if(uncertain_json_features[f].properties.status_code === 3){
-                        this.uncertain_collection[f].image = this.les_beached_image;
-                    } else {
-                        this.uncertain_collection[f].image = this.les_point_image;
+
+                    if (uncertain_json_features.length > 0) {
+                        this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
+                        this.uncertain_collection[f].show = true;
+
+                        if(uncertain_json_features[f].properties.status_code === 3){
+                            this.uncertain_collection[f].image = this.les_beached_image;
+                        } else {
+                            this.uncertain_collection[f].image = this.les_point_image;
+                        }
                     }
                 }
             }
