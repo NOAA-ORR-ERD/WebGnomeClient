@@ -50,14 +50,6 @@ define([
                 ]
             });
             this.mapview.render();
-            this.geolocation = new ol.Geolocation({
-                projection: this.mapview.map.getView().getProjection()
-            });
-            this.geolocation.setTracking(true);
-            this.geolocation.on('change:position', _.bind(function(){
-                this.mapview.map.getView().setCenter(this.geolocation.getPosition());
-                this.mapview.map.getView().setZoom(20);
-            },this));
         },
 
         setup: function(e){
