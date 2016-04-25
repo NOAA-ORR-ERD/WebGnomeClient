@@ -229,7 +229,6 @@ define([
                         masses.surface += Math.abs(burnRemoved);
                     }
                     masses.burned += burnRemoved;
-                    console.log(masses);
                 }
             }
 
