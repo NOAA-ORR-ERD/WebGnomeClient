@@ -82,6 +82,7 @@ define([
             this.sliderjq.slider('value', currentEff);
             this.updateTooltip(currentEff);
             this.model.set('active_cleanup', effType);
+            this.reassessRisk();
         },
 
         updateTooltip: function(value) {
