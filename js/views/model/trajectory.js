@@ -151,9 +151,13 @@ define([
         },
 
         renderCesiumMap: function(){
+            if(!this.layers){
+                this.layers = {};
+            }
+
             var image_providers = Cesium.createDefaultImageryProviderViewModels();
             var default_image = new Cesium.ProviderViewModel({
-                name: 'Blank',
+                name: 'None',
                 tooltip: '',
                 iconUrl: '/img/globe.png',
                 creationFunction: function(){
@@ -166,7 +170,7 @@ define([
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
                 vrButton: false,
-                geocode: false,
+                geocoder: false,
                 homeButton: false,
                 timeline: false,
                 navigationHelpButton: false,
@@ -182,23 +186,26 @@ define([
                 })
             });
 
-            var map = webgnome.model.get('map');
-            var bounds = this.viewer.entities.add({
-                name: 'Map Bounds',
-                polygon: {
-                    hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(map.get('map_bounds'))),
-                    material: Cesium.Color.WHITE.withAlpha(0),
-                    outline: true,
-                    outlineColor: Cesium.Color.BLUE,
-                    show:true
-                }
-            });
-            this.viewer.flyTo(bounds, {
-                duration: 1.0,
-            });
+            this.spills = [];
+            this.layers.spills = this.spills;
+            webgnome.model.get('spills').forEach(_.bind(function(spill){
+                var release = spill.get('release');
+                this.spills.push(this.viewer.entities.add({
+                    name: spill.get('name'),
+                    id: spill.get('id'),
+                    position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
+                    billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+                    },
+                    description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
+                }));
+            }, this));
 
-            map.getGeoJSON(_.bind(function(geojson){
-                this.viewer.dataSources.add(Cesium.GeoJsonDataSource.load(geojson, {
+
+            webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                this.layers.map = new Cesium.GeoJsonDataSource();
+                this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
                     stroke: Cesium.Color.WHITE.withAlpha(0)
                 }));
@@ -358,6 +365,7 @@ define([
                 // this is the first time le are being rendered
                 // create a new datasource to handle the entities
                 this.les = new Cesium.BillboardCollection();
+                this.layers.particles = this.les;
                 this.certain_collection = [];
                 this.uncertain_collection = [];
                 this.viewer.scene.primitives.add(this.les);
@@ -399,6 +407,7 @@ define([
 
             var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
             var uncertain_json_features = step.get('TrajectoryGeoJsonOutput').uncertain.features;
+            var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
 
             for(var f = 0; f < certain_json_features.length; f++){
                 if(!this.certain_collection[f]){
@@ -417,9 +426,8 @@ define([
                         }));
                     }
                 } else {
-                    // update the point
+                    // update the point position and graphical representation
                     this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
-                    this.certain_collection[f].show = true;
                     if(certain_json_features[f].properties.status_code === 3){
                         this.certain_collection[f].image = this.les_beached_image;
                     } else {
@@ -428,7 +436,6 @@ define([
 
                     if (uncertain_json_features.length > 0) {
                         this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
-                        this.uncertain_collection[f].show = true;
 
                         if(uncertain_json_features[f].properties.status_code === 3){
                             this.uncertain_collection[f].image = this.les_beached_image;
@@ -437,10 +444,17 @@ define([
                         }
                     }
                 }
+
+                // set visibility of the particle
+                this.certain_collection[f].show = visible;
+                if(this.uncertain_collection[f]){
+                    this.uncertain_collection[f].show = visible;
+                }
             }
+
             if(this.certain_collection.length > certain_json_features.length){
                 // we have entites that were created for a future step but the model is now viewing a previous step
-                // hide the leftover entities
+                // hide the leftover particles
                 for(var l = certain_json_features.length; l < this.certain_collection.length; l++){
                     this.certain_collection[l].show = false;
                     if(this.uncertain_collection[l]){
@@ -619,29 +633,94 @@ define([
         },
 
         toggleLayers: function(event){
-            var checked_layers = [];
+            var checked_layers = this.checked_layers = [];
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
             });
-            var base_layer = this.$('.layers input[name="maplayer"]:checked').val();
 
-            this.ol.map.getLayers().forEach(function(layer){
-                if (layer.get('type') === 'base'){
-                    if (base_layer !== 'none'){
-                        if(layer.get('name') === base_layer){
-                            layer.setVisible(true);
-                        } else {
-                            layer.setVisible(false);
-                        }
-                    } else {
-                        layer.setVisible(false);
-                    }
-                } else if (checked_layers.indexOf(layer.get('name')) !== -1 || layer.get('name') === 'currents'){
-                    layer.setVisible(true);
-                } else if (_.isUndefined(layer.get('id'))){
-                    layer.setVisible(false);
+            if(checked_layers.indexOf('noaanavcharts') !== -1){
+                if (!this.layers.nav) {
+                    this.layers.nav = this.viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
+                        layers: '1',
+                        url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                    }));
+                    this.layers.nav.alpha = 0.60;
                 }
-            });
+            } else if(this.layers.nav) {
+                this.viewer.imageryLayers.remove(this.layers.nav);
+                delete this.layers.nav;
+            }
+
+            if(checked_layers.indexOf('modelmap') !== -1){
+                this.layers.map.show = true;
+            } else {
+                this.layers.map.show = false;
+            }
+
+            if(checked_layers.indexOf('spills') !== -1){
+                for(var spill in this.layers.spills){
+                    this.layers.spills[spill].show = true;
+                }
+            } else {
+                for(var spill in this.layers.spills){
+                    this.layers.spills[spill].show = false;
+                }
+            }
+
+            // start at two because of the two billboard primitives added for image reference
+            if(checked_layers.indexOf('particles') !== -1 && this.layers.particles){
+                for(var part = 2; part < this.layers.particles.length; part++){
+                    this.layers.particles.get(part).show = true;
+                }
+            } else if(this.layers.particles) {
+                for(var part = 2; part < this.layers.particles.length; part++){
+                    this.layers.particles.get(part).show = false;
+                }
+            }
+
+            if(checked_layers.indexOf('spillableArea') !== -1){
+                if(!this.layers.spillable){
+                    this.layers.spillable = [];
+                    var polygons = webgnome.model.get('map').get('spillable_area');
+                    for(var poly in polygons){
+                        this.layers.spillable.push(this.viewer.entities.add({ 
+                            polygon: {
+                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                material: Cesium.Color.BLUE.withAlpha(0.25),
+                                outline: true,
+                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75)
+                            }
+                        }));    
+                    }
+                } else {
+                    for(var area in this.layers.spillable){
+                        this.layers.spillable[area].show = true;
+                    }
+                }
+            } else if(this.layers.spillable){
+                for(var area in this.layers.spillable){
+                    this.layers.spillable[area].show = false;
+                }
+            }
+
+            if(checked_layers.indexOf('map_bounds') !== -1){
+                if(!this.layers.bounds){
+                    var map = webgnome.model.get('map');
+                    this.layers.bounds = this.viewer.entities.add({
+                        name: 'Map Bounds',
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(map.get('map_bounds'))),
+                            material: Cesium.Color.WHITE.withAlpha(0),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE,
+                        }
+                    });                    
+                } else {
+                    this.layers.bounds.show = true;
+                } 
+            } else if(this.layers.bounds){
+                this.layers.bounds.show = false;
+            }
         },
 
         toggleGrid: function(e){
