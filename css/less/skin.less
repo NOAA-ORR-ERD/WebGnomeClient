@@ -1553,7 +1553,7 @@ nav.navbar{
         width: 70%;
     }
 
-    .spill-button, .help-button{
+    .spill-button{
         left: .5em;
         top: 10em;
         z-index: 1;
@@ -1605,21 +1605,12 @@ nav.navbar{
     }
 
     .help-button{
-        top: 14.5em;
-        display: none;
-
+        top: 50px;
+        position: absolute;
+        right: 121px;
+        z-index: 1;
         button{
             color: white;
-
-        }
-        [role=tooltip]{
-            display: none;
-        }
-
-        &:hover{
-            [role=tooltip]{
-                top: inherit;
-            }
         }
     }
 
@@ -1703,7 +1694,7 @@ nav.navbar{
     }
 
     .layers{
-        top: 75px;
+        top: 90px;
         right: -300px;
         width: 300px;
         position: absolute;
@@ -1771,6 +1762,26 @@ nav.navbar{
                     text-overflow: ellipsis;
                 }
             }
+        }
+    }
+
+    .cesium-viewer-toolbar{
+        right: 45px;
+        top: 50px;
+    }
+    .cesium-infoBox{
+        left: 0px;
+        top: 50px;
+        transform: translate(-100%, 0);
+        box-shadow: 0 0 0;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        overflow: hidden;
+        &.cesium-infoBox-visible{
+
+            transform: translate(0, 0);
         }
     }
 }
