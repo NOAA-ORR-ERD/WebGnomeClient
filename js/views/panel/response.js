@@ -37,7 +37,7 @@ define([
         },
 
         render: function(){
-            weatherers = webgnome.model.get('weatherers').models;
+            var weatherers = webgnome.model.get('weatherers').models;
             this.filter(weatherers);
 
             var compiled = _.template(ResponsePanelTemplate, {

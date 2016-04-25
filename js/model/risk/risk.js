@@ -31,6 +31,8 @@ define([
             'column': 1/3,
             'shoreline': 1/3,
 
+            'active_cleanup': null,
+
             units: {
                 'depth': 'm',
                 'distance': 'km'
@@ -183,7 +185,7 @@ define([
             if (Object.keys(this.get('slopes')).length !== 0) {
                 var slopes = this.get('slopes');
 
-                if (slopes.Skimmer) {
+                if (slopes.Skimmer && this.get('active_cleanup') === 'Skimmer') {
                     var skimmedRemoved = eff.Skimmer * slopes.Skimmer - masses.skimmed;
 
                     if (skimmedRemoved > 0) {
@@ -198,7 +200,7 @@ define([
                     masses.skimmed += skimmedRemoved;
                 }
 
-                if (slopes.ChemicalDispersion) {
+                if (slopes.ChemicalDispersion && this.get('active_cleanup') === 'ChemicalDispersion') {
                     var dispersionRemoved = eff.ChemicalDispersion * slopes.ChemicalDispersion - masses.chemicalDispersion;
 
                     if (dispersionRemoved > 0) {
@@ -214,7 +216,7 @@ define([
                     masses.column += dispersionRemoved;
                 }
  
-                if (slopes.Burn) {
+                if (slopes.Burn && this.get('active_cleanup') === 'Burn') {
                     var burnRemoved = eff.Burn * slopes.Burn - masses.burned;
 
                     if (burnRemoved > 0) {
@@ -227,6 +229,7 @@ define([
                         masses.surface += Math.abs(burnRemoved);
                     }
                     masses.burned += burnRemoved;
+                    console.log(masses);
                 }
             }
 
@@ -235,8 +238,6 @@ define([
                     masses[key] = 0;
                 }
             }
-
-            console.log(masses);
 
             return masses;
         },
@@ -256,7 +257,7 @@ define([
 
             for (var i = 0; i < cleanups.length; i++) {
                 var str = cleanups[i].parseObjType();
-                maxes[str] += this.convertMass(cleanups[i].get('amount'), cleanups[i].get('units'));
+                maxes[str] = cleanups[i].getMaxCleanup();
             }
 
             return maxes;

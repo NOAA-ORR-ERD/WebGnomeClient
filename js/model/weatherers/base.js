@@ -12,6 +12,12 @@ define([
             'obj_type': 'gnome.weatherers.Weathering'
         },
 
+        cleanupMap: {
+            'Skimmer': 'skimmed',
+            'Burn': 'burned',
+            'ChemicalDispersion': 'chem_dispersed'
+        },
+
 		initialize: function(){
             if (this.get('obj_type').indexOf('cleanup') !== -1){
                 var start_time = '';
@@ -49,6 +55,19 @@ define([
             _.each(relevantColl, function(el, inx, list){
                 el.set('efficiency', eff);
             });
+        },
+
+        getMaxCleanup: function() {
+            var type = this.parseObjType();
+            var balance = webgnome.mass_balance;
+            var key = this.cleanupMap[type];
+            var cleanup = _.filter(balance, function(el){
+                return el.name === key;
+            });
+            var current_amount = cleanup[0].nominal[parseInt(webgnome.model.get('num_time_steps'), 10) - 1][1];
+            var eff = (this.get('efficiency') !== 0) ? this.get('efficiency') : 1;
+
+            return current_amount / eff;
         }
 	});
 

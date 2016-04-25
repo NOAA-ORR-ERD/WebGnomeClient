@@ -55,6 +55,8 @@ define([
 
             this.createSlider('response', parseInt(this.model.get('efficiency')[firstEff] * 100, 10));
 
+            this.model.set('active_cleanup', firstEff);
+
             this.relativeImp = new RelativeImportance('importance',
             {
                 sideLength: 150,
@@ -79,6 +81,7 @@ define([
             var currentEff = parseInt(this.model.get('efficiency')[effType] * 100, 10);
             this.sliderjq.slider('value', currentEff);
             this.updateTooltip(currentEff);
+            this.model.set('active_cleanup', effType);
         },
 
         updateTooltip: function(value) {
