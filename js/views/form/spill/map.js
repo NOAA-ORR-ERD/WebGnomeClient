@@ -41,6 +41,7 @@ define([
             });
             var id = 'spill-form-map-' + this.model.cid;
             this.spillMapView = new SpillMapView({
+                trajectory: true,
                 id: id,
                 zoom: 2,
                 center: [-128.6, 42.7],
@@ -75,8 +76,6 @@ define([
             }, this), 250);
             this.renderSpillFeature();
             this.toggleSpill();
-            this.locationSelect();
-            this.renderSpillableArea();
             this.addMapControls();
         },
 
@@ -380,34 +379,6 @@ define([
             var controls = _.template(MapControlsTemplate, {});
             this.$('.ol-viewport').append(controls);
             this.$('[data-toggle="tooltip"]').tooltip({placement: 'right'});
-        },
-
-        locationSelect: function(){
-            var map = webgnome.model.get('map');
-            if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(data){
-                    this.shorelineSource = new ol.source.Vector({
-                        features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
-                    });
-                    this.shorelineLayer = new ol.layer.Vector({
-                        name: 'shoreline',
-                        source: this.shorelineSource,
-                        style: new ol.style.Style({
-                            fill: new ol.style.Fill({
-                                color: [228, 195, 140, 0.6]
-                            }),
-                            stroke: new ol.style.Stroke({
-                                color: [228, 195, 140, 0.75],
-                                width: 1
-                            })
-                        })
-                    });
-                    if(this.spillMapView.map){
-                        this.spillMapView.map.getLayers().insertAt(1, this.shorelineLayer);
-                        this.spillMapView.setMapOrientation();
-                    }
-                }, this));
-            }
         },
 
         save: function() {

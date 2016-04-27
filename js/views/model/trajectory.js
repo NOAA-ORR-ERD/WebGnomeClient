@@ -420,7 +420,6 @@ define([
                 }
                 this.checked_currents = active_currents;
 
-
                 var ice = webgnome.model.get('movers').filter(function(mover){
                     return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
                 });
