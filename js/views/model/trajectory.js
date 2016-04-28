@@ -539,29 +539,6 @@ define([
             this.IceImageLayer.setSource(source);
         },
 
-        /**
-         * Create or update a layers source features (conceptually a grid)
-         * @param {ol.vector.Source} source Vector source you want to project the data on to
-         * @param {Object|GeoJson} grid Geographical representation of where the nodes/cells should be
-         * @param {Object} data Dictionary/Object of parameters you want to apply to the grid
-         */
-        updateGridedData: function(source, grid, data){
-            var properties = _.keys(data);
-            if(source.getFeatures().length > 0){
-                // this data's grid is already set up, just update the data.
-
-            } else {
-                // this data's grid isn't setup, set it up and set the data at the same time
-                var new_features = (new ol.format.GeoJSON()).readFeatures(grid, {featureProjection: 'EPSG:3857'});
-                for(var f = 0; f < new_features.length; f++){
-                    for(var p = 0; p < properties.length; p++){
-                        new_features[f].set(properties[p], data[properties[p]][f], true);
-                    }
-                }
-                source.addFeatures(new_features);
-            }
-        },
-
         renderIce: function(step){
             var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
             if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
