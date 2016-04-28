@@ -969,9 +969,15 @@ define([
         ICSInputSelect: function(){
             var date_format = webgnome.config.date_format.moment;
             var model_start_time = webgnome.model.get('start_time');
-            var model_end_time = moment(model_start_time).add(webgnome.model.get('duration'), 's').format(date_format);
-            var start_input = (this.$('#ics209 #start_time').val() === '') ? model_start_time : this.$('#ics209 #start_time').val();
-            var end_input = (this.$('#ics209 #end_time').val() === '') ? model_end_time : this.$('#ics209 #end_time').val();
+            var start_input = this.$('#ics209 #start_time').val();
+            var end_input = this.$('#ics209 #end_time').val();
+
+            if (start_input !== '' && end_input === '') {
+                end_input = moment(start_input).add(webgnome.model.get('time_step'), 's').format(date_format);
+            } else if (start_input === '' && end_input !== '') {
+                start_input = moment(end_input).subtract(webgnome.model.get('time_step'), 's').format(date_format);
+            }
+
             var start_time = moment(start_input, date_format);
             var end_time = moment(end_input, date_format);
             var selection = {
@@ -1011,7 +1017,6 @@ define([
             } else {
                 start_input.val(moment(selection.xaxis.from / 1000, 'X').format(date_format));
                 end_input.val(moment(selection.xaxis.to / 1000, 'X').format(date_format));
-
             }
 
             if(changed){
