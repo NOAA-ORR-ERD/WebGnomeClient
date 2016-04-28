@@ -718,7 +718,7 @@ define([
                 current.getGrid(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     var geometryInstances = [];
-                    for(var cell = 0; cell < data.length; cell++){
+                    for(var cell = data.length; cell--;){
                         geometryInstances.push(new Cesium.GeometryInstance({
                             geometry: new Cesium.SimplePolylineGeometry({
                                 positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
@@ -778,7 +778,7 @@ define([
                     var current = webgnome.model.get('movers').get(id);
                     current.getGrid(_.bind(function(grid){
                         var ice = [];
-                        for(var cell = 0; cell < grid.length; cell++){
+                        for(var cell = grid.length; cell--;){
                             ice.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.PolygonGeometry({
                                     polygonHierarchy: {
@@ -802,9 +802,10 @@ define([
                             }));
                             primitive.readyPromise.then(_.bind(function(){
                                 this.ice_grid = [];
-                                for(cell = 0; cell < grid.length; cell++){
+                                for(cell = grid.length; cell--;){
                                     this.ice_grid.push(primitive.getGeometryInstanceAttributes(cell));
                                 }
+                                this.ice_grid.reverse();
                             }, this));
                         }
                     }, this));
