@@ -733,7 +733,6 @@ define([
                     if(geometryInstances.length > 0){
                         this.grids[current.get('id')] = this.viewer.scene.primitives.add(new Cesium.Primitive({
                             geometryInstances: geometryInstances,
-                            cull: false,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
                                 translucent: false
