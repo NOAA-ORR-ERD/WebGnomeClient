@@ -103,7 +103,7 @@ define([
             var ice = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
             });
-            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
+            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
             var tc_ice = [];
             ice_tc_outputter.get('ice_movers').forEach(function(mover){
                 tc_ice.push(mover.get('id'));
@@ -138,6 +138,10 @@ define([
                     this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
                 }, this)
             });
+
+            if (tc_ice.length > 0) {
+                this.toggleIceTC();
+            }
 
             this.contextualize();
 
@@ -544,6 +548,8 @@ define([
             if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
                 var mover = outputter.get('ice_movers').at(0);
                 var data = step.get('IceRawJsonOutput').data[mover.get('id')];
+                if(!data){ return null; }
+                
                 var vis = $('.ice-tc input[type="radio"]:checked').val();
                 var colorBuffer = new Uint8Array(4);
                 colorBuffer[2] = 255;
@@ -744,7 +750,7 @@ define([
         },
 
         toggleIceTC: function(e){
-            var checked = this.$('.ice-tc input:checked');
+            var checked = this.$('.ice-tc input[type="checkbox"]:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
             if (checked.length > 0){
@@ -754,45 +760,52 @@ define([
                     var id = input.id.replace('tc-', '');
                     var current = webgnome.model.get('movers').get(id);
                     current.getGrid(_.bind(function(grid){
-                        var ice = [];
-                        for(var cell = grid.length; cell--;){
-                            ice.push(new Cesium.GeometryInstance({
-                                geometry: new Cesium.PolygonGeometry({
-                                    polygonHierarchy: {
-                                        positions: Cesium.Cartesian3.fromDegreesArray(grid[cell])
-                                    },
-                                    vertextFormat: Cesium.VertexFormat.POSITION_AND_COLOR
-                                }),
-                                'id': cell,
-                                attributes: {
-                                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLUE.withAlpha(0))
-                                }
-                            }));
-                        }
-                        if(ice.length > 0){
-                            var primitive = this.viewer.scene.primitives.add(new Cesium.Primitive({
-                                geometryInstances: ice,
-                                appearance: new Cesium.PerInstanceColorAppearance({
-                                    flat: true,
-                                    translucent: true
-                                })
-                            }));
-                            primitive.readyPromise.then(_.bind(function(){
-                                this.ice_grid = [];
-                                for(cell = grid.length; cell--;){
-                                    this.ice_grid.push(primitive.getGeometryInstanceAttributes(cell));
-                                }
-                                this.ice_grid.reverse();
-                            }, this));
+                        if(!this.layers.ice){
+                            var ice = [];
+                            for(var cell = grid.length; cell--;){
+                                ice.push(new Cesium.GeometryInstance({
+                                    geometry: new Cesium.PolygonGeometry({
+                                        polygonHierarchy: {
+                                            positions: Cesium.Cartesian3.fromDegreesArray(grid[cell])
+                                        },
+                                        vertextFormat: Cesium.VertexFormat.POSITION_AND_COLOR
+                                    }),
+                                    'id': cell,
+                                    attributes: {
+                                        color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLUE.withAlpha(0))
+                                    }
+                                }));
+                            }
+                            if(ice.length > 0){
+                                this.layers.ice = this.viewer.scene.primitives.add(new Cesium.Primitive({
+                                    geometryInstances: ice,
+                                    appearance: new Cesium.PerInstanceColorAppearance({
+                                        flat: true,
+                                        translucent: true
+                                    })
+                                }));
+                                this.layers.ice.readyPromise.then(_.bind(function(){
+                                    this.ice_grid = [];
+                                    for(cell = grid.length; cell--;){
+                                        this.ice_grid.push(this.layers.ice.getGeometryInstanceAttributes(cell));
+                                    }
+                                    this.ice_grid.reverse();
+                                }, this));
+                            }
+                        } else {
+                            this.layers.ice.show = true;
                         }
                     }, this));
                     current_outputter.get('ice_movers').add(current);
                 }, this));
             } else {
                 current_outputter.get('ice_movers').reset();
+                this.layers.ice.show = false;
             }
 
-            this.renderStep({step: this.frame});
+            if(this.state === 'pause'){
+                this.renderStep({step: this.frame});
+            }
             current_outputter.save();
         },
 
