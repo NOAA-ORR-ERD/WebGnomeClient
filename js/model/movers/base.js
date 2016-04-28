@@ -29,10 +29,10 @@ define([
                     this.requested = true;
                     this.grid = grid;
                     for(var cell = 0; cell < this.grid.length; cell++){
-                        if(this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2]){
+                        if(this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] || 
+                            this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1]){
                             // if the last set of coords are not the same as the first set
                             // copy the first set to the end of the array.
-                            // Currently only compairs a single peice of the pair instead of both peices.
                             this.grid[cell].push(this.grid[cell][0]);
                             this.grid[cell].push(this.grid[cell][1]);
                         }
