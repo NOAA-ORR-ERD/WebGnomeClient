@@ -866,7 +866,7 @@ define([
                         this.ol.map.getLayers().insertAt(3, gridLayer);
                     }
                 }, this));
-            } 
+            }
 
             this.ol.map.getLayers().forEach(function(layer){
                 if (layer.get('id') === id && layer.get('type') === 'grid'){

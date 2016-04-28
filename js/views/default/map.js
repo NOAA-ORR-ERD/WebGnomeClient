@@ -2,9 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'ol',
-    'text!templates/default/mapcontrols/controls.html'
-], function($, _, Backbone, ol, MapControlsTemplate){
+    'ol'
+], function($, _, Backbone, ol){
     'use strict';
     var olMapView = Backbone.View.extend({
         className: 'map',
@@ -42,9 +41,16 @@ define([
             this.defaults();
             if (options.trajectory) {
                     this.trajectory = options.trajectory;
-                    options.controls = 'full',
-                    //this.renderer = 'webgl',
                     this.layers = [
+                        new ol.layer.Tile({
+                            name: 'noaanavcharts',
+                            source: new ol.source.TileWMS({
+                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                                params: {'LAYERS': '1', 'TILED': true}
+                            }),
+                            opacity: 0.5,
+                            visible: true
+                        }),
                         new ol.layer.Tile({
                             source: new ol.source.MapQuest({layer: 'osm'}),
                             name: 'mapquest',
@@ -59,24 +65,9 @@ define([
                             }),
                             visible: false,
                             type: 'base'
-                        }),
-                        new ol.layer.Tile({
-                            name: 'noaanavcharts',
-                            source: new ol.source.TileWMS({
-                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                                params: {'LAYERS': '1', 'TILED': true}
-                            }),
-                            opacity: 0.5,
-                            visible: false
                         })
                     ];
                     this.styles = {
-                        ice_grid: new ol.style.Style({
-                                stroke: new ol.style.Stroke({
-                                color: [36, 36, 227, 0.75],
-                                width: 1
-                            })
-                        }),
                         spill: new ol.style.Style({
                             image: new ol.style.Icon({
                                 anchor: [0.5, 1.0],
@@ -94,12 +85,6 @@ define([
                             }),
                         stroke: new ol.style.Stroke({
                                 color: [228, 195, 140, 0.75],
-                                width: 1
-                            })
-                        }),
-                        currents_grid: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: [171, 37, 184, 0.75],
                                 width: 1
                             })
                         })
@@ -133,8 +118,10 @@ define([
                     }
                 }
 
-                if(!_.isUndefined(options.layers)){
+                if(!_.isUndefined(options.layers) && !options.trajectory){
                     this.layers = options.layers;
+                } else {
+                    this.layers = this.layers.concat(options.layers);
                 }
 
                 if(!_.isUndefined(options.interactions)){
@@ -202,47 +189,6 @@ define([
                     })
                 }),
                 visible: false
-
-            });
-
-            var map_bounds = webgnome.model.get('map').get('map_bounds');
-            var map_feature = new ol.Feature({
-                geometry: new ol.geom.Polygon([map_bounds]).transform('EPSG:4326', 'EPSG:3857')
-            });
-            this.mapBoundsSource = new ol.source.Vector({
-                features: [map_feature]
-            });
-
-            this.MapBounds = new ol.layer.Image({
-                name: 'map_bounds',
-                source: new ol.source.ImageVector({
-                    source: this.mapBoundsSource,
-                    style: new ol.style.Style({
-                        fill: new ol.style.Fill({
-                            color: [255, 160, 122, 0.1]
-                        }),
-                        stroke: new ol.style.Stroke({
-                            color: [233, 150, 122, 0.75],
-                            width: 1
-                        })
-                    })
-                }),
-                visible: false
-            });
-
-            this.CurrentLayer = new ol.layer.Image({
-                name: 'currents',
-                source: new ol.source.ImageVector({
-                    source: new ol.source.Vector(),
-                    style: this.styles.currents
-                })
-            });
-
-            this.IceLayer = new ol.layer.Image({
-                name: 'ice'
-            });
-            this.IceImageLayer = new ol.layer.Image({
-                name: 'ice'
             });
 
             var map = webgnome.model.get('map');
@@ -272,66 +218,16 @@ define([
                 }, this));
             }
             
-            // only compile the template if the map isn't drawn yet
-            // or if there is a redraw request because of the map object changing
-            //if(_.isUndefined(this.map) && this.redraw === false || this.redraw){
-                var currents = webgnome.model.get('movers').filter(function(mover){
-                    return [
-                        'gnome.movers.current_movers.CatsMover',
-                        'gnome.movers.current_movers.GridCurrentMover',
-                        'gnome.movers.current_movers.ComponentMover',
-                        'gnome.movers.current_movers.CurrentCycleMover',
-                        'gnome.movers.wind_movers.GridWindmover'
-                    ].indexOf(mover.get('obj_type')) !== -1;
-                });
-                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
-                var active_currents = [];
-                if(current_outputter.get('on')){
-                    current_outputter.get('current_movers').forEach(function(mover){
-                        active_currents.push(mover.get('id'));
-                    });
-                }
-                this.checked_currents = active_currents;
-
-                var ice = webgnome.model.get('movers').filter(function(mover){
-                    return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
-                });
-                var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.image.IceImageOutput'});
-                var tc_ice = [];
-                ice_tc_outputter.get('ice_movers').forEach(function(mover){
-                    tc_ice.push(mover.get('id'));
-                });
-                this.tc_ice = tc_ice;
-
-                var compiled = _.template(MapControlsTemplate, {
-                    currents: currents,
-                    active_currents: active_currents,
-                    ice: ice,
-                    tc_ice: tc_ice,
-                });
-                console.log(this.$('.ol-viewport').html());
-                this.$('.ol-viewport').append(compiled);
-                this.$('.layers .title').click(_.bind(function(){
-                    this.$('.layers').toggleClass('expanded');
-                }, this));
-            //}
             this.addLayers();
             this.map.getLayers().forEach(function(layer){
                 if (layer.get('type') !== 'base') {
                     layer.setVisible(true);
-                } else {
-                    layer.setVisible(false);
                 }
             });
         },
 
         addLayers: function() {
-            this.map.addLayer(this.MapBounds);
             this.map.addLayer(this.SpillableArea);
-            this.setMapOrientation();
-            this.map.addLayer(this.CurrentLayer);
-            this.map.addLayer(this.IceLayer);
-            this.map.addLayer(this.IceImageLayer);
             this.map.addLayer(this.SpillIndexLayer);
             this.map.addLayer(this.SpillLayer);
         },
