@@ -139,10 +139,6 @@ define([
                 }, this)
             });
 
-            if (tc_ice.length > 0) {
-                this.toggleIceTC();
-            }
-
             this.contextualize();
 
             if(localStorage.getItem('advanced') === 'true'){
@@ -207,6 +203,9 @@ define([
                 }));
             }, this));
 
+            if (this.tc_ice.length > 0) {
+                this.toggleIceTC();
+            }
 
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                 this.layers.map = new Cesium.GeoJsonDataSource();
