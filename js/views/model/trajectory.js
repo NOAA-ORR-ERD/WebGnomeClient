@@ -348,7 +348,7 @@ define([
             if(!step){ return; }
             this.renderSpill(step);
             // this.renderCurrent(step);
-            // this.renderIce(step);
+            this.renderIce(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
             this.frame = step.get('step_num');
@@ -564,55 +564,32 @@ define([
 
         renderIce: function(step){
             var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
-            if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0){
+            if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
                 var mover = outputter.get('ice_movers').at(0);
                 var data = step.get('IceRawJsonOutput').data[mover.get('id')];
-                mover.getGrid(_.bind(function(grid){
-                    this.updateGridedData(this.IceLayer.getSource(), grid, data);
-                }, this));
+                var vis = $('.ice-tc input[type="radio"]:checked').val();
+                var colorBuffer = new Uint8Array(4);
+                colorBuffer[2] = 255;
+
+                if(data[vis].length > 0){
+                    // update existing grid with color data
+                    for(var cell = data[vis].length; cell--;){
+                        this.iceValueToAlpha(vis, data[vis][cell], colorBuffer);
+                        if(colorBuffer[3] !== this.ice_grid[cell].color[3]){
+                            this.ice_grid[cell].color[3] = colorBuffer[3];
+                            this.ice_grid[cell].color = this.ice_grid[cell].color;
+                        }
+                    }
+                }
             }
+        },
 
-
-            // var ice_features = [];
-            // var ice_data = this.$('input[name=ice_data]:checked').val();
-
-            // if(step && step.get('IceGeoJsonOutput') && this.tc_ice && this.tc_ice.length > 0){
-            //     var ice = step.get('IceGeoJsonOutput').feature_collections;
-            //     for(var t = 0; t < this.tc_ice.length; t++){
-            //         var id = this.tc_ice[t];
-            //         if(_.has(ice, id)){
-            //             var features;
-            //             if(ice_data === 'thickness'){
-            //                 features = ice[id][1].features;
-            //             } else {
-            //                 features = ice[id][0].features;
-            //             }
-            //             for(var r = 0; r < features.length; r++){
-            //                 var coords = features[r].geometry.coordinates;
-            //                 var poly = new ol.geom.MultiPolygon([coords]);
-            //                 poly.transform('EPSG:4326', 'EPSG:3857');
-            //                 var properties = {
-            //                     geometry: poly
-            //                 };
-            //                 properties[ice_data] = features[r].properties[ice_data];
-                            
-            //                 var f = new ol.Feature(properties);
-            //                 ice_features.push(f);
-            //             }
-            //         }
-            //     }
-            // }
-            // var ice_source = new ol.source.Vector({
-            //     features: ice_features,
-            //     useSpatialIndex: false
-            // });
-
-            // var ice_image = new ol.source.ImageVector({
-            //     source: ice_source,
-            //     style: this.styles.ice[ice_data]
-            // });
-
-            // this.IceLayer.setSource(ice_image);
+        iceValueToAlpha: function(name, value, colorBuffer){
+            if(name[0] === 'c'){
+                colorBuffer[3] = ~~(value * 255);
+            } else {
+                colorBuffer[3] = ~~((value * 0.1666666667) * 255);
+            }
         },
 
         disableUI: function(){
@@ -800,7 +777,38 @@ define([
                 this.$('.ice-tc input[type="checkbox"]:checked').each(_.bind(function(i, input){
                     var id = input.id.replace('tc-', '');
                     var current = webgnome.model.get('movers').get(id);
-                    current.getGrid();
+                    current.getGrid(_.bind(function(grid){
+                        var ice = [];
+                        for(var cell = 0; cell < grid.length; cell++){
+                            ice.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.PolygonGeometry({
+                                    polygonHierarchy: {
+                                        positions: Cesium.Cartesian3.fromDegreesArray(grid[cell])
+                                    },
+                                    vertextFormat: Cesium.VertexFormat.POSITION_AND_COLOR
+                                }),
+                                'id': cell,
+                                attributes: {
+                                    color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLUE.withAlpha(0))
+                                }
+                            }));
+                        }
+                        if(ice.length > 0){
+                            var primitive = this.viewer.scene.primitives.add(new Cesium.Primitive({
+                                geometryInstances: ice,
+                                appearance: new Cesium.PerInstanceColorAppearance({
+                                    flat: true,
+                                    translucent: true
+                                })
+                            }));
+                            primitive.readyPromise.then(_.bind(function(){
+                                this.ice_grid = [];
+                                for(cell = 0; cell < grid.length; cell++){
+                                    this.ice_grid.push(primitive.getGeometryInstanceAttributes(cell));
+                                }
+                            }, this));
+                        }
+                    }, this));
                     current_outputter.get('ice_movers').add(current);
                 }, this));
             } else {
