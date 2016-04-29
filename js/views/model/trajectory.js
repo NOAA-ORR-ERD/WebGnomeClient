@@ -689,38 +689,57 @@ define([
             }
             var existing_grids = _.keys(this.grids);
             for(var grid = 0; grid < existing_grids.length; grid++){
-                this.grids[existing_grids[grid]].show = false;
+                for(var prims = this.grids[existing_grids[grid]].length; prims--;){
+                    this.grids[existing_grids[grid]][prims].show = false;
+                }
             }
 
             var id = this.$(e.currentTarget).attr('id').replace('grid-', '');
             if(_.has(this.grids, id)){
-                this.grids[id].show = true;
+                // need to hide the entire set of grids.
+                for(var active_prim = this.grids[id].length; active_prim--;){
+                    this.grids[id][active_prim].show = true;
+                }
             } else if(id !== 'none-grid'){
                 var current = webgnome.model.get('movers').findWhere({id: id});
                 current.getGrid(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
-                    var geometryInstances = [];
-                    for(var cell = data.length; cell--;){
-                        geometryInstances.push(new Cesium.GeometryInstance({
-                            geometry: new Cesium.SimplePolylineGeometry({
-                                positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
-                            }),
-                            id: 'grid',
-                            attributes: {
-                                color: color
-                            },
-                            allowPicking: false
-                        }));
-                    }
-                    if(geometryInstances.length > 0){
-                        this.grids[current.get('id')] = this.viewer.scene.primitives.add(new Cesium.Primitive({
-                            geometryInstances: geometryInstances,
+                    this.grids[current.get('id')]  = [];
+                    var batch = 3000;
+                    var batch_limit = Math.ceil(data.length / batch);
+                    var segment = 0;
+                    for(var b = 0; b < batch_limit; b++){
+                        // setup the new batch
+                        var geo = [];
+
+                        // build the batch
+                        var limit = segment + batch;
+                        for(var cell = segment; cell < limit; cell++){
+                            if(data[cell]){
+                                geo.push(new Cesium.GeometryInstance({
+                                    geometry: new Cesium.SimplePolylineGeometry({
+                                        positions: Cesium.Cartesian3.fromDegreesArray(data[cell])
+                                    }),
+                                    attributes: {
+                                        color: color
+                                    },
+                                    allowPicking: false
+                                }));
+                            }
+                        }
+
+                        segment += batch;
+
+                        // send the batch to the gpu/cesium
+                        this.grids[current.get('id')].push(this.viewer.scene.primitives.add(new Cesium.Primitive({
+                            geometryInstances: geo,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
                                 translucent: false
                             })
-                        }));
+                        })));
                     }
+                        
                 }, this));
             }
         },
