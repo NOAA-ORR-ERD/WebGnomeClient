@@ -15,7 +15,6 @@ define([
         className: 'page home',
 
         events: {
-            'click .setup': 'setup',
             'click .advanced': 'setup',
             'click .location': 'location',
             'click .adios-wizard': 'adios',
@@ -63,6 +62,7 @@ define([
         setup: function(e){
             e.preventDefault();
             if(webgnome.hasModel()){
+                webgnome.model.set('mode', 'gnome');
                 webgnome.model.save({'name': 'Model'});
             }
             webgnome.router.navigate('config', true);

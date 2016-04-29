@@ -1009,7 +1009,6 @@ define([
                 selection.xaxis.from !== this.ICSSelection.xaxis.from){
                     start_input.val(moment(selection.xaxis.from / 1000, 'X').format(date_format));
                     end_input.val(moment(selection.xaxis.to / 1000, 'X').format(date_format));
-
                     changed = true;
                 } else {
                     changed = false;
