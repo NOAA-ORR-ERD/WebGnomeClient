@@ -25,7 +25,6 @@ define([
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
-        sliderValue: 0,
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -398,7 +397,7 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.sliderValue;
+                value = !_.isUndefined(this.sliderValue) ? this.sliderValue : this.$('#variable .slider').slider('value');
             }
             this.sliderValue = value;
             var percentRange = this.sliderValue * 3.0;
@@ -415,7 +414,7 @@ define([
             if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.sliderValue;
+                value = !_.isUndefined(this.sliderValue) ? this.sliderValue : this.$('#constant .slider').slider('value');
             }
             this.sliderValue = value;
             if (this.model.get('timeseries').length > 0){
