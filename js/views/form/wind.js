@@ -25,6 +25,7 @@ define([
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
+        sliderValue: 0,
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -249,6 +250,7 @@ define([
                     this.renderSpills();
                 }
             }
+            this.update();
             $(window).trigger('resize');
         },
 
@@ -396,12 +398,14 @@ define([
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = this.$('#variable .slider').slider('value');
+                value = this.sliderValue;
             }
-            var percentRange = value * 3.0;
+            this.sliderValue = value;
+            var percentRange = this.sliderValue * 3.0;
             this.$('#variable .tooltip-inner').text('+/- ' + percentRange.toFixed(1) + ' %');
             var variableSliderMax = this.$('#variable .slider').slider("option", "max");
-            this.model.set('speed_uncertainty_scale', value / (50.0 / 3));
+            this.model.set('speed_uncertainty_scale', this.sliderValue / (50.0 / 3));
+            this.$('#variable .slider').slider('value', this.sliderValue);
             this.renderTimeseries(value);
             this.updateTooltipWidth();
         },
@@ -411,12 +415,13 @@ define([
             if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
-                value = !_.isNaN(this.$('#constant .slider').slider('value')) ? this.$('#constant .slider').slider('value') : 0;
+                value = this.sliderValue;
             }
+            this.sliderValue = value;
             if (this.model.get('timeseries').length > 0){
                 var speed = this.model.get('timeseries')[0][1][0];
-                var uncertainty = value / (50.0 / 3);
-                if (value === 0){
+                var uncertainty = this.sliderValue / (50.0 / 3);
+                if (this.sliderValue === 0){
                     this.$('#constant .tooltip-inner').text(speed);
                 } else {
                     var rangeObj = nucos.rayleighDist().rangeFinder(speed, uncertainty);
@@ -424,6 +429,7 @@ define([
                 }
                 var constantSliderMax = this.$('#constant .slider').slider("option", "max");
                 this.model.set('speed_uncertainty_scale', uncertainty);
+                this.$('#constant .slider').slider('value', this.sliderValue);
                 this.updateTooltipWidth();
             }
         },
