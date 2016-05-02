@@ -37,6 +37,15 @@ define([
         },
 
         validate: function(attrs, options){
+            var temp_bounds = {
+                upper: 313.15,
+                lower: 271.15
+            };
+
+            var temp_units = attrs.units.temperature;
+            var temp_lower_bound = nucos.convert('Temperature', 'K', temp_units, temp_bounds.lower).toFixed(2);
+            var temp_upper_bound = nucos.convert('Temperature', 'K', temp_units, temp_bounds.upper).toFixed(2);
+
             if (attrs.salinity < 0 || attrs.salinity === ''){
                 return 'Salinity must be a number greater than or equal to zero!';
             }
@@ -50,7 +59,7 @@ define([
             }
 
             if(_.isNull(attrs.temperature) || (this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15)){
-                return 'Water temperature must be a reasonable degree.';
+                return 'Water temperature must be between ' + temp_lower_bound + ' \xB0' + temp_units + ' and ' + temp_upper_bound + ' \xB0' + temp_units + '!';
             }
 
             if (!_.isNull(attrs.wave_height) && (parseFloat(attrs.wave_height) < 0 || attrs.wave_height.length === 0)){
