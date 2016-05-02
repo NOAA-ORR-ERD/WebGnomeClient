@@ -179,6 +179,7 @@ define([
 
             this.setupUpload();
             this.rendered();
+            this.populateDateTime();
         },
 
         rendered: function(){
@@ -236,6 +237,7 @@ define([
                         var coordObj = {lat: coords[1], lon: coords[0]};
                         this.nwsFetch(coordObj);
                         this.$('.save').addClass('disabled');
+                        this.populateDateTime();
                     }, this));
 
                     var spill = webgnome.model.get('spills').at(0);
@@ -251,6 +253,12 @@ define([
             }
             this.update();
             $(window).trigger('resize');
+            this.populateDateTime();
+        },
+
+        populateDateTime: function() {
+            var starting_time = this.model.get('timeseries')[0][0];
+            this.$('#variable-datetime').val(moment.utc(starting_time).format(webgnome.config.date_format.moment));
         },
 
         renderSpills: function() {
@@ -346,6 +354,7 @@ define([
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
             this.$('.save').removeClass('disabled');
+            this.populateDateTime();
         },
 
         nwsError: function(){
@@ -636,6 +645,7 @@ define([
                 html = html + template;
             });
             this.$('table:first tbody').html(html);
+            this.populateDateTime();
         },
 
         variableFormValidation: function(entry){
