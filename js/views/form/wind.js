@@ -645,7 +645,6 @@ define([
                 html = html + template;
             });
             this.$('table:first tbody').html(html);
-            this.populateDateTime();
         },
 
         variableFormValidation: function(entry){

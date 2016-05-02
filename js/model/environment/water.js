@@ -58,7 +58,7 @@ define([
                 return 'Sediment load must be a number greater than or equal to zero!';
             }
 
-            if(_.isNull(attrs.temperature) || (this.convertToK(attrs.temperature) < 271.15 || this.convertToK(attrs.temperature) > 313.15)){
+            if(_.isNull(attrs.temperature) || (this.convertToK(attrs.temperature) < temp_bounds.lower || this.convertToK(attrs.temperature) > temp_bounds.upper)){
                 return 'Water temperature must be between ' + temp_lower_bound + ' \xB0' + temp_units + ' and ' + temp_upper_bound + ' \xB0' + temp_units + '!';
             }
 
