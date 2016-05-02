@@ -14,12 +14,15 @@ define([
         title: 'Water Properties',
 
         events: function(){
+            var formModalHash = FormModal.prototype.events;
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
             return _.defaults({
                 'change select': function(e){
                     this.revealManualInputs(e);
                 },
                 'click .reset': 'resetSelect'
-            }, FormModal.prototype.events);
+            }, formModalHash);
         },
 
         initialize: function(options, model){
@@ -29,8 +32,9 @@ define([
         },
 
         render: function(options){
+            var water_temp = (this.model.isNew()) ? '' : this.model.get('temperature');
             this.body = _.template(WaterTemplate, {
-                water_temp: this.model.get('temperature'),
+                water_temp: water_temp,
                 salinity: this.model.get('salinity')
             });
 
@@ -119,6 +123,11 @@ define([
             } else {
                 this.clearError();
             }
+        },
+
+        save: function() {
+            this.update();
+            FormModal.prototype.save.call(this);
         },
 
         resetSelect: function(e) {
