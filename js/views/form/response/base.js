@@ -82,11 +82,6 @@ define([
             var start_time = this.startTime;
             this.model.set('name', name);
             this.model.set('active_start', start_time.format('YYYY-MM-DDTHH:mm:ss'));
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         parseDuration: function(start, end){

@@ -393,12 +393,6 @@ define([
             
             
             this.$('.additional-wind-compass').remove();
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         updateVariableSlide: function(ui){

@@ -80,12 +80,6 @@ define([
             var units = this.$('#units').val();
 
             this.model.set('units', units);
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         addBeachedAmount: function(e){

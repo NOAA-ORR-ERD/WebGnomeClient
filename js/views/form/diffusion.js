@@ -40,12 +40,6 @@ define([
             this.model.set('name', name);
             this.model.set('diffusion_coef', coeff);
             this.model.set('uncertain_factor', uncertain_factor);
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         }
 	});
 	

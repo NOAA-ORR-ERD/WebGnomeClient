@@ -59,12 +59,6 @@ define([
 
 	        var active = this.$('#active').is(':checked');
 	        this.model.set('on', active);
-
-	        if(!this.model.isValid()){
-	          this.error('Error!', this.model.validationError);
-	        } else {
-	          this.clearError();
-	        }
 		}
 
 	});

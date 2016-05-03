@@ -24,11 +24,11 @@ define([
             'click .save': 'save',
             'click .finish': 'finish',
             'click .cancel': 'wizardclose',
-            'change input': 'update',
-            'keyup input': 'update',
             'click input': 'selectContents',
+            'click .modal-header .gnome-help': 'showHelp',
+            'change input': 'update',
             'change select': 'update',
-            'click .modal-header .gnome-help': 'showHelp'
+            'keyup input': 'update'
         },
 
         initialize: function(options){
@@ -135,7 +135,7 @@ define([
         },
 
         save: function(callback){
-            if(this.model){
+            if(this.model && this.model.isValid()){
                 this.model.save(null, {
                     success: _.bind(function(){
                         this.trigger('save', this.model);
@@ -150,6 +150,8 @@ define([
                     this.error('Error!', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
+            } else if (!this.model.isValid()) {
+                this.error('Error!', this.model.validationError);
             } else {
                 this.trigger('save', this.$('form'));
                 if(_.isFunction(callback)){ callback(); }
