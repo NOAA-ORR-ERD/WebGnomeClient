@@ -77,8 +77,8 @@ define([
 
         reset: function(){
             this.length = 0;
-            localforage.clear();
             this.trigger('reset');
+            this.inline = [];
         }
     });
 
