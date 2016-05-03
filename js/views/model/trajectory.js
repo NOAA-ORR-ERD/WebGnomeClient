@@ -208,6 +208,9 @@ define([
                 this.toggleIceTC();
             }
 
+            if (this.checked_currents.length > 0){
+                this.toggleUV();
+            }
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                 this.layers.map = new Cesium.GeoJsonDataSource();
                 this.viewer.dataSources.add(this.layers.map.load(geojson, {
@@ -351,7 +354,7 @@ define([
         drawStep: function(step){
             if(!step){ return; }
             this.renderSpill(step);
-            // this.renderCurrent(step);
+            this.renderCurrent(step);
             this.renderIce(step);
 
             this.controls.date.text(moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm'));
@@ -470,43 +473,30 @@ define([
         },
 
         renderCurrent: function(step){
-            var current_features = [];
-            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0){
-                var currents = step.get('CurrentGeoJsonOutput').feature_collections;
-                for(var i = 0; i < this.checked_currents.length; i++){
-                    var id = this.checked_currents[i];
-                    if(_.has(currents, id)){
-                        for (var c = 0; c < currents[id].features.length; c++){
-                            var coords = currents[id].features[c].geometry.coordinates;
-                            for(var co = 0; co < coords.length; co++){
-                                var feature_coords = ol.proj.transform(coords[co], 'EPSG:4326', 'EPSG:3857');
-                                var velocity = currents[id].features[c].properties.velocity;
-                                var f = new ol.Feature({
-                                    geometry: new ol.geom.Point(feature_coords)
-                                });
-                                f.set('velocity', velocity);
-
-                                current_features.push(f);  
-                            }
+            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0 && this.layers.uv){
+                // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
+                var id = this.checked_currents[0];
+                var data = step.get('CurrentGeoJsonOutput')[id];
+                if(data && this.current_arrow[id]){
+                    for(var uv = data.direction.length; uv--;){
+                        this.layers.uv[id].get(uv).show = true;
+                        if(this.layers.uv[id].get(uv).rotation !== data.direction[uv]){
+                            this.layers.uv[id].get(uv).rotation = data.direction[uv];
                         }
+                        if(this.layers.uv[id].get(uv).image !== this.uvImage(data.magnitude[uv], id)){
+                            this.layers.uv[id].get(uv).image = this.uvImage(data.magnitude[uv], id);
+                        }
+                    }
+                } else if(this.layers.uv[id]){
+                    for(var h = this.layers.uv[id].length; h--;){
+                        this.layers.uv[id].get(h).show = false;
                     }
                 }
             }
-            var cur_source = new ol.source.Vector({
-                features: current_features
-            });
+        },
 
-            var cur_cluster = new ol.source.Cluster({
-                source: cur_source,
-                distance: 30
-            });
-
-            var cur_image = new ol.source.ImageVector({
-                source: cur_cluster,
-                style: this.styles.currents
-            });
-
-            this.CurrentLayer.setSource(cur_image);
+        uvImage: function(magnitude, id){
+            return this.current_arrow[id][Math.round(Math.abs(magnitude)*10)/10];
         },
 
         renderIceImage: function(step){
@@ -549,7 +539,7 @@ define([
                 var mover = outputter.get('ice_movers').at(0);
                 var data = step.get('IceRawJsonOutput').data[mover.get('id')];
                 if(!data){ return null; }
-                
+
                 var vis = $('.ice-tc input[type="radio"]:checked').val();
                 var colorBuffer = new Uint8Array(4);
                 colorBuffer[2] = 255;
@@ -749,13 +739,50 @@ define([
             var checked = this.$('.current-uv input:checked, .ice-uv input:checked');
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
 
-            if (checked.length > 0){
+            var uv_layers = _.keys(this.layers.uv);
+            for(var l = 0; l < uv_layers.length; l++){
+                for(var bb = this.layers.uv[uv_layers[l]].length; bb--;){
+                    this.layers.uv[uv_layers[l]].get(bb).show = false;
+                }
+            }
+
+            var id = $(checked[0]).attr('id').replace('uv-', '');
+            if (checked.length > 0 && id !== 'none-uv'){
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
 
                 this.$('.current-uv input:checked, .ice-uv input:checked').each(_.bind(function(i, input){
-                    var id = input.id.replace('uv-', '');
                     var current = webgnome.model.get('movers').get(id);
+                    current.getCenters(_.bind(function(centers){
+                        if(!this.layers.uv){
+                            this.layers.uv = {};
+                        }
+
+                        if(!this.layers.uv[id]){
+                            this.layers.uv[id] = new Cesium.BillboardCollection();
+                            this.viewer.scene.primitives.add(this.layers.uv[id]);
+                            this.generateUVTextures(this.layers.uv[id], id);
+                        }
+
+                        var layer = this.layers.uv[id];
+
+                        // update the positions of any existing centers
+                        var existing_length = this.layers.uv[id].length;
+                        for(var existing = 0; existing < existing_length; existing++){
+                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0], centers[existing][1]);
+                            layer.get(existing).show = false;
+                        }
+
+                        var create_length = centers.length;
+                        for(var c = existing_length; c < create_length; c++){
+                            layer.add({
+                                show: false,
+                                position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
+                                image: this.current_arrow[id][0]
+                            });
+                        }
+                    }, this));
+
                     this.checked_currents.push(id);
                     current_outputter.get('current_movers').add(current);
                 }, this));
@@ -763,9 +790,66 @@ define([
                 current_outputter.get('current_movers').reset();
                 this.checked_currents = [];
             }
-            this.renderStep({step: this.frame});
+            if(this.state === 'pause'){
+                this.renderStep({step: this.frame});
+            }
 
             current_outputter.save();
+        },
+
+        generateUVTextures: function(layer, id){
+            if(!this.current_arrow){
+                this.current_arrow = {};
+            }
+            if(!this.current_arrow[id]){
+                this.current_arrow[id] = {};
+                // generate a canvas based texture for each size arrow we want
+                // 0.0, 0.1, 0.2, etc...
+                
+                var canvas = document.createElement('canvas');
+                canvas.width = 7;
+                canvas.height = 7;
+                var ctx = canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.arc(3.5, 3.5, 2, 0, 2 * Math.PI);
+                ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
+                ctx.stroke();
+                this.current_arrow[id][0] = layer.add({
+                    image: canvas, 
+                    show: false,
+                }).image;
+
+                var angle = 0.785398163;
+                var width = 60;
+                var center = width / 2;
+
+                for(var a = 0.1; a < 3.0; a += 0.1){
+                    var s_a = Math.round(a*10)/10;
+                    canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = s_a * 60;
+                    ctx = canvas.getContext('2d');
+
+                    var len = Math.abs(canvas.height / Math.log(canvas.height));
+                    var rad = Math.PI / 2;
+
+                    var arr_left = [(center + len * Math.cos(rad - angle)), (0 + len * Math.sin(rad - angle))];
+                    var arr_right =[(center + len * Math.cos(rad + angle)), (0 + len * Math.sin(rad + angle))];
+
+                    ctx.moveTo(center, canvas.height);
+                    ctx.lineTo(center, 0);
+                    ctx.lineTo(arr_right[0], arr_right[1]);
+                    ctx.moveTo(arr_left[0], arr_left[1]);
+                    ctx.lineTo(center, 0);
+                    ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
+                    ctx.stroke();
+
+                    this.current_arrow[id][s_a] = layer.add({
+                        image: canvas, 
+                        show: false,
+                    }).image;    
+                }
+            }
         },
 
         toggleIceTC: function(e){
