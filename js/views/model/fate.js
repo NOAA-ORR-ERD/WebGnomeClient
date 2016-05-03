@@ -975,11 +975,12 @@ define([
             var model_start_time = webgnome.model.get('start_time');
             var start_input = this.$('#ics209 #start_time').val();
             var end_input = this.$('#ics209 #end_time').val();
+            var time_span_hrs = 24;
 
             if (start_input !== '' && end_input === '') {
-                end_input = moment(start_input).add(webgnome.model.get('time_step'), 's').format(date_format);
+                end_input = moment(start_input).add(time_span_hrs, 'h').format(date_format);
             } else if (start_input === '' && end_input !== '') {
-                start_input = moment(end_input).subtract(webgnome.model.get('time_step'), 's').format(date_format);
+                start_input = moment(end_input).subtract(time_span_hrs, 'h').format(date_format);
             }
 
             var start_time = moment(start_input, date_format);
