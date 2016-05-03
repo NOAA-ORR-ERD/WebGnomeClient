@@ -173,6 +173,7 @@ define([
                 geocoder: false,
                 homeButton: false,
                 timeline: false,
+                sceneModePicker: false,
                 targetFrameRate: 30, 
                 navigationHelpButton: false,
                 navigationInstructionsInitiallyVisible: false,
