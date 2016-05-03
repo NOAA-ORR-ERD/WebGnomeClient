@@ -179,19 +179,23 @@ define([
                 }
             } else {
                 webgnome.cache.on('step:recieved', this.buildDataset, this);
-                webgnome.cache.step();
+                setTimeout(function(){
+                    webgnome.cache.step();
+                }, 200);
             }
         },
 
         loadStep: function(err, step){
-           this.formatStep(new GnomeStep(step));
+           this.formatStep(step);
 
             // on the last step render the graph and if there are more steps start the steping.
-            if(step.step_num === webgnome.cache.length - 1){
+            if(step.get('step_num') === webgnome.cache.length - 1){
                 this.renderGraphs();
-                if(step.step_num < webgnome.model.get('num_time_steps')){
+                if(step.get('step_num') < webgnome.model.get('num_time_steps')){
                     webgnome.cache.on('step:recieved', this.buildDataset, this);
-                    webgnome.cache.step();
+                    setTimeout(function(){
+                        webgnome.cache.step();
+                    }, 200);
                 }
             }
         },

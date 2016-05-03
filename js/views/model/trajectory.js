@@ -20,7 +20,7 @@ define([
         id: 'map',
         spillToggle: false,
         spillCoords: [],
-        state: 'pause',
+        state: 'loading',
         frame: 0,
         contracted: false,
 
@@ -210,13 +210,24 @@ define([
             if (this.checked_currents.length > 0){
                 this.toggleUV();
             }
+
+            this.layers.map = new Cesium.GeoJsonDataSource();
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                this.layers.map = new Cesium.GeoJsonDataSource();
                 this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
                     stroke: Cesium.Color.WHITE.withAlpha(0)
                 }));
             }, this));
+
+            if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
+                var bounds = webgnome.model.get('map').get('map_bounds');
+                this.viewer.flyTo(this.layers.map, {
+                    duration: 0.25
+                });
+            } else {
+                // fly to a gridded current instead
+            }
+
             this.load();
         },
 
@@ -242,6 +253,7 @@ define([
 
         load: function(){
             this.updateProgress();
+            this.state = 'pause';
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
         },
@@ -341,7 +353,7 @@ define([
             if(_.has(source, 'step')){
                 webgnome.cache.at(source.step, _.bind(function(err, step){
                     if(!err){
-                        this.drawStep(new GnomeStep(step));
+                        this.drawStep(step);
                     }
                 }, this));
             } else {

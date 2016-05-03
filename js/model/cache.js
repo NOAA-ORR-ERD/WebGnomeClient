@@ -8,6 +8,7 @@ define([
     'use strict';
     var cache = Backbone.Collection.extend({
         fetching: false,
+        inline: [],
 
         initialize: function(options, model){
             this.gnome_model = model;
@@ -28,12 +29,10 @@ define([
             this.fetching = true;
             step.fetch({
                 success: _.bind(function(step){
-                    this.add(step, {
-                        success: _.bind(function(){
-                            this.fetching = false;
-                            this.trigger('step:recieved', step);
-                        }, this)
-                    });
+                    this.inline.push(step);
+                    this.fetching = false;
+                    this.length++;
+                    this.trigger('step:recieved', step);
                 }, this),
                 error: _.bind(function(){
                     this.fetching = false;
@@ -72,7 +71,7 @@ define([
 
         at: function(index, cb){
             if(this.length > index && index >= 0){
-                return localforage.getItem(index.toString(), cb);
+                return cb(false, this.inline[index]);
             }
         },
 
