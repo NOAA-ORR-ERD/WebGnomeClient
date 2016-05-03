@@ -262,6 +262,15 @@ define([
             }
         },
 
+        close: function(){
+            if (this.map) {
+                this.map.setTarget(null);
+                this.map = null;
+            }
+            
+            Backbone.View.prototype.close.call(this);
+        },
+
         delayedRender: function(){
             setTimeout(_.bind(function(){
                 this.map.updateSize();

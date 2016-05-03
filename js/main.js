@@ -11,6 +11,7 @@ require.config({
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
+        cesium: 'lib/cesium/Build/Cesium/Cesium',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
@@ -79,6 +80,9 @@ require.config({
         jqueryDatetimepicker: ['jquery'],
         ol: {
             exports: 'ol'
+        },
+        cesium: {
+            exports: 'Cesium'
         },
         compassui: {
             exports: '$',

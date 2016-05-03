@@ -16,18 +16,6 @@
         </div>
         <div id="general" class="panel-collapse collapse in">
             <div class="panel-body">
-                <strong>Base Map Type</strong>
-                <form role="form" class="form-horizontal base">
-                    <div class="radio">
-                        <label for="none"><input type="radio" id="none" name="maplayer" checked="checked" value="none">None</label>
-                    </div>
-                    <div class="radio">
-                        <label for="mapquest"><input type="radio" id="mapquest" name="maplayer" value="mapquest">Mapquest</label>
-                    </div>
-                    <div class="radio">
-                        <label for="usgsbase"><input type="radio" id="usgsbase" name="maplayer" value="usgs">USGS</label>
-                    </div>
-                </form>
                 <strong>Visibility</strong>
                 <form role="form" class="form-horizontal checkboxes base">
                     <div class="checkbox">
@@ -38,6 +26,9 @@
                     </div>
                     <div class="checkbox">
                         <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
+                    </div>
+                    <div class="checkbox">
+                        <label for="particles"><input type="checkbox" checked="checked" id="particles">Particles</label>
                     </div>
                     <div class="checkbox">
                         <label for="spillableArea"><input type="checkbox" id="spillableArea">Spillable Area</label>
@@ -190,9 +181,8 @@
     </button> -->
 </div>
 
-<div class="help-button ol-control">
-    <button class="ol-has-tooltip">
-        ?
-        <span role="tooltip">Help</span>
+<div class="help-button">
+    <button class="cesium-button cesium-toolbar-button">
+        Help
     </button>
 </div>
