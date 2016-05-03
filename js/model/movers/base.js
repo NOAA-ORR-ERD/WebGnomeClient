@@ -9,7 +9,8 @@ define([
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
         requesting: false,
-        requested: false,
+        requested_grid: false,
+        requested_centers: false,
 
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
@@ -22,12 +23,14 @@ define([
 
         getGrid: function(callback){
             var url = this.urlRoot + this.id + '/grid';
-            if(!this.requesting && !this.requested){
+            if(!this.requesting && !this.requested_grid){
                 this.requesting = true;
                 $.get(url, null, _.bind(function(grid){
                     this.requesting = false;
-                    this.requested = true;
+                    this.requested_grid = true;
                     this.grid = grid;
+
+                    // make it a closed shape if it isn't.
                     for(var cell = 0; cell < this.grid.length; cell++){
                         if(this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] || 
                             this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1]){
@@ -45,6 +48,26 @@ define([
             } else if(callback) {
                 callback(this.grid);
                 return this.grid;
+            }
+        },
+
+        getCenters: function(callback){
+            var url = this.urlRoot + this.id + '/centers';
+            if(!this.requesting && !this.requested_centers){
+                this.requesting = true;
+                $.get(url, null, _.bind(function(centers){
+                    this.requesting = false;
+                    this.requested_centers = true;
+                    this.centers = centers;
+
+                    if(callback){
+                        callback(this.centers);
+                        return this.centers;
+                    }
+                }, this));
+            } else{
+                callback(this.centers);
+                return this.centers;
             }
         },
 
