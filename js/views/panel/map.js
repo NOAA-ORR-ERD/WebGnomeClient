@@ -69,7 +69,7 @@ define([
                             })
                         }),
                     });
-                    var locationMap = new OlMapView({
+                    this.locationMap = new OlMapView({
                         el: this.$('#mini-locmap'),
                         controls: [],
                         layers: [
@@ -86,10 +86,10 @@ define([
                         }),
                     });
                     
-                    locationMap.render();
-                    locationMap.map.on('postcompose', _.bind(function(){
+                    this.locationMap.render();
+                    this.locationMap.map.on('postcompose', _.bind(function(){
                         var extent = shorelineSource.getExtent();
-                        locationMap.map.getView().fit(extent, locationMap.map.getSize());
+                        this.locationMap.map.getView().fit(extent, this.locationMap.map.getSize());
                     }, this));
                     this.trigger('render');
                 }, this));
@@ -140,6 +140,13 @@ define([
             form.render();
             form.on('hidden', form.close);
             form.on('save', map.resetRequest, map);
+        },
+
+        close: function(){
+            if (this.locationMap) {
+                this.locationMap.close();
+            }
+            BasePanel.prototype.close.call(this);
         }
     });
 
