@@ -852,7 +852,7 @@ define([
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis = {
-                    ticks: [0, 10, 100, 1000, 10000, 100000, 10000000],
+                    ticks: [1, 10, 100, 1000, 10000, 100000, 10000000],
                     tickFormatter: function(tick){
                         return tick.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     },
