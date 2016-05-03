@@ -257,7 +257,8 @@ define([
         },
 
         populateDateTime: function() {
-            var starting_time = this.model.get('timeseries')[0][0];
+            var timeseries = this.model.get('timeseries');
+            var starting_time = timeseries[timeseries.length - 1][0];
             this.$('#variable-datetime').val(moment.utc(starting_time).format(webgnome.config.date_format.moment));
         },
 
