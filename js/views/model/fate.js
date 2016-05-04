@@ -823,6 +823,7 @@ define([
         renderGraphDensity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            dataset[0].label = 'Average Oil (Emulsion) Density';
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
