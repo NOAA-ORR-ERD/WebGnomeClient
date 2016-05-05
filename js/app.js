@@ -56,12 +56,10 @@ define([
                                     if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
                                         if($('.modal').length === 0){
                                             swal({
-                                                html: true,
                                                 title: 'Application Error!',
                                                 text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 type: 'error',
                                                 confirmButtonText: 'Ok'
-                                            }).then(function(isConfirm){
                                             });
                                         }
                                     }
