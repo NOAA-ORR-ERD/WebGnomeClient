@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'sweetalert'
-], function($, _, Backbone, swal){
+    'sweetalert',
+    'model/gnome'
+], function($, _, Backbone, swal, GnomeModel){
     'use strict';
     var baseWizard = Backbone.View.extend({
         steps: [],
@@ -76,6 +77,8 @@ define([
                 closeOnCancel: true
             }).then(_.bind(function(isConfirm) {
                 if (isConfirm) {
+                    webgnome.model = new GnomeModel();
+                    webgnome.model.save(null, {validate: false});
                     _.each(this.steps, function(step){
                         if(step.$el.is(':hidden')){
                             step.close();
@@ -86,7 +89,6 @@ define([
                     this.unbind();
                     this.remove();
                 } else {
-                    console.log(this.steps[this.step]);
                     this.steps[this.step].show();
                 }
             }, this));
