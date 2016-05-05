@@ -58,10 +58,10 @@ define([
                                             swal({
                                                 html: true,
                                                 title: 'Application Error!',
-                                                text: 'An error in the application has occured, if this problem persists please contact support.<br /><br /><code>' + req.responseText + '</code>',
+                                                text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
                                                 type: 'error',
                                                 confirmButtonText: 'Ok'
-                                            }, function(isConfirm){
+                                            }).then(function(isConfirm){
                                             });
                                         }
                                     }
