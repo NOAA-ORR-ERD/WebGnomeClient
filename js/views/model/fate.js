@@ -1099,8 +1099,16 @@ define([
             high.other_natural += high.dissolution;
             report.other_natural += report.sedimentation;
             report.other_natural += report.dissolution;
+
+            var amount_type = 'Volume Spilled';
+            var mass_units = ['kg', 'metric ton', 'ton'];
+
+            if (mass_units.indexOf(to_units) > -1) {
+                amount_type = 'Mass Spilled';
+            }
             
             var compiled = _.template(ICSTemplate, {
+                amount_type: amount_type,
                 report: report,
                 cumulative: cumulative,
                 low: low,
