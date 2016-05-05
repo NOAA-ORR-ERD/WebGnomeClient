@@ -91,7 +91,7 @@ define([
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: "<button type='button' class='cancel'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
+                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
                     }, wind);
                     windform.on('save', _.bind(function(){
                         webgnome.model.get('environment').add(wind, {merge: true});

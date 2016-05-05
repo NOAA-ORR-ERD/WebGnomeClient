@@ -166,7 +166,7 @@ define([
                 showCancelButton: true,
                 confirmButtonText: "Confirm",
                 closeOnConfirm: true
-            }, _.bind(function(isConfirm){
+            }).then(_.bind(function(isConfirm){
                 if (isConfirm){
                     var oilId = $(e.target).data('adiosId');
                     var cachedOils = JSON.parse(localStorage.getItem('cachedOils'));
@@ -333,8 +333,7 @@ define([
                     cancelButtonText: "Keep original oil",
                     closeOnConfirm: true,
                     closeOnCancel: true
-                },
-                _.bind(function(isConfirm){
+                }).then(_.bind(function(isConfirm){
                     if (isConfirm){
                         this.initOilLib();
                     }
@@ -354,8 +353,7 @@ define([
                     cancelButtonText: "Cancel",
                     closeOnConfirm: true,
                     closeOnCancel: true
-                },
-                _.bind(function(isConfirm){
+                }).then(_.bind(function(isConfirm){
                     if (isConfirm){
                         if (webgnome.model.get('spills').length > 0){
                             webgnome.model.get('spills').at(0).get('element_type').set('substance', null);

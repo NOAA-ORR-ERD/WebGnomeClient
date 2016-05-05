@@ -124,7 +124,7 @@ define([
                 text:'Creating a new model will delete all data related to any current model.',
                 type: 'warning',
                 showCancelButton: true,
-            }, _.bind(function(isConfirm){
+            }).then(_.bind(function(isConfirm){
                 if(isConfirm){
                     localStorage.setItem('prediction', null);
                     if (!_.isUndefined(webgnome.riskCalc)) {

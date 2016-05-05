@@ -101,7 +101,7 @@ define([
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
             }
-            BasePanel.prototype.render.call(this);            
+            BasePanel.prototype.render.call(this);
         },
 
         delete: function(e){
@@ -116,7 +116,7 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }, _.bind(function(isConfirmed){
+            }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
                     var movers = webgnome.model.get('movers').filter(function(model){
                         if(model.get('wind') && model.get('wind').get('id') === id){

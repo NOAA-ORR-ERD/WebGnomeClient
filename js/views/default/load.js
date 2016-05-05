@@ -156,7 +156,7 @@ define([
                             type: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'
-                        }, function(isConfirm){
+                        }).then(function(isConfirm){
                             if (isConfirm){
                                 for (var i = 0; i < neededModels.length; i++){
                                     if (neededModels[i].indexOf('outputters') !== -1){

@@ -43,7 +43,7 @@ require.config({
         'get-size': 'lib/get-size/',
         'matches-selector': 'lib/matches-selector/',
         outlayer: 'lib/outlayer/',
-        sweetalert: 'lib/sweetalert/lib/sweet-alert',
+        sweetalert: 'lib/sweetalert2/dist/sweetalert2.min',
         nucos: 'lib/nucos/nucos',
         relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',

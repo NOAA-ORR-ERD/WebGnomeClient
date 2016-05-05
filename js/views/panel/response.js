@@ -199,7 +199,7 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }, _.bind(function(isConfirmed){
+            }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('weatherers').remove(id);
                     webgnome.model.save(null, {

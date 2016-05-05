@@ -520,8 +520,7 @@ define([
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true
-            },
-            _.bind(function(isConfirm){
+            }).then(_.bind(function(isConfirm){
                 if (isConfirm){
                     this.model.set('timeseries', [[model_start_time, [0, 0]]]);
                     this.originalTimeseries = [[model_start_time, [0, 0]]];

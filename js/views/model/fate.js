@@ -370,8 +370,7 @@ define([
                         showCancelButton: true
                     };
                 }
-                swal(swalObj,
-                function(isConfirm){
+                swal(swalObj).then(function(isConfirm){
                     if (isConfirm) {
                         webgnome.router.navigate('config', true);
                     }
