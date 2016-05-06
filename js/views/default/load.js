@@ -150,7 +150,6 @@ define([
                             msg += 'The following spill models were altered to be compatible.<br /><br /><code>' + invalidSpillsStr + '</code><br />';
                         }
                         swal({
-                            html: true,
                             title: 'Model Compliance',
                             text: 'The model you loaded is not compliant with the web environment.' + msg,
                             type: 'warning',
