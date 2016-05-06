@@ -66,6 +66,16 @@ define([
                 this.$('.delete').prop('disabled', true);
             }
 
+            var start_time;
+
+            if (this.model.get('timeseries').length === 0) {
+                start_time = moment(webgnome.model.get('start_time')).add(webgnome.model.get('time_step'), 's');
+            } else {
+                start_time = moment(this.model.get('timeseries')[this.model.get('timeseries').length - 1][0]);
+            }
+
+            var initial_time = start_time.format(webgnome.config.date_format.moment);
+
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
@@ -74,18 +84,14 @@ define([
             this.$('#datepick').on('click', _.bind(function(){
                 this.$('#datetime').datetimepicker('show');
             }, this));
+
+            this.$('#datetime').val(initial_time);
         },
 
         update: function(){
             var units = this.$('#units').val();
 
             this.model.set('units', units);
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         addBeachedAmount: function(e){
@@ -198,7 +204,7 @@ define([
                 confirmButtonColor: "#DD6B55",
                 confirmButtonText: "Ok",
                 closeOnConfirm: true
-            }, _.bind(function(isConfirm) {
+            }).then(_.bind(function(isConfirm) {
                 webgnome.model.get('weatherers').remove(id);
                 webgnome.model.save();
                 this.on('hidden', _.bind(function(){

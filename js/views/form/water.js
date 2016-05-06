@@ -15,8 +15,6 @@ define([
 
         events: function(){
             var formModalHash = FormModal.prototype.events;
-            delete formModalHash['change input'];
-            delete formModalHash['keyup input'];
             return _.defaults({
                 'change select': function(e){
                     this.revealManualInputs(e);
@@ -118,16 +116,6 @@ define([
             this.model.set('temperature', this.$('#temp').val());
             this.model.set('salinity', this.$('.salinity:visible').val());
             this.model.set('sediment', this.$('.sediment:visible').val());
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
-        },
-
-        save: function() {
-            this.update();
-            FormModal.prototype.save.call(this);
         },
 
         resetSelect: function(e) {

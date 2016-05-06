@@ -257,7 +257,8 @@ define([
         },
 
         populateDateTime: function() {
-            var starting_time = this.model.get('timeseries')[0][0];
+            var timeseries = this.model.get('timeseries');
+            var starting_time = timeseries[timeseries.length - 1][0];
             this.$('#variable-datetime').val(moment.utc(starting_time).format(webgnome.config.date_format.moment));
         },
 
@@ -393,12 +394,6 @@ define([
             
             
             this.$('.additional-wind-compass').remove();
-
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         updateVariableSlide: function(ui){
@@ -525,8 +520,7 @@ define([
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it.",
                 closeOnConfirm: true
-            },
-            _.bind(function(isConfirm){
+            }).then(_.bind(function(isConfirm){
                 if (isConfirm){
                     this.model.set('timeseries', [[model_start_time, [0, 0]]]);
                     this.originalTimeseries = [[model_start_time, [0, 0]]];

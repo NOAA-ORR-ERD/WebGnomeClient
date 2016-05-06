@@ -370,8 +370,7 @@ define([
                         showCancelButton: true
                     };
                 }
-                swal(swalObj,
-                function(isConfirm){
+                swal(swalObj).then(function(isConfirm){
                     if (isConfirm) {
                         webgnome.router.navigate('config', true);
                     }
@@ -823,6 +822,7 @@ define([
         renderGraphDensity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            dataset[0].label = 'Average Oil (Emulsion) Density';
             if(_.isUndefined(this.graphDensity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 options.yaxis.ticks = 4;
@@ -975,11 +975,12 @@ define([
             var model_start_time = webgnome.model.get('start_time');
             var start_input = this.$('#ics209 #start_time').val();
             var end_input = this.$('#ics209 #end_time').val();
+            var time_span_hrs = 24;
 
             if (start_input !== '' && end_input === '') {
-                end_input = moment(start_input).add(webgnome.model.get('time_step'), 's').format(date_format);
+                end_input = moment(start_input).add(time_span_hrs, 'h').format(date_format);
             } else if (start_input === '' && end_input !== '') {
-                start_input = moment(end_input).subtract(webgnome.model.get('time_step'), 's').format(date_format);
+                start_input = moment(end_input).subtract(time_span_hrs, 'h').format(date_format);
             }
 
             var start_time = moment(start_input, date_format);
@@ -1098,8 +1099,16 @@ define([
             high.other_natural += high.dissolution;
             report.other_natural += report.sedimentation;
             report.other_natural += report.dissolution;
+
+            var amount_type = 'Volume Spilled';
+            var mass_units = ['kg', 'metric ton', 'ton'];
+
+            if (mass_units.indexOf(to_units) > -1) {
+                amount_type = 'Mass Spilled';
+            }
             
             var compiled = _.template(ICSTemplate, {
+                amount_type: amount_type,
                 report: report,
                 cumulative: cumulative,
                 low: low,

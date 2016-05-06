@@ -29,12 +29,12 @@ define([
                 new ModelForm({
                     name: 'step1',
                     title: 'Model Settings <span class="sub-title">GNOME Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="next">Next</button>',
                 }, webgnome.model),
                 new WindForm({
                     name: 'step2',
                     title: 'Wind <span class="sub-title">GNOME Wizard</span>',
-                    buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
+                    buttons: '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>',
                 }, wind).on('save', function(){
                     webgnome.model.get('environment').add(wind);
                 }),
@@ -45,7 +45,7 @@ define([
                 }).on('select', _.bind(function(form){
                     form.title += '<span class="sub-title">ADIOS Wizard</span>';
                     form.name = 'step3';
-                    form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+                    form.buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
                     this.register(form);
                     this.steps[this.step].on('hidden', _.bind(function(){
                         this.close();
@@ -62,7 +62,7 @@ define([
                     form.title += '<span class="sub-title">GNOME Wizard</span>';
                     form.name = 'step5';
                     form.$el.addClass('gnome');
-                    form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
+                    form.buttons = '<button type="button" class="cancel">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
                     this.register(form);
                     this.steps[this.step].on('hidden', _.bind(function(){
                         this.close();

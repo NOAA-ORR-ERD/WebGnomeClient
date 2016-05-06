@@ -82,11 +82,6 @@ define([
             var start_time = this.startTime;
             this.model.set('name', name);
             this.model.set('active_start', start_time.format('YYYY-MM-DDTHH:mm:ss'));
-            if(!this.model.isValid()){
-                this.error('Error!', this.model.validationError);
-            } else {
-                this.clearError();
-            }
         },
 
         parseDuration: function(start, end){
@@ -136,7 +131,7 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }, _.bind(function(isConfirmed){
+            }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
                     webgnome.model.get('weatherers').remove(id);
                     webgnome.model.save();

@@ -24,11 +24,11 @@ define([
             'click .save': 'save',
             'click .finish': 'finish',
             'click .cancel': 'wizardclose',
-            'change input': 'update',
-            'keyup input': 'update',
             'click input': 'selectContents',
+            'click .modal-header .gnome-help': 'showHelp',
+            'change input': 'update',
             'change select': 'update',
-            'click .modal-header .gnome-help': 'showHelp'
+            'keyup input': 'update'
         },
 
         initialize: function(options){

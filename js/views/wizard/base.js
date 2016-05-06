@@ -1,8 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
-], function($, _, Backbone){
+    'backbone',
+    'sweetalert',
+    'model/gnome'
+], function($, _, Backbone, swal, GnomeModel){
     'use strict';
     var baseWizard = Backbone.View.extend({
         steps: [],
@@ -64,15 +66,32 @@ define([
         },
 
         close: function(){
-            _.each(this.steps, function(step){
-                if(step.$el.is(':hidden')){
-                    step.close();
+            swal({
+                title: "Are you sure?",
+                text: "You will lose all the entered model data!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, I am sure",
+                cancelButtonText: "Go back",
+                closeOnConfirm: true,
+                closeOnCancel: true
+            }).then(_.bind(function(isConfirm) {
+                if (isConfirm) {
+                    webgnome.model = new GnomeModel();
+                    webgnome.model.save(null, {validate: false});
+                    _.each(this.steps, function(step){
+                        if(step.$el.is(':hidden')){
+                            step.close();
+                        } else {
+                            step.once('hidden', step.close, step);
+                        }
+                    });
+                    this.unbind();
+                    this.remove();
                 } else {
-                    step.once('hidden', step.close, step);
+                    this.steps[this.step].show();
                 }
-            });
-            this.unbind();
-            this.remove();
+            }, this));
         }
     });
 

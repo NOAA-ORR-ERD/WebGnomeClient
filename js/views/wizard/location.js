@@ -116,7 +116,7 @@ define([
                         name: el.name,
                         title: title.join(' '),
                         body: "<div>Filler Text</div>",
-                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Finalize Model</button>"
+                        buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Run Model</button>"
                     });
                     finishForm.on('finish', function(){
                         webgnome.model.save().always(function(){
