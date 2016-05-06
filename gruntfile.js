@@ -55,7 +55,23 @@ module.exports = function(grunt){
         copy: {
             build: {
                 expand: true,
-                src: ['favicon.ico', 'fonts/*', 'img/*', 'css/images/*', 'resource/*'],
+                src: [
+                    'favicon.ico',
+                    'fonts/*',
+                    'img/*',
+                    'css/images/*',
+                    'resource/*'
+                ],
+                dest: 'dist/build/'
+            },
+            cesium: {
+                expand: true,
+                src: [
+                    'js/lib/cesium/Build/Cesium/ThirdParty/**',
+                    'js/lib/cesium/Build/Cesium/Assets/**',
+                    'js/lib/cesium/Build/Cesium/Widgets/**',
+                    'js/lib/cesium/Build/Cesium/Workers/**'
+                ],
                 dest: 'dist/build/'
             }
         },
@@ -168,7 +184,7 @@ module.exports = function(grunt){
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'vulcanize:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'vulcanize:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
