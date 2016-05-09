@@ -123,7 +123,6 @@ define([
                             localStorage.setItem('view', 'trajectory');
                             webgnome.router.navigate('trajectory', true);
                         });
-                        finishForm.trigger('wizardclose');
                     });
 
                     this.steps.push(finishForm);
