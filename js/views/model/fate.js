@@ -693,7 +693,7 @@ define([
                         }
 
                         if (row === 0) {
-                            if (dataset[set].name === 'floating' || display.other === 'same') {
+                            if (dataset[set].name === 'amount_released' || display.other === 'same') {
                                 row_html +='<th style="background: ' + color + ';">' + dataset[set].label + ' (' + to_unit + ')</th>';
                             } else {
                                 row_html += '<th style="background: ' + color + ';">' + dataset[set].label + ' (' + display.other + ')</th>';
