@@ -78,6 +78,19 @@ define([
             }, this));
         },
 
+        hoverTooltip: function(feature) {
+            this.tooltip.setPosition(feature.getGeometry().getCoordinates());
+            var element = this.tooltip.getElement();
+            if (this.$('.tooltip').length !== 0) {
+                this.$('.tooltip-inner').text(feature.get('title'));
+            } else {
+                this.$(element).attr('data-toggle', 'tooltip');
+                this.$(element).attr('data-placement', 'right');
+                this.$(element).attr('title', feature.get('title'));
+                this.$(element).tooltip('show');
+            }
+        },
+
         setupLocation: function(e){
             e.stopPropagation();
             var slug = $(e.target).data('slug');
@@ -129,7 +142,15 @@ define([
                 offsetX: -2,
                 offsetY: -22
             });
+            this.tooltip = new ol.Overlay({
+                position: 'bottom-center',
+                element: this.$('.tooltip-hover')[0],
+                stopEvent: false,
+                offsetX: 0,
+                offsetY: -22
+            });
             this.mapView.map.addOverlay(this.popup);
+            this.mapView.map.addOverlay(this.tooltip);
             this.registerMapEvents();
         },
 
@@ -172,10 +193,10 @@ define([
                 });
                 if(pointer){
                     this.mapView.map.getViewport().style.cursor = 'pointer';
-                    this.mapClickEvent(e);
                 } else {
                     this.mapView.map.getViewport().style.cursor = '';
                 }
+                this.mapHoverEvent(e);
             }, this));
 
             // clicking a location creates a popover with it's related information displayed
@@ -193,6 +214,26 @@ define([
                 e.pixel = this.mapView.map.getPixelFromCoordinate(coords);
                 this.mapClickEvent(e);
             }, this), 200);
+        },
+
+        mapHoverEvent: function(e) {
+            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                return feature;
+            });
+            if (feature){
+                if (this.$('.tooltip').length === 0) {
+                    this.hoverTooltip(feature);
+                } else {
+                    this.$('.tooltip-hover').one('hidden.bs.tooltip', _.bind(function(){
+                    setTimeout(_.bind(function(){
+                        this.hoverTooltip(feature);
+                        }, this), 1);
+                    }, this));
+                    this.$('.tooltip-hover').tooltip('destroy');
+                }
+            } else {
+                this.$('.tooltip-hover').tooltip('destroy');
+            }
         },
 
         mapClickEvent: function(e){
