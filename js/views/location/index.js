@@ -167,15 +167,16 @@ define([
             // change mouse to pointer when hovering over a feature.
 
             this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
+                var pointer = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                     return true;
                 });
                 if(pointer){
-                    this.getViewport().style.cursor = 'pointer';
+                    this.mapView.map.getViewport().style.cursor = 'pointer';
+                    this.mapClickEvent(e);
                 } else {
-                    this.getViewport().style.cursor = '';
+                    this.mapView.map.getViewport().style.cursor = '';
                 }
-            }, this.mapView.map));
+            }, this));
 
             // clicking a location creates a popover with it's related information displayed
             this.mapView.map.on('click', this.mapClickEvent, this);
