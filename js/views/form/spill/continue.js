@@ -20,9 +20,7 @@ define([
         loaded: false,
 
         events: function(){
-            return _.defaults({
-                'click .slider': 'updateAmountTooltip'
-            }, BaseSpillForm.prototype.events());
+            return _.defaults({}, BaseSpillForm.prototype.events());
         },
 
         initialize: function(options, spillModel){
@@ -155,6 +153,8 @@ define([
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
             }
+            var value = this.$('.slider').slider('value');
+            this.model.set('amount_uncertainty_scale', value / 5);
         },
 
         inputFieldUpdate: function(e) {
@@ -226,13 +226,7 @@ define([
                     this.$('#amount-tooltip').text(bottom + ' - ' + top);
                 }
             }
-            this.model.set('amount_uncertainty_scale', value / 5);
             this.updateTooltipWidth();
-        },
-
-        updateAmountTooltip: function(){
-            this.update();
-            this.updateAmountSlide();
         },
 
         close: function(){
