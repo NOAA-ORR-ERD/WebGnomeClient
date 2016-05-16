@@ -78,6 +78,15 @@ define([
             }, this));
         },
 
+        dblClickPin: function(feature) {
+            var slug = feature.get('slug');
+            var name = feature.get('title');
+
+            webgnome.model.resetLocation(_.bind(function(){
+                this.setupLocation(null, {slug: slug, name: name});
+            }, this));
+        },
+
         hoverTooltip: function(feature) {
             this.tooltip.setPosition(feature.getGeometry().getCoordinates());
             var element = this.tooltip.getElement();
@@ -91,10 +100,16 @@ define([
             }
         },
 
-        setupLocation: function(e){
-            e.stopPropagation();
-            var slug = $(e.target).data('slug');
-            var name = $(e.target).data('name');
+        setupLocation: function(e, options){
+            var slug, name;
+            if (!_.isNull(e)){
+                e.stopPropagation();
+                slug = $(e.target).data('slug');
+                name = $(e.target).data('name');
+            } else {
+                slug = options.slug;
+                name = options.name;
+            }
             webgnome.model = new GnomeModel();
             if(_.has(webgnome, 'cache')){
                 webgnome.cache.rewind();
@@ -201,6 +216,7 @@ define([
 
             // clicking a location creates a popover with it's related information displayed
             this.mapView.map.on('click', this.mapClickEvent, this);
+            this.mapView.map.on('dblclick', this.mapDblClickEvent, this);
         },
 
         highlightLoc: function(e){
@@ -254,6 +270,16 @@ define([
                 }
             } else {
                 this.$('.popup').popover('destroy');
+            }
+        },
+
+        mapDblClickEvent: function(e) {
+            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                return feature;
+            });
+
+            if (feature && ($('.loading').length === 0 && $('.modal').length === 0)) {
+                this.dblClickPin(feature);
             }
         },
 
