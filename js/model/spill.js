@@ -42,6 +42,7 @@ define([
                 this.set('units', 'kg');
             }
             this.on('change:element_type', this.addListeners, this);
+            this.on('change:release', this.addListeners, this);
             this.addListeners();
         },
 
@@ -82,6 +83,11 @@ define([
 
         addListeners: function(){
             this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
+            this.listenTo(this.get('release'), 'change', this.releaseChange);
+        },
+
+        releaseChange: function(release) {
+            this.childChange('release', release);
         },
 
         elementTypeChange: function(element_type){
