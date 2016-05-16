@@ -100,6 +100,8 @@ define([
             release.set('end_release_time', releaseTime);
             BaseSpillForm.prototype.update.call(this);
             this.updateConstantSlide();
+            var value = this.$('.slider').slider('value');
+            this.model.set('amount_uncertainty_scale', value / 5);
         },
 
         updateConstantSlide: function(ui){
@@ -122,7 +124,6 @@ define([
                     this.$('.slider .tooltip-inner').text(bottom + ' - ' + top);
                 }
             }
-            this.model.set('amount_uncertainty_scale', value / 5);
             this.updateTooltipWidth();
         }
 
