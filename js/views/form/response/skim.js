@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
-    'views/form/response/base',
+    'views/form/response/adios_base',
     'text!templates/form/response/skim.html',
     'model/weatherers/skim',
     'moment',
@@ -12,7 +12,7 @@ define([
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
     'use strict';
     var skimForm = ResponseFormModal.extend({
-        title: 'Skim Response',
+        title: 'ADIOS Skim Response',
         className: 'modal response form-modal skim-form',
 
         events: function(){

@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
-    'views/form/response/base',
+    'views/form/response/adios_base',
     'text!templates/form/response/burn.html',
     'model/weatherers/burn',
     'moment',
@@ -13,7 +13,7 @@ define([
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment, nucos){
     'use strict';
     var inSituBurnForm = ResponseFormModal.extend({
-        title: 'In-Situ Burn Response',
+        title: 'ADIOS In-Situ Burn Response',
         className: 'modal response form-modal insituburn-form',
 
         initialize: function(options, burnModel){

@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
-    'views/form/response/base',
+    'views/form/response/adios_base',
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
     'moment',
@@ -12,7 +12,7 @@ define([
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, DisperseModel, moment){
     'use strict';
     var disperseForm = ResponseFormModal.extend({
-        title: 'Disperse Response',
+        title: 'ADIOS Disperse Response',
         className: 'modal response form-modal disperse-form',
 
         initialize: function(options, disperseModel){

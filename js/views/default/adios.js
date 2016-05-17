@@ -185,8 +185,8 @@ define([
         },
 
         solve: function(){
-            var view = localStorage.getItem('view');
-            webgnome.router.navigate(view, true);
+            localStorage.setItem('view', 'fate');
+            webgnome.router.navigate('fate', true);
         },
 
         clickResponse: function(){
