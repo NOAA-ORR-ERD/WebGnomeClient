@@ -83,6 +83,7 @@ define([
             var name = feature.get('title');
 
             webgnome.model.resetLocation(_.bind(function(){
+                this.$('.popup').popover('destroy');
                 this.setupLocation(null, {slug: slug, name: name});
             }, this));
         },
