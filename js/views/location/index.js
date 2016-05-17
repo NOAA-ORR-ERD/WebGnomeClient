@@ -184,6 +184,11 @@ define([
                     })
                 })
             });
+            this.features = this.layer.getSource().getFeatures();
+
+            this.features.forEach(function(el, i, arr){
+                console.log(el.get('slug'));
+            });
 
             this.mapView.map.addLayer(this.layer);
 
@@ -220,6 +225,10 @@ define([
             this.mapView.map.on('dblclick', this.mapDblClickEvent, this);
         },
 
+        findFeature: function(slug) {
+            return _.find(this.features, function(el) { return el.get('slug') === slug; });
+        },
+
         highlightLoc: function(e){
             var loc = e.currentTarget;
             var coords = $(loc).data('coords').split(',');
@@ -227,9 +236,12 @@ define([
             this.mapView.map.getView().setCenter(coords);
             this.mapView.map.getView().setZoom(24);
 
+            var slug = $(loc).children().data('slug');
+            var feature = this.findFeature(slug);
+
             setTimeout(_.bind(function(){
                 e.pixel = this.mapView.map.getPixelFromCoordinate(coords);
-                this.mapClickEvent(e);
+                this.mapClickEvent(e, feature);
             }, this), 200);
         },
 
@@ -253,10 +265,15 @@ define([
             }
         },
 
-        mapClickEvent: function(e){
-            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                return feature;
-            });
+        mapClickEvent: function(e, feature_param){
+            var feature;
+            if (_.isUndefined(feature_param)) {
+                feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                    return feature;
+                });
+            } else {
+                feature = feature_param;
+            }
 
             if(feature){
                 if(this.$('.popover').length === 0){
