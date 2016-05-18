@@ -184,10 +184,6 @@ define([
             });
             this.features = this.layer.getSource().getFeatures();
 
-            this.features.forEach(function(el, i, arr){
-                console.log(el.get('slug'));
-            });
-
             this.mapView.map.addLayer(this.layer);
 
             var sortedLocations = geojson.features.sort(function(a, b) {
