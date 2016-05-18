@@ -82,10 +82,8 @@ define([
             var slug = feature.get('slug');
             var name = feature.get('title');
 
-            webgnome.model.resetLocation(_.bind(function(){
-                this.$('.popup').popover('destroy');
-                this.setupLocation(null, {slug: slug, name: name});
-            }, this));
+            this.$('.popup').popover('destroy');
+            this.setupLocation(null, {slug: slug, name: name});
         },
 
         hoverTooltip: function(feature) {
