@@ -143,8 +143,8 @@ define([
         },
 
         renderWaterForm: function() {
-            var waterForm = new WaterForm();
-            console.log(waterForm.model);
+            var waterModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var waterForm = new WaterForm(null, waterModel);
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(waterForm.model, {merge:true});
