@@ -12,6 +12,8 @@ define([
     'text!templates/default/export.html',
     'model/risk/risk',
     'views/wizard/risk',
+    'views/form/oil/library',
+    'views/form/water',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -25,7 +27,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -58,7 +60,9 @@ define([
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
             'click .export-csv': 'exportCSV',
-            'change .vol-units': 'renderGraphICS'
+            'change .vol-units': 'renderGraphICS',
+            'click .substance .select': 'renderOilLibrary',
+            'click .water .select': 'renderWaterForm'
         },
         dataPrecision: 3,
 
@@ -128,6 +132,7 @@ define([
             }
 
             if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
+                //var waterForm = new
                 this.$('.water').addClass('missing');
             }
 
@@ -135,6 +140,30 @@ define([
                 this.$('.weatherers').addClass('missing');
             }
 
+        },
+
+        renderWaterForm: function() {
+            var waterForm = new WaterForm();
+            console.log(waterForm.model);
+            waterForm.on('hidden', waterForm.close);
+            waterForm.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(waterForm.model, {merge:true});
+            }, this));
+            waterForm.render();
+        },
+
+        renderOilLibrary: function() {
+            var element_type = webgnome.model.getElementType();
+            var oilLib = new OilLibraryView({}, element_type);
+            oilLib.on('save wizardclose', _.bind(function(){
+                if(oilLib.$el.is(':hidden')){
+                    oilLib.close();
+                } else {
+                    oilLib.once('hidden', oilLib.close, oilLib);
+                }
+                this.noWeathering();
+            }, this));
+            oilLib.render();
         },
 
         toggleRAC: function(){

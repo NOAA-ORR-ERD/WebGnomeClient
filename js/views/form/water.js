@@ -6,8 +6,9 @@ define([
     'nucos',
     'views/modal/form',
     'text!templates/form/water.html',
+    'model/environment/water',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, nucos, FormModal, WaterTemplate){
+], function($, _, Backbone, module, nucos, FormModal, WaterTemplate, WaterModel){
     'use strict';
     var waterForm = FormModal.extend({
         className: 'modal form-modal model-form water-form',
@@ -26,7 +27,11 @@ define([
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
-            this.model = (model ? model : null);
+            if (!_.isUndefined(model)) {
+                this.model = model;
+            } else {
+                this.model = new WaterModel();
+            }
         },
 
         render: function(options){
