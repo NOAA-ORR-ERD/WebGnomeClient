@@ -382,14 +382,22 @@ define([
         },
 
         initMapModal: function() {
-            this.mapModal = new MapFormView({}, this.model.get('release'));
-            this.mapModal.render();
-            this.mapModal.on('hidden', _.bind(function() {
-                this.show();
-                this.mapModal.close();
-            }, this));
-            this.mapModal.on('save', this.setManualFields, this);
-            this.hide();
+            if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
+                this.mapModal = new MapFormView({}, this.model.get('release'));
+                this.mapModal.render();
+                this.mapModal.on('hidden', _.bind(function() {
+                    this.show();
+                    this.mapModal.close();
+                }, this));
+                this.mapModal.on('save', this.setManualFields, this);
+                this.hide();
+            } else {
+                swal({
+                    title: 'A location must be selected!',
+                    text: 'Please load a location file before placing your spill location',
+                    type: 'error'
+                });
+            }
         },
 
         setManualFields: function(){
