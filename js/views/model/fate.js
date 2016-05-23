@@ -17,6 +17,7 @@ define([
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
+    'views/form/wind',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -30,7 +31,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -66,7 +67,8 @@ define([
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderOilLibrary',
-            'click .water .select': 'renderWaterForm'
+            'click .water .select': 'renderWaterForm',
+            'click .wind .select': 'renderWindForm'
         },
         dataPrecision: 3,
 
@@ -204,6 +206,24 @@ define([
                 webgnome.obj_ref[element_type.id] = element_type;
             }, this));
             oilLib.render();
+        },
+
+        renderWindForm: function() {
+            var windForm;
+            var windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+
+            if (!_.isNull(windModel)) {
+                windForm = new WindForm(null, windModel);
+            } else {
+                windForm = new WindForm();
+            }
+
+            windForm.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(windForm.model, {merge: true});
+            }, this));
+
+            windForm.on('hidden', windForm.close);
+            windForm.render();
         },
 
         toggleRAC: function(){
