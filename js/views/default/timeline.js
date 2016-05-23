@@ -18,6 +18,7 @@ define([
             this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
+            this.listenTo(webgnome.model, 'change:start_time change:duration', this.render);
         },
 
         render: function(){
