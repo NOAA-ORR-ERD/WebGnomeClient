@@ -369,10 +369,11 @@ define([
 
                 var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
                 var element_type = this.getElementType();
+                var wind = this.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
 
                 if (on_weatherers.length > 0 &&
                     element_type && element_type.get('substance') &&
-                    water && webgnome.model.get('spills').length > 0){
+                    water && webgnome.model.get('spills').length > 0 && wind){
                     return true;
                 }
 

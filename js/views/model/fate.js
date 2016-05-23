@@ -18,6 +18,7 @@ define([
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/wind',
+    'model/element',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -31,7 +32,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -111,19 +112,24 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             if(webgnome.model.validWeathering()){
-                this.module = module;
-                this.formatXaxisLabel();
-                BaseView.prototype.initialize.call(this, options);
-                this.$el.appendTo('body');
-                this.render();
-                $(window).on('scroll', this.tableOilBudgetStickyHeader);
-                webgnome.cache.on('rewind', this.reset, this);
-                webgnome.cache.on('step:failed', this.toggleRAC, this);
+                this.renderWeathering(options);
             } else {
                 webgnome.model.on('change', this.noWeathering, this);
+                webgnome.model.get('spills').on('change add remove', this.noWeathering, this);
                 this.appendNoWeatheringView();
             }
+        },
+
+        renderWeathering: function(options) {
+            this.formatXaxisLabel();
+            this.$el.appendTo('body');
+            this.render();
+            $(window).on('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.on('rewind', this.reset, this);
+            webgnome.cache.on('step:failed', this.toggleRAC, this);
         },
 
         appendNoWeatheringView: function() {
@@ -132,22 +138,27 @@ define([
         },
 
         noWeathering: function(options){
-            this.$el.html(_.template(NoWeatheringTemplate));
+            if (webgnome.model.validWeathering()) {
+                this.$el.html('');
+                this.renderWeathering();
+            } else {
+                this.$el.html(_.template(NoWeatheringTemplate));
 
-            if(webgnome.model.get('spills').length === 0){
-                this.$('.spill').addClass('missing');
-            }
+                if(webgnome.model.get('spills').length === 0){
+                    this.$('.spill').addClass('missing');
+                }
 
-            if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
-                this.$('.substance').addClass('missing');
-            }
+                if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
+                    this.$('.substance').addClass('missing');
+                }
 
-            if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
-                this.$('.water').addClass('missing');
-            }
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
+                    this.$('.water').addClass('missing');
+                }
 
-            if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
-                this.$('.wind').addClass('missing');
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
+                    this.$('.wind').addClass('missing');
+                }
             }
         },
 
@@ -195,7 +206,12 @@ define([
         },
 
         renderOilLibrary: function() {
-            var element_type = webgnome.model.getElementType();
+            var element_type;
+            if (webgnome.model.getElementType()){
+                element_type = webgnome.model.getElementType();
+            } else {
+                element_type = new ElementModel();
+            }
             var oilLib = new OilLibraryView({}, element_type);
             oilLib.on('save wizardclose', _.bind(function(){
                 if(oilLib.$el.is(':hidden')){
@@ -204,6 +220,7 @@ define([
                     oilLib.once('hidden', oilLib.close, oilLib);
                 }
                 webgnome.obj_ref[element_type.id] = element_type;
+                this.noWeathering();
             }, this));
             oilLib.render();
         },

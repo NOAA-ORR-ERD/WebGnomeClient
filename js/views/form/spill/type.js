@@ -46,7 +46,9 @@ define([
                 spillForm.on('hidden', function(){
                     spillForm.trigger('wizardclose');
                 });
-                webgnome.router.views[1].updateSpill();
+                if (!_.isUndefined(webgnome.router.views[1].updateSpill)){
+                    webgnome.router.views[1].updateSpill();
+                }
             });
         },
 
