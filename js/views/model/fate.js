@@ -14,6 +14,9 @@ define([
     'views/wizard/risk',
     'views/form/oil/library',
     'views/form/water',
+    'views/form/spill/type',
+    'views/form/spill/instant',
+    'views/form/spill/continue',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -27,7 +30,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -61,6 +64,7 @@ define([
             'click .print-graph': 'printGraphImage',
             'click .export-csv': 'exportCSV',
             'change .vol-units': 'renderGraphICS',
+            'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderOilLibrary',
             'click .water .select': 'renderWaterForm'
         },
@@ -115,12 +119,17 @@ define([
                 webgnome.cache.on('rewind', this.reset, this);
                 webgnome.cache.on('step:failed', this.toggleRAC, this);
             } else {
-                this.noWeathering();
+                webgnome.model.on('change', this.noWeathering, this);
+                this.appendNoWeatheringView();
             }
         },
 
-        noWeathering: function(){
+        appendNoWeatheringView: function() {
             this.$el.appendTo('body');
+            this.noWeathering();
+        },
+
+        noWeathering: function(options){
             this.$el.html(_.template(NoWeatheringTemplate));
 
             if(webgnome.model.get('spills').length === 0){
@@ -132,14 +141,45 @@ define([
             }
 
             if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
-                //var waterForm = new
                 this.$('.water').addClass('missing');
             }
 
-            if(webgnome.model.get('weatherers').where({on: 'true'}).length === 0){
-                this.$('.weatherers').addClass('missing');
+            if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
+                this.$('.wind').addClass('missing');
             }
+        },
 
+        renderSpillForm: function() {
+            if (webgnome.model.get('spills').length === 0) {
+                var spillTypeForm = new SpillTypeForm();
+                spillTypeForm.render();
+                spillTypeForm.on('hidden', spillTypeForm.close);
+                spillTypeForm.on('select', _.bind(function(form){
+                    form.on('wizardclose', form.close);
+                    form.on('save', _.bind(function(model){
+                        webgnome.model.get('spills').add(form.model);
+                        webgnome.model.save(null, {validate: false});
+                        if(form.$el.is(':hidden')){
+                            form.close();
+                        } else {
+                            form.once('hidden', form.close, form);
+                        }
+                    }, this));
+                }, this));
+            } else {
+                var spill = webgnome.model.get('spills').at(0);
+                var spillView;
+                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
+                    spillView = new SpillContinueForm(null, spill);
+                } else {
+                    spillView = new SpillInstantForm(null, spill);
+                }
+                spillView.on('save', function(){
+                    spillView.on('hidden', spillView.close);
+                });
+                spillView.on('wizardclose', spillView.close);
+                spillView.render();
+            }
         },
 
         renderWaterForm: function() {
@@ -161,7 +201,7 @@ define([
                 } else {
                     oilLib.once('hidden', oilLib.close, oilLib);
                 }
-                this.noWeathering();
+                webgnome.obj_ref[element_type.id] = element_type;
             }, this));
             oilLib.render();
         },
