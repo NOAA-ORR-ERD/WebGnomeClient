@@ -552,7 +552,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.needle = null;
+                options.needle.tooltips = false;
                 options.colors = this.colors;
                 options.legend.show = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', cloneset, options);
