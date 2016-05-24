@@ -114,6 +114,7 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            this.$el.appendTo('body');
             if(webgnome.model.validWeathering()){
                 this.renderWeathering(options);
             } else {
@@ -125,7 +126,6 @@ define([
 
         renderWeathering: function(options) {
             this.formatXaxisLabel();
-            this.$el.appendTo('body');
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
@@ -201,6 +201,7 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(waterForm.model, {merge:true});
+                webgnome.model.save(null, {silent: true});
             }, this));
             waterForm.render();
         },
@@ -237,6 +238,7 @@ define([
 
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(windForm.model, {merge: true});
+                webgnome.model.save(null, {silent: true});
             }, this));
 
             windForm.on('hidden', windForm.close);
