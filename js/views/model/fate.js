@@ -95,7 +95,11 @@ define([
                 on: false,
                 stack: false,
                 noduplicates: true,
-                label: this.formatNeedleLabel
+                label: this.formatNeedleLabel,
+                formatX: function(text) {
+                    var unix_time = parseInt(text, 10);
+                    return moment(unix_time).format(webgnome.config.date_format.moment);
+                }
             },
             legend: {
                 position: 'nw'
@@ -1336,12 +1340,12 @@ define([
                 if(this.validateDataset()){
                     webgnome.cache.step();
                     this.frame++;
-                    this.renderGraphs();    
+                    this.renderGraphs();
                 } else {
                     webgnome.cache.off('step:recieved', this.buildDataset, this);
                     delete this.dataset;
                     this.frame = 0;
-                    this.load();   
+                    this.load();
                 }
             } else {
                 swal({
@@ -1393,7 +1397,8 @@ define([
                             show: false
                         },
                         needle: {
-                            label: _.bind(this.formatNeedleLabel, this)
+                            label: _.bind(this.formatNeedleLabel, this),
+                            formatX: _.bind(this.formatNeedleTime, this)
                         }
                     });
                 }
@@ -1492,6 +1497,12 @@ define([
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
+        },
+
+        formatNeedleTime: function(text){
+            var unix_time = parseInt(text, 10);
+
+            return moment(unix_time).format(webgnome.config.date_format.moment);
         },
 
         pruneDataset: function(dataset, leaves){
