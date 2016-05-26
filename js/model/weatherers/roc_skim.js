@@ -17,22 +17,26 @@ define([
                 disharge_pr: 160,
                 offload_time: 0,
                 transit_time: 0,
-                stay_on_site: false,
+                offload_to: 'shore',
                 barge_arrival: '',
                 timeseries: this.calculateOperatingPeriods(),
                 group: 'A',
                 throughput: 75,
-                recovery: 1,
+                recovery: '1',
                 recovery_ef: 0,
-                units:{
-                    speed: 'kt',
+                units: new Backbone.Model({
+                    speed: 'knots',
                     swath: 'ft',
                     storage: 'bbl',
                     nameplate_pr: 'gpm',
                     decant_pr: 'gpm',
                     discharge_pr: 'gpm',
-                }
+                })
             };
+        },
+
+        models: {
+            units: Backbone.Model
         }
     });
     return ROCSkimModel;
