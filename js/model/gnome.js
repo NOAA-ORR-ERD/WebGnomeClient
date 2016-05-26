@@ -30,6 +30,7 @@ define([
     'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim',
+    'model/weatherers/roc_skim',
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
@@ -41,6 +42,7 @@ define([
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter, IceRawOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
+    ROCSkimModel,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
     'use strict';
     var gnomeModel = BaseModel.extend({
@@ -87,7 +89,8 @@ define([
                 'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
-                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData
+                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
+                'gnome.weatherers.ROC.Skimmer': ROCSkimModel
             }
         },
 
