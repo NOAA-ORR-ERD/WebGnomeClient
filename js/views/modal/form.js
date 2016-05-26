@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'views/modal/base',
     'text!templates/default/alert-danger.html',
     'views/default/help',
     'views/attributes/attributes',
-], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView, AttributesView){
+], function($, _, Backbone, moment, BaseModal, AlertDangerTemplate, HelpView, AttributesView){
     'use strict';
     var formModal = BaseModal.extend({
         className: 'modal form-modal',
