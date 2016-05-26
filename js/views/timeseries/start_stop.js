@@ -69,7 +69,7 @@ define([
         },
 
         updateSlide: function(e, ui){
-            var index = this.$(e.target).parents('.entry').data('index');
+            var index = this.$(e.target).parents('.entry').data('tsindex');
             var start = this.timeseries[index][0];
             var stop = this.timeseries[index][1];
 
