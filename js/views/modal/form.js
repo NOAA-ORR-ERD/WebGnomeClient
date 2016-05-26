@@ -38,6 +38,30 @@ define([
             }
         },
 
+        update: function(e){
+            var name = $(e.target).attr('name');
+            var value = $(e.target).val();
+            if(!name){ return; }
+            // if the user is inputting a negative numerical value
+            // reset it back to the non-neg version.
+            if(value < 0 || value === '-'){
+                nonneg = value.replace('-', '');
+                $(e.target).val(parseFloat(nonneg));
+                value = nonneg; 
+            }
+
+            if($(e.target).attr('type') === 'number'){
+                value = parseFloat(value);
+            }
+
+            name = name.split(':');
+            if(name.length === 1){
+                this.model.set(name[0], value);
+            } else {
+                this.model.get(name[0]).set(name[1], value);
+            }
+        },
+
         selectContents: function(e){
             var type = this.$(e.target).attr('type');
             if (type === 'number' || type === 'text') {
