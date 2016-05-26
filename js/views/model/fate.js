@@ -96,9 +96,11 @@ define([
                 stack: false,
                 noduplicates: true,
                 label: this.formatNeedleLabel,
-                formatX: function(text) {
-                    var unix_time = parseInt(text, 10);
-                    return moment(unix_time).format(webgnome.config.date_format.moment);
+                x_tooltip: {
+                    formatX: function(text){
+                        var unix_time = parseInt(text, 10);
+                        return moment(unix_time).format(webgnome.config.date_format.moment);
+                    }
                 }
             },
             legend: {
@@ -974,6 +976,9 @@ define([
                     },
                     transform: function(v){
                         return Math.log(v+10);
+                    },
+                    inverseTransform: function(v){
+                        return Math.exp(v);
                     },
                     tickDecimals: 0
                 };
