@@ -93,7 +93,7 @@
                                 </label>
                             </div>
                             <div class="input-group">
-                                <input type="number" class="form-control" name="recovery_ef" value="{{ recovery_ef }}">
+                                <input type="number" class="form-control" id="recovery_ef" name="recovery_ef" value="{{ recovery_ef }}">
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
@@ -184,7 +184,10 @@
                     <div class="form-group">
                         <label for="barge_arrival" class="col-sm-6 control-label">Barge Arrives On:</label>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" name="barge_arrival" id="barge_arrival">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" name="barge_arrival" id="barge_arrival">
+                                <span class="input-group-addon"><i></i></span>
+                            </div>
                         </div>
                     </div>
                 </div>
