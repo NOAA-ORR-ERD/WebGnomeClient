@@ -94,6 +94,8 @@ define([
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
                     }, wind);
                     windform.on('save', _.bind(function(){
+                        var windMover = new GnomeWindMover({wind: wind});
+                        webgnome.model.get('movers').add(windMover, {merge: true});
                         webgnome.model.get('environment').add(wind, {merge: true});
                     }, this));
 
