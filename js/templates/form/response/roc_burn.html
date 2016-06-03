@@ -1,0 +1,121 @@
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="name" class="form-control" name="name" value="{{ name }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel complete">
+                <div class="panel-heading">Encounter Rate</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-6 control-label" for="speed">Oil Collection Speed:</label>
+                        <div class="col-sm-3">
+                            <input type="number" id="speed" class="form-control" name="speed" value="{{ speed }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:speed">
+                                <option value="knots">knots</option>
+                                <option value="mph">mph</option>
+                                <option value="kmph">kmph</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="offset" class="col-sm-6 control-label">Burning Offset Distance:</label>
+                        <div class="col-sm-3">
+                            <input type="number" id="offset" class="form-control" value="{{ offset }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:offset">
+                                <option value="ft">ft</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel complete">
+                <div class="panel-heading">Fire Boom</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-6 control-label" for="boom_length">Fire Boom Length:</label>
+                        <div class="col-sm-3">
+                            <input type="number" id="boom_length" class="form-control" name="boom_length" value="{{ boom_length }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:boom_length">
+                                <option value="ft">ft</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-6 control-label" for="boom_draft">Fire Boom Draft:</label>
+                        <div class="col-sm-3">
+                            <input type="number" id="boom_draft" class="form-control" name="boom_draft" value="{{ boom_draft }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:boom_draft">
+                                <option value="in">in</option>
+                                <option value="cm">cm</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="offset" class="col-sm-6 control-label">Boom Throughput Efficiency:</label>
+                        <div class="col-sm-3">
+                            <input type="number" id="offset" class="form-control" value="{{ offset }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:offset">
+                                <option value="ft">ft</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel complete">
+                <div class="panel-heading">Efficiencies</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="throughput" class="col-sm-6 control-label">Throughput Efficiency:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="throughput" name="throughput" value="{{ throughput }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="burn" class="col-sm-6 control-label">Burn Effenciency:</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <label><input type="radio" name="burn" value="2"> ROC high value</label>
+                                <label><input type="radio" name="burn" value="1"> ROC nominal value</label>
+                                <label><input type="radio" name="burn" value="0"> ROC low value</label>
+                                <label>
+                                    <input type="radio" name="burn" value="custom"> Use my own value</label>
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="burn_ef" name="burn_ef" value="{{ burn_ef }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row timeseries">
+    </div>
+</form>
