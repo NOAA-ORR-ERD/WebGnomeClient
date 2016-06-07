@@ -14,12 +14,15 @@ define([
     'model/weatherers/roc_skim',
     'views/form/response/roc_skim',
     'model/weatherers/roc_burn',
-    'views/form/response/roc_burn'
+    'views/form/response/roc_burn',
+    'model/weatherers/roc_disperse',
+    'views/form/response/roc_disperse'
 ], function($, _, Backbone, module, FormModal, FormTemplate, 
     InSituBurnModel, DisperseModel, SkimModel, 
     InSituBurnForm, DisperseForm, SkimForm,
     ROCSkimModel, ROCSkimForm,
-    ROCBurnModel, ROCBurnForm){
+    ROCBurnModel, ROCBurnForm,
+    ROCDisperseModel, ROCDisperseForm){
     'use strict';
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
@@ -112,6 +115,21 @@ define([
         },
 
         roc_disperse: function(){
+            var disperse = new ROCDisperseModel();
+            this.defaultName(disperse);
+            this.on('hidden', _.bind(function(){
+                var form = new ROCDisperseForm({model: disperse});
+                form.render();
+                form.on('wizardclose', form.close);
+                form.on('save', function(){
+                    webgnome.model.get('weatherers').add(disperse);
+                    webgnome.model.save(null, {validate: false});
+                    form.on('hidden', function(){
+                        form.trigger('wizardclose');
+                    });
+                });
+            }));
+
         },
 
         roc_skim: function(){

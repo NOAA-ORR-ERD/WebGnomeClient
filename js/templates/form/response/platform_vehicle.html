@@ -1,0 +1,169 @@
+<form class="form-horizontal">
+    <div class="form-group form-group-sm">
+        <label for="name" class="control-label col-md-4">Name:</label>
+        <div class="col-md-8">
+            <input type="text" class="form-control" name="name" id="name" value="{{ name }}" default="{{ name }}">
+        </div>
+    </div>      
+
+{% if(type === 'aircraft'){ %}
+    <div class="form-group form-group-sm">
+        <label for="taxi" class="control-label col-md-4" style="white-space: nowrap">Taxi + Take Off/Land:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="taxi_land_depart" id="taxi" value="{{ taxi_land_depart }}" default="{{ taxi_land_depart }}">
+                <span class="input-group-addon">min</span>
+            </div>
+        </div>
+    </div>
+{% } %}
+
+{% if(type === 'aircraft'){ %}
+    <div class="form-group form-group-sm">
+        <label for="payload" class="control-label col-md-4">Payload:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="payload" id="payload" value="{{ payload }}" default="{{ payload }}">
+                <span class="input-group-addon">gal</span>
+            </div>
+        </div>
+    </div>
+{% } %}
+
+    <div class="form-group form-group-sm">
+        <label for="dispersant_load" class="control-label col-md-4">Dispersant Load:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="dispersant_load" id="dispersant_load" value="{{ dispersant_load }}" default="{{ dispersant_load }}">
+                <span class="input-group-addon">min</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-group-sm">
+        <label for="fuel_load" class="control-label col-md-4">Fuel Load Time:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="fuel_load" id="fuel_load" value="{{ fuel_load }}" default="{{ fuel_load }}">
+                <span class="input-group-addon">min</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group form-group-sm">
+        <label for="transit_speed" class="control-label col-md-4">Transit Speed:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="transit_speed" id="transit_speed" value="{{ transit_speed }}" default="{{ transit_speed }}">
+                <span class="input-group-addon">kts</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-group-sm">
+        <label class="control-label col-md-4" for="app_speed">Application Speed:</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="number" class="form-control" name="application_speed_min" value="{{ application_speed_min }}">
+                <span class="input-group-addon"> - </span>
+                <input type="number" class="form-control" name="application_speed" id="app_speed" value="{{ application_speed }}" default="{{ application_speed }}">
+                <span class="input-group-addon"> - </span>
+                <input type="number" class="form-control" name="application_speed_max" value="{{ application_speed_max }}">
+            </div>
+            <span class="help-block">
+                <span class="pull-left">min</span> 
+                <span class="pull-right">max</span>
+                <span style="text-align: center; display: block">applied</span>
+            </span>
+        </div>
+    </div>
+
+{% if(type === 'aircraft'){ %}
+    <div class="form-group form-group-sm">
+        <label for="approach" class="control-label col-md-4">Approach:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="approach" id="approach" value="{{ approach }}" default="{{ approach }}">
+                <span class="input-group-addon">nm</span>
+            </div>
+        </div>
+    </div>
+{% } %}
+
+    <div class="form-group form-group-sm">
+        <label for="pump_rate" class="control-label col-md-4">Pump Rate:</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="number" class="form-control" value="{{ pump_rate_min }}" name="pump_rate_min">
+                <span class="input-group-addon"> - </span>
+                <input type="text" class="form-control" id="pump_rate" value="Calc" default="Calculated" disabled>
+                <span class="input-group-addon"> - </span>
+                <input type="number" class="form-control" value="{{ pump_rate_max }}" name="pump_rate_max">
+            </div>
+            <span class="help-block">
+                <span class="pull-left">min</span> 
+                <span class="pull-right">max</span>
+                <span style="text-align: center; display: block">applied</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="form-group form-group-sm">
+        <label for="swath_width" class="control-label col-md-4">Swath Width:</label>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="number" class="form-control" name="swath_width_min" value="{{ swath_width_min }}">
+                <span class="input-group-addon"> - </span>
+                <input type="number" class="form-control" name="swath_width" id="swath_width" value="{{ swath_width }}" default="{{ swath_width }}">
+                <span class="input-group-addon"> - </span>
+                <input type="number" class="form-control" value="{{ swath_width_max }}" name="swath_width_max">
+            </div>
+            <span class="help-block">
+                <span class="pull-left">min</span> 
+                <span class="pull-right">max</span>
+                <span style="text-align: center; display: block">applied</span>
+            </span>
+        </div>
+    </div>
+    
+{% if(type === 'aircraft'){ %}
+    <div class="form-group form-group-sm">
+        <label for="departure" class="control-label col-md-4">Departure:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="departure" id="departure" value="{{ departure }}" default="{{ departure }}">
+                <span class="input-group-addon">nm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-group-sm">
+        <label for="reposition" class="control-label col-md-4">Reposition Speed:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="reposition_speed" id="reposition" value="{{ reposition_speed }}" default="{{ reposition_speed }}">
+                <span class="input-group-addon">kts</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group form-group-sm">
+        <label for="u_turn" class="control-label col-md-4">U Turn Time:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="u_turn_time" id="u_turn" value="{{ u_turn_time }}" default="{{ u_turn_time }}">
+                <span class="input-group-addon">min</span>
+            </div>
+        </div>
+    </div>
+{% } %}
+
+    <div class="form-group form-group-sm">
+        <label for="max_op_time" class="control-label col-md-4">Max Sortie Time:</label>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="number" class="form-control" name="max_op_time" id="max_op_time" value="{{ max_op_time }}" default="{{ max_op_time }}">
+                <span class="input-group-addon">hr</span>
+            </div>
+        </div>
+    </div>
+</form>

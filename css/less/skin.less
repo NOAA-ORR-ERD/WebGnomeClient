@@ -2365,10 +2365,6 @@ nav.navbar{
         box-shadow: none;
         background: #efefef;
 
-        .panel-body{
-            display: none;
-        }
-
         #sub-panel{
             border: 1px solid white;
             border-top: 0;
@@ -2390,7 +2386,7 @@ nav.navbar{
                 }
             }
 
-            .panel-body{
+            > .panel-body{
                 display: block;
             }
 
@@ -2470,6 +2466,13 @@ nav.navbar{
                     .glyphicon-info-sign;
                     color: #0099ff;                  
                 }
+            }
+        }
+
+        .panel-body{
+            .help-block{
+                margin-bottom: 0;
+                font-size: 10px;
             }
         }
     }
@@ -3316,6 +3319,7 @@ nav.navbar{
         label{
             float: right;
             margin-top: 4px;
+            padding-top: 0 !important;
         }
     }
 }
