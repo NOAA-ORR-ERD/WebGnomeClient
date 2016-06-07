@@ -18,6 +18,7 @@ define([
             this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
+            this.listenTo(webgnome.model, 'change:start_time change:duration', this.render);
         },
 
         render: function(){
@@ -32,10 +33,10 @@ define([
 
             // spills
             webgnome.model.get('spills').forEach(function(spill){
-                var start = parseInt(moment(spill.get('release').get('release_time')).format('x'));
+                var start = parseInt(moment(spill.get('release').get('release_time')).format('x'), 10);
                 var end = Math.max(
-                    parseInt(moment(spill.get('release').get('end_release_time')).format('x')),
-                    parseInt(start + (webgnome.model.get('time_step') * 1000))
+                    parseInt(moment(spill.get('release').get('end_release_time')).format('x'), 10),
+                    parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
                 );
 
                 timelinedata.push({
@@ -48,8 +49,8 @@ define([
 
             webgnome.model.get('weatherers').forEach(function(weatherer){
                 if(weatherer.get('obj_type').indexOf('cleanup') !== -1){
-                    var start = parseInt(moment(weatherer.get('active_start')).format('x'));
-                    var end = parseInt(moment(weatherer.get('active_stop')).format('x'));
+                    var start = parseInt(moment(weatherer.get('active_start')).format('x'), 10);
+                    var end = parseInt(moment(weatherer.get('active_stop')).format('x'), 10);
 
                     timelinedata.push({
                         label: weatherer.get('name'),
@@ -71,13 +72,13 @@ define([
                     if(mover.get('active_start') === "-inf"){
                         start = -Infinity;
                     } else {
-                        start = parseInt(moment(mover.get('active_start')).format('x'));
+                        start = parseInt(moment(mover.get('active_start')).format('x'), 10);
                     }
 
                     if(mover.get('active_stop') === 'inf'){
                         end = Infinity;
                     } else {
-                        end = parseInt(moment(mover.get('active_stop')).format('x'));
+                        end = parseInt(moment(mover.get('active_stop')).format('x'), 10);
                     }
 
                     timelinedata.push({
@@ -96,13 +97,13 @@ define([
                 if(mover.get('active_start') === "-inf"){
                     start = -Infinity;
                 } else {
-                    start = parseInt(moment(mover.get('active_start')).format('x'));
+                    start = parseInt(moment(mover.get('active_start')).format('x'), 10);
                 }
 
                 if(mover.get('active_stop') === 'inf'){
                     end = Infinity;
                 } else {
-                    end = parseInt(moment(mover.get('active_stop')).format('x'));
+                    end = parseInt(moment(mover.get('active_stop')).format('x'), 10);
                 }
 
                 timelinedata.push({

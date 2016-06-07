@@ -39,9 +39,15 @@ define([
             this.layer = new ol.layer.Vector({
                 source: this.source
             });
+
+            var traj = true;
+            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                traj = false;
+            }
+
             var id = 'spill-form-map-' + this.model.cid;
             this.spillMapView = new SpillMapView({
-                trajectory: true,
+                trajectory: traj,
                 id: id,
                 zoom: 2,
                 center: [-128.6, 42.7],

@@ -12,6 +12,13 @@ define([
     'text!templates/default/export.html',
     'model/risk/risk',
     'views/wizard/risk',
+    'views/form/oil/library',
+    'views/form/water',
+    'views/form/spill/type',
+    'views/form/spill/instant',
+    'views/form/spill/continue',
+    'views/form/wind',
+    'model/element',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -25,7 +32,7 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -58,7 +65,11 @@ define([
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
             'click .export-csv': 'exportCSV',
-            'change .vol-units': 'renderGraphICS'
+            'change .vol-units': 'renderGraphICS',
+            'click .spill .select': 'renderSpillForm',
+            'click .substance .select': 'renderOilLibrary',
+            'click .water .select': 'renderWaterForm',
+            'click .wind .select': 'renderWindForm'
         },
         dataPrecision: 3,
 
@@ -84,7 +95,13 @@ define([
                 on: false,
                 stack: false,
                 noduplicates: true,
-                label: this.formatNeedleLabel
+                label: this.formatNeedleLabel,
+                x_tooltip: {
+                    formatX: function(text){
+                        var unix_time = parseInt(text, 10);
+                        return moment(unix_time).format(webgnome.config.date_format.moment);
+                    }
+                }
             },
             legend: {
                 position: 'nw'
@@ -101,40 +118,137 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
+            this.$el.appendTo('body');
             if(webgnome.model.validWeathering()){
-                this.module = module;
-                this.formatXaxisLabel();
-                BaseView.prototype.initialize.call(this, options);
-                this.$el.appendTo('body');
-                this.render();
-                $(window).on('scroll', this.tableOilBudgetStickyHeader);
-                webgnome.cache.on('rewind', this.reset, this);
-                webgnome.cache.on('step:failed', this.toggleRAC, this);
+                this.renderWeathering(options);
             } else {
-                this.noWeathering();
+                webgnome.model.on('change', this.noWeathering, this);
+                webgnome.model.get('spills').on('change add remove', this.noWeathering, this);
+                this.appendNoWeatheringView();
             }
         },
 
-        noWeathering: function(){
+        renderWeathering: function(options) {
+            this.formatXaxisLabel();
+            this.render();
+            $(window).on('scroll', this.tableOilBudgetStickyHeader);
+            webgnome.cache.on('rewind', this.reset, this);
+            webgnome.cache.on('step:failed', this.toggleRAC, this);
+        },
+
+        appendNoWeatheringView: function() {
             this.$el.appendTo('body');
-            this.$el.html(_.template(NoWeatheringTemplate));
+            this.noWeathering();
+        },
 
-            if(webgnome.model.get('spills').length === 0){
-                this.$('.spill').addClass('missing');
+        noWeathering: function(options){
+            if (webgnome.model.validWeathering()) {
+                this.$el.html('');
+                this.renderWeathering();
+            } else {
+                this.$el.html(_.template(NoWeatheringTemplate));
+
+                if(webgnome.model.get('spills').length === 0){
+                    this.$('.spill').addClass('missing');
+                }
+
+                if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
+                    this.$('.substance').addClass('missing');
+                }
+
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
+                    this.$('.water').addClass('missing');
+                }
+
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
+                    this.$('.wind').addClass('missing');
+                }
+            }
+        },
+
+        renderSpillForm: function() {
+            if (webgnome.model.get('spills').length === 0) {
+                var spillTypeForm = new SpillTypeForm();
+                spillTypeForm.render();
+                spillTypeForm.on('hidden', spillTypeForm.close);
+                spillTypeForm.on('select', _.bind(function(form){
+                    form.on('wizardclose', form.close);
+                    form.on('save', _.bind(function(model){
+                        webgnome.model.get('spills').add(form.model);
+                        webgnome.model.save(null, {validate: false});
+                        if(form.$el.is(':hidden')){
+                            form.close();
+                        } else {
+                            form.once('hidden', form.close, form);
+                        }
+                    }, this));
+                }, this));
+            } else {
+                var spill = webgnome.model.get('spills').at(0);
+                var spillView;
+                if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')){
+                    spillView = new SpillContinueForm(null, spill);
+                } else {
+                    spillView = new SpillInstantForm(null, spill);
+                }
+                spillView.on('save', function(){
+                    spillView.on('hidden', spillView.close);
+                });
+                spillView.on('wizardclose', spillView.close);
+                spillView.render();
+            }
+        },
+
+        renderWaterForm: function() {
+            var waterModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var waterForm = new WaterForm(null, waterModel);
+            waterForm.on('hidden', waterForm.close);
+            waterForm.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(waterForm.model, {merge:true});
+                webgnome.model.save(null, {silent: true});
+            }, this));
+            waterForm.render();
+        },
+
+        renderOilLibrary: function() {
+            var element_type;
+            if (webgnome.model.getElementType()){
+                element_type = webgnome.model.getElementType();
+            } else {
+                element_type = new ElementModel();
+            }
+            var oilLib = new OilLibraryView({}, element_type);
+            oilLib.on('save wizardclose', _.bind(function(){
+                if(oilLib.$el.is(':hidden')){
+                    oilLib.close();
+                } else {
+                    oilLib.once('hidden', oilLib.close, oilLib);
+                }
+                webgnome.obj_ref[element_type.id] = element_type;
+                this.noWeathering();
+            }, this));
+            oilLib.render();
+        },
+
+        renderWindForm: function() {
+            var windForm;
+            var windModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+
+            if (!_.isNull(windModel)) {
+                windForm = new WindForm(null, windModel);
+            } else {
+                windForm = new WindForm();
             }
 
-            if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
-                this.$('.substance').addClass('missing');
-            }
+            windForm.on('save', _.bind(function(){
+                webgnome.model.get('environment').add(windForm.model, {merge: true});
+                webgnome.model.save(null, {silent: true});
+            }, this));
 
-            if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
-                this.$('.water').addClass('missing');
-            }
-
-            if(webgnome.model.get('weatherers').where({on: 'true'}).length === 0){
-                this.$('.weatherers').addClass('missing');
-            }
-
+            windForm.on('hidden', windForm.close);
+            windForm.render();
         },
 
         toggleRAC: function(){
@@ -444,7 +558,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.needle = null;
+                options.needle.tooltips = false;
                 options.colors = this.colors;
                 options.legend.show = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', cloneset, options);
@@ -650,12 +764,14 @@ define([
             for (var row = 0; row < dataset[0].data.length; row++){
                 var ts_date = moment(dataset[0].data[row][0]);
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
+                var durationAsHrs = parseInt(duration.asHours(), 10);
 
                 if(ts_date.minutes() === 0 && (duration.asHours() < 7 ||
                     duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
-                    duration.asHours() > 121 && duration.asHours() % 24 === 0)){
+                    duration.asHours() > 121 && duration.asHours() % 24 === 0) &&
+                    (durationAsHrs === duration.asHours())){
                     if(opacity === 0.10){
                         opacity = 0.25;
                     } else {
@@ -862,6 +978,9 @@ define([
                     },
                     transform: function(v){
                         return Math.log(v+10);
+                    },
+                    inverseTransform: function(v){
+                        return Math.exp(v);
                     },
                     tickDecimals: 0
                 };
@@ -1228,12 +1347,12 @@ define([
                 if(this.validateDataset()){
                     webgnome.cache.step();
                     this.frame++;
-                    this.renderGraphs();    
+                    this.renderGraphs();
                 } else {
                     webgnome.cache.off('step:recieved', this.buildDataset, this);
                     delete this.dataset;
                     this.frame = 0;
-                    this.load();   
+                    this.load();
                 }
             } else {
                 swal({
@@ -1285,7 +1404,8 @@ define([
                             show: false
                         },
                         needle: {
-                            label: _.bind(this.formatNeedleLabel, this)
+                            label: _.bind(this.formatNeedleLabel, this),
+                            formatX: _.bind(this.formatNeedleTime, this)
                         }
                     });
                 }
@@ -1384,6 +1504,12 @@ define([
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
             var units = $('.tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
+        },
+
+        formatNeedleTime: function(text){
+            var unix_time = parseInt(text, 10);
+
+            return moment(unix_time).format(webgnome.config.date_format.moment);
         },
 
         pruneDataset: function(dataset, leaves){

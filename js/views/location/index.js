@@ -78,10 +78,37 @@ define([
             }, this));
         },
 
-        setupLocation: function(e){
-            e.stopPropagation();
-            var slug = $(e.target).data('slug');
-            var name = $(e.target).data('name');
+        dblClickPin: function(feature) {
+            var slug = feature.get('slug');
+            var name = feature.get('title');
+
+            this.$('.popup').popover('destroy');
+            this.setupLocation(null, {slug: slug, name: name});
+        },
+
+        hoverTooltip: function(feature) {
+            this.tooltip.setPosition(feature.getGeometry().getCoordinates());
+            var element = this.tooltip.getElement();
+            if (this.$('.tooltip').length !== 0) {
+                this.$('.tooltip-inner').text(feature.get('title'));
+            } else {
+                this.$(element).attr('data-toggle', 'tooltip');
+                this.$(element).attr('data-placement', 'right');
+                this.$(element).attr('title', feature.get('title'));
+                this.$(element).tooltip('show');
+            }
+        },
+
+        setupLocation: function(e, options){
+            var slug, name;
+            if (!_.isNull(e)){
+                e.stopPropagation();
+                slug = $(e.target).data('slug');
+                name = $(e.target).data('name');
+            } else {
+                slug = options.slug;
+                name = options.name;
+            }
             webgnome.model = new GnomeModel();
             if(_.has(webgnome, 'cache')){
                 webgnome.cache.rewind();
@@ -129,7 +156,15 @@ define([
                 offsetX: -2,
                 offsetY: -22
             });
+            this.tooltip = new ol.Overlay({
+                position: 'bottom-center',
+                element: this.$('.tooltip-hover')[0],
+                stopEvent: false,
+                offsetX: 0,
+                offsetY: -22
+            });
             this.mapView.map.addOverlay(this.popup);
+            this.mapView.map.addOverlay(this.tooltip);
             this.registerMapEvents();
         },
 
@@ -147,6 +182,7 @@ define([
                     })
                 })
             });
+            this.features = this.layer.getSource().getFeatures();
 
             this.mapView.map.addLayer(this.layer);
 
@@ -167,18 +203,24 @@ define([
             // change mouse to pointer when hovering over a feature.
 
             this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.forEachFeatureAtPixel(e.pixel, function(feature){
+                var pointer = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                     return true;
                 });
                 if(pointer){
-                    this.getViewport().style.cursor = 'pointer';
+                    this.mapView.map.getViewport().style.cursor = 'pointer';
                 } else {
-                    this.getViewport().style.cursor = '';
+                    this.mapView.map.getViewport().style.cursor = '';
                 }
-            }, this.mapView.map));
+                this.mapHoverEvent(e);
+            }, this));
 
             // clicking a location creates a popover with it's related information displayed
             this.mapView.map.on('click', this.mapClickEvent, this);
+            this.mapView.map.on('dblclick', this.mapDblClickEvent, this);
+        },
+
+        findFeature: function(slug) {
+            return _.find(this.features, function(el) { return el.get('slug') === slug; });
         },
 
         highlightLoc: function(e){
@@ -188,16 +230,44 @@ define([
             this.mapView.map.getView().setCenter(coords);
             this.mapView.map.getView().setZoom(24);
 
+            var slug = $(loc).children().data('slug');
+            var feature = this.findFeature(slug);
+
             setTimeout(_.bind(function(){
                 e.pixel = this.mapView.map.getPixelFromCoordinate(coords);
-                this.mapClickEvent(e);
+                this.mapClickEvent(e, feature);
             }, this), 200);
         },
 
-        mapClickEvent: function(e){
+        mapHoverEvent: function(e) {
             var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                 return feature;
             });
+            if (feature){
+                if (this.$('.tooltip').length === 0) {
+                    this.hoverTooltip(feature);
+                } else {
+                    this.$('.tooltip-hover').one('hidden.bs.tooltip', _.bind(function(){
+                    setTimeout(_.bind(function(){
+                        this.hoverTooltip(feature);
+                        }, this), 1);
+                    }, this));
+                    this.$('.tooltip-hover').tooltip('destroy');
+                }
+            } else {
+                this.$('.tooltip-hover').tooltip('destroy');
+            }
+        },
+
+        mapClickEvent: function(e, feature_param){
+            var feature;
+            if (_.isUndefined(feature_param)) {
+                feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                    return feature;
+                });
+            } else {
+                feature = feature_param;
+            }
 
             if(feature){
                 if(this.$('.popover').length === 0){
@@ -212,6 +282,16 @@ define([
                 }
             } else {
                 this.$('.popup').popover('destroy');
+            }
+        },
+
+        mapDblClickEvent: function(e) {
+            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
+                return feature;
+            });
+
+            if (feature && ($('.loading').length === 0 && $('.modal').length === 0)) {
+                this.dblClickPin(feature);
             }
         },
 

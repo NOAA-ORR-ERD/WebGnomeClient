@@ -36,7 +36,7 @@ define([
         sortTable: function(){
             var compiled = _.template(OilTableTemplate, {data: this.oilLib});
             this.$el.html(compiled);
-            var substance = this.model.get('substance');
+            var substance = !_.isEmpty(this.model) ? this.model.get('substance') : null;
             if (substance && substance.get('adios_oil_id')){
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }

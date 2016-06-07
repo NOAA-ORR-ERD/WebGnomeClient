@@ -122,7 +122,8 @@ define([
             oilLib.render();
         },
 
-        clickSpill: function(){
+        clickSpill: function(e){
+            e.stopPropagation();
             var spill = webgnome.model.get('spills').at(0);
             if(spill){
                 var spillView;

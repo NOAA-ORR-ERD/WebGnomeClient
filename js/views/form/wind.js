@@ -15,12 +15,13 @@ define([
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'views/default/map',
+    'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, NwsWind){
+    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, WindModel, NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -49,8 +50,13 @@ define([
         initialize: function(options, GnomeWind){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
-            this.model = GnomeWind;
-            
+
+            if (!_.isUndefined(GnomeWind)) {
+                this.model = GnomeWind;
+            } else {
+                this.model = new WindModel();
+            }
+
             if(!this.model.get('name')){
                 var count = webgnome.model.get('environment').where({obj_type: this.model.get('obj_type')});
                 count = !count ? 1 : count.length + 1;

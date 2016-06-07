@@ -1,15 +1,16 @@
 define([
     'underscore',
     'backbone',
-    'model/base',
+    'model/movers/base',
     'model/environment/wind'
 ], function(_, Backbone, BaseModel, GnomeWind){
     'use strict';
     var windMover = BaseModel.extend({
-        urlRoot: '/mover/',
-
         defaults: {
-            obj_type: 'gnome.movers.wind_movers.WindMover'
+            obj_type: 'gnome.movers.wind_movers.WindMover',
+            name: 'WindMover',
+            active_start: '-inf',
+            active_stop: 'inf'
         },
 
         model: {
