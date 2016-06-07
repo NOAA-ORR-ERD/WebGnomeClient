@@ -11,6 +11,7 @@ require.config({
         moment: 'lib/moment/moment',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
+        json: 'lib/requirejs-plugins/src/json',
         cesium: 'lib/cesium/Build/CesiumUnminified/Cesium',
         ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
