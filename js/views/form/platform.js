@@ -6,7 +6,7 @@ define([
     'text!templates/form/response/platform.html',
     'text!templates/form/response/platform_type.html',
     'text!templates/form/response/platform_vehicle.html',
-    'json!/../../resource/platforms.json'
+    'json!model/platforms.json'
 ], function(_, $, Backbone, FormBase, 
     PlatformTemplate, PlatformTypeTemplate, PlatformVehicleTemplate,
     platforms){

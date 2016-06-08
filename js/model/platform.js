@@ -2,7 +2,7 @@ define([
     'underscore',
     'backbone',
     'model/base',
-    'json!/../../resource/platforms.json'
+    'json!model/platforms.json'
 ], function(_, Backbone, BaseModel, platforms){
     var Platform = BaseModel.extend({
         defaults: function(){
