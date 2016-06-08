@@ -34,6 +34,7 @@ define([
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/weathering_data',
+    'model/weatherers/dissolution',
     'model/user_prefs',
     'model/risk/risk'
 ], function(_, $, Backbone, moment,
@@ -41,7 +42,7 @@ define([
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter, IceRawOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, UserPrefs, RiskModel){
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -87,7 +88,8 @@ define([
                 'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
-                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData
+                'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
+                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer
             }
         },
 
@@ -110,7 +112,8 @@ define([
                     new EvaporationWeatherer({on: false}),
                     new NaturalDispersionWeatherer({name: '_natural', on: false}),
                     new EmulsificationWeatherer({on: false}),
-                    new FayGravityViscous({on: false})
+                    new FayGravityViscous({on: false}),
+                    new DissolutionWeatherer({on: false})
                 ]),
                 movers: new Backbone.Collection(),
                 environment: new Backbone.Collection(),
