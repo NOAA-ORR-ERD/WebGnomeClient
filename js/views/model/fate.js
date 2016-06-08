@@ -927,7 +927,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphSedimentation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[2]];
+                options.colors = [this.colors[3]];
                 this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphSedimentation.setData(dataset);
@@ -1000,6 +1000,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDissolution)) {
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
                 this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDissolution.setData(dataset);
