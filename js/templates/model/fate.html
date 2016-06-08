@@ -9,6 +9,7 @@
             <li><a href="#budget-graph" role="tab" data-toggle="tab">Oil Budget - Graph</a></li>
             <li><a href="#evaporation" role="tab" data-toggle="tab">Evaporation</a></li>
             <li><a href="#dispersion" role="tab" data-toggle="tab">Dispersion</a></li>
+            <li><a href="#dissolution" role="tab" data-toggle="tab">Dissolution</a></li>
             <li><a href="#sedimentation" role="tab" data-toggle="tab">Sedimentation</a></li>
             <li><a href="#emulsification" role="tab" data-toggle="tab">Water</a></li>
             <li><a href="#density" role="tab" data-toggle="tab">Density</a></li>
@@ -168,6 +169,16 @@
                 <div class="chart">
                     <div class="axisLabel yaxisLabel">{{ units }}</div>
                     <div class="axisLabel xaxisLabel">{{ time }}</div> 
+                    <div class="canvas"></div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="dissolution">
+            {{ buttons }}
+            <div class="timeline">
+                <div class="chart">
+                    <div class="axisLabel yaxisLabel">{{ units }}</div>
+                    <div class="axisLabel xaxisLabel">{{ time }}</div>
                     <div class="canvas"></div>
                 </div>
             </div>

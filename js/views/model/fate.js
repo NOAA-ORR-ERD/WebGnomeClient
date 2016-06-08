@@ -519,6 +519,8 @@ define([
                 this.renderGraphEvaporation(this.dataset);
             } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
+            } else if (active === '#dissolution') {
+                this.renderGraphDissolution(this.dataset);
             } else if(active === '#sedimentation') {
                 this.renderGraphSedimentation(this.dataset);
             } else if(active === '#density') {
@@ -993,6 +995,20 @@ define([
             dataset[0].fillArea = null;
         },
 
+        renderGraphDissolution: function(dataset){
+            dataset = this.pluckDataset(dataset, ['dissolution']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphDissolution)) {
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
+            } else {
+                this.graphDissolution.setData(dataset);
+                this.graphDissolution.setupGrid();
+                this.graphDissolution.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
         convertDataset: function(d, to_unit){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
@@ -1021,6 +1037,7 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
+            console.log(dataset);
             dataset = this.pruneDataset(dataset, ['avg_density',
                 'amount_released',
                 'avg_viscosity',
@@ -1031,7 +1048,8 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'dissolution'
                 ]);
             var icsUnits = this.$('.vol-units').val();
             dataset = this.convertDataset(dataset, icsUnits);
