@@ -15,6 +15,8 @@ define([
 
         initialize: function(options){
             BaseResponseForm.prototype.initialize.call(this, options);
+            this.listenTo(this.model, 'change:dosage', this.toggleDosage);  
+            this.listenTo(this.model, 'change:dispersant', this.toggleDispersant);
         },
 
         render: function(){
@@ -27,6 +29,25 @@ define([
 
             this.platform = new PlatformView({model: this.model.get('platform')});
             this.$('.platform').append(this.platform.$el);
+
+            this.toggleDosage();
+            this.toggleDispersant();
+        },
+
+        toggleDosage: function(){
+            if(this.model.get('dosage') === 'auto'){
+                this.$('input[name="dosage_val"]').attr('disabled', true);
+            } else {
+                this.$('input[name="dosage_val"]').attr('disabled', false);
+            }
+        },
+
+        toggleDispersant: function(){
+            if(this.model.get('dispersant') === 'custom'){
+                this.$('input[name="dispersant_ef"]').attr('disabled', false);
+            } else {
+                this.$('input[name="dispersant_ef"]').attr('disabled', true);
+            }
         },
 
         close: function(){
