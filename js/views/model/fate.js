@@ -1527,7 +1527,7 @@ define([
 
         formatNeedleLabel: function(text){
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
-            var units = $('.tab-pane:visible .yaxisLabel').text();
+            var units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
 
