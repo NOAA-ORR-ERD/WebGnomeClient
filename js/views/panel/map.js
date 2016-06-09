@@ -41,12 +41,12 @@ define([
             var map = webgnome.model.get('map');
 
             if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                this.$el.html(_.template(MapPanelTemplate, {
-                    map: true
-                }));
-
-                this.$('.panel').addClass('complete');
                 map.getGeoJSON(_.bind(function(geojson){
+                    this.$el.html(_.template(MapPanelTemplate, {
+                        map: true
+                    }));
+
+                    this.$('.panel').addClass('complete');
                     this.$('.panel-body').removeClass('text');
                     this.$('.panel-body').addClass('map').show();
 
