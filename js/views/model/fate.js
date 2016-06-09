@@ -507,8 +507,14 @@ define([
 
         renderGraphs: function(){
             // find active tab and render it's graph.
-            var active = this.$('.active a').attr('href');
-
+            var active;
+            
+            if (this.$('.active a').attr('href') === '#ics209') {
+                active = this.$('.active a').attr('href');
+            } else {
+                active = this.$('.nav-pills .active a').attr('href');
+            }
+            
             $('#flotTip').remove();
 
             if(active === '#budget-graph') {
