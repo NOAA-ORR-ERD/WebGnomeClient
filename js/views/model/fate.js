@@ -442,6 +442,8 @@ define([
             if (cleanup === 0) {
                 this.$('.run-risk').hide();
             }
+
+            this.$('#budget-table').tab('show');
             
             this.load();
         },
@@ -507,14 +509,13 @@ define([
 
         renderGraphs: function(){
             // find active tab and render it's graph.
-            var active;
-            
-            if (this.$('.active a').attr('href') === '#ics209') {
-                active = this.$('.active a').attr('href');
-            } else {
-                active = this.$('.nav-pills .active a').attr('href');
+            var parentTabId = this.$('.active a').attr('href');
+            var active = this.$(parentTabId + ' .active a').attr('href');
+
+            if (_.isUndefined(active)) {
+                active = parentTabId;
             }
-            
+
             $('#flotTip').remove();
 
             if(active === '#budget-graph') {
@@ -1044,7 +1045,6 @@ define([
             if(!_.isArray(dataset)){
                 dataset = this.dataset;
             }
-            console.log(dataset);
             dataset = this.pruneDataset(dataset, ['avg_density',
                 'amount_released',
                 'avg_viscosity',
