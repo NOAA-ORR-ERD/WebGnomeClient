@@ -443,7 +443,8 @@ define([
                 this.$('.run-risk').hide();
             }
 
-            this.$('#budget-table').tab('show');
+            console.log(this.$('.first-tab'));
+            this.$('.first-tab').tab('show');
             
             this.load();
         },
