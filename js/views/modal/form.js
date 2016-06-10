@@ -3,12 +3,14 @@ define([
     'underscore',
     'backbone',
     'views/modal/base',
+    'views/form/base',
     'text!templates/default/alert-danger.html',
     'views/default/help',
-    'views/attributes/attributes',
-], function($, _, Backbone, BaseModal, AlertDangerTemplate, HelpView, AttributesView){
+    'views/attributes/attributes'
+], function($, _, Backbone, BaseModal, BaseForm, AlertDangerTemplate, HelpView, AttributesView){
     'use strict';
-    var formModal = BaseModal.extend({
+    var PseudoMultipleInheritance = BaseForm.extend(BaseModal.prototype);
+    var formModal = PseudoMultipleInheritance.extend({
         className: 'modal form-modal',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         form: [],
@@ -38,28 +40,13 @@ define([
             }
         },
 
-        selectContents: function(e){
-            var type = this.$(e.target).attr('type');
-            if (type === 'number' || type === 'text') {
-                e.preventDefault();
-                this.$(e.target).select();
-            }
-        },
-
         render: function(){
             BaseModal.prototype.render.call(this);
             if(this.model){
+                this.sync();
                 this.renderAttributes();
                 this.model.on('change', this.renderAttributes, this);
             }
-        },
-
-        renderAttributes: function(){
-            if(this.attributes){
-                this.attributes.remove();
-            }
-            this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
-            this.$('.modal-body').append(this.attributes.$el);
         },
 
         stickyFooter: function(){
@@ -166,6 +153,14 @@ define([
             this.trigger('back');
         },
 
+        renderAttributes: function(){
+            if(this.attributes){
+                this.attributes.remove();
+            }
+            this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
+            this.$('.modal-body').append(this.attributes.$el);
+        },
+
         error: function(strong, message) {
             this.$('.modal-body .alert.validation').remove();
             this.$('.modal-body').prepend(_.template(AlertDangerTemplate, {strong: strong, message: message}));
@@ -173,29 +168,6 @@ define([
 
         clearError: function() {
             this.$('.modal-body .alert.validation').remove();
-        },
-
-        isValid: function() {
-            if (_.isFunction(this.validate)){
-                var valid = this.validate();
-                if (_.isUndefined(valid)) {
-                    this.validationError = null;
-                    return true;
-                }
-                this.validationError = valid;
-                return false;
-            } else {
-                return true;
-            }
-        },
-
-        validate: function() {
-            if (!_.isUndefined(this.model)) {
-                if (this.model.isValid()) {
-                    return;
-                }
-                return this.model.validationError;
-            }
         },
 
         wizardclose: function(){

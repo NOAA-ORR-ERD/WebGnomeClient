@@ -19,10 +19,12 @@ define([
         },
 
         render: function(){
-            if(this.help.ready){
-                this.showHelp();
-            } else {
-                this.help.on('ready', this.showHelp, this);
+            if(this.module){
+                if(this.help.ready){
+                    this.showHelp();
+                } else {
+                    this.help.on('ready', this.showHelp, this);
+                }
             }
         },
 
