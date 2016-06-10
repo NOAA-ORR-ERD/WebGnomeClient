@@ -371,35 +371,38 @@ define([
 
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
-            var speed = this.form[active].speed.val();
-            var direction = this.form[active].direction.val();
-            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
-            }
-            var gnomeStart = webgnome.model.get('start_time');
-            if(compass && speed !== '' && direction !== ''){
-                this.$('.' + active + '-compass').compassRoseUI('update', {
-                    speed: speed,
-                    direction: direction,
-                    trigger_move: false
-                });
-            }
 
-            if(active === 'constant'){
-                // if the constant wind pain is active a timeseries needs to be generated for the values provided
-                var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
-                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-                this.model.set('timeseries', [[date, [speed, direction]]]);
-                this.updateConstantSlide();
-            } else {
-                this.updateVariableSlide();
-            }
+            if (active !== 'nws') {
+                var speed = this.form[active].speed.val();
+                var direction = this.form[active].direction.val();
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
+                }
+                var gnomeStart = webgnome.model.get('start_time');
+                if(compass && speed !== '' && direction !== ''){
+                    this.$('.' + active + '-compass').compassRoseUI('update', {
+                        speed: speed,
+                        direction: direction,
+                        trigger_move: false
+                    });
+                }
 
-            this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
-            this.model.set('name', this.$('#name').val());
-            
-            
-            this.$('.additional-wind-compass').remove();
+                if(active === 'constant'){
+                    // if the constant wind pain is active a timeseries needs to be generated for the values provided
+                    var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
+                    var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                    this.model.set('timeseries', [[date, [speed, direction]]]);
+                    this.updateConstantSlide();
+                } else {
+                    this.updateVariableSlide();
+                }
+
+                this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
+                this.model.set('name', this.$('#name').val());
+                
+                
+                this.$('.additional-wind-compass').remove();
+            }
         },
 
         updateVariableSlide: function(ui){
