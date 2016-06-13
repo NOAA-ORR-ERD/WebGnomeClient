@@ -1056,7 +1056,6 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
-                'dissolution'
                 ]);
             var icsUnits = this.$('.vol-units').val();
             dataset = this.convertDataset(dataset, icsUnits);
@@ -1188,7 +1187,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached', 'dissolution']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -1243,6 +1242,8 @@ define([
             high.other_natural += high.dissolution;
             report.other_natural += report.sedimentation;
             report.other_natural += report.dissolution;
+
+            report.floating = report.floating > 0 ? report.floating : 0;
 
             var amount_type = 'Volume Spilled';
             var mass_units = ['kg', 'metric ton', 'ton'];
