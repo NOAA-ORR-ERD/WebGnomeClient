@@ -443,7 +443,6 @@ define([
                 this.$('.run-risk').hide();
             }
 
-            console.log(this.$('.first-tab'));
             this.$('.first-tab').tab('show');
             
             this.load();
