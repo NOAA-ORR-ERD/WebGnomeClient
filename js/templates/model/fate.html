@@ -126,6 +126,17 @@
                     <div><label>Wind Speed:</label> {{ wind_speed }}</div>
                     <div><label>Pour Point:</label> {{ pour_point }}</div>
                     <div><label>Wave Height:</label> {{ wave_height }}</div>
+                    <!--<div><label>Water Temp:</label> {{ water_temp }}</div>
+                    <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                    <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
+                    {% if (rate_exposed){ %}
+                        <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
+                        <div><label>Spill Duration:</label> {{ duration }}</div>
+                    {% } %}-->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info">
                     <div><label>Water Temp:</label> {{ water_temp }}</div>
                     <div><label>Time of Initial Release:</label> {{ release_time }}</div>
                     <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
