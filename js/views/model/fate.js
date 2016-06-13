@@ -1243,6 +1243,8 @@ define([
             report.other_natural += report.sedimentation;
             report.other_natural += report.dissolution;
 
+            report.floating = report.floating > 0 ? report.floating : 0;
+
             var amount_type = 'Volume Spilled';
             var mass_units = ['kg', 'metric ton', 'ton'];
 
