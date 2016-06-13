@@ -167,7 +167,6 @@ define([
             } else if (amountChanged || durationChanged) {
                 this.updateRate();
             }
-            this.updateAmountTooltip();
         },
 
         updateRate: function(){
