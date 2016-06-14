@@ -13,7 +13,7 @@
     "requirejs-text": "2.0.12",
     "requirejs-plugins": "~1.0.3",
     "bootstrap": "3.*.*",
-    "datetimepicker": "2.2.9",
+    "datetimepicker": "2.*.*",
     "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git#3.15.1",
     "cesium": "https://cesiumjs.org/releases/Cesium-1.20.zip",
     "jquery-file-upload": "9.10.1",
