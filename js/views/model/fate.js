@@ -420,6 +420,9 @@ define([
             this.rendered = true;
 
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
+                minDate: moment(webgnome.model.get('start_time')).format('YYYY/MM/DD'),
+                startDate: moment(webgnome.model.get('start_time')).format('YYYY/MM/DD'),
+                maxDate: moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY/MM/DD'),
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
@@ -1120,11 +1123,7 @@ define([
             var end_input = this.$('#ics209 #end_time').val();
             var time_span_hrs = 24;
 
-            if (start_input !== '' && end_input === '') {
-                end_input = moment(start_input).add(time_span_hrs, 'h').format(date_format);
-            } else if (start_input === '' && end_input !== '') {
-                start_input = moment(end_input).subtract(time_span_hrs, 'h').format(date_format);
-            }
+            if(!start_input || !end_input){ return null; }
 
             var start_time = moment(start_input, date_format);
             var end_time = moment(end_input, date_format);

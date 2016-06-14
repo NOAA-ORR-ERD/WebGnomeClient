@@ -62,7 +62,7 @@ define([
                     this.geo_json = geo_json;
                     callback(geo_json);
                 }, this));
-            } else if (this.requested && !this.geo_json) {
+            } else if (this.requested && this.geo_json) {
                 callback(this.geo_json);
             }
             return null;

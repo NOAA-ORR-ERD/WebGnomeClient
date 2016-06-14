@@ -49,7 +49,9 @@ require.config({
         relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
-        localforage: 'lib/localforage/dist/localforage'
+        localforage: 'lib/localforage/dist/localforage',
+        'jquery-mousewheel': 'lib/jquery-mousewheel/jquery.mousewheel',
+        'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter'
     },
     shim: {
         jquery: {
@@ -78,7 +80,11 @@ require.config({
             exports: 'html2canvas'
         },
         JUMFlotLib: ['flot'],
-        jqueryDatetimepicker: ['jquery'],
+        jqueryDatetimepicker: ['jquery', 'jquery-mousewheel', 'php-date-formatter'],
+        'jquery-mousewheel': ['jquery'],
+        'php-date-formatter': {
+            exports: 'DateFormatter'
+        },
         ol: {
             exports: 'ol'
         },
