@@ -1824,10 +1824,18 @@ nav.navbar{
             li{
                 line-height: 25px;
 
+                a {
+                    display: none;
+                }
+
                 &.missing{
                     span{
                         .glyphicon-remove;
                         color: #F60026;
+                    }
+
+                    a{
+                        display: inline;
                     }
                 }
             }
