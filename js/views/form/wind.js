@@ -26,6 +26,7 @@ define([
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
+        sliderValue: 0,
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -168,7 +169,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5 + ' %</div></div>');
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5.0 + ' %</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateVariableSlide(ui);
@@ -407,6 +408,7 @@ define([
 
         updateVariableSlide: function(ui){
             var value;
+            if(this.$('#variable .ui-slider').length === 0){return null;}
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
@@ -424,6 +426,7 @@ define([
 
         updateConstantSlide: function(ui){
             var value;
+            if(this.$('#constant .ui-slider').length === 0){return null;}
             if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
@@ -483,6 +486,8 @@ define([
                     if(not_replaced){
                         this.model.get('timeseries').push(entry);
                     }
+
+                    this.model.trigger('change', this.model);
 
                     // Code for time incrementer updates assuming values in form are in hours
                     dateObj.add('h', incrementer);
@@ -608,11 +613,14 @@ define([
                 e.stopPropagation();
                 var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
+                this.model.trigger('change', this.model);
+
                 this.renderTimeseries();
             }
         },
 
         renderTimeseries: function(uncertainty){
+            if(this.$('#variable .ui-slider').length === 0){ return null; }
             this.model.sortTimeseries();
 
             if(!_.isUndefined(uncertainty)){
