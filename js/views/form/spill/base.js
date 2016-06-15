@@ -61,6 +61,10 @@ define([
 			} else {
 				this.model = spillModel;
 			}
+
+            if (webgnome.model.get('mode') === 'adios') {
+                this.$el.addClass('adios');
+            }
             this.showGeo = true;
             this.showSubstance = true;
             if(this.model.get('name') === 'Spill'){
