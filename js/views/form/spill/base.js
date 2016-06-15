@@ -62,9 +62,6 @@ define([
 				this.model = spillModel;
 			}
 
-            if (webgnome.model.get('mode') === 'adios') {
-                this.$el.addClass('adios');
-            }
             this.showGeo = true;
             this.showSubstance = true;
             if(this.model.get('name') === 'Spill'){
@@ -80,6 +77,7 @@ define([
 
             if (webgnome.model.get('mode') === 'adios') {
                 this.$('.release-time').hide();
+                this.$el.addClass('adios');
             }
 
             this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
