@@ -45,7 +45,7 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1){
+            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios'){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger)){

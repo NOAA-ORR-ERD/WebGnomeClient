@@ -10,13 +10,23 @@ define([
     'cesium',
     'model/spill',
     'views/form/spill/continue',
+    'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
     'jqueryui/slider'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
-        className: 'trajectory-view map ',
+        className: function() {
+            var str;
+            if (webgnome.model.get('mode') !== 'adios') {
+                str = 'trajectory-view map ';
+            } else {
+                str = 'trajectory-view no-map';
+            }
+
+            return str;
+        },
         id: 'map',
         spillToggle: false,
         spillCoords: [],
@@ -45,18 +55,25 @@ define([
             'click .ice-uv input': 'toggleUV',
             'click .ice-grid input[type="radio"]': 'toggleGrid',
             'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
-            'click .ice-tc input[type="radio"]': 'toggleIceData'
+            'click .ice-tc input[type="radio"]': 'toggleIceData',
+            'click .view-gnome-mode': 'viewGnomeMode',
+            'click .view-weathering': 'viewWeathering'
         },
 
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            if (webgnome.model.get('mode') !== 'adios'){
+                webgnome.cache.on('rewind', this.rewind, this);
+                this.modelMode = 'gnome';
+            } else {
+                this.modelMode = 'adios';
+            }
             this.$el.appendTo('body');
-            if(webgnome.hasModel()){
+            if(webgnome.hasModel() && this.modelMode !== 'adios'){
                 this.modelListeners();
             }
             this.render();
-            webgnome.cache.on('rewind', this.rewind, this);
         },
 
         modelListeners: function(){
@@ -71,7 +88,31 @@ define([
 
         render: function(){
             BaseView.prototype.render.call(this);
+            if (this.modelMode !== 'adios') {
+                this.renderTrajectory();
+            } else {
+                this.renderNoTrajectory();
+            }
+        },
 
+        viewGnomeMode: function() {
+            webgnome.model.set('mode', 'gnome');
+            webgnome.model.save(null, {
+                success: function(){
+                    webgnome.router.navigate('config', true);
+                }
+            });
+        },
+
+        viewWeathering: function() {
+            webgnome.router.navigate('fate', true);
+        },
+
+        renderNoTrajectory: function() {
+            this.$el.html(_.template(NoTrajMapTemplate));
+        },
+
+        renderTrajectory: function() {
             var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
@@ -1097,25 +1138,27 @@ define([
         },
 
         close: function(){
-            this.pause();
-            if(webgnome.model){
-                webgnome.model.off('change', this.contextualize, this);
-                webgnome.model.off('sync', this.spillListeners, this);
-                webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-            }
-            if(this.drawStepTimeout){
-                clearTimeout(this.drawStepTimeout);
-            }
-            webgnome.cache.off('step:recieved', this.renderStep, this);
-            webgnome.cache.off('step:failed', this.pause, this);
-            webgnome.cache.off('rewind', this.rewind, this);
+            if (this.modelMode !== 'adios'){
+                this.pause();
+                if(webgnome.model){
+                    webgnome.model.off('change', this.contextualize, this);
+                    webgnome.model.off('sync', this.spillListeners, this);
+                    webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
+                }
+                if(this.drawStepTimeout){
+                    clearTimeout(this.drawStepTimeout);
+                }
+                webgnome.cache.off('step:recieved', this.renderStep, this);
+                webgnome.cache.off('step:failed', this.pause, this);
+                webgnome.cache.off('rewind', this.rewind, this);
 
-            Mousetrap.unbind('space');
-            Mousetrap.unbind('right');
-            Mousetrap.unbind('left');
+                Mousetrap.unbind('space');
+                Mousetrap.unbind('right');
+                Mousetrap.unbind('left');
+                this.unbind();
+                this.viewer.destroy();
+            }
             this.remove();
-            this.unbind();
-            this.viewer.destroy();
         }
     });
 
