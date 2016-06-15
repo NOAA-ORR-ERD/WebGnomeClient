@@ -22,9 +22,8 @@ define([
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
-    'model/outputters/ice_geo',
-    'model/outputters/ice_image',
     'model/outputters/ice_raw',
+    'model/outputters/ice_image',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -40,7 +39,7 @@ define([
 ], function(_, $, Backbone, moment,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceGeoOutputter, IceImageOutputter, IceRawOutputter,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel){
     'use strict';
@@ -74,10 +73,9 @@ define([
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
-                'gnome.outputters.geo_json.CurrentGeoJsonOutput': CurrentOutputter,
-                'gnome.outputters.geo_json.IceGeoJsonOutput': IceGeoOutputter,
+                'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
+                'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
-                'gnome.outputters.geo_json.IceRawJsonOutput': IceRawOutputter,
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -104,16 +102,13 @@ define([
                     new TrajectoryOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceGeoOutputter(),
-                    new IceImageOutputter(),
-                    new IceRawOutputter()
+                    new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
                     new NaturalDispersionWeatherer({name: '_natural', on: false}),
                     new EmulsificationWeatherer({on: false}),
                     new FayGravityViscous({on: false}),
-                    new DissolutionWeatherer({on: false})
                 ]),
                 movers: new Backbone.Collection(),
                 environment: new Backbone.Collection(),
@@ -403,10 +398,10 @@ define([
             environment.add(waves);
 
             // drop all of the currents from current outputter
-            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'}).get('current_movers').reset();
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'}).get('current_movers').reset();
 
             // drop all of the ice movers from the ice mover outputter
-            this.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'}).get('ice_movers').reset();
+            this.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'}).get('ice_movers').reset();
 
             // remove the map
             var map = new MapModel({obj_type: 'gnome.map.GnomeMap'});
@@ -511,7 +506,7 @@ define([
 
             if(currents.length > 0){
                 var outputter = this.get('outputters').findWhere({
-                    obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'
+                    obj_type: 'gnome.outputters.json.CurrentJsonOutput'
                 });
                 if(outputter){
                     outputter.get('current_movers').add(currents, {merge: true});

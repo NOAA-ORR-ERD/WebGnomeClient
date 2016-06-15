@@ -131,7 +131,7 @@ define([
                     'gnome.movers.wind_movers.GridWindmover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
             var active_currents = [];
             if(current_outputter.get('on')){
                 current_outputter.get('current_movers').forEach(function(mover){
@@ -143,7 +143,7 @@ define([
             var ice = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
             });
-            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
+            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             var tc_ice = [];
             ice_tc_outputter.get('ice_movers').forEach(function(mover){
                 tc_ice.push(mover.get('id'));
@@ -528,10 +528,10 @@ define([
         },
 
         renderCurrent: function(step){
-            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0 && this.layers.uv){
+            if(step.get('CurrentJsonOutput') && this.checked_currents && this.checked_currents.length > 0 && this.layers.uv){
                 // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
                 var id = this.checked_currents[0];
-                var data = step.get('CurrentGeoJsonOutput')[id];
+                var data = step.get('CurrentJsonOutput')[id];
                 if(data && this.current_arrow[id]){
                     for(var uv = data.direction.length; uv--;){
                         this.layers.uv[id].get(uv).show = true;
@@ -589,10 +589,10 @@ define([
         },
 
         renderIce: function(step){
-            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
-            if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
+            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
+            if(step && step.get('IceJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
                 var mover = outputter.get('ice_movers').at(0);
-                var data = step.get('IceRawJsonOutput').data[mover.get('id')];
+                var data = step.get('IceJsonOutput').data[mover.get('id')];
                 if(!data){ return null; }
 
                 var vis = $('.ice-tc input[type="radio"]:checked').val();
@@ -792,7 +792,7 @@ define([
 
         toggleUV: function(e){
             var checked = this.$('.current-uv input:checked, .ice-uv input:checked');
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
 
             var uv_layers = _.keys(this.layers.uv);
             for(var l = 0; l < uv_layers.length; l++){
@@ -910,7 +910,7 @@ define([
         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input[type="checkbox"]:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             if (checked.length > 0){
                 current_outputter.get('ice_movers').reset();
 
