@@ -41,6 +41,13 @@ define([
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }
             this.$('tr[data-generic="true"]').addClass('generic');
+            var generics = this.$('.generic td:first-child');
+
+            for (var i = 0; i < generics.length; i++) {
+                var origText = this.$(generics[i]).text();
+                this.$(generics[i]).text('GENERIC ' + origText);
+            }
+
             this.updateCaret();
             this.processCategory();
             this.trigger('renderTable');

@@ -28,7 +28,7 @@ define([
             if(value < 0 || value === '-'){
                 nonneg = value.replace('-', '');
                 $(e.target).val(parseFloat(nonneg));
-                value = nonneg; 
+                value = nonneg;
             }
 
             if($(e.target).attr('type') === 'number'){
