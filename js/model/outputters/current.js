@@ -16,7 +16,7 @@ define([
 
         defaults: function(){
             return {
-                obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput',
+                obj_type: 'gnome.outputters.json.CurrentJsonOutput',
                 name: 'Outputter',
                 output_last_step: 'true',
                 output_zero_step: 'true',
