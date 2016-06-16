@@ -445,8 +445,6 @@ define([
             if (cleanup === 0) {
                 this.$('.run-risk').hide();
             }
-
-            this.$('.first-tab').tab('show');
             
             this.load();
         },
