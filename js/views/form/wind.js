@@ -317,7 +317,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                acceptedFiles: '.nc, .wnd',
+                acceptedFiles: '.nc, .wnd, .txt',
                 dictDefaultMessage: 'Drop <code>.nc</code> or <code>.wnd</code> file here to upload (or click to navigate)'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
@@ -355,7 +355,6 @@ define([
                 }, this)
             });
         },
-
 
         nwsLoad: function(model){
             this.model.set('timeseries', model.get('timeseries'));
