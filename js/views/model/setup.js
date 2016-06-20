@@ -143,7 +143,11 @@ define([
             var form = new GnomeForm(null, webgnome.model);
             form.on('hidden', form.close);
             form.on('save', _.bind(function(){
+                for(var child in this.children){
+                    this.children[child].close();
+                }
                 this.$el.html('');
+
                 this.render();
             }, this));
             form.render();
