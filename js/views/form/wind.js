@@ -317,8 +317,8 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                acceptedFiles: '.nc, .wnd, .txt',
-                dictDefaultMessage: 'Drop <code>.nc</code> or <code>.wnd</code> file here to upload (or click to navigate)'
+                acceptedFiles: '.osm, .wnd, .txt, .dat',
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: <code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
