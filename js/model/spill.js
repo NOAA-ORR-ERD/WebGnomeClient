@@ -41,9 +41,35 @@ define([
             } else {
                 this.set('units', 'kg');
             }
+            this.on('change', this.calculate, this);
             this.on('change:element_type', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
             this.addListeners();
+            this.calculate();
+        },
+
+        calculate: function(){
+            this.calculateSI();
+            this.calculatePerLEMass();
+        },
+
+        calculatePerLEMass: function(){
+            if(this.get('release')){
+                this._per_le_mass = this._amount_si / this.get('release').get('num_elements');
+            } else {
+                this._per_le_mass = 0;
+            }
+        },
+
+        calculateSI: function(){
+            if(this.get('element_type') && this.get('element_type').get('substance')){
+                // caluclate si w/ substance api
+                var oilConverter = new nucos.OilQuantityConverter();
+                this._amount_si = oilConverter.Convert(this.get('amount'), this.get('units'), this.get('element_type').get('substance').get('api'), 'API Degree', 'kg');
+            } else {
+                // calculate si straight volume
+                this._amount_si = nucos.convert('Mass', this.get('units'), 'kg', this.get('amount'));
+            }
         },
 
         parseDuration: function(){
