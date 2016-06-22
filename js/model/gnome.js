@@ -109,6 +109,7 @@ define([
                     new NaturalDispersionWeatherer({name: '_natural', on: false}),
                     new EmulsificationWeatherer({on: false}),
                     new FayGravityViscous({on: false}),
+                    new DissolutionWeatherer({on: false})
                 ]),
                 movers: new Backbone.Collection(),
                 environment: new Backbone.Collection(),
