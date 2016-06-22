@@ -7,7 +7,7 @@ define([
     'use strict';
     var dissolutionWeatherer = BaseModel.extend({
         defaults: {
-            'obj_type': 'gnome.weatherers.Dissolution',
+            'obj_type': 'gnome.weatherers.dissolution.Dissolution',
             'name': 'Dissolution'
         },
 
