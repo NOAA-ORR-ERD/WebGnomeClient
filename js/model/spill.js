@@ -184,8 +184,9 @@ define([
                 // if there is a substance and an amount is defined it should be greater than 1 bbl
                 var oilConverter = new nucos.OilQuantityConverter();
                 var bbl = oilConverter.Convert(attrs.amount, attrs.units, substance.api, 'API Degree', 'bbl');
+                var contextualLimit = oilConverter.Convert(1, 'bbl', substance.api, 'API Degree', attrs.units).toFixed(2);
                 if(bbl < 1){
-                    return 'Amount must be greater than 1 bbl when using a weatherable substance';
+                    return 'Amount must be greater than ' + contextualLimit + ' ' + attrs.units + ' when using a weatherable substance';
                 }
             } else if(attrs.amount <= 0) {
                 return 'Amount must be greater than 0';
