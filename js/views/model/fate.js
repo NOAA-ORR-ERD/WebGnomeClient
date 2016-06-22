@@ -124,9 +124,9 @@ define([
             if(webgnome.model.validWeathering()){
                 this.renderWeathering(options);
             } else {
-                webgnome.model.on('change', this.noWeathering, this);
-                webgnome.model.get('spills').on('change add remove', this.noWeathering, this);
-                this.appendNoWeatheringView();
+                this.listenTo(webgnome.model, 'change', this.noWeathering);
+                this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
+                this.noWeathering();
             }
         },
 
@@ -136,11 +136,6 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
             webgnome.cache.on('step:failed', this.toggleRAC, this);
-        },
-
-        appendNoWeatheringView: function() {
-            this.$el.appendTo('body');
-            this.noWeathering();
         },
 
         noWeathering: function(options){
