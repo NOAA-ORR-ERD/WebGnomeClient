@@ -491,6 +491,11 @@ define([
                             chemical_dis[d].set('waves', waves);
                         }
 
+                        var dissolution = this.get('weatherers').where({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
+                        for(var di = 0; di < dissolution.lenght; di++){
+                            dissolution[di].set('waves', waves);
+                        }
+
                         cb();
                     }, this)
                 });
