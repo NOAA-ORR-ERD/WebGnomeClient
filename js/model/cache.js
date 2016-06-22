@@ -26,19 +26,21 @@ define([
         step: function(){
             var step = new StepModel();
             this.trigger('step:sent');
-            this.fetching = true;
-            step.fetch({
-                success: _.bind(function(step){
-                    this.inline.push(step);
-                    this.fetching = false;
-                    this.length++;
-                    this.trigger('step:recieved', step);
-                }, this),
-                error: _.bind(function(){
-                    this.fetching = false;
-                    this.trigger('step:failed');
-                }, this)
-            });
+            if(!this.fetching){
+                this.fetching = true;
+                step.fetch({
+                    success: _.bind(function(step){
+                        this.inline.push(step);
+                        this.fetching = false;
+                        this.length++;
+                        this.trigger('step:recieved', step);
+                    }, this),
+                    error: _.bind(function(){
+                        this.fetching = false;
+                        this.trigger('step:failed');
+                    }, this)
+                });
+            }
         },
 
         rewind: function(override){
