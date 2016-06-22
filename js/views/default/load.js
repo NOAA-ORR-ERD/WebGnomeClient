@@ -26,7 +26,7 @@ define([
 
             this.$el.html(template);
             if(!options.simple){
-                $('body').append(this.$el); 
+                $('body').append(this.$el);
             }
 
             this.dropzone = new Dropzone('.dropzone', {
@@ -110,6 +110,12 @@ define([
                     var spillGeo = true;
                     var invalidSpills = [];
                     for (var i = 0; i < spills.length; i++){
+
+                        if (model.get('mode') === 'adios') {
+                            spills[i].get('release').set('release_time', model.get('start_time'));
+                            invalidSpills.push(spills[i].get('name'));
+                        }
+
                         if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0){
                             spillGeo = false;
                             break;
