@@ -1080,15 +1080,12 @@ define([
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
-                var con_width = this.$('.legend').width() - (15 * (dataset.length - 1));
-                var width = Math.floor(con_width / (dataset.length));
                 var compiled = '';
-                var units = webgnome.model.get('spills').at(0).get('units');
                 for(var i = 0; i < dataset.length; i++){
                     if(dataset[i].label !== 'Amount released'){
                         compiled += _.template(BreakdownTemplate, {
                             color: this.colors[i],
-                            width: width,
+                            width: 'auto',
                             label: dataset[i].label,
                             value: 0
                         });
