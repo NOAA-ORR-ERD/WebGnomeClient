@@ -31,7 +31,8 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flotneedle'
+    'flotneedle',
+    'moment-round'
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
@@ -1095,6 +1096,37 @@ define([
             var date_format = webgnome.config.date_format.moment;
             var start_time = moment(parseInt(ranges.xaxis.from, 10) / 1000, 'X');
             var end_time = moment(parseInt(ranges.xaxis.to, 10) / 1000, 'X');
+            var step = webgnome.model.get('time_step');
+            var inc = 0;
+            var unit = '';
+            if(step < 60){
+                // round to the nearest min
+                inc = 1;
+                unit = 'minutes';
+            } else if (step <= 300){
+                // round to the nearest 5 min inc
+                inc = 5;
+                unit = 'minutes';
+            } else if (step <= 600){
+                // round to the nearest 10 min inc
+                inc = 10;
+                unit = 'minutes';
+            } else if (step <= 900){
+                // round to the nearest 15 min inc
+                inc = 15;
+                unit = 'minutes';
+            } else if (step <= 1800){
+                // round to the nearest 30 min inc
+                inc = 30;
+                unit = 'minutes';
+            } else {
+                // round to the nearest 1 hour inc
+                inc = 1;
+                unit = 'hours';
+            }
+            start_time.round(inc, unit);
+            end_time.round(inc, unit);
+
             var selection = {
                 xaxis: {
                     from: start_time.unix() * 1000,

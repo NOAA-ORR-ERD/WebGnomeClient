@@ -9,6 +9,7 @@ require.config({
         underscore: 'lib/underscore/underscore',
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
+        'moment-round': 'lib/moment-round/dist/moment-round',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
         json: 'lib/requirejs-plugins/src/json',
