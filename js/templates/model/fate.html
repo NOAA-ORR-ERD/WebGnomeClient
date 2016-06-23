@@ -249,11 +249,17 @@
         <div class="tab-pane" id="ics209">
             <div class="col-md-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Report Period</div>
+                    <div class="panel-heading">Operational Period</div>
                     <div class="panel-body">
                         <p>
-                            Click and drag report period to view
+                            Click and drag operational period to view
                         </p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="legend"></div>
+                            </div>
+                        </div>
+
                         <div class="timeline">
                             <div class="chart">
                                 <div class="axisLabel yaxisLabel">{{ units }}</div>
@@ -261,29 +267,31 @@
                                 <div class="canvas"></div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <form class="form-horizontal" role="form">
-                                <div class="form-group">
-                                    <label for="start_time" class="col-xs-2 control-label">Start Time</label>
-                                    <div class="col-xs-4">
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control" id="start_time" value="">
-                                            <span class="input-group-addon" id="datepick_start">
-                                                <i></i>
-                                            </span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label for="start_time" class="col-xs-2 control-label">Start Time</label>
+                                        <div class="col-xs-4">
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control" id="start_time" value="">
+                                                <span class="input-group-addon" id="datepick_start">
+                                                    <i></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <label for="end_time" class="col-xs-2 control-label">End Time</label>
+                                        <div class="col-xs-4">
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control" id="end_time" value="">
+                                                <span class="input-group-addon" id="datepick_end">
+                                                    <i></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <label for="end_time" class="col-xs-2 control-label">End Time</label>
-                                    <div class="col-xs-4">
-                                        <div class="input-group date">
-                                            <input type="text" class="form-control" id="end_time" value="">
-                                            <span class="input-group-addon" id="datepick_end">
-                                                <i></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
