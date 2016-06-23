@@ -131,6 +131,7 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
+            this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.on('change:map', this.validateSpills, this);
@@ -158,6 +159,15 @@ define([
         spillsChange: function(child){
             this.childChange('spills', child);
             this.toggleWeatherers(child);
+        },
+
+        adiosSpillTimeFix: function() {
+            if (this.get('mode') === 'adios') {
+                var start_time = this.get('start_time');
+                this.get('spills').each(function(model){
+                    model.get('release').durationShift(start_time);
+                });
+            }
         },
 
         weatherersChange: function(child){

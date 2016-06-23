@@ -76,7 +76,7 @@ define([
             xhr.always(function(){
                 if(webgnome && webgnome.obj_ref && model.get('id')){
                     webgnome.obj_ref[model.get('id')] = model;
-                }    
+                }
             });
             return xhr;
         },
