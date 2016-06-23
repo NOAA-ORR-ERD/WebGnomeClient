@@ -107,21 +107,13 @@ define([
                     var spills = model.get('spills').models;
 
                     var locationExists = (map.get('map_bounds')[0][0] !== -360) && (map.get('map_bounds')[0][1] !== 90);
-                    var spillGeo = true;
                     var invalidSpills = [];
                     for (var i = 0; i < spills.length; i++){
 
                         if (model.get('mode') === 'adios') {
-                            spills[i].get('release').set('release_time', model.get('start_time'));
+                            spills[i].get('release').durationShift(model.get('start_time'));
                             invalidSpills.push(spills[i].get('name'));
-                        }
-
-                        if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0){
-                            spillGeo = false;
-                            break;
-                        }
-
-                        if (spills[i].get('release').get('end_position')[0] === 0 && spills[i].get('release').get('end_position')[1] === 0){
+                        } else if (spills[i].get('release').get('end_position')[0] === 0 && spills[i].get('release').get('end_position')[1] === 0) {
                             var start_position = spills[i].get('release').get('start_position');
                             spills[i].get('release').set('end_position', start_position);
                             invalidSpills.push(spills[i].get('name'));
