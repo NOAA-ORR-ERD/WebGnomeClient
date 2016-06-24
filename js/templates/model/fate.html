@@ -1,5 +1,43 @@
 <div class="container">
-    <div class="col-md-12" style="padding-bottom:15px;">
+    <div class="col-md-8">
+        <div class="panel-default panel">
+            <div class="panel-heading">Model Settings</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info">
+                            <div><label>Oil Name:</label> {{ name }}</div>
+                            <div><label>API:</label> {{ api }}</div>
+                            <div><label>Wind Speed:</label> {{ wind_speed }}</div>
+                            <div><label>Pour Point:</label> {{ pour_point }}</div>
+                            <div><label>Wave Height:</label> {{ wave_height }}</div>
+                        </div>        
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info">
+                            <div><label>Water Temp:</label> {{ water_temp }}</div>
+                            <div><label>Time of Initial Release:</label> {{ release_time }}</div>
+                            <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
+                            {% if (rate_exposed){ %}
+                                <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
+                                <div><label>Spill Duration:</label> {{ duration }}</div>
+                            {% } %}
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="panel-default panel">
+            <div class="panel-heading">Export</div>
+            <div class="panel-body">
+                <a class="btn btn-info download btn-sm" data-type="csv" title="CSV files are best when importing into spreadsheet applications (Numbers, Excel, Calc)."><span class="glyphicon glyphicon-cloud-download"></span> CSV</a>
+                <a class="btn btn-info btn-sm download" data-type="html" title="HTML files are best when importing into wordprocessing applications (Word, Pages, Writer)."><span class="glyphicon glyphicon-cloud-download"></span> HTML</a>
+                <a class="btn btn-info btn-sm print"><span class="glyphicon glyphicon-print"></span> Print</a>
+            </div>
+        </div>
         <a class="btn btn-info run-risk pull-right disabled" title="Response Benefit"><span class="glyphicon glyphicon-random"></span> Response Benefit</a>
     </div>
     <div class="col-md-12">
@@ -117,33 +155,6 @@
                         <a class="btn btn-info download" data-type="html" title="HTML files are best when importing into wordprocessing applications (Word, Pages, Writer)."><span class="glyphicon glyphicon-cloud-download"></span> HTML</a>
                         <a class="btn btn-info print"><span class="glyphicon glyphicon-print"></span> Print</a>
                     </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info">
-                    <div><label>Oil Name:</label> {{ name }}</div>
-                    <div><label>API:</label> {{ api }}</div>
-                    <div><label>Wind Speed:</label> {{ wind_speed }}</div>
-                    <div><label>Pour Point:</label> {{ pour_point }}</div>
-                    <div><label>Wave Height:</label> {{ wave_height }}</div>
-                    <!--<div><label>Water Temp:</label> {{ water_temp }}</div>
-                    <div><label>Time of Initial Release:</label> {{ release_time }}</div>
-                    <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
-                    {% if (rate_exposed){ %}
-                        <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
-                        <div><label>Spill Duration:</label> {{ duration }}</div>
-                    {% } %}-->
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="info">
-                    <div><label>Water Temp:</label> {{ water_temp }}</div>
-                    <div><label>Time of Initial Release:</label> {{ release_time }}</div>
-                    <div><label>Total Amount of Oil Released:</label> <span class="amount-released">{{ total_released }}</span></div>
-                    {% if (rate_exposed){ %}
-                        <div><label>Spill Rate:</label> <span class="rate-released">{{ spill_rate }}</span></div>
-                        <div><label>Spill Duration:</label> {{ duration }}</div>
-                    {% } %}
                 </div>
             </div>
             <div class="col-md-12">
