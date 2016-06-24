@@ -65,7 +65,7 @@ define([
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
-            'click .export-csv': 'exportCSV',
+            'click a[data-type=csv]': 'exportCSV',
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderOilLibrary',
@@ -115,7 +115,8 @@ define([
             'evaporation': 'evaporated',
             'sedimentation': 'sedimentation',
             'density': 'avg_density',
-            'emulsification': 'water_content'
+            'emulsification': 'water_content',
+            'dissolution': 'dissolution'
         },
 
         initialize: function(options){
@@ -1366,10 +1367,22 @@ define([
         },
 
         exportCSV: function() {
-            var tabName = this.$('.tab-pane.active').attr('id');
+            var tabName, dataset;
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                tabName = this.$(parentTabName + ' .tab-pane.active').attr('id');
+            } else {
+                tabName = parentTabName.substring(1);
+            }
+            
             var dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
             var datasetName = this.tabToLabelMap[tabName];
-            var dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+            if (!_.isUndefined(datasetName)) {
+                dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+            } else {
+                //dataset = 
+            }
             var dataArr = dataset.data;
             var filename = webgnome.model.get('name') + '_' + tabName;
             var header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
