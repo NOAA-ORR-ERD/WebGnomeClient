@@ -60,8 +60,7 @@ define([
             'click #budget-table .export a.print': 'printTableOilBudget',
             'change #ics209 input': 'ICSInputSelect',
             'change #ics209 select': 'renderTableICS',
-            'click #ics209 .export a.download': 'downloadTableICS',
-            'click #ics209 .export a.print': 'printTableICS',
+            'click a[data-type=html]': 'exportHTML',
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
@@ -1302,31 +1301,6 @@ define([
             this.$('#ics209 .ics-table').html(compiled);
         },
 
-        downloadTableICS: function(e){
-            var table = this.$('#ics209 table:last');
-            var type = $(e.target).data('type');
-            if (type === undefined){
-                type = $(e.target).parent().data('type');
-            }
-            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
-            var filename = name + '.' + type;
-            var content = '';
-
-            switch(type){
-                case 'csv':
-                    content = this.tableToCSV(table);
-                    break;
-                case 'html':
-                    content = this.tableToHTML(table);
-                    break;
-            }
-
-            var pom = document.createElement('a');
-            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-            pom.setAttribute('download', filename);
-            pom.click();
-        },
-
         printTableICS: function(){
             window.print();
         },
@@ -1402,6 +1376,23 @@ define([
             var pom = document.createElement('a');
             pom.setAttribute('href', csv);
             pom.setAttribute('download', filename + '.csv');
+            pom.click();
+        },
+
+        exportHTML: function(e) {
+            var modelInfo = this.$('.model-settings').html();
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            var tabName;
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                tabName = this.$(parentTabName + ' .tab-pane.active').attr('id');
+            } else {
+                tabName = parentTabName;
+            }
+            var tableHTML = this.tableToHTML(this.$(tabName + ' table'));
+            var content = modelInfo + tableHTML;
+            var pom = document.createElement('a');
+            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            pom.setAttribute('download', tabName.substring(1) + '.html');
             pom.click();
         },
 
