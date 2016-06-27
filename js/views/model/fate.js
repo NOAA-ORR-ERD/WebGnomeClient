@@ -1367,7 +1367,7 @@ define([
         },
 
         exportCSV: function() {
-            var tabName, dataset;
+            var tabName, dataset, csv, header, dataUnits;
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
@@ -1376,26 +1376,28 @@ define([
                 tabName = parentTabName.substring(1);
             }
             
-            var dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
+            var filename = webgnome.model.get('name') + '_' + tabName;
             var datasetName = this.tabToLabelMap[tabName];
             if (!_.isUndefined(datasetName)) {
+                dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
                 dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+                var dataArr = dataset.data;
+                header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
+                csv = [header];
+
+                for (var i = 0; i < dataArr.length; i++) {
+                    var datasetrow = this.convertUnixToDateTimeCSV(dataArr[i]);
+                    datasetrow.splice(2,1);
+                    var row = datasetrow.join(",");
+                    csv.push(row);
+                }
+                csv = csv.join('\r\n');
             } else {
-                //dataset = 
+                var table = this.$('#' + tabName + ' table');
+                csv = this.tableToCSV(table);
             }
-            var dataArr = dataset.data;
-            var filename = webgnome.model.get('name') + '_' + tabName;
-            var header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
-            var csv = [header];
-
-            for (var i = 0; i < dataArr.length; i++) {
-                var datasetrow = this.convertUnixToDateTimeCSV(dataArr[i]);
-                datasetrow.splice(2,1);
-                var row = datasetrow.join(",");
-                csv.push(row);
-            }
-
-            csv = encodeURI('data:text/csv;charset=utf-8,' + csv.join('\r\n'));
+            
+            csv = encodeURI('data:text/csv;charset=utf-8,' + csv);
 
             var pom = document.createElement('a');
             pom.setAttribute('href', csv);
