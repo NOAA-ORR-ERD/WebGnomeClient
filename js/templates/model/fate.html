@@ -35,6 +35,9 @@
             <div class="panel-body">
                 <a class="btn btn-info download btn-sm" data-type="csv" title="CSV files are best when importing into spreadsheet applications (Numbers, Excel, Calc)."><span class="glyphicon glyphicon-cloud-download"></span> CSV</a>
                 <a class="btn btn-info btn-sm download" data-type="html" title="HTML files are best when importing into wordprocessing applications (Word, Pages, Writer)."><span class="glyphicon glyphicon-cloud-download"></span> HTML</a>
+                <a class="btn btn-info btn-sm saveas">
+                <span class="glyphicon glyphicon-floppy-save"></span>
+                Save as image</a>
                 <a class="btn btn-info btn-sm print"><span class="glyphicon glyphicon-print"></span> Print</a>
             </div>
         </div>
@@ -53,7 +56,7 @@
     <div class="tab-content">
         <div class="tab-pane col-md-12" id="budget-graph">
             <div class="tab-pane" id="budget-graph">
-                {{ buttons }}
+                <!-- {{ buttons }} -->
                 <div class="pies">
                     <div class="col-md-4">
                         <div class="panel panel-blank chart-holder-uncert" data-dataset="low">

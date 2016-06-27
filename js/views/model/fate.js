@@ -1661,8 +1661,21 @@ define([
             return release_init;
         },
 
+        getActiveGraph: function(e) {
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            var element;
+            
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                element = this.$(parentTabName + ' .tab-pane.active .timeline');
+            } else {
+                element = this.$(parentTabName + ' .timeline');
+            }
+
+            return element;
+        },
+
         saveGraphImage: function(e){
-            var element = this.$('.tab-pane.active .timeline').get();
+            var element = this.getActiveGraph();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
                     var ctx = canvas.getContext('2d');
