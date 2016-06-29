@@ -1356,6 +1356,7 @@ define([
                 dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
                 dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
                 var dataArr = dataset.data;
+
                 header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
                 csv = [header];
 
@@ -1368,6 +1369,16 @@ define([
                 csv = csv.join('\r\n');
             } else {
                 var table = this.$('#' + tabName + ' table');
+
+                if (table.length === 0) {
+                    swal({
+                        title: 'CSV export unavailable!',
+                        text: 'Cannot export CSV for this tab',
+                        type: 'warning'
+                    });
+                    return;
+                }
+
                 csv = this.tableToCSV(table);
             }
             
@@ -1654,7 +1665,7 @@ define([
             return release_init;
         },
 
-        getActiveGraph: function(e) {
+        getActiveElement: function(e) {
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             var element;
             
@@ -1670,7 +1681,7 @@ define([
         },
 
         saveGraphImage: function(e){
-            var element = this.getActiveGraph();
+            var element = this.getActiveElement();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
                     var ctx = canvas.getContext('2d');
