@@ -57,7 +57,7 @@ define([
             'click a.run-risk': 'clickRisk',
             'change #budget-table select': 'renderTableOilBudget',
             'click #budget-table .export a.download': 'downloadTableOilBudget',
-            'click #budget-table .export a.print': 'printTableOilBudget',
+            'click a.print': 'printScreen',
             'change #ics209 input': 'ICSInputSelect',
             'change #ics209 select': 'renderTableICS',
             'click a[data-type=html]': 'exportHTML',
@@ -892,7 +892,7 @@ define([
             pom.click();
         },
 
-        printTableOilBudget: function(e){
+        printScreen: function(e){
             window.print();
         },
 
@@ -1660,8 +1660,10 @@ define([
             
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
                 element = this.$(parentTabName + ' .tab-pane.active .timeline');
-            } else {
+            } else if (this.$(parentTabName + ' .timeline').length !== 0){
                 element = this.$(parentTabName + ' .timeline');
+            } else {
+                element = this.$(parentTabName + ' table');
             }
 
             return element;
