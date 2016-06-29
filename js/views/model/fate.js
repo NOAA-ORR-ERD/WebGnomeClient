@@ -1400,7 +1400,7 @@ define([
                 tabName = parentTabName;
             }
             var tableHTML = this.tableToHTML(this.$(tabName + ' table'));
-            var content = modelInfo + tableHTML;
+            var content = modelInfo.replace(/°/g, '&deg;') + tableHTML;
             var pom = document.createElement('a');
             pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
             pom.setAttribute('download', tabName.substring(1) + '.html');
@@ -1680,7 +1680,7 @@ define([
             return element;
         },
 
-        saveGraphImage: function(e){
+        saveGraphImage: function(e, options){
             var element = this.getActiveElement();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
