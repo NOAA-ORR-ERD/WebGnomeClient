@@ -1395,17 +1395,19 @@ define([
                 tabName = parentTabName;
             }
             var tableHTML = this.tableToHTML(this.$(tabName + ' table'));
+            var filename = webgnome.model.get('name') + '_';
             if (this.$(tabName + ' table').length !== 0){
                 content = modelInfo + tableHTML;
                 var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
-                this.downloadContent(source, tabName.substring(1) + '.html');
+                this.downloadContent(source, filename + tabName.substring(1) + '.html');
             } else {
                 this.modelInfo = modelInfo;
                 this.tabName = tabName;
+                this.fileName = filename;
                 this.saveGraphImage(null, _.bind(function(img) {
                     var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
                     var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
-                    this.downloadContent(source, this.tabName.substring(1) + '.html');
+                    this.downloadContent(source, this.fileName + this.tabName + '.html');
                 }, this));
             }
         },
