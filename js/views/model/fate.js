@@ -1367,19 +1367,16 @@ define([
                     csv.push(row);
                 }
                 csv = csv.join('\r\n');
-            } else {
+            } else if (this.$('#' + tabName + ' table').length !== 0){
                 var table = this.$('#' + tabName + ' table');
-
-                if (table.length === 0) {
-                    swal({
-                        title: 'CSV export unavailable!',
-                        text: 'Cannot export CSV for this tab',
-                        type: 'warning'
-                    });
-                    return;
-                }
-
                 csv = this.tableToCSV(table);
+            } else {
+                swal({
+                    title: 'CSV export unavailable!',
+                    text: 'Cannot export CSV for this tab',
+                    type: 'warning'
+                });
+                return;
             }
             
             csv = encodeURI('data:text/csv;charset=utf-8,' + csv);
