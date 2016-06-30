@@ -1381,14 +1381,12 @@ define([
             
             csv = encodeURI('data:text/csv;charset=utf-8,' + csv);
 
-            var pom = document.createElement('a');
-            pom.setAttribute('href', csv);
-            pom.setAttribute('download', filename + '.csv');
-            pom.click();
+            this.downloadContent(csv, filename + '.csv');
         },
 
         exportHTML: function(e) {
-            var modelInfo = this.$('.model-settings').html();
+            var content;
+            var modelInfo = this.$('.model-settings').html().replace(/°/g, '&deg;');
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             var tabName;
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
@@ -1397,11 +1395,19 @@ define([
                 tabName = parentTabName;
             }
             var tableHTML = this.tableToHTML(this.$(tabName + ' table'));
-            var content = modelInfo.replace(/°/g, '&deg;') + tableHTML;
-            var pom = document.createElement('a');
-            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-            pom.setAttribute('download', tabName.substring(1) + '.html');
-            pom.click();
+            if (this.$(tabName + ' table').length !== 0){
+                content = modelInfo + tableHTML;
+                var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+                this.downloadContent(source, tabName.substring(1) + '.html');
+            } else {
+                this.modelInfo = modelInfo;
+                this.tabName = tabName;
+                this.saveGraphImage(null, 'moo', _.bind(function(img) {
+                    var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
+                    var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+                    this.downloadContent(source, this.tabName.substring(1) + '.html');
+                }, this));
+            }
         },
 
         tableToHTML: function(table, header){
@@ -1677,7 +1683,7 @@ define([
             return element;
         },
 
-        saveGraphImage: function(e, options){
+        saveGraphImage: function(e, options, cb){
             var element = this.getActiveElement();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
@@ -1696,12 +1702,21 @@ define([
 
                     var currentTab = this.$('.tab-pane.active').attr('id');
                     var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
-                    var pom = document.createElement('a');
-                    pom.setAttribute('href', img);
-                    pom.setAttribute('download', name);
-                    pom.click();
+
+                    if (_.isUndefined(options)) {
+                        this.downloadContent(img, name);
+                    } else {
+                        cb(img);
+                    }
                 }, this)
             });
+        },
+
+        downloadContent: function(source, filename) {
+            var pom = document.createElement('a');
+            pom.setAttribute('href', source);
+            pom.setAttribute('download', filename);
+            pom.click();
         },
 
         printGraphImage: function(e){
