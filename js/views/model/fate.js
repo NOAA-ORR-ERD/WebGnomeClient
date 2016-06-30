@@ -1402,7 +1402,7 @@ define([
             } else {
                 this.modelInfo = modelInfo;
                 this.tabName = tabName;
-                this.saveGraphImage(null, 'moo', _.bind(function(img) {
+                this.saveGraphImage(null, _.bind(function(img) {
                     var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
                     var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
                     this.downloadContent(source, this.tabName.substring(1) + '.html');
@@ -1683,7 +1683,7 @@ define([
             return element;
         },
 
-        saveGraphImage: function(e, options, cb){
+        saveGraphImage: function(e, cb){
             var element = this.getActiveElement();
             html2canvas(element, {
                 onrendered: _.bind(function(canvas){
@@ -1703,7 +1703,7 @@ define([
                     var currentTab = this.$('.tab-pane.active').attr('id');
                     var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
 
-                    if (_.isUndefined(options)) {
+                    if (_.isUndefined(cb)) {
                         this.downloadContent(img, name);
                     } else {
                         cb(img);
