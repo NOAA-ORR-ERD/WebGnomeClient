@@ -32,7 +32,8 @@ define([
     'flotfillarea',
     'flotselect',
     'flotneedle',
-    'moment-round'
+    'moment-round',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
