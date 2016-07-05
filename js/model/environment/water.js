@@ -26,16 +26,6 @@ define([
             kinematic_viscosity: 1
         },
 
-        convertToK: function(temp){
-            if (this.get('units').temperature === 'F'){
-                temp = (temp - 32) * (5.0 / 9);
-            }
-            if (this.get('units').temperature !== 'K'){
-                temp = parseFloat(temp) + 273.15;
-            }
-            return temp;
-        },
-
         validate: function(attrs, options){
             var temp_bounds = {
                 upper: 313.15,
