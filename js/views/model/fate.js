@@ -1741,7 +1741,7 @@ define([
                     ctx.globalCompositeOperation = compositeOperation;
 
                     var currentTab = this.$('.tab-pane.active').attr('id');
-                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + obj.name : obj.name;
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + '_' + obj.name : obj.name;
 
                     if (_.isUndefined(cb)) {
                         this.downloadContent(img, name);
