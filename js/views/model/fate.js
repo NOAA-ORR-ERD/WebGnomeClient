@@ -1704,25 +1704,28 @@ define([
 
         getActiveElement: function(e) {
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
-            var element;
+            var element, name;
             
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
                 element = this.$(parentTabName + ' .tab-pane.active .timeline');
+                name = this.$(parentTabName + ' .tab-pane.active').attr('id');
             } else if (this.$(parentTabName + ' .timeline').length !== 0){
                 element = this.$(parentTabName + ' .timeline');
                 if (parentTabName === '#budget-graph') {
                     element = this.$(parentTabName);
                 }
+                name = parentTabName.substring(1);
             } else {
                 element = this.$(parentTabName + ' table');
+                name = parentTabName.substring(1);
             }
 
-            return element;
+            return {element: element, name: name};
         },
 
         saveGraphImage: function(e, cb){
-            var element = this.getActiveElement();
-            html2canvas(element, {
+            var obj = this.getActiveElement();
+            html2canvas(obj.element, {
                 onrendered: _.bind(function(canvas){
                     var ctx = canvas.getContext('2d');
                     var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1738,7 +1741,7 @@ define([
                     ctx.globalCompositeOperation = compositeOperation;
 
                     var currentTab = this.$('.tab-pane.active').attr('id');
-                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + obj.name : obj.name;
 
                     if (_.isUndefined(cb)) {
                         this.downloadContent(img, name);
