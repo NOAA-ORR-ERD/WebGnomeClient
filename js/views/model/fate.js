@@ -1341,6 +1341,35 @@ define([
             return datarowcp;
         },
 
+        convertMomentToDateTimeCSV: function(time) {
+            return moment(time).toISOString();
+        },
+
+        modelInfoCSV: function() {
+            var headerRow = [];
+            var valueRow = [];
+            var data = this.$('.info div');
+
+            data.each(_.bind(function(i, el, arr){
+                var obj = this.$(el);
+                var headerText = obj.children('label').text().replace(/:/g, '');
+                var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,/g, '');
+
+                if (headerText.indexOf("Time") > -1) {
+                    valueText = this.convertMomentToDateTimeCSV(valueText);
+                }
+
+                headerRow.push(headerText);
+                valueRow.push(valueText);
+            }, this));
+
+            headerRow = headerRow.join(',');
+            valueRow = valueRow.join(',');
+            var csv = [headerRow, valueRow];
+
+            return csv.join('\r\n');
+        },
+
         exportCSV: function() {
             var tabName, dataset, csv, header, dataUnits;
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
@@ -1379,8 +1408,10 @@ define([
                 });
                 return;
             }
+
+            var metaData = this.modelInfoCSV();
             
-            csv = encodeURI('data:text/csv;charset=utf-8,' + csv);
+            csv = encodeURI('data:text/csv;charset=utf-8,' + metaData + '\r\n' + csv);
 
             this.downloadContent(csv, filename + '.csv');
         },
