@@ -52,11 +52,16 @@ require.config({
         socketio: 'lib/socket.io-client/dist/socket.io',
         localforage: 'lib/localforage/dist/localforage',
         'jquery-mousewheel': 'lib/jquery-mousewheel/jquery.mousewheel',
-        'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter'
+        'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter',
+        'toastr': 'lib/toastr/toastr'
     },
     shim: {
         jquery: {
             exports: '$'
+        },
+        toastr:{
+            exports: 'toastr',
+            deps: ['jquery']
         },
         bootstrap: ['jquery'],
         jqueryui: {
