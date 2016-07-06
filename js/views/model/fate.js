@@ -1710,6 +1710,9 @@ define([
                 element = this.$(parentTabName + ' .tab-pane.active .timeline');
             } else if (this.$(parentTabName + ' .timeline').length !== 0){
                 element = this.$(parentTabName + ' .timeline');
+                if (parentTabName === '#budget-graph') {
+                    element = this.$(parentTabName);
+                }
             } else {
                 element = this.$(parentTabName + ' table');
             }
