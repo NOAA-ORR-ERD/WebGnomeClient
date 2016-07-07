@@ -10,13 +10,23 @@ define([
     'cesium',
     'model/spill',
     'views/form/spill/continue',
+    'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
     'jqueryui/slider'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, GnomeStep, Mousetrap){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({
-        className: 'trajectory-view map ',
+        className: function() {
+            var str;
+            if (webgnome.model.get('mode') !== 'adios') {
+                str = 'trajectory-view map ';
+            } else {
+                str = 'trajectory-view no-map';
+            }
+
+            return str;
+        },
         id: 'map',
         spillToggle: false,
         spillCoords: [],
@@ -45,18 +55,25 @@ define([
             'click .ice-uv input': 'toggleUV',
             'click .ice-grid input[type="radio"]': 'toggleGrid',
             'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
-            'click .ice-tc input[type="radio"]': 'toggleIceData'
+            'click .ice-tc input[type="radio"]': 'toggleIceData',
+            'click .view-gnome-mode': 'viewGnomeMode',
+            'click .view-weathering': 'viewWeathering'
         },
 
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            if (webgnome.model.get('mode') !== 'adios'){
+                webgnome.cache.on('rewind', this.rewind, this);
+                this.modelMode = 'gnome';
+            } else {
+                this.modelMode = 'adios';
+            }
             this.$el.appendTo('body');
-            if(webgnome.hasModel()){
+            if(webgnome.hasModel() && this.modelMode !== 'adios'){
                 this.modelListeners();
             }
             this.render();
-            webgnome.cache.on('rewind', this.rewind, this);
         },
 
         modelListeners: function(){
@@ -71,7 +88,31 @@ define([
 
         render: function(){
             BaseView.prototype.render.call(this);
+            if (this.modelMode !== 'adios') {
+                this.renderTrajectory();
+            } else {
+                this.renderNoTrajectory();
+            }
+        },
 
+        viewGnomeMode: function() {
+            webgnome.model.set('mode', 'gnome');
+            webgnome.model.save(null, {
+                success: function(){
+                    webgnome.router.navigate('config', true);
+                }
+            });
+        },
+
+        viewWeathering: function() {
+            webgnome.router.navigate('fate', true);
+        },
+
+        renderNoTrajectory: function() {
+            this.$el.html(_.template(NoTrajMapTemplate));
+        },
+
+        renderTrajectory: function() {
             var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
@@ -90,7 +131,7 @@ define([
                     'gnome.movers.wind_movers.GridWindmover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
             var active_currents = [];
             if(current_outputter.get('on')){
                 current_outputter.get('current_movers').forEach(function(mover){
@@ -102,7 +143,7 @@ define([
             var ice = webgnome.model.get('movers').filter(function(mover){
                 return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
             });
-            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
+            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             var tc_ice = [];
             ice_tc_outputter.get('ice_movers').forEach(function(mover){
                 tc_ice.push(mover.get('id'));
@@ -430,39 +471,62 @@ define([
             var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
             var uncertain_json_features = step.get('TrajectoryGeoJsonOutput').uncertain.features;
             var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
+            var num_les = certain_json_features.length > uncertain_json_features.length ? certain_json_features.length : uncertain_json_features.length;
 
-            for(var f = 0; f < certain_json_features.length; f++){
-                if(!this.certain_collection[f]){
+            for(var f = 0; f < num_les; f++){
+                if(!this.certain_collection[f] || !this.uncertain_collection[f]){
                     // create a new point
-                    this.certain_collection.push(this.les.add({
-                        position: Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]),
-                        color: Cesium.Color.BLACK,
-                        image: certain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
-                    }));
 
-                    if (uncertain_json_features.length > 0) {
+                    if(certain_json_features[f]){
+                        this.certain_collection.push(this.les.add({
+                            position: Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]),
+                            color: Cesium.Color.BLACK.withAlpha(
+                                certain_json_features[f].properties.mass / webgnome.model.get('spills').at(certain_json_features[f].properties.spill_num)._per_le_mass
+                            ),
+                            image: certain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
+                        }));
+                    }
+
+                    if (uncertain_json_features[f]) {
                         this.uncertain_collection.push(this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]),
-                            color: Cesium.Color.RED,
+                            color: Cesium.Color.RED.withAlpha(
+                                uncertain_json_features[f].properties.mass / webgnome.model.get('spills').at(uncertain_json_features[f].properties.spill_num)._per_le_mass
+                            ),
                             image: uncertain_json_features[f].properties.status_code === 2 ? this.les_point_image : this.les_beached_image
                         }));
                     }
                 } else {
                     // update the point position and graphical representation
-                    this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
-                    if(certain_json_features[f].properties.status_code === 3){
-                        this.certain_collection[f].image = this.les_beached_image;
-                    } else {
-                        this.certain_collection[f].image = this.les_point_image;
+                    if(certain_json_features[f]){
+                        this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain_json_features[f].geometry.coordinates[0], certain_json_features[f].geometry.coordinates[1]);
+                        if(certain_json_features[f].properties.status_code === 3){
+                            this.certain_collection[f].image = this.les_beached_image;
+                        } else {
+                            this.certain_collection[f].image = this.les_point_image;
+                        }
+                        // set the opacity of particle if the mass has changed
+                        if(certain_json_features[f].properties.mass !== webgnome.model.get('spills').at(certain_json_features[f].properties.spill_num)._per_le_mass){
+                            this.certain_collection[f].color = Cesium.Color.BLACK.withAlpha(
+                                certain_json_features[f].properties.mass / webgnome.model.get('spills').at(certain_json_features[f].properties.spill_num)._per_le_mass
+                            );
+                        }
                     }
 
-                    if (uncertain_json_features.length > 0) {
+                    if(uncertain_json_features[f]) {
                         this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain_json_features[f].geometry.coordinates[0], uncertain_json_features[f].geometry.coordinates[1]);
 
                         if(uncertain_json_features[f].properties.status_code === 3){
                             this.uncertain_collection[f].image = this.les_beached_image;
                         } else {
                             this.uncertain_collection[f].image = this.les_point_image;
+                        }
+
+                        // set the opacity of particle if the mass has changed
+                        if(uncertain_json_features[f].properties.mass !== webgnome.model.get('spills').at(uncertain_json_features[f].properties.spill_num)._per_le_mass){
+                            this.uncertain_collection[f].color = Cesium.Color.RED.withAlpha(
+                                uncertain_json_features[f].properties.mass / webgnome.model.get('spills').at(uncertain_json_features[f].properties.spill_num)._per_le_mass
+                            );
                         }
                     }
                 }
@@ -487,10 +551,10 @@ define([
         },
 
         renderCurrent: function(step){
-            if(step.get('CurrentGeoJsonOutput') && this.checked_currents && this.checked_currents.length > 0 && this.layers.uv){
+            if(step.get('CurrentJsonOutput') && this.checked_currents && this.checked_currents.length > 0 && this.layers.uv){
                 // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
                 var id = this.checked_currents[0];
-                var data = step.get('CurrentGeoJsonOutput')[id];
+                var data = step.get('CurrentJsonOutput')[id];
                 if(data && this.current_arrow[id]){
                     for(var uv = data.direction.length; uv--;){
                         this.layers.uv[id].get(uv).show = true;
@@ -548,10 +612,10 @@ define([
         },
 
         renderIce: function(step){
-            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
-            if(step && step.get('IceRawJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
+            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
+            if(step && step.get('IceJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
                 var mover = outputter.get('ice_movers').at(0);
-                var data = step.get('IceRawJsonOutput').data[mover.get('id')];
+                var data = step.get('IceJsonOutput').data[mover.get('id')];
                 if(!data){ return null; }
 
                 var vis = $('.ice-tc input[type="radio"]:checked').val();
@@ -751,7 +815,7 @@ define([
 
         toggleUV: function(e){
             var checked = this.$('.current-uv input:checked, .ice-uv input:checked');
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.CurrentGeoJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
 
             var uv_layers = _.keys(this.layers.uv);
             for(var l = 0; l < uv_layers.length; l++){
@@ -869,7 +933,7 @@ define([
         toggleIceTC: function(e){
             var checked = this.$('.ice-tc input[type="checkbox"]:checked');
             // var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput'});
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.geo_json.IceRawJsonOutput'});
+            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
             if (checked.length > 0){
                 current_outputter.get('ice_movers').reset();
 
@@ -1097,25 +1161,27 @@ define([
         },
 
         close: function(){
-            this.pause();
-            if(webgnome.model){
-                webgnome.model.off('change', this.contextualize, this);
-                webgnome.model.off('sync', this.spillListeners, this);
-                webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-            }
-            if(this.drawStepTimeout){
-                clearTimeout(this.drawStepTimeout);
-            }
-            webgnome.cache.off('step:recieved', this.renderStep, this);
-            webgnome.cache.off('step:failed', this.pause, this);
-            webgnome.cache.off('rewind', this.rewind, this);
+            if (this.modelMode !== 'adios'){
+                this.pause();
+                if(webgnome.model){
+                    webgnome.model.off('change', this.contextualize, this);
+                    webgnome.model.off('sync', this.spillListeners, this);
+                    webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
+                }
+                if(this.drawStepTimeout){
+                    clearTimeout(this.drawStepTimeout);
+                }
+                webgnome.cache.off('step:recieved', this.renderStep, this);
+                webgnome.cache.off('step:failed', this.pause, this);
+                webgnome.cache.off('rewind', this.rewind, this);
 
-            Mousetrap.unbind('space');
-            Mousetrap.unbind('right');
-            Mousetrap.unbind('left');
+                Mousetrap.unbind('space');
+                Mousetrap.unbind('right');
+                Mousetrap.unbind('left');
+                this.unbind();
+                this.viewer.destroy();
+            }
             this.remove();
-            this.unbind();
-            this.viewer.destroy();
         }
     });
 

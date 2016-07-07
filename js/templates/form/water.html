@@ -82,6 +82,7 @@
 							<option value="windcalc">Compute from wind (Unlimited Fetch)</option>
 							<option value="fetch">Compute from wind and fetch</option>
 							<option value="specified">Known wave height</option>
+							<option value="river">I'm in a river</option>
 						</select>
 					</div>
 				</div>
@@ -107,6 +108,14 @@
 							<option value="m">Meters</option>
 							<option value="ft">Feet</option>
 						</select>
+					</div>
+				</div>
+				<div class="form-group water-warn hide">
+					<div class="col-sm-12">
+						<div class="alert alert-warning">
+							<b>Caution: </b>
+							When using ADIOS in rivers, the turbulent mixing in the river may not be represented correctly by setting wind speed and wave heights and the spreading of the oil may be restricted by the banks of the river.  Consult the technical documentation for more details.
+						</div>
 					</div>
 				</div>
 			</div>

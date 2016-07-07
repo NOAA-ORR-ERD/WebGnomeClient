@@ -113,7 +113,7 @@ define([
                 this.model.set('fetch', this.$('#fetch').val());
                 units.fetch = this.$('#fetch-units').val();
             }
-            if (this.$('#data-source').val() === 'specified'){
+            if (this.$('#data-source').val() === 'specified' || this.$('#data-source').val() === 'river'){
                 this.model.set('wave_height', this.$('#height').val());
                 units.wave_height = this.$('#wave_height-units').val();
             }
@@ -149,18 +149,22 @@ define([
                 this.$(e.currentTarget).parent().addClass('hide');
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
             }
-            if (['fetch', 'specified'].indexOf(value) !== -1) {
-                this.$('.fetch, .specified').addClass('hide');
+            if (['fetch', 'specified', 'river'].indexOf(value) !== -1) {
+                this.$('.fetch, .specified, .water-warn').addClass('hide');
                 this.$(e.currentTarget).parents('.form-group').siblings('.' + value).removeClass('hide');
                 if (value === 'fetch') {
-                    this.model.set('fetch', '');
+                    //this.model.set('fetch', '');
                     this.model.set('wave_height', null);
-                } else if (value === 'specified') {
-                    this.model.set('wave_height', '');
+                } else if (value === 'specified' || value === 'river') {
+                    //this.model.set('wave_height', '');
                     this.model.set('fetch', null);
+                    if (value === 'river') {
+                        this.$('.specified').removeClass('hide');
+                        this.$('.water-warn').removeClass('hide');
+                    }
                 }
             } else if (value === 'windcalc') {
-                this.$('.fetch, .specified').addClass('hide');
+                this.$('.fetch, .specified, .water-warn').addClass('hide');
                 this.model.set('wave_height', null);
                 this.model.set('fetch', null);
             }

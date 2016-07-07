@@ -3,8 +3,9 @@ define([
     'underscore',
     'backbone',
     'socketio',
-    'text!templates/default/logger/index.html'
-], function($, _, Backbone, io, LoggerTemplate){
+    'text!templates/default/logger/index.html',
+    'toastr'
+], function($, _, Backbone, io, LoggerTemplate, toastr){
     'use strict';
     var loggerView = Backbone.View.extend({
         className: 'logger',
@@ -21,9 +22,23 @@ define([
         },
 
         initialize: function(){
+            this.setupToasts();
             this.render();
             this.socketUrl = webgnome.config.api + this.socketRoute;
             this.startSocket();
+        },
+
+        setupToasts: function(){
+            toastr.options.preventDuplicates = true;
+            toastr.options.closeButton = true;
+            toastr.options.newestOnTop = false;
+            toastr.options.positionClass = 'toast-bottom-left';
+            toastr.options.timeOut = 0;
+            toastr.options.showDuration = 0;
+            toastr.options.hideDuration = 0;
+            toastr.options.extendedTimeOut = 0;
+
+            this.listenTo(webgnome.model, 'sync', this.clearToasts);
         },
 
         render: function(){
@@ -58,6 +73,12 @@ define([
             this.socket.on('log', _.bind(this.socketLog, this));
         },
 
+        closeSocket: function(){
+            this.socket.disconnect();
+            this.socket.removeAllListeners();
+            this.socket = null;
+        },
+
         socketError: function(error){
             this.log({type: 'error', message: 'Failed to connect!'});
             this.log({type: 'warning', message: 'Interactve logging has been disabled'});
@@ -69,6 +90,19 @@ define([
 
         socketLog: function(event){
             this.log(event);
+            this.toast(event);
+        },
+
+        toast: function(message){
+            if(message.level.toLowerCase() === 'criti'){
+                toastr.error(_.escape(message.message));
+            } else if(message.level.toLowerCase() === 'warni') {
+                toastr.warning(_.escape(message.message));
+            }
+        },
+
+        clearToasts: function(){
+            toastr.clear();
         },
 
         /**
@@ -158,6 +192,12 @@ define([
             this.$('.window .logs').html('');
             this.evalLogs();
             this.windowScrollCheck();
+        },
+
+        close: function(){
+            this.closeSocket();
+            this.clearToasts();
+            Backbone.View.prototype.close.call(this);
         }
     });
 

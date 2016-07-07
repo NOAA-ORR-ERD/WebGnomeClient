@@ -36,9 +36,7 @@ define([
             this.model.set('distance', this.$('input[name="distance"]').val());
             this.model.set('units', this.$('select[name="units"]').val());
             this.model.set('bearing', this.$('input[name="bearing"]').val());
-            var center = this.$('input[name="center"]').val().split(',');
-            center.push(0);
-            this.model.set('center', center);
+            this.model.set('center', this.$('input[name="center"]').val().split(','));
         },
 
         wizardclose: function() {

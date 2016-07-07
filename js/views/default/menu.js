@@ -247,6 +247,10 @@ define([
             if(window.location.href.indexOf('fate') !== -1){
                 this.toggleView('fate');
             }
+
+            if (window.location.href.indexOf('config') !== -1) {
+                this.toggleView('config');
+            }
             
         },
 

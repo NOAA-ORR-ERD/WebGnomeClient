@@ -31,7 +31,9 @@ define([
     'flotpie',
     'flotfillarea',
     'flotselect',
-    'flotneedle'
+    'flotneedle',
+    'moment-round',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
@@ -56,15 +58,14 @@ define([
             'click a.run-risk': 'clickRisk',
             'change #budget-table select': 'renderTableOilBudget',
             'click #budget-table .export a.download': 'downloadTableOilBudget',
-            'click #budget-table .export a.print': 'printTableOilBudget',
+            'click a.print': 'printScreen',
             'change #ics209 input': 'ICSInputSelect',
             'change #ics209 select': 'renderTableICS',
-            'click #ics209 .export a.download': 'downloadTableICS',
-            'click #ics209 .export a.print': 'printTableICS',
+            'click a[data-type=html]': 'exportHTML',
             'click .gnome-help': 'renderHelp',
             'click .saveas': 'saveGraphImage',
             'click .print-graph': 'printGraphImage',
-            'click .export-csv': 'exportCSV',
+            'click a[data-type=csv]': 'exportCSV',
             'change .vol-units': 'renderGraphICS',
             'click .spill .select': 'renderSpillForm',
             'click .substance .select': 'renderOilLibrary',
@@ -114,7 +115,8 @@ define([
             'evaporation': 'evaporated',
             'sedimentation': 'sedimentation',
             'density': 'avg_density',
-            'emulsification': 'water_content'
+            'emulsification': 'water_content',
+            'dissolution': 'dissolution'
         },
 
         initialize: function(options){
@@ -124,9 +126,9 @@ define([
             if(webgnome.model.validWeathering()){
                 this.renderWeathering(options);
             } else {
-                webgnome.model.on('change', this.noWeathering, this);
-                webgnome.model.get('spills').on('change add remove', this.noWeathering, this);
-                this.appendNoWeatheringView();
+                this.listenTo(webgnome.model, 'change', this.noWeathering);
+                this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
+                this.noWeathering();
             }
         },
 
@@ -136,11 +138,6 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
             webgnome.cache.on('step:failed', this.toggleRAC, this);
-        },
-
-        appendNoWeatheringView: function() {
-            this.$el.appendTo('body');
-            this.noWeathering();
         },
 
         noWeathering: function(options){
@@ -420,6 +417,9 @@ define([
             this.rendered = true;
 
             this.$('#ics209 #start_time, #ics209 #end_time').datetimepicker({
+                minDate: moment(webgnome.model.get('start_time')).format('YYYY/MM/DD'),
+                startDate: moment(webgnome.model.get('start_time')).format('YYYY/MM/DD'),
+                maxDate: moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').format('YYYY/MM/DD'),
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
@@ -507,7 +507,12 @@ define([
 
         renderGraphs: function(){
             // find active tab and render it's graph.
-            var active = this.$('.active a').attr('href');
+            var parentTabId = this.$('.active a').attr('href');
+            var active = this.$(parentTabId + ' .active a').attr('href');
+
+            if (_.isUndefined(active)) {
+                active = parentTabId;
+            }
 
             $('#flotTip').remove();
 
@@ -519,6 +524,8 @@ define([
                 this.renderGraphEvaporation(this.dataset);
             } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
+            } else if (active === '#dissolution') {
+                this.renderGraphDissolution(this.dataset);
             } else if(active === '#sedimentation') {
                 this.renderGraphSedimentation(this.dataset);
             } else if(active === '#density') {
@@ -886,7 +893,7 @@ define([
             pom.click();
         },
 
-        printTableOilBudget: function(e){
+        printScreen: function(e){
             window.print();
         },
 
@@ -925,7 +932,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphSedimentation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[2]];
+                options.colors = [this.colors[3]];
                 this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphSedimentation.setData(dataset);
@@ -993,6 +1000,21 @@ define([
             dataset[0].fillArea = null;
         },
 
+        renderGraphDissolution: function(dataset){
+            dataset = this.pluckDataset(dataset, ['dissolution']);
+            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            if(_.isUndefined(this.graphDissolution)) {
+                var options = $.extend(true, {}, this.defaultChartOptions);
+                options.colors = [this.colors[2]];
+                this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
+            } else {
+                this.graphDissolution.setData(dataset);
+                this.graphDissolution.setupGrid();
+                this.graphDissolution.draw();
+            }
+            dataset[0].fillArea = null;
+        },
+
         convertDataset: function(d, to_unit){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
@@ -1031,7 +1053,7 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
                 ]);
             var icsUnits = this.$('.vol-units').val();
             dataset = this.convertDataset(dataset, icsUnits);
@@ -1059,6 +1081,19 @@ define([
                 
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
+                var compiled = '';
+                for(var i = 0; i < dataset.length; i++){
+                    if(dataset[i].label !== 'Amount released'){
+                        compiled += _.template(BreakdownTemplate, {
+                            color: this.colors[i],
+                            width: 'auto',
+                            label: dataset[i].label,
+                            value: 0
+                        });
+                    }
+                }
+                this.$('.legend').html(compiled);
+
             } else {
                 this.graphICS.setData(dataset);
                 this.graphICS.setupGrid();
@@ -1075,6 +1110,37 @@ define([
             var date_format = webgnome.config.date_format.moment;
             var start_time = moment(parseInt(ranges.xaxis.from, 10) / 1000, 'X');
             var end_time = moment(parseInt(ranges.xaxis.to, 10) / 1000, 'X');
+            var step = webgnome.model.get('time_step');
+            var inc = 0;
+            var unit = '';
+            if(step < 60){
+                // round to the nearest min
+                inc = 1;
+                unit = 'minutes';
+            } else if (step <= 300){
+                // round to the nearest 5 min inc
+                inc = 5;
+                unit = 'minutes';
+            } else if (step <= 600){
+                // round to the nearest 10 min inc
+                inc = 10;
+                unit = 'minutes';
+            } else if (step <= 900){
+                // round to the nearest 15 min inc
+                inc = 15;
+                unit = 'minutes';
+            } else if (step <= 1800){
+                // round to the nearest 30 min inc
+                inc = 30;
+                unit = 'minutes';
+            } else {
+                // round to the nearest 1 hour inc
+                inc = 1;
+                unit = 'hours';
+            }
+            start_time.round(inc, unit);
+            end_time.round(inc, unit);
+
             var selection = {
                 xaxis: {
                     from: start_time.unix() * 1000,
@@ -1096,11 +1162,7 @@ define([
             var end_input = this.$('#ics209 #end_time').val();
             var time_span_hrs = 24;
 
-            if (start_input !== '' && end_input === '') {
-                end_input = moment(start_input).add(time_span_hrs, 'h').format(date_format);
-            } else if (start_input === '' && end_input !== '') {
-                start_input = moment(end_input).subtract(time_span_hrs, 'h').format(date_format);
-            }
+            if(!start_input || !end_input){ return null; }
 
             var start_time = moment(start_input, date_format);
             var end_time = moment(end_input, date_format);
@@ -1163,7 +1225,7 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
-            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached']);
+            var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached', 'dissolution']);
             var report = {
                 spilled: 0,
                 evaporated: 0,
@@ -1219,6 +1281,8 @@ define([
             report.other_natural += report.sedimentation;
             report.other_natural += report.dissolution;
 
+            report.floating = report.floating > 0 ? report.floating : 0;
+
             var amount_type = 'Volume Spilled';
             var mass_units = ['kg', 'metric ton', 'ton'];
 
@@ -1236,31 +1300,6 @@ define([
             });
 
             this.$('#ics209 .ics-table').html(compiled);
-        },
-
-        downloadTableICS: function(e){
-            var table = this.$('#ics209 table:last');
-            var type = $(e.target).data('type');
-            if (type === undefined){
-                type = $(e.target).parent().data('type');
-            }
-            var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ICS 209' : 'ICS 209';
-            var filename = name + '.' + type;
-            var content = '';
-
-            switch(type){
-                case 'csv':
-                    content = this.tableToCSV(table);
-                    break;
-                case 'html':
-                    content = this.tableToHTML(table);
-                    break;
-            }
-
-            var pom = document.createElement('a');
-            pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-            pom.setAttribute('download', filename);
-            pom.click();
         },
 
         printTableICS: function(){
@@ -1302,29 +1341,107 @@ define([
             return datarowcp;
         },
 
-        exportCSV: function() {
-            var tabName = this.$('.tab-pane.active').attr('id');
-            var dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
-            var datasetName = this.tabToLabelMap[tabName];
-            var dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
-            var dataArr = dataset.data;
-            var filename = webgnome.model.get('name') + '_' + tabName;
-            var header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
-            var csv = [header];
+        convertMomentToDateTimeCSV: function(time) {
+            return moment(time).toISOString();
+        },
 
-            for (var i = 0; i < dataArr.length; i++) {
-                var datasetrow = this.convertUnixToDateTimeCSV(dataArr[i]);
-                datasetrow.splice(2,1);
-                var row = datasetrow.join(",");
-                csv.push(row);
+        modelInfoCSV: function() {
+            var headerRow = [];
+            var valueRow = [];
+            var data = this.$('.info div');
+
+            data.each(_.bind(function(i, el, arr){
+                var obj = this.$(el);
+                var headerText = obj.children('label').text().replace(/:/g, '');
+                var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,/g, '');
+
+                if (headerText.indexOf("Time") > -1) {
+                    valueText = this.convertMomentToDateTimeCSV(valueText);
+                }
+
+                headerRow.push(headerText);
+                valueRow.push(valueText);
+            }, this));
+
+            headerRow = headerRow.join(',');
+            valueRow = valueRow.join(',');
+            var csv = [headerRow, valueRow];
+
+            return csv.join('\r\n');
+        },
+
+        exportCSV: function() {
+            var tabName, dataset, csv, header, dataUnits;
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                tabName = this.$(parentTabName + ' .tab-pane.active').attr('id');
+            } else {
+                tabName = parentTabName.substring(1);
+            }
+            
+            var filename = webgnome.model.get('name') + '_' + tabName;
+            var datasetName = this.tabToLabelMap[tabName];
+            if (!_.isUndefined(datasetName)) {
+                dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
+                dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+                var dataArr = dataset.data;
+
+                header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
+                csv = [header];
+
+                for (var i = 0; i < dataArr.length; i++) {
+                    var datasetrow = this.convertUnixToDateTimeCSV(dataArr[i]);
+                    datasetrow.splice(2,1);
+                    var row = datasetrow.join(",");
+                    csv.push(row);
+                }
+                csv = csv.join('\r\n');
+            } else if (this.$('#' + tabName + ' table').length !== 0){
+                var table = this.$('#' + tabName + ' table');
+                csv = this.tableToCSV(table);
+            } else {
+                swal({
+                    title: 'CSV export unavailable!',
+                    text: 'Cannot export CSV for this tab',
+                    type: 'warning'
+                });
+                return;
             }
 
-            csv = encodeURI('data:text/csv;charset=utf-8,' + csv.join('\r\n'));
+            var metaData = this.modelInfoCSV();
+            
+            csv = encodeURI('data:text/csv;charset=utf-8,' + metaData + '\r\n' + csv);
 
-            var pom = document.createElement('a');
-            pom.setAttribute('href', csv);
-            pom.setAttribute('download', filename + '.csv');
-            pom.click();
+            this.downloadContent(csv, filename + '.csv');
+        },
+
+        exportHTML: function(e) {
+            var content;
+            var modelInfo = this.$('.model-settings').html().replace(/°/g, '&deg;');
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            var tabName;
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                tabName = this.$(parentTabName + ' .tab-pane.active').attr('id');
+            } else {
+                tabName = parentTabName;
+            }
+            var tableHTML = this.tableToHTML(this.$(tabName + ' table'));
+            var filename = webgnome.model.get('name') + '_';
+            if (this.$(tabName + ' table').length !== 0){
+                content = modelInfo + tableHTML;
+                var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+                this.downloadContent(source, filename + tabName.substring(1) + '.html');
+            } else {
+                this.modelInfo = modelInfo;
+                this.tabName = tabName;
+                this.fileName = filename;
+                this.saveGraphImage(null, _.bind(function(img) {
+                    var content = _.template(ExportTemplate, {body: this.modelInfo + '<img src="' + img + '"/>'});
+                    var source = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+                    this.downloadContent(source, this.fileName + this.tabName + '.html');
+                }, this));
+            }
         },
 
         tableToHTML: function(table, header){
@@ -1502,7 +1619,7 @@ define([
 
         formatNeedleLabel: function(text){
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
-            var units = $('.tab-pane:visible .yaxisLabel').text();
+            var units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
             return num + ' ' + units;
         },
 
@@ -1585,9 +1702,30 @@ define([
             return release_init;
         },
 
-        saveGraphImage: function(e){
-            var element = this.$('.tab-pane.active .timeline').get();
-            html2canvas(element, {
+        getActiveElement: function(e) {
+            var parentTabName = this.$('.nav-tabs li.active a').attr('href');
+            var element, name;
+            
+            if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
+                element = this.$(parentTabName + ' .tab-pane.active .timeline');
+                name = this.$(parentTabName + ' .tab-pane.active').attr('id');
+            } else if (this.$(parentTabName + ' .timeline').length !== 0){
+                element = this.$(parentTabName + ' .timeline');
+                if (parentTabName === '#budget-graph') {
+                    element = this.$(parentTabName);
+                }
+                name = parentTabName.substring(1);
+            } else {
+                element = this.$(parentTabName + ' table');
+                name = parentTabName.substring(1);
+            }
+
+            return {element: element, name: name};
+        },
+
+        saveGraphImage: function(e, cb){
+            var obj = this.getActiveElement();
+            html2canvas(obj.element, {
                 onrendered: _.bind(function(canvas){
                     var ctx = canvas.getContext('2d');
                     var data = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -1603,13 +1741,22 @@ define([
                     ctx.globalCompositeOperation = compositeOperation;
 
                     var currentTab = this.$('.tab-pane.active').attr('id');
-                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + ' ' + currentTab : currentTab;
-                    var pom = document.createElement('a');
-                    pom.setAttribute('href', img);
-                    pom.setAttribute('download', name);
-                    pom.click();
+                    var name = webgnome.model.get('name') ? webgnome.model.get('name') + '_' + obj.name : obj.name;
+
+                    if (_.isUndefined(cb)) {
+                        this.downloadContent(img, name);
+                    } else {
+                        cb(img);
+                    }
                 }, this)
             });
+        },
+
+        downloadContent: function(source, filename) {
+            var pom = document.createElement('a');
+            pom.setAttribute('href', source);
+            pom.setAttribute('download', filename);
+            pom.click();
         },
 
         printGraphImage: function(e){

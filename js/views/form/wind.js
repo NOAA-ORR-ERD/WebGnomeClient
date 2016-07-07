@@ -26,6 +26,7 @@ define([
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
+        sliderValue: 0,
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -168,7 +169,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function(){
-                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5 + ' %</div></div>');
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5.0 + ' %</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui){
                         this.updateVariableSlide(ui);
@@ -316,8 +317,8 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                acceptedFiles: '.nc',
-                dictDefaultMessage: 'Drop <code>.nc</code> file here to upload (or click to navigate)'
+                acceptedFiles: '.osm, .wnd, .txt, .dat',
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: <code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
@@ -355,7 +356,6 @@ define([
             });
         },
 
-
         nwsLoad: function(model){
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
@@ -371,39 +371,43 @@ define([
 
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
-            var speed = this.form[active].speed.val();
-            var direction = this.form[active].direction.val();
-            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
-            }
-            var gnomeStart = webgnome.model.get('start_time');
-            if(compass && speed !== '' && direction !== ''){
-                this.$('.' + active + '-compass').compassRoseUI('update', {
-                    speed: speed,
-                    direction: direction,
-                    trigger_move: false
-                });
-            }
 
-            if(active === 'constant'){
-                // if the constant wind pain is active a timeseries needs to be generated for the values provided
-                var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
-                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-                this.model.set('timeseries', [[date, [speed, direction]]]);
-                this.updateConstantSlide();
-            } else {
-                this.updateVariableSlide();
-            }
+            if (active !== 'nws') {
+                var speed = this.form[active].speed.val();
+                var direction = this.form[active].direction.val();
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.' + active + '-compass')[0].settings['cardinal-angle'](direction);
+                }
+                var gnomeStart = webgnome.model.get('start_time');
+                if(compass && speed !== '' && direction !== ''){
+                    this.$('.' + active + '-compass').compassRoseUI('update', {
+                        speed: speed,
+                        direction: direction,
+                        trigger_move: false
+                    });
+                }
 
-            this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
-            this.model.set('name', this.$('#name').val());
-            
-            
-            this.$('.additional-wind-compass').remove();
+                if(active === 'constant'){
+                    // if the constant wind pain is active a timeseries needs to be generated for the values provided
+                    var dateObj = moment(this.form.constant.datetime.val(), webgnome.config.date_format.moment);
+                    var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                    this.model.set('timeseries', [[date, [speed, direction]]]);
+                    this.updateConstantSlide();
+                } else {
+                    this.updateVariableSlide();
+                }
+
+                this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
+                this.model.set('name', this.$('#name').val());
+                
+                
+                this.$('.additional-wind-compass').remove();
+            }
         },
 
         updateVariableSlide: function(ui){
             var value;
+            if(this.$('#variable .ui-slider').length === 0){return null;}
             if(!_.isUndefined(ui)){
                 value = ui.value;
             } else {
@@ -421,6 +425,7 @@ define([
 
         updateConstantSlide: function(ui){
             var value;
+            if(this.$('#constant .ui-slider').length === 0){return null;}
             if (!_.isUndefined(ui)){
                 value = ui.value;
             } else {
@@ -480,6 +485,8 @@ define([
                     if(not_replaced){
                         this.model.get('timeseries').push(entry);
                     }
+
+                    this.model.trigger('change', this.model);
 
                     // Code for time incrementer updates assuming values in form are in hours
                     dateObj.add('h', incrementer);
@@ -605,11 +612,14 @@ define([
                 e.stopPropagation();
                 var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
+                this.model.trigger('change', this.model);
+
                 this.renderTimeseries();
             }
         },
 
         renderTimeseries: function(uncertainty){
+            if(this.$('#variable .ui-slider').length === 0){ return null; }
             this.model.sortTimeseries();
 
             if(!_.isUndefined(uncertainty)){

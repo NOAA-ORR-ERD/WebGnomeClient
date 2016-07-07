@@ -45,11 +45,14 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1){
+            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios'){
                 this.views.push(new FooterView());
             }
-            if(_.isUndefined(this.logger)){
+            if(_.isUndefined(this.logger) && window.location.hash !== ''){
                 this.logger = new LoggerView();
+            } else if(this.logger && window.location.hash === ''){
+                this.logger.close();
+                this.logger = undefined;
             }
         },
 
@@ -61,6 +64,7 @@ define([
         config: function(){
             this.menu('add');
             this.views.push(new SetupView());
+            localStorage.setItem('view', 'config');
         },
 
         locations: function(){

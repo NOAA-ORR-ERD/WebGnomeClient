@@ -116,6 +116,12 @@ img{
     .logger {
         display: none;
     }
+    .gnome-help{
+        display: none !important;
+    }
+    .app-state{
+        display: none !important;
+    }
 }
 
 .swal2-overlay{
@@ -1589,6 +1595,17 @@ nav.navbar{
         width: 70%;
     }
 
+    &.no-map {
+        background-image: none;
+        background-color: white;
+        position: relative;
+        top: 0px;
+
+        h1 {
+            text-align: center;
+        }
+    }
+
     .spill-button{
         left: .5em;
         top: 10em;
@@ -1850,10 +1867,18 @@ nav.navbar{
             li{
                 line-height: 25px;
 
+                a {
+                    display: none;
+                }
+
                 &.missing{
                     span{
                         .glyphicon-remove;
                         color: #F60026;
+                    }
+
+                    a{
+                        display: inline;
                     }
                 }
             }
@@ -1887,7 +1912,7 @@ nav.navbar{
         margin-bottom: 15px;
     }
     
-    .nav-tabs{
+    .nav-tabs, .nav-pills{
         margin-bottom: 15px;
     }
 
@@ -1959,6 +1984,44 @@ nav.navbar{
             top: 0;
         }
     }
+
+    #ics209 .legend{
+        .breakdown;
+        font-size: 10px;
+        padding: 0;
+        .panel-body{
+            display: none;
+        }            
+    }
+    
+    .breakdown{
+        padding: 15px 15px 0 15px;                
+        background: #efefef;
+        .panel{
+            margin-right: 15px;
+            color: white;
+            float: left;
+
+            &:last-of-type{
+                margin-right: 0;
+            }
+
+            .panel-heading{
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                padding: 5px;
+            }
+            .panel-body{
+                border-top: 1px solid rgba(0, 0, 0, .25);
+                padding: 5px;
+                font-size: 18px;
+                font-weight: bold;
+                text-align: center;
+            }
+        }
+    }    
+
     #budget-graph{
         .pies{
             .panel{
@@ -1988,33 +2051,6 @@ nav.navbar{
             display: none;
         }
         
-        .breakdown{
-            padding: 15px 15px 0 15px;                
-            background: #efefef;
-            .panel{
-                margin-right: 15px;
-                color: white;
-                float: left;
-
-                &:last-of-type{
-                    margin-right: 0;
-                }
-
-                .panel-heading{
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    padding: 5px;
-                }
-                .panel-body{
-                    border-top: 1px solid rgba(0, 0, 0, .25);
-                    padding: 5px;
-                    font-size: 18px;
-                    font-weight: bold;
-                    text-align: center;
-                }
-            }
-        }    
 
         .timeline{
             background: #efefef;
@@ -3168,10 +3204,6 @@ nav.navbar{
     }
 
     .oilTable {
-
-        .generic {
-            background-color: #FDED90;
-        }
 
         .select {
             background-color: #428bca;

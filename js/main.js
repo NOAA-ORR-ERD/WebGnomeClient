@@ -9,6 +9,7 @@ require.config({
         underscore: 'lib/underscore/underscore',
         backbone: 'lib/backbone/backbone',
         moment: 'lib/moment/moment',
+        'moment-round': 'lib/moment-round/dist/moment-round',
         mousetrap: 'lib/mousetrap/mousetrap',
         text: 'lib/requirejs-text/text',
         json: 'lib/requirejs-plugins/src/json',
@@ -49,11 +50,18 @@ require.config({
         relativeimportance: 'lib/relativeimportance/relativeImportance',
         dropzone: 'lib/dropzone/dist/dropzone-amd-module',
         socketio: 'lib/socket.io-client/dist/socket.io',
-        localforage: 'lib/localforage/dist/localforage'
+        localforage: 'lib/localforage/dist/localforage',
+        'jquery-mousewheel': 'lib/jquery-mousewheel/jquery.mousewheel',
+        'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter',
+        'toastr': 'lib/toastr/toastr'
     },
     shim: {
         jquery: {
             exports: '$'
+        },
+        toastr:{
+            exports: 'toastr',
+            deps: ['jquery']
         },
         bootstrap: ['jquery'],
         jqueryui: {
@@ -78,7 +86,11 @@ require.config({
             exports: 'html2canvas'
         },
         JUMFlotLib: ['flot'],
-        jqueryDatetimepicker: ['jquery'],
+        jqueryDatetimepicker: ['jquery', 'jquery-mousewheel', 'php-date-formatter'],
+        'jquery-mousewheel': ['jquery'],
+        'php-date-formatter': {
+            exports: 'DateFormatter'
+        },
         ol: {
             exports: 'ol'
         },

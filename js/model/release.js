@@ -50,6 +50,21 @@ define([
             BaseModel.prototype.initialize.call(this, options);
         },
 
+        getDuration: function(){
+            var startInUnix = moment(this.get('release_time')).unix();
+            var endInUnix = moment(this.get('end_release_time')).unix();
+
+            return endInUnix - startInUnix;
+        },
+
+        durationShift: function(startTime) {
+            var duration = this.getDuration();
+            var startObj = moment(startTime);
+            this.set('release_time', startTime);
+            var endTime = startObj.add(duration, 's').format();
+            this.set('end_release_time', endTime);
+        },
+
         validate: function(attrs, options){
             if(this.validateAmount(attrs)){
                 return this.validateAmount(attrs);
