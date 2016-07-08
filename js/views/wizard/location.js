@@ -64,11 +64,11 @@ define([
             _.each(this.location.get('steps'), _.bind(function(el){
                 var title = [];
                 title[0] = el.title;
-                title[1] = '<span class="sub-title">' + this.name + '</span>';
+                title[1] = this.name;
                 if(el.type === 'text' || el.type === 'welcome'){
-                    if(!el.title){
-                        title[0] = 'Welcome';
-                    }
+                    // if(!el.title){
+                    //     title[0] = 'Welcome';
+                    // }
                     this.steps.push(new TextForm({
                         name: el.name,
                         title: title.join(' '),
