@@ -1346,8 +1346,7 @@ define([
         },
 
         modelInfoCSV: function() {
-            var headerRow = [];
-            var valueRow = [];
+            var csv = '';
             var data = this.$('.info div');
 
             data.each(_.bind(function(i, el, arr){
@@ -1359,15 +1358,10 @@ define([
                     valueText = this.convertMomentToDateTimeCSV(valueText);
                 }
 
-                headerRow.push(headerText);
-                valueRow.push(valueText);
+                csv += headerText + ',' + valueText + '\r\n';
             }, this));
 
-            headerRow = headerRow.join(',');
-            valueRow = valueRow.join(',');
-            var csv = [headerRow, valueRow];
-
-            return csv.join('\r\n');
+            return csv;
         },
 
         exportCSV: function() {
