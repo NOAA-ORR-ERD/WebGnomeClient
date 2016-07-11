@@ -34,8 +34,11 @@ define([
                 controls: [],
                 layers: [
                      new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'}),
-                        name: 'mapquest',
+                        source: new new ol.source.TileWMS({
+                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                params: {'LAYERS': '0', 'TILED': true}
+                            }),
+                        name: 'usgs',
                         type: 'base',
                     }),
                     new ol.layer.Tile({
