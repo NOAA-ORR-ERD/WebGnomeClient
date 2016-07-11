@@ -8,8 +8,8 @@ define([
     'use strict';
     var textForm = FormModal.extend({
         initialize: function(options, modal){
-            this.module = module;
-            if (options.moduleId) {
+            if (!_.isUndefined(options.moduleId)) {
+                this.module = module;
                 this.module.id = options.moduleId;
             }
             FormModal.prototype.initialize.call(this, options);

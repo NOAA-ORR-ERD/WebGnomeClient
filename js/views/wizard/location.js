@@ -51,8 +51,7 @@ define([
         },
 
         helpNameConvert: function(text) {
-            var firstWord = text.split(" ")[0];
-            return firstWord[0].toUpperCase() + firstWord.substring(1);
+            return text.split(",")[0].replace(/\s/g, "_");
         },
 
         load_location: function(){
@@ -72,13 +71,16 @@ define([
                 title[1] = this.name;
                 var helpFilename = this.helpNameConvert(this.name);
                 if(el.type === 'text' || el.type === 'welcome'){
-                    this.steps.push(new TextForm({
+                    var textOpts = {
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: el.buttons,
-                        moduleId: 'views/model/locations/' + helpFilename
-                    }));
+                        buttons: el.buttons
+                    };
+                    if (el.type === 'welcome') {
+                        textOpts['moduleId'] = 'views/model/locations/' + helpFilename;
+                    }
+                    this.steps.push(new TextForm(textOpts));
                 } else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
                         name: el.name,
