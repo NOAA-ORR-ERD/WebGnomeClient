@@ -10,7 +10,7 @@ define([
     'views/form/oil/library',
     'views/default/map',
     'jqueryDatetimepicker',
-    'jqueryui/slider',
+    'jqueryui/widgets/slider',
     'moment'
 ], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
     'use strict';

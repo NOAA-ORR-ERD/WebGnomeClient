@@ -13,7 +13,7 @@ define([
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
-    'jqueryui/slider'
+    'jqueryui/widgets/slider'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap){
     'use strict';
     var trajectoryView = BaseView.extend({

@@ -6,7 +6,7 @@ define([
 	'moment',
     'sweetalert',
 	'jqueryDatetimepicker',
-    'jqueryui/slider'
+    'jqueryui/widgets/slider'
 ], function($, _, Backbone, FormModal, moment, swal){
     'use strict';
 	var baseResponseForm = FormModal.extend({

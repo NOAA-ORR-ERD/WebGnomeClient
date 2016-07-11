@@ -14,7 +14,7 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'jqueryui/sortable'
+    'jqueryui/widgets/sortable'
 ], function(_, $, Backbone, BasePanel, WindModel, WindMoverModel, WindForm, WindPanelTemplate, nucos, moment, swal){
     var windPanel = BasePanel.extend({
         className: 'col-md-3 wind panel-view object',

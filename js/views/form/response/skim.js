@@ -8,7 +8,7 @@ define([
     'model/weatherers/skim',
     'moment',
     'jqueryDatetimepicker',
-    'jqueryui/slider'
+    'jqueryui/widgets/slider'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
     'use strict';
     var skimForm = ResponseFormModal.extend({

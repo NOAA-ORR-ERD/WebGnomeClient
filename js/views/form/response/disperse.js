@@ -7,8 +7,7 @@ define([
     'text!templates/form/response/disperse.html',
     'model/weatherers/dispersion',
     'moment',
-    'jqueryDatetimepicker',
-    'jqueryui/slider'
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, DisperseModel, moment){
     'use strict';
     var disperseForm = ResponseFormModal.extend({

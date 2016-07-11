@@ -8,8 +8,7 @@ define([
     'model/weatherers/burn',
     'moment',
     'nucos',
-    'jqueryDatetimepicker',
-    'jqueryui/slider'
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, ResponseFormModal, FormTemplate, BurnModel, moment, nucos){
     'use strict';
     var inSituBurnForm = ResponseFormModal.extend({

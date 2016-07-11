@@ -8,7 +8,7 @@ define([
     'views/faq/single',
     'model/help/help',
     'collection/help',
-    'jqueryui/autocomplete'
+    'jqueryui/widgets/autocomplete'
 ], function($, _, Backbone, chosen, FAQTemplate, DefaultView, SingleView, HelpModel, HelpCollection){
     'use strict';
 	var faqView = Backbone.View.extend({

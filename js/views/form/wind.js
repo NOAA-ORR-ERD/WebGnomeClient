@@ -18,7 +18,7 @@ define([
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
-    'jqueryui/slider',
+    'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
     FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, WindModel, NwsWind){
