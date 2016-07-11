@@ -50,6 +50,11 @@ define([
             });
         },
 
+        helpNameConvert: function(text) {
+            var firstWord = text.split(" ")[0];
+            return firstWord[0].toUpperCase() + firstWord.substring(1);
+        },
+
         load_location: function(){
             webgnome.model.set('uncertain', true);
             webgnome.model.save(null, {validate: false});
@@ -65,15 +70,14 @@ define([
                 var title = [];
                 title[0] = el.title;
                 title[1] = this.name;
+                var helpFilename = this.helpNameConvert(this.name);
                 if(el.type === 'text' || el.type === 'welcome'){
-                    // if(!el.title){
-                    //     title[0] = 'Welcome';
-                    // }
                     this.steps.push(new TextForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
-                        buttons: el.buttons
+                        buttons: el.buttons,
+                        moduleId: 'views/model/locations/' + helpFilename
                     }));
                 } else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
