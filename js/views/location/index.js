@@ -9,8 +9,10 @@ define([
     'sweetalert',
     'text!templates/location/index.html',
     'text!templates/location/list.html',
-    'views/wizard/location'
-], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard){
+    'views/wizard/location',
+    'views/default/help',
+    'views/modal/help'
+], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
     'use strict';
     var locationsView = Backbone.View.extend({
         className: 'page locations',
@@ -52,7 +54,7 @@ define([
 
         clickPin: function(feature){
             this.popup.setPosition(feature.getGeometry().getCoordinates());
-            var content = '<button class="btn btn-primary setup btn-block" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
+            var content = '<button class="btn btn-primary setup btn-block" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button><button class="btn btn-primary help btn-block" data-name="' + feature.get('title') + '">About</button>';
             this.$('.popup').popover({
                 placement: 'top',
                 html: true,
@@ -73,12 +75,37 @@ define([
                 }, this));
 
                 this.$('.setup').on('click', _.bind(this.setupLocation, this));
+
+                this.$('.help').on('click', _.bind(this.loadHelp, this));
             }, this));
 
             this.$('.popup').one('hide.bs.popover', _.bind(function(){
                 this.$('.load').off('click');
                 this.$('.setup').off('click');
+                this.$('.help').off('click');
             }, this));
+        },
+
+        loadHelp: function(e, options) {
+            var name, helpView, helpModal;
+            if (!_.isNull(e)){
+                e.stopPropagation();
+                name = $(e.target).data('name');
+            } else {
+                name = options.name;
+            }
+
+            name = 'views/model/locations/' + name.split(",")[0].replace(/\s/g, "_");
+
+            helpView = new HelpView({path: name});
+            helpModal = new HelpModal({help: helpView});
+
+            helpModal.on('hidden', function(){
+                helpModal.close();
+            });
+
+            this.$('.popup').popover('destroy');
+            helpModal.render();
         },
 
         dblClickPin: function(feature) {
