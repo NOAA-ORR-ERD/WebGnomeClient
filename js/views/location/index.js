@@ -97,7 +97,7 @@ define([
 
             name = 'views/model/locations/' + name.split(",")[0].replace(/\s/g, "_");
 
-            helpView = new HelpView({path: name});
+            helpView = new HelpView({path: name, context: 'view'});
             helpModal = new HelpModal({help: helpView});
 
             helpModal.on('hidden', function(){
