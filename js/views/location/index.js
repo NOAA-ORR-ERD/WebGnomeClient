@@ -54,7 +54,7 @@ define([
 
         clickPin: function(feature){
             this.popup.setPosition(feature.getGeometry().getCoordinates());
-            var content = '<button class="btn btn-primary setup btn-block" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button><button class="btn btn-primary help btn-block" data-name="' + feature.get('title') + '">About</button>';
+            var content = '<button class="btn btn-primary help" data-name="' + feature.get('title') + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
             this.$('.popup').popover({
                 placement: 'top',
                 html: true,
