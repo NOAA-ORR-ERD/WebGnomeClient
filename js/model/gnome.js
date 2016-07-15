@@ -286,6 +286,10 @@ define([
             return moment(timeStr).unix();
         },
 
+        convertToMinutes: function(secs) {
+            return parseInt(secs / 60, 10);
+        },
+
         getTimeInvalidModels: function(collection) {
             var invalidModels = [];
             var modelStart = this.convertToUnix(this.get('start_time'));
@@ -297,7 +301,17 @@ define([
                     var end = this.convertToUnix(el.get('active_stop'));
 
                     if (start > modelStart || end < modelEnd) {
-                        invalidModels.push(el);
+                        var timeDiff;
+                        var startDiff = !_.isNaN(start - modelStart) ? start - modelStart : 0;
+                        var endDiff = !_.isNaN(modelEnd - end) ? modelEnd - end : 0;
+
+                        if (startDiff > endDiff) {
+                            timeDiff = this.convertToMinutes(startDiff);
+                        } else {
+                            timeDiff = this.convertToMinutes(endDiff);
+                        }
+
+                        invalidModels.push({model: el, timeDiff: timeDiff});
                     }
                 }
             }, this));
@@ -308,18 +322,18 @@ define([
         moversTimeComplianceCheck: function() {
             var movers = this.get('movers');
             var invalidModels = this.getTimeInvalidModels(movers);
-            var msg = '<code>';
+            var msg = '<ul>';
 
             _.each(invalidModels, function(el, i, list){
-                msg += el.get('name') + '<br>';
+                msg += '<li>' + el.model.get('name') + ' <i>off by ' + el.timeDiff + ' minutes</i></li>';
             });
 
-            msg += '</code>';
+            msg += '</ul>';
 
             if (invalidModels.length > 0) {
                 swal({
                     title: 'Mover(s) incompatible with model runtime',
-                    text: 'The movers listed below are out of sync with the model runtime:<br>' + msg + '<br>Extrapolate the start and/or end times?',
+                    text: 'The movers listed below are out of sync with the model:<br>' + msg + 'Extrapolate the start and/or end times?',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Extrapolate',
@@ -334,8 +348,8 @@ define([
 
         extrapolateCollection: function(invalidModels) {
             _.each(invalidModels, function(el, i, list){
-                el.set('active_start', '-inf');
-                el.set('active_end', 'inf');
+                el.model.set('active_start', '-inf');
+                el.model.set('active_end', 'inf');
             });
         },
 
