@@ -3,6 +3,7 @@ define([
     'jquery',
     'backbone',
     'moment',
+    'sweetalert',
     'model/base',
     'model/cache',
     'model/map/map',
@@ -36,7 +37,7 @@ define([
     'model/weatherers/dissolution',
     'model/user_prefs',
     'model/risk/risk'
-], function(_, $, Backbone, moment,
+], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
@@ -134,6 +135,8 @@ define([
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
+            this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            //this.get('environment').on('change add', this.timeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -277,6 +280,63 @@ define([
             // if (attrs.start_time === null || attrs.duration) {
             //     return 'Model needs both start time and duration.';
             // }
+        },
+
+        convertToUnix: function(timeStr) {
+            return moment(timeStr).unix();
+        },
+
+        getTimeInvalidModels: function(collection) {
+            var invalidModels = [];
+            var modelStart = this.convertToUnix(this.get('start_time'));
+            var modelEnd = this.convertToUnix(moment(this.get('start_time')).add(this.get('duration'), 'm'));
+
+            collection.each(_.bind(function(el, i, col){
+                if (el.get('active_start') !== '-inf' || el.get('active_stop') !== 'inf') {
+                    var start = this.convertToUnix(el.get('active_start'));
+                    var end = this.convertToUnix(el.get('active_stop'));
+
+                    if (start > modelStart || end < modelEnd) {
+                        invalidModels.push(el);
+                    }
+                }
+            }, this));
+
+            return invalidModels;
+        },
+
+        moversTimeComplianceCheck: function() {
+            var movers = this.get('movers');
+            var invalidModels = this.getTimeInvalidModels(movers);
+            var msg = '<code>';
+
+            _.each(invalidModels, function(el, i, list){
+                msg += el.get('name') + '<br>';
+            });
+
+            msg += '</code>';
+
+            if (invalidModels.length > 0) {
+                swal({
+                    title: 'Mover(s) incompatible with model runtime',
+                    text: 'The movers listed below are out of sync with the model runtime:<br>' + msg + '<br>Extrapolate the start and/or end times?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Extrapolate',
+                    cancelButtonText: 'Cancel'
+                }).then(_.bind(function(extrapolate) {
+                    if (extrapolate) {
+                        this.extrapolateCollection(invalidModels);
+                    }
+                }, this));
+            }
+        },
+
+        extrapolateCollection: function(invalidModels) {
+            _.each(invalidModels, function(el, i, list){
+                el.set('active_start', '-inf');
+                el.set('active_end', 'inf');
+            });
         },
 
         formatDuration: function() {
