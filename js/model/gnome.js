@@ -36,13 +36,16 @@ define([
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
     'model/user_prefs',
-    'model/risk/risk'
+    'model/risk/risk',
+    'collection/movers',
+    'collection/environment'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel){
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel, 
+    MoversCollection, EnvironmentCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -112,8 +115,8 @@ define([
                     new FayGravityViscous({on: false}),
                     new DissolutionWeatherer({on: false})
                 ]),
-                movers: new Backbone.Collection(),
-                environment: new Backbone.Collection(),
+                movers: new MoversCollection(),
+                environment: new EnvironmentCollection(),
                 spills: new Backbone.Collection()
             };
         },
@@ -136,7 +139,7 @@ define([
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
-            //this.get('environment').on('change add', this.timeComplianceCheck, this);
+            this.get('environment').on('change add', this.envTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -282,53 +285,15 @@ define([
             // }
         },
 
-        convertToUnix: function(timeStr) {
-            return moment(timeStr).unix();
-        },
-
-        convertToMinutes: function(secs) {
-            return parseInt(secs / 60, 10);
-        },
-
-        getTimeInvalidModels: function(collection) {
-            var invalidModels = [];
-            var modelStart = this.convertToUnix(this.get('start_time'));
-            var modelEnd = this.convertToUnix(moment(this.get('start_time')).add(this.get('duration'), 'm'));
-
-            collection.each(_.bind(function(el, i, col){
-                if (el.get('active_start') !== '-inf' || el.get('active_stop') !== 'inf') {
-                    var start = this.convertToUnix(el.get('active_start'));
-                    var end = this.convertToUnix(el.get('active_stop'));
-
-                    if (start > modelStart || end < modelEnd) {
-                        var timeDiff;
-                        var startDiff = !_.isNaN(start - modelStart) ? start - modelStart : 0;
-                        var endDiff = !_.isNaN(modelEnd - end) ? modelEnd - end : 0;
-
-                        if (startDiff > endDiff) {
-                            timeDiff = this.convertToMinutes(startDiff);
-                        } else {
-                            timeDiff = this.convertToMinutes(endDiff);
-                        }
-
-                        invalidModels.push({model: el, timeDiff: timeDiff});
-                    }
-                }
-            }, this));
-
-            return invalidModels;
-        },
-
         moversTimeComplianceCheck: function() {
-            var movers = this.get('movers');
-            var invalidModels = this.getTimeInvalidModels(movers);
-            var msg = '<ul>';
+            var invalidModels = this.get('movers').getTimeInvalidModels();
+            var msg = '<code>';
 
             _.each(invalidModels, function(el, i, list){
-                msg += '<li>' + el.model.get('name') + ' <i>off by ' + el.timeDiff + ' minutes</i></li>';
+                msg += el.model.get('name') + ' <i>off by ' + el.timeDiff + ' minutes</i><br>';
             });
 
-            msg += '</ul>';
+            msg += '</code>';
 
             if (invalidModels.length > 0) {
                 swal({
@@ -344,6 +309,10 @@ define([
                     }
                 }, this));
             }
+        },
+
+        envTimeComplianceCheck: function() {
+            var environment = this.get('environment');
         },
 
         extrapolateCollection: function(invalidModels) {
