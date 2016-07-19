@@ -299,7 +299,7 @@ define([
 
         moversTimeComplianceCheck: function() {
             var invalidModels = this.get('movers').getTimeInvalidModels();
-            var msg = this.composeInvalidMsg(inValidModels);
+            var msg = this.composeInvalidMsg(invalidModels);
 
             if (invalidModels.length > 0) {
                 swal({
@@ -318,10 +318,10 @@ define([
         },
 
         envTimeComplianceCheck: function() {
-            var inValidModels = this.get('environment').areDataValid();
-            var msg = this.composeInvalidMsg(inValidModels);
+            var invalidModels = this.get('environment').areDataValid();
+            var msg = this.composeInvalidMsg(invalidModels);
 
-            if (inValidModels.length > 0) {
+            if (invalidModels.length > 0) {
                 swal({
                     title: 'Environment data incompatible with model runtime',
                     text: 'The data listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
@@ -352,8 +352,7 @@ define([
 
         extrapolateCollection: function(invalidModels) {
             _.each(invalidModels, function(el, i, list){
-                el.model.set('active_start', '-inf');
-                el.model.set('active_end', 'inf');
+                el.model.set('extrapolate', true);
             });
         },
 
