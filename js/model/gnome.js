@@ -285,15 +285,21 @@ define([
             // }
         },
 
-        moversTimeComplianceCheck: function() {
-            var invalidModels = this.get('movers').getTimeInvalidModels();
+        composeInvalidMsg: function(arr) {
             var msg = '<code>';
 
-            _.each(invalidModels, function(el, i, list){
+            _.each(arr, function(el, i, list){
                 msg += el.model.get('name') + ' <i>off by ' + el.timeDiff + ' minutes</i><br>';
             });
 
             msg += '</code>';
+
+            return msg;
+        },
+
+        moversTimeComplianceCheck: function() {
+            var invalidModels = this.get('movers').getTimeInvalidModels();
+            var msg = this.composeInvalidMsg(inValidModels);
 
             if (invalidModels.length > 0) {
                 swal({
@@ -312,7 +318,36 @@ define([
         },
 
         envTimeComplianceCheck: function() {
-            var environment = this.get('environment');
+            var inValidModels = this.get('environment').areDataValid();
+            var msg = this.composeInvalidMsg(inValidModels);
+
+            if (inValidModels.length > 0) {
+                swal({
+                    title: 'Environment data incompatible with model runtime',
+                    text: 'The data listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Select Option',
+                    cancelButtonText: 'Cancel'
+                }).then(_.bind(function(options){
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option',
+                            text: 'You can fit the model runtime to the data or extrapolate the data',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Fit Model',
+                            cancelButtonText: 'Extrapolate'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                console.log('fit');
+                            } else {
+                                console.log('extra');
+                            }
+                        }, this));
+                    }
+                }), this);
+            }
         },
 
         extrapolateCollection: function(invalidModels) {
