@@ -25,10 +25,10 @@ define([
                         timeDiff = parseInt(endDiff / 60, 10);
                     }
 
-                    windArr.push({name: 'wind', timeDiff: timeDiff});
+                    windArr.push({name: windData.get('name'), timeDiff: timeDiff});
                 }
             }
-            
+
             return windArr;
         },
 
