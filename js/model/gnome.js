@@ -289,7 +289,7 @@ define([
             var msg = '<code>';
 
             _.each(arr, function(el, i, list){
-                msg += el.model.get('name') + ' <i>off by ' + el.timeDiff + ' minutes</i><br>';
+                msg += el.model.get('name') + ' <i>off by ' + el.timeDiff + '</i><br>';
             });
 
             msg += '</code>';
@@ -304,21 +304,34 @@ define([
             if (invalidModels.length > 0) {
                 swal({
                     title: 'Mover(s) incompatible with model runtime',
-                    text: 'The movers listed below are out of sync with the model:<br>' + msg + 'Extrapolate the start and/or end times?',
+                    text: 'The movers listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
                     type: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: 'Extrapolate',
+                    confirmButtonText: 'Select Option',
                     cancelButtonText: 'Cancel'
-                }).then(_.bind(function(extrapolate) {
-                    if (extrapolate) {
-                        this.extrapolateCollection(invalidModels);
+                }).then(_.bind(function(options) {
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option',
+                            text: 'You can fit the model runtime to the data or extrapolate the data',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Fit Model',
+                            cancelButtonText: 'Extrapolate'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+
+                            } else {
+                                this.extrapolateCollection(invalidModels);
+                            }
+                        }, this));
                     }
                 }, this));
             }
         },
 
         envTimeComplianceCheck: function() {
-            var invalidModels = this.get('environment').areDataValid();
+            var invalidModels = this.get('environment').getTimeInvalidModels();
             var msg = this.composeInvalidMsg(invalidModels);
 
             if (invalidModels.length > 0) {
