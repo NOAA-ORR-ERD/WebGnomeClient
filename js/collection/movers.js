@@ -16,15 +16,15 @@ define([
             this.each(_.bind(function(el, i, col){
                 var validType = '[GridCurrentMover|GridWindMover|WindMover]'.match(el.get('obj_type'));
                 if (!el.get('extrapolate') && el.get('on') && validType) {
-                    if ((!_.isUndefined(start) && !_.isUndefined(end)) || (el.get('active_start') >= start && el.get('active_stop') <= end)) {
-                        start = el.get('active_start');
-                        end = el.get('active_stop');
+                    if ((!_.isUndefined(start) && !_.isUndefined(end)) || (el.get('real_data_start') >= start && el.get('real_data_stop') <= end)) {
+                        start = el.get('real_data_start');
+                        end = el.get('real_data_stop');
                         prevMover = el;
                     } else {
                         swal({
                             title: 'Movers cannot be reconciled!',
-                            text: 'The mover: ' + el.get('name') + ' does not fall in the runtime of the previous mover: ' +
-                                prevMover.get('name') + '. You will need to either turn off this mover or extrapolate.',
+                            text: 'The mover: ' + el.get('name') + ' does not fall in the runtime of the previous movers ' +
+                                '. You will need to either turn off this mover or extrapolate.',
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Select Option',
