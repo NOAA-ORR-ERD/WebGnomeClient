@@ -301,9 +301,11 @@ define([
 
         },
 
-        // fitToInterval: function(interval) {
-        //     this.set
-        // },
+        fitToInterval: function(interval) {
+            var duration = moment.duration(moment(interval.end).diff(interval.start)).asMinutes();
+            this.set('start_time', interval.start);
+            this.set('duration', duration);
+        },
 
         moversTimeComplianceCheck: function() {
             var modelStart = this.get('start_time');
