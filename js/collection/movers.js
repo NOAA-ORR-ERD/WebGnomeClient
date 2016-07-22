@@ -12,14 +12,13 @@ define([
         },
 
         findValidTimeInterval: function() {
-            var start, end, prevMover;
+            var start, end;
             this.each(_.bind(function(el, i, col){
                 var validType = '[GridCurrentMover|GridWindMover|WindMover]'.match(el.get('obj_type'));
                 if (!el.get('extrapolate') && el.get('on') && validType) {
                     if ((!_.isUndefined(start) && !_.isUndefined(end)) || (el.get('real_data_start') >= start && el.get('real_data_stop') <= end)) {
                         start = el.get('real_data_start');
                         end = el.get('real_data_stop');
-                        prevMover = el;
                     } else {
                         swal({
                             title: 'Movers cannot be reconciled!',
