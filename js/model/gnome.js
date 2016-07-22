@@ -297,14 +297,25 @@ define([
             return msg;
         },
 
-        moversTimeComplianceCheck: function() {
-            var invalidModels = this.get('movers').getTimeInvalidModels();
-            var msg = this.composeInvalidMsg(invalidModels);
+        compareModelRunTimeInterval: function() {
 
-            if (invalidModels.length > 0) {
+        },
+
+        fitToInterval: function(interval) {
+            this.set
+        },
+
+        moversTimeComplianceCheck: function() {
+            var modelStart = this.get('start_time');
+            var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').format();
+            var moverInterval = this.get('movers').findValidTimeInterval();
+            var moverStart = !_.isUndefined(moverInterval.start) ? moverInterval.start : modelStart;
+            var moverEnd = !_.isUndefined(moverInterval.end) ? moverInterval.end : modelEnd;
+
+            if (moverStart > modelStart || moverEnd < modelEnd) {
                 swal({
-                    title: 'Mover(s) incompatible with model runtime',
-                    text: 'The movers listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
+                    title: 'Model runtime',
+                    text: 'The movers listed below are out of sync with the model:<br>You can alter the model to fit the data.',
                     type: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Select Option',
@@ -320,9 +331,9 @@ define([
                             cancelButtonText: 'Extrapolate'
                         }).then(_.bind(function(fit){
                             if (fit) {
-
+                                this.fitToInterval(moverInterval);
                             } else {
-                                this.extrapolateCollection(invalidModels);
+                                //this.extrapolateCollection(invalidModels);
                             }
                         }, this));
                     }
@@ -330,11 +341,12 @@ define([
             }
         },
 
-        envTimeComplianceCheck: function() {
+        envTimeComplianceCheck: function(e) {
+            var changeInWind = e.get('obj_type') === 'gnome.environment.wind.Wind';
             var invalidModels = this.get('environment').getTimeInvalidModels();
             var msg = this.composeInvalidMsg(invalidModels);
 
-            if (invalidModels.length > 0) {
+            if (changeInWind && invalidModels.length > 0) {
                 swal({
                     title: 'Environment data incompatible with model runtime',
                     text: 'The data listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
@@ -361,12 +373,6 @@ define([
                     }
                 }), this);
             }
-        },
-
-        extrapolateCollection: function(invalidModels) {
-            _.each(invalidModels, function(el, i, list){
-                el.model.set('extrapolate', true);
-            });
         },
 
         formatDuration: function() {
