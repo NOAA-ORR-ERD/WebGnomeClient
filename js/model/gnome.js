@@ -301,9 +301,9 @@ define([
 
         },
 
-        fitToInterval: function(interval) {
-            this.set
-        },
+        // fitToInterval: function(interval) {
+        //     this.set
+        // },
 
         moversTimeComplianceCheck: function() {
             var modelStart = this.get('start_time');
