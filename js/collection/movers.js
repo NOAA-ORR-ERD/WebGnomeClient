@@ -12,45 +12,46 @@ define([
         },
 
         findValidTimeInterval: function() {
-            var start, end;
-            this.each(_.bind(function(el, i, col){
-                var validType = '[GridCurrentMover|GridWindMover|WindMover]'.match(el.get('obj_type'));
+            var obj = {};
+            this.each(_.bind(function(el, i, collection){
+                var validType = !_.isNull('[GridCurrentMover|GridWindMover|WindMover]'.match(el.parseObjType())) ? true : false;
                 if (!el.get('extrapolate') && el.get('on') && validType) {
-                    if ((!_.isUndefined(start) && !_.isUndefined(end)) || (el.get('real_data_start') >= start && el.get('real_data_stop') <= end)) {
-                        start = el.get('real_data_start');
-                        end = el.get('real_data_stop');
-                    } else {
-                        swal({
-                            title: 'Movers cannot be reconciled!',
-                            text: 'The mover: ' + el.get('name') + ' does not fall in the runtime of the previous movers ' +
-                                '. You will need to either turn off this mover or extrapolate.',
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Select Option',
-                            cancelButtonText: 'Cancel'
-                        }).then(_.bind(function(option){
-                            if (option) {
-                                swal({
-                                    title: 'Choose correction option',
-                                    text: 'Select whether to turn off or extrapolate mover: ' + el.get('name') + '.',
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Turn Off',
-                                    cancelButtonText: 'Extrapolate'
-                                }).then(_.bind(function(turn_off){
-                                    if (turn_off) {
-                                        el.set('on', false);
-                                    } else {
-                                        el.set('extrapolate', true);
-                                    }
-                                }, this));
-                            }
-                        }, this));
+                    if ((_.isUndefined(obj.start) && _.isUndefined(obj.end)) || (el.get('real_data_start') >= obj.start && el.get('real_data_stop') <= obj.end)) {
+                            obj.start = el.get('real_data_start');
+                            obj.end = el.get('real_data_stop');
+                            console.log(obj);
+                        } else {
+                            swal({
+                                title: 'Movers cannot be reconciled!',
+                                text: 'The mover: ' + el.get('name') + ' does not fall in the runtime of the previous movers ' +
+                                    '. You will need to either turn off this mover or extrapolate.',
+                                type: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Select Option',
+                                cancelButtonText: 'Cancel'
+                            }).then(_.bind(function(option){
+                                if (option) {
+                                    swal({
+                                        title: 'Choose correction option',
+                                        text: 'Select whether to turn off or extrapolate mover: ' + el.get('name') + '.',
+                                        type: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Turn Off',
+                                        cancelButtonText: 'Extrapolate'
+                                    }).then(_.bind(function(turn_off){
+                                        if (turn_off) {
+                                            el.set('on', false);
+                                        } else {
+                                            el.set('extrapolate', true);
+                                        }
+                                    }, this));
+                                }
+                            }, this));
+                        }
                     }
-                }
             }, this));
 
-            return {start: start, end: end};
+            return obj;
         },
 
         getTimeInvalidModels: function() {
