@@ -20,6 +20,7 @@ define([
     'model/movers/ice',
     'model/movers/grid_current',
     'model/movers/current_cycle',
+    'model/movers/component',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
@@ -38,14 +39,15 @@ define([
     'model/user_prefs',
     'model/risk/risk',
     'collection/movers',
-    'collection/environment'
+    'collection/environment',
+    'collection/spills'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
+    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel, 
-    MoversCollection, EnvironmentCollection){
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
+    MoversCollection, EnvironmentCollection, SpillsCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -72,7 +74,8 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
-                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover
+                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
+                'gnome.movers.current_movers.ComponentMover': ComponentMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
@@ -117,7 +120,7 @@ define([
                 ]),
                 movers: new MoversCollection(),
                 environment: new EnvironmentCollection(),
-                spills: new Backbone.Collection()
+                spills: new SpillsCollection()
             };
         },
 
@@ -135,6 +138,7 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
+            this.get('spills').on('add', this.spillsTimeCompliance, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
@@ -173,6 +177,28 @@ define([
                 this.get('spills').each(function(model){
                     model.get('release').durationShift(start_time);
                 });
+            }
+        },
+
+        spillsTimeCompliance: function() {
+            var start_time = this.get('start_time');
+
+            if (!this.get('spills').startTimeComplies(start_time)) {
+                swal({
+                    title: "Model start does not match spill(s) start time(s)!",
+                    text: "One or more spills do not start when the model starts. Would you like to fit the model start to the spill(s) start?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No"
+                }).then(_.bind(function(correct){
+                    if (correct) {
+                        var spillStart = this.get('spills').at(0).get('release').get('release_time');
+                        this.set('start_time', spillStart);
+                        this.save();
+                        this.trigger('save');
+                    }
+                }, this));
             }
         },
 
@@ -307,7 +333,7 @@ define([
             this.set('duration', duration);
         },
 
-        moversTimeComplianceCheck: function() {
+        moversTimeComplianceCheck: function(col) {
             var modelStart = this.get('start_time');
             var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').format();
             var moverInterval = this.get('movers').findValidTimeInterval();
