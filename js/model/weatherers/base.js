@@ -45,10 +45,6 @@ define([
             BaseModel.prototype.initialize.call(this);
 		},
 
-        parseObjType: function(){
-            return this.get('obj_type').split('.').pop();
-        },
-
         cascadeEfficiencies: function(eff){
             var weathererType = this.get('obj_type');
             var relevantColl = webgnome.model.get('weatherers').where({'obj_type': weathererType});
