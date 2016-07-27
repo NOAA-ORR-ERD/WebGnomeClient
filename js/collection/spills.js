@@ -10,7 +10,6 @@ define([
 
         startTimeComplies: function(start_time) {
             this.each(_.bind(function(el, i, col){
-                console.log(start_time, el.get('release').get('release_time'));
                 if (start_time !== el.get('release').get('release_time')) {
                     this.complied = false;
                 }
