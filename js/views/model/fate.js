@@ -119,6 +119,21 @@ define([
             'dissolution': 'dissolution'
         },
 
+        nameToColorMap: {
+            'evaporated': 'rgb(141, 107, 7)',
+            'natural_dispersion': 'rgb(154, 26, 0)',
+            'dissolution': 'rgb(197, 11, 108)',
+            'sedimentation': 'rgb(112, 48, 160)',
+            'floating': 'rgb(13, 136, 0)',
+            'amount_released': 'rgb(255, 255, 255)',
+            'chem_dispersed': 'rgb(55, 96, 146)',
+            'skimmed': 'rgb(0, 51, 153)',
+            'burned': 'rgb(49, 133, 156)',
+            'beached': 'rgb(228, 108, 10)',
+            'off_maps': 'rgb(146, 208, 80)',
+            'observed_beached': 'rgb(228, 108, 10)'
+        },
+
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
@@ -138,6 +153,21 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
             webgnome.cache.on('step:failed', this.toggleRAC, this);
+        },
+
+        generateColorArray: function(dataset) {
+            var colors = [];
+
+            _.each(dataset, _.bind(function(el, i, arr){
+                var color = this.nameToColorMap[el.name];
+                if (color) {
+                    colors.push(color);
+                } else {
+                    colors.push(this.colors[1]);
+                }
+            }, this));
+
+            return colors;
         },
 
         noWeathering: function(options){
@@ -566,7 +596,7 @@ define([
                 options.series.group = true;
                 options.series.lines.fill = 1;
                 options.needle.tooltips = false;
-                options.colors = this.colors;
+                options.colors = this.generateColorArray(cloneset);
                 options.legend.show = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', cloneset, options);
                 this.renderPiesTimeout = null;
@@ -610,9 +640,9 @@ define([
                 var units = webgnome.model.get('spills').at(0).get('units');
                 for(var i = 0; i < data.length; i++){
                     if(data[i].label !== 'Amount released'){
-                        var k = i - 1;
+                        var color = this.nameToColorMap[data[i].name];
                         compiled += _.template(BreakdownTemplate, {
-                            color: this.colors[k],
+                            color: color,
                             width: width,
                             label: data[i].label,
                             value: Math.round(data[i].data) + ' ' + units
@@ -660,7 +690,7 @@ define([
                         innerRadius: 0.65
                     }
                 },
-                colors: this.colors,
+                colors: this.generateColorArray(dataset),
                 legend: {
                     show: false
                 }
@@ -718,7 +748,7 @@ define([
                         y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
                     }
                     
-                    d.push({label: this.formatLabel(series.name), data: y});
+                    d.push({label: this.formatLabel(series.name), data: y, name: series.name});
                 }
             }
             return d;
@@ -810,8 +840,7 @@ define([
                         var color = '';
 
                         if (dataset[set].label !== 'Amount released') {
-                            var offByOne = set - 1;
-                            color = this.colors[offByOne];
+                            color = this.nameToColorMap[dataset[set].name];
                             color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
                         }
 
@@ -902,7 +931,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[0]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -917,7 +946,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[1]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -932,7 +961,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphSedimentation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[3]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphSedimentation.setData(dataset);
@@ -1005,7 +1034,7 @@ define([
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDissolution)) {
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[2]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDissolution.setData(dataset);
@@ -1072,7 +1101,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.colors = this.colors;
+                options.colors = this.generateColorArray(dataset);
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
@@ -1085,7 +1114,7 @@ define([
                 for(var i = 0; i < dataset.length; i++){
                     if(dataset[i].label !== 'Amount released'){
                         compiled += _.template(BreakdownTemplate, {
-                            color: this.colors[i],
+                            color: this.nameToColorMap[dataset[i].name],
                             width: 'auto',
                             label: dataset[i].label,
                             value: 0
