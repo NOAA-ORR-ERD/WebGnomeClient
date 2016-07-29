@@ -57,6 +57,12 @@ define([
                     }, this)
                 });
             }
+
+            this.listenTo(webgnome.model, 'change', this.addSyncListener);
+        },
+
+        addSyncListener: function() {
+            this.listenToOnce(webgnome.model, 'sync', this.rerender);
         },
 
         render: function(){
@@ -127,6 +133,15 @@ define([
                 delay: delay,
                 container: 'body'
             });
+        },
+
+        rerender: function() {
+            for(var child in this.children){
+                this.children[child].close();
+            }
+
+            this.$el.html('');
+            this.render();
         },
 
         layout: function(){

@@ -138,7 +138,7 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
-            this.get('spills').on('add', this.spillsTimeCompliance, this);
+            this.get('spills').on('change add', this.spillsTimeCompliance, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
@@ -196,7 +196,6 @@ define([
                         var spillStart = this.get('spills').at(0).get('release').get('release_time');
                         this.set('start_time', spillStart);
                         this.save();
-                        this.trigger('save');
                     }
                 }, this));
             }
