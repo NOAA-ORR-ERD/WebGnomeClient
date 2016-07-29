@@ -82,7 +82,10 @@ define([
             },
             xaxis: {
                 mode: 'time',
-                timezone: 'browser'
+                timezone: 'browser',
+                tickFormatter: function(millisecs, plotObj) {
+                    return moment(millisecs).format("YYYY/M/D");
+                }
             },
             series: {
                 lines: {
