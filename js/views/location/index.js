@@ -276,7 +276,7 @@ define([
             var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                 return feature;
             });
-            if (feature){
+            if (feature && this.$('.popover').length === 0){
                 if (this.$('.tooltip').length === 0) {
                     this.hoverTooltip(feature);
                 } else {
