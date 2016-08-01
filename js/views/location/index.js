@@ -125,6 +125,9 @@ define([
                 this.$(element).attr('data-toggle', 'tooltip');
                 this.$(element).attr('data-placement', 'right');
                 this.$(element).attr('title', feature.get('title'));
+                this.$(element).one('hide.bs.tooltip', _.bind(function(){
+                    this.$(element).tooltip('destroy');
+                }, this));
                 this.$(element).tooltip('show');
             }
         },
@@ -282,10 +285,10 @@ define([
                         this.hoverTooltip(feature);
                         }, this), 1);
                     }, this));
-                    this.$('.tooltip-hover').tooltip('destroy');
+                    this.$('.tooltip-hover').tooltip('hide');
                 }
             } else {
-                this.$('.tooltip-hover').tooltip('destroy');
+                this.$('.tooltip-hover').tooltip('hide');
             }
         },
 
