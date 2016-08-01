@@ -26,6 +26,7 @@ define([
     'model/outputters/current',
     'model/outputters/ice_raw',
     'model/outputters/ice_image',
+    'model/outputters/netcdf',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -44,7 +45,7 @@ define([
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover, ComponentMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
     MoversCollection, EnvironmentCollection, SpillsCollection){
@@ -83,6 +84,7 @@ define([
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
+                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -109,7 +111,8 @@ define([
                     new TrajectoryOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceOutputter()
+                    new IceOutputter(),
+                    new NetCDFOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
