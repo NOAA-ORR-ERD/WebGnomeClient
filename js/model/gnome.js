@@ -84,7 +84,7 @@ define([
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
-                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter
+                //'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
