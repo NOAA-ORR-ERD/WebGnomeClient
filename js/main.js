@@ -82,6 +82,7 @@ require.config({
         flotextents: ['flot'],
         flotnavigate: ['flot'],
         flotgantt: ['JUMFlotLib'],
+	'moment-round': ['moment'],
         html2canvas: {
             exports: 'html2canvas'
         },
