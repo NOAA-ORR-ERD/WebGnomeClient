@@ -894,7 +894,7 @@ define([
                 ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
                 ctx.stroke();
                 this.current_arrow[id][0] = layer.add({
-                    image: canvas, 
+                    image: canvas,
                     show: false,
                 }).image;
 
