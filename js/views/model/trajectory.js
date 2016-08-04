@@ -214,7 +214,7 @@ define([
                 homeButton: false,
                 timeline: false,
                 sceneModePicker: false,
-                targetFrameRate: 30, 
+                targetFrameRate: 30,
                 navigationHelpButton: false,
                 navigationInstructionsInitiallyVisible: false,
                 skyAtmosphere: false,
@@ -662,6 +662,7 @@ define([
         },
 
         toggleLayers: function(event){
+            var spill, part, area;
             var checked_layers = this.checked_layers = [];
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
@@ -687,22 +688,22 @@ define([
             }
 
             if(checked_layers.indexOf('spills') !== -1){
-                for(var spill in this.layers.spills){
+                for(spill in this.layers.spills){
                     this.layers.spills[spill].show = true;
                 }
             } else {
-                for(var spill in this.layers.spills){
+                for(spill in this.layers.spills){
                     this.layers.spills[spill].show = false;
                 }
             }
 
             // start at two because of the two billboard primitives added for image reference
             if(checked_layers.indexOf('particles') !== -1 && this.layers.particles){
-                for(var part = 2; part < this.layers.particles.length; part++){
+                for(part = 2; part < this.layers.particles.length; part++){
                     this.layers.particles.get(part).show = true;
                 }
             } else if(this.layers.particles) {
-                for(var part = 2; part < this.layers.particles.length; part++){
+                for(part = 2; part < this.layers.particles.length; part++){
                     this.layers.particles.get(part).show = false;
                 }
             }
@@ -712,22 +713,22 @@ define([
                     this.layers.spillable = [];
                     var polygons = webgnome.model.get('map').get('spillable_area');
                     for(var poly in polygons){
-                        this.layers.spillable.push(this.viewer.entities.add({ 
+                        this.layers.spillable.push(this.viewer.entities.add({
                             polygon: {
                                 hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
                                 material: Cesium.Color.BLUE.withAlpha(0.25),
                                 outline: true,
                                 outlineColor: Cesium.Color.BLUE.withAlpha(0.75)
                             }
-                        }));    
+                        }));
                     }
                 } else {
-                    for(var area in this.layers.spillable){
+                    for(area in this.layers.spillable){
                         this.layers.spillable[area].show = true;
                     }
                 }
             } else if(this.layers.spillable){
-                for(var area in this.layers.spillable){
+                for(area in this.layers.spillable){
                     this.layers.spillable[area].show = false;
                 }
             }
@@ -743,10 +744,10 @@ define([
                             outline: true,
                             outlineColor: Cesium.Color.BLUE,
                         }
-                    });                    
+                    });
                 } else {
                     this.layers.bounds.show = true;
-                } 
+                }
             } else if(this.layers.bounds){
                 this.layers.bounds.show = false;
             }
@@ -923,9 +924,9 @@ define([
                     ctx.stroke();
 
                     this.current_arrow[id][s_a] = layer.add({
-                        image: canvas, 
+                        image: canvas,
                         show: false,
-                    }).image;    
+                    }).image;
                 }
             }
         },
