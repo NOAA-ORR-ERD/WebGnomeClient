@@ -20,6 +20,7 @@ define([
         },
 
         update: function(e){
+            var nonneg;
             var name = $(e.target).attr('name');
             var value = $(e.target).val();
             if(!name){ return; }
