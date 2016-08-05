@@ -19,7 +19,6 @@ define([
                     if ((_.isUndefined(obj.start) && _.isUndefined(obj.end)) || (el.get('real_data_start') >= obj.start && el.get('real_data_stop') <= obj.end)) {
                             obj.start = el.get('real_data_start');
                             obj.end = el.get('real_data_stop');
-                            console.log(obj);
                         } else {
                             swal({
                                 title: 'Movers cannot be reconciled!',
