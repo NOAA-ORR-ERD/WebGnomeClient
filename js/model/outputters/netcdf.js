@@ -9,7 +9,7 @@ define([
 
         defaults: {
             'obj_type': 'gnome.outputters.netcdf.NetCDFOutput',
-            'name': 'Outputter',
+            'name': 'netCDF',
             'output_last_step': 'true',
             'output_zero_step': 'true',
             'netcdf_filename': 'Model.nc',
