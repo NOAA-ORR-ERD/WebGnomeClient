@@ -1645,10 +1645,6 @@ define([
                     low_value = 10000;
                     nominal_value = 10000;
                     high_value = 10000;
-                  //else if (this.dataset[set].name === 'secondtime'){
-                //     low_value = -1;
-                //     nominal_value = -1;
-                //     high_value = -1;
                 } else {
                     low_value = low[this.dataset[set].name];
                     nominal_value = nominal[this.dataset[set].name];
