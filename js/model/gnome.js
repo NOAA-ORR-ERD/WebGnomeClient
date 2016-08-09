@@ -85,7 +85,8 @@ define([
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
-                'gnome.outputters.kmz.KMZOutputter': KMZOutputter
+                'gnome.outputters.kmz.KMZOutputter': KMZOutputter,
+                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -113,7 +114,8 @@ define([
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
                     new IceOutputter(),
-                    new KMZOutputter()
+                    new KMZOutputter(),
+                    new NetCDFOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
