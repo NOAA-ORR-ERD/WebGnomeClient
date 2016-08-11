@@ -6,10 +6,12 @@ define([
     'views/modal/about',
     'views/modal/hotkeys',
     'views/form/location',
+    'views/form/outputter/netcdf',
+    'views/form/outputter/kmz',
     'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, swal, GnomeModel) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, NetCDFForm, KMZForm, swal, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -49,6 +51,8 @@ define([
             'click .rewind': 'rewind',
             // 'click .step': 'step',
             // 'click .rununtil': 'rununtil',
+            'click .netcdf': 'netcdf',
+            'click .kmz': 'kmz',
 
             'click .about': 'about',
             'click .overview': 'overview',
@@ -115,6 +119,18 @@ define([
 
         rewind: function(){
             webgnome.cache.rewind();
+        },
+
+        netcdf: function(e) {
+            e.preventDefault();
+            var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.netcdf.NetCDFOutput'});
+            new NetCDFForm(null, model).render();
+        },
+
+        kmz: function(e) {
+            e.preventDefault();
+            var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.kmz.KMZOutput'});
+            new KMZForm(null, model).render();
         },
 
         newModel: function(event){

@@ -3,6 +3,7 @@ define([
     'underscore',
     'backbone',
     'module',
+    'text!templates/form/outputter/kmz.html',
     'views/modal/form',
 ], function($, _, Backbone, module, KMZOutputTemplate, FormModal){
     'use strict';
@@ -17,7 +18,7 @@ define([
 
         render: function(options) {
             this.body = _.template(KMZOutputTemplate, {
-
+                
             });
 
             FormModal.prototype.render.call(this, options);

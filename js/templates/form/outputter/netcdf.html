@@ -1,0 +1,30 @@
+<form class="form-horizontal" role="form">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="time_step">Time Step Length (s):</label>
+					<div class="col-sm-4">
+						<input type="number" min="0" id="time_step" class="form-control" value="{{ time_step }}">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="time_step">Output Zero Step:</label>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" class="zerostep" {% if (output_zero_step){ %} checked {% } %}>
+						</label>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="time_step">Output Last Step:</label>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" class="laststep" {% if (output_last_step){ %} checked {% } %}>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

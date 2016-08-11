@@ -13,7 +13,8 @@ define([
             'output_last_step': 'true',
             'output_zero_step': 'true',
             'netcdf_filename': 'Model.nc',
-            'on': false
+            'on': false,
+            'output_timestep': 900
         },
 
         toTree: function(){

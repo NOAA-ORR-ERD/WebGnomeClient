@@ -13,7 +13,8 @@ define([
             'output_last_step': 'true',
             'output_zero_step': 'true',
             'filename': 'Model.kmz',
-            'on': false
+            'on': false,
+            'output_timestep': 900
         },
 
         toTree: function(){
