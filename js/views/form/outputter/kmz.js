@@ -3,26 +3,11 @@ define([
     'underscore',
     'backbone',
     'module',
-    'text!templates/form/outputter/kmz.html',
-    'views/modal/form',
-], function($, _, Backbone, module, KMZOutputTemplate, FormModal){
+    'views/form/outputter/base',
+], function($, _, Backbone, module, OutputModal){
     'use strict';
-    var kmzOutputForm = FormModal.extend({
-        initialize: function(options, model){
-            if (!_.isUndefined(model)) {
-                this.model = model;
-            }
-
-            FormModal.prototype.initialize.call(this, options);
-        },
-
-        render: function(options) {
-            this.body = _.template(KMZOutputTemplate, {
-                
-            });
-
-            FormModal.prototype.render.call(this, options);
-        }
+    var kmzOutputForm = OutputModal.extend({
+        title: 'KMZ Output'
     });
 
     return kmzOutputForm;

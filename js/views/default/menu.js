@@ -124,13 +124,20 @@ define([
         netcdf: function(e) {
             e.preventDefault();
             var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.netcdf.NetCDFOutput'});
-            new NetCDFForm(null, model).render();
+            var netCDFForm = new NetCDFForm(null, model);
+
+            
+
+            netCDFForm.render();
         },
 
         kmz: function(e) {
             e.preventDefault();
             var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.kmz.KMZOutput'});
-            new KMZForm(null, model).render();
+            var kmzForm = new KMZForm(null, model);
+            
+
+            kmzForm.render();
         },
 
         newModel: function(event){
