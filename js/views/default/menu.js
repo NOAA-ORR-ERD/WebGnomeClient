@@ -128,7 +128,7 @@ define([
 
             netCDFForm.on('wizardclose', netCDFForm.close);
             netCDFForm.on('save', _.bind(function(model){
-
+                netCDFForm.close();
             }, this));
 
             netCDFForm.render();
@@ -141,7 +141,7 @@ define([
             
             kmzForm.on('wizardclose', kmzForm.close);
             kmzForm.on('save', _.bind(function(model){
-
+                kmzForm.close();
             }, this));
 
             kmzForm.render();
