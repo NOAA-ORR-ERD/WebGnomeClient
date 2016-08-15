@@ -5,7 +5,8 @@ define([
     'module',
     'text!templates/form/outputter/base.html',
     'views/modal/form',
-], function($, _, Backbone, module, OutputTemplate, FormModal){
+    'views/modal/loading'
+], function($, _, Backbone, module, OutputTemplate, FormModal, LoadingModal){
     'use strict';
     var outputForm = FormModal.extend({
         initialize: function(options, model){
@@ -14,6 +15,7 @@ define([
             }
 
             this.model.set('on', true);
+            this.model.save();
             webgnome.cache.on('step:recieved', this.step, this);
             webgnome.cache.on('step:failed', this.turnOff, this);
 
@@ -49,16 +51,18 @@ define([
 
         save: function(options) {
             webgnome.cache.step();
+            this.hide();
+            this.loadingModal = new LoadingModal({title: "Running Model..."});
+            this.loadingModal.render();
         },
 
         turnOff: function() {
-            console.log('turn off ran');
             this.model.set('on', false);
             webgnome.cache.rewind();
-
             webgnome.cache.off('step:recieved', this.step, this);
             webgnome.cache.off('step:failed', this.turnOff, this);
-            FormModal.prototype.save.call(this, options);
+            this.loadingModal.close();
+            FormModal.prototype.save.call(this);
         }
 
     });
