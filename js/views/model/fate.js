@@ -1007,10 +1007,17 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['water_content', 'secondtime']);
+            dataset = this.pluckDataset(dataset, ['water_content', 'secondtime', 'floating']);
+            for (var i = 0; i < dataset.length; i++) {
+                if (dataset[i].name === 'floating') {
+                    dataset[i]['yaxis'] = 2;
+                }
+            }
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsification)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                delete options.yaxis;
+                options.yaxes = [{}, { position: 'right'}];
                 this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEmulsification.setData(dataset);
