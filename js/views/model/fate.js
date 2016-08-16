@@ -86,8 +86,12 @@ define([
                     mode: 'time',
                     timezone: 'browser',
                     tickFormatter: function(millisecs, plotObj) {
-                        var momentObj = moment(millisecs);
-                        return momentObj.format("YYYY/M/D");
+                        var time = moment(millisecs).format("H");
+                        if (plotObj.ticks.length % 2 === 0) {
+                            return moment(millisecs).format("YYYY/M/D");
+                        } else {
+                            return '';
+                        }
                     }
                 },
                 {
