@@ -1007,12 +1007,17 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['water_content', 'secondtime', 'floating']);
+            dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
+
             for (var i = 0; i < dataset.length; i++) {
                 if (dataset[i].name === 'floating') {
                     dataset[i]['yaxis'] = 2;
                     dataset[i].label = 'Surface Volume including Emulsion';
                 }
+                dataset[i].needle = {
+                    label: _.bind(this.formatNeedleLabel, this),
+                    formatX: _.bind(this.formatNeedleTime, this)
+                };
             }
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEmulsification)){
