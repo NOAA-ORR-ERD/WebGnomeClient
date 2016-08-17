@@ -594,15 +594,19 @@ define([
                 'dispersibility_difficult',
                 'dispersibility_unlikely'
                 ]);
-
             var selection = this.$('.panel-primary').data('dataset');
 
             for(var i = 0; i < cloneset.length; i++){
                 cloneset[i].data = cloneset[i][selection];
+                if (cloneset[i].yaxis) {
+                    delete cloneset[i].yaxis;
+                }
             }
 
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                delete options.yaxes;
+                options.yaxis = {};
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
@@ -1007,6 +1011,7 @@ define([
             for (var i = 0; i < dataset.length; i++) {
                 if (dataset[i].name === 'floating') {
                     dataset[i]['yaxis'] = 2;
+                    dataset[i].label = 'Surface Volume including Emulsion';
                 }
             }
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
