@@ -85,22 +85,14 @@ define([
                     position: 'bottom',
                     mode: 'time',
                     timezone: 'browser',
-                    tickFormatter: function(millisecs, plotObj) {
-                        var time = moment(millisecs).format("H");
-                        if (plotObj.ticks.length % 2 === 0) {
-                            return moment(millisecs).format("YYYY/M/D");
-                        } else {
-                            return '';
-                        }
-                    }
+                    timeformat: "%Y/%m/%d",
+                    minTickSize: [1, "day"]
                 },
                 {
                     position: 'top',
                     mode: 'time',
                     timezone: 'browser',
-                    tickFormatter: function(millisecs, plotObj) {
-                        return moment(millisecs).format("H:mm");
-                    }
+                    timeformat: "%H:%M"
                 }
             ],
             series: {
