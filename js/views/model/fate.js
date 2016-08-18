@@ -1018,8 +1018,12 @@ define([
                     label: _.bind(this.formatNeedleLabel, this),
                     formatX: _.bind(this.formatNeedleTime, this)
                 };
+
+                if (dataset[i].name !== 'secondtime') {
+                    dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                }
             }
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            
             if(_.isUndefined(this.graphEmulsification)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
                 delete options.yaxis;
@@ -1690,9 +1694,16 @@ define([
             });
         },
 
-        formatNeedleLabel: function(text){
+        formatNeedleLabel: function(text, n){
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
-            var units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
+            var units;
+
+            if (n === 1) {
+                units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
+            } else {
+                units = $('#weatherers .tab-pane:visible .secondYaxisLabel').text();
+            }
+            
             return num + ' ' + units;
         },
 
