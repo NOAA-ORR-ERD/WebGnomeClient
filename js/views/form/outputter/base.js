@@ -46,10 +46,28 @@ define([
             webgnome.cache.step();
         },
 
+        convertToSeconds: function(duration, unit) {
+            switch (unit){
+                case "s":
+                    break;
+                case "min":
+                    duration *= 60;
+                    break;
+                case "hr":
+                    duration *= 3600;
+                    break;
+            }
+
+            return duration;
+        },
+
         update: function() {
             var output_timestep = this.$('#time_step').val();
             var zeroStep = this.$('.zerostep').is(':checked');
             var lastStep = this.$('.laststep').is(':checked');
+            var unit = this.$('#units').val();
+
+            output_timestep = this.convertToSeconds(output_timestep, unit);
 
             this.model.set('output_timestep', output_timestep);
             this.model.set('output_zero_step', zeroStep);
