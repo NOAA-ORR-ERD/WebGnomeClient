@@ -1698,6 +1698,8 @@ define([
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
             var units;
 
+            console.log(n);
+
             if (n === 1) {
                 units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
             } else {
