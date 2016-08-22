@@ -5,7 +5,8 @@ define([
     'module',
     'text!templates/form/outputter/base.html',
     'views/modal/form',
-    'views/modal/loading'
+    'views/modal/loading',
+    'jqueryDatetimepicker'
 ], function($, _, Backbone, module, OutputTemplate, FormModal, LoadingModal){
     'use strict';
     var outputForm = FormModal.extend({
@@ -33,6 +34,12 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
+
+            this.$('#start_time').datetimepicker({
+                format: webgnome.config.date_format.datetimepicker,
+                allowTimes: webgnome.config.date_format.half_hour_times,
+                step: webgnome.config.date_format.time_step
+            });
         },
 
         step: function() {
@@ -63,6 +70,11 @@ define([
             webgnome.cache.off('step:failed', this.turnOff, this);
             this.loadingModal.close();
             FormModal.prototype.save.call(this);
+        },
+
+        close: function() {
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.close.call(this);
         }
 
     });

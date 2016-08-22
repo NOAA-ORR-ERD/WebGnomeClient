@@ -3,13 +3,22 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="form-group">
-					<label class="col-sm-4 control-label" for="time_step">Time Step Length (s):</label>
+					<label class="col-sm-4 control-label" for="start_time">Output Start Time:</label>
+					<div class="input-group date col-sm-4">
+                        <input type="text" id="start_time" class="form-control" value="">
+                        <span class="input-group-addon" id="datepick">
+                            <i></i>
+                        </span>
+                    </div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="time_step">Output Time Step Length (s):</label>
 					<div class="col-sm-4">
 						<input type="number" min="0" id="time_step" class="form-control" value="{{ time_step }}">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-4 control-label" for="time_step">Output Zero Step:</label>
+					<label class="col-sm-4 control-label" for="time_step">Output Initial Positions:</label>
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" class="zerostep" {% if (output_zero_step){ %} checked {% } %}>
@@ -17,7 +26,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-sm-4 control-label" for="time_step">Output Last Step:</label>
+					<label class="col-sm-4 control-label" for="time_step">Output Final Positions:</label>
 					<div class="checkbox">
 						<label>
 							<input type="checkbox" class="laststep" {% if (output_last_step){ %} checked {% } %}>
