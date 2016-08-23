@@ -38,6 +38,10 @@ define([
             });
         },
 
+        contextualizeTime: function() {
+
+        },
+
         convertToSeconds: function(duration, unit) {
             switch (unit){
                 case "s":
@@ -90,6 +94,7 @@ define([
                 });
                 this.hide();
                 this.loadingModal = new LoadingModal({title: "Running Model..."});
+                this.loadingModal.on('hide', this.close, this.loadingModal);
                 this.loadingModal.render();
             }, this), true);
         },
@@ -97,7 +102,7 @@ define([
         turnOff: function() {
             this.toggleOutputters(_.bind(function(){
                 webgnome.cache.rewind();
-                this.loadingModal.close();
+                this.loadingModal.hide();
                 FormModal.prototype.save.call(this);
             }, this), false);
         },
