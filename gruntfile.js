@@ -129,7 +129,9 @@ module.exports = function(grunt){
                     "window" : true,
                     "document": true,
                     "module": true,
-                    "require": true
+                    "require": true,
+                    "Promise": true,
+                    "Uint8Array": true
                 }
             },
             all: src
