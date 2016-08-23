@@ -1011,7 +1011,7 @@ define([
 
             for (var i = 0; i < dataset.length; i++) {
                 if (dataset[i].name === 'floating') {
-                    dataset[i]['yaxis'] = 2;
+                    dataset[i].yaxis = 2;
                     dataset[i].label = 'Surface Volume including Emulsion';
                 }
                 dataset[i].needle = {
@@ -1680,7 +1680,7 @@ define([
         addAxesValue: function(dataset) {
             var data = _.clone(dataset);
             for (var key in data) {
-                data[key]['xaxis'] = 2;
+                data[key].xaxis = 2;
             }
 
             return dataset.concat(data);

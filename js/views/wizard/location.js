@@ -78,7 +78,7 @@ define([
                         buttons: el.buttons
                     };
                     if (el.type === 'welcome') {
-                        textOpts['moduleId'] = 'views/model/locations/' + helpFilename;
+                        textOpts.moduleId = 'views/model/locations/' + helpFilename;
                     }
                     this.steps.push(new TextForm(textOpts));
                 } else if (el.type === 'model') {
