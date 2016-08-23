@@ -6,19 +6,15 @@ define([
     'text!templates/form/outputter/base.html',
     'views/modal/form',
     'views/modal/loading',
+    'model/no_cleanup_step',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, OutputTemplate, FormModal, LoadingModal){
+], function($, _, Backbone, module, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel){
     'use strict';
     var outputForm = FormModal.extend({
         initialize: function(options, model){
             if (!_.isUndefined(model)) {
                 this.model = model;
             }
-
-            this.model.set('on', true);
-            this.model.save();
-            webgnome.cache.on('step:recieved', this.step, this);
-            webgnome.cache.on('step:failed', this.turnOff, this);
 
             FormModal.prototype.initialize.call(this, options);
         },
@@ -40,10 +36,6 @@ define([
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
             });
-        },
-
-        step: function() {
-            webgnome.cache.step();
         },
 
         convertToSeconds: function(duration, unit) {
@@ -74,20 +66,40 @@ define([
             this.model.set('output_last_step', lastStep);
         },
 
+        toggleOutputters: function(cb, on) {
+            webgnome.model.get('outputters').each(_.bind(function(el, i, arr){
+                if (el.get('obj_type') === this.model.get('obj_type')) {
+                    el.set('on', on);
+                } else {
+                    el.set('on', !on);
+                }
+            }, this));
+            webgnome.model.save(null, {
+                success: cb
+            });
+        },
+
         save: function(options) {
-            webgnome.cache.step();
-            this.hide();
-            this.loadingModal = new LoadingModal({title: "Running Model..."});
-            this.loadingModal.render();
+            this.toggleOutputters(_.bind(function(){
+                var full_run = new NoCleanUpModel({'response_on': true});
+                full_run.save(null, {
+                    success: _.bind(this.turnOff, this),
+                    error: function(model, response, options) {
+                        console.log(response);
+                    }
+                });
+                this.hide();
+                this.loadingModal = new LoadingModal({title: "Running Model..."});
+                this.loadingModal.render();
+            }, this), true);
         },
 
         turnOff: function() {
-            this.model.set('on', false);
-            webgnome.cache.rewind();
-            webgnome.cache.off('step:recieved', this.step, this);
-            webgnome.cache.off('step:failed', this.turnOff, this);
-            this.loadingModal.close();
-            FormModal.prototype.save.call(this);
+            this.toggleOutputters(_.bind(function(){
+                webgnome.cache.rewind();
+                this.loadingModal.close();
+                FormModal.prototype.save.call(this);
+            }, this), false);
         },
 
         close: function() {
