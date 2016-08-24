@@ -3,12 +3,13 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'text!templates/form/outputter/base.html',
     'views/modal/form',
     'views/modal/loading',
     'model/no_cleanup_step',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel){
+], function($, _, Backbone, module, moment, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel){
     'use strict';
     var outputForm = FormModal.extend({
         initialize: function(options, model){
@@ -20,10 +21,12 @@ define([
         },
 
         render: function(options) {
+            var start_time = moment(this.model.get('output_start_time')).format(webgnome.config.date_format.moment);
             var output_timestep = this.model.get('output_timestep');
             var zeroStep = this.model.get('output_zero_step');
             var lastStep = this.model.get('output_last_step');
             this.body = _.template(OutputTemplate, {
+                start_time: start_time,
                 time_step: output_timestep,
                 output_zero_step: zeroStep,
                 output_last_step: lastStep
