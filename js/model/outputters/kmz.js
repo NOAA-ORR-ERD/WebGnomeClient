@@ -17,6 +17,14 @@ define([
             'output_timestep': 900
         },
 
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            if (!_.isUndefined(webgnome.model) && !_.isNull(this.get('output_start_time'))) {
+                var start_time = webgnome.model.get('start_time');
+                this.set('output_start_time', start_time);
+            }
+        },
+
         toTree: function(){
             return '';
         }
