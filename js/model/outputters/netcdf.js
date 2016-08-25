@@ -1,28 +1,23 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
+    'model/outputters/file_outputter'
+], function(_, Backbone, FileOutputterModel){
     'use strict';
-    var netCDFOutputter = BaseModel.extend({
+    var netCDFOutputter = FileOutputterModel.extend({
         urlRoot: '/outputter/',
 
-        defaults: {
-            'obj_type': 'gnome.outputters.netcdf.NetCDFOutput',
-            'name': 'netCDF',
-            'output_last_step': 'true',
-            'output_zero_step': 'true',
-            'netcdf_filename': 'Model.nc',
-            'on': false,
-            'output_timestep': 900
+        defaults: function() {
+            return _.defaults({
+                'obj_type': 'gnome.outputters.netcdf.NetCDFOutput',
+                'name': 'netCDF',
+                'netcdf_filename': 'Model.nc',
+                'output_timestep': 900
+            }, FileOutputterModel.defaults);
         },
 
-        initialize: function(options) {
-            BaseModel.prototype.initialize.call(this, options);
-            if (!_.isUndefined(webgnome.model) && !_.isNull(this.get('output_start_time'))) {
-                var start_time = webgnome.model.get('start_time');
-                this.set('output_start_time', start_time);
-            }
+        validate: function(attrs, options) {
+            
         },
 
         toTree: function(){

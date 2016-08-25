@@ -1,28 +1,23 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
+    'model/outputters/file_outputter'
+], function(_, Backbone, FileOutputterModel){
     'use strict';
-    var kmzOutputter = BaseModel.extend({
+    var kmzOutputter = FileOutputterModel.extend({
         urlRoot: '/outputter/',
 
-        defaults: {
-            'obj_type': 'gnome.outputters.kmz.KMZOutput',
-            'name': 'Model',
-            'output_last_step': 'true',
-            'output_zero_step': 'true',
-            'filename': 'Model.kmz',
-            'on': false,
-            'output_timestep': 900
+        defaults: function() {
+            return _.defaults({
+                'obj_type': 'gnome.outputters.kmz.KMZOutput',
+                'name': 'Model',
+                'filename': 'Model.kmz',
+                'output_timestep': 900
+            }, FileOutputterModel.defaults);
         },
 
-        initialize: function(options) {
-            BaseModel.prototype.initialize.call(this, options);
-            if (!_.isUndefined(webgnome.model) && !_.isNull(this.get('output_start_time'))) {
-                var start_time = webgnome.model.get('start_time');
-                this.set('output_start_time', start_time);
-            }
+        validate: function(attrs, options) {
+            
         },
 
         toTree: function(){
