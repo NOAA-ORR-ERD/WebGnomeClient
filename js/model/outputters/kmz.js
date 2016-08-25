@@ -13,7 +13,7 @@ define([
                 'name': 'Model',
                 'filename': 'Model.kmz',
                 'output_timestep': 900
-            }, FileOutputterModel.defaults);
+            }, FileOutputterModel.prototype.defaults);
         },
 
         validate: function(attrs, options) {

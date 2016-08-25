@@ -4,7 +4,8 @@ define([
     'backbone',
     'module',
     'views/form/outputter/base',
-], function($, _, Backbone, module, OutputModal){
+    'model/outputters/kmz'
+], function($, _, Backbone, module, OutputModal, KMZModel){
     'use strict';
     var kmzOutputForm = OutputModal.extend({
         title: 'KMZ Output'

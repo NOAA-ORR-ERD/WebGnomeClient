@@ -13,7 +13,7 @@ define([
                 'name': 'netCDF',
                 'netcdf_filename': 'Model.nc',
                 'output_timestep': 900
-            }, FileOutputterModel.defaults);
+            }, FileOutputterModel.prototype.defaults);
         },
 
         validate: function(attrs, options) {

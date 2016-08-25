@@ -8,16 +8,51 @@ define([
     'views/modal/form',
     'views/modal/loading',
     'model/no_cleanup_step',
+    'model/outputters/kmz',
+    'model/outputters/netcdf',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel){
+], function($, _, Backbone, module, moment, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel, KMZModel, NetCDFModel){
     'use strict';
     var outputForm = FormModal.extend({
+        models: {
+            'gnome.outputters.netcdf.NetCDFOutput': NetCDFModel,
+            'gnome.outputters.kmz.KMZOutput': KMZModel
+        },
+
         initialize: function(options, model){
             if (!_.isUndefined(model)) {
                 this.model = model;
+            } else {
+                this.model = this.findOutputterModel();
             }
 
             FormModal.prototype.initialize.call(this, options);
+        },
+
+        findOutputterModel: function() {
+            var model;
+            var obj_type;
+
+            console.log(this.title);
+
+            if (this.title === 'KMZ Output') {
+                obj_type = 'gnome.outputters.kmz.KMZOutput';
+            } else if (this.title === 'NetCDF Output') {
+                obj_type = 'gnome.outputters.netcdf.NetCDFOutput';
+            }
+
+            console.log(obj_type);
+
+            model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
+
+            console.log(model);
+
+            if (_.isUndefined(model)) {
+                model = new this.models[obj_type]();
+                webgnome.model.get('outputters').add(model);
+            }
+
+            return model;
         },
 
         render: function(options) {
