@@ -61,8 +61,11 @@ define([
             this.listenTo(webgnome.model, 'change', this.addSyncListener);
         },
 
-        addSyncListener: function() {
-            this.listenToOnce(webgnome.model, 'sync', this.rerender);
+        addSyncListener: function(model) {
+            var changed = _.keys(model.changed);
+            if(changed.length > 1 || changed.indexOf('map') === -1){
+                this.listenToOnce(webgnome.model, 'sync', this.rerender);
+            }
         },
 
         render: function(){
