@@ -113,9 +113,7 @@ define([
                     new TrajectoryOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
-                    new IceOutputter(),
-                    new KMZOutputter(),
-                    new NetCDFOutputter()
+                    new IceOutputter()
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
@@ -136,6 +134,7 @@ define([
             webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};
             this.addListeners();
+            console.log(this);
         },
 
         addListeners: function(){
