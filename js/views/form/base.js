@@ -20,14 +20,13 @@ define([
         },
 
         update: function(e){
-            var nonneg;
             var name = $(e.target).attr('name');
             var value = $(e.target).val();
             if(!name){ return; }
             // if the user is inputting a negative numerical value
             // reset it back to the non-neg version.
             if(value < 0 || value === '-'){
-                nonneg = value.replace('-', '');
+                var nonneg = value.replace('-', '');
                 $(e.target).val(parseFloat(nonneg));
                 value = nonneg;
             }

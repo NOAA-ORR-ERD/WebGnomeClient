@@ -577,39 +577,39 @@ define([
             return this.current_arrow[id][Math.round(Math.abs(magnitude)*10)/10];
         },
 
-        renderIceImage: function(step){
-            var source;
-            var ice_data = this.$('.ice-tc input[type="radio"]:checked').val();
+        // renderIceImage: function(step){
+        //     var source;
+        //     var ice_data = this.$('.ice-tc input[type="radio"]:checked').val();
 
-            if(step && step.get('IceImageOutput') && this.tc_ice && this.tc_ice.length > 0){
-                var image = step.get('IceImageOutput')[ice_data + '_image'];
-                var bb = step.get('IceImageOutput').bounding_box;
-                var coords = [[bb[0], [bb[0][0], bb[1][1]], bb[1], [bb[1][0], bb[0][1]]]];
-                var poly = new ol.geom.Polygon(coords).transform('EPSG:4326', 'EPSG:3857');
-                source = new ol.source.ImageStatic({
-                    url: image,
-                    imageSize: [1000, 1000],
-                    imageExtent: poly.getExtent(),
-                    projection: step.get('IceImageOutput').projection,
-                    imageLoadFunction: function(imageTile, src){
-                        var imageElement = imageTile.getImage();
-                        imageElement.src = src;
-                    }
-                });
-            } else {
-                source = new ol.source.ImageStatic({
-                    url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-                    imageSize: [1, 1],
-                    imageExtent: [-20000000000, -2000000000, 2000000000, 20000000],
-                    imageLoadFunction: function(imageTile, src){
-                        var imageElement = imageTile.getImage();
-                        imageElement.src = src;
-                    }
-                });
-            }
+        //     if(step && step.get('IceImageOutput') && this.tc_ice && this.tc_ice.length > 0){
+        //         var image = step.get('IceImageOutput')[ice_data + '_image'];
+        //         var bb = step.get('IceImageOutput').bounding_box;
+        //         var coords = [[bb[0], [bb[0][0], bb[1][1]], bb[1], [bb[1][0], bb[0][1]]]];
+        //         var poly = new ol.geom.Polygon(coords).transform('EPSG:4326', 'EPSG:3857');
+        //         source = new ol.source.ImageStatic({
+        //             url: image,
+        //             imageSize: [1000, 1000],
+        //             imageExtent: poly.getExtent(),
+        //             projection: step.get('IceImageOutput').projection,
+        //             imageLoadFunction: function(imageTile, src){
+        //                 var imageElement = imageTile.getImage();
+        //                 imageElement.src = src;
+        //             }
+        //         });
+        //     } else {
+        //         source = new ol.source.ImageStatic({
+        //             url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+        //             imageSize: [1, 1],
+        //             imageExtent: [-20000000000, -2000000000, 2000000000, 20000000],
+        //             imageLoadFunction: function(imageTile, src){
+        //                 var imageElement = imageTile.getImage();
+        //                 imageElement.src = src;
+        //             }
+        //         });
+        //     }
 
-            this.IceImageLayer.setSource(source);
-        },
+        //     this.IceImageLayer.setSource(source);
+        // },
 
         renderIce: function(step){
             var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
@@ -662,7 +662,6 @@ define([
         },
 
         toggleLayers: function(event){
-            var spill, part, area;
             var checked_layers = this.checked_layers = [];
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
@@ -687,6 +686,7 @@ define([
                 this.layers.map.show = false;
             }
 
+            var spill;
             if(checked_layers.indexOf('spills') !== -1){
                 for(spill in this.layers.spills){
                     this.layers.spills[spill].show = true;
@@ -697,6 +697,7 @@ define([
                 }
             }
 
+            var part;
             // start at two because of the two billboard primitives added for image reference
             if(checked_layers.indexOf('particles') !== -1 && this.layers.particles){
                 for(part = 2; part < this.layers.particles.length; part++){
@@ -708,6 +709,7 @@ define([
                 }
             }
 
+            var area;
             if(checked_layers.indexOf('spillableArea') !== -1){
                 if(!this.layers.spillable){
                     this.layers.spillable = [];
@@ -1034,28 +1036,28 @@ define([
             e.target.blur();
         },
 
-        renderSpills: function(){
-            // foreach spill add at feature to the source
-            var spills = webgnome.model.get('spills');
-            spills.forEach(function(spill){
-                var start_position = spill.get('release').get('start_position');
-                var end_position = spill.get('release').get('end_position');
-                var geom;
-                if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
-                    start_position = [start_position[0], start_position[1]];
-                    geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
-                } else {
-                    start_position = [start_position[0], start_position[1]];
-                    end_position = [end_position[0], end_position[1]];
-                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
-                }
-                var feature = new ol.Feature({
-                    geometry: geom,
-                    spill: spill.get('id')
-                });
-                this.SpillIndexSource.addFeature(feature);
-            }, this);
-        },
+        // renderSpills: function(){
+        //     // foreach spill add at feature to the source
+        //     var spills = webgnome.model.get('spills');
+        //     spills.forEach(function(spill){
+        //         var start_position = spill.get('release').get('start_position');
+        //         var end_position = spill.get('release').get('end_position');
+        //         var geom;
+        //         if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
+        //             start_position = [start_position[0], start_position[1]];
+        //             geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
+        //         } else {
+        //             start_position = [start_position[0], start_position[1]];
+        //             end_position = [end_position[0], end_position[1]];
+        //             geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
+        //         }
+        //         var feature = new ol.Feature({
+        //             geometry: geom,
+        //             spill: spill.get('id')
+        //         });
+        //         this.SpillIndexSource.addFeature(feature);
+        //     }, this);
+        // },
 
         resetSpills: function(){
             // remove all spills from the source.
@@ -1063,56 +1065,56 @@ define([
             this.renderSpills();
         },
 
-        addLineSpill: function(e){
-            this.draw = new ol.interaction.Draw({
-                source: this.SpillIndexSource,
-                type: 'LineString'
-            });
-            this.ol.map.addInteraction(this.draw);
-            this.draw.on('drawend', _.bind(function(e){
-                var spillCoords = e.feature.getGeometry().getCoordinates();
-                for (var i = 0; i < spillCoords.length; i++){
-                    spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
-                    spillCoords[i].push('0');
-                }
-                var spill = new GnomeSpill();
-                spill.get('release').set('start_position', spillCoords[0]);
-                spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
-                spill.get('release').set('release_time', webgnome.model.get('start_time'));
-                spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-                var spillform = new SpillForm({showMap: true}, spill);
-                spillform.render();
-                spillform.on('save', function(spill){
-                    webgnome.model.get('spills').add(spill);
-                    webgnome.model.trigger('sync');
-                });
-                spillform.on('hidden', spillform.close);
-                this.toggleSpill();
+        // addLineSpill: function(e){
+        //     this.draw = new ol.interaction.Draw({
+        //         source: this.SpillIndexSource,
+        //         type: 'LineString'
+        //     });
+        //     this.ol.map.addInteraction(this.draw);
+        //     this.draw.on('drawend', _.bind(function(e){
+        //         var spillCoords = e.feature.getGeometry().getCoordinates();
+        //         for (var i = 0; i < spillCoords.length; i++){
+        //             spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
+        //             spillCoords[i].push('0');
+        //         }
+        //         var spill = new GnomeSpill();
+        //         spill.get('release').set('start_position', spillCoords[0]);
+        //         spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
+        //         spill.get('release').set('release_time', webgnome.model.get('start_time'));
+        //         spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
+        //         var spillform = new SpillForm({showMap: true}, spill);
+        //         spillform.render();
+        //         spillform.on('save', function(spill){
+        //             webgnome.model.get('spills').add(spill);
+        //             webgnome.model.trigger('sync');
+        //         });
+        //         spillform.on('hidden', spillform.close);
+        //         this.toggleSpill();
 
-            }, this));
-        },
+        //     }, this));
+        // },
 
-        addPointSpill: function(e){
-            // add a spill to the model.
-            var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-            var spill = new GnomeSpill();
-            // add the dummy z-index thing
-            coord.push(0);
-            spill.get('release').set('start_position', coord);
-            spill.get('release').set('end_position', coord);
-            spill.get('release').set('release_time', webgnome.model.get('start_time'));
-            spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
+        // addPointSpill: function(e){
+        //     // add a spill to the model.
+        //     var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
+        //     var spill = new GnomeSpill();
+        //     // add the dummy z-index thing
+        //     coord.push(0);
+        //     spill.get('release').set('start_position', coord);
+        //     spill.get('release').set('end_position', coord);
+        //     spill.get('release').set('release_time', webgnome.model.get('start_time'));
+        //     spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
 
-            var spillform = new SpillForm({showMap: true}, spill);
-            spillform.render();
-            spillform.on('save', function(spill){
-                webgnome.model.get('spills').add(spill);
-                webgnome.model.trigger('sync');
-            });
-            spillform.on('hidden', spillform.close);
+        //     var spillform = new SpillForm({showMap: true}, spill);
+        //     spillform.render();
+        //     spillform.on('save', function(spill){
+        //         webgnome.model.get('spills').add(spill);
+        //         webgnome.model.trigger('sync');
+        //     });
+        //     spillform.on('hidden', spillform.close);
 
-            this.toggleSpill();
-        },
+        //     this.toggleSpill();
+        // },
 
         spillHover: function(e){
             if(!this.spillToggle){
