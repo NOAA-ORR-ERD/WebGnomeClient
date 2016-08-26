@@ -92,6 +92,7 @@ define([
         },
 
         update: function() {
+            var output_start_time = moment(this.$('#start_time').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             var output_timestep = this.$('#time_step').val();
             var zeroStep = this.$('.zerostep').is(':checked');
             var lastStep = this.$('.laststep').is(':checked');
@@ -102,6 +103,7 @@ define([
             this.model.set('output_timestep', output_timestep);
             this.model.set('output_zero_step', zeroStep);
             this.model.set('output_last_step', lastStep);
+            this.model.set('output_start_time', output_start_time);
 
             if (this.model.isValid()) {
                 this.clearError();
