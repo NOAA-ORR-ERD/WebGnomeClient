@@ -16,10 +16,6 @@ define([
             }, FileOutputterModel.prototype.defaults);
         },
 
-        validate: function(attrs, options) {
-            
-        },
-
         toTree: function(){
             return '';
         }

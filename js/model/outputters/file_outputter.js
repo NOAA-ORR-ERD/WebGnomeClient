@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
+    'moment',
     'model/base'
-], function(_, Backbone, BaseModel){
+], function(_, Backbone, moment, BaseModel){
     'use strict';
     var fileOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
@@ -28,7 +29,11 @@ define([
         },
 
         validate: function(attrs, options) {
-            
+            if (attrs.output_timestep <= 0) {
+                return 'Output timestep must be greater than zero!';
+            }
+
+            if (moment(attrs.))
         },
 
         toTree: function(){
