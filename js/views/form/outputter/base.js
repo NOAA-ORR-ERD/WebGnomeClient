@@ -33,24 +33,19 @@ define([
             var model;
             var obj_type;
 
-            console.log(this.title);
-
             if (this.title === 'KMZ Output') {
                 obj_type = 'gnome.outputters.kmz.KMZOutput';
             } else if (this.title === 'NetCDF Output') {
                 obj_type = 'gnome.outputters.netcdf.NetCDFOutput';
             }
 
-            console.log(obj_type);
-
-            model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
-
-            console.log(model);
-
             if (_.isUndefined(model)) {
                 model = new this.models[obj_type]();
-                webgnome.model.get('outputters').add(model);
+                webgnome.model.get('outputters').add(model, {'merge': true});
             }
+
+            model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
+            model.setStartTime();
 
             return model;
         },
@@ -117,7 +112,8 @@ define([
                 }
             }, this));
             webgnome.model.save(null, {
-                success: cb
+                success: cb,
+                silent: true
             });
         },
 
@@ -141,6 +137,7 @@ define([
             this.toggleOutputters(_.bind(function(){
                 webgnome.cache.rewind();
                 this.loadingModal.hide();
+                webgnome.model.get('outputters').remove(this.model);
                 FormModal.prototype.save.call(this);
             }, this), false);
         },

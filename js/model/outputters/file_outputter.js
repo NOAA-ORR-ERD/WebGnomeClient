@@ -16,10 +16,15 @@ define([
 
         initialize: function(options) {
             if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
-                var start_time = webgnome.model.get('start_time');
-                this.set('output_start_time', start_time);
+                this.setStartTime();
             }
             BaseModel.prototype.initialize.call(this, options);
+        },
+
+        setStartTime: function() {
+            var start_time = webgnome.model.get('start_time');
+
+            this.set('output_start_time', start_time);
         },
 
         validate: function(attrs, options) {
