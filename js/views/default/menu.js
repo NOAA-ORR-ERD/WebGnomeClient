@@ -121,10 +121,9 @@ define([
             webgnome.cache.rewind();
         },
 
-        netcdf: function(e) {
-            e.preventDefault();
-            var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.netcdf.NetCDFOutput'});
-            var netCDFForm = new NetCDFForm(null, model);
+        netcdf: function(event) {
+            event.preventDefault();
+            var netCDFForm = new NetCDFForm();
 
             netCDFForm.on('wizardclose', netCDFForm.close);
             netCDFForm.on('save', _.bind(function(model){
@@ -135,9 +134,8 @@ define([
         },
 
         kmz: function(e) {
-            e.preventDefault();
-            var model = webgnome.model.get('outputters').findWhere({'obj_type': 'gnome.outputters.kmz.KMZOutput'});
-            var kmzForm = new KMZForm(null, model);
+            event.preventDefault();
+            var kmzForm = new KMZForm();
             
             kmzForm.on('wizardclose', kmzForm.close);
             kmzForm.on('save', _.bind(function(model){
