@@ -33,7 +33,9 @@ define([
                 return 'Output timestep must be greater than zero!';
             }
 
-            if (moment(attrs.))
+            if (moment(attrs.output_start_time).isBefore(webgnome.model.get('start_time'))) {
+                return 'Output start time cannot be before model start time!';
+            }
         },
 
         toTree: function(){
