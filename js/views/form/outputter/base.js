@@ -64,6 +64,7 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
+            this.contextualizeTime();
 
             this.$('#start_time').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
@@ -73,7 +74,9 @@ define([
         },
 
         contextualizeTime: function() {
-
+            var timeInfo = this.model.timeConversion();
+            this.$('#time_step').val(timeInfo.amount);
+            this.$('#units').val(timeInfo.unit);
         },
 
         convertToSeconds: function(duration, unit) {
