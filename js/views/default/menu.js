@@ -133,7 +133,7 @@ define([
             netCDFForm.render();
         },
 
-        kmz: function(e) {
+        kmz: function(event) {
             event.preventDefault();
             var kmzForm = new KMZForm();
             
