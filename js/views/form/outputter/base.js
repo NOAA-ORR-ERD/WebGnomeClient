@@ -39,12 +39,13 @@ define([
                 obj_type = 'gnome.outputters.netcdf.NetCDFOutput';
             }
 
+            model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
+
             if (_.isUndefined(model)) {
                 model = new this.models[obj_type]();
                 webgnome.model.get('outputters').add(model, {'merge': true});
             }
 
-            model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
             model.setStartTime();
 
             return model;
@@ -101,6 +102,10 @@ define([
             this.model.set('output_timestep', output_timestep);
             this.model.set('output_zero_step', zeroStep);
             this.model.set('output_last_step', lastStep);
+
+            if (this.model.isValid()) {
+                this.clearError();
+            }
         },
 
         toggleOutputters: function(cb, on) {
@@ -118,26 +123,29 @@ define([
         },
 
         save: function(options) {
-            this.toggleOutputters(_.bind(function(){
-                var full_run = new NoCleanUpModel({'response_on': true});
-                full_run.save(null, {
-                    success: _.bind(this.turnOff, this),
-                    error: function(model, response, options) {
-                        console.log(response);
-                    }
-                });
-                this.hide();
-                this.loadingModal = new LoadingModal({title: "Running Model..."});
-                this.loadingModal.on('hide', this.close, this.loadingModal);
-                this.loadingModal.render();
-            }, this), true);
+            if (!this.model.isValid()) {
+                this.error("Error! ", this.model.validationError);
+            } else {
+                this.toggleOutputters(_.bind(function(){
+                    var full_run = new NoCleanUpModel({'response_on': true});
+                    full_run.save(null, {
+                        success: _.bind(this.turnOff, this),
+                        error: function(model, response, options) {
+                            console.log(response);
+                        }
+                    });
+                    this.hide();
+                    this.loadingModal = new LoadingModal({title: "Running Model..."});
+                    this.loadingModal.on('hide', this.close, this.loadingModal);
+                    this.loadingModal.render();
+                }, this), true);
+            }
         },
 
         turnOff: function() {
             this.toggleOutputters(_.bind(function(){
                 webgnome.cache.rewind();
                 this.loadingModal.hide();
-                webgnome.model.get('outputters').remove(this.model);
                 FormModal.prototype.save.call(this);
             }, this), false);
         },
