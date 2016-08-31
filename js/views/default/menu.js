@@ -8,10 +8,11 @@ define([
     'views/form/location',
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
+    'views/form/outputter/shape',
     'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, NetCDFForm, KMZForm, swal, GnomeModel) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, NetCDFForm, KMZForm, ShapeForm, swal, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -53,6 +54,7 @@ define([
             // 'click .rununtil': 'rununtil',
             'click .netcdf': 'netcdf',
             'click .kmz': 'kmz',
+            'click .shape': 'shape',
 
             'click .about': 'about',
             'click .overview': 'overview',
@@ -143,6 +145,18 @@ define([
             }, this));
 
             kmzForm.render();
+        },
+
+        shape: function(event) {
+            event.preventDefault();
+            var shapeForm = new ShapeForm();
+
+            shapeForm.on('wizardclose', shapeForm.close);
+            shapeForm.on('save', _.bind(function(model){
+                shapeForm.close();
+            }, this));
+
+            shapeForm.render();
         },
 
         newModel: function(event){

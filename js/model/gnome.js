@@ -28,6 +28,7 @@ define([
     'model/outputters/ice_image',
     'model/outputters/netcdf',
     'model/outputters/kmz',
+    'model/outputters/shape',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -47,7 +48,7 @@ define([
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
-    KMZOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
+    KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
     MoversCollection, EnvironmentCollection, SpillsCollection){
     'use strict';
@@ -86,7 +87,8 @@ define([
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
                 'gnome.outputters.kmz.KMZOutput': KMZOutputter,
-                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter
+                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter,
+                'gnome.outputters.shape.ShapeOutput': ShapeOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -134,7 +136,6 @@ define([
             webgnome.user_prefs = new UserPrefs();
             webgnome.obj_ref = {};
             this.addListeners();
-            console.log(this);
         },
 
         addListeners: function(){

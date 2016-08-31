@@ -10,13 +10,15 @@ define([
     'model/no_cleanup_step',
     'model/outputters/kmz',
     'model/outputters/netcdf',
+    'model/outputters/shape',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel, KMZModel, NetCDFModel){
+], function($, _, Backbone, module, moment, OutputTemplate, FormModal, LoadingModal, NoCleanUpModel, KMZModel, NetCDFModel, ShapeModel){
     'use strict';
     var outputForm = FormModal.extend({
         models: {
             'gnome.outputters.netcdf.NetCDFOutput': NetCDFModel,
-            'gnome.outputters.kmz.KMZOutput': KMZModel
+            'gnome.outputters.kmz.KMZOutput': KMZModel,
+            'gnome.outputters.shape.ShapeOutput': ShapeModel
         },
 
         initialize: function(options, model){
@@ -32,21 +34,32 @@ define([
         findOutputterModel: function() {
             var model;
             var obj_type;
+            var ext;
 
             if (this.title === 'KMZ Output') {
                 obj_type = 'gnome.outputters.kmz.KMZOutput';
+                ext = '.kmz';
             } else if (this.title === 'NetCDF Output') {
                 obj_type = 'gnome.outputters.netcdf.NetCDFOutput';
+                ext = '.nc';
+            } else if (this.title === 'Shapefile Output') {
+                obj_type = 'gnome.outputters.shape.ShapeOutput';
+                ext = '.shp';
             }
 
             model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
 
             if (_.isUndefined(model)) {
                 model = new this.models[obj_type]();
-                webgnome.model.get('outputters').add(model, {'merge': true});
+                model.save(null, {
+                    success: function() {
+                        webgnome.model.get('outputters').add(model, {'merge': true});
+                    }
+                });
             }
 
             model.setStartTime();
+            model.setOutputterName(ext);
 
             return model;
         },
@@ -64,6 +77,7 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
+            
             this.contextualizeTime();
 
             this.$('#start_time').datetimepicker({

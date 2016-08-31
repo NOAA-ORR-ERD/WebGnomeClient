@@ -22,6 +22,13 @@ define([
             BaseModel.prototype.initialize.call(this, options);
         },
 
+        setOutputterName: function(ext) {
+            var name = webgnome.model.get('name');
+
+            this.set('name', name);
+            this.set('filename', name + ext);
+        },
+
         setStartTime: function() {
             var start_time = webgnome.model.get('start_time');
 
