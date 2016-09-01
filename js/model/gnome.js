@@ -56,6 +56,11 @@ define([
         url: '/model',
         ajax: [],
         ref_hash: {},
+        fileOutputters: [
+            'gnome.outputters.netcdf.NetCDFOutput',
+            'gnome.outputters.shape.ShapeOutput',
+            'gnome.outputters.kmz.KMZOutput'
+        ],
         model: {
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
