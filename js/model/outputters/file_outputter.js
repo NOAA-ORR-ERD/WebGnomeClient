@@ -25,9 +25,11 @@ define([
             BaseModel.prototype.initialize.call(this, options);
         },
 
-        setOutputterName: function() {
+        setOutputterName: function(model) {
             var ext = this.get('name').split('.').pop();
-            var name = webgnome.model.get('name');
+            var name = _.isUndefined(model) ? webgnome.model.get('name') : model.get('name');
+
+            name = name.replace(/ /g, "_");
 
             this.set('name', name + '.' + ext);
         },
