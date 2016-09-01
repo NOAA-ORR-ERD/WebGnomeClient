@@ -34,17 +34,13 @@ define([
         findOutputterModel: function() {
             var model;
             var obj_type;
-            var ext;
 
             if (this.title === 'KMZ Output') {
                 obj_type = 'gnome.outputters.kmz.KMZOutput';
-                ext = '.kmz';
             } else if (this.title === 'NetCDF Output') {
                 obj_type = 'gnome.outputters.netcdf.NetCDFOutput';
-                ext = '.nc';
             } else if (this.title === 'Shapefile Output') {
                 obj_type = 'gnome.outputters.shape.ShapeOutput';
-                ext = '.shp';
             }
 
             model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});
@@ -58,8 +54,8 @@ define([
                 });
             }
 
+            model.setOutputterName();
             model.setStartTime();
-            model.setOutputterName(ext);
 
             return model;
         },
@@ -77,7 +73,7 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-            
+
             this.contextualizeTime();
 
             this.$('#start_time').datetimepicker({
