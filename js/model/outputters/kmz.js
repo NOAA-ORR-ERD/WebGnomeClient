@@ -10,7 +10,7 @@ define([
         defaults: function() {
             return _.defaults({
                 'obj_type': 'gnome.outputters.kmz.KMZOutput',
-                'name': 'Model',
+                'name': 'Model.kmz',
                 'filename': 'Model.kmz',
                 'output_timestep': 900
             }, FileOutputterModel.prototype.defaults);

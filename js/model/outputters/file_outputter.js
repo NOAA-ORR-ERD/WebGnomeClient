@@ -18,15 +18,18 @@ define([
         initialize: function(options) {
             if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
                 this.setStartTime();
+                this.setOutputterName();
+
+                webgnome.model.on('change:name', this.setOutputterName, this);
             }
             BaseModel.prototype.initialize.call(this, options);
         },
 
-        setOutputterName: function(ext) {
+        setOutputterName: function() {
+            var ext = this.get('name').split('.').pop();
             var name = webgnome.model.get('name');
 
-            this.set('name', name);
-            this.set('filename', name + ext);
+            this.set('name', name + '.' + ext);
         },
 
         setStartTime: function() {

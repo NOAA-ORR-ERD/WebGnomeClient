@@ -10,17 +10,10 @@ define([
         defaults: function() {
             return _.defaults({
                 'obj_type': 'gnome.outputters.shape.ShapeOutput',
-                'name': 'Model',
+                'name': 'Model.shp',
                 'filename': 'Model.shp',
                 'output_timestep': 900
             }, FileOutputterModel.prototype.defaults);
-        },
-
-        initialize: function(options) {
-            FileOutputterModel.prototype.initialize.call(this, options);
-            var name = this.get('name');
-
-            this.set('filename', name + '.shp');
         },
 
         toTree: function(){
