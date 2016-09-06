@@ -60,7 +60,7 @@ module.exports = function(grunt){
                     'fonts/*',
                     'img/*',
                     'css/images/*',
-                    'resource/*'
+                    'resource/*',
                 ],
                 dest: 'dist/build/'
             },
@@ -70,7 +70,8 @@ module.exports = function(grunt){
                     'js/lib/cesium/Build/Cesium/ThirdParty/**',
                     'js/lib/cesium/Build/Cesium/Assets/**',
                     'js/lib/cesium/Build/Cesium/Widgets/**',
-                    'js/lib/cesium/Build/Cesium/Workers/**'
+                    'js/lib/cesium/Build/Cesium/Workers/**',
+                    'js/lib/cesium/Build/Documentation/images/**'
                 ],
                 dest: 'dist/build/'
             }

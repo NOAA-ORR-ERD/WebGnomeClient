@@ -3,12 +3,12 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'jqueryui/core',
     'views/modal/form',
     'text!templates/risk/input.html',
     'text!templates/risk/slider_input.html',
-    'nucos'
-], function($, _, Backbone, moment, jqueryui, FormModal, RiskTemplate, SliderTemplate, nucos) {
+    'nucos',
+    'jqueryui/widgets/slider'
+], function($, _, Backbone, moment, FormModal, RiskTemplate, SliderTemplate, nucos) {
     var riskForm = FormModal.extend({
         className: 'modal form-modal risk-form',
         name: 'risk',

@@ -2,14 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'jqueryui/core',
     'views/modal/form',
     'text!templates/risk/tuning.html',
     'text!templates/risk/relativeimportance.html',
     'text!templates/risk/slider.html',
     'text!templates/risk/relativeimportancetable.html',
-    'relativeimportance'
-], function($, _, Backbone, jqueryui, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance) {
+    'relativeimportance',
+    'jqueryui/widgets/slider'
+], function($, _, Backbone, FormModal, RiskTemplate, RelativeImportanceTemplate, SliderTemplate, RelImpTableTemplate, RelativeImportance) {
     var riskForm = FormModal.extend({
         className: 'modal form-modal risk-form tuning',
         name: 'risk',
