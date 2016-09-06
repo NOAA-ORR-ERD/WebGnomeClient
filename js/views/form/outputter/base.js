@@ -157,10 +157,16 @@ define([
             }
         },
 
+        removeOutputter: function() {
+            var model = this.model;
+            webgnome.model.get('outputters').remove(model);
+        },
+
         turnOff: function() {
             this.toggleOutputters(_.bind(function(){
                 webgnome.cache.rewind();
                 this.loadingModal.hide();
+                this.removeOutputter();
                 FormModal.prototype.save.call(this);
             }, this), false);
         },
