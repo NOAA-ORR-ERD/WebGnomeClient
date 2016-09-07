@@ -95,7 +95,6 @@ define([
                 this.$('.list').sortable({
                     update: _.bind(this.order, this)
                 });
-                this.$('.list').disableSelection();
             } else {
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel').removeClass('complete');
