@@ -1,6 +1,6 @@
 define([
     'underscore',
-    'jquery', 
+    'jquery',
     'backbone',
     'views/modal/form',
     'text!templates/form/map/upload.html',
