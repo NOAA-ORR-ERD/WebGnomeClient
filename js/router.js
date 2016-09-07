@@ -64,7 +64,6 @@ define([
         config: function(){
             this.menu('add');
             this.views.push(new SetupView());
-            localStorage.setItem('view', 'config');
         },
 
         locations: function(){
