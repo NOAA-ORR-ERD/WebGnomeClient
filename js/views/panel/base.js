@@ -16,6 +16,7 @@ define([
 
         initialize: function(options){
             BaseView.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model, 'sync', this.render);
         },
 
         rerender: function(model, xhr){
