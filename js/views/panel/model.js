@@ -17,11 +17,6 @@ define([
             'blur input': 'updateModel'
         }, BasePanel.prototype.events),
 
-        initialize: function(options) {
-            BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model, 'change', this.rerender);
-        },
-
         render: function() {
             var model = webgnome.model;
             var duration = model.formatDuration();
@@ -82,6 +77,7 @@ define([
 
             webgnome.model.save(null, {
                 validate: false,
+                silent: true
             });
         }
     });
