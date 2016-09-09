@@ -300,7 +300,7 @@ define([
 
             if(localStorage.getItem('autorun') === 'true'){
                 localStorage.setItem('autorun', '');
-                this.play()
+                this.play();
             }
         },
 
