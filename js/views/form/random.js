@@ -6,7 +6,7 @@ define([
     'text!templates/form/random.html'
 ], function($, _, Backbone, FormModal, FormTemplate){
      'use strict';
-	   var randomForm = FormModal.extend({
+     var randomForm = FormModal.extend({
       title: 'Diffusion Settings',
       className: 'modal form-modal',
       events: function(){
@@ -14,7 +14,7 @@ define([
 
           }, FormModal.prototype.events);
       },
-		  initialize: function(options, GnomeRandom){
+      initialize: function(options, GnomeRandom){
            FormModal.prototype.initialize.call(this, options);
            this.model = GnomeRandom;
       },
