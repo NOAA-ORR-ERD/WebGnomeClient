@@ -115,6 +115,7 @@ define([
         },
 
         run: function(){
+            localStorage.setItem('autorun', true);
             var view = localStorage.getItem('view');
             webgnome.router.navigate(view, true);
         },
