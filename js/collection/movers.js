@@ -14,7 +14,7 @@ define([
         findValidTimeInterval: function() {
             var obj = {};
             this.each(_.bind(function(el, i, collection){
-                var validType = !_.isNull('[RandomMover|GridCurrentMover|GridWindMover|WindMover|CatsMover]'.match(el.parseObjType())) ? true : false;
+                var validType = _.isNull('[RandomMover|GridCurrentMover|GridWindMover|WindMover|CatsMover]'.match(el.parseObjType())) ? true : false;
                 if (!el.get('extrapolate') && el.get('on') && validType) {
                     if ((_.isUndefined(obj.start) && _.isUndefined(obj.end)) || (el.get('real_data_start') >= obj.start && el.get('real_data_stop') <= obj.end)) {
                             obj.start = el.get('real_data_start');
