@@ -297,6 +297,11 @@ define([
             this.state = 'pause';
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
+
+            if(localStorage.getItem('autorun') === 'true'){
+                localStorage.setItem('autorun', '');
+                this.play()
+            }
         },
 
         loop: function(){

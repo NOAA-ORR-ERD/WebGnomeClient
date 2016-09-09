@@ -335,6 +335,9 @@ define([
                     webgnome.cache.step();
                 }, 200);
             }
+            if(localStorage.getItem('autorun') === 'true'){
+                localStorage.setItem('autorun', '');
+            }
         },
 
         loadStep: function(err, step){
