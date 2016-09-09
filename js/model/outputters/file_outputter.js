@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'model/base'
-], function(_, Backbone, moment, BaseModel){
+    'model/base',
+    'model/fileoutput'
+], function(_, Backbone, moment, BaseModel, FileOutputModel){
     'use strict';
     var fileOutputter = BaseModel.extend({
         urlRoot: '/outputter/',
@@ -23,6 +24,20 @@ define([
                 webgnome.model.on('change:name', this.setOutputterName, this);
             }
             BaseModel.prototype.initialize.call(this, options);
+        },
+
+        fetchFile: function() {
+            var obj_type = this.get('obj_type');
+            var fileOutputModel = new FileOutputModel({'obj_type': obj_type});
+
+            fileOutputModel.fetch({
+                success: function(model, status, xhr) {
+                    console.log(model);
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
         },
 
         setOutputterName: function(model) {

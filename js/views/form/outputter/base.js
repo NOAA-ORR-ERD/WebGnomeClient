@@ -167,6 +167,7 @@ define([
                 webgnome.cache.rewind();
                 this.loadingModal.hide();
                 this.removeOutputter();
+                window.location.href = webgnome.config.api + '/export/output/' + this.model.get('obj_type');
                 FormModal.prototype.save.call(this);
             }, this), false);
         },

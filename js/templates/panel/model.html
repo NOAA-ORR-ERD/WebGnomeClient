@@ -1,0 +1,38 @@
+<div class="panel-default panel">
+    <div class="panel-heading">
+        <div class="advanced-edit edit add"></div>
+        Incident 
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="name">Incident Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label" for="start_time">Start Time</label>
+                <div class="col-sm-6">
+                    <div class="input-group date">
+                        <input type="text" id="start_time" class="form-control datetime" value="{{ start_time }}" name="start">
+                        <span class="input-group-addon" id="datepick">
+                            <i></i>
+                        </span>
+                    </div>
+                </div>                        
+            </div>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">Max Duration</label>
+                <div class="col-sm-3">
+                    <label class="control-label" for="days">Day(s)</label>
+                    <input type="number" class="form-control" id="days" min="0" max="30" value="{{ duration.days }}">
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label" for="hours">Hour(s)</label>
+                    <input type="number" class="form-control" id="hours" min="0" max="23" value="{{ duration.hours }}">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
