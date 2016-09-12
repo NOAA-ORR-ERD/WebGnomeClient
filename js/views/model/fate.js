@@ -1551,7 +1551,6 @@ define([
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
-                this.timeDataset = [];
                 var keyOrder = [
                     'amount_released',
                     'evaporated',
@@ -1573,7 +1572,7 @@ define([
                     delete titles.off_maps;
                     delete titles.beached;
                 }
-                
+
                 var titlesKeys = Object.keys(titles);
                 keyOrder = _.union(keyOrder, titlesKeys);
                 var keys = keyOrder.filter(function(el, i, arr){
