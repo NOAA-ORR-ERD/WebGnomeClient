@@ -9,8 +9,10 @@ define([
     'sweetalert',
     'text!templates/location/index.html',
     'text!templates/location/list.html',
-    'views/wizard/location'
-], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard){
+    'views/wizard/location',
+    'views/default/help',
+    'views/modal/help'
+], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
     'use strict';
     var locationsView = Backbone.View.extend({
         className: 'page locations',
@@ -37,7 +39,10 @@ define([
                 id: 'locations-map',
                 layers: [
                     new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'})
+                        source: new ol.source.TileWMS({
+                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                params: {'LAYERS': '0', 'TILED': true}
+                            })
                     })
                 ]
             });
@@ -49,7 +54,7 @@ define([
 
         clickPin: function(feature){
             this.popup.setPosition(feature.getGeometry().getCoordinates());
-            var content = '<button class="btn btn-primary setup btn-block" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
+            var content = '<button class="btn btn-primary help" data-name="' + feature.get('title') + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
             this.$('.popup').popover({
                 placement: 'top',
                 html: true,
@@ -70,12 +75,37 @@ define([
                 }, this));
 
                 this.$('.setup').on('click', _.bind(this.setupLocation, this));
+
+                this.$('.help').on('click', _.bind(this.loadHelp, this));
             }, this));
 
             this.$('.popup').one('hide.bs.popover', _.bind(function(){
                 this.$('.load').off('click');
                 this.$('.setup').off('click');
+                this.$('.help').off('click');
             }, this));
+        },
+
+        loadHelp: function(e, options) {
+            var name, helpView, helpModal;
+            if (!_.isNull(e)){
+                e.stopPropagation();
+                name = $(e.target).data('name');
+            } else {
+                name = options.name;
+            }
+
+            name = 'views/model/locations/' + name.split(",")[0].replace(/\s/g, "_");
+
+            helpView = new HelpView({path: name, context: 'view'});
+            helpModal = new HelpModal({help: helpView});
+
+            helpModal.on('hidden', function(){
+                helpModal.close();
+            });
+
+            this.$('.popup').popover('destroy');
+            helpModal.render();
         },
 
         dblClickPin: function(feature) {
@@ -95,6 +125,9 @@ define([
                 this.$(element).attr('data-toggle', 'tooltip');
                 this.$(element).attr('data-placement', 'right');
                 this.$(element).attr('title', feature.get('title'));
+                this.$(element).one('hide.bs.tooltip', _.bind(function(){
+                    this.$(element).tooltip('destroy');
+                }, this));
                 this.$(element).tooltip('show');
             }
         },
@@ -243,7 +276,7 @@ define([
             var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
                 return feature;
             });
-            if (feature){
+            if (feature && this.$('.popover').length === 0){
                 if (this.$('.tooltip').length === 0) {
                     this.hoverTooltip(feature);
                 } else {
@@ -252,10 +285,10 @@ define([
                         this.hoverTooltip(feature);
                         }, this), 1);
                     }, this));
-                    this.$('.tooltip-hover').tooltip('destroy');
+                    this.$('.tooltip-hover').tooltip('hide');
                 }
             } else {
-                this.$('.tooltip-hover').tooltip('destroy');
+                this.$('.tooltip-hover').tooltip('hide');
             }
         },
 

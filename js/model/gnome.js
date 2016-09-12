@@ -3,6 +3,7 @@ define([
     'jquery',
     'backbone',
     'moment',
+    'sweetalert',
     'model/base',
     'model/cache',
     'model/map/map',
@@ -19,11 +20,15 @@ define([
     'model/movers/ice',
     'model/movers/grid_current',
     'model/movers/current_cycle',
+    'model/movers/component',
     'model/outputters/trajectory',
     'model/outputters/weathering',
     'model/outputters/current',
     'model/outputters/ice_raw',
     'model/outputters/ice_image',
+    'model/outputters/netcdf',
+    'model/outputters/kmz',
+    'model/outputters/shape',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/emulsification',
@@ -36,19 +41,27 @@ define([
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
     'model/user_prefs',
-    'model/risk/risk'
-], function(_, $, Backbone, moment,
+    'model/risk/risk',
+    'collection/movers',
+    'collection/environment',
+    'collection/spills'
+], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter,
-    EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    ROCSkimModel,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel){
+    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, CurrentCycleMover, ComponentMover,
+    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
+    KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
+    MoversCollection, EnvironmentCollection, SpillsCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
         ajax: [],
         ref_hash: {},
+        fileOutputters: [
+            'gnome.outputters.netcdf.NetCDFOutput',
+            'gnome.outputters.shape.ShapeOutput',
+            'gnome.outputters.kmz.KMZOutput'
+        ],
         model: {
             spills: {
                 'gnome.spill.spill.Spill': SpillModel
@@ -70,7 +83,8 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
-                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover
+                'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
+                'gnome.movers.current_movers.ComponentMover': ComponentMover
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
@@ -78,6 +92,9 @@ define([
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
+                'gnome.outputters.kmz.KMZOutput': KMZOutputter,
+                'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter,
+                'gnome.outputters.shape.ShapeOutput': ShapeOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -114,9 +131,9 @@ define([
                     new FayGravityViscous({on: false}),
                     new DissolutionWeatherer({on: false})
                 ]),
-                movers: new Backbone.Collection(),
-                environment: new Backbone.Collection(),
-                spills: new Backbone.Collection()
+                movers: new MoversCollection(),
+                environment: new EnvironmentCollection(),
+                spills: new SpillsCollection()
             };
         },
 
@@ -134,9 +151,12 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
+            this.get('spills').on('change add', this.spillsTimeCompliance, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
+            this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            this.get('environment').on('change add', this.envTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -170,6 +190,27 @@ define([
                 this.get('spills').each(function(model){
                     model.get('release').durationShift(start_time);
                 });
+            }
+        },
+
+        spillsTimeCompliance: function() {
+            var start_time = this.get('start_time');
+
+            if (!this.get('spills').startTimeComplies(start_time)) {
+                swal({
+                    title: "Model start does not match spill(s) start time(s)!",
+                    text: "One or more spills do not start when the model starts. Would you like to fit the model start to the spill(s) start?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No"
+                }).then(_.bind(function(correct){
+                    if (correct) {
+                        var spillStart = this.get('spills').at(0).get('release').get('release_time');
+                        this.set('start_time', spillStart);
+                        this.save();
+                    }
+                }, this));
             }
         },
 
@@ -280,6 +321,98 @@ define([
             // if (attrs.start_time === null || attrs.duration) {
             //     return 'Model needs both start time and duration.';
             // }
+        },
+
+        composeInvalidMsg: function(arr) {
+            var msg = '<code>';
+
+            _.each(arr, function(el, i, list){
+                msg += el.model.get('name') + ' <i>off by ' + el.timeDiff + '</i><br>';
+            });
+
+            msg += '</code>';
+
+            return msg;
+        },
+
+        compareModelRunTimeInterval: function() {
+
+        },
+
+        fitToInterval: function(interval) {
+            var duration = moment.duration(moment(interval.end).diff(interval.start)).asMinutes();
+            this.set('start_time', interval.start);
+            this.set('duration', duration);
+        },
+
+        moversTimeComplianceCheck: function(col) {
+            var modelStart = this.get('start_time');
+            var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').format();
+            var moverInterval = this.get('movers').findValidTimeInterval();
+            var moverStart = !_.isUndefined(moverInterval.start) ? moverInterval.start : modelStart;
+            var moverEnd = !_.isUndefined(moverInterval.end) ? moverInterval.end : modelEnd;
+
+            if (moverStart > modelStart || moverEnd < modelEnd) {
+                swal({
+                    title: 'Model runtime',
+                    text: 'The movers listed below are out of sync with the model:<br>You can alter the model to fit the data.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Select Option',
+                    cancelButtonText: 'Cancel'
+                }).then(_.bind(function(options) {
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option',
+                            text: 'You can fit the model runtime to the data or extrapolate the data',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Fit Model',
+                            cancelButtonText: 'Extrapolate'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                this.fitToInterval(moverInterval);
+                            } else {
+                                //this.extrapolateCollection(invalidModels);
+                            }
+                        }, this));
+                    }
+                }, this));
+            }
+        },
+
+        envTimeComplianceCheck: function(e) {
+            var changeInWind = e.get('obj_type') === 'gnome.environment.wind.Wind';
+            var invalidModels = this.get('environment').getTimeInvalidModels();
+            var msg = this.composeInvalidMsg(invalidModels);
+
+            if (changeInWind && invalidModels.length > 0) {
+                swal({
+                    title: 'Environment data incompatible with model runtime',
+                    text: 'The data listed below are out of sync with the model:<br>' + msg + 'You can alter the model to fit the data.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Select Option',
+                    cancelButtonText: 'Cancel'
+                }).then(_.bind(function(options){
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option',
+                            text: 'You can fit the model runtime to the data or extrapolate the data',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Fit Model',
+                            cancelButtonText: 'Extrapolate'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                console.log('fit');
+                            } else {
+                                console.log('extra');
+                            }
+                        }, this));
+                    }
+                }), this);
+            }
         },
 
         formatDuration: function() {

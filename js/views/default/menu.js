@@ -6,10 +6,13 @@ define([
     'views/modal/about',
     'views/modal/hotkeys',
     'views/form/location',
+    'views/form/outputter/netcdf',
+    'views/form/outputter/kmz',
+    'views/form/outputter/shape',
     'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, swal, GnomeModel) {
+ ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, NetCDFForm, KMZForm, ShapeForm, swal, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -49,6 +52,9 @@ define([
             'click .rewind': 'rewind',
             // 'click .step': 'step',
             // 'click .rununtil': 'rununtil',
+            'click .netcdf': 'netcdf',
+            'click .kmz': 'kmz',
+            'click .shape': 'shape',
 
             'click .about': 'about',
             'click .overview': 'overview',
@@ -109,12 +115,49 @@ define([
         },
 
         run: function(){
+            localStorage.setItem('autorun', true);
             var view = localStorage.getItem('view');
             webgnome.router.navigate(view, true);
         },
 
         rewind: function(){
             webgnome.cache.rewind();
+        },
+
+        netcdf: function(event) {
+            event.preventDefault();
+            var netCDFForm = new NetCDFForm();
+
+            netCDFForm.on('wizardclose', netCDFForm.close);
+            netCDFForm.on('save', _.bind(function(model){
+                netCDFForm.close();
+            }, this));
+
+            netCDFForm.render();
+        },
+
+        kmz: function(event) {
+            event.preventDefault();
+            var kmzForm = new KMZForm();
+            
+            kmzForm.on('wizardclose', kmzForm.close);
+            kmzForm.on('save', _.bind(function(model){
+                kmzForm.close();
+            }, this));
+
+            kmzForm.render();
+        },
+
+        shape: function(event) {
+            event.preventDefault();
+            var shapeForm = new ShapeForm();
+
+            shapeForm.on('wizardclose', shapeForm.close);
+            shapeForm.on('save', _.bind(function(model){
+                shapeForm.close();
+            }, this));
+
+            shapeForm.render();
         },
 
         newModel: function(event){

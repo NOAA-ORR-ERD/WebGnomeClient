@@ -10,6 +10,7 @@ define([
     'views/modal/form',
     'model/gnome',
     'views/form/model',
+    'views/panel/model',
     'views/panel/wind',
     'views/panel/water',
     'views/panel/map',
@@ -20,19 +21,12 @@ define([
     'views/panel/beached',
     'views/default/timeline',
     'jqueryDatetimepicker'
-], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm,
+], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm, ModelPanel,
     WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, SpillPanel, ResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
         current_extents: [],
-
-        events: function(){
-            return _.defaults({
-                'blur input': 'updateModel',
-                'click .advanced-edit': 'clickModel'
-            }, BaseView.prototype.events);
-        },
 
         initialize: function(options){
             this.module = module;
@@ -70,6 +64,7 @@ define([
             BaseView.prototype.render.call(this);
 
             this.children = [
+                this.modelpanel = new ModelPanel(),
                 this.wind = new WindPanel(),
                 this.water = new WaterPanel(),
                 this.map = new MapPanel(),
@@ -81,6 +76,7 @@ define([
             ];
 
             this.$('.model-objects').append(
+                this.modelpanel.$el,
                 this.wind.$el,
                 this.water.$el,
                 this.map.$el,
@@ -108,25 +104,6 @@ define([
             this.$('.icon').tooltip({
                 placement: 'bottom'
             });
-            this.$('.datetime').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
-            });
-            this.$('#datepick').on('click', _.bind(function(){
-                this.$('.datetime').datetimepicker('show');
-            }, this));
-
-            var delay = {
-                show: 500,
-                hide: 100
-            };
-
-            this.$('.panel-heading .advanced-edit').tooltip({
-                title: 'Advanced Edit',
-                delay: delay,
-                container: 'body'
-            });
         },
 
         layout: function(){
@@ -137,20 +114,6 @@ define([
             var compiled = '<div class="gnome-help" title="Click for help"></div>';
             this.$('h2:first').append(compiled);
             this.$('h2:first .gnome-help').tooltip();
-        },
-
-        clickModel: function(){
-            var form = new GnomeForm(null, webgnome.model);
-            form.on('hidden', form.close);
-            form.on('save', _.bind(function(){
-                for(var child in this.children){
-                    this.children[child].close();
-                }
-                this.$el.html('');
-
-                this.render();
-            }, this));
-            form.render();
         },
 
         clickDate: function(){
@@ -170,22 +133,6 @@ define([
                     return $('.setup .col-md-6').outerWidth() / 2;
                 }(),
                 item: '.object',
-            });
-        },
-
-        updateModel: function(){
-            var name = this.$('#name').val();
-            webgnome.model.set('name', name);
-            var start_time = moment(this.$('.datetime').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            webgnome.model.set('start_time', start_time);
-
-            var days = this.$('#days').val();
-            var hours = this.$('#hours').val();
-            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
-            webgnome.model.set('duration', duration);
-
-            webgnome.model.save(null, {
-                validate: false,
             });
         },
 

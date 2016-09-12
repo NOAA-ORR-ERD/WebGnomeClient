@@ -430,6 +430,12 @@ img{
         -moz-transform-origin: 0 0;
         -webkit-transform-origin: 0 0;
     }
+
+    .secondYaxisLabel {
+        .yaxisLabel;
+        left: 1110px;
+    }
+
     .axisLabel {
         position: absolute;
         text-align: center;
@@ -598,12 +604,12 @@ nav.navbar{
         }
     }
 
-    .run, .rewind{
+    .menu-button, .rewind{
         float: right;
         margin-right: 15px;
         margin-top: 8px;
     }
-    .run{
+    .menu-button {
         margin-right: 5px;
     }
     
@@ -1439,6 +1445,10 @@ nav.navbar{
         &.top{
             margin-top: -32px;
         }
+
+        .help {
+            .pull-right;
+        }
     }
     .row{
         .make-row();
@@ -1461,7 +1471,7 @@ nav.navbar{
     }
 
     .location-list{
-        width: 240px;
+        width: 300px;
         float: right;
         height: 700px;
         overflow-y: scroll;

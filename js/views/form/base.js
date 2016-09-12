@@ -26,7 +26,7 @@ define([
             // if the user is inputting a negative numerical value
             // reset it back to the non-neg version.
             if(value < 0 || value === '-'){
-                nonneg = value.replace('-', '');
+                var nonneg = value.replace('-', '');
                 $(e.target).val(parseFloat(nonneg));
                 value = nonneg;
             }

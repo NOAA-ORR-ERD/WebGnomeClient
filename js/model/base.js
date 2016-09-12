@@ -15,6 +15,10 @@ define([
             }
         },
 
+        parseObjType: function(){
+            return this.get('obj_type').split('.').pop();
+        },
+
         parse: function(response){
             // model needs a special parse function to turn child objects into their appropriate models
             for(var key in this.model){

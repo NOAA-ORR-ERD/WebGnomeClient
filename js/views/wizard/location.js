@@ -50,6 +50,10 @@ define([
             });
         },
 
+        helpNameConvert: function(text) {
+            return text.split(",")[0].replace(/\s/g, "_");
+        },
+
         load_location: function(){
             webgnome.model.set('uncertain', true);
             webgnome.model.save(null, {validate: false});
@@ -64,17 +68,19 @@ define([
             _.each(this.location.get('steps'), _.bind(function(el){
                 var title = [];
                 title[0] = el.title;
-                title[1] = '<span class="sub-title">' + this.name + '</span>';
+                title[1] = this.name;
+                var helpFilename = this.helpNameConvert(this.name);
                 if(el.type === 'text' || el.type === 'welcome'){
-                    if(!el.title){
-                        title[0] = 'Welcome';
-                    }
-                    this.steps.push(new TextForm({
+                    var textOpts = {
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: el.buttons
-                    }));
+                    };
+                    if (el.type === 'welcome') {
+                        textOpts.moduleId = 'views/model/locations/' + helpFilename;
+                    }
+                    this.steps.push(new TextForm(textOpts));
                 } else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
                         name: el.name,

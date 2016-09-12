@@ -80,7 +80,10 @@ define([
                         target: 'map-form-coast-map',
                         layers: [
                             new ol.layer.Tile({
-                                source: new ol.source.MapQuest({layer: 'osm'})
+                                    source: new ol.source.TileWMS({
+                                    url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                    params: {'LAYERS': '0', 'TILED': true}
+                                })
                             })
                         ],
                         view: new ol.View2D({

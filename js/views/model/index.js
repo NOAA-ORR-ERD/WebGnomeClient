@@ -39,7 +39,7 @@ define([
         },
 
         render: function(){
-            this.$el.append(IndexTemplate);
+            // this.$el.append(IndexTemplate);
             $('body').append(this.$el);
             var view = localStorage.getItem('view');
 

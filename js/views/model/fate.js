@@ -80,10 +80,21 @@ define([
                 borderColor: '#ddd',
                 hoverable: true,
             },
-            xaxis: {
-                mode: 'time',
-                timezone: 'browser'
-            },
+            xaxes: [
+                {
+                    position: 'bottom',
+                    mode: 'time',
+                    timezone: 'browser',
+                    timeformat: "%Y/%m/%d",
+                    minTickSize: [1, "day"]
+                },
+                {
+                    position: 'top',
+                    mode: 'time',
+                    timezone: 'browser',
+                    timeformat: "%H:%M"
+                }
+            ],
             series: {
                 lines: {
                     show: true,
@@ -119,6 +130,21 @@ define([
             'dissolution': 'dissolution'
         },
 
+        nameToColorMap: {
+            'evaporated': 'rgb(141, 107, 7)',
+            'natural_dispersion': 'rgb(154, 26, 0)',
+            'dissolution': 'rgb(197, 11, 108)',
+            'sedimentation': 'rgb(112, 48, 160)',
+            'floating': 'rgb(13, 136, 0)',
+            'amount_released': 'rgb(255, 255, 255)',
+            'chem_dispersed': 'rgb(55, 96, 146)',
+            'skimmed': 'rgb(0, 51, 153)',
+            'burned': 'rgb(49, 133, 156)',
+            'beached': 'rgb(228, 108, 10)',
+            'off_maps': 'rgb(146, 208, 80)',
+            'observed_beached': 'rgb(228, 108, 10)'
+        },
+
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
@@ -138,6 +164,21 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
             webgnome.cache.on('step:failed', this.toggleRAC, this);
+        },
+
+        generateColorArray: function(dataset) {
+            var colors = [];
+
+            _.each(dataset, _.bind(function(el, i, arr){
+                var color = this.nameToColorMap[el.name];
+                if (color) {
+                    colors.push(color);
+                } else {
+                    colors.push(this.colors[1]);
+                }
+            }, this));
+
+            return colors;
         },
 
         noWeathering: function(options){
@@ -293,6 +334,9 @@ define([
                 setTimeout(function(){
                     webgnome.cache.step();
                 }, 200);
+            }
+            if(localStorage.getItem('autorun') === 'true'){
+                localStorage.setItem('autorun', '');
             }
         },
 
@@ -557,16 +601,21 @@ define([
 
             for(var i = 0; i < cloneset.length; i++){
                 cloneset[i].data = cloneset[i][selection];
+                if (cloneset[i].yaxis) {
+                    delete cloneset[i].yaxis;
+                }
             }
 
             if(_.isUndefined(this.graphOilBudget)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                delete options.yaxes;
+                options.yaxis = {};
                 options.grid.autoHighlight = false;
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
                 options.needle.tooltips = false;
-                options.colors = this.colors;
+                options.colors = this.generateColorArray(cloneset);
                 options.legend.show = false;
                 this.graphOilBudget = $.plot('#budget-graph .timeline .chart .canvas', cloneset, options);
                 this.renderPiesTimeout = null;
@@ -599,7 +648,8 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'secondtime'
             ]);
             
             var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
@@ -610,9 +660,9 @@ define([
                 var units = webgnome.model.get('spills').at(0).get('units');
                 for(var i = 0; i < data.length; i++){
                     if(data[i].label !== 'Amount released'){
-                        var k = i - 1;
+                        var color = this.nameToColorMap[data[i].name];
                         compiled += _.template(BreakdownTemplate, {
-                            color: this.colors[k],
+                            color: color,
                             width: width,
                             label: data[i].label,
                             value: Math.round(data[i].data) + ' ' + units
@@ -660,7 +710,7 @@ define([
                         innerRadius: 0.65
                     }
                 },
-                colors: this.colors,
+                colors: this.generateColorArray(dataset),
                 legend: {
                     show: false
                 }
@@ -718,7 +768,7 @@ define([
                         y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
                     }
                     
-                    d.push({label: this.formatLabel(series.name), data: y});
+                    d.push({label: this.formatLabel(series.name), data: y, name: series.name});
                 }
             }
             return d;
@@ -738,7 +788,8 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'secondtime'
                 ]);
             var table = this.$('#budget-table table:first');
             var display = {
@@ -809,9 +860,8 @@ define([
                         to_unit = display.released;
                         var color = '';
 
-                        if (dataset[set].label !== 'Amount released') {
-                            var offByOne = set - 1;
-                            color = this.colors[offByOne];
+                        if (dataset[set].label !== 'Amount released' && dataset[set].name !== 'secondtime') {
+                            color = this.nameToColorMap[dataset[set].name];
                             color = color.replace('rgb', 'rgba').replace(')', ',' + opacity + ')');
                         }
 
@@ -898,11 +948,11 @@ define([
         },
 
         renderGraphEvaporation: function(dataset){
-            dataset = this.pluckDataset(dataset, ['evaporated']);
+            dataset = this.pluckDataset(dataset, ['evaporated', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphEvaporation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[0]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEvaporation.setData(dataset);
@@ -913,11 +963,11 @@ define([
         },
 
         renderGraphDispersion: function(dataset){
-            dataset = this.pluckDataset(dataset, ['natural_dispersion']);
+            dataset = this.pluckDataset(dataset, ['natural_dispersion', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDispersion)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[1]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDispersion.setData(dataset);
@@ -928,11 +978,11 @@ define([
         },
 
         renderGraphSedimentation: function(dataset){
-            dataset = this.pluckDataset(dataset, ['sedimentation']);
+            dataset = this.pluckDataset(dataset, ['sedimentation', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphSedimentation)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[3]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphSedimentation.setData(dataset);
@@ -943,7 +993,7 @@ define([
         },
 
         renderGraphDensity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_density', 'water_density']);
+            dataset = this.pluckDataset(dataset, ['avg_density', 'water_density', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             dataset[0].label = 'Average Oil (Emulsion) Density';
             if(_.isUndefined(this.graphDensity)){
@@ -960,10 +1010,27 @@ define([
         },
 
         renderGraphEmulsification: function(dataset){
-            dataset = this.pluckDataset(dataset, ['water_content']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+            dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
+
+            for (var i = 0; i < dataset.length; i++) {
+                if (dataset[i].name === 'floating') {
+                    dataset[i].yaxis = 2;
+                    dataset[i].label = 'Surface Volume including Emulsion';
+                }
+                dataset[i].needle = {
+                    label: _.bind(this.formatNeedleLabel, this),
+                    formatX: _.bind(this.formatNeedleTime, this)
+                };
+
+                if (dataset[i].name !== 'secondtime') {
+                    dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                }
+            }
+            
             if(_.isUndefined(this.graphEmulsification)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
+                delete options.yaxis;
+                options.yaxes = [{}, { position: 'right'}];
                 this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphEmulsification.setData(dataset);
@@ -974,7 +1041,7 @@ define([
         },
 
         renderGraphViscosity: function(dataset){
-            dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely']);
+            dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphViscosity)){
                 var options = $.extend(true, {}, this.defaultChartOptions);
@@ -1001,11 +1068,11 @@ define([
         },
 
         renderGraphDissolution: function(dataset){
-            dataset = this.pluckDataset(dataset, ['dissolution']);
+            dataset = this.pluckDataset(dataset, ['dissolution', 'secondtime']);
             dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
             if(_.isUndefined(this.graphDissolution)) {
                 var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = [this.colors[2]];
+                options.colors = this.generateColorArray(dataset);
                 this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
             } else {
                 this.graphDissolution.setData(dataset);
@@ -1072,7 +1139,7 @@ define([
                 options.series.stack = true;
                 options.series.group = true;
                 options.series.lines.fill = 1;
-                options.colors = this.colors;
+                options.colors = this.generateColorArray(dataset);
                 options.selection = {mode: 'x', color: '#428bca'};
                 options.crosshair = undefined;
                 options.tooltip = false;
@@ -1085,7 +1152,7 @@ define([
                 for(var i = 0; i < dataset.length; i++){
                     if(dataset[i].label !== 'Amount released'){
                         compiled += _.template(BreakdownTemplate, {
-                            color: this.colors[i],
+                            color: this.nameToColorMap[dataset[i].name],
                             width: 'auto',
                             label: dataset[i].label,
                             value: 0
@@ -1346,28 +1413,22 @@ define([
         },
 
         modelInfoCSV: function() {
-            var headerRow = [];
-            var valueRow = [];
+            var csv = '';
             var data = this.$('.info div');
 
             data.each(_.bind(function(i, el, arr){
                 var obj = this.$(el);
                 var headerText = obj.children('label').text().replace(/:/g, '');
-                var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,/g, '');
+                var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,|°/g, '');
 
                 if (headerText.indexOf("Time") > -1) {
                     valueText = this.convertMomentToDateTimeCSV(valueText);
                 }
 
-                headerRow.push(headerText);
-                valueRow.push(valueText);
+                csv += headerText + ',' + valueText + '\r\n';
             }, this));
 
-            headerRow = headerRow.join(',');
-            valueRow = valueRow.join(',');
-            var csv = [headerRow, valueRow];
-
-            return csv.join('\r\n');
+            return csv;
         },
 
         exportCSV: function() {
@@ -1490,6 +1551,7 @@ define([
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
+                this.timeDataset = [];
                 var titles = _.clone(nominal);
                 delete titles.step_num;
                 delete titles.time_stamp;
@@ -1526,6 +1588,15 @@ define([
                         }
                     });
                 }
+
+                this.dataset.push({
+                    name: 'secondtime',
+                    data: [],
+                    high: [],
+                    low: [],
+                    nominal: [],
+                    xaxis: 2
+                });
             }
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
@@ -1600,13 +1671,22 @@ define([
                     high_value = high[this.dataset[set].name];
                 }
 
-                
                 this.dataset[set].high.push([date.unix() * 1000, high_value]);
                 this.dataset[set].low.push([date.unix() * 1000, low_value]);
                 this.dataset[set].data.push([date.unix() * 1000, nominal_value, 0, low_value, high_value]);
                 this.dataset[set].nominal.push([date.unix() * 1000, nominal_value]);
                 webgnome.mass_balance = this.dataset;
             }
+
+        },
+
+        addAxesValue: function(dataset) {
+            var data = _.clone(dataset);
+            for (var key in data) {
+                data[key].xaxis = 2;
+            }
+
+            return dataset.concat(data);
         },
 
         runIterator: function(set){
@@ -1617,9 +1697,16 @@ define([
             });
         },
 
-        formatNeedleLabel: function(text){
+        formatNeedleLabel: function(text, n){
             var num = parseFloat(parseFloat(text).toPrecision(this.dataPrecision)).toString();
-            var units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
+            var units;
+
+            if (n === 1) {
+                units = $('#weatherers .tab-pane:visible .yaxisLabel').text();
+            } else {
+                units = $('#weatherers .tab-pane:visible .secondYaxisLabel').text();
+            }
+            
             return num + ' ' + units;
         },
 

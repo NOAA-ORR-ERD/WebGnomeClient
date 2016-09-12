@@ -24,7 +24,7 @@ require.config({
         flotsymbol: 'lib/flot/jquery.flot.symbol',
         flottime: 'lib/flot/jquery.flot.time',
         flotresize: 'lib/flot/jquery.flot.resize',
-        flotdirection: 'lib/flotdirection/index',
+        flotdirection: 'lib/flotdirection/jquery.flot.direction',
         flotspline: 'lib/flotspline/jquery.flot.spline',
         flotstack: 'lib/flot/jquery.flot.stack',
         flotpie: 'lib/flot/jquery.flot.pie',
@@ -82,6 +82,7 @@ require.config({
         flotextents: ['flot'],
         flotnavigate: ['flot'],
         flotgantt: ['JUMFlotLib'],
+        'moment-round': ['moment'],
         html2canvas: {
             exports: 'html2canvas'
         },

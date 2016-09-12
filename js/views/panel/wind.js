@@ -14,7 +14,7 @@ define([
     'flottime',
     'flotresize',
     'flotdirection',
-    'jqueryui/sortable'
+    'jqueryui/widgets/sortable'
 ], function(_, $, Backbone, BasePanel, WindModel, WindMoverModel, WindForm, WindPanelTemplate, nucos, moment, swal){
     var windPanel = BasePanel.extend({
         className: 'col-md-3 wind panel-view object',
@@ -95,7 +95,6 @@ define([
                 this.$('.list').sortable({
                     update: _.bind(this.order, this)
                 });
-                this.$('.list').disableSelection();
             } else {
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel').removeClass('complete');

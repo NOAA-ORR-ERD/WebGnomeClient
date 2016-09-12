@@ -37,6 +37,10 @@ define([
             this.listenTo(webgnome.model.get('map'), 'sync', this.rerender);
         },
 
+        rerender: function() {
+            this.render();
+        },
+
         render: function(){
             var map = webgnome.model.get('map');
 
@@ -74,7 +78,10 @@ define([
                         controls: [],
                         layers: [
                             new ol.layer.Tile({
-                                source: new ol.source.MapQuest({layer: 'osm'}),
+                                source: new ol.source.TileWMS({
+                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                params: {'LAYERS': '0', 'TILED': true}
+                            }),
                                 visible: webgnome.model.get('map').geographical
                             }),
                             shorelineLayer
@@ -98,7 +105,7 @@ define([
                     map: false
                 }));
                 this.$('.panel').addClass('complete');
-                this.$('.panel-body').addClass('text').show().html();
+                this.$('.panel-body').addClass('text').show();
                 this.$('.panel-body').removeClass('map');
             }
             BasePanel.prototype.render.call(this);
@@ -117,12 +124,12 @@ define([
             }, this));
             mapForm.on('select', _.bind(function(form){
                 mapForm.on('hidden', _.bind(function(){
-                    form.render();
                     form.on('hidden', form.close);
                     form.on('save', _.bind(function(map){
                         webgnome.model.set('map', map);
                         webgnome.model.save(null, {validate: false});
                     }, this));
+                    form.render();
                 }, this));
             }, this));
             mapForm.render();

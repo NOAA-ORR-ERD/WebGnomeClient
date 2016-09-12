@@ -18,7 +18,7 @@ define([
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
-    'jqueryui/slider',
+    'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
     FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, WindModel, NwsWind){
@@ -97,7 +97,10 @@ define([
                 center: ol.proj.transform([-137.49, 47.97], 'EPSG:4326', 'EPSG:3857'),
                 layers: [
                     new ol.layer.Tile({
-                        source: new ol.source.MapQuest({layer: 'osm'})
+                        source: new ol.source.TileWMS({
+                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                params: {'LAYERS': '0', 'TILED': true}
+                            })
                     }),
                     new ol.layer.Vector({
                         source: new ol.source.Vector({
