@@ -1565,16 +1565,21 @@ define([
                     'floating'
                 ];
 
+                var titles = _.clone(nominal);
+
                 if (webgnome.model.get('mode') !== 'adios') {
                     keyOrder.splice(keyOrder.length - 2, 0, 'beached', 'off_maps');
+                } else {
+                    delete titles.off_maps;
+                    delete titles.beached;
                 }
-                var titles = _.clone(nominal);
+                
                 var titlesKeys = Object.keys(titles);
                 keyOrder = _.union(keyOrder, titlesKeys);
                 var keys = keyOrder.filter(function(el, i, arr){
                     return !_.isUndefined(titles[el]);
                 });
-                
+
                 for(var type in keys){
                     this.dataset.push({
                         data: [],
