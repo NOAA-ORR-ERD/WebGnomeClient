@@ -106,7 +106,6 @@ define([
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
-                'gnome.weatherers.ROC.Skimmer': ROCSkimModel,
                 'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer
             }
         },

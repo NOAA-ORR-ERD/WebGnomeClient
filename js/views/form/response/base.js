@@ -39,5 +39,5 @@ define([
         }
     });
 
-    return BaseResponseForm;
+    return baseResponseForm;
 });
