@@ -7,18 +7,20 @@ define([
     var ROCWeatherer = BaseWeatherer.extend({
 
         calculateOperatingPeriods: function(){
-            var start = moment(webgnome.model.get('start_time'));
-            var end = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
-            var days = moment.duration(end.unix() - start.unix(), 'seconds').days();
+            if(webgnome.model){
+                var start = moment(webgnome.model.get('start_time'));
+                var end = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's');
+                var days = moment.duration(end.unix() - start.unix(), 'seconds').days();
 
-            var periods = [];
-            for(var d = 0; d < days; d++){
-                periods.push([
-                    moment(start.format('YYYY-MM-DD') + 'T07:00:00').add(d, 'days').format('YYYY-MM-DDTHH:mm:ss'),
-                    moment(start.format('YYYY-MM-DD') + 'T19:00:00').add(d, 'days').format('YYYY-MM-DDTHH:mm:ss')
-                ]);
+                var periods = [];
+                for(var d = 0; d < days; d++){
+                    periods.push([
+                        moment(start.format('YYYY-MM-DD') + 'T07:00:00').add(d, 'days').format('YYYY-MM-DDTHH:mm:ss'),
+                        moment(start.format('YYYY-MM-DD') + 'T19:00:00').add(d, 'days').format('YYYY-MM-DDTHH:mm:ss')
+                    ]);
+                }
+                return periods;
             }
-            return periods;
         },
 
         /**

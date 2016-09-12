@@ -34,7 +34,6 @@ define([
     'model/weatherers/emulsification',
     'model/weatherers/burn',
     'model/weatherers/skim',
-    'model/weatherers/roc_skim',
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
