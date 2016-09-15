@@ -269,7 +269,7 @@ define([
         populateDateTime: function() {
             var timeseries = this.model.get('timeseries');
             var starting_time = timeseries[timeseries.length - 1][0];
-            this.$('#variable-datetime').val(moment.utc(starting_time).format(webgnome.config.date_format.moment));
+            this.$('#variable-datetime').val(moment(starting_time).format(webgnome.config.date_format.moment));
         },
 
         renderSpills: function() {
