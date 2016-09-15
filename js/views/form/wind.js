@@ -360,6 +360,7 @@ define([
         },
 
         nwsLoad: function(model){
+            console.log(model);
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
@@ -647,7 +648,7 @@ define([
                     velocity = low + ' - ' + high;
                 }
 
-                var date = moment.utc(el[0]).format(webgnome.config.date_format.moment);
+                var date = moment(el[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarStaticTemplate);
                 var template = compiled({
                     tsindex: index,
