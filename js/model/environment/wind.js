@@ -29,6 +29,11 @@ define([
             units: 'knots'
         },
 
+        initialize: function(attrs, options) {
+            BaseModel.prototype.initialize.call(this, attrs, options);
+            this.on('change:timeseries', this.convertTimeSeries, this);
+        },
+
         checkWindSpeed: function() {
             var timeseries = this.get('timeseries');
             for (var i = 0; i < timeseries.length; i++) {
@@ -45,6 +50,14 @@ define([
 
             var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
             return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
+        },
+
+        convertTimeSeries: function() {
+            if (this.get('timeseries').length > 1) {
+                _.each(this.get('timeseries'), function(el, i, ts) {
+                    el[0] = moment(el[0]).format();
+                });
+            }
         },
 
         validate: function(attrs, options){
