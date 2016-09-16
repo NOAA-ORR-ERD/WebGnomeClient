@@ -55,7 +55,8 @@ define([
         convertTimeSeries: function() {
             if (this.get('timeseries').length > 1) {
                 _.each(this.get('timeseries'), function(el, i, ts) {
-                    el[0] = moment(el[0]).format();
+                    var timeString = el[0].replace(/[+-]\d\d:\d\d/, '');
+                    el[0] = moment(timeString).format("YYYY-MM-DDTHH:mm:ss");
                 });
             }
         },
