@@ -1593,8 +1593,7 @@ define([
                     'water_density',
                     'water_viscosity',
                     'dispersibility_difficult',
-                    'dispersibility_unlikely',
-                    'floating'
+                    'dispersibility_unlikely'
                 ];
 
                 var titles = _.clone(nominal);
