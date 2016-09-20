@@ -379,9 +379,9 @@ define([
             }
         },
 
-        envTimeComplianceCheck: function(e) {
-            var changeInWind = e.get('obj_type') === 'gnome.environment.wind.Wind';
-            var invalidModels = this.get('environment').getTimeInvalidModels();
+        envTimeComplianceCheck: function(model) {
+            var changeInWind = model.get('obj_type') === 'gnome.environment.wind.Wind';
+            var invalidModels = this.get('environment').getTimeInvalidModels(model);
             var msg = this.composeInvalidMsg(invalidModels);
 
             if (changeInWind && invalidModels.length > 0) {

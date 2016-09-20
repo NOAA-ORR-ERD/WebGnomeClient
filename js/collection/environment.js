@@ -6,10 +6,10 @@ define([
     'use strict';
     var environment = Backbone.Collection.extend({
 
-        windCompliance: function() {
+        windCompliance: function(model) {
             var modelStart = moment(this.get('start_time')).unix();
             var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').unix();
-            var windData = this.findWhere({'obj_type': 'gnome.environment.wind.Wind'});
+            var windData = model;
             var windArr = [];
 
             if (!_.isUndefined(windData) && !_.isUndefined(windData.get('timeseries'))) {
@@ -45,9 +45,9 @@ define([
             return windArr;
         },
 
-        getTimeInvalidModels: function() {
+        getTimeInvalidModels: function(model) {
             var dataModels = [];
-            var wind = this.windCompliance();
+            var wind = this.windCompliance(model);
             dataModels = dataModels.concat(wind);
 
             return dataModels;
