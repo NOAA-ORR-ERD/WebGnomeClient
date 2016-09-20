@@ -42,7 +42,6 @@ define([
     'model/user_prefs',
     'model/risk/risk',
     'collection/movers',
-    'collection/environment',
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
@@ -50,7 +49,7 @@ define([
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
-    MoversCollection, EnvironmentCollection, SpillsCollection){
+    MoversCollection, SpillsCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -130,7 +129,7 @@ define([
                     new DissolutionWeatherer({on: false})
                 ]),
                 movers: new MoversCollection(),
-                environment: new EnvironmentCollection(),
+                environment: new Backbone.Collection(),
                 spills: new SpillsCollection()
             };
         },
