@@ -7,8 +7,8 @@ define([
     var environment = Backbone.Collection.extend({
 
         windCompliance: function(model) {
-            var modelStart = moment(this.get('start_time')).unix();
-            var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').unix();
+            var modelStart = moment(webgnome.model.get('start_time')).unix();
+            var modelEnd = moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 'm').unix();
             var windData = model;
             var windArr = [];
 
