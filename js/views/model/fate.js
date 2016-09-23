@@ -1551,25 +1551,33 @@ define([
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
-                this.timeDataset = [];
+                var keyOrder = [
+                    'amount_released',
+                    'evaporated',
+                    'natural_dispersion',
+                    'sedimentation',
+                    'dissolution',
+                    'water_density',
+                    'water_viscosity',
+                    'dispersibility_difficult',
+                    'dispersibility_unlikely',
+                    'floating'
+                ];
+
                 var titles = _.clone(nominal);
-                delete titles.step_num;
-                delete titles.time_stamp;
-                delete titles.floating;
-                delete titles.natural_dispersion;
-                delete titles.evaporated;
-                delete titles.amount_released;
-                delete titles.beached;
-                delete titles.off_maps;
-                var keys = Object.keys(titles);
-                keys.unshift('amount_released', 'evaporated', 'natural_dispersion');
-                // maybe add a check to see if the map is not a gnome map aka water world.
-                // beach and off_maps wouldn't apply then.
-                if (webgnome.model.get('mode') !== 'adios'){
-                    keys.push('beached', 'off_maps');
+
+                if (webgnome.model.get('mode') !== 'adios') {
+                    keyOrder.splice(keyOrder.length - 2, 0, 'beached', 'off_maps');
+                } else {
+                    delete titles.off_maps;
+                    delete titles.beached;
                 }
 
-                keys.push('floating', 'water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
+                var titlesKeys = Object.keys(titles);
+                keyOrder = _.union(keyOrder, titlesKeys);
+                var keys = keyOrder.filter(function(el, i, arr){
+                    return !_.isUndefined(titles[el]);
+                });
 
                 for(var type in keys){
                     this.dataset.push({

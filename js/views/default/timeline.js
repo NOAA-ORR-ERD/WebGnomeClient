@@ -64,21 +64,24 @@ define([
             // general movers w/ bundle collection for inf
             var bundle = [];
             webgnome.model.get('movers').forEach(function(mover){
-                if(mover.get('active_start') === '-inf' && mover.get('active_stop') === 'inf' && mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover'){
+                if(mover.get('real_data_start') === '-inf' && mover.get('real_data_stop') === 'inf' && mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover'){
                     bundle.push(mover);
                 } else if(mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover') {
                     var start, end;
 
-                    if(mover.get('active_start') === "-inf"){
+                    if(mover.get('real_data_start') === "-inf"){
                         start = -Infinity;
                     } else {
-                        start = parseInt(moment(mover.get('active_start')).format('x'), 10);
+                        start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
                     }
 
-                    if(mover.get('active_stop') === 'inf'){
+                    if(mover.get('real_data_stop') === 'inf'){
                         end = Infinity;
                     } else {
-                        end = parseInt(moment(mover.get('active_stop')).format('x'), 10);
+                        end = Math.max(
+                            parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
+                            parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
+                        );
                     }
 
                     timelinedata.push({
@@ -94,16 +97,19 @@ define([
             var windmovers = webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.WindMover'});
             for(var m = 0; m < windmovers.length; m++){
                 var mover = windmovers[m];
-                if(mover.get('active_start') === "-inf"){
+                if(mover.get('real_data_start') === "-inf"){
                     start = -Infinity;
                 } else {
-                    start = parseInt(moment(mover.get('active_start')).format('x'), 10);
+                    start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
                 }
 
-                if(mover.get('active_stop') === 'inf'){
+                if(mover.get('real_data_stop') === 'inf'){
                     end = Infinity;
                 } else {
-                    end = parseInt(moment(mover.get('active_stop')).format('x'), 10);
+                    end = Math.max(
+                        parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
+                        parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
+                    );
                 }
 
                 timelinedata.push({
