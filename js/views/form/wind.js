@@ -522,6 +522,11 @@ define([
                 });
                 this.$(row).addClass('edit');
                 this.$(row).html(template);
+                this.$(row).find('.input-time').datetimepicker({
+                    format: webgnome.config.date_format.datetimepicker,
+                    allowTimes: webgnome.config.date_format.half_hour_times,
+                    step: webgnome.config.date_format.time_step
+                });
                 this.attachCompass(e, entry, row);
             }
         },
@@ -579,14 +584,14 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
-            var date = entry[0];
+            var date = moment(this.$('.input-time').val()).format(webgnome.config.date_format.moment);
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                 direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
             }
             entry = [date, [speed, direction]];
-            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
-                if (el[0] === entry[0]){
-                    array[index] = entry;
+            _.each(this.model.get('timeseries'), _.bind(function(el, i, array){
+                if (index === i){
+                    array[i] = entry;
                     this.timeseries = array;
                 }
             }, this));
