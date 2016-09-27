@@ -95,7 +95,7 @@ define([
 
         sortTimeseries: function(){
             var ts = _.sortBy(this.get('timeseries'), function(entry){
-                return moment.utc(entry[0]).unix();
+                return moment(entry[0]).unix();
             });
             this.set('timeseries', ts);
         },
