@@ -59,6 +59,7 @@ define([
                     el[0] = moment(timeString).format("YYYY-MM-DDTHH:mm:ss");
                 });
             }
+            this.sortTimeseries();
         },
 
         validate: function(attrs, options){
