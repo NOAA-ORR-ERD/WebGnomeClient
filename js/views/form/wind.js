@@ -596,6 +596,7 @@ define([
                 }
             }, this));
             this.$('.additional-wind-compass').remove();
+            $('.xdsoft_datetimepicker:last').remove();
             this.$(row).removeClass('edit');
             this.renderTimeseries();
         },
@@ -612,6 +613,7 @@ define([
             });
             this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
+            $('.xdsoft_datetimepicker:last').remove();
         },
 
         removeTimeseriesEntry: function(e){
