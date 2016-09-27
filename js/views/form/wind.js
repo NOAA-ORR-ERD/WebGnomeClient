@@ -584,7 +584,7 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
-            var date = moment(this.$('.input-time').val()).format(webgnome.config.date_format.moment);
+            var date = moment(this.$('.input-time').val()).format();
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                 direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
             }
