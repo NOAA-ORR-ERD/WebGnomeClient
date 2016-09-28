@@ -511,7 +511,7 @@ define([
             if (this.$('.input-speed').length === 0 && editClassExists){
                 e.preventDefault();
                 var row = this.$(e.target).parents('tr')[0];
-                var index = $(row).data('tsindex');
+                var index = this.$(row).data('tsindex');
                 var entry = this.model.get('timeseries')[index];
                 var date = moment(entry[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarInputTemplate);
@@ -584,21 +584,26 @@ define([
             var entry = this.model.get('timeseries')[index];
             var speed = this.$('.input-speed').val();
             var direction = this.$('.input-direction').val();
-            var date = moment(this.$('.input-time').val()).format();
+            var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
             if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                 direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
             }
             entry = [date, [speed, direction]];
-            _.each(this.model.get('timeseries'), _.bind(function(el, i, array){
+            var tsCopy = _.clone(this.model.get('timeseries'));
+            _.each(tsCopy, _.bind(function(el, i, array){
                 if (index === i){
                     array[i] = entry;
-                    this.timeseries = array;
                 }
             }, this));
-            this.$('.additional-wind-compass').remove();
-            $('.xdsoft_datetimepicker:last').remove();
-            this.$(row).removeClass('edit');
-            this.renderTimeseries();
+            this.model.set('timeseries', tsCopy);
+            if (this.model.isValid()) {
+                this.$('.additional-wind-compass').remove();
+                $('.xdsoft_datetimepicker:last').remove();
+                this.$(row).removeClass('edit');
+                this.renderTimeseries();
+            } else {
+                this.error('Error!', this.model.validationError);
+            }
         },
 
         cancelTimeseriesEntry: function(e){
@@ -630,7 +635,6 @@ define([
 
         renderTimeseries: function(uncertainty){
             if(this.$('#variable .ui-slider').length === 0){ return null; }
-            this.model.sortTimeseries();
 
             if(!_.isUndefined(uncertainty)){
                 uncertainty = uncertainty / (50.0 / 3);
