@@ -1,0 +1,38 @@
+<div class="panel panel-default complete">
+    <div class="panel-heading">
+        <a class="btn btn-primary btn-xs map-modal pull-right">Place on Map</a>
+        <div class="panel-title">
+            Position
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12 position-header">
+                Start
+            </div>
+            <div class="col-sm-6">
+                <label for="start-lat">Latitude</label>
+                <input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}">
+            </div>
+            <div class="col-md-6">
+                <label for="start-lng">Longitude</label>
+                <input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}">
+            </div>
+            
+            <div class="col-md-12 position-header">
+                End
+            </div>
+            <div class="col-md-6">
+                <label for="end-lat">Latitude</label>
+                <input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}">
+            </div>
+            <div class="col-md-6">
+                <label for="end-lng">Longitude</label>
+                <input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}">
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-primary btn-xs remove-endpoint">Remove Endpoint</a>
+            </div>
+        </div>
+    </div>
+</div>
