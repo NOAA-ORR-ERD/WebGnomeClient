@@ -8,6 +8,8 @@ define([
     'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
+    'text!templates/form/spill/position_single.html',
+    'text!templates/form/spill/position_double.html',
     'model/substance',
 	'nucos',
 	'ol',
@@ -15,7 +17,7 @@ define([
     'sweetalert',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, FormModal, OilLibraryView, MapFormView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, SubstanceModel, nucos, ol, moment, swal){
+], function($, _, Backbone, FormModal, OilLibraryView, MapFormView, OilInfoView, SubstanceTemplate, SubstanceNullTemplate, PositionSingleTemplate, PositionDoubleTemplate, SubstanceModel, nucos, ol, moment, swal){
     'use strict';
 	var baseSpillForm = FormModal.extend({
 
@@ -31,10 +33,13 @@ define([
                 'blur .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
+                'show.bs.model': 'renderPositionInfo',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
                 'click .oil-info': 'initOilInfo',
-                'click .map-modal': 'initMapModal'
+                'click .map-modal': 'initMapModal',
+                'click .add-endpoint': 'addEndpoint',
+                'click .remove-endpoint': 'removeEndpoint'
             }, FormModal.prototype.events);
         },
 
@@ -70,8 +75,6 @@ define([
 		},
 
 		render: function(options){
-			var geoCoords_start = this.model.get('release').get('start_position');
-            var geoCoords_end = this.model.get('release').get('end_position');
             var units = this.model.get('units');
             FormModal.prototype.render.call(this, options);
 
@@ -85,6 +88,7 @@ define([
 			if (!this.showGeo) {
 				this.$('.map').hide();
 			}
+            this.renderPositionInfo();
             this.$('#datetime').datetimepicker({
 				format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
@@ -282,6 +286,37 @@ define([
                 this.model.get('element_type').set('substance', substance);
                 webgnome.model.get('spills').at(0).get('element_type').set('substance', substance);
             }
+        },
+
+        renderPositionInfo: function(e) {
+            var isSpillPoint = this.model.get('release').isReleasePoint();
+            var start_point = this.model.get('release').get('start_position');
+            var end_point = this.model.get('release').get('end_position');
+            var compiled;
+
+            if (isSpillPoint) {
+                compiled = _.template(PositionSingleTemplate, {
+                    start_coords: {'lat': start_point[1], 'lon': start_point[0]}
+                });
+            } else {
+                compiled = _.template(PositionDoubleTemplate, {
+                    start_coords: {'lat': start_point[1], 'lon': start_point[0]},
+                    end_coords: {'lat': end_point[1], 'lon': end_point[0]}
+                });
+            }
+            this.$('#positionInfo').html('');
+            this.$('#positionInfo').html(compiled);
+        },
+
+        addEndpoint: function() {
+            this.model.get('release').set('end_position', [0,0,0]);
+            this.renderPositionInfo();
+        },
+
+        removeEndpoint: function() {
+            var start_pos = this.model.get('release').get('start_position');
+            this.model.get('release').set('end_position', start_pos);
+            this.renderPositionInfo();
         },
 
         emulsionUpdate: function(){
