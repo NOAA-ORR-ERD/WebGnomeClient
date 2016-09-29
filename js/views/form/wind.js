@@ -596,14 +596,10 @@ define([
                 }
             }, this));
             this.model.set('timeseries', tsCopy);
-            if (this.model.isValid()) {
-                this.$('.additional-wind-compass').remove();
-                $('.xdsoft_datetimepicker:last').remove();
-                this.$(row).removeClass('edit');
-                this.renderTimeseries();
-            } else {
-                this.error('Error!', this.model.validationError);
-            }
+            this.$('.additional-wind-compass').remove();
+            $('.xdsoft_datetimepicker:last').remove();
+            this.$(row).removeClass('edit');
+            this.renderTimeseries();
         },
 
         cancelTimeseriesEntry: function(e){
@@ -717,6 +713,7 @@ define([
         save: function(){
             if(_.isUndefined(this.nws) || !this.nws.fetching){
                 this.update();
+                console.log(this.model);
                 FormModal.prototype.save.call(this);
             }
         },

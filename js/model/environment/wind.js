@@ -69,6 +69,13 @@ define([
                 var upperLimit = Math.floor(nucos.convert("Velocity", attrs.speedLimit.units, attrs.units, attrs.speedLimit.mag));
                 _.each(attrs.timeseries, function(el, ind, arr){
                     var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
+                    var prevIndex = ind - 1;
+
+                    if (prevIndex >= 0 && el[0] === arr[prevIndex][0]) {
+                        msg = 'Duplicate entries with the start time: ';
+                        msg += moment(el[0]).format(webgnome.config.date_format.moment);
+                    }
+
                     if(speed < 0){
                         msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '!';
                     }
