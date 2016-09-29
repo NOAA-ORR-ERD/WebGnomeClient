@@ -49,8 +49,6 @@ define([
                 time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                 showGeo: this.showGeo,
                 showSubstance: this.showSubstance,
-                start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
                 disabled: disabled,
                 cid: cid
             });
@@ -79,19 +77,8 @@ define([
             var amount = parseFloat(this.$('#spill-amount').val());
             var units = this.$('#units').val();
             var release = this.model.get('release');
-            var startPosition = release.get('start_position');
-            var endPosition = release.get('end_position');
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
-            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
-            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
-            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
-            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
-
-            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
-            var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
-
-            release.set('start_position', start_position);
-            release.set('end_position', end_position);
+            
             this.model.set('name', name);
             this.model.set('release', release);
             this.model.set('units', units);

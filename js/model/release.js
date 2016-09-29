@@ -119,6 +119,17 @@ define([
             }
         },
 
+        isReleasePoint: function() {
+            var start_point = this.get('start_position');
+            var end_point = this.get('end_position');
+
+            if (start_point[0] !== end_point[0] || start_point[1] !== end_point[1]) {
+                return false;
+            }
+
+            return true;
+        },
+
         validateAmount: function(attrs){
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)){
                 return 'Duration must be a positive value';

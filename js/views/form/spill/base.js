@@ -294,7 +294,7 @@ define([
             var end_point = this.model.get('release').get('end_position');
             var compiled;
 
-            if (isSpillPoint) {
+            if (!_.isNull(e) && isSpillPoint) {
                 compiled = _.template(PositionSingleTemplate, {
                     start_coords: {'lat': start_point[1], 'lon': start_point[0]}
                 });
@@ -308,15 +308,14 @@ define([
             this.$('#positionInfo').html(compiled);
         },
 
-        addEndpoint: function() {
-            this.model.get('release').set('end_position', [0,0,0]);
-            this.renderPositionInfo();
+        addEndpoint: function(e) {
+            this.renderPositionInfo(null);
         },
 
-        removeEndpoint: function() {
+        removeEndpoint: function(e) {
             var start_pos = this.model.get('release').get('start_position');
             this.model.get('release').set('end_position', start_pos);
-            this.renderPositionInfo();
+            this.renderPositionInfo(e);
         },
 
         emulsionUpdate: function(){
@@ -335,7 +334,27 @@ define([
 		update: function(){
             this.emulsionUpdate();
             this.tabStatusSetter();
+            this.setCoords();
 		},
+
+        setCoords: function() {
+            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
+            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
+            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : null;
+            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : null;
+            var end_position;
+
+            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
+
+            if (_.isNull(endLat) || _.isNull(endLon)) {
+                end_position = [parseFloat(startLon), parseFloat(startLat), 0];
+            } else {
+                end_position = [parseFloat(endLon), parseFloat(endLat), 0];
+            }
+
+            this.model.get('release').set('start_position', start_position);
+            this.model.get('release').set('end_position', end_position);
+        },
 
         initOilLib: function(){
             if(_.isUndefined(this.oilLibraryView)){
@@ -432,6 +451,7 @@ define([
         setManualFields: function(){
             var startPoint = this.model.get('release').get('start_position');
             var endPoint = this.model.get('release').get('end_position');
+            this.renderPositionInfo();
 
             this.$('#start-lat').val(startPoint[1]);
             this.$('#start-lon').val(startPoint[0]);
