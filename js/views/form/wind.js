@@ -713,7 +713,6 @@ define([
         save: function(){
             if(_.isUndefined(this.nws) || !this.nws.fetching){
                 this.update();
-                console.log(this.model);
                 FormModal.prototype.save.call(this);
             }
         },
