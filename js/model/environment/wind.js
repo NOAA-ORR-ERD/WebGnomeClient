@@ -108,6 +108,13 @@ define([
             this.set('timeseries', ts);
         },
 
+        addTimeseriesRow: function(index) {
+            var prevEntry = this.get('timeseries')[index];
+            var prevDate = moment(prevEntry[0]).subtract(30, 'm').format("YYYY-MM-DDTHH:mm:ss");
+            var newEntry = [prevDate, [0, 0]];
+            this.get('timeseries').splice(index, 0, newEntry);
+        },
+
         toTree: function(){
             var units = this.get('units');
             var timeseries = this.get('timeseries');

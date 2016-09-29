@@ -39,6 +39,7 @@ define([
                 'click .edit': 'modifyTimeseriesEntry',
                 'click .trash': 'removeTimeseriesEntry',
                 'click .ok': 'enterTimeseriesEntry',
+                'click .add-row': 'addTimeseriesRow',
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
@@ -528,6 +529,15 @@ define([
                     step: webgnome.config.date_format.time_step
                 });
                 this.attachCompass(e, entry, row);
+            }
+        },
+
+        addTimeseriesRow: function(e) {
+            if (this.$('.input-speed').length === 0) {
+                var parentRow = this.$(e.target).parents('tr')[0];
+                var index = this.$(parentRow).data('tsindex');
+                this.model.addTimeseriesRow(index);
+                this.renderTimeseries();
             }
         },
 
