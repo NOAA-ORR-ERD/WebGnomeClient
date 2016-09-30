@@ -536,6 +536,7 @@ define([
                     allowTimes: webgnome.config.date_format.half_hour_times,
                     step: webgnome.config.date_format.time_step
                 });
+                this.$('tr .add-row').remove();
                 this.attachCompass(e, entry, row);
             }
         },
@@ -572,9 +573,6 @@ define([
                     this.$('.above').off('click');
                     this.$('.below').off('click');
                 }, this));
-                
-                // this.model.addTimeseriesRow(index);
-                // this.renderTimeseries();
             }
         },
 
