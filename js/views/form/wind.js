@@ -14,6 +14,7 @@ define([
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
+    'text!templates/form/wind/popover.html',
     'views/default/map',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
@@ -21,7 +22,7 @@ define([
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, WindModel, NwsWind){
+    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindModel, NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -119,6 +120,13 @@ define([
                     this.spillLayer
                 ]
             });
+
+            this.$el.on('click', _.bind(function(e){
+                var $clicked = this.$(e.target);
+                if (!$clicked.hasClass('add-row') && $clicked.parents('.popover').length === 0) {
+                    this.$('.popover').popover('hide');
+                }
+            }, this));
         },
 
         render: function(options){
@@ -533,11 +541,42 @@ define([
         },
 
         addTimeseriesRow: function(e) {
-            if (this.$('.input-speed').length === 0) {
+            if (this.$('.popover').length === 0) {
                 var parentRow = this.$(e.target).parents('tr')[0];
                 var index = this.$(parentRow).data('tsindex');
-                this.model.addTimeseriesRow(index);
-                this.renderTimeseries();
+                var compiled = _.template(PopoverTemplate, {
+                    tsindex: index
+                });
+                this.$(e.target).popover({
+                    placement: 'left',
+                    html: 'true',
+                    title: '<span class="text-info"><strong>Add Row</strong></span>',
+                    content: compiled,
+                    trigger: 'click focus'
+                });
+                this.$(e.target).popover('show');
+
+                //this.
+
+                //this.$('.popover').one('shown.bs.popover', _.bind(function() {
+                    this.$('.above').on('click', _.bind(function() {
+                        this.model.addTimeseriesRow(index);
+                        this.renderTimeseries();
+                    }, this));
+
+                    this.$('.below').on('click', _.bind(function() {
+                        this.model.addTimeseriesRow(index + 1);
+                        this.renderTimeseries();
+                    }, this));
+                //}, this));
+
+                this.$('.popover').one('hide.bs.popover', _.bind(function(){
+                    this.$('.above').off('click');
+                    this.$('.below').off('click');
+                }, this));
+                
+                // this.model.addTimeseriesRow(index);
+                // this.renderTimeseries();
             }
         },
 
@@ -665,14 +704,13 @@ define([
                 }
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
-                var compiled = _.template(VarStaticTemplate);
-                var template = compiled({
+                var compiled = _.template(VarStaticTemplate, {
                     tsindex: index,
                     date: date,
                     speed: velocity,
                     direction: direction
                 });
-                html = html + template;
+                html = html + compiled;
             });
             this.$('table:first tbody').html(html);
         },
