@@ -108,11 +108,43 @@ define([
             this.set('timeseries', ts);
         },
 
-        addTimeseriesRow: function(index) {
-            var prevEntry = this.get('timeseries')[index];
-            var prevDate = moment(prevEntry[0]).subtract(30, 'm').format("YYYY-MM-DDTHH:mm:ss");
-            var newEntry = [prevDate, [0, 0]];
+        determineTimeInterval: function(index, boundingIndex, boundingInterval) {
+            var ts = this.get('timeseries');
+            var tsLength = ts.length;
+            var timeInterval;
+
+            if (boundingIndex >= tsLength || boundingIndex < 0) {
+                timeInterval = boundingInterval * 60;
+            } else {
+                var prevEntry = moment(ts[index][0]);
+                var boundingEntry = moment(ts[boundingIndex][0]);
+                timeInterval = Math.abs(prevEntry.diff(boundingEntry, 'minutes') / 2);
+            }
+
+            if (boundingIndex - index < 0) {
+                timeInterval *= -1;
+            }
+
+            return timeInterval;
+        },
+
+        addTimeseriesRow: function(index, opts) {
+            var prevEntryDate = this.get('timeseries')[index][0];
+            var boundingIndex;
+
+            if (opts.add === 'above') {
+                boundingIndex = index - 1;
+            } else if (opts.add === 'below') {
+                boundingIndex = index + 1;
+            }
+
+            var newInterval = this.determineTimeInterval(index, boundingIndex, opts.interval);
+
+            var newDate = moment(prevEntryDate).add(newInterval, 'm').format("YYYY-MM-DDTHH:mm:ss");
+
+            var newEntry = [newDate, [0, 0]];
             this.get('timeseries').splice(index, 0, newEntry);
+            this.sortTimeseries();
         },
 
         toTree: function(){

@@ -556,19 +556,17 @@ define([
                 });
                 this.$(e.target).popover('show');
 
-                //this.
+                var interval = this.$('#incrementCount').val();
 
-                //this.$('.popover').one('shown.bs.popover', _.bind(function() {
-                    this.$('.above').on('click', _.bind(function() {
-                        this.model.addTimeseriesRow(index);
-                        this.renderTimeseries();
-                    }, this));
+                this.$('.above').on('click', _.bind(function() {
+                    this.model.addTimeseriesRow(index, {'add': 'above', 'interval': interval});
+                    this.renderTimeseries();
+                }, this));
 
-                    this.$('.below').on('click', _.bind(function() {
-                        this.model.addTimeseriesRow(index + 1);
-                        this.renderTimeseries();
-                    }, this));
-                //}, this));
+                this.$('.below').on('click', _.bind(function() {
+                    this.model.addTimeseriesRow(index, {'add': 'below', 'interval': interval});
+                    this.renderTimeseries();
+                }, this));
 
                 this.$('.popover').one('hide.bs.popover', _.bind(function(){
                     this.$('.above').off('click');
