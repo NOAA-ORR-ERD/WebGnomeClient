@@ -42,8 +42,8 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                acceptedFiles: '.nc',
-                dictDefaultMessage: 'Drop <code>.nc</code> file here to upload (or click to navigate)'
+                //acceptedFiles: '.nc, .cur',
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code> 
             });
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
