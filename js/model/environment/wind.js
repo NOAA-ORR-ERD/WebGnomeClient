@@ -111,12 +111,22 @@ define([
         determineTimeInterval: function(index, boundingIndex, boundingInterval) {
             var ts = this.get('timeseries');
             var tsLength = ts.length;
+            var prevEntry = moment(ts[index][0]);
             var timeInterval;
 
             if (boundingIndex >= tsLength || boundingIndex < 0) {
-                timeInterval = boundingInterval * 60;
+                if (tsLength >= 2) {
+                    var pairIndex;
+                    if (boundingIndex >= tsLength) {
+                        pairIndex = index - 1;
+                    } else {
+                        pairIndex = index + 1;
+                    }
+                    timeInterval = Math.abs(prevEntry.diff(ts[pairIndex][0], 'minutes'));
+                } else {
+                    timeInterval = boundingInterval * 60;
+                }
             } else {
-                var prevEntry = moment(ts[index][0]);
                 var boundingEntry = moment(ts[boundingIndex][0]);
                 timeInterval = Math.abs(prevEntry.diff(boundingEntry, 'minutes') / 2);
             }
