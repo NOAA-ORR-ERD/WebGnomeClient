@@ -138,15 +138,9 @@ define([
             return timeInterval;
         },
 
-        addTimeseriesRow: function(index, opts) {
+        addTimeseriesRow: function(index, newIndex, opts) {
             var prevEntry = this.get('timeseries')[index];
-            var boundingIndex;
-
-            if (opts.add === 'above') {
-                boundingIndex = index - 1;
-            } else if (opts.add === 'below') {
-                boundingIndex = index + 1;
-            }
+            var boundingIndex = newIndex;
 
             var newInterval = this.determineTimeInterval(index, boundingIndex, opts.interval);
 

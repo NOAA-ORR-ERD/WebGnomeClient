@@ -548,6 +548,12 @@ define([
             }
         },
 
+        addRowHelper: function(e, index, newIndex, opts) {
+            this.model.addTimeseriesRow(index, newIndex, opts);
+            this.renderTimeseries();
+            this.modifyTimeseriesEntry(e, newIndex);
+        },
+
         addTimeseriesRow: function(e) {
             if (this.$('.popover').length === 0) {
                 var parentRow = this.$(e.target).parents('tr')[0];
@@ -567,15 +573,13 @@ define([
                 var interval = this.$('#incrementCount').val();
 
                 this.$('.above').on('click', _.bind(function(e) {
-                    this.model.addTimeseriesRow(index, {'add': 'above', 'interval': interval});
-                    this.renderTimeseries();
-                    this.modifyTimeseriesEntry(e, index - 1);
+                    var newIndex = index - 1;
+                    this.addRowHelper(e, index, newIndex, {'interval': interval});
                 }, this));
 
                 this.$('.below').on('click', _.bind(function(e) {
-                    this.model.addTimeseriesRow(index, {'add': 'below', 'interval': interval});
-                    this.renderTimeseries();
-                    this.modifyTimeseriesEntry(e, index + 1);
+                    var newIndex = index + 1;
+                    this.addRowHelper(e, index, newIndex, {'interval': interval});
                 }, this));
 
                 this.$('.popover').one('hide.bs.popover', _.bind(function(){
