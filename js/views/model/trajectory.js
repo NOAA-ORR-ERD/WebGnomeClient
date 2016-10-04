@@ -305,13 +305,17 @@ define([
         },
 
         loop: function(){
-            if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1){
+            if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
+               this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if (webgnome.cache.length > this.controls.seek.slider('value')){
                     // the cache has the step, just render it
                     this.renderStep({step: this.controls.seek.slider('value')});
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();
+                }
+                if(this.state === 'next'){
+                    this.pause();
                 }
             } else {
                 this.pause();
@@ -372,8 +376,8 @@ define([
         next: function(){
             if($('.modal').length === 0){
                 this.pause();
-                this.controls.seek.slider('value', this.frame + 1);
-                this.renderStep({step: this.frame + 1});
+                this.state = 'next';
+                this.loop();
             }
         },
 
@@ -418,7 +422,7 @@ define([
 
             this.controls.date.text(time);
             this.frame = step.get('step_num');
-            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'play'){
+            if(this.frame < webgnome.model.get('num_time_steps')){
                 this.drawStepTimeout = setTimeout(_.bind(function(){
                     this.controls.seek.slider('value', this.frame + 1);
                 }, this), 60);
