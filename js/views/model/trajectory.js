@@ -112,6 +112,25 @@ define([
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 
+        setupControlTooltips: function() {
+            this.controls.play.tooltip({
+                title: "Play",
+                container: "body"
+            });
+            this.controls.pause.tooltip({
+                title: "Pause",
+                container: "body"
+            });
+            this.controls.rewind.tooltip({
+                title: "Rewind",
+                container: "body"
+            });
+            this.controls.step.tooltip({
+                title: "Step Forward",
+                container: "body"
+            });
+        },
+
         renderTrajectory: function() {
             var date;
             if(webgnome.hasModel()){
@@ -166,6 +185,7 @@ define([
                 'play': this.$('.controls .play'),
                 'pause': this.$('.controls .play'),
                 'seek': this.$('.seek > div:first'),
+                'step': this.$('.controls .next'),
                 'fastforward' : this.$('.controls .fastfoward'),
                 'rewind': this.$('.controls .rewind'),
                 'progress': this.$('.controls .progress-bar'),
@@ -178,6 +198,8 @@ define([
                     this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
                 }, this)
             });
+
+            this.setupControlTooltips();
 
             this.contextualize();
 

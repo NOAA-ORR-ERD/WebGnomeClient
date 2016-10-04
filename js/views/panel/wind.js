@@ -71,7 +71,7 @@ define([
 
                 if(dataset){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.dataset = dataset;                        
+                    this.dataset = dataset;
                     setTimeout(_.bind(function(){
                         this.plot = $.plot(this.$('.chart .canvas'), dataset, {
                             grid: {
