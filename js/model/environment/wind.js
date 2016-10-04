@@ -129,7 +129,7 @@ define([
         },
 
         addTimeseriesRow: function(index, opts) {
-            var prevEntryDate = this.get('timeseries')[index][0];
+            var prevEntry = this.get('timeseries')[index];
             var boundingIndex;
 
             if (opts.add === 'above') {
@@ -140,9 +140,9 @@ define([
 
             var newInterval = this.determineTimeInterval(index, boundingIndex, opts.interval);
 
-            var newDate = moment(prevEntryDate).add(newInterval, 'm').format("YYYY-MM-DDTHH:mm:ss");
+            var newDate = moment(prevEntry[0]).add(newInterval, 'm').format("YYYY-MM-DDTHH:mm:ss");
 
-            var newEntry = [newDate, [0, 0]];
+            var newEntry = [newDate, prevEntry[1]];
             this.get('timeseries').splice(index, 0, newEntry);
             this.sortTimeseries();
         },
