@@ -513,14 +513,21 @@ define([
             }
         },
 
-        modifyTimeseriesEntry: function(e){
+        modifyTimeseriesEntry: function(e, rowIndex){
             // Create boolean value to confirm that the DOM element clicked was the 
             // edit pencil and not the check in the table row.
             var editClassExists = this.$(e.target).hasClass('edit');
-            if (this.$('.input-speed').length === 0 && editClassExists){
-                e.preventDefault();
-                var row = this.$(e.target).parents('tr')[0];
-                var index = this.$(row).data('tsindex');
+            if (this.$('.input-speed').length === 0) {
+                var row;
+                var index;
+                if (editClassExists) {
+                    e.preventDefault();
+                    row = this.$(e.target).parents('tr')[0];
+                    index = this.$(row).data('tsindex');
+                } else if (!_.isUndefined(rowIndex)) {
+                    index = rowIndex >= 0 ? rowIndex : 0;
+                    row = this.$('[data-tsindex="' + index + '"]');
+                }
                 var entry = this.model.get('timeseries')[index];
                 var date = moment(entry[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarInputTemplate);
@@ -559,14 +566,16 @@ define([
 
                 var interval = this.$('#incrementCount').val();
 
-                this.$('.above').on('click', _.bind(function() {
+                this.$('.above').on('click', _.bind(function(e) {
                     this.model.addTimeseriesRow(index, {'add': 'above', 'interval': interval});
                     this.renderTimeseries();
+                    this.modifyTimeseriesEntry(e, index - 1);
                 }, this));
 
-                this.$('.below').on('click', _.bind(function() {
+                this.$('.below').on('click', _.bind(function(e) {
                     this.model.addTimeseriesRow(index, {'add': 'below', 'interval': interval});
                     this.renderTimeseries();
+                    this.modifyTimeseriesEntry(e, index + 1);
                 }, this));
 
                 this.$('.popover').one('hide.bs.popover', _.bind(function(){
