@@ -63,6 +63,7 @@ define([
         fetchNoCleanupData: function(){
             var cleanupData = new NoCleanupStep();
             cleanupData.set('response_on', false);
+            console.log(cleanupData);
             cleanupData.save({
                 success: _.bind(function(model) {
                     console.log(model);

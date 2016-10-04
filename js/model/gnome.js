@@ -153,6 +153,7 @@ define([
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            this.get('environment').on('change add', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
