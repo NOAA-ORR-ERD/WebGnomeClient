@@ -125,7 +125,11 @@ define([
                 title: "Rewind",
                 container: "body"
             });
-            this.controls.step.tooltip({
+            this.controls.back.tooltip({
+                title: "Step Back",
+                container: "body"
+            });
+            this.controls.forward.tooltip({
                 title: "Step Forward",
                 container: "body"
             });
@@ -185,7 +189,8 @@ define([
                 'play': this.$('.controls .play'),
                 'pause': this.$('.controls .play'),
                 'seek': this.$('.seek > div:first'),
-                'step': this.$('.controls .next'),
+                'back': this.$('.controls .back'),
+                'forward': this.$('.controls .next'),
                 'fastforward' : this.$('.controls .fastfoward'),
                 'rewind': this.$('.controls .rewind'),
                 'progress': this.$('.controls .progress-bar'),
