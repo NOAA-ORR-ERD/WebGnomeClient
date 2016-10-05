@@ -44,6 +44,7 @@ define([
             'focusout .help-button': 'helpBlur',
             'click .play': 'play',
             'click .pause': 'pause',
+            'click .back': 'prev',
             'click .next': 'next',
             'click .rewind': 'rewindClick',
             'slide .seek > div': 'seek',
