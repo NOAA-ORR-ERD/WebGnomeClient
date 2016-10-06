@@ -28,6 +28,7 @@ define([
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
             this.$('.panel-body').show();
+            $('.xdsoft_datetimepicker:last').remove();
             BasePanel.prototype.render.call(this);
 
             this.$('.datetime').datetimepicker({
