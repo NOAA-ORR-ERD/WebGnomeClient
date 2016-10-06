@@ -932,7 +932,7 @@ define([
                 canvas.height = 7;
                 var ctx = canvas.getContext('2d');
                 ctx.beginPath();
-                ctx.arc(3.5, 3.5, 2, 0, 2 * Math.PI);
+                ctx.arc(1, 1, 0.5, 0, 2 * Math.PI);
                 ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
                 ctx.stroke();
                 this.current_arrow[id][0] = layer.add({
