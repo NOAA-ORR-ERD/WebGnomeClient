@@ -1,4 +1,7 @@
 before_script: 
+  - yum update -y
+  - yum install -y node npm
+  - npm install -g grunt-cli
   - npm install
 
 master: 
@@ -11,4 +14,6 @@ master:
 
 develop:
   script:
-    - grunt lint 
+    - grunt install
+    - cp config-example.json config.json
+    - grunt build
