@@ -9,6 +9,7 @@ define([
     'views/model/setup',
     'views/model/index',
     'views/default/adios',
+    'views/default/roc',
     'views/model/trajectory',
     'views/model/fate',
     'views/default/overview',
@@ -17,7 +18,7 @@ define([
     'views/default/footer',
     'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, RocView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
         views: [],
@@ -27,6 +28,7 @@ define([
             'locations': 'locations',
             'config': 'config',
             'adios': 'adios',
+            'roc': 'roc',
             'model': 'model',
             'trajectory': 'trajectory',
             'fate': 'fate',
@@ -78,6 +80,11 @@ define([
             } else {
                 this.navigate('', true);
             }
+        },
+        
+        roc: function(){
+            this.menu('add');
+            this.views.push(new RocView());
         },
 
         model: function(){

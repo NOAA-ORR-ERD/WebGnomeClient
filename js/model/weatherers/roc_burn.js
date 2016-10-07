@@ -13,9 +13,11 @@ define([
                 boom_length: 200,
                 boom_draft: 12,
                 speed: 0.75,
-                throughput: 75,
-                burn: '1',
-                burn_ef: 0,
+                throughput: 0.75,
+                _throughput: 75,
+                burn_effeciency_type: '1',
+                burn_effeciency_custom: 0,
+                _burn_effeciency_custom: 0,
                 units: new Backbone.Model({
                     offset: 'ft',
                     boom_length: 'ft',
@@ -27,6 +29,11 @@ define([
 
         models: {
             units: Backbone.Model
+        },
+
+        initialize: function(options){
+            this.on('change:_throughput', this.percentToDecimal('throughput'));
+            this.on('change:_burn_effeciency_custom', this.percentToDecial('burn_effeciency_custom'));
         }
     });
     return ROCBurnModel;
