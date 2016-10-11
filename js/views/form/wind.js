@@ -544,6 +544,7 @@ define([
                     step: webgnome.config.date_format.time_step
                 });
                 this.$('tr .add-row').remove();
+                this.$(row).find('.input-speed').focus().val(entry[1][0]);
                 this.attachCompass(e, entry, row);
             }
         },
