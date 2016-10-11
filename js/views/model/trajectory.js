@@ -113,27 +113,20 @@ define([
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 
+        createTooltipObject: function(title) {
+            return {
+                "title": title,
+                "container": "body",
+                "placement": "bottom"
+            };
+        },
+
         setupControlTooltips: function() {
-            this.controls.play.tooltip({
-                title: "Play",
-                container: "body"
-            });
-            this.controls.pause.tooltip({
-                title: "Pause",
-                container: "body"
-            });
-            this.controls.rewind.tooltip({
-                title: "Rewind",
-                container: "body"
-            });
-            this.controls.back.tooltip({
-                title: "Step Back",
-                container: "body"
-            });
-            this.controls.forward.tooltip({
-                title: "Step Forward",
-                container: "body"
-            });
+            this.controls.play.tooltip(this.createTooltipObject("Play"));
+            this.controls.pause.tooltip(this.createTooltipObject("Pause"));
+            this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
+            this.controls.back.tooltip(this.createTooltipObject("Step Back"));
+            this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
         },
 
         renderTrajectory: function() {
