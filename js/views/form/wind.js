@@ -384,7 +384,7 @@ define([
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
 
-            if (active !== 'nws') {
+            if (active !== 'nws' && active !== 'variable') {
                 var speed = this.form[active].speed.val();
                 var direction = this.form[active].direction.val();
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
@@ -472,46 +472,46 @@ define([
             this.update(false);
         },
 
-        addTimeseriesEntry: function(e){
-            e.preventDefault();
-            if (this.$('.additional-wind-compass').length === 0){
-                var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-                var speed = this.form.variable.speed.val();
-                var direction = this.form.variable.direction.val();
-                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
-                }
-                var entry = [date, [speed, direction]];
-                var incrementer = parseInt(this.form.variable.increment.val(), 10);
+        // addTimeseriesEntry: function(e){
+        //     e.preventDefault();
+        //     if (this.$('.additional-wind-compass').length === 0){
+        //         var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
+        //         var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+        //         var speed = this.form.variable.speed.val();
+        //         var direction = this.form.variable.direction.val();
+        //         if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+        //             direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+        //         }
+        //         var entry = [date, [speed, direction]];
+        //         var incrementer = parseInt(this.form.variable.increment.val(), 10);
 
-                if(this.variableFormValidation(entry)){
-                    var not_replaced = true;
-                    _.each(this.model.get('timeseries'), function(el, index, array){
-                        if(el[0] === entry[0]){
-                            not_replaced = false;
-                            array[index] = entry;
-                        }
-                    });
+        //         if(this.variableFormValidation(entry)){
+        //             var not_replaced = true;
+        //             _.each(this.model.get('timeseries'), function(el, index, array){
+        //                 if(el[0] === entry[0]){
+        //                     not_replaced = false;
+        //                     array[index] = entry;
+        //                 }
+        //             });
 
-                    if(not_replaced){
-                        this.model.get('timeseries').push(entry);
-                    }
+        //             if(not_replaced){
+        //                 this.model.get('timeseries').push(entry);
+        //             }
 
-                    this.model.trigger('change', this.model);
+        //             this.model.trigger('change', this.model);
 
-                    // Code for time incrementer updates assuming values in form are in hours
-                    dateObj.add('h', incrementer);
-                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
+        //             // Code for time incrementer updates assuming values in form are in hours
+        //             dateObj.add('h', incrementer);
+        //             this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
 
-                    this.renderTimeseries();
-                }
-                this.update();
-                this.$('#variable-speed').focus().select();
-            } else {
+        //             this.renderTimeseries();
+        //         }
+        //         this.update();
+        //         this.$('#variable-speed').focus().select();
+        //     } else {
 
-            }
-        },
+        //     }
+        // },
 
         modifyTimeseriesEntry: function(e, rowIndex){
             // Create boolean value to confirm that the DOM element clicked was the 
@@ -725,19 +725,19 @@ define([
             this.$('table:first tbody').html(html);
         },
 
-        variableFormValidation: function(entry){
-            // need to add a error presentation if something doesn't pass validation here.
-            var valid = true;
-            if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
-                valid = false;
-            }
-            var incrementVal = this.form.variable.increment.val();
-            if(!incrementVal) {
-                valid = false;
-            }
+        // variableFormValidation: function(entry){
+        //     // need to add a error presentation if something doesn't pass validation here.
+        //     var valid = true;
+        //     if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
+        //         valid = false;
+        //     }
+        //     var incrementVal = this.form.variable.increment.val();
+        //     if(!incrementVal) {
+        //         valid = false;
+        //     }
 
-            return valid;
-        },
+        //     return valid;
+        // },
 
         unbindBaseMouseTrap: function(){
             Mousetrap.unbind('enter');

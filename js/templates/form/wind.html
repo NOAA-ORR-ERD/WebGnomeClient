@@ -111,6 +111,20 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2">
+                            <label for="incrementer" class="control-label">Inc. (hrs):</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <input id="incrementCount" type="number" value="6" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
                 <label class="control-label">Wind Speed Uncertainty:</label>
             </div>
             <div class="col-sm-6 col-sm-offset-1">
@@ -121,43 +135,6 @@
             <div class="col-sm-4 col-sm-offset-1 slider-label"><sup>Certain</sup></div>
             <div class="col-sm-3 col-sm-offset-1 slider-label"><sup>Uncertain</sup></div>
         </div>
-        <hr />
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <div class="col-sm-5">
-                            <label for="variable-datetime" class="control-label pull-right">Date &amp; Time:</label>                        
-                        </div>
-                        <div class="col-sm-7">
-                            <div class="input-group date">
-                                <input type="text" id="variable-datetime" class="form-control" value="">
-                                <span class="input-group-addon" id="datepick">
-                                    <i></i>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5"><label class="control-label pull-right" for="variable-speed">Speed:</label></div>
-                        <div class="col-sm-4"><input type="number" min="1" id="variable-speed" class="form-control col-xs-3" value=""></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-5"><label for="variable-direction" class="control-label pull-right">Wind Direction:</label></div>
-                        <div class="col-sm-4"><input type="text" id="variable-direction" value="" class="form-control"></div>
-                    </div>
-                    <div class="row"><div class="col-sm-12"><hr></div></div>
-                    <div class="form-group">
-                        <div class="col-sm-4"><a href="#" class="btn btn-success add">Add Entry</a></div>
-                        <div class="col-sm-5"><label for="incrementer" class="control-label pull-right">Inc. (hrs):</label></div>
-                        <div class="col-sm-3"><input id="incrementCount" type="number" value="6" class="form-control"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <div class="variable-compass" id="vc"></div>
-            </div>
-        </div>        
     </div>
     <div class="tab-pane" id="nws">
         <p>Retrieve forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
