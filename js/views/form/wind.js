@@ -144,12 +144,9 @@ define([
             this.form.constant.direction = this.$('#constant-direction');
             this.form.constant.datetime = this.$('#constant-datetime');
             this.form.variable = {};
-            this.form.variable.speed = this.$('#variable-speed');
-            this.form.variable.direction = this.$('#variable-direction');
-            this.form.variable.datetime = this.$('#variable-datetime');
             this.form.variable.increment = this.$('#incrementCount');
             this.trigger('show');
-            this.$('#variable-datetime, #constant-datetime').datetimepicker({
+            this.$('#constant-datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
@@ -228,18 +225,11 @@ define([
                     });
                 }
             } else if (e.target.hash === '#variable') {
-                if(this.$('.variable-compass canvas').length === 0){
-                    this.$('.variable-compass').compassRoseUI({
-                        'arrow-direction': 'in',
-                        'move': _.bind(this.variableCompassUpdate, this)
-                    });
-                }
 
                 if(!_.isUndefined(this.originalTimeseries)){
                     this.model.set('timeseries', this.originalTimeseries);
                 }
                 this.updateTooltipWidth();
-                this.unbindBaseMouseTrap();
                 this.renderTimeseries();
             } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
