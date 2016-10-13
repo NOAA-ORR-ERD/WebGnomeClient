@@ -202,6 +202,7 @@ define([
             if(this.model.get('timeseries').length <= 1){
                 this.$('.nav-tabs a[href="#constant"]').tab('show');
             } else {
+                this.unbindBaseMouseTrap();
                 this.$('.nav-tabs a[href="#variable"]').tab('show');
             }
         },
@@ -462,47 +463,6 @@ define([
             this.update(false);
         },
 
-        // addTimeseriesEntry: function(e){
-        //     e.preventDefault();
-        //     if (this.$('.additional-wind-compass').length === 0){
-        //         var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-        //         var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-        //         var speed = this.form.variable.speed.val();
-        //         var direction = this.form.variable.direction.val();
-        //         if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-        //             direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
-        //         }
-        //         var entry = [date, [speed, direction]];
-        //         var incrementer = parseInt(this.form.variable.increment.val(), 10);
-
-        //         if(this.variableFormValidation(entry)){
-        //             var not_replaced = true;
-        //             _.each(this.model.get('timeseries'), function(el, index, array){
-        //                 if(el[0] === entry[0]){
-        //                     not_replaced = false;
-        //                     array[index] = entry;
-        //                 }
-        //             });
-
-        //             if(not_replaced){
-        //                 this.model.get('timeseries').push(entry);
-        //             }
-
-        //             this.model.trigger('change', this.model);
-
-        //             // Code for time incrementer updates assuming values in form are in hours
-        //             dateObj.add('h', incrementer);
-        //             this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
-
-        //             this.renderTimeseries();
-        //         }
-        //         this.update();
-        //         this.$('#variable-speed').focus().select();
-        //     } else {
-
-        //     }
-        // },
-
         modifyTimeseriesEntry: function(e, rowIndex){
             // Create boolean value to confirm that the DOM element clicked was the 
             // edit pencil and not the check in the table row.
@@ -628,27 +588,34 @@ define([
 
         enterTimeseriesEntry: function(e){
             e.preventDefault();
-            var row = this.$(e.target).parents('tr')[0];
-            var index = $(row).data('tsindex');
-            var entry = this.model.get('timeseries')[index];
-            var speed = this.$('.input-speed').val();
-            var direction = this.$('.input-direction').val();
-            var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
-            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            var row;
+            if (e.which === 13) {
+                row = this.$('tr.edit')[0];
+            } else {
+                row = this.$(e.target).parents('tr')[0];
             }
-            entry = [date, [speed, direction]];
-            var tsCopy = _.clone(this.model.get('timeseries'));
-            _.each(tsCopy, _.bind(function(el, i, array){
-                if (index === i){
-                    array[i] = entry;
+            if (!_.isUndefined(row)) {
+                var index = $(row).data('tsindex');
+                var entry = this.model.get('timeseries')[index];
+                var speed = this.$('.input-speed').val();
+                var direction = this.$('.input-direction').val();
+                var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
                 }
-            }, this));
-            this.model.set('timeseries', tsCopy);
-            this.$('.additional-wind-compass').remove();
-            $('.xdsoft_datetimepicker:last').remove();
-            this.$(row).removeClass('edit');
-            this.renderTimeseries();
+                entry = [date, [speed, direction]];
+                var tsCopy = _.clone(this.model.get('timeseries'));
+                _.each(tsCopy, _.bind(function(el, i, array){
+                    if (index === i){
+                        array[i] = entry;
+                    }
+                }, this));
+                this.model.set('timeseries', tsCopy);
+                this.$('.additional-wind-compass').remove();
+                $('.xdsoft_datetimepicker:last').remove();
+                this.$(row).removeClass('edit');
+                this.renderTimeseries();
+            }
         },
 
         cancelTimeseriesEntry: function(e){
@@ -731,7 +698,7 @@ define([
 
         unbindBaseMouseTrap: function(){
             Mousetrap.unbind('enter');
-            Mousetrap.bind('enter', _.bind(this.addTimeseriesEntry, this));
+            Mousetrap.bind('enter', _.bind(this.enterTimeseriesEntry, this));
         },
 
         rebindBaseMouseTrap: function(){
