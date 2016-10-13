@@ -358,7 +358,6 @@ define([
                 this.error("Placement error!", err);
             } else {
                 this.clearError();
-                FormModal.prototype.save.call(this);
                 this.trigger('save');
                 this.hide();
             }
