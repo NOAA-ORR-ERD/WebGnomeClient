@@ -467,7 +467,7 @@ define([
             // Create boolean value to confirm that the DOM element clicked was the 
             // edit pencil and not the check in the table row.
             var editClassExists = this.$(e.target).hasClass('edit');
-            if (this.$('.input-speed').length === 0 && (editClassExists || rowIndex)) {
+            if ((this.$('.input-speed').length === 0 && editClassExists) || !_.isUndefined(rowIndex)) {
                 var row;
                 var index;
                 if (editClassExists) {
@@ -503,7 +503,7 @@ define([
             this.model.addTimeseriesRow(index, newIndex, opts);
             this.renderTimeseries();
 
-            if (index - newIndex > 0) {
+            if (index - newIndex >= 0) {
                 this.modifyTimeseriesEntry(e, index);
             } else {
                 this.modifyTimeseriesEntry(e, newIndex);
@@ -618,7 +618,7 @@ define([
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
                 $('.xdsoft_datetimepicker:last').remove();
-                this.$(row).removeClass('edit');
+                $(row).remove();
                 this.renderTimeseries();
             }
         },
@@ -645,7 +645,6 @@ define([
                 var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
                 this.model.trigger('change', this.model);
-
                 this.renderTimeseries();
             }
         },
