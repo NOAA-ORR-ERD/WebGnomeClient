@@ -502,7 +502,12 @@ define([
         addRowHelper: function(e, index, newIndex, opts) {
             this.model.addTimeseriesRow(index, newIndex, opts);
             this.renderTimeseries();
-            this.modifyTimeseriesEntry(e, newIndex);
+
+            if (index - newIndex > 0) {
+                this.modifyTimeseriesEntry(e, index);
+            } else {
+                this.modifyTimeseriesEntry(e, newIndex);
+            }
         },
 
         addTimeseriesRow: function(e) {
