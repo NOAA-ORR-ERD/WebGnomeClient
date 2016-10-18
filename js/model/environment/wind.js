@@ -111,8 +111,14 @@ define([
             }
             var invalidEntries = [];
             _.each(attrs.timeseries, function(el, ind, arr){
+                var prevIndex = ind - 1;
                 var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
-                if((speed < 0 || speed > attrs.speedLimit.mag) || (el[1][1] < 0 || el[1][1] > 360) || _.isNull(el[1][1])){
+
+                if(((prevIndex >= 0 && el[0] === arr[prevIndex][0]) ||
+                    (speed < 0 || speed > attrs.speedLimit.mag) ||
+                    (el[1][1] < 0 ||
+                     el[1][1] > 360) ||
+                    _.isNull(el[1][1]))) {
                     invalidEntries.push(ind);
                 }
             });
