@@ -487,6 +487,7 @@ define([
                     'direction': entry[1][1]
                 });
                 this.$(row).addClass('edit');
+                this.$(row).removeClass('error');
                 this.$(row).html(template);
                 this.$(row).find('.input-time').datetimepicker({
                     format: webgnome.config.date_format.datetimepicker,
