@@ -684,6 +684,11 @@ define([
                 html = html + compiled;
             });
             this.$('table:first tbody').html(html);
+
+            var invalidEntries = this.model.validateTimeSeries();
+            _.each(invalidEntries, _.bind(function(el, index){
+                this.$('[data-tsindex="' + el + '"]').addClass('error');
+            }, this));
         },
 
         // variableFormValidation: function(entry){

@@ -101,6 +101,24 @@ define([
             }
         },
 
+        validateTimeSeries: function(attrs) {
+            if (_.isUndefined(attrs)){
+                attrs = {
+                    'speedLimit': this.speedLimit,
+                    'timeseries': this.get('timeseries'),
+                    'units': this.get('units')
+                };
+            }
+            var invalidEntries = [];
+            _.each(attrs.timeseries, function(el, ind, arr){
+                var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
+                if((speed < 0 || speed > attrs.speedLimit.mag) || (el[1][1] < 0 || el[1][1] > 360) || _.isNull(el[1][1])){
+                    invalidEntries.push(ind);
+                }
+            });
+            return invalidEntries;
+        },
+
         sortTimeseries: function(){
             var ts = _.sortBy(this.get('timeseries'), function(entry){
                 return moment(entry[0]).unix();
