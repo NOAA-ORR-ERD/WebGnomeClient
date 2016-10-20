@@ -118,10 +118,10 @@ define([
         delete: function(e){
             e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
-            var wind = webgnome.model.get('environment').get(id);
+            var windMover = webgnome.model.get('movers').get(id);
 
             swal({
-                title: 'Delete "' + wind.get('name') + '"',
+                title: 'Delete "' + windMover.get('wind').get('name') + '"',
                 text: 'Are you sure you want to delete this wind?',
                 type: 'warning',
                 confirmButtonText: 'Delete',
@@ -129,15 +129,16 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
-                    var movers = webgnome.model.get('movers').filter(function(model){
-                        if(model.get('wind') && model.get('wind').get('id') === id){
-                            return true;
-                        }
-                        return false;
-                    });
+                    // var movers = webgnome.model.get('movers').filter(function(model){
+                    //     if(model.get('wind') && model.get('wind').get('id') === id){
+                    //         return true;
+                    //     }
+                    //     return false;
+                    // });
 
-                    webgnome.model.get('movers').remove(movers);
-                    webgnome.model.get('environment').remove(id);
+
+                    webgnome.model.get('movers').remove(id);
+                    webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
                     webgnome.model.save(null, {
                         validate: false
                     });
