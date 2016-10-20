@@ -7,8 +7,8 @@
     <div class="panel-body">
         <div class="chart"><div class="axisLabel yaxisLabel">{{ units }}</div><div class="axisLabel xaxisLabel">Time</div><div class="canvas"></div></div>
         <div class="list">
-            {% for (var i = 0; i < winds.length; i++){ %}
-                <div class="single row" data-id="{{ winds[i].get('id') }}">
+            {% for (var i = 0; i < windMovers.length; i++){ %}
+                <div class="single row" data-id="{{ windMovers[i].get('id') }}">
                     <div class="col-sm-7">
                         <h5>{{ winds[i].get('name') }}</h5>
                     </div>

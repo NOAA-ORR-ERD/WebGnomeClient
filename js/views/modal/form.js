@@ -157,7 +157,12 @@ define([
             if(this.attributes){
                 this.attributes.remove();
             }
-            this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
+            if (this.superModel) {
+                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.superModel});
+            } else {
+                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
+            }
+            
             this.$('.modal-body').append(this.attributes.$el);
         },
 

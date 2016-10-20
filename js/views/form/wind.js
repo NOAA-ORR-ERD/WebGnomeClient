@@ -16,13 +16,15 @@ define([
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
     'views/default/map',
+    'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindModel, NwsWind){
+    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindMoverModel, WindModel,
+    NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -50,14 +52,18 @@ define([
             }, formModalHash);
         },
 
-        initialize: function(options, GnomeWind){
+        initialize: function(options, models){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
 
-            if (!_.isUndefined(GnomeWind)) {
-                this.model = GnomeWind;
+            if (!_.isUndefined(models)) {
+                this.model = models.model;
+                this.superModel = models.superModel;
             } else {
-                this.model = new WindModel();
+                this.superModel = new WindMoverModel();
+                var windModel = new WindModel();
+                this.superModel.set('wind', windModel);
+                this.model = this.superModel.get('wind');
             }
 
             if(!this.model.get('name')){
