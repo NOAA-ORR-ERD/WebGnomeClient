@@ -201,8 +201,8 @@ define([
                 this.updateTooltipWidth();
                 
             }, this), 1);
-            $('.modal').on('scroll', this.variableWindStickyHeader);
-
+            //$('.modal').on('scroll', this.variableWindStickyHeader);
+            //$('.table-wrapper').on('scroll', this.variableWindStickyHeader);
             this.setupUpload();
             this.rendered();
             this.populateDateTime();
@@ -728,8 +728,8 @@ define([
 
         variableWindStickyHeader: function(e){
             if($('.wind-form #variable table:visible').length > 0){
-                var top = $('.modal').scrollTop();
-                var modal_offset = $('.modal').offset();
+                var top = $('.table-wrapper').scrollTop();
+                var modal_offset = $('.table-wrapper').offset();
                 var offset = $('.wind-form #variable table:first').offset();
                 offset.top -= modal_offset.top;
 
