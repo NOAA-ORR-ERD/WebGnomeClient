@@ -158,6 +158,10 @@ define([
                 step: webgnome.config.date_format.time_step
             });
 
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#constant-datetime').datetimepicker('show');
+            }, this));
+
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');
             setTimeout(_.bind(function(){
                 this.$('#constant .slider').slider({
