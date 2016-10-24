@@ -173,7 +173,7 @@ define([
                 this.attributes.remove();
             }
             if (this.superModel) {
-                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.superModel});
+                this.attributes = new AttributesView({name: this.superModel.get('obj_type'), model: this.superModel});
             } else {
                 this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
             }
