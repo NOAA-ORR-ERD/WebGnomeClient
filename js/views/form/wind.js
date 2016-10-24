@@ -202,7 +202,7 @@ define([
                 
             }, this), 1);
             //$('.modal').on('scroll', this.variableWindStickyHeader);
-            //$('.table-wrapper').on('scroll', this.variableWindStickyHeader);
+            $('.table-wrapper').on('scroll', this.variableWindStickyHeader);
             this.setupUpload();
             this.rendered();
             this.populateDateTime();
@@ -735,7 +735,7 @@ define([
 
                 if(offset.top < 0 && $('.wind-form .sticky').length === 0){
                     // a sticky header to the table.
-                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
+                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable .table-wrapper');
                 } else if(offset.top > 0 && $('.wind-form #variable .sticky').length > 0) {
                     // remove the sticky header from the table.
                     $('.wind-form #variable .sticky').remove();

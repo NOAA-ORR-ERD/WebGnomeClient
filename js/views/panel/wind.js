@@ -136,7 +136,6 @@ define([
                     //     return false;
                     // });
 
-
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
                     webgnome.model.save(null, {
