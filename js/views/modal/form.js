@@ -122,7 +122,22 @@ define([
         },
 
         save: function(callback){
-            if(this.model){
+            if (this.superModel) {
+                this.superModel.save(null, {
+                    success: _.bind(function(){
+                        this.trigger('save', this.superModel);
+                        if(_.isFunction(callback)) { callback(); }
+                        this.hide();
+                    }, this),
+                    error: _.bind(function(model, response){
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
+                    }, this)
+                });
+                if (this.superModel.validationError){
+                    this.error('Error!', this.superModel.validationError);
+                    this.$el.scrollTop(0);
+                }
+            } else if(this.model){
                 this.model.save(null, {
                     success: _.bind(function(){
                         this.trigger('save', this.model);
