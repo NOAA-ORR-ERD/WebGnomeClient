@@ -102,8 +102,8 @@ define([
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
                     }, {'superModel': windMover, 'model': windMover.get('wind')});
                     windform.on('save', _.bind(function(){
-                        webgnome.model.get('movers').add(windMover);
-                        webgnome.model.get('environment').add(windMover.get('wind'));
+                        webgnome.model.get('movers').add(windMover, {merge: true});
+                        webgnome.model.get('environment').add(windMover.get('wind'), {merge: true});
                     }, this));
 
                     this.steps.push(windform);

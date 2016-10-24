@@ -177,7 +177,7 @@ define([
             if(!wind){
                 wind = new Wind();
             }
-            var form = new WindForm({}, wind);
+            var form = new WindForm({}, {'model': wind}) ;
             form.on('hidden', form.close);
             form.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
