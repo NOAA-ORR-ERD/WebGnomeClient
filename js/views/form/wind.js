@@ -729,18 +729,15 @@ define([
         variableWindStickyHeader: function(e){
             if($('.wind-form #variable table:visible').length > 0){
                 var top = $('.table-wrapper').scrollTop();
-                var modal_offset = $('.table-wrapper').offset();
-                var offset = $('.wind-form #variable table:first').offset();
-                offset.top -= modal_offset.top;
 
-                if(offset.top < 0 && $('.wind-form .sticky').length === 0){
-                    // a sticky header to the table.
-                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable .table-wrapper');
-                } else if(offset.top > 0 && $('.wind-form #variable .sticky').length > 0) {
+                if(top > 0 && $('.wind-form .sticky').length === 0){
+                    // add a sticky header to the table.
+                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').appendTo('.wind-form #variable .table-wrapper');
+                } else if(top === 0 && $('.wind-form #variable .sticky').length > 0) {
                     // remove the sticky header from the table.
                     $('.wind-form #variable .sticky').remove();
                 } else {
-                    $('.wind-form #variable .sticky').css('top', top - 30 + 'px');
+                    $('.wind-form #variable .sticky').css('top', top + 'px');
                 }
             }
         },
