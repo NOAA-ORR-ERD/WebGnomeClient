@@ -32,6 +32,10 @@ define([
                 if (uncertAngle < 0){
                     return 'Angle Scale must be greater than or equal to zero!';
                 }
+
+                if (!this.get('wind').isValid()) {
+                    return this.get('wind').validationError;
+                }
             } else {
                 return 'All input fields must be numbers and cannot be left blank!';
             }
