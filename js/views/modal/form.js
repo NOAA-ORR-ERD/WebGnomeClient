@@ -123,7 +123,7 @@ define([
 
         save: function(callback){
             if (this.superModel) {
-                this.superModel.save(null, {
+                var opts = {
                     success: _.bind(function(){
                         this.trigger('save', this.superModel);
                         if(_.isFunction(callback)) { callback(); }
@@ -132,7 +132,11 @@ define([
                     error: _.bind(function(model, response){
                         this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
                     }, this)
-                });
+                };
+                if (this.superModel.isNew()) {
+                    opts['validate'] = false;
+                }
+                this.superModel.save(null, opts);
                 if (this.superModel.validationError || this.model.validationError){
                     this.error('Error!', this.superModel.validationError);
                     this.error('Error!', this.model.validationError);
