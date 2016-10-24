@@ -133,11 +133,12 @@ define([
                         this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
                     }, this)
                 });
-                if (this.superModel.validationError){
+                if (this.superModel.validationError || this.model.validationError){
                     this.error('Error!', this.superModel.validationError);
+                    this.error('Error!', this.model.validationError);
                     this.$el.scrollTop(0);
                 }
-            } else if(this.model){
+            } else if(this.model) {
                 this.model.save(null, {
                     success: _.bind(function(){
                         this.trigger('save', this.model);
