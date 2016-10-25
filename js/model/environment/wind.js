@@ -70,6 +70,7 @@ define([
                 _.each(attrs.timeseries, function(el, ind, arr){
                     var speed = nucos.convert("Velocity", attrs.units, attrs.speedLimit.units, el[1][0]);
                     var prevIndex = ind - 1;
+                    var invalid = false;
 
                     if (prevIndex >= 0 && el[0] === arr[prevIndex][0]) {
                         msg = 'Duplicate entries with the start time: ';
@@ -78,17 +79,25 @@ define([
 
                     if(speed < 0){
                         msg = 'Speed must be greater than or equal to 0 ' + attrs.units + '!';
+                        invalid = true;
                     }
                     if(speed > attrs.speedLimit.mag){
                         msg = 'Speed must be less than or equal to ' + upperLimit + ' ' + attrs.units + '!';
+                        invalid = true;
                     }
 
                     if(el[1][1] < 0 || el[1][1] > 360){
                         msg = 'Direction must be between 0 and 360 degrees';
+                        invalid = true;
                     }
 
                     if(_.isNull(el[1][1])){
                         msg = 'Enter a valid direction!';
+                        invalid = true;
+                    }
+
+                    if (msg && invalid) {
+                        msg += '\nEntry: ' + moment(el[0]).format(webgnome.config.date_format.moment);
                     }
                 });
                 if (msg) {
