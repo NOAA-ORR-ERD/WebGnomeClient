@@ -98,10 +98,6 @@ define([
                 if (real_data_start > model_start) {
                     return false;
                 }
-
-                if (active_stop === 'inf' || (real_data_stop < active_stop && real_data_stop !== real_data_start)) {
-                    return false;
-                }
             }
 
             return true;

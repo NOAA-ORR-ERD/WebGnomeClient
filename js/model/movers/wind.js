@@ -17,6 +17,19 @@ define([
             wind: GnomeWind
         },
 
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            this.on('change:wind', this.windChange, this);
+        },
+
+        windChange: function() {
+            this.get('wind').on('change', this.triggerWindChange, this);
+        },
+
+        triggerWindChange: function(child) {
+            this.childChange('wind', child);
+        },
+
         validate: function(attrs, options){
             var uncertTimeDelay = attrs.uncertain_time_delay;
             var uncertDuration = attrs.uncertain_duration;
