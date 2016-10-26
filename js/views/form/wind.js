@@ -373,6 +373,7 @@ define([
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
+            this.unbindBaseMouseTrap();
             this.$('.save').removeClass('disabled');
             this.populateDateTime();
         },
@@ -632,6 +633,7 @@ define([
                         array[i] = entry;
                     }
                 }, this));
+
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
                 $('.xdsoft_datetimepicker:last').remove();
