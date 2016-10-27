@@ -331,10 +331,6 @@ define([
             return msg;
         },
 
-        compareModelRunTimeInterval: function() {
-
-        },
-
         fitToInterval: function(start_time) {
             this.set('start_time', start_time);
         },
@@ -345,7 +341,7 @@ define([
                 success: _.bind(function(model) {
                     var modelTimeIsValid = model.isTimeValid();
 
-                    if (!modelTimeIsValid) {
+                    if (!modelTimeIsValid && $('.modal').length === 0) {
                         swal({
                             title: 'Model runtime',
                             text: 'The mover listed below are out of sync with the model:<br><code>' + model.get('name') + '</code> You can alter the model to fit the data.',
