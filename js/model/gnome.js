@@ -333,6 +333,7 @@ define([
 
         fitToInterval: function(start_time) {
             this.set('start_time', start_time);
+            this.save();
         },
 
         moversTimeComplianceCheck: function(model) {

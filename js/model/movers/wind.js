@@ -23,11 +23,11 @@ define([
         },
 
         windChange: function() {
-            this.get('wind').on('change', this.triggerWindChange, this);
+            this.listenTo(this.get('wind'), 'change:timeseries', this.triggerWindChange);
         },
 
-        triggerWindChange: function(child) {
-            this.childChange('wind', child);
+        triggerWindChange: function(wind) {
+            this.childChange('wind', wind);
         },
 
         validate: function(attrs, options){
