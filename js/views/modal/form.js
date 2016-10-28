@@ -134,9 +134,11 @@ define([
                     }, this)
                 };
                 if (this.superModel.isNew()) {
-                    opts['validate'] = false;
+                    opts.validate = false;
                 }
-                this.superModel.save(null, opts);
+                if (this.model.isValid()) {
+                    this.superModel.save(null, opts);
+                }
                 if (this.superModel.validationError || this.model.validationError){
                     this.error('Error!', this.superModel.validationError);
                     this.error('Error!', this.model.validationError);

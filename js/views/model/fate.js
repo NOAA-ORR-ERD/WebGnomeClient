@@ -1723,7 +1723,7 @@ define([
         },
 
         checkDataExists: function(datasetNameArr) {
-            if (!_.isUndefined(this.dataset) && this.dataset[datasetName]) {
+            if (!_.isUndefined(this.dataset) && this.dataset[datasetNameArr]) {
                 return true;
             }
             return false;
