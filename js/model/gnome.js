@@ -194,8 +194,8 @@ define([
 
             if (!this.get('spills').startTimeComplies(start_time)) {
                 swal({
-                    title: "Model start does not match spill(s) start time(s)!",
-                    text: "One or more spills do not start when the model starts. Would you like to fit the model start to the spill(s) start?",
+                    title: "Model start does not match spill start time!",
+                    text: "This spill does not start when the model starts. Would you like to fit the model start to the spill's start?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Yes",
