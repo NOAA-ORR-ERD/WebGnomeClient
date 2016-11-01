@@ -420,7 +420,7 @@ define([
 
             if (active === 'variable') {
                 var currentUnits = this.$('#' + active + ' select[name="units"]').val();
-                this.$('#' + active + ' .units').text(currentUnits);
+                this.$('#' + active + ' .units').text('(' + currentUnits + ')');
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             }
         },
