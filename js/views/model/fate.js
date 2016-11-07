@@ -1029,14 +1029,6 @@ define([
             }
         },
 
-        convertDatasetAmounts: function(dataset, units) {
-            if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
-                dataset = this.convertDataset(dataset, 'bbl', true);
-            }
-
-            return dataset;
-        },
-
         renderGraphEmulsification: function(dataset){
             dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
             var units = webgnome.model.get('spills').at(0).get('units');
@@ -1046,7 +1038,7 @@ define([
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].name === 'floating') {
                         if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
-                            dataset[i] = this.convertDatasetAmounts(dataset[i], units);
+                            dataset[i] = this.convertDataset(dataset[i], 'bbl', true);
                             this.$('.secondYaxisLabel').text('bbl');
                         }
                         dataset[i].yaxis = 2;
