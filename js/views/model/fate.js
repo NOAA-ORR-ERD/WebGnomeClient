@@ -1029,12 +1029,26 @@ define([
             }
         },
 
+        convertDatasetAmounts: function(dataset, units) {
+            if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
+                dataset = this.convertDataset(dataset, 'bbl', true);
+            }
+
+            return dataset;
+        },
+
         renderGraphEmulsification: function(dataset){
             dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
+            var units = webgnome.model.get('spills').at(0).get('units');
+            var options = $.extend(true, {}, this.defaultChartOptions);
 
             if (dataset.length === 3) {
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].name === 'floating') {
+                        if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
+                            dataset[i] = this.convertDatasetAmounts(dataset[i], units);
+                            this.$('.secondYaxisLabel').text('bbl');
+                        }
                         dataset[i].yaxis = 2;
                         dataset[i].label = 'Surface Volume including Emulsion';
                     }
@@ -1049,7 +1063,6 @@ define([
                 }
                 
                 if(_.isUndefined(this.graphEmulsification)){
-                    var options = $.extend(true, {}, this.defaultChartOptions);
                     delete options.yaxis;
                     options.yaxes = [{}, { position: 'right'}];
                     this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
@@ -1115,22 +1128,36 @@ define([
             }
         },
 
-        convertDataset: function(d, to_unit){
+        convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
+            var data;
+            var arr;
+            var k;
+            var i;
 
             if (to_unit === from_unit) {
                 return dataset;
             }
 
-            for (var set in dataset) {
-                var data = dataset[set].data;
-                for (var i = 0; i < data.length; i++) {
-                    var arr = data[i];
-                    for (var k = 1; k < arr.length; k++) {
+            if (!single) {
+                for (var set in dataset) {
+                    data = dataset[set].data;
+                    for (i = 0; i < data.length; i++) {
+                        arr = data[i];
+                        for (k = 1; k < arr.length; k++) {
+                            arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
+                        }
+                    }
+                }
+            } else {
+                data = dataset.data;
+                for (i = 0; i < data.length; i++) {
+                    arr = data[i];
+                    for (k = 1; k < arr.length; k++) {
                         arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
                     }
                 }
