@@ -60,18 +60,18 @@ define([
             }
         },
 
-        fetchNoCleanupData: function(){
+        fetchNoCleanupData: function(cb){
             var cleanupData = new NoCleanupStep();
             cleanupData.set('response_on', false);
-            console.log(cleanupData);
-            cleanupData.save({
+            cleanupData.save(null, {
                 success: _.bind(function(model) {
-                    console.log(model);
                     var noCleanupMasses = model.get('WeatheringOutput').nominal;
                     this.set('column_noclean', noCleanupMasses.natural_dispersion);
                     this.set('surface_noclean', noCleanupMasses.floating);
                     this.set('shoreline_noclean', noCleanupMasses.beached);
-                    this.trigger('loaded');
+                    if (cb) {
+                        cb();
+                    }
                 }, this),
                 error: function(model, response, options) {
                     console.log(model, response, options);

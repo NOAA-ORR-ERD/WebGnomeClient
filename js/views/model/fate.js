@@ -290,7 +290,9 @@ define([
         },
 
         toggleRAC: function(){
-            this.$('.run-risk').toggleClass('disabled');
+            if (this.$('.run-risk').hasClass('disabled')) {
+                this.$('.run-risk').toggleClass('disabled');
+            }
         },
 
         formatXaxisLabel: function() {
@@ -506,7 +508,6 @@ define([
             var numOfCleanups = this.checkForCleanup();
             if (spills.length === 1 && numOfCleanups > 0){
                 var riskWizard = new RiskFormWizard();
-                riskWizard.render();
             } else {
                 var swalObj;
                 if (spills.length > 1) {
