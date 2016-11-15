@@ -163,7 +163,8 @@ define([
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
-            webgnome.cache.on('step:failed', this.toggleRAC, this);
+            webgnome.cache.on('step:recieved', this.disableRAC, this);
+            webgnome.cache.on('step:failed', this.enableRAC, this);
         },
 
         generateColorArray: function(dataset) {
@@ -289,9 +290,15 @@ define([
             windForm.render();
         },
 
-        toggleRAC: function(){
+        enableRAC: function() {
             if (this.$('.run-risk').hasClass('disabled')) {
-                this.$('.run-risk').toggleClass('disabled');
+                this.$('.run-risk').removeClass('disabled');
+            }
+        },
+
+        disableRAC: function() {
+            if (!this.$('.run-risk').hasClass('disabled')) {
+                this.$('.run-risk').addClass('disabled');
             }
         },
 
@@ -367,7 +374,6 @@ define([
                 this.frame = 0;
                 this.renderLoop();
             }
-            this.toggleRAC();
         },
 
         render: function(){
