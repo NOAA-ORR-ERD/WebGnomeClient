@@ -14,6 +14,7 @@ define([
         initialize: function(){
             webgnome.riskCalc = new RiskModel();
             webgnome.riskCalc.fetchNoCleanupData(_.bind(function(){
+                this.nonmodelWizard = true;
                 this.setup(webgnome.riskCalc);
                 this.start();
             }, this));
