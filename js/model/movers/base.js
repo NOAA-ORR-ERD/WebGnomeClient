@@ -95,6 +95,10 @@ define([
             var on = this.get('on');
 
             if ((!extrapolate && on) && (active_start === '-inf' || active_start > model_start)) {
+                if (real_data_start === real_data_stop) {
+                    return true;
+                }
+                
                 if (real_data_start > model_start) {
                     return false;
                 }
