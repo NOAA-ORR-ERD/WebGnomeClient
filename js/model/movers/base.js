@@ -98,6 +98,10 @@ define([
                 if (real_data_start > model_start) {
                     return false;
                 }
+
+                if (real_data_stop < model_start) {
+                    return false;
+                }
             }
 
             return true;
