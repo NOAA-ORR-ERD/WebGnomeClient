@@ -112,7 +112,7 @@ define([
             return {
                 obj_type: 'gnome.model.Model',
                 time_step: 900,
-                start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                start_time: moment().add(1, 'hour').format('YYYY-MM-DDTHH:00:00'),
                 duration: 86400,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
