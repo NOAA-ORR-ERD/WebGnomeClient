@@ -29,8 +29,7 @@ define([
             'click input': 'selectContents',
             'click .modal-header .gnome-help': 'showHelp',
             'change input': 'update',
-            'change select': 'update',
-            'keyup input': 'update'
+            'change select': 'update'
         },
 
         initialize: function(options){
