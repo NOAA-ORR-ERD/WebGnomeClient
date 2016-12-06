@@ -122,7 +122,29 @@ define([
         },
 
         save: function(callback){
-            if(this.model){
+            if (this.superModel) {
+                var opts = {
+                    success: _.bind(function(){
+                        this.trigger('save', this.superModel);
+                        if(_.isFunction(callback)) { callback(); }
+                        this.hide();
+                    }, this),
+                    error: _.bind(function(model, response){
+                        this.error('Saving Failed!', 'Server responded with HTTP code: ' + response.status);
+                    }, this)
+                };
+                if (this.superModel.isNew()) {
+                    opts.validate = false;
+                }
+                if (this.model.isValid()) {
+                    this.superModel.save(null, opts);
+                }
+                if (this.superModel.validationError || this.model.validationError){
+                    this.error('Error!', this.superModel.validationError);
+                    this.error('Error!', this.model.validationError);
+                    this.$el.scrollTop(0);
+                }
+            } else if(this.model) {
                 this.model.save(null, {
                     success: _.bind(function(){
                         this.trigger('save', this.model);
@@ -158,7 +180,7 @@ define([
                 this.attributes.remove();
             }
             if (this.superModel) {
-                this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.superModel});
+                this.attributes = new AttributesView({name: this.superModel.get('obj_type'), model: this.superModel});
             } else {
                 this.attributes = new AttributesView({name: this.model.get('obj_type'), model: this.model});
             }

@@ -16,7 +16,7 @@ define([
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
-        className: 'modal form-modal continuespill-form',
+        className: 'modal form-modal spill-form continuespill-form',
         loaded: false,
 
         events: function(){

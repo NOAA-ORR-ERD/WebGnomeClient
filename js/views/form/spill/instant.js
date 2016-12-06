@@ -15,7 +15,7 @@ define([
     'use strict';
     var instantSpillForm = BaseSpillForm.extend({
         title: 'Instantaneous Release',
-        className: 'modal form-modal instantspill-form',
+        className: 'modal form-modal spill-form instantspill-form',
 
         initialize: function(options, spillModel){
             this.module = module;

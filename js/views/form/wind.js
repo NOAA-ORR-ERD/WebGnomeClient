@@ -360,7 +360,7 @@ define([
         loaded: function(e, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.filename.split('/').pop());
+            this.model.set('name', json_response.name);
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);
@@ -373,6 +373,7 @@ define([
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
+            this.unbindBaseMouseTrap();
             this.$('.save').removeClass('disabled');
             this.populateDateTime();
         },
@@ -415,6 +416,12 @@ define([
                 
                 
                 this.$('.additional-wind-compass').remove();
+            }
+
+            if (active === 'variable') {
+                var currentUnits = this.$('#' + active + ' select[name="units"]').val();
+                this.$('#' + active + ' .units').text('(' + currentUnits + ')');
+                this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             }
         },
 
@@ -626,6 +633,7 @@ define([
                         array[i] = entry;
                     }
                 }, this));
+
                 this.model.set('timeseries', tsCopy);
                 this.$('.additional-wind-compass').remove();
                 $('.xdsoft_datetimepicker:last').remove();

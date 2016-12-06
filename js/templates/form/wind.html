@@ -75,7 +75,19 @@
     </div>
     <div class="tab-pane" id="variable">
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-4">
+                            <label for="incrementer" class="control-label">Inc. (hrs):</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input id="incrementCount" type="number" value="6" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
                 <a class="btn btn-danger pull-right clear-winds">
                     Clear All
                 </a>
@@ -84,10 +96,15 @@
                 <div class="form-horizontal">
                     <div class="form-group">
                         <div class="col-sm-2">
-                            <label for="incrementer" class="control-label">Inc. (hrs):</label>
+                            <label for="units" class="control-label">Units:</label>
                         </div>
-                        <div class="col-sm-2">
-                            <input id="incrementCount" type="number" value="6" class="form-control">
+                        <div class="col-sm-4">
+                            <select name="units" class="form-control" id="units">
+                                <option value="m/s">meters / sec</option>
+                                <option value="knots">knots</option>
+                                <option value="mph">miles / hour</option>
+                                <option value="km/h">kilometers / hour</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -100,15 +117,12 @@
                             <th>
                                 <div class="pull-left">Speed</div>
                                 <div class="col-xs-7">
-                                    <select name="units" class="form-control" id="units">
-                                        <option value="m/s">meters / sec</option>
-                                        <option value="knots">knots</option>
-                                        <option value="mph">miles / hour</option>
-                                        <option value="km/h">kilometers / hour</option>
-                                    </select>
+                                    <div class="units">
+                                        {{ unit }}
+                                    </div> 
                                 </div>
                             </th>
-                            <th>Direction</th>
+                            <th>Direction (&deg; true)</th>
                             <th></th>
                         </th>
                     </thead>

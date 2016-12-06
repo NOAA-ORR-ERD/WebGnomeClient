@@ -92,17 +92,18 @@ define([
                     if(!el.title){
                         title[0] = 'Wind';
                     }
+                    var windMover = new GnomeWindMover();
                     var wind = new GnomeWind();
+                    windMover.set('wind', wind);
                     var windform = new WindForm({
                         name: el.name,
                         title: title.join(' '),
                         body: el.body,
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
-                    }, wind);
+                    }, {'superModel': windMover, 'model': windMover.get('wind')});
                     windform.on('save', _.bind(function(){
-                        var windMover = new GnomeWindMover({wind: wind});
                         webgnome.model.get('movers').add(windMover, {merge: true});
-                        webgnome.model.get('environment').add(wind, {merge: true});
+                        webgnome.model.get('environment').add(windMover.get('wind'), {merge: true});
                     }, this));
 
                     this.steps.push(windform);

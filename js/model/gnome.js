@@ -112,7 +112,7 @@ define([
             return {
                 obj_type: 'gnome.model.Model',
                 time_step: 900,
-                start_time: moment().format('YYYY-MM-DDTHH:00:00'),
+                start_time: moment().add(1, 'hour').format('YYYY-MM-DDTHH:00:00'),
                 duration: 86400,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
@@ -153,7 +153,6 @@ define([
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
             this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
-            this.get('environment').on('change add', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -195,8 +194,8 @@ define([
 
             if (!this.get('spills').startTimeComplies(start_time)) {
                 swal({
-                    title: "Model start does not match spill(s) start time(s)!",
-                    text: "One or more spills do not start when the model starts. Would you like to fit the model start to the spill(s) start?",
+                    title: "Model start does not match spill start time!",
+                    text: "This spill does not start when the model starts. Would you like to fit the model start to the spill's start?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Yes",
@@ -332,50 +331,46 @@ define([
             return msg;
         },
 
-        compareModelRunTimeInterval: function() {
-
+        fitToInterval: function(start_time) {
+            this.set('start_time', start_time);
+            this.save();
         },
 
-        fitToInterval: function(interval) {
-            var duration = moment.duration(moment(interval.end).diff(interval.start)).asMinutes();
-            this.set('start_time', interval.start);
-            this.set('duration', duration);
-        },
+        moversTimeComplianceCheck: function(model) {
+            model.save(null, {
+                validate: false,
+                success: _.bind(function(model) {
+                    var modelTimeIsValid = model.isTimeValid();
 
-        moversTimeComplianceCheck: function(col) {
-            var modelStart = this.get('start_time');
-            var modelEnd = moment(this.get('start_time')).add(this.get('duration'), 'm').format();
-            var moverInterval = this.get('movers').findValidTimeInterval();
-            var moverStart = !_.isUndefined(moverInterval.start) ? moverInterval.start : modelStart;
-            var moverEnd = !_.isUndefined(moverInterval.end) ? moverInterval.end : modelEnd;
-
-            if (moverStart > modelStart || moverEnd < modelEnd) {
-                swal({
-                    title: 'Model runtime',
-                    text: 'The movers listed below are out of sync with the model:<br>You can alter the model to fit the data.',
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Select Option',
-                    cancelButtonText: 'Cancel'
-                }).then(_.bind(function(options) {
-                    if (options) {
+                    if (!modelTimeIsValid && $('.modal').length === 0) {
                         swal({
-                            title: 'Select a correction option',
-                            text: 'You can fit the model runtime to the data or extrapolate the data',
+                            title: 'Model runtime',
+                            text: 'The mover listed below are out of sync with the model:<br><code>' + model.get('name') + '</code> You can alter the model to fit the data.',
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: 'Fit Model',
-                            cancelButtonText: 'Extrapolate'
-                        }).then(_.bind(function(fit){
-                            if (fit) {
-                                this.fitToInterval(moverInterval);
-                            } else {
-                                //this.extrapolateCollection(invalidModels);
+                            confirmButtonText: 'Select Option',
+                            cancelButtonText: 'Cancel'
+                        }).then(_.bind(function(options) {
+                            if (options) {
+                                swal({
+                                    title: 'Select a correction option',
+                                    text: 'You can fit the model runtime to the data or extrapolate the data',
+                                    type: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Fit Model',
+                                    cancelButtonText: 'Extrapolate'
+                                }).then(_.bind(function(fit){
+                                    if (fit) {
+                                        this.fitToInterval(model.get('real_data_start'));
+                                    } else {
+                                        model.set('extrapolate', true);
+                                    }
+                                }, this));
                             }
                         }, this));
                     }
-                }, this));
-            }
+                }, this)
+            });
         },
 
         formatDuration: function() {
@@ -395,6 +390,14 @@ define([
                 hours = 0;
             }
             return {days: days, hours: hours};
+        },
+
+        getEndTime: function() {
+            var durationObj = this.formatDuration();
+            var timeInHours = durationObj.days * 24 + durationObj.hours;
+            var start_time = this.get('start_time');
+
+            return moment(start_time).add(timeInHours, 'h').format('YYYY-MM-DDTHH:00:00');
         },
 
         durationString: function(start_str) {
