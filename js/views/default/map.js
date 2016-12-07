@@ -45,11 +45,11 @@ define([
             if (options.trajectory) {
                     this.trajectory = options.trajectory;
                     this.layers = [
-                        new ol.layer.Tile({
+                        new ol.layer.Image({
                             name: 'noaanavcharts',
-                            source: new ol.source.TileWMS({
-                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                                params: {'LAYERS': '1', 'TILED': true}
+                            source: new ol.source.ImageWMS({
+                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
+                                params: {'LAYERS': '1'}
                             }),
                             opacity: 0.5,
                             visible: true
