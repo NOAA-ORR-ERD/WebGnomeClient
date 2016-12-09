@@ -24,7 +24,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_map',
                 maxFiles: 1,
-                acceptedFiles: '.bna',
+                //acceptedFiles: '.bna',
                 dictDefaultMessage: 'Drop <code>.bna</code> file here to upload (or click to navigate)'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
