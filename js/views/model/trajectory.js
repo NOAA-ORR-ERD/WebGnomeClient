@@ -145,7 +145,7 @@ define([
                     'gnome.movers.current_movers.GridCurrentMover',
                     'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.CurrentCycleMover',
-                    'gnome.movers.wind_movers.GridWindmover'
+                    'gnome.movers.wind_movers.GridWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
