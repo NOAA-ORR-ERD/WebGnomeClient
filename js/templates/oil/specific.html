@@ -24,13 +24,10 @@
     		<div class="tab-pane active" id="generalinfo-oil_{{ viewName }}">
     			<div class="row">
     				<div class="col-md-12">
+    					<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
+    				</div>
+    				<div class="col-md-12">
     					<div><label>Product Type:</label> {{ data.imported.product_type }}</div>
-    				</div>
-    				<div class="col-md-12">
-    					<div><label>Oil Class:</label> {{ data.imported.oil_class }}</div>
-    				</div>
-    				<div class="col-md-12">
-    					<div><label>Adios Oil ID:</label> {{ data.imported.adios_oil_id }}</div>
     				</div>
     				<div class="col-md-12">
     					<div><label>Location:</label> {{ data.imported.location }}</div>
@@ -38,9 +35,9 @@
     				<div class="col-md-12">
     					<div><label>Field Name:</label> {{ data.imported.field_name }}</div>
     				</div>
-                    <div class="col-md-12">
-                        <div><label>Sample Date:</label></div>
-                    </div>
+    				<div class="col-md-12">
+    					<div><label>Oil Class:</label> {{ data.imported.oil_class }}</div>
+    				</div>
     				<div class="col-md-12">
     					<div><label>Synonyms:</label>
                             {% if (data.imported.synonyms){ %}
@@ -58,6 +55,12 @@
                                 {% } %}
                             {% } %}
                         </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div><label>Sample Date:</label></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div><label>Quality Index:</label> {{ (data.quality_index * 100).toFixed(1) }}%</div>
                     </div>
     				<div class="col-md-12">
     					<div><label>Reference:</label> {{ data.imported.reference }}</div>
