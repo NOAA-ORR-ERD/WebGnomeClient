@@ -22,6 +22,7 @@ define([
             var duration = model.formatDuration();
             var compiled = _.template(ModelPanelTemplate, {
                 name: model.get('name'),
+                uncertain: model.get('uncertain'),
                 start_time: moment(model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: duration
             });
@@ -77,6 +78,9 @@ define([
             var hours = this.$('#hours').val();
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             webgnome.model.set('duration', duration);
+
+            var uncertain = this.$('#uncertain:checked').val();
+            webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
             webgnome.model.save(null, {
                 validate: false,
