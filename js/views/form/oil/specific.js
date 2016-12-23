@@ -29,6 +29,7 @@ define([
                 });
             } else {
                 this.render(options);
+                this.tabRender();
             }
 		},
 
@@ -51,27 +52,23 @@ define([
         },
 
         cToF: function(c){
-            return (((c * (9/5)) + 32).toFixed(1));
+            return ((c * 9.0 / 5.0) + 32.0).toFixed(1);
         },
 
-        groupAnalysis: [
-            'aromatics_fraction',
-             'polars_fraction',
-             'resins_fraction',
-             'saturates_fraction',
-             'paraffins_fraction',
-             'sulphur_fraction',
-             'benzene_fraction',
-             'wax_content_fraction',
-             'asphaltenes_fraction'
-            ],
+        groupAnalysis: ['aromatics_fraction',
+			            'polars_fraction',
+			            'resins_fraction',
+			            'saturates_fraction',
+			            'paraffins_fraction',
+			            'sulphur_fraction',
+			            'benzene_fraction',
+			            'wax_content_fraction',
+			            'asphaltenes_fraction'],
 
-        tempAttrs: [
-             'pour_point_min_k',
-             'pour_point_max_k',
-             'flash_point_max_k',
-             'flash_point_min_k'
-            ],
+        tempAttrs: ['pour_point_min_k',
+		            'pour_point_max_k',
+		            'flash_point_min_k',
+		            'flash_point_max_k'],
 
         estimatedParse: function(){
             
@@ -79,12 +76,12 @@ define([
 
 		dataParse: function(oilParam){
             var oil = $.extend(true, {}, oilParam);
-            for (var attr in oil){
+            for (var attr in oil) {
                 // When value of oil attribute is null
-                if (!oil[attr] && this.tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1){
+                if (!oil[attr] && this.tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1) {
                     oil[attr] = "--";
-                } else if (attr === 'bullwinkle_fraction'){
-                    if (oil.estimated[attr]){
+                } else if (attr === 'bullwinkle_fraction') {
+                    if (oil.estimated[attr]) {
                         oil[attr] = '<code>' + oil[attr].toFixed(2) + '</code>';
                     } else {
                         oil[attr] = oil[attr].toFixed(2);
@@ -92,19 +89,19 @@ define([
                 }
                 // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
                 else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
-                    if (oil.estimated[attr]){
+                    if (oil.estimated[attr]) {
                         oil[attr] = '<code>' + (oil[attr] * 1000).toFixed(1) + '</code>';
                     } else {
                         oil[attr] = (oil[attr] * 1000).toFixed(1);
                     }
-                } else if (attr === 'api'){
-                    if (oil.estimated[attr]){
+                } else if (attr === 'api') {
+                    if (oil.estimated[attr]) {
                         oil[attr] = '<code>' + oil[attr].toFixed(1) + '</code>';
                     } else {
                         oil[attr] = oil[attr].toFixed(1);
                     }
-                } else if (attr === 'adhesion_kg_m_2'){
-                    if (oil.estimated[attr]){
+                } else if (attr === 'adhesion_kg_m_2') {
+                    if (oil.estimated[attr]) {
                         oil[attr] = '<code>' + oil[attr] + '</code>';
                     }
                 } else if (attr === 'categories') {
@@ -124,38 +121,38 @@ define([
 			return oil;
 		},
 
-        parseTemperatureData: function(oil, attr){
-            if (this.tempAttrs.indexOf(attr) !== -1){
+        parseTemperatureData: function(oil, attr) {
+            if (this.tempAttrs.indexOf(attr) !== -1) {
                 var str;
-                if (oil[attr]){
-                    if (attr.indexOf('max') > -1){
+                if (oil[attr]) {
+                    if (attr.indexOf('max') > -1) {
                         str = attr.substring(0, attr.length - 6) + '_min_k';
                         if (oil[str] === oil[attr]){
                             oil[str] = '';
                         }
                     } else {
                         str = attr.substring(0, attr.length - 6) + '_max_k';
-                        if (oil[str] === oil[attr]){
+                        if (oil[str] === oil[attr]) {
                             oil[str] = '';
                         }
                     }
                     var celsius = (oil[attr] - 273.15).toFixed(1);
-                    if (oil.estimated[attr]){
+                    if (oil.estimated[attr]) {
                         oil[attr] = '<code>' + this.cToF(celsius) + ' (' + celsius + ')</code> &deg;F (&deg;C)';
                     } else {
                         oil[attr] = this.cToF(celsius) + ' (' + celsius + ') &deg;F (&deg;C)';
                     }
                 } else {
-                    for (var i = 0; i < this.tempAttrs.length; i++){
-                        if (attr === this.tempAttrs[i]){
-                            if (attr.indexOf('max') > -1){
+                    for (var i = 0; i < this.tempAttrs.length; i++) {
+                        if (attr === this.tempAttrs[i]) {
+                            if (attr.indexOf('max') > -1) {
                                 str = attr.substring(0, attr.length - 6) + '_min_k';
-                                if (oil[str] === oil[attr]){
+                                if (oil[str] === oil[attr]) {
                                     oil[str] = '';
                                 }
                             } else {
                                 str = attr.substring(0, attr.length - 6) + '_max_k';
-                                if (oil[str] === oil[attr]){
+                                if (oil[str] === oil[attr]) {
                                     oil[str] = '';
                                 }
                             }

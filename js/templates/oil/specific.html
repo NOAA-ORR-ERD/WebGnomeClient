@@ -60,7 +60,13 @@
                         <div><label>Sample Date:</label></div>
                     </div>
                     <div class="col-md-12">
-                        <div><label>Quality Index:</label> {{ (data.quality_index * 100).toFixed(1) }}%</div>
+                        <div>
+                            <label class="info" title="The quality index is a numeric score that we will use to represent the 'fitness' of the oil's source data,  Please refer to the oil library documentation for a detailed explanation of how we generate this score.">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                                Quality Index:
+                            </label>
+                            {{ (data.quality_index * 100).toFixed(1) }}%
+                        </div>
                     </div>
     				<div class="col-md-12">
     					<div><label>Reference:</label> {{ data.imported.reference }}</div>
@@ -74,14 +80,15 @@
     		<div class="tab-pane" id="properties_{{ viewName }}">
     			<div class="row">
     				<div class="col-md-6">
-    					<div><label>API:</label> {{ data.api }}</div>
+    					<div><label>API:</label> {{ data.api }} </div>
     				</div>
     				<div class="col-md-6">
     					<div><label>Pour Point:</label> {{ data.pour_point_min_k }} {{ data.pour_point_max_k }} </div>
     				</div>
                     <div class="col-md-6">
-                        <label class="info" title="At a certain temperature,  vaporizing oil or oil product may reach  a vapor  concentration large enough to  sustain combustion. This temperature is called the flash point.">
-                            <span class="glyphicon glyphicon-info-sign"></span> Flash Point:
+                        <label class="info" title="A flash point is defined as the minimum temperature at which an oil or fuel product will ignite on application of an ignition source.  This is different than the fire point of an oil, which is the temperature at which the vapor produced by an oil will continue to burn for at least 5 seconds after ignition.">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            Flash Point:
                         </label>
                         {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
                     </div>
