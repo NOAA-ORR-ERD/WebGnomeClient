@@ -20,6 +20,7 @@ define([
             } else {
                 this.viewName = 'oilLib';
             }
+
             if (!_.isUndefined(options.infoMode)) {
                 options.model.fetch({
                     success: _.bind(function(model){

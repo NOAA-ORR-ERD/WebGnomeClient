@@ -82,6 +82,7 @@ define([
 
         set_quality_index_colors: function(table_container) {
             var qi_idx = table_container.find('th.quality_index').index() + 1;
+
             table_container.find('tr td:nth-child(' + qi_idx + ')')
             .each(function() {
             	var cell = this;

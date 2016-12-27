@@ -80,7 +80,13 @@
     		<div class="tab-pane" id="properties_{{ viewName }}">
     			<div class="row">
     				<div class="col-md-6">
-    					<div><label>API:</label> {{ data.api }} </div>
+    					<div>
+    					    <label class="info" title="The API value of a substance is a representation of its density relative to the density of water at 15&deg C.">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+    					        API:
+    					    </label>
+    					    {{ data.api }}
+    					</div>
     				</div>
     				<div class="col-md-6">
                         <label class="info" title="Pour point is the lowest temperature at which an oil will flow at a specific rate under specified conditions. It is roughly equivalent to melting point for pure substances, but because oil is a mixture of compounds, pour point is difficult to measure precisely, and may vary somewhat from sample to sample.">
@@ -110,7 +116,10 @@
     				<div class="col-md-6">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-    					       <span class="info" title="A measure of a fluid's resistance to flow. An oil with large viscosity resists motion because of internal friction. There are two related viscosity values, kinematic viscosity, measured in Stokes, and dynamic viscosity, measured in Poise. Dynamic viscosity equals the kinematic viscosity multiplied by the fluid density. Water has a kinematic viscosity on 1 centistoke (cSt) and a dynamic viscosity of one centipoise.  Oil viscosities are larger.">Kinematic Viscosity <span class="glyphicon glyphicon-info-sign"></span></span>
+    					       <span class="info" title="A measure of a fluid's resistance to flow. An oil with large viscosity resists motion because of internal friction. There are two related viscosity values, kinematic viscosity, measured in Stokes, and dynamic viscosity, measured in Poise. Dynamic viscosity equals the kinematic viscosity multiplied by the fluid density. Water has a kinematic viscosity on 1 centistoke (cSt) and a dynamic viscosity of one centipoise.  Oil viscosities are larger.">
+    					           Kinematic Viscosity 
+    					           <span class="glyphicon glyphicon-info-sign"></span>
+    					       </span>
                             </div>
                             <div class="panel-body">
             					{% if (!data.kvis){ %}
@@ -143,7 +152,10 @@
                     <div class="col-md-6">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-                                Density
+                                <span class="info" title="The density of a substance is its mass per unit volume.">
+                                    Density
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </span>
                             </div>
                             <div class="panel-body">
                                 {% if (!data.imported.densities){ %}
