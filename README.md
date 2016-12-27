@@ -2,7 +2,7 @@ WebGnomeClient
 ==============
 [![build status](https://ci.orr.noaa.gov/projects/2/status.png?ref=master)](https://ci.orr.noaa.gov/projects/2?ref=master)
 
-Javascript client that uses the WebGnomeAPI to create and run py_gnome models.
+Javascript client that uses the WebGnomeAPI to create and run py_gnome models. Instructions on how to setup a WebgnomeAPI server and OilLibraryAPI server can be found here [API Setup](API_SETUP.md)
 
 ## System Requirments
 * [Node.js](http://nodejs.org/)
