@@ -1,4 +1,4 @@
-<div id="specificOilContainer"> 
+<div id="specificOilContainer">
     <div class="row">
     	<div class="col-md-12">
     		<h4>{{ data.name }}</h4>
@@ -61,7 +61,7 @@
                     </div>
                     <div class="col-md-12">
                         <div>
-                            <label class="info" title="The quality index is a numeric score that we will use to represent the 'fitness' of the oil's source data,  Please refer to the oil library documentation for a detailed explanation of how we generate this score.">
+                            <label class="info" title="The quality index is a numeric score that represents the 'fitness' of the particular oil's record for use in the weathering model.  Please refer to the oil library technical documentation for a detailed explanation of how this score is generated.">
                                 <span class="glyphicon glyphicon-info-sign"></span>
                                 Quality Index:
                             </label>
@@ -81,7 +81,7 @@
     			<div class="row">
     				<div class="col-md-6">
     					<div>
-    					    <label class="info" title="The API value of a substance is a representation of its density relative to the density of water at 15&deg C.">
+    					    <label class="info" title="The American Petroleum Institute gravity, or API gravity, is a measure of how heavy or light a petroleum liquid is compared to fresh water: if its API gravity is greater than 10, it is lighter and floats on water; if less than 10, it is heavier and sinks.">
                                 <span class="glyphicon glyphicon-info-sign"></span>
     					        API:
     					    </label>
@@ -89,7 +89,7 @@
     					</div>
     				</div>
     				<div class="col-md-6">
-                        <label class="info" title="Pour point is the lowest temperature at which an oil will flow at a specific rate under specified conditions. It is roughly equivalent to melting point for pure substances, but because oil is a mixture of compounds, pour point is difficult to measure precisely, and may vary somewhat from sample to sample.">
+                        <label class="info" title="Pour point is the lowest temperature at which an oil will flow under specified conditions. It is roughly equivalent to melting point for pure substances, but because oil is a mixture of compounds, pour point is difficult to measure precisely, and may vary somewhat from sample to sample.">
                             <span class="glyphicon glyphicon-info-sign"></span> Pour Point:
                         </label>
                         {{ data.pour_point_min_k }} {{data.pour_point_max_k }}
@@ -102,7 +102,7 @@
                         {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
                     </div>
                     <div class="col-md-6">
-                        <label class="info" title="Some oils will only form a stable emulsion when a certain ratio of aromatic  fraction to asphaltene fraction is present in the spilled oil. The aromatic /asphaltene fraction changes as the aromatics evaporate. The emulsion constant records the fraction of the oil that must evaporate before the oil emulsifies.">
+                        <label class="info" title="Some oils will only form a stable emulsion when a certain fraction of the oil has evaporated. The emulsion constant is the fraction of the oil that must evaporate before the oil emulsifies.">
                             <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
                         </label>
                         {{ data.bullwinkle_fraction }}
@@ -116,8 +116,8 @@
     				<div class="col-md-6">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-    					       <span class="info" title="A measure of a fluid's resistance to flow. An oil with large viscosity resists motion because of internal friction. There are two related viscosity values, kinematic viscosity, measured in Stokes, and dynamic viscosity, measured in Poise. Dynamic viscosity equals the kinematic viscosity multiplied by the fluid density. Water has a kinematic viscosity on 1 centistoke (cSt) and a dynamic viscosity of one centipoise.  Oil viscosities are larger.">
-    					           Kinematic Viscosity 
+    					       <span class="info" title="A measure of a fluid's resistance to flow. Water has a kinematic viscosity of 1 centistoke (cSt) Oil viscosities are generally larger.">
+    					           Kinematic Viscosity
     					           <span class="glyphicon glyphicon-info-sign"></span>
     					       </span>
                             </div>
@@ -187,8 +187,8 @@
                     <div class="col-md-12">
                         <div class="panel complete panel-default">
                             <div class="panel-heading">
-                                <span class="info" title="The attractive force exerted upon the surface molecules of a liquid by the molecules beneath to make the liquid have the least  interfacial surface area. A typical oil-water surface tension is 30 dynes/cm. Chemical dispersants reduce surface tension.">
-                                    Interfacial Tension (Dynes/cm) 
+                                <span class="info" title="The attractive force exerted between the surface molecules of a liquid that tends to reduce the interfacial surface area. A typical oil-water interfacial tension is 30 dynes/cm. Chemical dispersants reduce the interfacial tension between oil and water.">
+                                    Interfacial Tension (Dynes/cm)
                                     <span class="glyphicon glyphicon-info-sign"></span>
                                 </span>
                             </div>
@@ -218,15 +218,15 @@
                                 <div class="col-md-6">
                                     <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
                                         <span class="glyphicon glyphicon-info-sign"></span> Saturates:
-                                    </label> 
+                                    </label>
                                     {{ data.saturates_fraction }}
                                 </div>
                                 <div class="col-md-6"><label>Polars:</label> {{ data.polars_fraction }}</div>
                                 <div class="col-md-6">
                                     <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        <span class="glyphicon glyphicon-info-sign"></span>
                                         Aromatics:
-                                    </label> 
+                                    </label>
                                     {{ data.aromatics_fraction }}
                                 </div>
                                 <div class="col-md-6"><label>Benzene:</label> {{ data.benzene_fraction }}</div>
@@ -234,15 +234,15 @@
                                     <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
                                         <span class="glyphicon glyphicon-info-sign"></span>
                                         Resins:
-                                    </label> 
+                                    </label>
                                     {{ data.resins_fraction }}
                                 </div>
                                 <div class="col-md-6"><label>Sulfur:</label> {{ data.sulphur_fraction }}</div>
                                 <div class="col-md-6">
                                     <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
-                                        <span class="glyphicon glyphicon-info-sign"></span> 
+                                        <span class="glyphicon glyphicon-info-sign"></span>
                                         Asphaltenes:
-                                    </label> 
+                                    </label>
                                     {{ data.asphaltenes_fraction }}</div>
                                 <div class="col-md-6"><label>Paraffins:</label> {{ data.paraffins_fraction }}</div>
                                 <div class="col-md-6"><label>Wax Content:</label> {{ data.wax_content_fraction }}</div>
@@ -255,7 +255,7 @@
     		<div class="tab-pane" id="distillation_{{ viewName }}">
     			<div class="row">
                     <div class="col-md-12">
-        				<h4 class="info pull-left" title="Oil is a mixture of molecules that boil at different temperatures and pressures.  The table displays the cumulative mass fraction of the oil that boils off at atmospheric pressure for a specific liquid temperature of the boiling oil and its corresponding produced vapor temperature.">Distillation Cuts <span class="glyphicon glyphicon-info-sign"></span></h4>
+        				<h4 class="info pull-left" title="Oil is a mixture of molecules that boil at different temperatures and pressures.  The table displays the cumulative mass fraction of the oil that boils off at atmospheric pressure for a specific liquid temperature of the oil and its corresponding produced vapor temperature.">Distillation Cuts <span class="glyphicon glyphicon-info-sign"></span></h4>
         				{% if (!data.cuts){ %}
         					<div>No Distillation Cuts on Record.</div>
         				{% } else { %}
