@@ -4,6 +4,10 @@ WebGnomeClient
 
 Javascript client that uses the WebGnomeAPI to create and run py_gnome models. Instructions on how to setup a WebgnomeAPI server and OilLibraryAPI server can be found here [API Setup](API_SETUP.md)
 
+## Application Requirements
+* [WebGnomeAPI Server](https://srccontrol.orr.noaa.gov/gnome/webgnomeapi.git)
+* [OilLibraryAPI Server](https://srccontrol.orr.noaa.gov/gnome/oillibraryapi.git)
+
 ## System Requirments
 * [Node.js](http://nodejs.org/)
 * [npm](http://www.npmjs.org/)
