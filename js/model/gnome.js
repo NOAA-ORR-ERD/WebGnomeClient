@@ -193,11 +193,11 @@ define([
 
         spillsTimeCompliance: function() {
             var start_time = this.get('start_time');
-
+            
             if (!this.get('spills').startTimeComplies(start_time)) {
                 swal({
-                    title: "Model start does not match spill start time!",
-                    text: "This spill does not start when the model starts. Would you like to fit the model start to the spill's start?",
+                    title: "The spill start time is not the same as the model start time!",
+                    text: "Would you like to change the model start time to match the spill's start time?",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Yes",
@@ -342,25 +342,24 @@ define([
             model.save(null, {
                 validate: false,
                 success: _.bind(function(model) {
-                    var modelTimeIsValid = model.isTimeValid();
-
-                    if (!modelTimeIsValid && $('.modal').length === 0) {
+                    var msg = model.isTimeValid();
+                    if (!(msg==='') && $('.modal').length === 0) {
                         swal({
-                            title: 'Model runtime',
-                            text: 'The mover listed below are out of sync with the model:<br><code>' + model.get('name') + '</code> You can alter the model to fit the data.',
+                            title: 'Error',
+                            text: msg,
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: 'Select Option',
-                            cancelButtonText: 'Cancel'
+                            confirmButtonText: 'Fix',
+                            cancelButtonText: 'Ignore'
                         }).then(_.bind(function(options) {
                             if (options) {
                                 swal({
-                                    title: 'Select a correction option',
-                                    text: 'You can fit the model runtime to the data or extrapolate the data',
+                                    title: 'Select a correction option:',
+                                    text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
                                     type: 'warning',
                                     showCancelButton: true,
-                                    confirmButtonText: 'Fit Model',
-                                    cancelButtonText: 'Extrapolate'
+                                    confirmButtonText: 'Change Model Start',
+                                    cancelButtonText: 'Extrapolate Mover'
                                 }).then(_.bind(function(fit){
                                     if (fit) {
                                         this.fitToInterval(model.get('real_data_start'));

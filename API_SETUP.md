@@ -2,6 +2,8 @@ WebgnomeAPI [![build status](https://srccontrol.orr.noaa.gov/gnome/webgnomeapi/b
 ============
 
 WebgnomeAPI requires a running redis server on the same system. Depending on your operating system the process to install and run redis varies and will not be covered in this piece of documentation. 
+For Windows there are binaries availabe on GitHub here:
+https://github.com/MSOpenTech/redis/releases
 
 ### Installation
 `conda create -n webgnomeapi python=2`
