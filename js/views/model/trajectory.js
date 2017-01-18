@@ -444,9 +444,7 @@ define([
             this.controls.date.text(time);
             this.frame = step.get('step_num');
             if(this.frame < webgnome.model.get('num_time_steps')){
-                this.drawStepTimeout = setTimeout(_.bind(function(){
-                    this.controls.seek.slider('value', this.frame + 1);
-                }, this), 60);
+                this.controls.seek.slider('value', this.frame + 1);
             } else {
                 this.pause();
             }
@@ -1203,9 +1201,6 @@ define([
                     webgnome.model.off('change', this.contextualize, this);
                     webgnome.model.off('sync', this.spillListeners, this);
                     webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-                }
-                if(this.drawStepTimeout){
-                    clearTimeout(this.drawStepTimeout);
                 }
                 webgnome.cache.off('step:recieved', this.renderStep, this);
                 webgnome.cache.off('step:failed', this.pause, this);
