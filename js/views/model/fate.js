@@ -163,7 +163,8 @@ define([
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
-            webgnome.cache.on('step:failed', this.toggleRAC, this);
+            webgnome.cache.on('step:recieved', this.disableRAC, this);
+            webgnome.cache.on('step:failed', this.enableRAC, this);
         },
 
         generateColorArray: function(dataset) {
@@ -289,8 +290,16 @@ define([
             windForm.render();
         },
 
-        toggleRAC: function(){
-            this.$('.run-risk').toggleClass('disabled');
+        enableRAC: function() {
+            if (this.$('.run-risk').hasClass('disabled')) {
+                this.$('.run-risk').removeClass('disabled');
+            }
+        },
+
+        disableRAC: function() {
+            if (!this.$('.run-risk').hasClass('disabled')) {
+                this.$('.run-risk').addClass('disabled');
+            }
         },
 
         formatXaxisLabel: function() {
@@ -365,7 +374,6 @@ define([
                 this.frame = 0;
                 this.renderLoop();
             }
-            this.toggleRAC();
         },
 
         render: function(){
@@ -506,7 +514,6 @@ define([
             var numOfCleanups = this.checkForCleanup();
             if (spills.length === 1 && numOfCleanups > 0){
                 var riskWizard = new RiskFormWizard();
-                riskWizard.render();
             } else {
                 var swalObj;
                 if (spills.length > 1) {
@@ -949,155 +956,207 @@ define([
 
         renderGraphEvaporation: function(dataset){
             dataset = this.pluckDataset(dataset, ['evaporated', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphEvaporation)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = this.generateColorArray(dataset);
-                this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphEvaporation)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphEvaporation = $.plot('#evaporation .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphEvaporation.setData(dataset);
+                    this.graphEvaporation.setupGrid();
+                    this.graphEvaporation.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphEvaporation.setData(dataset);
-                this.graphEvaporation.setupGrid();
-                this.graphEvaporation.draw();
+                this.$('#evaporation .timeline .chart').text('Weatherer Turned Off');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphDispersion: function(dataset){
             dataset = this.pluckDataset(dataset, ['natural_dispersion', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphDispersion)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = this.generateColorArray(dataset);
-                this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphDispersion)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphDispersion = $.plot('#dispersion .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphDispersion.setData(dataset);
+                    this.graphDispersion.setupGrid();
+                    this.graphDispersion.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphDispersion.setData(dataset);
-                this.graphDispersion.setupGrid();
-                this.graphDispersion.draw();
+                this.$('#dispersion .timeline .chart').text('Weatherer Turned Off');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphSedimentation: function(dataset){
             dataset = this.pluckDataset(dataset, ['sedimentation', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphSedimentation)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = this.generateColorArray(dataset);
-                this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphSedimentation)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphSedimentation = $.plot('#sedimentation .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphSedimentation.setData(dataset);
+                    this.graphSedimentation.setupGrid();
+                    this.graphSedimentation.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphSedimentation.setData(dataset);
-                this.graphSedimentation.setupGrid();
-                this.graphSedimentation.draw();
+                this.$('#sedimentation .timeline .chart').text('Weatherer Turned Off');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphDensity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_density', 'water_density', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            dataset[0].label = 'Average Oil (Emulsion) Density';
-            if(_.isUndefined(this.graphDensity)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.yaxis.ticks = 4;
-                options.yaxis.tickDecimals = 2;
-                this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
+
+            if (dataset.length === 3) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                dataset[0].label = 'Average Oil (Emulsion) Density';
+                if(_.isUndefined(this.graphDensity)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.yaxis.ticks = 4;
+                    options.yaxis.tickDecimals = 2;
+                    this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphDensity.setData(dataset);
+                    this.graphDensity.setupGrid();
+                    this.graphDensity.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphDensity.setData(dataset);
-                this.graphDensity.setupGrid();
-                this.graphDensity.draw();
+                this.$('#density .timeline .chart').text('Dataset incomplete for graph display');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphEmulsification: function(dataset){
             dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
+            var units = webgnome.model.get('spills').at(0).get('units');
+            var options = $.extend(true, {}, this.defaultChartOptions);
 
-            for (var i = 0; i < dataset.length; i++) {
-                if (dataset[i].name === 'floating') {
-                    dataset[i].yaxis = 2;
-                    dataset[i].label = 'Surface Volume including Emulsion';
-                }
-                dataset[i].needle = {
-                    label: _.bind(this.formatNeedleLabel, this),
-                    formatX: _.bind(this.formatNeedleTime, this)
-                };
+            if (dataset.length === 3) {
+                for (var i = 0; i < dataset.length; i++) {
+                    if (dataset[i].name === 'floating') {
+                        if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
+                            dataset[i] = this.convertDataset(dataset[i], 'bbl', true);
+                            this.$('.secondYaxisLabel').text('bbl');
+                        }
+                        dataset[i].yaxis = 2;
+                        dataset[i].label = 'Surface Volume including Emulsion';
+                    }
+                    dataset[i].needle = {
+                        label: _.bind(this.formatNeedleLabel, this),
+                        formatX: _.bind(this.formatNeedleTime, this)
+                    };
 
-                if (dataset[i].name !== 'secondtime') {
-                    dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                    if (dataset[i].name !== 'secondtime') {
+                        dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                    }
                 }
-            }
-            
-            if(_.isUndefined(this.graphEmulsification)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                delete options.yaxis;
-                options.yaxes = [{}, { position: 'right'}];
-                this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
+                
+                if(_.isUndefined(this.graphEmulsification)){
+                    delete options.yaxis;
+                    options.yaxes = [{}, { position: 'right'}];
+                    this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphEmulsification.setData(dataset);
+                    this.graphEmulsification.setupGrid();
+                    this.graphEmulsification.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphEmulsification.setData(dataset);
-                this.graphEmulsification.setupGrid();
-                this.graphEmulsification.draw();
+                this.$('#emulsification .timeline .chart').text('Dataset incomplete for graph display');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphViscosity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphViscosity)){
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.yaxis = {
-                    ticks: [1, 10, 100, 1000, 10000, 100000, 10000000],
-                    tickFormatter: function(tick){
-                        return tick.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    },
-                    transform: function(v){
-                        return Math.log(v+10);
-                    },
-                    inverseTransform: function(v){
-                        return Math.exp(v);
-                    },
-                    tickDecimals: 0
-                };
-                this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, options);
+            if (dataset.length === 5) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphViscosity)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.yaxis = {
+                        ticks: [1, 10, 100, 1000, 10000, 100000, 10000000],
+                        tickFormatter: function(tick){
+                            return tick.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        },
+                        transform: function(v){
+                            return Math.log(v+10);
+                        },
+                        inverseTransform: function(v){
+                            return Math.exp(v);
+                        },
+                        tickDecimals: 0
+                    };
+                    this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphViscosity.setData(dataset);
+                    this.graphViscosity.setupGrid();
+                    this.graphViscosity.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphViscosity.setData(dataset);
-                this.graphViscosity.setupGrid();
-                this.graphViscosity.draw();
+                this.$('#viscosity .timeline .chart').text('Dataset incomplete for graph display');
             }
-            dataset[0].fillArea = null;
         },
 
         renderGraphDissolution: function(dataset){
             dataset = this.pluckDataset(dataset, ['dissolution', 'secondtime']);
-            dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
-            if(_.isUndefined(this.graphDissolution)) {
-                var options = $.extend(true, {}, this.defaultChartOptions);
-                options.colors = this.generateColorArray(dataset);
-                this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphDissolution)) {
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphDissolution = $.plot('#dissolution .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphDissolution.setData(dataset);
+                    this.graphDissolution.setupGrid();
+                    this.graphDissolution.draw();
+                }
+                dataset[0].fillArea = null;
             } else {
-                this.graphDissolution.setData(dataset);
-                this.graphDissolution.setupGrid();
-                this.graphDissolution.draw();
+                this.$('#dissolution .timeline .chart').text('Weatherer Turned Off');
             }
-            dataset[0].fillArea = null;
         },
 
-        convertDataset: function(d, to_unit){
+        convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
             var api = (!_.isNull(substance)) ? substance.get('api') : 10;
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
+            var data;
+            var arr;
+            var k;
+            var i;
 
             if (to_unit === from_unit) {
                 return dataset;
             }
 
-            for (var set in dataset) {
-                var data = dataset[set].data;
-                for (var i = 0; i < data.length; i++) {
-                    var arr = data[i];
-                    for (var k = 1; k < arr.length; k++) {
+            if (!single) {
+                for (var set in dataset) {
+                    data = dataset[set].data;
+                    for (i = 0; i < data.length; i++) {
+                        arr = data[i];
+                        for (k = 1; k < arr.length; k++) {
+                            arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
+                        }
+                    }
+                }
+            } else {
+                data = dataset.data;
+                for (i = 0; i < data.length; i++) {
+                    arr = data[i];
+                    for (k = 1; k < arr.length; k++) {
                         arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
                     }
                 }
@@ -1560,8 +1619,7 @@ define([
                     'water_density',
                     'water_viscosity',
                     'dispersibility_difficult',
-                    'dispersibility_unlikely',
-                    'floating'
+                    'dispersibility_unlikely'
                 ];
 
                 var titles = _.clone(nominal);
@@ -1578,6 +1636,8 @@ define([
                 var keys = keyOrder.filter(function(el, i, arr){
                     return !_.isUndefined(titles[el]);
                 });
+
+                keys.push('water_density', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely');
 
                 for(var type in keys){
                     this.dataset.push({
@@ -1686,6 +1746,13 @@ define([
                 webgnome.mass_balance = this.dataset;
             }
 
+        },
+
+        checkDataExists: function(datasetNameArr) {
+            if (!_.isUndefined(this.dataset) && this.dataset[datasetNameArr]) {
+                return true;
+            }
+            return false;
         },
 
         addAxesValue: function(dataset) {

@@ -151,7 +151,7 @@ define([
                     });
                     this.hide();
                     this.loadingModal = new LoadingModal({title: "Running Model..."});
-                    this.loadingModal.on('hide', this.close, this.loadingModal);
+                    this.loadingModal.on('hidden.bs.modal', this.loadingModal.close, this.loadingModal);
                     this.loadingModal.render();
                 }, this), true);
             }

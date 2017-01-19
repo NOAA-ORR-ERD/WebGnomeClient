@@ -3,8 +3,9 @@ define([
     'jquery',
     'backbone',
     'model/base',
-    'ol'
-], function(_, $, Backbone, BaseModel, ol){
+    'ol',
+    'moment'
+], function(_, $, Backbone, BaseModel, ol, moment){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -81,6 +82,36 @@ define([
                 features.push(feature);
             }
             return features;
+        },
+
+        isTimeValid: function() {
+            var model_start = webgnome.model.get('start_time');
+            var model_stop = webgnome.model.getEndTime();
+            var active_start = this.get('active_start');
+            var active_stop = this.get('active_stop');
+            var real_data_start = this.get('real_data_start');
+            var real_data_stop = this.get('real_data_stop');
+            var extrapolate = this.get('extrapolate');
+            var on = this.get('on');
+            var msg = ''
+
+            if ((!extrapolate && on) && (active_start === '-inf' || active_start > model_start)) {
+                if (real_data_start === real_data_stop) {
+                    return msg;
+                }
+                
+                if (real_data_start > model_start) {
+                    msg = 'Mover data begins after model start time'
+                    return msg;
+                }
+
+                if (real_data_stop < model_start) {
+                    msg = 'Mover contains no data within model run time'
+                    return msg;
+                }
+            }
+
+            return msg;
         }
     });
 

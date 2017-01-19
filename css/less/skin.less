@@ -136,6 +136,13 @@ img{
         width: 100%;
         overflow: scroll;
     }
+
+    .swal2-modal {
+        h2 {
+            line-height: 1em;
+            margin-bottom: 15px;
+        }
+    }
 }
 
 .app-state{
@@ -1188,7 +1195,7 @@ nav.navbar{
         }
     }
 
-    &.spill, &.response, &.diffusion, &.current, &.wind{
+    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind{
         .panel{
             cursor: default;
 
@@ -1411,7 +1418,7 @@ nav.navbar{
                     }
                 }
                 .panel-body{
-                    height: 200px;
+                    height: 250px;
                     display: block;
                 }
             }
@@ -1736,6 +1743,12 @@ nav.navbar{
             span{
                 .glyphicon;
                 .glyphicon-step-forward;
+            }
+        }
+        .back {
+            span{
+                .glyphicon;
+                .glyphicon-step-backward;
             }
         }
         .seek{
@@ -2687,6 +2700,14 @@ nav.navbar{
             border-radius: 0 0 3px 3px;
         }
 
+        .table-wrapper {
+            height: 300px;
+            overflow: auto;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
         table{
             span{
                 opacity: 0;
@@ -2701,7 +2722,7 @@ nav.navbar{
             th{
                 line-height: 34px;
             }
-            span.edit{
+            span.edit, span.add-row {
                 margin-right: 10px;
             }
             .ok, .undo {
@@ -2728,6 +2749,10 @@ nav.navbar{
                     opacity: 1;
                 }
             }
+            tr.error {
+                background: #f2dede;
+                color: #a94442;
+            }
             .table-input-spd {
                 width: 100px;
             }
@@ -2741,6 +2766,9 @@ nav.navbar{
         }
         
         #constant, #variable{
+            .popover {
+                padding-bottom: 10px;
+            }
             .slider{
                 margin-top: 40px;
 
@@ -2772,8 +2800,8 @@ nav.navbar{
         .sticky{
             position: fixed;
             top: 0;
-            left: 20px;
-            right: 20px;
+            left: 15px;
+            right: 15px;
             height: 52px;
             overflow: hidden;
 
@@ -2790,6 +2818,12 @@ nav.navbar{
             td{
                 visibility: hidden;
             }
+        }
+    }
+
+    &.wind-form{
+        .sticky{
+            position: absolute;
         }
     }
 
@@ -3434,4 +3468,6 @@ nav.navbar{
   }
 }
 
-
+.xdsoft_datetimepicker {
+    z-index: 1999;
+}

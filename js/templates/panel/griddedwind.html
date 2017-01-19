@@ -1,0 +1,23 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="add"></div>
+        <div class="state"></div>
+        Gridded Wind
+    </div>
+    <div class="panel-body">
+        <div class="map" id="mini-windmap"></div>
+        <div class="list">
+            {% for (var i = 0; i < griddedwind.length; i++){ %}
+                <div class="single row" data-id="{{ griddedwind[i].get('id') }}">
+                    <div class="col-sm-8">
+                        <h5>{{ griddedwind[i].get('name') }}</h5>
+                    </div>
+                    <div class="col-sm-4">
+                        <span class="trash delete" title="Remove {{ griddedwind[i].get('name') }}"></span>
+                        <span class="edit" title="Edit {{ griddedwind[i].get('name') }}"></span>
+                    </div>
+                </div>
+            {% } %}
+        </div>            
+    </div>
+</div>

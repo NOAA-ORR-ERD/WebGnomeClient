@@ -29,13 +29,14 @@ define([
         },
 
         new: function(){
+            var windMover = new WindMoverModel();
             var wind = new WindModel();
-            var windForm = new WindForm(null, wind);
+            windMover.set('wind', wind);
+            var windForm = new WindForm(null, {'superModel': windMover, 'model': windMover.get('wind')});
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
-                var windMover = new WindMoverModel({wind: wind});
                 webgnome.model.get('movers').add(windMover);
-                webgnome.model.get('environment').add(wind);
+                webgnome.model.get('environment').add(windMover.get('wind'));
             }, this));
             windForm.render();
         },
@@ -44,34 +45,45 @@ define([
             e.stopPropagation();
             var id = this.getID(e);
 
-            var wind = webgnome.model.get('environment').get(id);
-            var windForm = new WindForm(null, wind);
+            var windMover = webgnome.model.get('movers').get(id);
+            var windForm = new WindForm(null, {'superModel': windMover, 'model': windMover.get('wind')});
             windForm.on('hidden', windForm.close);
 
             windForm.render();
         },
 
+        generateWindsArray: function(windMovers) {
+            var winds = [];
+            _.each(windMovers, function(el, i, arr){
+                winds.push(el.get('wind'));
+            });
+
+            return winds;
+        },
+
         render: function(){
-            var winds = _.union(
-                webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
-                // webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.GridWindMover'})
+            var windMovers = _.union(
+                //webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'})
+                webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.WindMover'})
             );
+            var winds = this.generateWindsArray(windMovers);
 
             var compiled = _.template(WindPanelTemplate, {
+                windMovers: windMovers,
                 winds: winds,
-                units: winds.length > 0 ? winds[0].get('units') : ''
+                units: windMovers.length > 0 ? windMovers[0].get('wind').get('units') : ''
             });
 
             this.$el.html(compiled);
 
             if(winds.length > 0){
-                var dataset = this.generateDataset(winds);
+                var dataset = this.generateDataset(winds, windMovers);
 
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
 
                 if(dataset){
                     // set a time out to wait for the box to finish expanding or animating before drawing
-                    this.dataset = dataset;                        
+                    this.dataset = dataset;
                     setTimeout(_.bind(function(){
                         this.plot = $.plot(this.$('.chart .canvas'), dataset, {
                             grid: {
@@ -106,10 +118,10 @@ define([
         delete: function(e){
             e.stopPropagation();
             var id = $(e.target).parents('.single').data('id');
-            var wind = webgnome.model.get('environment').get(id);
+            var windMover = webgnome.model.get('movers').get(id);
 
             swal({
-                title: 'Delete "' + wind.get('name') + '"',
+                title: 'Delete "' + windMover.get('wind').get('name') + '"',
                 text: 'Are you sure you want to delete this wind?',
                 type: 'warning',
                 confirmButtonText: 'Delete',
@@ -117,15 +129,15 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
-                    var movers = webgnome.model.get('movers').filter(function(model){
-                        if(model.get('wind') && model.get('wind').get('id') === id){
-                            return true;
-                        }
-                        return false;
-                    });
+                    // var movers = webgnome.model.get('movers').filter(function(model){
+                    //     if(model.get('wind') && model.get('wind').get('id') === id){
+                    //         return true;
+                    //     }
+                    //     return false;
+                    // });
 
-                    webgnome.model.get('movers').remove(movers);
-                    webgnome.model.get('environment').remove(id);
+                    webgnome.model.get('movers').remove(id);
+                    webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
                     webgnome.model.save(null, {
                         validate: false
                     });
@@ -145,11 +157,12 @@ define([
             webgnome.model.save();
         },
 
-        generateDataset: function(winds){
+        generateDataset: function(winds, windMovers){
             var dataset = [];
             var unit = winds[0].get('units');
             for(var w in winds){
                 var wind = winds[w];
+                var windMover = windMovers[w];
                 var ts = wind.get('timeseries');
                 var data = [];
                 var raw_data = [];
@@ -186,7 +199,7 @@ define([
                         fillColor: '#7a7a7a',
                         arrawLength: 5
                     },
-                    id: wind.get('id')
+                    id: windMover.get('id')
                 });
 
                 if (ts.length > 24){
@@ -202,7 +215,7 @@ define([
                         direction: {
                             show: false
                         },
-                        id: wind.get('id')
+                        id: windMover.get('id')
                     });
                 }
             }

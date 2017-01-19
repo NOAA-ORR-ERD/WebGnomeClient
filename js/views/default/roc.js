@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'moment',
-    'text!templates/default/adios.html',
+    'text!templates/default/roc.html',
     'views/form/model',
     'views/form/oil/library',
     'views/form/spill/type-wizcompat',
@@ -19,12 +19,12 @@ define([
     'model/element',
     'model/environment/water',
     'model/environment/wind'
-], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
+], function($, _, Backbone, moment, ROCTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
         BeachedView, ElementType, Water, Wind){
     'use strict';
-    var adiosView = Backbone.View.extend({
-        className: 'page adios',
+    var rocView = Backbone.View.extend({
+        className: 'page roc',
 
         events: {
             'click .name': 'clickName',
@@ -71,7 +71,7 @@ define([
                 }
             }
 
-            var compiled = _.template(AdiosTemplate, {
+            var compiled = _.template(ROCTemplate, {
                 model: webgnome.model,
                 start_time: start_time,
                 durationStr: durationStr,
@@ -132,7 +132,7 @@ define([
                 } else {
                     spillView = new SpillInstantView(null, spill);
                 }
-                spillView.$el.addClass('adios');
+                spillView.$el.addClass('roc');
                 spillView.on('save', function(){
                     spillView.on('hidden', spillView.close);
                 });
@@ -144,7 +144,7 @@ define([
                 spillTypeForm.render();
                 spillTypeForm.on('hidden', spillTypeForm.close);
                 spillTypeForm.on('select', _.bind(function(form){
-                    form.$el.addClass('adios');
+                    form.$el.addClass('roc');
                     form.on('wizardclose', form.close);
                     form.on('save', _.bind(function(){
                         webgnome.model.get('spills').add(form.model);
@@ -177,7 +177,7 @@ define([
             if(!wind){
                 wind = new Wind();
             }
-            var form = new WindForm({}, {'model': wind}) ;
+            var form = new WindForm({}, wind);
             form.on('hidden', form.close);
             form.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(wind, {merge:true});
@@ -249,5 +249,5 @@ define([
         }
     });
 
-    return adiosView;
+    return rocView;
 });

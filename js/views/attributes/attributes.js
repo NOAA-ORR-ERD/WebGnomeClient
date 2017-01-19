@@ -14,8 +14,14 @@ define([
         },
 
         initialize: function(options){
-            if(!_.has(options, 'model')){ return null; }
-            this.model = options.model;
+            if (!_.has(options, 'model')){ return null; }
+
+            if (_.has(options, 'superModel')) {
+                this.model = options.superModel;
+            } else {
+                this.model = options.model;
+            }
+
             if(options.name){
                 this.name = options.name;
             }

@@ -2,8 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
-], function($, _, Backbone, FormModal){
+], function($, _, Backbone, module, FormModal){
     'use strict';
     var customForm = FormModal.extend({
 
@@ -14,6 +15,10 @@ define([
         },
 
         initialize: function(options){
+            if (!_.isUndefined(options.moduleId)) {
+                this.module = module;
+                this.module.id = options.moduleId;
+            }
             FormModal.prototype.initialize.call(this, options);
             var modal = this.el;
             var modaljq = this.$el;

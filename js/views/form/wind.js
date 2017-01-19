@@ -14,14 +14,17 @@ define([
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
+    'text!templates/form/wind/popover.html',
     'views/default/map',
+    'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, OlMapView, WindModel, NwsWind){
+    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindMoverModel, WindModel,
+    NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -39,6 +42,7 @@ define([
                 'click .edit': 'modifyTimeseriesEntry',
                 'click .trash': 'removeTimeseriesEntry',
                 'click .ok': 'enterTimeseriesEntry',
+                'click .add-row': 'addTimeseriesRow',
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
@@ -48,14 +52,18 @@ define([
             }, formModalHash);
         },
 
-        initialize: function(options, GnomeWind){
+        initialize: function(options, models){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
 
-            if (!_.isUndefined(GnomeWind)) {
-                this.model = GnomeWind;
+            if (!_.isUndefined(models)) {
+                this.model = models.model;
+                this.superModel = models.superModel;
             } else {
-                this.model = new WindModel();
+                this.superModel = new WindMoverModel();
+                var windModel = new WindModel();
+                this.superModel.set('wind', windModel);
+                this.model = this.superModel.get('wind');
             }
 
             if(!this.model.get('name')){
@@ -118,6 +126,13 @@ define([
                     this.spillLayer
                 ]
             });
+
+            this.$el.on('click', _.bind(function(e){
+                var $clicked = this.$(e.target);
+                if (!$clicked.hasClass('add-row') && $clicked.parents('.popover').length === 0) {
+                    this.$('.popover').popover('hide');
+                }
+            }, this));
         },
 
         render: function(options){
@@ -135,16 +150,17 @@ define([
             this.form.constant.direction = this.$('#constant-direction');
             this.form.constant.datetime = this.$('#constant-datetime');
             this.form.variable = {};
-            this.form.variable.speed = this.$('#variable-speed');
-            this.form.variable.direction = this.$('#variable-direction');
-            this.form.variable.datetime = this.$('#variable-datetime');
             this.form.variable.increment = this.$('#incrementCount');
             this.trigger('show');
-            this.$('#variable-datetime, #constant-datetime').datetimepicker({
+            this.$('#constant-datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
             });
+
+            this.$('#datepick').on('click', _.bind(function(){
+                this.$('#constant-datetime').datetimepicker('show');
+            }, this));
 
             this.$('select[name="units"]').find('option[value="' + this.model.get('units') + '"]').prop('selected', 'selected');
             setTimeout(_.bind(function(){
@@ -185,8 +201,8 @@ define([
                 this.updateTooltipWidth();
                 
             }, this), 1);
-            $('.modal').on('scroll', this.variableWindStickyHeader);
-
+            //$('.modal').on('scroll', this.variableWindStickyHeader);
+            $('.table-wrapper').on('scroll', this.variableWindStickyHeader);
             this.setupUpload();
             this.rendered();
             this.populateDateTime();
@@ -196,6 +212,7 @@ define([
             if(this.model.get('timeseries').length <= 1){
                 this.$('.nav-tabs a[href="#constant"]').tab('show');
             } else {
+                this.unbindBaseMouseTrap();
                 this.$('.nav-tabs a[href="#variable"]').tab('show');
             }
         },
@@ -219,18 +236,11 @@ define([
                     });
                 }
             } else if (e.target.hash === '#variable') {
-                if(this.$('.variable-compass canvas').length === 0){
-                    this.$('.variable-compass').compassRoseUI({
-                        'arrow-direction': 'in',
-                        'move': _.bind(this.variableCompassUpdate, this)
-                    });
-                }
 
                 if(!_.isUndefined(this.originalTimeseries)){
                     this.model.set('timeseries', this.originalTimeseries);
                 }
                 this.updateTooltipWidth();
-                this.unbindBaseMouseTrap();
                 this.renderTimeseries();
             } else if (e.target.hash === '#nws'){
                 if(this.$('#wind-form-map canvas').length === 0){
@@ -269,7 +279,7 @@ define([
         populateDateTime: function() {
             var timeseries = this.model.get('timeseries');
             var starting_time = timeseries[timeseries.length - 1][0];
-            this.$('#variable-datetime').val(moment.utc(starting_time).format(webgnome.config.date_format.moment));
+            this.$('#variable-datetime').val(moment(starting_time).format(webgnome.config.date_format.moment));
         },
 
         renderSpills: function() {
@@ -320,8 +330,8 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                acceptedFiles: '.osm, .wnd, .txt, .dat',
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: <code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
+                //acceptedFiles: '.osm, .wnd, .txt, .dat',
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
@@ -350,7 +360,7 @@ define([
         loaded: function(e, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.filename.split('/').pop());
+            this.model.set('name', json_response.name);
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);
@@ -360,10 +370,10 @@ define([
         },
 
         nwsLoad: function(model){
-            console.log(model);
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
             this.$('.variable a').tab('show');
+            this.unbindBaseMouseTrap();
             this.$('.save').removeClass('disabled');
             this.populateDateTime();
         },
@@ -376,7 +386,7 @@ define([
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
 
-            if (active !== 'nws') {
+            if (active !== 'nws' && active !== 'variable') {
                 var speed = this.form[active].speed.val();
                 var direction = this.form[active].direction.val();
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
@@ -406,6 +416,12 @@ define([
                 
                 
                 this.$('.additional-wind-compass').remove();
+            }
+
+            if (active === 'variable') {
+                var currentUnits = this.$('#' + active + ' select[name="units"]').val();
+                this.$('#' + active + ' .units').text('(' + currentUnits + ')');
+                this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
             }
         },
 
@@ -464,55 +480,21 @@ define([
             this.update(false);
         },
 
-        addTimeseriesEntry: function(e){
-            e.preventDefault();
-            if (this.$('.additional-wind-compass').length === 0){
-                var dateObj = moment(this.form.variable.datetime.val(), webgnome.config.date_format.moment);
-                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
-                var speed = this.form.variable.speed.val();
-                var direction = this.form.variable.direction.val();
-                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
-                }
-                var entry = [date, [speed, direction]];
-                var incrementer = parseInt(this.form.variable.increment.val(), 10);
-
-                if(this.variableFormValidation(entry)){
-                    var not_replaced = true;
-                    _.each(this.model.get('timeseries'), function(el, index, array){
-                        if(el[0] === entry[0]){
-                            not_replaced = false;
-                            array[index] = entry;
-                        }
-                    });
-
-                    if(not_replaced){
-                        this.model.get('timeseries').push(entry);
-                    }
-
-                    this.model.trigger('change', this.model);
-
-                    // Code for time incrementer updates assuming values in form are in hours
-                    dateObj.add('h', incrementer);
-                    this.form.variable.datetime.val(dateObj.format(webgnome.config.date_format.moment));
-
-                    this.renderTimeseries();
-                }
-                this.update();
-                this.$('#variable-speed').focus().select();
-            } else {
-
-            }
-        },
-
-        modifyTimeseriesEntry: function(e){
+        modifyTimeseriesEntry: function(e, rowIndex){
             // Create boolean value to confirm that the DOM element clicked was the 
             // edit pencil and not the check in the table row.
             var editClassExists = this.$(e.target).hasClass('edit');
-            if (this.$('.input-speed').length === 0 && editClassExists){
-                e.preventDefault();
-                var row = this.$(e.target).parents('tr')[0];
-                var index = $(row).data('tsindex');
+            if ((this.$('.input-speed').length === 0 && editClassExists) || !_.isUndefined(rowIndex)) {
+                var row;
+                var index;
+                if (editClassExists) {
+                    e.preventDefault();
+                    row = this.$(e.target).parents('tr')[0];
+                    index = this.$(row).data('tsindex');
+                } else if (!_.isUndefined(rowIndex)) {
+                    index = rowIndex >= 0 ? rowIndex : 0;
+                    row = this.$('[data-tsindex="' + index + '"]');
+                }
                 var entry = this.model.get('timeseries')[index];
                 var date = moment(entry[0]).format(webgnome.config.date_format.moment);
                 var compiled = _.template(VarInputTemplate);
@@ -522,8 +504,62 @@ define([
                     'direction': entry[1][1]
                 });
                 this.$(row).addClass('edit');
+                this.$(row).removeClass('error');
                 this.$(row).html(template);
+                this.$(row).find('.input-time').datetimepicker({
+                    format: webgnome.config.date_format.datetimepicker,
+                    allowTimes: webgnome.config.date_format.half_hour_times,
+                    step: webgnome.config.date_format.time_step
+                });
+                this.$('tr .add-row').remove();
+                this.$(row).find('.input-speed').focus().val(entry[1][0]);
                 this.attachCompass(e, entry, row);
+            }
+        },
+
+        addRowHelper: function(e, index, newIndex, opts) {
+            this.model.addTimeseriesRow(index, newIndex, opts);
+            this.renderTimeseries();
+
+            if (index - newIndex >= 0) {
+                this.modifyTimeseriesEntry(e, index);
+            } else {
+                this.modifyTimeseriesEntry(e, newIndex);
+            }
+        },
+
+        addTimeseriesRow: function(e) {
+            if (this.$('.popover').length === 0) {
+                var parentRow = this.$(e.target).parents('tr')[0];
+                var index = this.$(parentRow).data('tsindex');
+                var compiled = _.template(PopoverTemplate, {
+                    tsindex: index
+                });
+                this.$(e.target).popover({
+                    placement: 'left',
+                    html: 'true',
+                    title: '<span class="text-info"><strong>Add Row</strong></span>',
+                    content: compiled,
+                    trigger: 'click focus'
+                });
+                this.$(e.target).popover('show');
+
+                var interval = this.$('#incrementCount').val();
+
+                this.$('.above').on('click', _.bind(function(e) {
+                    var newIndex = index - 1;
+                    this.addRowHelper(e, index, newIndex, {'interval': interval});
+                }, this));
+
+                this.$('.below').on('click', _.bind(function(e) {
+                    var newIndex = index + 1;
+                    this.addRowHelper(e, index, newIndex, {'interval': interval});
+                }, this));
+
+                this.$('.popover').one('hide.bs.popover', _.bind(function(){
+                    this.$('.above').off('click');
+                    this.$('.below').off('click');
+                }, this));
             }
         },
 
@@ -575,25 +611,35 @@ define([
 
         enterTimeseriesEntry: function(e){
             e.preventDefault();
-            var row = this.$(e.target).parents('tr')[0];
-            var index = $(row).data('tsindex');
-            var entry = this.model.get('timeseries')[index];
-            var speed = this.$('.input-speed').val();
-            var direction = this.$('.input-direction').val();
-            var date = entry[0];
-            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+            var row;
+            if (e.which === 13) {
+                row = this.$('tr.edit')[0];
+            } else {
+                row = this.$(e.target).parents('tr')[0];
             }
-            entry = [date, [speed, direction]];
-            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
-                if (el[0] === entry[0]){
-                    array[index] = entry;
-                    this.timeseries = array;
+            if (!_.isUndefined(row)) {
+                var index = $(row).data('tsindex');
+                var entry = this.model.get('timeseries')[index];
+                var speed = this.$('.input-speed').val();
+                var direction = this.$('.input-direction').val();
+                var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
                 }
-            }, this));
-            this.$('.additional-wind-compass').remove();
-            this.$(row).removeClass('edit');
-            this.renderTimeseries();
+                entry = [date, [speed, direction]];
+                var tsCopy = _.clone(this.model.get('timeseries'));
+                _.each(tsCopy, _.bind(function(el, i, array){
+                    if (index === i){
+                        array[i] = entry;
+                    }
+                }, this));
+
+                this.model.set('timeseries', tsCopy);
+                this.$('.additional-wind-compass').remove();
+                $('.xdsoft_datetimepicker:last').remove();
+                $(row).remove();
+                this.renderTimeseries();
+            }
         },
 
         cancelTimeseriesEntry: function(e){
@@ -608,6 +654,7 @@ define([
             });
             this.$(row).removeClass('edit');
             this.$('.additional-wind-compass').remove();
+            $('.xdsoft_datetimepicker:last').remove();
         },
 
         removeTimeseriesEntry: function(e){
@@ -617,14 +664,12 @@ define([
                 var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
                 this.model.trigger('change', this.model);
-
                 this.renderTimeseries();
             }
         },
 
         renderTimeseries: function(uncertainty){
             if(this.$('#variable .ui-slider').length === 0){ return null; }
-            this.model.sortTimeseries();
 
             if(!_.isUndefined(uncertainty)){
                 uncertainty = uncertainty / (50.0 / 3);
@@ -649,35 +694,39 @@ define([
                 }
 
                 var date = moment(el[0]).format(webgnome.config.date_format.moment);
-                var compiled = _.template(VarStaticTemplate);
-                var template = compiled({
+                var compiled = _.template(VarStaticTemplate, {
                     tsindex: index,
                     date: date,
                     speed: velocity,
                     direction: direction
                 });
-                html = html + template;
+                html = html + compiled;
             });
             this.$('table:first tbody').html(html);
+
+            var invalidEntries = this.model.validateTimeSeries();
+            _.each(invalidEntries, _.bind(function(el, index){
+                this.$('[data-tsindex="' + el + '"]').addClass('error');
+            }, this));
         },
 
-        variableFormValidation: function(entry){
-            // need to add a error presentation if something doesn't pass validation here.
-            var valid = true;
-            if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
-                valid = false;
-            }
-            var incrementVal = this.form.variable.increment.val();
-            if(!incrementVal) {
-                valid = false;
-            }
+        // variableFormValidation: function(entry){
+        //     // need to add a error presentation if something doesn't pass validation here.
+        //     var valid = true;
+        //     if(!this.form.variable.datetime.val() || !this.form.variable.speed.val() || !this.form.variable.direction.val()){
+        //         valid = false;
+        //     }
+        //     var incrementVal = this.form.variable.increment.val();
+        //     if(!incrementVal) {
+        //         valid = false;
+        //     }
 
-            return valid;
-        },
+        //     return valid;
+        // },
 
         unbindBaseMouseTrap: function(){
             Mousetrap.unbind('enter');
-            Mousetrap.bind('enter', _.bind(this.addTimeseriesEntry, this));
+            Mousetrap.bind('enter', _.bind(this.enterTimeseriesEntry, this));
         },
 
         rebindBaseMouseTrap: function(){
@@ -687,19 +736,16 @@ define([
 
         variableWindStickyHeader: function(e){
             if($('.wind-form #variable table:visible').length > 0){
-                var top = $('.modal').scrollTop();
-                var modal_offset = $('.modal').offset();
-                var offset = $('.wind-form #variable table:first').offset();
-                offset.top -= modal_offset.top;
+                var top = $('.table-wrapper').scrollTop();
 
-                if(offset.top < 0 && $('.wind-form .sticky').length === 0){
-                    // a sticky header to the table.
-                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').insertAfter('.wind-form #variable table');
-                } else if(offset.top > 0 && $('.wind-form #variable .sticky').length > 0) {
+                if(top > 0 && $('.wind-form .sticky').length === 0){
+                    // add a sticky header to the table.
+                    $('<div class="sticky"><table class="table table-condensed">' + $('.wind-form #variable table:last').html() + '</table></div>').appendTo('.wind-form #variable .table-wrapper');
+                } else if(top === 0 && $('.wind-form #variable .sticky').length > 0) {
                     // remove the sticky header from the table.
                     $('.wind-form #variable .sticky').remove();
                 } else {
-                    $('.wind-form #variable .sticky').css('top', top - 30 + 'px');
+                    $('.wind-form #variable .sticky').css('top', top + 'px');
                 }
             }
         },

@@ -17,6 +17,19 @@ define([
             wind: GnomeWind
         },
 
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            this.on('change:wind', this.windChange, this);
+        },
+
+        windChange: function() {
+            this.listenTo(this.get('wind'), 'change:timeseries', this.triggerWindChange);
+        },
+
+        triggerWindChange: function(wind) {
+            this.childChange('wind', wind);
+        },
+
         validate: function(attrs, options){
             var uncertTimeDelay = attrs.uncertain_time_delay;
             var uncertDuration = attrs.uncertain_duration;
@@ -31,6 +44,10 @@ define([
                 }
                 if (uncertAngle < 0){
                     return 'Angle Scale must be greater than or equal to zero!';
+                }
+
+                if (!this.get('wind').isValid()) {
+                    return this.get('wind').validationError;
                 }
             } else {
                 return 'All input fields must be numbers and cannot be left blank!';

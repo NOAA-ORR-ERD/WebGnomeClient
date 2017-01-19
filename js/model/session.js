@@ -1,8 +1,7 @@
-define([
-    'underscore',
-    'backbone',
-    'sweetalert'
-], function(_, Backbone, swal){
+define(['underscore',
+        'backbone',
+        'sweetalert'],
+function(_, Backbone, swal) {
     'use strict';
     var sessionModel = Backbone.Model.extend({
         url: '/session',
@@ -10,7 +9,7 @@ define([
             'id': null,
         },
 
-        initialize: function(callback){
+        initialize: function(callback) {
             this.save(null, {
                 success: function(model){
                     localStorage.setItem('session', model.id);
@@ -21,7 +20,7 @@ define([
 
         },
 
-        error: function(){
+        error: function() {
             swal({
                 title: 'Connection Error',
                 text: 'Error establishing a session with the API server.',

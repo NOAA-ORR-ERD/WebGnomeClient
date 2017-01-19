@@ -2,26 +2,24 @@ define([
     'underscore',
     'jquery',
     'views/modal/form',
-    'model/movers/cats',
-    'model/movers/grid_current',
-    'text!templates/form/mover/create.html',
+    'model/movers/grid_wind',
+    'text!templates/form/griddedwind.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
-    var createMoverForm = FormModal.extend({
-        className: 'modal form-modal current-form',
-        title: 'Create Current Mover',
+], function(_, $, FormModal, GridWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
+    var griddedWindForm = FormModal.extend({
+        className: 'modal form-modal griddedwind-form',
+        title: 'Load Wind Mover',
 
         events: function(){
             return _.defaults({
-                'click .grid': 'grid',
-                'click .cats': 'cats',
+                'click .gridwind': 'gridwind',
             }, FormModal.prototype.events);
         },
 
         initialize: function(options){
             FormModal.prototype.initialize.call(this, options);
-            this.body = _.template(CreateMoverTemplate);
+            this.body = _.template(GriddedWindTemplate);
             this.buttons = null;
         },
 
@@ -51,13 +49,8 @@ define([
             this.dropzone.on('sending', _.bind(this.sending, this));
         },
 
-        grid: function(){
-            this.model = new GridCurrentMover();
-            this.nextStep();
-        },
-
-        cats: function(){
-            this.model = new CatsMover();
+        gridwind: function(){
+            this.model = new GridWindMover();
             this.nextStep();
         },
 
@@ -99,5 +92,5 @@ define([
             FormModal.prototype.close.call(this);
         }
     });
-    return createMoverForm;
+    return griddedWindForm;
 });

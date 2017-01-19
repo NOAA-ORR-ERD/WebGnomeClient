@@ -14,6 +14,7 @@ define([
         mapShown: false,
         title: 'Place Spill',
         className: 'modal form-modal map-modal-form',
+        size: 'lg',
 
         events: function() {
             return _.defaults({
@@ -357,7 +358,6 @@ define([
                 this.error("Placement error!", err);
             } else {
                 this.clearError();
-                FormModal.prototype.save.call(this);
                 this.trigger('save');
                 this.hide();
             }

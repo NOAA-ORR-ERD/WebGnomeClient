@@ -14,7 +14,9 @@ define([
     'text!templates/form/oil.html',
     'sweetalert',
     'jqueryui/widgets/slider'
-], function($, _, Backbone, module, chosen, moment, SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal, SpecificOil, OilTemplate, swal){
+], function($, _, Backbone, module, chosen, moment,
+		    SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal,
+		    SpecificOil, OilTemplate, swal) {
     'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',
@@ -182,15 +184,19 @@ define([
                 viscosity: this.$('.slider-viscosity').slider('values'),
                 pour_point: this.$('.slider-pourpoint').slider('values')
             };
+
             if(!search.text && search.category.child === 'All' && search.api === [this.api_min, this.api_max]){
                 this.oilTable.oilLib.models = this.oilTable.oilLib.originalModels;
                 this.oilTable.oilLib.length = this.oilTable.oilLib.models.length;
-            } else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
+            }
+            else if (search.text.indexOf("number") > -1 || search.text.indexOf("no.") > -1 || search.text.indexOf("#") > -1){
                 search.text = search.text.replace(/^.*(number|#).*$/, "no.");
                 this.oilTable.oilLib.search(search);
-            } else {
+            }
+            else {
                 this.oilTable.oilLib.search(search);
             }
+
             this.oilTable.render();
             this.triggerTableResize();
             this.$('.resultsLength').empty();

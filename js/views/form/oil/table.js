@@ -20,7 +20,7 @@ define([
         sortDnIcon: '&#9660;',
         activeIcon: null,
 
-        initialize: function(elementModel){
+        initialize: function(elementModel) {
             this.oilLib = new OilLib();
             this.model = elementModel;
             this.oilLib.once('ready', this.sortTable, this);
@@ -28,18 +28,24 @@ define([
             this.on('sort', this.sortTable);
         },
 
-        setReady: function(){
+        setReady: function() {
             this.ready = true;
             this.trigger('ready');
         },
 
-        sortTable: function(){
-            var compiled = _.template(OilTableTemplate, {data: this.oilLib});
+        sortTable: function() {
+            var compiled = _.template(OilTableTemplate, {
+            	data: this.oilLib
+            });
             this.$el.html(compiled);
+
+            this.set_quality_index_colors(this.$el);
+
             var substance = !_.isEmpty(this.model) ? this.model.get('substance') : null;
-            if (substance && substance.get('adios_oil_id')){
+            if (substance && substance.get('adios_oil_id')) {
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }
+
             this.$('tr[data-generic="true"]').addClass('generic');
             var generics = this.$('.generic td:first-child');
 
@@ -53,8 +59,8 @@ define([
             this.trigger('renderTable');
         },
 
-        updateCaret: function(){
-             if (this.oilLib.sortDir === 1){
+        updateCaret: function() {
+             if (this.oilLib.sortDir === 1) {
                 this.activeIcon = this.sortUpIcon;
             } else {
                 this.activeIcon = this.sortDnIcon;
@@ -70,12 +76,28 @@ define([
             }
         },
 
-        render: function(){
-            var compiled = _.template(OilTableTemplate, {
-                data: this.oilLib
-            });
-            $('#tableContainer').html(this.$el.html(compiled));
+        render: function() {
             this.trigger('sort');
+        },
+
+        set_quality_index_colors: function(table_container) {
+            var qi_idx = table_container.find('th.quality_index').index() + 1;
+
+            table_container.find('tr td:nth-child(' + qi_idx + ')')
+            .each(function() {
+            	var cell = this;
+                var quality_index = parseFloat(cell.textContent);
+
+                if (quality_index <= 50.0) {
+                    cell.classList = ['danger'];
+                }
+                else if (quality_index <= 70.0) {
+                    cell.classList = ['warning'];
+                }
+                else {
+                    cell.classList = ['success'];
+                }
+            });
         },
 
         headerClick: function(e){

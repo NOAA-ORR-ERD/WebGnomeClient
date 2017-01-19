@@ -22,7 +22,7 @@ define([
             this.body = _.template(FormTemplate, {
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
-                uncertainty: this.model.get('uncertain'),
+                uncertain: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60,
                 name: this.model.get('name')
             });
@@ -48,8 +48,8 @@ define([
             var name = this.$('#name').val();
             this.model.set('name', name);
 
-            // var uncertainty = this.$('#uncertainty:checked').val();
-            // this.model.set('uncertain', _.isUndefined(uncertainty) ? false : true);
+            //var uncertain = this.$('#uncertain:checked').val();
+            //this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
             // var time_steps = this.$('#time_steps').val();
             // var time_steps_mins = parseFloat(time_steps, 10) * 60;

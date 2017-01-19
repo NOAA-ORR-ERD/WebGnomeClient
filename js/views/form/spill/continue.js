@@ -16,7 +16,7 @@ define([
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',
-        className: 'modal form-modal continuespill-form',
+        className: 'modal form-modal spill-form continuespill-form',
         loaded: false,
 
         events: function(){
@@ -53,8 +53,6 @@ define([
                     'duration': duration,
                     showGeo: this.showGeo,
                     showSubstance: this.showSubstance,
-                    start_coords: {'lat': startPosition[1], 'lon': startPosition[0]},
-                    end_coords: {'lat': endPosition[1], 'lon': endPosition[0]},
                     disabled: disabled,
                     cid: cid
                 });
@@ -129,20 +127,8 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
-            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
-            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : '0';
-            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : '0';
 
-            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
-            var end_position = [parseFloat(endLon), parseFloat(endLat), 0];
-            if (end_position[0] === 0 && end_position[1] === 0){
-                this.$('#end-lat').val(startLat);
-                this.$('#end-lon').val(startLon);
-            }
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
-            release.set('start_position', start_position);
-            release.set('end_position', end_position);
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('name', name);

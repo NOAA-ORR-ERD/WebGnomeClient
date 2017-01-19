@@ -44,6 +44,7 @@ define([
             'focusout .help-button': 'helpBlur',
             'click .play': 'play',
             'click .pause': 'pause',
+            'click .back': 'prev',
             'click .next': 'next',
             'click .rewind': 'rewindClick',
             'slide .seek > div': 'seek',
@@ -112,6 +113,22 @@ define([
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 
+        createTooltipObject: function(title) {
+            return {
+                "title": title,
+                "container": "body",
+                "placement": "bottom"
+            };
+        },
+
+        setupControlTooltips: function() {
+            this.controls.play.tooltip(this.createTooltipObject("Play"));
+            this.controls.pause.tooltip(this.createTooltipObject("Pause"));
+            this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
+            this.controls.back.tooltip(this.createTooltipObject("Step Back"));
+            this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
+        },
+
         renderTrajectory: function() {
             var date;
             if(webgnome.hasModel()){
@@ -128,7 +145,7 @@ define([
                     'gnome.movers.current_movers.GridCurrentMover',
                     'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.CurrentCycleMover',
-                    'gnome.movers.wind_movers.GridWindmover'
+                    'gnome.movers.wind_movers.GridWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
@@ -166,6 +183,8 @@ define([
                 'play': this.$('.controls .play'),
                 'pause': this.$('.controls .play'),
                 'seek': this.$('.seek > div:first'),
+                'back': this.$('.controls .back'),
+                'forward': this.$('.controls .next'),
                 'fastforward' : this.$('.controls .fastfoward'),
                 'rewind': this.$('.controls .rewind'),
                 'progress': this.$('.controls .progress-bar'),
@@ -178,6 +197,8 @@ define([
                     this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
                 }, this)
             });
+
+            this.setupControlTooltips();
 
             this.contextualize();
 
@@ -423,9 +444,7 @@ define([
             this.controls.date.text(time);
             this.frame = step.get('step_num');
             if(this.frame < webgnome.model.get('num_time_steps')){
-                this.drawStepTimeout = setTimeout(_.bind(function(){
-                    this.controls.seek.slider('value', this.frame + 1);
-                }, this), 60);
+                this.controls.seek.slider('value', this.frame + 1);
             } else {
                 this.pause();
             }
@@ -904,7 +923,7 @@ define([
                 canvas.height = 7;
                 var ctx = canvas.getContext('2d');
                 ctx.beginPath();
-                ctx.arc(3.5, 3.5, 2, 0, 2 * Math.PI);
+                ctx.arc(1, 1, 0.5, 0, 2 * Math.PI);
                 ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
                 ctx.stroke();
                 this.current_arrow[id][0] = layer.add({
@@ -1182,9 +1201,6 @@ define([
                     webgnome.model.off('change', this.contextualize, this);
                     webgnome.model.off('sync', this.spillListeners, this);
                     webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-                }
-                if(this.drawStepTimeout){
-                    clearTimeout(this.drawStepTimeout);
                 }
                 webgnome.cache.off('step:recieved', this.renderStep, this);
                 webgnome.cache.off('step:failed', this.pause, this);

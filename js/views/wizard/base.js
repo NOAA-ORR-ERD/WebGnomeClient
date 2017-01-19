@@ -66,24 +66,28 @@ define([
         },
 
         confirmClose: function() {
-            swal({
-                    title: "Are you sure?",
-                    text: "You will lose all the entered model data!",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes, I am sure",
-                    cancelButtonText: "Go back",
-                    closeOnConfirm: true,
-                    closeOnCancel: true
-                }).then(_.bind(function(isConfirm) {
-                    if (isConfirm) {
-                        webgnome.model = new GnomeModel();
-                        webgnome.model.save(null, {validate: false});
-                        this.close();
-                    } else {
-                        this.steps[this.step].show();
-                    }
-                }, this));
+            if (!this.nonmodelWizard) {
+                swal({
+                        title: "Are you sure?",
+                        text: "You will lose all the entered model data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, I am sure",
+                        cancelButtonText: "Go back",
+                        closeOnConfirm: true,
+                        closeOnCancel: true
+                    }).then(_.bind(function(isConfirm) {
+                        if (isConfirm) {
+                            webgnome.model = new GnomeModel();
+                            webgnome.model.save(null, {validate: false});
+                            this.close();
+                        } else {
+                            this.steps[this.step].show();
+                        }
+                    }, this));
+            } else {
+                this.close();
+            }
         },
 
         close: function(){
