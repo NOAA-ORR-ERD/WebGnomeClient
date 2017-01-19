@@ -6,7 +6,7 @@ define([
     var ROCBurnModel = ROCWeatherer.extend({
         defaults: function(){
             return {
-                obj_type: 'gnome.weatherers.ROC.Burn',
+                obj_type: 'gnome.weatherers.roc.Burn',
                 name: 'ROC Burn',
                 timeseries: this.calculateOperatingPeriods(),
                 offset: 500,
@@ -33,7 +33,7 @@ define([
 
         initialize: function(options){
             this.on('change:_throughput', this.percentToDecimal('throughput'));
-            this.on('change:_burn_effeciency_custom', this.percentToDecial('burn_effeciency_custom'));
+            this.on('change:_burn_effeciency_custom', this.percentToDecimal('burn_effeciency_custom'));
         }
     });
     return ROCBurnModel;
