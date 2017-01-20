@@ -18,7 +18,8 @@ define([
             'click .advanced': 'setup',
             'click .location': 'location',
             'click .adios-wizard': 'adios',
-            'click .gnome-wizard': 'gnome'
+            'click .gnome-wizard': 'gnome',
+            'click .doc': 'doc',
         },
 
         initialize: function(){
@@ -29,29 +30,6 @@ define([
             var compiled = _.template(IndexTemplate);
             $('body').append(this.$el.append(compiled));
             this.load = new LoadView({simple: true, el: this.$('.load')});
-            this.mapview = new MapView({
-                id: 'map',
-                controls: [],
-                layers: [
-                     new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            }),
-                        name: 'usgs',
-                        type: 'base',
-                    }),
-                    new ol.layer.Tile({
-                        name: 'noaanavcharts',
-                        source: new ol.source.TileWMS({
-                            url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                            params: {'LAYERS': '1', 'TILED': true}
-                        }),
-                        opacity: 0.5,
-                    })
-                ]
-            });
-            this.mapview.render();
         },
 
         setup: function(e){
@@ -90,9 +68,13 @@ define([
             var wiz = new GnomeWizard();
         },
 
+        doc: function(event){
+            event.preventDefault();
+            window.open("doc/");
+        },
+
         close: function(){
             this.load.close();
-            this.mapview.close();
             Backbone.View.prototype.close.call(this);
         }
     });

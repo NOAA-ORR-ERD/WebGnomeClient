@@ -57,12 +57,13 @@ define([
             'click .shape': 'shape',
 
             'click .about': 'about',
-            'click .overview': 'overview',
+            'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
 
             'click .gnome': 'gnome',
             'click .adios': 'adios',
+            'click .setup': 'setup',
             'click .home': 'home',
 
             'click .app-menu-link': 'openAppMenu',
@@ -98,11 +99,6 @@ define([
         gnome: function(event){
             event.preventDefault();
             webgnome.router.navigate('gnome/', true);
-        },
-
-        adios: function(event){
-            event.preventDefault();
-            webgnome.router.navigate('adios/', true);
         },
 
         nothing: function(event){
@@ -160,11 +156,10 @@ define([
             shapeForm.render();
         },
 
-        newModel: function(event){
-            event.preventDefault();
+        resetModel: function(cb){
             swal({
                 title: 'Create New Model?',
-                text:'Creating a new model will delete all data related to any current model.',
+                text:'This action will delete all data related to any previous model setup.',
                 type: 'warning',
                 showCancelButton: true,
                 reverseButtons: true
@@ -175,18 +170,14 @@ define([
                         webgnome.riskCalc.destroy();
                     }
                     webgnome.riskCalc = undefined;
-                    webgnome.model = new GnomeModel();
+                   
 
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
                     }
-                    webgnome.model.save(null, {
-                        validate: false,
-                        success: _.bind(function(){
-                            this.contextualize();
-                            webgnome.router.navigate('', true);
-                        }, this)
-                    });
+
+                    this.contextualize();
+                    cb();                                                 
                 }
             }, this));
         },
@@ -198,12 +189,52 @@ define([
 
         load: function(event){
             event.preventDefault();
-            webgnome.router.navigate('load', true);
+            this.resetModel(function(){
+                webgnome.router.navigate('load', true);
+                });
         },
 
         locations: function(event){
             event.preventDefault();
-            webgnome.router.navigate('locations', true);
+            this.resetModel(function(){
+                webgnome.router.navigate('locations', true);
+                });
+        },
+
+        adios: function(event){
+            event.preventDefault();
+            this.resetModel(function(){
+                webgnome.model = new GnomeModel({
+                    name: 'ADIOS Model_',
+                    duration: 432000,
+                    time_step: 3600,
+                    mode: 'adios'
+                });
+                webgnome.model.save(null, {
+                    validate: false,
+                    success: function(){
+                        webgnome.router.navigate('adios', true);
+                    }
+                });
+                localStorage.setItem('view', 'fate');
+            });
+        },
+
+        setup: function(event){ 
+            event.preventDefault();
+            this.resetModel(function(){
+                webgnome.model = new GnomeModel({
+                    mode: 'gnome',
+                    name: 'Model',
+                });
+                webgnome.model.save(null, {
+                    validate: false,
+                    success: function(){
+                        webgnome.router.navigate('config', true);
+                    }
+                });
+                localStorage.setItem('view', 'trajectory');
+            });
         },
 
         save: function(event){
@@ -228,9 +259,9 @@ define([
             new AboutModal().render();
         },
 
-        overview: function(event){
+        doc: function(event){
             event.preventDefault();
-            webgnome.router.navigate('overview', true);
+            window.open("doc/");
         },
 
         faq: function(event){
