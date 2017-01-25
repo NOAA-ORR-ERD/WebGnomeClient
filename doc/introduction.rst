@@ -1,0 +1,45 @@
+############
+Introduction
+############
+
+About WebGNOME
+==============
+
+WebGNOME is a publicly available oil spill trajectory and fate model that simulates oil movement
+and weathering due to winds and currents. GNOME was developed by the NOAA Office of Response 
+and Restoration (OR&R) Emergency Response Division for use in oil spill response.
+
+You can use WebGNOME to:
+
+    - Predict how winds, currents, and other processes might move and spread oil
+      spilled on the water.
+    - Learn how predicted oil trajectories are affected by inexactness ("uncertainty") in
+      current and wind observations and forecasts.
+    - See how spilled oil is predicted to change chemically and physically ("weather")
+      during the time that it remains on the water surface.
+
+
+To use WebGNOME, you describe a spill scenario by entering information into the program and 
+potentially uploading files with ocean currents, wind forecasts, and shoreline information.
+For examining the fate of spilled oil, a specific oil can be selected from a database 
+of more than a thousand different crude oils and refined products.
+
+WebGNOME then creates and displays an oil spill animation showing the predicted trajectory
+of the oil spilled in your scenario. You can also view graphs containing information on 
+the "oil budget" or partitioning of spilled oil between the water surface, water column, and 
+atmosphere. 
+
+To make setting up and running WebGNOME easier, users can choose to start with a webGNOME
+Location File. These exist for many Unisted States waterways and contain pre-packaged tide 
+and current data. 
+
+Alternatively, users can choose to utilize shoreline data and output from numerous publically 
+available ocean and meteorological models through the GOODS website.
+
+Related Projects
+================
+
+pyGNOME: https://github.com/NOAA-ORR-ERD/PyGnome
+
+ 
+
