@@ -37,7 +37,7 @@ define([
         events: {
             'click .spill-button .fixed': 'toggleSpill',
             'click .spill-button .moving': 'toggleSpill',
-            'click .help-button button': 'renderHelp',
+            'click .gnome-help': 'renderHelp',
             'mouseout .spill-button': 'toggleSpillBlur',
             'focusout .spill-button': 'toggleSpillBlur',
             'mouseout .help-button': 'helpBlur',
