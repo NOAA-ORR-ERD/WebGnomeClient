@@ -35,6 +35,8 @@ define([
             var modal = new HelpModal(options);
             modal.render();
         },
+
+
         
 
     });

@@ -19,7 +19,7 @@ define([
                 'release': new GnomeRelease(),
                 'element_type': this.getElementType(),
                 'name': 'Spill',
-                'amount': 0,
+                'amount': 1,
                 'units': ''
             };
         },

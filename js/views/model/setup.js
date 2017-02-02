@@ -114,7 +114,7 @@ define([
         },
 
         showHelp: function(){
-            var compiled = '<div class="gnome-help" title="Click for help"></div>';
+            var compiled = '<div class="gnome-help" title="Get Help on Setup View"></div>';
             this.$('h2:first').append(compiled);
             this.$('h2:first .gnome-help').tooltip();
         },

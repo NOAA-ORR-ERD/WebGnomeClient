@@ -2,43 +2,63 @@
     <div class="container">
         <div class="row">
             <div class="title">
-                <h1>GNOME ALPHA</h1>
+                <h1>WebGNOME (ALPHA)</h1>
             </div>
         </div>
         <div class="row">
             <div class="main">
                 <div class="alert alert-danger">
-                    This software is a draft working product distributed solely for pre-dissemination peer review under applicable information quality guidelines. It should not be used for any other purpose. It has not been formally released and does not represent, and should not be construed to represent, the official forecast of NOAA on spill behavior.
+                    This software is a draft working product distributed solely for 
+                    pre-dissemination peer review under applicable information quality guidelines. 
+                    It should not be used for any other purpose. It has not been formally released 
+                    and does not represent, and should not be construed to represent, 
+                    the official forecast of NOAA on spill behavior.
                 </div>
 
-                <p>
-                    <strong>GNOME</strong> (General NOAA Operational Modeling Environment) is a modeling tool used to predict the possible route, or trajectory, a pollutant might follow in or on a body of water. It has now been integrated with <strong>ADIOS</strong> (Automated Data Inquiry for Oil Spills) an oil weathering model that predicts how different types of oil undergo physical changes in the marine environment.
-                </p>
-
-                <p>
-                    The GNOME suite supports different user needs and experience levels by choosing among the options below
-                </p>
+               
             </div>
         </div>
+
         <div class="row">
+            <div class="main">
+                <div class="panel panel-default">
+                    <div class="panel-footer">
+                        <p>
+                        WebGNOME is a publicly available oil spill trajectory and fate model that simulates oil movement
+                        and weathering due to winds and currents. WebGNOME was developed by the NOAA Office of Response 
+                        and Restoration (OR&R) Emergency Response Division for use in oil spill response.</p>
+                        <p>
+                        To use WebGNOME, you describe a spill scenario by entering information into the program and 
+                        potentially uploading files with ocean currents, wind forecasts, and shoreline information.
+                        For examining the fate of spilled oil, a specific oil can be selected from a database 
+                        of more than a thousand different crude oils and refined products.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">  
             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <h4>Weathering Only</h4>
+                        <h4>Get Started</h4>
                     </div>
                     <div class="panel-footer">
-                        <p>Use the ADIOS wizard to get started modeling weathering of different oils, to estimate the oil budget, or to examine the impact of different response options.</p>
-                        <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span> ADIOS Wizard</a>
+                        <p>WebGNOME supports different user needs and experience levels by offering several startup modes.
+                        For more information or help on choosing a startup mode see the online help pages.</p>
+                        <a href="#" class="doc btn btn-warning btn-block"><span class="glyphicon glyphicon-question-sign"> </span> WebGNOME User Manual</a>
                     </div>
                 </div>
-            </div>
+            </div>          
             <div class="col-md-3">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Location Files</h4>
                     </div>
                     <div class="panel-footer">
-                        <p>Choose from available locations which are already set up with shoreline, tide, and current data. These files represent typical or climatological conditions for the region.</p>
+                        <p>Location Files guide users through the WebGNOME setup for a
+                        specific region. Each Location File contains pre-packaged
+                        information about the tides, currents, and shorelines in the region it covers.</p>
                         <!-- <a href="#" class="gnome-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span> GNOME Wizard</a> -->
                         <a href="#" class="location btn btn-info btn-block"><span class="glyphicon glyphicon-map-marker"> </span> Load a Location</a>
                     </div>
@@ -50,9 +70,11 @@
                         <h4>Custom Location</h4>
                     </div>
                     <div class="panel-footer">
-                        <p>Set up custom locations by uploading shoreline, winds, and/or currents data in supported file formats.</p>
-                        <a href="#" class="advanced btn btn-warning btn-block"><span class="glyphicon glyphicon-wrench"> </span> Advanced Mode</a>
-                        <a href="/goods" class=" btn btn-warning btn-block"><span class="glyphicon glyphicon-globe"> </span> GOODS</a>
+                        <p>Set up WebGNOME manually by uploading shoreline, winds, and/or currents data. 
+                        Help on file formats and finding data through the GNOME data server
+                        <a href="https://gnome.orr.noaa.gov/goods" target="_blank">(GOODS)</a> can be found in the User Manual.</p>
+                        <a href="#" class="advanced btn btn-info btn-block"><span class="glyphicon glyphicon-wrench"> </span> Manual Setup</a>
+
                     </div>
                 </div>
             </div>
@@ -62,13 +84,44 @@
                         <h4>Load</h4>
                     </div>
                     <div class="panel-footer">
+                        <p>
+                        Load a previously saved WebGNOME scenario.
+                        </p>
+                        <p>&nbsp</p>
                         <div class="load"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <div class="map" id="map"></div>
+        </div>   
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>Weathering Only</h4>
+                    </div>
+                    <div class="panel-footer">
+                        <p>WebGNOME also supports scenarios that consider only the weathering of the oil (similar to the previous NOAA ADIOS2 model). 
+                        Use this startup wizard to quickly estimate an oil budget without entering details on the incident location or currents.</p>
+                        <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span> Fate Wizard</a>
+                    </div>
+                </div>
+            </div>
+           <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h4>Response Options Calculator</h4>
+                    </div>
+                    <div class="panel-footer">
+                        <p>Use the Response Options Calculator (ROC) wizard in WebGNOME to assess system performance involving mechanical recovery, 
+                        dispersant application, and the burning of oil.</p>
+                        <a href="#" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span>ROC Wizard</a>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <!--<a href="/goods" class=" btn btn-warning btn-block"><span class="glyphicon glyphicon-globe"> </span> GOODS</a>-->
+        
     </div>
 </div>
