@@ -65,7 +65,7 @@ define([
                 }
                 console.log(model);
             };
-        }
+        },
 
         decimalToPercent: function(attr_name){
             var dec = this.get(attr_name);

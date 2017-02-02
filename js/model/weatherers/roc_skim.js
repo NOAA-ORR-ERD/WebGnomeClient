@@ -22,7 +22,7 @@ define([
                 barge_arrival: '',
                 timeseries: this.calculateOperatingPeriods(),
                 group: 'A',
-                _throughput: 75
+                _throughput: 75,
                 throughput: 0.75,
                 recovery: '1',
                 recovery_ef: 0,
