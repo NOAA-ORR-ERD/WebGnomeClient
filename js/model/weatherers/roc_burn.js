@@ -15,9 +15,9 @@ define([
                 speed: 0.75,
                 throughput: 0.75,
                 _throughput: 75,
-                burn_effeciency_type: '1',
-                burn_effeciency_custom: 0,
-                _burn_effeciency_custom: 0,
+                burn_efficiency_type: '1',
+                burn_efficiency_custom: 0,
+                _burn_efficiency_custom: 0,
                 units: new Backbone.Model({
                     offset: 'ft',
                     boom_length: 'ft',
@@ -32,8 +32,15 @@ define([
         },
 
         initialize: function(options){
+            ROCWeatherer.prototype.initialize.call(this, options);
             this.on('change:_throughput', this.percentToDecimal('throughput'));
-            this.on('change:_burn_effeciency_custom', this.percentToDecimal('burn_effeciency_custom'));
+            this.on('change:_burn_efficiency_custom', this.percentToDecimal('burn_efficiency_custom'));
+        },
+        
+        parse: function(attributes){
+            attributes = ROCWeather.prototype.parse.call(this, options);
+            attributes._throughput = this.decimalToPercent('throughput');
+            attributes._burn_efficiency_custom = this.decimalToPercent('burn_efficiency_custom');
         }
     });
     return ROCBurnModel;
