@@ -66,6 +66,12 @@ define([
                 console.log(model);
             };
         }
+
+        decimalToPercent: function(attr_name){
+            var dec = this.get(attr_name);
+            var per = dec * 100;
+            this.set('_' + attr_name, per, {silent: true, parse: false});
+        }
     });
 
     return ROCWeatherer;
