@@ -41,7 +41,7 @@ define([
             units: Backbone.Model
         },
 
-        initialize: function(){
+        initialize: function(options){
             ROCWeatherer.prototype.initialize.call(this, options);
             this.on('change:_decant', this.percentToDecimal('decant'));
         },
