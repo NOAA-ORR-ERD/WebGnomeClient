@@ -83,8 +83,12 @@ define([
         },
         
         roc: function(){
-            this.menu('add');
-            this.views.push(new RocView());
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new RocView());
+            } else {
+                this.navigate('', true)
+            }
         },
 
         model: function(){
