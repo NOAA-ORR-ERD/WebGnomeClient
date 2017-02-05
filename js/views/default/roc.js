@@ -11,17 +11,15 @@ define([
     'views/form/spill/continue',
     'views/form/water',
     'views/form/wind',
-    'views/form/response/type',
-    'views/form/response/disperse',
-    'views/form/response/insituBurn',
-    'views/form/response/skim',
-    'views/form/beached',
     'model/element',
     'model/environment/water',
-    'model/environment/wind'
+    'model/environment/wind',
+    'model/weatherers/roc_skim',
+    'views/form/response/roc_skim'
 ], function($, _, Backbone, moment, ROCTemplate, ModelForm,
-        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        BeachedView, ElementType, Water, Wind){
+        OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm,
+        ElementType, Water, Wind,
+        RocSkimmerModel, RocSkimmerForm){
     'use strict';
     var rocView = Backbone.View.extend({
         className: 'page roc',
@@ -33,9 +31,7 @@ define([
             'click .water': 'clickWater',
             'click .wind': 'clickWind',
             'click .solve:not(.disabled)': 'solve',
-            'click .response': 'clickResponse',
-            'click .response .item': 'loadResponse',
-            'click .beached': 'clickBeached'
+            'click .skimmer': 'clickSkimmer'
         },
 
         initialize: function(){
@@ -81,9 +77,7 @@ define([
                 wind_from: wind ? moment(wind.get('timeseries')[0][0]).format('MM-DD-YYYY H:mm') : null,
                 wind_to: wind ? moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('MM-DD-YYYY H:mm') : null,
                 water: water,
-                responses: responses,
-                beached_units: beached_units,
-                beached_ts: beached_ts
+                skimmers: webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.ROC.Skimmer'})
             });
 
             if($('body').find(this.$el).length === 0){
@@ -185,15 +179,24 @@ define([
             form.render();
         },
 
+        clickSkimmer: function(){
+            var skimmer = new RocSkimmerModel();
+            var form = new RocSkimmerForm({model: skimmer});
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('weatherers').add(skimmer);
+                webgnome.model.save();
+            }, this));
+            form.render();
+        },
+
+        loadSkimmer: function(e){
+            e.stopPropagation();
+        },
+
         solve: function(){
             localStorage.setItem('view', 'fate');
             webgnome.router.navigate('fate', true);
-        },
-
-        clickResponse: function(){
-            var form = new ResponseType();
-            form.render();
-            form.on('hidden', form.close);
         },
 
         loadResponse: function(e){
@@ -226,17 +229,6 @@ define([
                 responseView.on('hidden', responseView.close);
             }, this));
             responseView.render();
-        },
-
-        clickBeached: function() {
-            var beached = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.manual_beaching.Beaching'});
-            var form = new BeachedView({}, beached);
-            form.on('hidden', form.close);
-            form.on('save', _.bind(function(){
-                webgnome.model.get('weatherers').add(form.model, {merge:true});
-                webgnome.model.save(null, {validate: false});
-            }, this));
-            form.render();
         },
 
         close: function(){

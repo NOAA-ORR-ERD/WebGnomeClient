@@ -20,6 +20,7 @@ define([
             'click .adios-wizard': 'adios',
             'click .gnome-wizard': 'gnome',
             'click .doc': 'doc',
+            'click .roc': 'roc'
         },
 
         initialize: function(){
@@ -44,6 +45,22 @@ define([
         location: function(e){
             e.preventDefault();
             webgnome.router.navigate('locations', true);
+        },
+
+        roc: function(e){
+            e.preventDefault();
+            webgnome.model = new GnomeModel({
+                name: 'ROC Model_',
+                duration: 432000,
+                time_step: 3600,
+                mode: 'adios'
+            });
+            webgnome.model.save(null, {
+                validate: false,
+                success: function(){
+                    webgnome.router.navigate('roc', true);
+                }
+            });
         },
 
         adios: function(e){
