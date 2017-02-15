@@ -60,10 +60,9 @@ define([
         percentToDecimal: function(attr_name){
             return function(model){
                 var attr_val = model.get('_' + attr_name);
-                if(String(attr_val).indexOf('.') === -1){
+                if(model.has('_' + attr_name)){
                     model.set(attr_name, model.get('_' + attr_name) / 100, {silent: true});
                 }
-                console.log(model);
             };
         },
 
