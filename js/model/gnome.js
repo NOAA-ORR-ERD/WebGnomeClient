@@ -40,6 +40,7 @@ define([
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
+    'model/weatherers/roc_skim',
     'model/user_prefs',
     'model/risk/risk',
     'collection/movers',
@@ -49,7 +50,9 @@ define([
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer,
+    RocSkimResponse,
+    UserPrefs, RiskModel,
     MoversCollection, SpillsCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
@@ -106,7 +109,8 @@ define([
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
-                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer
+                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
+                'gnome.weatherers.roc.Skim': RocSkimResponse
             }
         },
 
