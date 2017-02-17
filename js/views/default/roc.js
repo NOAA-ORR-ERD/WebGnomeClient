@@ -15,11 +15,16 @@ define([
     'model/environment/water',
     'model/environment/wind',
     'model/weatherers/roc_skim',
-    'views/form/response/roc_skim'
+    'model/weatherers/roc_burn',
+    'model/weatherers/roc_disperse',
+    'views/form/response/roc_skim',
+    'views/form/response/roc_burn',
+    'views/form/response/roc_disperse'
 ], function($, _, Backbone, moment, ROCTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm,
         ElementType, Water, Wind,
-        RocSkimmerModel, RocSkimmerForm){
+        RocSkimmerModel, RocBurnModel, RocDisperseModel,
+        RocSkimmerForm, RocBurnForm, RocDisperseForm){
     'use strict';
     var rocView = Backbone.View.extend({
         className: 'page roc',
@@ -31,7 +36,12 @@ define([
             'click .water': 'clickWater',
             'click .wind': 'clickWind',
             'click .solve:not(.disabled)': 'solve',
-            'click .skimmer': 'clickSkimmer'
+            'click .skimmer': 'clickSkimmer',
+            'click .skimmer .item': 'loadSkimmer',
+            'click .burn': 'clickBurn',
+            'click .burn .item': 'loadBurn',
+            'click .disperse': 'clickDisperse',
+            'click .disperse .item': 'loadDisperse'
         },
 
         initialize: function(){
@@ -77,7 +87,9 @@ define([
                 wind_from: wind ? moment(wind.get('timeseries')[0][0]).format('MM-DD-YYYY H:mm') : null,
                 wind_to: wind ? moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('MM-DD-YYYY H:mm') : null,
                 water: water,
-                skimmers: webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.ROC.Skimmer'})
+                skimmers: webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Skim'}),
+                burns: webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Burn'}),
+                disperses: webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Disperse'})
             });
 
             if($('body').find(this.$el).length === 0){
@@ -192,7 +204,71 @@ define([
 
         loadSkimmer: function(e){
             e.stopPropagation();
+            var id;
+            if($(e.target).hasClass('item')){
+                id = $(e.target).data('id');
+            } else {
+                id = $(e.target).parents('.item').data('id');
+            }
+            
+            var skimmer = webgnome.model.get('weatherers').get(id);
+            var form = new RocSkimmerForm({model: skimmer});
+            form.on('hidden', form.close);
+            form.render();
         },
+
+        clickBurn: function(){
+            var burn = new RocBurnModel();
+            var form = new RocBurnForm({model: burn});
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('weatherers').add(burn);
+                webgnome.model.save();
+            }, this));
+            form.render();
+        },
+
+        loadBurn: function(e){
+            e.stopPropagation();
+            var id;
+            if($(e.target).hasClass('item')){
+                id = $(e.target).data('id');
+            } else {
+                id = $(e.target).parents('.item').data('id');
+            }
+            
+            var burn = webgnome.model.get('weatherers').get(id);
+            var form = new RocBurnForm({model: burn});
+            form.on('hidden', form.close);
+            form.render();
+        },
+
+        clickDisperse: function(){
+            var disperse = new RocDisperseModel();
+            var form = new RocDisperseForm({model: disperse});
+            form.on('hidden', form.close);
+            form.on('save', _.bind(function(){
+                webgnome.model.get('weatherers').add(disperse);
+                webgnome.model.save();
+            }, this));
+            form.render();
+        },
+
+        loadDisperse: function(e){
+            e.stopPropagation();
+            var id;
+            if($(e.target).hasClass('item')){
+                id = $(e.target).data('id');
+            } else {
+                id = $(e.target).parents('.item').data('id');
+            }
+            
+            var disperse = webgnome.model.get('weatherers').get(id);
+            var form = new RocDisperseForm({model: disperse});
+            form.on('hidden', form.close);
+            form.render();
+        },
+
 
         solve: function(){
             localStorage.setItem('view', 'fate');

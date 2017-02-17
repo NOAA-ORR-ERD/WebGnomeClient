@@ -151,13 +151,13 @@
         </div>
         <div class="col-md-6">
             <div class="row input">
-                <div class="option skimmer" title="Click to add a new skimming response.">
-                    <div class="icon {% if(!spills.length > 0){ %}missing {% } %}"></div>
-                    <div class="title">Skimmers</div>
+                <div class="option skimmer" title="Click to add a new mechanical system.">
+                    <div class="icon {% if(!skimmers.length > 0){ %}missing {% } %}"></div>
+                    <div class="title">Mechanical</div>
                     {% if(skimmers.length > 0){ %}
                         <div class="col-md-12">
                         {% for (var i = 0; i < skimmers.length; i++){ %}
-                            <div class="item" data-id="">
+                            <div class="item" data-id="{{ skimmers[i].get('id') }}">
                                 <div class="col-sm-6">
                                     <label>Name: </label>
                                     {{ skimmers[i].get('name') }}
@@ -168,10 +168,56 @@
                         {% } %}
                         </div>
                     {% } else { %}
-                        <div class="col-sm-12"><p>Click to add a new skimming response.</p></div>
+                        <div class="col-sm-12"><p>Click to add a new mechanical system.</p></div>
                     {% } %}
                 </div>
             </div>
+            <div class="row input">
+                <div class="option burn" title="Click to add a new mechanical system.">
+                    <div class="icon {% if(!burns.length > 0){ %}missing {% } %}"></div>
+                    <div class="title">Burn</div>
+                    {% if(burns.length > 0){ %}
+                        <div class="col-md-12">
+                        {% for (var i = 0; i < burns.length; i++){ %}
+                            <div class="item" data-id="{{ burns[i].get('id') }}">
+                                <div class="col-sm-6">
+                                    <label>Name: </label>
+                                    {{ burns[i].get('name') }}
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                            </div>
+                        {% } %}
+                        </div>
+                    {% } else { %}
+                        <div class="col-sm-12"><p>Click to add a new burn system.</p></div>
+                    {% } %}
+                </div>
+            </div>
+            <div class="row input">
+                <div class="option disperse" title="Click to add a new dispersant system.">
+                    <div class="icon {% if(!disperses.length > 0){ %}missing {% } %}"></div>
+                    <div class="title">Dispersant</div>
+                    {% if(disperses.length > 0){ %}
+                        <div class="col-md-12">
+                        {% for (var i = 0; i < disperses.length; i++){ %}
+                            <div class="item" data-id="{{ disperses[i].get('id') }}">
+                                <div class="col-sm-6">
+                                    <label>Name: </label>
+                                    {{ disperses[i].get('name') }}
+                                </div>
+                                <div class="col-md-4">
+                                </div>
+                            </div>
+                        {% } %}
+                        </div>
+                    {% } else { %}
+                        <div class="col-sm-12"><p>Click to add a new dispersant system.</p></div>
+                    {% } %}
+                </div>
+            </div>
+
+
         </div>
     </div>
     <div class="row input">
