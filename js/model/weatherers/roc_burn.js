@@ -38,9 +38,10 @@ define([
         },
         
         parse: function(attributes){
-            attributes = ROCWeather.prototype.parse.call(this, options);
+            attributes = ROCWeatherer.prototype.parse.call(this, attributes);
             attributes._throughput = this.decimalToPercent('throughput');
             attributes._burn_efficiency_custom = this.decimalToPercent('burn_efficiency_custom');
+            return attributes;
         }
     });
     return ROCBurnModel;
