@@ -41,6 +41,8 @@ define([
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
     'model/weatherers/roc_skim',
+    'model/weatherers/roc_burn',
+    'model/weatherers/roc_disperse',
     'model/user_prefs',
     'model/risk/risk',
     'collection/movers',
@@ -51,7 +53,7 @@ define([
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer,
-    RocSkimResponse,
+    RocSkimResponse, RocBurnResponse, RocDisperseResponse,
     UserPrefs, RiskModel,
     MoversCollection, SpillsCollection){
     'use strict';
@@ -110,7 +112,9 @@ define([
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
                 'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
-                'gnome.weatherers.roc.Skim': RocSkimResponse
+                'gnome.weatherers.roc.Skim': RocSkimResponse,
+                'gnome.weatherers.roc.Burn': RocBurnResponse,
+                'gnome.weatherers.roc.Disperse': RocDisperseResponse
             }
         },
 
