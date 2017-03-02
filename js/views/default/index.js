@@ -53,7 +53,7 @@ define([
                 name: 'ROC Model_',
                 duration: 432000,
                 time_step: 3600,
-                mode: 'adios'
+                mode: 'roc'
             });
             webgnome.model.save(null, {
                 validate: false,

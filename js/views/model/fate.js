@@ -142,16 +142,20 @@ define([
             'burned': 'rgb(49, 133, 156)',
             'beached': 'rgb(228, 108, 10)',
             'off_maps': 'rgb(146, 208, 80)',
-            'observed_beached': 'rgb(228, 108, 10)'
+            'observed_beached': 'rgb(228, 108, 10)',
+            'boomed': 'rgb(200, 200, 200)'
         },
 
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            this.$el.appendTo('body');
-            if(webgnome.model.validWeathering()){
+            if(!webgnome.hasModel()){
+                webgnome.router.navigate('', true);
+            } else if(webgnome.model.validWeathering()){
+                this.$el.appendTo('body');
                 this.renderWeathering(options);
             } else {
+                this.$el.appendTo('body');
                 this.listenTo(webgnome.model, 'change', this.noWeathering);
                 this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
                 this.noWeathering();
@@ -785,18 +789,29 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pruneDataset(dataset, [
-                'avg_density',
-                'avg_viscosity',
-                'step_num',
-                'time_stamp',
-                'water_content',
-                'non_weathering',
-                'water_density',
-                'water_viscosity',
-                'dispersibility_difficult',
-                'dispersibility_unlikely',
-                'secondtime'
+            dataset = this.pluckDataset(dataset, [
+                'amount_released',
+                'beached',
+                'dissolution',
+                'evaporated',
+                'floating',
+                'natural_dispersion',
+                'off_maps',
+                'sedimentation',
+                'skimmed',
+                'burned',
+                'boomed'
+                //'avg_density',
+                //'avg_viscosity',
+                //'step_num',
+                //'time_stamp',
+                //'water_content',
+                //'non_weathering',
+                //'water_density',
+                //'water_viscosity',
+                //'dispersibility_difficult',
+                //'dispersibility_unlikely',
+                //'secondtime'
                 ]);
             var table = this.$('#budget-table table:first');
             var display = {

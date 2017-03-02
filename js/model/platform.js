@@ -8,6 +8,7 @@ define([
         defaults: function(){
             return {
                 type: '',
+                json_: 'webapi'
             };
         },
 

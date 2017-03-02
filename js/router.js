@@ -29,6 +29,7 @@ define([
             'config': 'config',
             'adios': 'adios',
             'roc': 'roc',
+            'response': 'response',
             'model': 'model',
             'trajectory': 'trajectory',
             'fate': 'fate',
@@ -47,7 +48,8 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios'){
+            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios' ||
+               webgnome.model.get('mode') === 'roc'){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger) && window.location.hash !== ''){
@@ -98,6 +100,12 @@ define([
             } else {
                 this.navigate('', true);
             }
+        },
+
+        response: function(){
+            this.menu('add');
+            this.views.push(new ResponseView());
+            localStorage.setItem('view', 'response');
         },
 
         trajectory: function(){
