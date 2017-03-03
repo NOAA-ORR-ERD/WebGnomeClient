@@ -36,17 +36,17 @@ define([
 
         toggleDosage: function(){
             if(this.model.get('dosage') === 'auto'){
-                this.$('input[name="dosage_val"]').attr('disabled', true);
+                this.$('input[name="dosage"]').attr('disabled', true);
             } else {
-                this.$('input[name="dosage_val"]').attr('disabled', false);
+                this.$('input[name="dosage"]').attr('disabled', false);
             }
         },
 
         toggleDispersant: function(){
             if(this.model.get('dispersant') === 'custom'){
-                this.$('input[name="dispersant_ef"]').attr('disabled', false);
+                this.$('input[name="disp_eff"]').attr('disabled', false);
             } else {
-                this.$('input[name="dispersant_ef"]').attr('disabled', true);
+                this.$('input[name="disp_eff"]').attr('disabled', true);
             }
         },
 

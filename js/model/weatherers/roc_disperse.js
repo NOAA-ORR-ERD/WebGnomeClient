@@ -13,18 +13,18 @@ define([
                 transit: 10,
                 pass_length: 4,
                 platform: new Platform(),
-                platform_type: '',
                 pass_type: 'bidirectional',
-                dor: 20,
+                disp_oil_ratio: 20,
                 dosage_type: 'auto',
-                dosage: 0,
+                dosage: null,
                 dispersant: '1',
-                dispersant_ef: 0,
+                disp_eff: null,
                 loading_type: 'simultaneous',
                 units: new Backbone.Model({
                     pass_length: 'nm',
                     transit: 'nm',
-                    dosage_val: 'gallon/acre',
+                    dosage: 'gal/acre',
+		    cascade_distance: 'nm'
                 })
             };
         },
@@ -32,7 +32,16 @@ define([
         models: {
             units: Backbone.Model,
             platform: Platform
-        }
+        },
+
+	initialize: function(options) {
+		ROCWeatherer.prototype.initialize.call(this, options);
+	},
+
+	parse: function(attributes) {
+		attributes = ROCWeatherer.prototype.parse.call(this, attributes);
+		return attributes
+	}
     });
     return ROCDisperseModel;
 });
