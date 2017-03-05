@@ -51,10 +51,23 @@ define([
                 container: '.modal'
             });
         },
+        
+        kToC: function(k){
+        	// Kelvin to Celcius
+        	return (k - 273.15).toFixed(1);
+        },
 
         cToF: function(c){
+        	// Celcius to Farenheit
             return ((c * 9.0 / 5.0) + 32.0).toFixed(1);
         },
+
+        kToF: function(k){
+        	// Kelvin to Farenheit
+        	return this.cToF(this.kToC(k));
+        },
+
+        doNotEvaluate: ["estimated"],
 
         groupAnalysis: ['aromatics_fraction',
 			            'polars_fraction',
@@ -66,190 +79,185 @@ define([
 			            'wax_content_fraction',
 			            'asphaltenes_fraction'],
 
-        tempAttrs: ['pour_point_min_k',
-		            'pour_point_max_k',
-		            'flash_point_min_k',
-		            'flash_point_max_k'],
+        tempAttrs: ['ref_temp_k',
+		            'liquid_temp_k',
+		            'vapor_temp_k'],
 
-        estimatedParse: function(){
-            
-        },
+        tempRangeAttrs: ['pour_point_min_k',
+			             'pour_point_max_k',
+			             'flash_point_min_k',
+			             'flash_point_max_k'],
 
-		dataParse: function(oilParam){
+		dataParse: function(oilParam, estimatedObj){
             var oil = $.extend(true, {}, oilParam);
-            for (var attr in oil) {
-                // When value of oil attribute is null
-                if (!oil[attr] && this.tempAttrs.indexOf(attr) === -1 && attr.indexOf('emuls') === -1) {
-                    oil[attr] = "--";
-                } else if (attr === 'bullwinkle_fraction') {
-                    if (oil.estimated[attr]) {
-                        oil[attr] = '<code>' + oil[attr].toFixed(2) + '</code>';
-                    } else {
-                        oil[attr] = oil[attr].toFixed(2);
-                    }
-                }
-                // Checks if oil attribute is one of the interfacial tensions and if so converts to cSt
-                else if (attr === 'oil_seawater_interfacial_tension_n_m' || attr === 'oil_water_interfacial_tension_n_m') {
-                    if (oil.estimated[attr]) {
-                        oil[attr] = '<code>' + (oil[attr] * 1000).toFixed(1) + '</code>';
-                    } else {
-                        oil[attr] = (oil[attr] * 1000).toFixed(1);
-                    }
-                } else if (attr === 'api') {
-                    if (oil.estimated[attr]) {
-                        oil[attr] = '<code>' + oil[attr].toFixed(1) + '</code>';
-                    } else {
-                        oil[attr] = oil[attr].toFixed(1);
-                    }
-                } else if (attr === 'adhesion_kg_m_2') {
-                    if (oil.estimated[attr]) {
-                        oil[attr] = '<code>' + oil[attr] + '</code>';
-                    }
-                } else if (attr === 'categories') {
-                    for (var i = 0; i < oil[attr].length; i++) {
-                        var parentCategory = oil[attr][i].parent.name;
-                        var childCategory = oil[attr][i].name;
-                        oil[attr][i] = parentCategory + '-' + childCategory;
-                    }
-                }
-                this.parseTemperatureData(oil, attr);
-                this.parseGroupAnalysis(oil, attr);
-                // When value of oil attribute is of type object but not array
-                this.parseObjectData(oil, attr);
-                // When value of oil attribute is of type array
-                this.parseArrayData(oil, attr);
-			}
-			return oil;
+
+            console.log("entering dataParse()...");
+
+            this.traverseOil("oil", oil, this.processOilNode);
+            console.log("completed traversing oil structure...");
+
+            // Set the initial estimated object.
+            // We will then pass it on to recursed calls
+            if (!estimatedObj && oil.estimated) {
+            	estimatedObj = oil.estimated;
+            	this.populateTemperatureEstimationFlags(estimatedObj);
+            }
+
+        	for (var attr in oil) {
+        		// determine if the attribute is estimated.
+        		if (estimatedObj[attr]) {
+        			oil[attr] = '<code>' + oil[attr] + '</code>';
+        		}
+        	}
+
+            return oil;
 		},
 
-        parseTemperatureData: function(oil, attr) {
-            if (this.tempAttrs.indexOf(attr) !== -1) {
-                var str;
-                if (oil[attr]) {
-                    if (attr.indexOf('max') > -1) {
-                        str = attr.substring(0, attr.length - 6) + '_min_k';
-                        if (oil[str] === oil[attr]){
-                            oil[str] = '';
-                        }
-                    } else {
-                        str = attr.substring(0, attr.length - 6) + '_max_k';
-                        if (oil[str] === oil[attr]) {
-                            oil[str] = '';
-                        }
-                    }
-                    var celsius = (oil[attr] - 273.15).toFixed(1);
-                    if (oil.estimated[attr]) {
-                        oil[attr] = '<code>' + this.cToF(celsius) + ' (' + celsius + ')</code> &deg;F (&deg;C)';
-                    } else {
-                        oil[attr] = this.cToF(celsius) + ' (' + celsius + ') &deg;F (&deg;C)';
-                    }
-                } else {
-                    for (var i = 0; i < this.tempAttrs.length; i++) {
-                        if (attr === this.tempAttrs[i]) {
-                            if (attr.indexOf('max') > -1) {
-                                str = attr.substring(0, attr.length - 6) + '_min_k';
-                                if (oil[str] === oil[attr]) {
-                                    oil[str] = '';
-                                }
-                            } else {
-                                str = attr.substring(0, attr.length - 6) + '_max_k';
-                                if (oil[str] === oil[attr]) {
-                                    oil[str] = '';
-                                }
-                            }
-                        }
-                    }
-                    oil[attr] = null;
+		traverseOil: function(parentAttr, o, func) {
+		    for (var i in o) {
+		        func.apply(this, [parentAttr, o, i]);  
+
+		        if ($.inArray(i, this.doNotEvaluate) >= 0) {
+		        	continue;
+		        }
+
+		        if (o[i] !== null && typeof(o[i])=="object") {
+		            //going on step down in the object tree!!
+		        	this.traverseOil(i, o[i], func);
+		        }
+		    }
+		},
+
+		processOilNode: function(parentAttr, parentObj, key) {
+		    // console.log(parentAttr + "[" + key + "] : " + parentObj[key]);
+
+		    this.parseTemperatureRangeData(parentObj, key);
+			this.parseTemperatureData(parentObj, key);
+
+		    this.parseGroupAnalysis(parentObj, key);
+
+		    if (parentObj[key] === null) {
+            	// When value of oil attribute is null
+                parentObj[key] = "--";
+            }
+            else if (key === 'bullwinkle_fraction')
+            {
+                parentObj[key] = parentObj[key].toFixed(2);
+            }
+            else if (key === 'oil_seawater_interfacial_tension_n_m' ||
+            		 key === 'oil_water_interfacial_tension_n_m')
+            {
+               	// convert to cSt
+            	parentObj[key] = (parentObj[key] * 1000).toFixed(1);
+            }
+            else if (key === 'api') {
+            	parentObj[key] = parentObj[key].toFixed(1);
+            }
+            else if (key === 'weathering') {
+            	parentObj[key] = parentObj[key].toFixed(1);
+            }
+            else if (key === 'kg_m_3') {
+            	parentObj[key] = parentObj[key].toFixed(2);
+            }
+            else if (key === 'categories') {
+                for (var i = 0; i < parentObj[key].length; i++) {
+                    var parentCategory = parentObj[key][i].parent.name;
+                    var childCategory = parentObj[key][i].name;
+                    parentObj[key][i] = parentCategory + '-' + childCategory;
                 }
             }
+		},
+
+		parseTemperatureRangeData: function(oil, attr) {
+            if ($.inArray(attr, this.tempRangeAttrs) >= 0) {
+            	// we are one of the registered min/max temperature attrs
+                if (oil[attr] === null) {
+                	// we don't have a value
+                	// basically these are min/max pair values, and if
+                	// one of them is missing, we just copy from the other
+                	// attribute in the pair
+                	var other_suffix = "";
+                	if (attr.indexOf("_max_k") === attr.length - 6) {
+                		other_suffix = "_min_k";
+                    }
+                	else if (attr.indexOf("_min_k") === attr.length - 6) {
+                		other_suffix = "_max_k";
+                    }
+
+                    var other_attr = attr.substring(0, attr.length - 6) +
+                    				 other_suffix;
+
+                    if (oil[other_attr] === null) {
+                    	// neither attribute in the pair have a value
+                    	oil[attr] = "--";
+                    }
+                    else {
+                    	oil[attr] = oil[other_attr];
+                    }
+                }
+
+                // we should have a valid value at this point
+                var attr_c = attr.substring(0, attr.length - 2) + '_c';
+                var attr_f = attr.substring(0, attr.length - 2) + '_f';
+                
+
+                if (oil[attr] === "--") {
+                	oil[attr_c] = oil[attr_f] = "--";
+                }
+                else {
+                	oil[attr_c] = this.kToC(oil[attr]);
+                	oil[attr_f] = this.kToF(oil[attr]);
+                }
+            }
+        },
+
+		parseTemperatureData: function(obj, key) {
+            if ($.inArray(key, this.tempAttrs) >= 0) {
+            	// we are one of the registered temperature attrs
+                if (obj[key] === null) {
+                	obj[key] = "--";
+                }
+
+                // we should have a valid value at this point
+                var key_c = key.substring(0, key.length - 2) + '_c';
+                var key_f = key.substring(0, key.length - 2) + '_f';
+
+                if (obj[key] === "--") {
+                	obj[key_c] = obj[key_f] = "--";
+                }
+                else {
+                	obj[key_c] = this.kToC(obj[key]);
+                	obj[key_f] = this.kToF(obj[key]);
+                }
+            }
+        },
+
+        populateTemperatureEstimationFlags: function(estimated) {
+        	for (var idx in this.tempRangeAttrs) {
+        		var attr = this.tempRangeAttrs[idx];
+                if (estimated[attr] !== null) {
+                	var attr_c = attr.substring(0, attr.length - 2) + "_c";
+                	var attr_f = attr.substring(0, attr.length - 2) + "_f";
+
+                	estimated[attr_c] = estimated[attr];
+                	estimated[attr_f] = estimated[attr];
+                }
+        	}
         },
 
         parseGroupAnalysis: function(oil, attr){
-            // Checks if oil attribute is one of the group analysis terms and if so converts to percent
-            if (this.groupAnalysis.indexOf(attr) !== -1 && !_.isNull(oil[attr])){
-                if (oil.estimated[attr]) {
-                    oil[attr] = (isNaN(Math.round((oil[attr] * 100).toFixed(2))) ? '--' : '<code>' + Math.round((oil[attr] * 100).toFixed(2))) + '</code>';
-                } else {
-                    oil[attr] = (isNaN(Math.round((oil[attr] * 100).toFixed(2))) ? '--' : Math.round((oil[attr] * 100).toFixed(2)));
-                }
+            // Checks if oil attribute is one of the group analysis terms
+        	// and if so converts to percent
+        	if ($.inArray(attr, this.groupAnalysis) >= 0 &&
+        			!_.isNull(oil[attr])) {
+        		oil[attr] = Math.round((oil[attr] * 100).toFixed(2));
+
+        		if (isNaN(oil[attr])) {
+                    oil[attr] = '--';
+        		}
             }
         },
-
-        parseObjectData: function(oil, attr){
-            if (_.isObject(oil[attr]) && !_.isArray(oil[attr])){
-                for (var key in oil[attr]){
-                    if (_.isArray(oil[attr][key]) && oil[attr][key].length === 0){
-                        if (key === 'kvis' || key === 'synonyms'){
-                            oil[attr][key] = false;
-                        }
-                    } else if (_.isArray(oil[attr][key])) {
-                    // For loop that goes through array
-                        var p;
-                        for (var o = 0; o < oil[attr][key].length; o++){
-                            for (var k in oil[attr][key][o]) {
-                                if (!oil[attr][key][o][p] && oil[attr][key][o] !== 'weathering'){
-                                    oil[attr][key][o][p] = "--";
-                                } else if (k === 'ref_temp_k' || k === 'vapor_temp_k' || k === 'liquid_temp_k') {
-                                    var k2;
-                                    if (oil.estimated[attr]){
-                                        oil[attr][key][o][p] = (oil[attr][key][o][p] - 273.15).toFixed(1);
-                                        k2 = k.substring(0, k.length - 2) + '_f';
-                                        oil[attr][key][o][k2] = '<code>' + this.cToF(oil[attr][key][o][p]).toString() + '</code>';
-                                        oil[attr][key][o][p] = '<code>(' + oil[attr][key][o][p] + ')</code>';
-                                    } else {
-                                        oil[attr][key][o][p] = (oil[attr][key][o][p] - 273.15).toFixed(1);
-                                        k2 = k.substring(0, k.length - 2) + '_f';
-                                        oil[attr][key][o][k2] = this.cToF(oil[attr][key][o][p]).toString();
-                                        oil[attr][key][o][p] = '(' + oil[attr][key][o][p] + ')';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-
-        parseArrayData: function(oil, attr){
-            // When oil attribute is an empty array
-            if (_.isArray(oil[attr])) {
-                if (oil[attr].length === 0){
-                    if (attr === 'cuts' || attr === 'kvis' || attr === 'synonyms' || attr === 'densities'){
-                        oil[attr] = false;
-                    } else {
-                        oil[attr] = '--';
-                    }
-                } else {
-                    // For loop that goes through array
-                    for (var s = 0; s < oil[attr].length; s++){
-                        for (var v in oil[attr][s]) {
-                            if (!oil[attr][s][v] && oil[attr][s] !== 'weathering'){
-                                oil[attr][s][v] = "--";
-                            } else if (v === 'ref_temp_k' || v === 'vapor_temp_k' || v === 'liquid_temp_k') {
-                                var v2;
-                                if (oil.estimated[attr]){
-                                    oil[attr][s][v] = (oil[attr][s][v] - 273.15).toFixed(1);
-                                    v2 = v.substring(0, v.length - 2) + '_f';
-                                    oil[attr][s][v2] = '<code>' + this.cToF(oil[attr][s][v]).toString() + '</code>';
-                                    oil[attr][s][v] = '<code>(' + oil[attr][s][v] + ')</code>';
-                                } else {
-                                    oil[attr][s][v] = (oil[attr][s][v] - 273.15).toFixed(1);
-                                    v2 = v.substring(0, v.length - 2) + '_f';
-                                    oil[attr][s][v2] = this.cToF(oil[attr][s][v]).toString();
-                                    oil[attr][s][v] = '(' + oil[attr][s][v] + ')';
-                                }
-                            } else if (v === 'kg_m_3'){
-                                if (oil.estimated[attr]){
-                                    oil[attr][s][v] = '<code>' + (oil[attr][s][v] / 1000).toFixed(3) + '</code>';
-                                } else {
-                                    oil[attr][s][v] = (oil[attr][s][v] / 1000).toFixed(3);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 	});
+
 	return specificOil;
 });
