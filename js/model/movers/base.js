@@ -93,7 +93,7 @@ define([
             var real_data_stop = this.get('real_data_stop');
             var extrapolate = this.get('extrapolate');
             var on = this.get('on');
-            var msg = ''
+            var msg = '';
 
             if ((!extrapolate && on) && (active_start === '-inf' || active_start > model_start)) {
                 if (real_data_start === real_data_stop) {
@@ -101,12 +101,12 @@ define([
                 }
                 
                 if (real_data_start > model_start) {
-                    msg = 'Mover data begins after model start time'
+                    msg = 'Mover data begins after model start time';
                     return msg;
                 }
 
                 if (real_data_stop < model_start) {
-                    msg = 'Mover contains no data within model run time'
+                    msg = 'Mover contains no data within model run time';
                     return msg;
                 }
             }

@@ -121,7 +121,7 @@ define([
 		        	continue;
 		        }
 
-		        if (o[i] !== null && typeof(o[i])=="object") {
+		        if (o[i] !== null && typeof(o[i]) === "object") {
 		            //going on step down in the object tree!!
 		        	this.traverseOil(i, o[i], func);
 		        }

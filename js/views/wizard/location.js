@@ -54,7 +54,7 @@ define([
             return text.split(",")[0].replace(/\s/g, "_");
         },
 
-        load_location: function(){
+        load_location: function() {
             webgnome.model.set('uncertain', true);
             webgnome.model.save(null, {validate: false});
 
@@ -66,61 +66,79 @@ define([
 
             // set up each step described in the location file.
             _.each(this.location.get('steps'), _.bind(function(el){
-                var title = [];
+                var textOpts;
+            	var title = [];
                 title[0] = el.title;
                 title[1] = this.name;
+
                 var helpFilename = this.helpNameConvert(this.name);
+
                 if(el.type === 'welcome'){
-                    title[0] = 'Location File'
-                    var textOpts = {
+                    title[0] = 'Location File';
+                    textOpts = {
                         name: el.name,
                         title: title.join(': '),
                         body: el.body + "<p>For background information on the Location File for  " + title[1] + " click on the help link at the top of this form.</p>",
                         buttons: el.buttons,
                         moduleId: 'views/model/locations/' + helpFilename,
                     };
+
                     this.steps.push(new TextForm(textOpts));
-               } else if (el.type === 'text'){
+                }
+                else if (el.type === 'text') {
                     var body = [];
                     // for now this is overriding the text in individual location file .json files 
                     // as they are not individually customized
                     if (el.title === 'Wind Type') {
-                            body = "<p>Wind can significantly influence oil movement and can force oil to move in a different direction from the currents.</p><p>The next form has several options for including a point (spatially constant) wind. You can:<ul><li> enter values for a wind that is constant in direction and speed for the entire model run,</li><li>enter values for a wind that varies in direction and/or speed over time,</li><li>upload a file with wind data,</li><li>link directly to the latest NOAA NWS marine forcast.</li></ul></p><p>If you'd like to use a gridded model product for winds, you can upload it later from the Setup View."                                       
-                    } else {body = el.body};
-                    var textOpts = {
+                            body = "<p>Wind can significantly influence oil movement and can force oil to move in a different direction from the currents.</p><p>The next form has several options for including a point (spatially constant) wind. You can:<ul><li> enter values for a wind that is constant in direction and speed for the entire model run,</li><li>enter values for a wind that varies in direction and/or speed over time,</li><li>upload a file with wind data,</li><li>link directly to the latest NOAA NWS marine forcast.</li></ul></p><p>If you'd like to use a gridded model product for winds, you can upload it later from the Setup View.";
+                    }
+                    else {
+                    	body = el.body;
+                    }
+
+                    textOpts = {
                         name: el.name,
                         title: title.join(': '),
                         body: body,
                         buttons: el.buttons
                     };
+
                     this.steps.push(new TextForm(textOpts));                
-                } else if (el.type === 'model') {
+                }
+                else if (el.type === 'model') {
                     this.steps.push(new ModelForm({
                         name: el.name,
                         title: title.join(': '),
                         body: el.body,
                         buttons: el.buttons
                     }, webgnome.model));
-                } else if (el.type === 'wind') {
-                    if(!el.title){
+                }
+                else if (el.type === 'wind') {
+                    if (!el.title) {
                         title[0] = 'Wind';
-                    };
+                    }
+
                     var windMover = new GnomeWindMover();
                     var wind = new GnomeWind();
                     windMover.set('wind', wind);
+
                     var windform = new WindForm({
                         name: el.name,
                         title: title.join(': '),
                         body: el.body,
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='next'>Next</button>"
-                    }, {'superModel': windMover, 'model': windMover.get('wind')});
+                    },
+                    {'superModel': windMover, 'model': windMover.get('wind')
+                    });
+
                     windform.on('save', _.bind(function(){
                         webgnome.model.get('movers').add(windMover, {merge: true});
                         webgnome.model.get('environment').add(windMover.get('wind'), {merge: true});
                     }, this));
 
                     this.steps.push(windform);
-                } else if (el.type ==='custom'){
+                }
+                else if (el.type ==='custom') {
                     var customForm = new CustomForm({
                         title: title.join(': '),
                         body: el.body + "<p>If you need more information on this option you can click on the help link at the top of this form.</p>",
@@ -130,18 +148,21 @@ define([
                         moduleId: 'views/model/locations/' + helpFilename,
                     });
                     this.steps.push(customForm);
-                } else if (el.type === 'finish') {
-                    if (!el.title){
+                }
+                else if (el.type === 'finish') {
+                    if (!el.title) {
                         title[0] = 'Almost Done';
                     }
+
                     var finishForm = new TextForm({
                         name: el.name,
                         title: title.join(': '),
                         body: "<div><p>Pressing the <b>Run Model</b> button will now take you to the <b>Map View</b> where you can visualize the spill movement.</p> <p>You can switch between Views by using the icons shown below which will appear at the top right of your browser window.<ul><li> To make modifications to your model setup, switch to <b>Setup View</b>.</li> <li> To view the oil budget, switch to <b>Fate View.</b></li></ul></p><p><img src='img/view_icons.png' alt='Image of View icons' style='width:473px;height:180px;'></p></div>",
                         buttons: "<button type='button' class='cancel' data-dismiss='modal'>Cancel</button><button type='button' class='back'>Back</button><button type='button' class='finish' data-dismiss='modal'>Run Model</button>"
                     });
-                    finishForm.on('finish', function(){
-                        webgnome.model.save().always(function(){
+
+                    finishForm.on('finish', function() {
+                        webgnome.model.save().always(function() {
                             localStorage.setItem('view', 'trajectory');
                             webgnome.router.navigate('trajectory', true);
                         });
@@ -153,10 +174,11 @@ define([
             }, this));
 
             var stepLength = this.steps.length;
+
             var spillWizForm = new SpillTypeWizForm({
                 name: 'step' + (stepLength - 2),
                 title: 'Select Spill Type <span class="sub-title">GNOME Wizard</span>'
-            }).on('select', _.bind(function(form){
+            }).on('select', _.bind(function(form) {
                 form.title += '<span class="sub-title">GNOME Wizard</span>';
                 form.name = 'step' + (stepLength - 2);
                 form.buttons = '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="back">Back</button><button type="button" class="next">Next</button>';
