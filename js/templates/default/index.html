@@ -5,6 +5,7 @@
                 <h1>WebGNOME (ALPHA)</h1>
             </div>
         </div>
+
         <div class="row">
             <div class="main">
                 <div class="alert alert-danger">
@@ -14,15 +15,13 @@
                     and does not represent, and should not be construed to represent, 
                     the official forecast of NOAA on spill behavior.
                 </div>
-
                
             </div>
         </div>
 
         <div class="row">
             <div class="main">
-                <div class="panel panel-default">
-                    <div class="panel-footer">
+
                         <p>
                         WebGNOME is a publicly available oil spill trajectory and fate model that simulates oil movement
                         and weathering due to winds and currents. WebGNOME was developed by the NOAA Office of Response 
@@ -32,8 +31,7 @@
                         potentially uploading files with ocean currents, wind forecasts, and shoreline information.
                         For examining the fate of spilled oil, a specific oil can be selected from a database 
                         of more than a thousand different crude oils and refined products.</p>
-                    </div>
-                </div>
+
             </div>
         </div>
 
@@ -95,32 +93,46 @@
         </div>   
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Weathering Only</h4>
                     </div>
                     <div class="panel-footer">
-                        <p>WebGNOME also supports scenarios that consider only the weathering of the oil (similar to the previous NOAA ADIOS2 model). 
+                        <p>WebGNOME supports scenarios that consider only the weathering of the oil (similar to the previous NOAA ADIOS2 model). 
                         Use this startup wizard to quickly estimate an oil budget without entering details on the incident location or currents.</p>
-                        <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-flash"> </span> Fate Wizard</a>
+                        <a href="#" class="adios-wizard btn btn-primary btn-block"><span class="glyphicon glyphicon-tint"> </span> Fate Wizard</a>
                     </div>
                 </div>
             </div>
-           <div class="col-md-6">
+           <div class="col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4>Response Options Calculator</h4>
                     </div>
                     <div class="panel-footer">
-                        <p>Use the Response Options Calculator (ROC) wizard in WebGNOME to assess system performance involving mechanical recovery, 
-                        dispersant application, and the burning of oil.</p>
-                        <a href="#" class="btn btn-primary btn-block roc"><span class="glyphicon glyphicon-flash"> </span> ROC Wizard</a>
+                        <p>Use the Response Options Calculator (ROC) wizard in WebGNOME to include
+                        assessment of the performance of response operations including mechanical recovery systems, 
+                        dispersant application, and/or the in situ burning of oil.</p>
+                        <a href="#" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-fire"> </span> ROC Wizard</a>
                     </div>
                 </div>
             </div>
-        </div>
-        
+ 
+
+          <div class="col-md-4">
+              <div class="panel panel-default">
+                  <div class="panel-body">
+                      <h4>ADIOS Oil Library</h4>
+                  </div>
+                  <div class="panel-footer">
+                      <p>The ADIOS Oil Library includes physical and chemical properties for hundreds of oils. 
+                      Oils are selected from this library for use in WebGNOME. Use this link to browse the oil 
+                      library or (future development) enter a custom oil.  </p>
+                      <a href="#" class="btn btn-primary btn-block"><span class="glyphicon glyphicon-th-list"> </span> Oil Library</a>
+                  </div>
+              </div>
+         </div>
         <!--<a href="/goods" class=" btn btn-warning btn-block"><span class="glyphicon glyphicon-globe"> </span> GOODS</a>-->
         
     </div>

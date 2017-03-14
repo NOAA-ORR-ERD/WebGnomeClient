@@ -90,16 +90,27 @@
     				</div>
     				<div class="col-md-6">
                         <label class="info" title="Pour point is the lowest temperature at which an oil will flow under specified conditions. It is roughly equivalent to melting point for pure substances, but because oil is a mixture of compounds, pour point is difficult to measure precisely, and may vary somewhat from sample to sample.">
-                            <span class="glyphicon glyphicon-info-sign"></span> Pour Point:
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            Pour Point &deg;F (&deg;C):
                         </label>
-                        {{ data.pour_point_min_k }} {{data.pour_point_max_k }}
+                        {% if (data.pour_point_min_k == data.pour_point_max_k) { %}
+                            {{ data.pour_point_min_f }} <b>(</b> {{data.pour_point_min_c }} <b>)</b>
+                        {% } else { %}
+                            [ {{ data.pour_point_min_f }} ... {{ data.pour_point_max_f }} ]
+                            <b>(</b> [ {{ data.pour_point_min_c }} ... {{ data.pour_point_max_c }} ] <b>)</b>
+                        {% } %}
     				</div>
                     <div class="col-md-6">
                         <label class="info" title="A flash point is defined as the minimum temperature at which an oil or fuel product will ignite on application of an ignition source.  This is different than the fire point of an oil, which is the temperature at which the vapor produced by an oil will continue to burn for at least 5 seconds after ignition.">
                             <span class="glyphicon glyphicon-info-sign"></span>
-                            Flash Point:
+                            Flash Point  &deg;F (&deg;C):
                         </label>
-                        {{ data.flash_point_min_k }} {{data.flash_point_max_k }}
+                        {% if (data.flash_point_min_k == data.flash_point_max_k) { %}
+                            {{ data.flash_point_min_f }} <b>(</b> {{data.flash_point_min_c }} <b>)</b>
+                        {% } else { %}
+                            [ {{ data.flash_point_min_f }} ... {{ data.flash_point_max_f }} ]
+                            <b>(</b> [ {{ data.flash_point_min_c }} ... {{ data.flash_point_max_c }} ] <b>)</b>
+                        {% } %}
                     </div>
                     <div class="col-md-6">
                         <label class="info" title="Some oils will only form a stable emulsion when a certain fraction of the oil has evaporated. The emulsion constant is the fraction of the oil that must evaporate before the oil emulsifies.">
@@ -140,7 +151,7 @@
                                         {% } %}
             							<tr>
             								<td>{{ centiStokes }}</td>
-            								<td>{{ data.kvis[i].ref_temp_f }} {{ data.kvis[i].ref_temp_k }}</td>
+            								<td>{{ data.kvis[i].ref_temp_f }} <b>(</b> {{ data.kvis[i].ref_temp_c }} <b>)</b> </td>
             								<td>{{ viscosityWeather }}</td>
             							</tr>
             						{% } %}
@@ -175,7 +186,7 @@
                                         {% } %}
                                         <tr>
                                             <td>{{ data.densities[i].kg_m_3 }}</td>
-                                            <td>{{ data.densities[i].ref_temp_f }} {{ data.densities[i].ref_temp_k }}</td>
+                                            <td>{{ data.densities[i].ref_temp_f }} <b>(</b> {{ data.densities[i].ref_temp_c }} <b>)</b> </td>
                                             <td>{{ densityWeather }}</td>
                                         </tr>
                                     {% } %}
@@ -256,28 +267,42 @@
     			<div class="row">
                     <div class="col-md-12">
         				<h4 class="info pull-left" title="Oil is a mixture of molecules that boil at different temperatures and pressures.  The table displays the cumulative mass fraction of the oil that boils off at atmospheric pressure for a specific liquid temperature of the oil and its corresponding produced vapor temperature.">Distillation Cuts <span class="glyphicon glyphicon-info-sign"></span></h4>
-        				{% if (!data.cuts){ %}
-        					<div>No Distillation Cuts on Record.</div>
-        				{% } else { %}
-        					<table class="table">
-        						<tr>
-        							<th>Cut #</th>
-        							<th>Mass Percent (%)</th>
-        							<th>Vapor Temperature &deg;F (&deg;C)</th>
-        							<th>Liquid Temperature &deg;F (&deg;C)</th>
-        						</tr>
-        					{% for (var i = 0; i < data.cuts.length; i++){ %}
-        						{% var count = i + 1; %}
-        						{% var percentCut = (data.cuts[i].fraction * 100).toFixed(3); %}
-        						<tr>
-        							<td>{{ count }}</td>
-        							<td>{{ percentCut }}</td>
-        							<td>{{ data.cuts[i].vapor_temp_f }} {{ data.cuts[i].vapor_temp_k }}</td>
-        							<td>{{ data.cuts[i].liquid_temp_f }} {{ data.cuts[i].liquid_temp_k }}</td>
-        						</tr>
-        					{% } %}
-        					</table>
-        				{% } %}
+                        {% var tempCuts = null; %}
+                        {% if (data.imported.cuts) { %}
+                        {%     tempCuts = data.imported.cuts; %}
+                        {% } else if (data.cuts) { %}
+                        {%     tempCuts = data.cuts; %}
+                        {% } %}
+                        {% if (!tempCuts) { %}
+                            <div>No Distillation Cuts on Record.</div>
+                        {% } else { %}
+                            <table class="table">
+                                <tr>
+                                    <th>Cut #</th>
+                                    <th>Mass Percent (%)</th>
+                                    <th>Vapor Temperature &deg;F (&deg;C)</th>
+                                    <th>Liquid Temperature &deg;F (&deg;C)</th>
+                                </tr>
+                            {% for (var i = 0; i < tempCuts.length; i++){ %}
+                                {% var count = i + 1; %}
+                                {% var percentCut = (tempCuts[i].fraction * 100).toFixed(1); %}
+                                <tr>
+                                    <td>{{ count }}</td>
+                                    <td>{{ percentCut }}</td>
+                                    {% if (tempCuts[i].vapor_temp_f  == "--") { %}
+                                        <td> -- </td>
+                                    {% } else { %}
+                                        <td>{{ tempCuts[i].vapor_temp_f }} <b>(</b> {{ tempCuts[i].vapor_temp_c }} <b>)</b> </td>
+                                    {% } %}
+                                    {% if (tempCuts[i].liquid_temp_f  == "--") { %}
+                                        <td> -- </td>
+                                    {% } else { %}
+                                        <td>{{ tempCuts[i].liquid_temp_f }} <b>(</b> {{ tempCuts[i].liquid_temp_c }} <b>)</b> </td>
+                                    {% } %}
+                                </tr>
+                            {% } %}
+                            </table>
+                        {% } %}
                     </div>
     			</div>
     		</div>

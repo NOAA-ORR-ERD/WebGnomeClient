@@ -351,7 +351,7 @@ define([
                 validate: false,
                 success: _.bind(function(model) {
                     var msg = model.isTimeValid();
-                    if (!(msg==='') && $('.modal').length === 0) {
+                    if ( msg !== '' && $('.modal').length === 0) {
                         swal({
                             title: 'Error',
                             text: msg,
