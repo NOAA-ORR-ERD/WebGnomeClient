@@ -660,7 +660,8 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
-                'secondtime'
+                'secondtime',
+                'systems'
             ]);
             
             var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
@@ -702,7 +703,8 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'systems'
                 ]);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'nominal');
@@ -789,29 +791,19 @@ define([
             if(!_.isArray(dataset)){
                 dataset = _.clone(this.dataset);
             }
-            dataset = this.pluckDataset(dataset, [
-                'amount_released',
-                'beached',
-                'dissolution',
-                'evaporated',
-                'floating',
-                'natural_dispersion',
-                'off_maps',
-                'sedimentation',
-                'skimmed',
-                'burned',
-                'boomed'
-                //'avg_density',
-                //'avg_viscosity',
-                //'step_num',
-                //'time_stamp',
-                //'water_content',
-                //'non_weathering',
-                //'water_density',
-                //'water_viscosity',
-                //'dispersibility_difficult',
-                //'dispersibility_unlikely',
-                //'secondtime'
+            dataset = this.pruneDataset(dataset, [
+                'avg_density',
+                'avg_viscosity',
+                'step_num',
+                'time_stamp',
+                'water_content',
+                'non_weathering',
+                'water_density',
+                'water_viscosity',
+                'dispersibility_difficult',
+                'dispersibility_unlikely',
+                'secondtime',
+                'systems'
                 ]);
             var table = this.$('#budget-table table:first');
             var display = {
