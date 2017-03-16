@@ -1635,7 +1635,7 @@ define([
 
                 var titles = _.clone(nominal);
 
-                if (webgnome.model.get('mode') !== 'adios') {
+                if (webgnome.model.get('mode') !== 'adios' && webgnome.model.get('mode') !== 'roc'){
                     keyOrder.splice(keyOrder.length - 2, 0, 'beached', 'off_maps');
                 } else {
                     delete titles.off_maps;
