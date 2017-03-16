@@ -8,8 +8,9 @@ define([
     'views/wizard/adios',
     'views/wizard/gnome',
     'views/default/map',
+    'views/form/oil/library',
     'model/gnome'
-], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, GnomeModel){
+], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, OilLibraryView, GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -20,7 +21,8 @@ define([
             'click .adios-wizard': 'adios',
             'click .gnome-wizard': 'gnome',
             'click .doc': 'doc',
-            'click .roc': 'roc'
+            'click .roc': 'roc',
+            'click .oillib': 'oillib'
         },
 
         initialize: function(){
@@ -45,6 +47,15 @@ define([
         location: function(e){
             e.preventDefault();
             webgnome.router.navigate('locations', true);
+        },
+        
+        oillib: function(e){
+            var oillib = new OilLibraryView({})
+            oillib.on('save wizardclose', _.bind(function(){
+                oillib.close();
+            }, this));
+            oillib.render()
+            oillib.$el.addClass('viewer');
         },
 
         roc: function(e){
