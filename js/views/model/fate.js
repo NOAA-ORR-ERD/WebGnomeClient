@@ -606,7 +606,9 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'secondtime',
+                'systems'
                 ]);
             var selection = this.$('.panel-primary').data('dataset');
 
@@ -704,7 +706,8 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
-                'systems'
+                'systems',
+                'secondstime'
                 ]);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'nominal');
@@ -1187,6 +1190,7 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
+                'systems'
                 ]);
             var icsUnits = this.$('.vol-units').val();
             dataset = this.convertDataset(dataset, icsUnits);
@@ -1697,6 +1701,7 @@ define([
                         'skimmed',
                         'burned',
                         'beached',
+                        'boomed',
                         'sedimentation',
                         'dissolution',
                         'off_maps',
