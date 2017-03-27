@@ -90,7 +90,7 @@ define([
                 this.menu('add');
                 this.views.push(new RocView());
             } else {
-                this.navigate('', true)
+                this.navigate('', true);
             }
         },
 
@@ -104,21 +104,33 @@ define([
         },
 
         response: function(){
-            this.menu('add');
-            this.views.push(new ResponseView());
-            localStorage.setItem('view', 'response');
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new ResponseView());
+                localStorage.setItem('view', 'response');
+            } else {
+                this.navigate('', true);
+            }
         },
 
         trajectory: function(){
-            this.menu('add');
-            this.views.push(new TrajectoryView());
-            localStorage.setItem('view', 'trajectory');
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new TrajectoryView());
+                localStorage.setItem('view', 'trajectory');
+            } else {
+                this.navigate('', true);
+            }
         },
 
         fate: function(){
-            this.menu('add');
-            this.views.push(new FateView());
-            localStorage.setItem('view', 'fate');
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new FateView());
+                localStorage.setItem('view', 'fate');
+            } else {
+                this.navigate('', true);
+            }
         },
 
         overview: function(){
