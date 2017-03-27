@@ -8,6 +8,7 @@ define([
     'views/location/index',
     'views/model/setup',
     'views/model/index',
+    'views/model/response/index',
     'views/default/adios',
     'views/default/roc',
     'views/model/trajectory',
@@ -18,7 +19,7 @@ define([
     'views/default/footer',
     'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, RocView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, ResponseView, AdiosView, RocView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
         views: [],
@@ -49,7 +50,7 @@ define([
             this.views = [];
             if(callback){ callback.apply(this, args); }
             if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios' ||
-               webgnome.model.get('mode') === 'roc'){
+                webgnome.model.get('mode') === 'roc'){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger) && window.location.hash !== ''){

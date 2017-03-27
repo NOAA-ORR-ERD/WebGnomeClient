@@ -728,6 +728,12 @@ nav.navbar{
                     .glyphicon-map-marker;
                     line-height: 22px;
                 }
+                &.response{
+                    left: 163px;
+                    .glyphicon;
+                    .glyphicon-dashboard;
+                    line-height:22px;
+                }
             }
         }
     }
@@ -1884,10 +1890,61 @@ nav.navbar{
     }
 }
 
-.fate-view{
+.response-view{
     padding-top: 20px;
     width: 100%;
+    background: white;
     margin-bottom: 20px;
+
+    .no-response{ 
+        h1 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        ul{
+            margin-bottom: 0;
+            list-style: none;
+            padding-left: 0;
+
+            li{
+                line-height: 25px;
+
+                a {
+                    display: none;
+                }
+
+                &.missing{
+                    span{
+                        .glyphicon-remove;
+                        color: #F60026;
+                    }
+
+                    a{
+                        display: inline;
+                    }
+                }
+            }
+
+            span{
+                .glyphicon;
+                .glyphicon-ok;
+                color: #00AE00;
+            }
+
+        }
+        .well{
+            margin-bottom: 30px;
+        }
+        .col-md-5{
+            margin: 0 auto;
+            float: none;
+        }
+    }
+}
+
+.fate-view{
+    padding-top: 20px;
+    width: 100%; margin-bottom: 20px;
     background: white;
     
     .no-weathering{

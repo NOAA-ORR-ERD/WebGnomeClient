@@ -325,6 +325,10 @@ define([
             if (window.location.href.indexOf('config') !== -1) {
                 this.toggleView('config');
             }
+
+            if (window.location.href.indexOf('response') !== -1){
+                this.toggleView('response');
+            }
             
         },
 
