@@ -1,0 +1,21 @@
+<h3>Burn Systems</h3>
+<table class="table table-highlight table-condenced">
+    <th>
+        <td>Name</td>
+        <td>Time Burning</td>
+        <td># of Burns</td>
+        <td>Oil Removed</td>
+        <td>Area Covered</td>
+        <td>BE Range</td>
+    </th>
+{% for(var b in burn) { %}
+    <tr>
+        <td>{{ burn[b].get('name') }}</td>
+        <td>{{ results[burn[b].get('id')]['time_burning'] }}</td>
+        <td>{{ results[burn[b].get('id')]['num_burns'] }}</td>
+        <td>{{ results[burn[b].get('id')]['removed'] }}</td>
+        <td>{{ results[burn[b].get('id')]['area_covered'] }}</td>
+    </tr>
+{% } %}
+</table>
+
