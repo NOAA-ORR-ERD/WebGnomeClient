@@ -1,21 +1,24 @@
 <h3>Burn Systems</h3>
-<table class="table table-highlight table-condenced">
-    <th>
-        <td>Name</td>
-        <td>Time Burning</td>
-        <td># of Burns</td>
-        <td>Oil Removed</td>
-        <td>Area Covered</td>
-        <td>BE Range</td>
-    </th>
+<table class="table table-highlight table-condenced table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Time Burning</th>
+            <th># of Burns</th>
+            <th>Oil Removed</th>
+            <th>Area Covered</th>
+        </tr>
+    </thead>
+    <tbody>
 {% for(var b in burn) { %}
-    <tr>
-        <td>{{ burn[b].get('name') }}</td>
-        <td>{{ results[burn[b].get('id')]['time_burning'] }}</td>
-        <td>{{ results[burn[b].get('id')]['num_burns'] }}</td>
-        <td>{{ results[burn[b].get('id')]['removed'] }}</td>
-        <td>{{ results[burn[b].get('id')]['area_covered'] }}</td>
-    </tr>
+        <tr data-response="{{ burn[b].get('id') }}">
+            <td>{{ burn[b].get('name') }}</td>
+            <td>{{ Math.round((results[burn[b].get('id')]['time_burning'] / 60 / 60) * 100) / 100 }} hrs</td>
+            <td>{{ results[burn[b].get('id')]['num_burns'] }}</td>
+            <td>{{ Math.round(converter.Convert(results[burn[b].get('id')]['burned'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
+            <td>{{ Math.round(results[burn[b].get('id')]['area_covered']) }} ac</td>
+        </tr>
 {% } %}
+    </tbody>
 </table>
 

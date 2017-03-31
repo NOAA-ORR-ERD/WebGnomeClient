@@ -1895,6 +1895,7 @@ nav.navbar{
     width: 100%;
     background: white;
     margin-bottom: 20px;
+    min-height: 600px;
 
     .no-response{ 
         h1 {
@@ -1939,6 +1940,61 @@ nav.navbar{
             margin: 0 auto;
             float: none;
         }
+    }
+
+    .single{
+        a{
+            line-height: 42px;
+        }
+    }
+    table{
+        tbody tr{
+            cursor: pointer;
+        }
+    }
+
+    .chart-holder{
+        height: 500px;
+        position: relative;
+        h6{
+            text-align: center;
+        }
+        .chart{
+            position: absolute;
+            left: 0px;
+            right: 0px;
+            bottom: 15px;
+            top: 15px;
+            width: auto;
+
+            .pieLabel{
+                padding: 4px;
+                border-radius: 2px;
+                background: #efefef;
+                font-size: 11px;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+                padding-left: 22px;
+
+                &:hover{
+                    z-index: 999
+                }
+
+                span{
+                    border: 1px solid #fff;
+                    height: 14px;
+                    width: 14px;
+                    margin-right: 4px;
+                    margin-bottom: 3px;
+                    display: block;
+                    float: left;
+                    margin-left: -18px;
+                }
+            }
+        }
+    }
+
+    .timeline{
+        height: 200px;
     }
 }
 

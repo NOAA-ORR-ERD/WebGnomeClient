@@ -53,7 +53,8 @@ require.config({
         localforage: 'lib/localforage/dist/localforage',
         'jquery-mousewheel': 'lib/jquery-mousewheel/jquery.mousewheel',
         'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter',
-        'toastr': 'lib/toastr/toastr'
+        'toastr': 'lib/toastr/toastr',
+        raphael: 'lib/raphael/raphael'
     },
     shim: {
         jquery: {

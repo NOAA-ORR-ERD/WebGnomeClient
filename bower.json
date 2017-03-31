@@ -39,6 +39,7 @@
     "webcomponentsjs": "^0.7.20",
     "sweetalert2": "^2.1.1",
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round/archive/master.zip",
-    "toastr": "^2.1.2"
+    "toastr": "^2.1.2",
+    "raphael": "~2.1.4"
   }
 }
