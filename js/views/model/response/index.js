@@ -9,6 +9,7 @@ define([
     'text!templates/model/response/index.html',
     'text!templates/model/response/none.html',
     'views/model/response/burn',
+    'views/model/response/disperse',
     'views/form/oil/library',
     'views/form/water',
     'views/form/spill/type',
@@ -17,7 +18,7 @@ define([
     'model/element',
     'views/form/wind'
 ], function($, _, Backbone, moment, nucos, module,
-            BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView,
+            BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView,
             OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ElementModel, WindForm){
     var responseView = BaseView.extend({
         className: 'response-view',
@@ -106,8 +107,7 @@ define([
                     webgnome.cache.step();
                 }, 200);
             }
-            if(localStorage.getItem('autorun') === 'true'){
-                localStorage.setItem('autorun', '');
+            if(localStorage.getItem('autorun') === 'true'){localStorage.setItem('autorun', '');
             }
         },
 
@@ -495,11 +495,21 @@ define([
         },
 
         renderSkim: function(){
-
         },
 
         renderDisperse: function(){
-
+            if(_.isUndefined(this.disperseView)){
+                responses = webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Disperse'});
+                this.dispserseView = new DisperseListView({
+                    responses: responses,
+                    results: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems,
+                    dataset: this.responseSystems
+                });
+                this.$('.disperse').html(this.dispserseView.$el);
+                this.children.push(this.burnView);
+            } else {
+                this.burnView.render(webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems);
+            }
         },
 
         setup_listeners: function(){

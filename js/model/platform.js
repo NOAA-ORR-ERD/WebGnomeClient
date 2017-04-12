@@ -12,10 +12,6 @@ define([
             };
         },
 
-        models: {
-            units: Backbone.Model
-        },
-
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
         },
@@ -66,6 +62,7 @@ define([
                 taxi_land_depart: 25,
                 fuel_load: 20,
                 dispersant_load: 20,
+                type: 'aircraft',
                 units: new Backbone.Model({
                     swath_width: 'ft',
                     application_speed: 'kt',
@@ -95,6 +92,7 @@ define([
                 transit_speed: 100,
                 fuel_load: 20,
                 dispersant_load: 20,
+                type: 'vessel',
                 units: new Backbone.Model({
                     swath_width: 'ft',
                     application_speed: 'kt',

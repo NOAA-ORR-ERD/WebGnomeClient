@@ -24,24 +24,20 @@ define([
                     pass_length: 'nm',
                     transit: 'nm',
                     dosage: 'gal/acre',
-		    cascade_distance: 'nm'
+		            cascade_distance: 'nm'
                 })
             };
         },
 
-        models: {
+        model: {
             units: Backbone.Model,
             platform: Platform
         },
 
-	initialize: function(options) {
-		ROCWeatherer.prototype.initialize.call(this, options);
-	},
+    	initialize: function(options) {
+    		ROCWeatherer.prototype.initialize.call(this, options);
+    	},
 
-	parse: function(attributes) {
-		attributes = ROCWeatherer.prototype.parse.call(this, attributes);
-		return attributes
-	}
     });
     return ROCDisperseModel;
 });
