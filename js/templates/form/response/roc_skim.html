@@ -1,0 +1,216 @@
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="name" class="form-control" name="name" value="{{ name }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel complete">
+                <div class="panel-heading">Encounter Rate</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label" for="speed">Speed:</label>
+                        <div class="col-sm-4">
+                            <input type="number" id="speed" class="form-control" name="speed" value="{{ speed }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:speed">
+                                <option value="knots">knots</option>
+                                <option value="mph">mph</option>
+                                <option value="kmph">kmph</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="swath_width" class="col-sm-4 control-label">Swath Width:</label>
+                        <div class="col-sm-4">
+                            <input type="number" id="swath_width" class="form-control" name="swath_width" value="{{ swath_width }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select class="form-control" name="units:swath">
+                                <option value="ft">ft</option>
+                                <option value="m">m</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel complete">
+                <div class="panel-heading">Recovery</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-sm-6 control-label" for="group">Skimmer Group:</label>
+                        <div class="col-sm-6">
+                            <label class="radio-inline">
+                               <input type="radio" name="group" value="A"> A
+                            </label>
+                            <label class="radio-inline">
+                               <input type="radio" name="group" value="B"> B
+                            </label>
+                            <label class="radio-inline">
+                               <input type="radio" name="group" value="C"> C
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="throughput" class="col-sm-6 control-label">Throughput Efficiency:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="throughput" name="throughput" value="{{ throughput }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nameplate_pump" class="col-sm-6 control-label">Nameplate Pump Rate:</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="nameplate_pump" id="nameplate_pump" class="form-control" value="{{ nameplate_pump }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="units:nameplate_pump" class="form-control">
+                                <option value="bbl/hr">bbl/hr</option>
+                                <option value="gpm">gpm</option>
+                                <option value="cu m/hr">cu m/hr</option>
+                                <option value="l/sec">L/sec</option>
+                                <option value="l/min">L/min</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recovery" class="col-sm-6 control-label">Recovery Effenciency:</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <label><input type="radio" name="recovery" value="2"> ROC high value</label>
+                                <label><input type="radio" name="recovery" value="1"> ROC nominal value</label>
+                                <label><input type="radio" name="recovery" value="0"> ROC low value</label>
+                                <label>
+                                    <input type="radio" name="recovery" value="custom"> Use my own value</label>
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="recovery_ef" name="recovery_ef" value="{{ recovery_ef }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel complete">
+                <div class="panel-heading">Storage</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="decant" class="col-sm-6 control-label">Decant:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group" class="form-control">
+                                <input type="number" name="_decant" id="decant" class="form-control" value="{{ _decant }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="storage" class="col-sm-6 control-label">Onboard Storage:</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="storage" id="storage" class="form-control" value="{{ storage }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="units:storage" class="form-control">
+                                <option value="bbl">bbl</option>
+                                <option value="gal">gal</option>
+                                <option value="cu m">cu m</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="decant_pump" class="col-sm-6 control-label">Decant Pump Rate:</label>
+                        <div class="col-sm-3">
+                            <input type="number" name="decant_pump" id="decant_pump" class="form-control" value="{{ decant_pump }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="units:decant_pump" class="form-control">
+                                <option value="bbl/hr">bbl/hr</option>
+                                <option value="gpm">gpm</option>
+                                <option value="cu m/hr">cu m/hr</option>
+                                <option value="l/sec">L/sec</option>
+                                <option value="l/min">L/min</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="offload" class="col-sm-6 control-label">Offload Rig + Derig Time: </label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="offload" id="offload" class="form-control" value="{{ offload }}">
+                                <span class="input-group-addon">min</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transit_time" class="col-sm-6 control-label">One Way Transit Time: </label>
+                        <div class="col-sm-6">
+                            <div class="input-group">
+                                <input type="number" name="transit_time" id="transit_time" class="form-control" value="{{ transit_time }}">
+                                <span class="input-group-addon">min</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="discharge_pump" class="col-sm-6 control-label">Discharge Pump Rate: </label>
+                        <div class="col-sm-3">
+                            <input type="number" name="transit_time" id="discharge_pump" class="form-control" value="{{ discharge_pump }}">
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="units:discharge_pump" class="form-control">
+                                <option value="bbl/hr">bbl/hr</option>
+                                <option value="gpm">gpm</option>
+                                <option value="cu m/hr">cu m/hr</option>
+                                <option value="l/sec">L/sec</option>
+                                <option value="l/min">L/min</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-6 control-label">Offload To:</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="offload_to" value="shore"> Shore-based Facility
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="offload_to" value="secondary"> Barge or Secondary Storage
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="barge_arrival" class="col-sm-6 control-label">Barge Arrives On:</label>
+                        <div class="col-sm-6">
+                            <div class="input-group date">
+                                <input type="text" class="form-control" name="barge_arrival" id="barge_arrival">
+                                <span class="input-group-addon"><i></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row timeseries">
+        
+    </div>
+</form>

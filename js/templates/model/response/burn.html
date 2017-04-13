@@ -1,0 +1,24 @@
+<h3>Burn Systems</h3>
+<table class="table table-highlight table-condenced table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Time Burning</th>
+            <th># of Burns</th>
+            <th>Oil Removed</th>
+            <th>Area Covered</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for(var r in responses) { %}
+        <tr data-response="{{ responses[r].get('id') }}">
+            <td>{{ responses[r].get('name') }}</td>
+            <td>{{ Math.round((results[responses[r].get('id')]['time_burning'] / 60 / 60) * 100) / 100 }} hrs</td>
+            <td>{{ results[responses[r].get('id')]['num_burns'] }}</td>
+            <td>{{ Math.round(converter.Convert(results[responses[r].get('id')]['burned'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
+            <td>{{ Math.round(results[responses[r].get('id')]['area_covered']) }} ac</td>
+        </tr>
+{% } %}
+    </tbody>
+</table>
+

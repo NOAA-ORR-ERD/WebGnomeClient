@@ -33,12 +33,12 @@ define([
             BaseModel.prototype.initialize.call(this, options);
             if(webgnome.hasModel() && webgnome.model.getElementType()){
                 this.set('element_type', webgnome.model.getElementType());
-                if (!_.isNull(this.get('element_type').get('substance'))) {
+                if (!_.isNull(this.get('element_type').get('substance')) && this.isNew()) {
                     this.set('units', 'bbl');
-                } else {
+                } else if(this.isNew()) {
                     this.set('units', 'kg');
                 }
-            } else {
+            } else if(this.isNew()) {
                 this.set('units', 'kg');
             }
             this.on('change', this.calculate, this);

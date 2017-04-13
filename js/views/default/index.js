@@ -8,8 +8,9 @@ define([
     'views/wizard/adios',
     'views/wizard/gnome',
     'views/default/map',
+    'views/form/oil/library',
     'model/gnome'
-], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, GnomeModel){
+], function($, _, Backbone, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, OilLibraryView, GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -20,6 +21,8 @@ define([
             'click .adios-wizard': 'adios',
             'click .gnome-wizard': 'gnome',
             'click .doc': 'doc',
+            'click .roc': 'roc',
+            'click .oillib': 'oillib'
         },
 
         initialize: function(){
@@ -44,6 +47,31 @@ define([
         location: function(e){
             e.preventDefault();
             webgnome.router.navigate('locations', true);
+        },
+        
+        oillib: function(e){
+            var oillib = new OilLibraryView({})
+            oillib.on('save wizardclose', _.bind(function(){
+                oillib.close();
+            }, this));
+            oillib.render()
+            oillib.$el.addClass('viewer');
+        },
+
+        roc: function(e){
+            e.preventDefault();
+            webgnome.model = new GnomeModel({
+                name: 'ROC Model_',
+                duration: 432000,
+                time_step: 3600,
+                mode: 'roc'
+            });
+            webgnome.model.save(null, {
+                validate: false,
+                success: function(){
+                    webgnome.router.navigate('roc', true);
+                }
+            });
         },
 
         adios: function(e){

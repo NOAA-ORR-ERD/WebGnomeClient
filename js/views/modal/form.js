@@ -2,12 +2,13 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'moment',
     'views/modal/base',
     'views/form/base',
     'text!templates/default/alert-danger.html',
     'views/default/help',
     'views/attributes/attributes'
-], function($, _, Backbone, BaseModal, BaseForm, AlertDangerTemplate, HelpView, AttributesView){
+], function($, _, Backbone, moment, BaseModal, BaseForm, AlertDangerTemplate, HelpView, AttributesView){
     'use strict';
     var PseudoMultipleInheritance = BaseForm.extend(BaseModal.prototype);
     var formModal = PseudoMultipleInheritance.extend({

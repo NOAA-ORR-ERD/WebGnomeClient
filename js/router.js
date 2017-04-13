@@ -8,7 +8,9 @@ define([
     'views/location/index',
     'views/model/setup',
     'views/model/index',
+    'views/model/response/index',
     'views/default/adios',
+    'views/default/roc',
     'views/model/trajectory',
     'views/model/fate',
     'views/default/overview',
@@ -17,7 +19,7 @@ define([
     'views/default/footer',
     'views/default/logger',
 ], function($, _, Backbone,
-    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, AdiosView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
+    IndexView, MenuView, NotFoundView, LocationsView, SetupView, ModelView, ResponseView, AdiosView, RocView, TrajectoryView, FateView, OverviewView, FAQView, LoadView, FooterView, LoggerView) {
     'use strict';
     var Router = Backbone.Router.extend({
         views: [],
@@ -27,6 +29,8 @@ define([
             'locations': 'locations',
             'config': 'config',
             'adios': 'adios',
+            'roc': 'roc',
+            'response': 'response',
             'model': 'model',
             'trajectory': 'trajectory',
             'fate': 'fate',
@@ -45,7 +49,8 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios'){
+            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios' ||
+                webgnome.model.get('mode') === 'roc'){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger) && window.location.hash !== ''){
@@ -79,6 +84,15 @@ define([
                 this.navigate('', true);
             }
         },
+        
+        roc: function(){
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new RocView());
+            } else {
+                this.navigate('', true);
+            }
+        },
 
         model: function(){
             if(webgnome.hasModel()){
@@ -89,16 +103,34 @@ define([
             }
         },
 
+        response: function(){
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new ResponseView());
+                localStorage.setItem('view', 'response');
+            } else {
+                this.navigate('', true);
+            }
+        },
+
         trajectory: function(){
-            this.menu('add');
-            this.views.push(new TrajectoryView());
-            localStorage.setItem('view', 'trajectory');
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new TrajectoryView());
+                localStorage.setItem('view', 'trajectory');
+            } else {
+                this.navigate('', true);
+            }
         },
 
         fate: function(){
-            this.menu('add');
-            this.views.push(new FateView());
-            localStorage.setItem('view', 'fate');
+            if(webgnome.hasModel()){
+                this.menu('add');
+                this.views.push(new FateView());
+                localStorage.setItem('view', 'fate');
+            } else {
+                this.navigate('', true);
+            }
         },
 
         overview: function(){

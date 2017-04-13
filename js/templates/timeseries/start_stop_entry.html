@@ -1,0 +1,16 @@
+<div class="form-group form-group-sm entry entry{{ index }}" data-tsindex="{{ tsindex }}" data-index="{{ index }}">
+    <div class="col-sm-2 radio">
+        <label for="active{{index}}">
+            <input type="checkbox" data-date="{{ day }}" {% if(tsindex !== null){ %} checked="checked" {% } %} id="active{{index}}">
+            Active
+        </label>
+    </div>
+    <div class="col-sm-2">
+        <label class="control-label">{{ day }}</label>
+    </div>
+    {% if(tsindex !== null){ %}
+        <div class="col-sm-7">
+            <div class="slider" id="slider{{ index }}"></div>
+        </div>
+    {% } %}
+</div>

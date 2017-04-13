@@ -56,6 +56,32 @@ img{
     }
 }
 
+.timeseries{
+    .entry{
+        margin-bottom: 35px;
+        background: #FBFBFB;
+        border: 1px solid #C1C1C1;
+        border-left: 0;
+        border-right: 0;
+
+        .radio{
+            padding-top: 3px;
+        }
+        .slider{
+            margin-top: 8px;
+            .tooltip{
+                opacity: 1;
+                width: 75px;
+                margin-top: 18px;
+                margin-left: -30px;
+            }
+            .ui-slider-range{
+                background: #2CC500;
+            }
+        }    
+    }
+}
+
 @media print {
     body{
         font-size: 10px !important;
@@ -134,6 +160,11 @@ img{
     font-size: 14px;
     font-weight: bold;
 
+    &.processing{
+        width: 171px;
+        margin-left: -85.5px;
+    }
+
     .spinner {
         height: 20px;
         width: 20px;
@@ -150,7 +181,7 @@ img{
         border-radius: 100%;
         float: left;
     }
-
+    
     @-webkit-keyframes rotation {
         from {
             -webkit-transform: rotate(0deg);
@@ -631,7 +662,7 @@ nav.navbar{
             background: rgba(0, 0, 0, 0.09);
             border-radius: 4px;
             border: 1px solid #afafaf;
-            width: 158px;
+            width: 209px;
             position: relative;
             color: #979797;
             box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
@@ -651,8 +682,13 @@ nav.navbar{
                     .glyphicon;
                     .glyphicon-stats;
                 }
+                
+                &.response{
+                    .glyphicon;
+                    .glyphicon-dashboard;
+                }
 
-                &.trajectory, &.fate, &.config{
+                &.trajectory, &.fate, &.config, &.response{
                     padding: 7px 17px 8px;
                 }
             }
@@ -691,6 +727,12 @@ nav.navbar{
                     .glyphicon;
                     .glyphicon-map-marker;
                     line-height: 22px;
+                }
+                &.response{
+                    left: 163px;
+                    .glyphicon;
+                    .glyphicon-dashboard;
+                    line-height:22px;
                 }
             }
         }
@@ -840,9 +882,10 @@ nav.navbar{
     }
 }
 
-.page.adios{
+.page.adios, .page.roc{
     .input{
-        margin: 30px 0;
+        margin-top: 30px;
+        margin-bottom: 30px;
 
         .option{
             min-height: 20px;
@@ -898,6 +941,10 @@ nav.navbar{
             }
         }
     }
+}
+
+.page.roc{
+    
 }
 
 .page.faq {
@@ -1843,10 +1890,117 @@ nav.navbar{
     }
 }
 
-.fate-view{
+.response-view{
     padding-top: 20px;
     width: 100%;
+    background: white;
     margin-bottom: 20px;
+    min-height: 600px;
+
+    .no-response{ 
+        h1 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        ul{
+            margin-bottom: 0;
+            list-style: none;
+            padding-left: 0;
+
+            li{
+                line-height: 25px;
+
+                a {
+                    display: none;
+                }
+
+                &.missing{
+                    span{
+                        .glyphicon-remove;
+                        color: #F60026;
+                    }
+
+                    a{
+                        display: inline;
+                    }
+                }
+            }
+
+            span{
+                .glyphicon;
+                .glyphicon-ok;
+                color: #00AE00;
+            }
+
+        }
+        .well{
+            margin-bottom: 30px;
+        }
+        .col-md-5{
+            margin: 0 auto;
+            float: none;
+        }
+    }
+
+    .single{
+        a{
+            line-height: 42px;
+        }
+    }
+    table{
+        tbody tr{
+            cursor: pointer;
+        }
+    }
+
+    .chart-holder{
+        height: 500px;
+        position: relative;
+        h6{
+            text-align: center;
+        }
+        .chart{
+            position: absolute;
+            left: 0px;
+            right: 0px;
+            bottom: 15px;
+            top: 15px;
+            width: auto;
+
+            .pieLabel{
+                padding: 4px;
+                border-radius: 2px;
+                background: #efefef;
+                font-size: 11px;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+                padding-left: 22px;
+
+                &:hover{
+                    z-index: 999
+                }
+
+                span{
+                    border: 1px solid #fff;
+                    height: 14px;
+                    width: 14px;
+                    margin-right: 4px;
+                    margin-bottom: 3px;
+                    display: block;
+                    float: left;
+                    margin-left: -18px;
+                }
+            }
+        }
+    }
+
+    .timeline{
+        height: 200px;
+    }
+}
+
+.fate-view{
+    padding-top: 20px;
+    width: 100%; margin-bottom: 20px;
     background: white;
     
     .no-weathering{
@@ -2406,10 +2560,6 @@ nav.navbar{
         box-shadow: none;
         background: #efefef;
 
-        .panel-body{
-            display: none;
-        }
-
         #sub-panel{
             border: 1px solid white;
             border-top: 0;
@@ -2431,7 +2581,7 @@ nav.navbar{
                 }
             }
 
-            .panel-body{
+            > .panel-body{
                 display: block;
             }
 
@@ -2511,6 +2661,13 @@ nav.navbar{
                     .glyphicon-info-sign;
                     color: #0099ff;                  
                 }
+            }
+        }
+
+        .panel-body{
+            .help-block{
+                margin-bottom: 0;
+                font-size: 10px;
             }
         }
     }
@@ -2811,14 +2968,18 @@ nav.navbar{
             &.well-blowout .icon{
                 background-image: url(/img/spill-well.png);
             }
-            &.burn .icon{
+            &.adios-burn .icon, &.roc-burn .icon{
                 background-image: url(/img/burn.png);
             }
-            &.disperse .icon{
+            &.adios-disperse .icon, &.roc-disperse .icon{
                 background-image: url(/img/disperse.png);
             }
-            &.skim .icon{
+            &.adios-skim .icon, &.roc-skim .icon{
                 background-image: url(/img/skim.png);
+            }
+
+            &.roc-skim .icon, &.roc-disperse .icon, &.roc-burn .icon{
+                background-color: #BE302D;
             }
         }
         .slider{
@@ -3133,6 +3294,13 @@ nav.navbar{
 }
 
 .oil-form{
+    &.viewer{
+        .modal-footer{
+            .save{
+                display: none
+            }
+        }
+    }
     .info{
         span{
             color: #CCCCCC;
@@ -3370,6 +3538,7 @@ nav.navbar{
         label{
             float: right;
             margin-top: 4px;
+            padding-top: 0 !important;
         }
     }
 }

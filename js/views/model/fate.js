@@ -142,16 +142,20 @@ define([
             'burned': 'rgb(49, 133, 156)',
             'beached': 'rgb(228, 108, 10)',
             'off_maps': 'rgb(146, 208, 80)',
-            'observed_beached': 'rgb(228, 108, 10)'
+            'observed_beached': 'rgb(228, 108, 10)',
+            'boomed': 'rgb(200, 200, 200)'
         },
 
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            this.$el.appendTo('body');
-            if(webgnome.model.validWeathering()){
+            if(!webgnome.hasModel()){
+                webgnome.router.navigate('', true);
+            } else if(webgnome.model.validWeathering()){
+                this.$el.appendTo('body');
                 this.renderWeathering(options);
             } else {
+                this.$el.appendTo('body');
                 this.listenTo(webgnome.model, 'change', this.noWeathering);
                 this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
                 this.noWeathering();
@@ -602,7 +606,9 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'secondtime',
+                'systems'
                 ]);
             var selection = this.$('.panel-primary').data('dataset');
 
@@ -656,7 +662,8 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
-                'secondtime'
+                'secondtime',
+                'systems'
             ]);
             
             var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
@@ -698,7 +705,9 @@ define([
                 'water_density',
                 'water_viscosity',
                 'dispersibility_difficult',
-                'dispersibility_unlikely'
+                'dispersibility_unlikely',
+                'systems',
+                'secondstime'
                 ]);
             var lowData = this.getPieData(pos, dataset, 'low');
             var nominalData = this.getPieData(pos, dataset, 'nominal');
@@ -796,7 +805,8 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
-                'secondtime'
+                'secondtime',
+                'systems'
                 ]);
             var table = this.$('#budget-table table:first');
             var display = {
@@ -1180,6 +1190,7 @@ define([
                 'water_viscosity',
                 'dispersibility_difficult',
                 'dispersibility_unlikely',
+                'systems'
                 ]);
             var icsUnits = this.$('.vol-units').val();
             dataset = this.convertDataset(dataset, icsUnits);
@@ -1624,7 +1635,7 @@ define([
 
                 var titles = _.clone(nominal);
 
-                if (webgnome.model.get('mode') !== 'adios') {
+                if (webgnome.model.get('mode') !== 'adios' && webgnome.model.get('mode') !== 'roc'){
                     keyOrder.splice(keyOrder.length - 2, 0, 'beached', 'off_maps');
                 } else {
                     delete titles.off_maps;
@@ -1690,6 +1701,7 @@ define([
                         'skimmed',
                         'burned',
                         'beached',
+                        'boomed',
                         'sedimentation',
                         'dissolution',
                         'off_maps',

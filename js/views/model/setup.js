@@ -35,6 +35,8 @@ define([
             if(webgnome.hasModel()){
                 if(webgnome.model.get('mode') === 'adios'){
                     webgnome.router.navigate('/adios', true);
+                } else if (webgnome.model.get('mode') === 'roc'){
+                    webgnome.router.navigate('/roc', true);
                 } else {
                     $('body').append(this.$el);
                     this.render();

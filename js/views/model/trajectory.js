@@ -330,7 +330,9 @@ define([
                this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
                 if (webgnome.cache.length > this.controls.seek.slider('value')){
                     // the cache has the step, just render it
-                    this.renderStep({step: this.controls.seek.slider('value')});
+                    setTimeout(_.bind(function(){
+                        this.renderStep({step: this.controls.seek.slider('value')});
+                    }, this), 16);
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();

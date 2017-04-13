@@ -40,6 +40,9 @@ define([
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
+    'model/weatherers/roc_skim',
+    'model/weatherers/roc_burn',
+    'model/weatherers/roc_disperse',
     'model/user_prefs',
     'model/risk/risk',
     'collection/movers',
@@ -49,7 +52,9 @@ define([
     WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer, UserPrefs, RiskModel,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer,
+    RocSkimResponse, RocBurnResponse, RocDisperseResponse,
+    UserPrefs, RiskModel,
     MoversCollection, SpillsCollection){
     'use strict';
     var gnomeModel = BaseModel.extend({
@@ -106,7 +111,10 @@ define([
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
-                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer
+                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
+                'gnome.weatherers.roc.Skim': RocSkimResponse,
+                'gnome.weatherers.roc.Burn': RocBurnResponse,
+                'gnome.weatherers.roc.Disperse': RocDisperseResponse
             }
         },
 
@@ -343,7 +351,7 @@ define([
                 validate: false,
                 success: _.bind(function(model) {
                     var msg = model.isTimeValid();
-                    if (!(msg==='') && $('.modal').length === 0) {
+                    if ( msg !== '' && $('.modal').length === 0) {
                         swal({
                             title: 'Error',
                             text: msg,

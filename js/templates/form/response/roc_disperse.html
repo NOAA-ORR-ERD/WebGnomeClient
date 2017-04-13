@@ -1,0 +1,115 @@
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="name" class="form-control" name="name" value="{{ name }}">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default complete">
+                <div class="panel-heading">Scenario</div>
+                <div class="panel-body">
+    
+                    <div class="form-group">
+                        <label class="control-label col-sm-6" for="transit">One-way Transit Distance:</label>
+                        <div class="col-sm-3">
+                            <input type="number" class="form-control" name="transit" id="transit">
+                        </div>
+                        <div class="col-sm-3">
+                            <select id="transit_unit" name="units:transit" class="form-control">
+                                <option>km</option>
+                                <option>mi</option>
+                                <option>nm</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pass_length" class="control-label col-sm-6">Avg. Pass Length:</label>
+                        <div class="col-md-3">
+                            <input type="number" class="form-control" name="pass_length" id="pass_length">
+                        </div>
+                        <div class="col-md-3">
+                            <select name="units:pass_length" class="form-control">
+                                <option>km</option>
+                                <option>mi</option>
+                                <option>nm</option>
+                            </select>
+                        </div>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="control-label col-md-6">Dispersant/Fuel Load:</label>
+                        <div class="col-md-6 radio">
+                            <label>
+                                <input type="radio" name="loading_type" value="simultaneous" default="simultaneous" checked="checked">
+                                Simultaneous
+                            </label>
+                            <label>
+                                <input type="radio" name="loading_type" value="seperate">
+                                Separate
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="disp_oil_ratio" class="control-label col-md-6">Dispersant to Oil Ratio:</label>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-addon">1:</span>
+                                <input type="number" class="form-control" name="disp_oil_ratio" id="disp_oil_ratio">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dosage_type" class="control-label col-md-6">Dosage:</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="dosage_type" value="auto"> Use ROC-recommended value
+                                </label>
+                                <label>
+                                    <input type="radio" name="dosage_type" value="custom"> Use my own value
+                                </label>    
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-sm-offset-6">
+                            <input type="number" name="dosage" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <select name="units:dosage" class="form-control">
+                                <option value="gal/acre">gal/acre</option>
+                                <option value="liter/hectare">L/Hec</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dispersant" class="col-sm-6 control-label">Dispersant Effenciency:</label>
+                        <div class="col-sm-6">
+                            <div class="radio">
+                                <label><input type="radio" name="dispersant" value="2"> ROC high value</label>
+                                <label><input type="radio" name="dispersant" value="1"> ROC nominal value</label>
+                                <label><input type="radio" name="dispersant" value="0"> ROC low value</label>
+                                <label>
+                                    <input type="radio" name="dispersant" value="custom"> Use my own value</label>
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="disp_eff" name="disp_eff" value="{{ disp_eff }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+        </div>
+        <div class="col-sm-6 platform">
+            
+        </div>
+    </div>
+
+    <div class="row timeseries"></div>    
+</form>

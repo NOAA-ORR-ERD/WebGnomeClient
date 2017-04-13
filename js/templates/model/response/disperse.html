@@ -1,0 +1,30 @@
+<h3>Dispersant Systems</h3>
+<table class="table table-highlight table-condenced table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Time Spraying</th>
+            <th>DOR</th>
+            <th>Dosage Range</th>
+            <th>Payloads Delivered</th>
+            <th>Dispersant Applied</th>
+            <th>Oil Treated</th>
+            <th>Area Covered</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for(var r in responses) { %}
+        <tr data-response="{{ responses[r].get('id') }}">
+            <td>{{ responses[r].get('name') }}</td>p
+            <td>{{ Math.round((results[responses[r].get('id')]['time_spraying'] / 60 / 60) * 100) / 100 }} hrs</td>
+            <td>{{ responses[r].get('disp_oil_ratio') }}</td>
+            <td></td>
+            <td>{{ results[responses[r].get('id')]['payloads_delivered'] }}</td>
+            <td>{{ results[responses[r].get('id')]['dispersant_applied'] }}</td>
+            <td>{{ results[responses[r].get('id')]['oil_treated'] }}</td>
+            <td>{{ results[responses[r].get('id')]['area_covered'] }}</td>
+        </tr>
+{% } %}
+    </tbody>
+</table>
+
