@@ -38,6 +38,30 @@ Location File Usage Examples
 Alaska Region
 -------------
 
+
+Atlantic Region
+---------------
+
+
+Gulf of Mexico
+--------------
+
+
+Pacific Region
+--------------
+
+
+International
+-------------
+
+
+
+To Be Reviewed / Updated
+========================
+
+Alaska
+------
+
 :ref:`north_slope_tech`
 
 :ref:`north_slope_examples`
@@ -45,6 +69,11 @@ Alaska Region
 :ref:`nslope_examples`
 
 :ref:`pws_examples`
+
+:ref:`glacier_examples`
+
+:ref:`stef_examples`
+
 
 Atlantic Region
 ---------------
@@ -55,10 +84,32 @@ Atlantic Region
 
 :ref:`narragan_examples`
 
+:ref:`delbay_examples`
+
+:ref:`lis_examples`
+
+:ref:`newyork_examples`
+
+:ref:`norfolk_examples`
+
+:ref:`ptevr_examples`
+
+:ref:`sjuan_examples`
+
+:ref:`stjohns_examples`
+
 Gulf of Mexico
 --------------
 
 :ref:`galveston_examples`
+
+:ref:`lmiss_examples`
+
+:ref:`mobile_examples`
+
+:ref:`sabine_examples`
+
+:ref:`tampa_examples`
 
 
 Pacific Region
@@ -66,56 +117,22 @@ Pacific Region
 
 :ref:`juandefuca_examples`
 
+:ref:`cre_examples`
+
+:ref:`kaneohe_examples`
+
+:ref:`sandiego_examples`
+
+:ref:`sbc_examples`
+
 
 International
 -------------
 
 :ref:`apra_examples`
 
-**FIXME** These need to be catagorized
 
 
 
-:ref:`cre_examples`
 
-:ref:`delbay_examples`
-
-
-:ref:`glacier_examples`
-
-
-
-:ref:`kaneohe_examples`
-
-:ref:`lis_examples`
-
-:ref:`lmiss_examples`
-
-:ref:`mobile_examples`
-
-
-
-:ref:`newyork_examples`
-
-:ref:`norfolk_examples`
-
-:ref:`nslope_examples`
-
-:ref:`ptevr_examples`
-
-:ref:`pws_examples`
-
-:ref:`sabine_examples`
-
-:ref:`sandiego_examples`
-
-:ref:`sbc_examples`
-
-:ref:`sjuan_examples`
-
-:ref:`stef_examples`
-
-:ref:`stjohns_examples`
-
-:ref:`tampa_examples`
 

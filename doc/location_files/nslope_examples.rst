@@ -3,8 +3,9 @@
 
 .. _nslope_examples:
 
+#######################
 Nslope Example Problems
-=======================
+#######################
 
     Try out these examples to learn the basics of modeling oil spills in
     the waters off the North Slope of Alaska. In these examples, you

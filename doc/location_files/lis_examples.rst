@@ -3,8 +3,8 @@
 
 .. _lis_examples:
 
-Lis Example Problems
-====================
+Central Long Island Sound Example Problems
+==========================================
 
 
 Try out these examples to learn the basics of modeling oil spills in
@@ -52,18 +52,16 @@ start at a different time, as follows:
 **Note the farthest longitudes east and west that each spill reaches.**
 Which spill moves the farthest east? The farthest west?
 
-    **Hint:** You may want to zoom in to the spill location before
-    running the model. Spills at this location move primarily east-west.
-    When the spills appear to stop moving and look more like "bees
-    swarming", pause the model. You can move (but don't click!) the
-    cursor to the point that appears to be the center of the spill and
-    read the latitude and longitude in the lower left corner of the Map
-    Window. Don't worry about matching the answers exactly.
+**Hint:** You may want to zoom in to the spill location before
+running the model. Spills at this location move primarily east-west.
+When the spills appear to stop moving and look more like "bees
+swarming", pause the model. You can move (but don't click!) the
+cursor to the point that appears to be the center of the spill and
+read the latitude and longitude in the lower left corner of the Map
+Window. Don't worry about matching the answers exactly.
 
-    **
-    **
 
-    **Answer:**
+**Answer:**
 
 +-------------+-----------------------------+-----------------------------+
 | **Spill**   | .. rubric:: Farthest West   | .. rubric:: Farthest East   |
@@ -78,19 +76,21 @@ Which spill moves the farthest east? The farthest west?
 | d           | 72° 49.37' W                | 72° 43.97' W                |
 +-------------+-----------------------------+-----------------------------+
 
-    Spill b, set on the slack current before the ebb tide, moves the
-    farthest east, while Spill d, set on the slack current before the
-    flood tide, moves the farthest west. You can now see that knowing
-    the timing of a spill relative to the tides (to within a few hours)
-    can make a big difference in spill trajectories. (Winds can make a
-    big difference to spill trajectories also! If the wind had been
-    blowing onshore when these spills occurred, very different coastal
-    areas would be threatened, even though the spills occurred in the
-    same location.)
+
+Spill b, set on the slack current before the ebb tide, moves the
+farthest east, while Spill d, set on the slack current before the
+flood tide, moves the farthest west. You can now see that knowing
+the timing of a spill relative to the tides (to within a few hours)
+can make a big difference in spill trajectories. (Winds can make a
+big difference to spill trajectories also! If the wind had been
+blowing onshore when these spills occurred, very different coastal
+areas would be threatened, even though the spills occurred in the
+same location.)
 
 Note that the date chosen for this example is during a spring tide
 period, when the flood and ebb currents are greatest. During neap tide
 conditions, the differences would not be as great.
+
 
 Example 2.
 ----------

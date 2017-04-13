@@ -3,8 +3,8 @@
 
 .. _ptevr_examples:
 
-Ptevr Example Problems
-======================
+Port Everglades Example Problems
+================================
 
 
 Try out these examples to learn the basics of modeling oil spills in

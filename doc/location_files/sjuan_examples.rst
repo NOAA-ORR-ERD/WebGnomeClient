@@ -3,9 +3,8 @@
 
 .. _sjuan_examples:
 
-Sjuan Example Problems
-======================
-
+San Juan Example Problems
+=========================
 
 Try out these examples to learn the basics of modeling oil spills in San
 Juan, Puerto Rico. Explore how the changing tides affect the

@@ -3,9 +3,10 @@
 
 .. _stef_examples:
 
-Stef Example Problems
-=====================
+Stefansson Sound Example Problems
+=================================
 
+**FIXE** This may have been superceded by the north slope location
 
 Try out these examples to learn the basics of modeling oil spills in
 Stefansson Sound, a region of the Beaufort Sea located off the North

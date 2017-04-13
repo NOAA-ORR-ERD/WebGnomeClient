@@ -3,8 +3,8 @@
 
 .. _stjohns_examples:
 
-Stjohns Example Problems
-========================
+St. Johns River Example Problems
+================================
 
 
 Try out these examples to learn the basics of modeling oil spills in the

@@ -3,8 +3,8 @@
 
 .. _cre_examples:
 
-Cre Example Problems
-====================
+Columbia River Estuary Example Problems
+=======================================
 
 
 Try out these examples to learn the basics of modeling oil spills in

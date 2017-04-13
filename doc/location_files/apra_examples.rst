@@ -44,24 +44,24 @@ beginning of a flood tide (2 p.m. on July 2, 2000).
 **"Zoom in" to the spill area and discuss the differences in the
 trajectories and beach impacts between these two spills.**
 
-    **Hints:** When you change the start time of the spill, you will
-    want to change both the *spill* start time and the *model* start
-    time. To do this, double-click the description of the spill
-    ("Non-Weathering: 40000 gallons") under **Spills** in the Summary
-    List (the left section of the Map Window). In the Spill Information
-    window, change the Release Start Time to 1400. GNOME will then
-    prompt you to change the model start time to match the spill start
-    time. Click "Change". Because GNOME is set up to adjust the *model*
-    start time to the *spill* start time, you should always change the
-    spill start time first.
+**Hints:** When you change the start time of the spill, you will
+want to change both the *spill* start time and the *model* start
+time. To do this, double-click the description of the spill
+("Non-Weathering: 40000 gallons") under **Spills** in the Summary
+List (the left section of the Map Window). In the Spill Information
+window, change the Release Start Time to 1400. GNOME will then
+prompt you to change the model start time to match the spill start
+time. Click "Change". Because GNOME is set up to adjust the *model*
+start time to the *spill* start time, you should always change the
+spill start time first.
 
-    **Answer:** As currents change direction and speed during the tidal
-    cycle, the movement of a spill changes also. As the tide ebbs, areas
-    within the harbor are less likely to be affected as the oil moves
-    away from the harbor entrance. As the tide floods, oil is carried
-    into the bay. Knowing the time when a spill occurs is very important
-    for making good spill trajectory predictions in areas with
-    significant tidal currents.
+**Answer:** As currents change direction and speed during the tidal
+cycle, the movement of a spill changes also. As the tide ebbs, areas
+within the harbor are less likely to be affected as the oil moves
+away from the harbor entrance. As the tide floods, oil is carried
+into the bay. Knowing the time when a spill occurs is very important
+for making good spill trajectory predictions in areas with
+significant tidal currents.
 
 
 Example 2.
