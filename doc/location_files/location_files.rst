@@ -38,11 +38,15 @@ Available Location Files
 Arctic Region
 -------------
 
-:ref:`north_slope_location`
+:ref:`north_slope_tech`
+
+:ref:`north_slope_examples`
 
 
 Atlantic Region
 ---------------
+
+:ref:`boston_examples`
 
 Gulf of Mexico
 --------------

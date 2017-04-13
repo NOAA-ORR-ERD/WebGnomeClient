@@ -9,11 +9,11 @@ WebGNOME Help Pages
 
 .. toctree::
    :maxdepth: 2
-   
+
    introduction
    basics
    fate
-   location_files
+   location_files/location_files
    custom
    goods
    references
