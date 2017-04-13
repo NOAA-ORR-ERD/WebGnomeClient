@@ -1,7 +1,11 @@
+
+:orphan:
+
 .. _boston_examples:
 
-Boston Harbor Example Problems
-===============================
+Boston Example Problems
+=======================
+
 
 Try out these examples to learn the basics of modeling oil spills in
 Boston Harbor and Vicinity. Explore how changing tides, winds, runoff
@@ -29,7 +33,10 @@ Uncertainty: Not included, unless specified.
 Use GNOME's Standard Mode and the Boston and Vicinity Location File to
 answer the following questions:
 
-**1.** Tides are an important part of the circulation in Boston Harbor.
+Example 1.
+----------
+
+Tides are an important part of the circulation in Boston Harbor.
 In this example, you will examine the effects of tides by starting a
 spill at two different times in the tidal cycle. Run the spill in GNOME
 twice, once at the beginning of a flood tide [Start Time: May 4, 2000 at
@@ -65,7 +72,10 @@ amount and location of pollutant?**
     out with the ebb tide. When the spill starts at the beginning of the
     ebb tide, the oil also impacts the western portion of Broad Sound.
 
-**2.** Wind can have a significant effect on a spill because it both
+Example 2.
+----------
+
+Wind can have a significant effect on a spill because it both
 moves the oil along the water's surface and drives currents. Rerun the
 ebb tide spill (May 5 at 0000) with 5-knot wind from the NW, then with
 no wind.
@@ -85,7 +95,10 @@ previous example?**
     wind, the oil does not spread as far north or as far south as it
     does with the wind's assistance.
 
-**3.** Forecasts of environmental parameters are inherently uncertain.
+Example 3.
+----------
+
+Forecasts of environmental parameters are inherently uncertain.
 For example, wind and weather forecasts can be "off" in the speed,
 direction, or timing of winds. GNOME supports a "Minimum Regret"
 solution in addition to the "Best Guess" solution that you have been
@@ -118,7 +131,10 @@ information would be useful?**
     endangered species) may be important enough to protect, even if it
     has a low probability of being oiled.
 
-**4.** The Merrimack River has very high flows in the spring. This
+Example 4.
+----------
+
+The Merrimack River has very high flows in the spring. This
 strong pulse of fresh water into the Gulf of Maine leads to a coastal
 current in Massachusetts Bay. Run two spill scenarios of 70,000 gallons
 of non-weathering oil near the entrance to Gloucester Harbor at 42°
@@ -142,7 +158,10 @@ example?**
     southwest, away from Gloucester Harbor. In the fall, however, most
     of the oil ends up in the harbor.
 
-**5.** Different types of pollutants weather differently. In the
+Example 5.
+----------
+
+Different types of pollutants weather differently. In the
 previous examples, the pollutant that spilled did not change with time
 (it was "non-weathering"). Now you are going to run a scenario that
 compares the effects of different types of pollutants.
@@ -208,7 +227,10 @@ below.
 | Off map                    | 0               | 0             |
 +----------------------------+-----------------+---------------+
 
-**6.** The new Effluent Outfall Tunnel discharges wastewater in
+Example 6.
+----------
+
+The new Effluent Outfall Tunnel discharges wastewater in
 Massachusetts Bay, about 14 km from Boston Harbor. Numerical modeling
 studies suggest that the discharge will have little or no effect on
 surface currents in the region in the summer and a small effect on

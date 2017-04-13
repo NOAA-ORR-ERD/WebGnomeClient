@@ -32,28 +32,90 @@ To get started using WebGNOME Location Files, visit:
 
 http://gnome-stage.orr.noaa.gov/#locations
 
-Available Location Files
-========================
+Location File Usage Examples
+============================
 
-Arctic Region
+Alaska Region
 -------------
 
 :ref:`north_slope_tech`
 
 :ref:`north_slope_examples`
 
+:ref:`nslope_examples`
+
+:ref:`pws_examples`
 
 Atlantic Region
 ---------------
 
 :ref:`boston_examples`
 
+:ref:`cascobay_examples`
+
+:ref:`narragan_examples`
+
 Gulf of Mexico
 --------------
+
+:ref:`galveston_examples`
+
 
 Pacific Region
 --------------
 
+:ref:`juandefuca_examples`
+
+
 International
 -------------
+
+:ref:`apra_examples`
+
+**FIXME** These need to be catagorized
+
+
+
+:ref:`cre_examples`
+
+:ref:`delbay_examples`
+
+
+:ref:`glacier_examples`
+
+
+
+:ref:`kaneohe_examples`
+
+:ref:`lis_examples`
+
+:ref:`lmiss_examples`
+
+:ref:`mobile_examples`
+
+
+
+:ref:`newyork_examples`
+
+:ref:`norfolk_examples`
+
+:ref:`nslope_examples`
+
+:ref:`ptevr_examples`
+
+:ref:`pws_examples`
+
+:ref:`sabine_examples`
+
+:ref:`sandiego_examples`
+
+:ref:`sbc_examples`
+
+:ref:`sjuan_examples`
+
+:ref:`stef_examples`
+
+:ref:`stjohns_examples`
+
+:ref:`tampa_examples`
 
