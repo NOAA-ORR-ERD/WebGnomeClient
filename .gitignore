@@ -7,4 +7,8 @@ config.json
 /doc/_build
 /doc/_static
 /doc/_templates
+
+.DS_Store
+
+npm-debug.log
 *.swp
