@@ -232,8 +232,8 @@ below.
 | Off map                    |                 |               |
 +----------------------------+-----------------+---------------+
 
-Hints:
-------
+
+**Hints:**
 
 (1) The spills you have set in previous examples have
 been point source spills, representing catastrophic releases at a
