@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'swal',
+    'sweetalert',
     'moment',
     'nucos',
     'module',
