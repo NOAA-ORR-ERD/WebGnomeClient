@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'swal',
     'moment',
     'nucos',
     'module',
@@ -17,7 +18,7 @@ define([
     'views/form/spill/continue',
     'model/element',
     'views/form/wind'
-], function($, _, Backbone, moment, nucos, module,
+], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView,
             OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ElementModel, WindForm){
     var responseView = BaseView.extend({
@@ -320,18 +321,18 @@ define([
             }
             var converter = new nucos.OilQuantityConverter();
 
-            for (var sys in this.responseSystems){
-                for(var set in this.responseSystems[sys]){
+            for (var sys2 in this.responseSystems){
+                for(var set in this.responseSystems[sys2]){
                     if([
                         'boomed',
                         'burned',
                         'skimmed',
                         'dispersed',
-                        'treated'].indexOf(this.responseSystems[sys][set].name) !== -1){
-                        nominal_value = systems[sys][this.responseSystems[sys][set].name];
+                        'treated'].indexOf(this.responseSystems[sys2][set].name) !== -1){
+                        var nominal_value = systems[sys2][this.responseSystems[sys2][set].name];
                         nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
 
-                        this.responseSystems[sys][set].data.push([date.unix() * 1000, nominal_value]);
+                        this.responseSystems[sys2][set].data.push([date.unix() * 1000, nominal_value]);
                     }
                 }
             }
@@ -480,7 +481,7 @@ define([
 
         renderBurn: function(){
             if(_.isUndefined(this.burnView)){
-                responses = webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Burn'});
+                var responses = webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Burn'});
                 this.burnView = new BurnResponseListView({
                     responses: responses,
                     results: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems,
@@ -499,7 +500,7 @@ define([
 
         renderDisperse: function(){
             if(_.isUndefined(this.disperseView)){
-                responses = webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Disperse'});
+                var responses = webgnome.model.get('weatherers').where({'obj_type': 'gnome.weatherers.roc.Disperse'});
                 this.dispserseView = new DisperseListView({
                     responses: responses,
                     results: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems,

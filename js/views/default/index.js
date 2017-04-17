@@ -50,11 +50,11 @@ define([
         },
         
         oillib: function(e){
-            var oillib = new OilLibraryView({})
+            var oillib = new OilLibraryView({});
             oillib.on('save wizardclose', _.bind(function(){
                 oillib.close();
             }, this));
-            oillib.render()
+            oillib.render();
             oillib.$el.addClass('viewer');
         },
 

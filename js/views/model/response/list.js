@@ -52,6 +52,7 @@ define([
         },
 
         getAPI: function(){
+            var api;
             if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
                 api = 10;
             } else {
