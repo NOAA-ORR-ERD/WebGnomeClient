@@ -1,5 +1,5 @@
 
-.. Use somethig like this to include littel images
+.. Use somethig like this to include little images
 
 .. .. |biohazard| image:: images/biohazard.png
 
@@ -78,7 +78,7 @@ the lower left corner of the window!)
 change both the *spill*
 start time and the *model* start time. To do this, double-click the
 description of the spill ("Non-Weathering: 100 barrels") under
-``Spills`` in the Summary List (the left section of the Map Window).
+"Spills" in the Summary List (the left section of the Map Window).
 
 In the Spill Information window, change the Release Start Time to
 May 5 at 0000. GNOME will then prompt you to change the model start
@@ -235,7 +235,7 @@ below.
 
 **Hints:**
 
-(1) The spills you have set in previous examples have
+1. The spills you have set in previous examples have
 been point source spills, representing catastrophic releases at a
 particular time and location. The spill described in this example is
 a spill from a vessel that is leaking as it is moving. To model this
@@ -246,7 +246,7 @@ the ending time (May 4, 2000 at 1830). Then click the box labeled
 "Different end release location" and enter the ending location of
 the spill (42° 18.76’ N, 70° 55.25’ W).
 
-(2) To view the mass balance for each scenario, click the right-pointing triangle next to
+2. To view the mass balance for each scenario, click the right-pointing triangle next to
 the spill description ("Fuel Oil #6: 30000 gallons") under
 **Spills** in the Summary List. Then click the right-pointing
 triangle next to "Splot Mass Balance" to view the mass balance for
