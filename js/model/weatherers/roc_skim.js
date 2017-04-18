@@ -50,7 +50,7 @@ define([
         },
 
         parse: function(attributes){
-            attrbitues = ROCWeatherer.prototype.parse.call(this, attributes);
+            attributes = ROCWeatherer.prototype.parse.call(this, attributes);
             attributes._decant = this.decimalToPercent('decant');
             return attributes;
         }

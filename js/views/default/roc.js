@@ -275,38 +275,6 @@ define([
             webgnome.router.navigate('fate', true);
         },
 
-        loadResponse: function(e){
-            e.stopPropagation();
-            var id;
-            if($(e.target).hasClass('item')){
-                id = $(e.target).data('id');
-            } else {
-                id = $(e.target).parents('.item').data('id');
-            }
-            var response = webgnome.model.get('weatherers').get(id);
-            var responseView;
-            var nameArray = response.get('obj_type').split('.');
-            switch (nameArray[nameArray.length - 1]){
-                case "ChemicalDispersion":
-                    responseView = new ResponseDisperseView(null, response);
-                    break;
-                case "Burn":
-                    responseView = new ResponseBurnView(null, response);
-                    break;
-                case "Skimmer":
-                    responseView = new ResponseSkimView(null, response);
-                    break;
-            }
-            responseView.on('wizardclose', function(){
-                responseView.on('hidden', responseView.close);
-            });
-            responseView.on('save', _.bind(function(){
-                webgnome.model.save(null, {validate: false});
-                responseView.on('hidden', responseView.close);
-            }, this));
-            responseView.render();
-        },
-
         close: function(){
             $('.sweet-overlay').remove();
             $('.sweet-alert').remove();
