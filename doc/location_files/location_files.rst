@@ -62,8 +62,6 @@ To Be Reviewed / Updated
 Alaska
 ------
 
-:ref:`north_slope_tech`
-
 :ref:`north_slope_examples`
 
 :ref:`nslope_examples`
