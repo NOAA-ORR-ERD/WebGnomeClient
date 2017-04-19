@@ -47,6 +47,7 @@ Available Location Files
 Alaska Region
 -------------
 
+Prince William Sound | :ref:`pws_user_guide` | :ref:`pws_examples`
 
 Atlantic Region
 ---------------
@@ -77,7 +78,7 @@ Alaska
 
 :ref:`nslope_examples`
 
-:ref:`pws_examples`
+
 
 :ref:`glacier_examples`
 
