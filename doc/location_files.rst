@@ -11,18 +11,27 @@ information about the tides, currents, and shorelines in the region it covers.
 WebGNOME uses the Location File information and user input to set up the model.
 
 Location Files are useful for planning but should not be used to model real oil spills!
+The Location Files are based on climatological or "average" conditions for a specific 
+region. Environmental conditions during an actual spill may differ widely from typical
+conditions. A useful analogy is an almanac versus a weather forecast -- if you are trying to 
+pick a good month to schedule a picnic an almanac may provide guidance. However, if you 
+have a picnic planned for tomorrow, an up to date weather forecast which incorporates recent
+observations will provide more useful information. Similarly, the Location Files are a 
+valuable resource for planning for a potential future spill but need to be modified to
+incorporate actual real-time environmental conditions in the case a spill occurs.
 
 Location File Wizard
 ====================
 
 The Location File Wizard asks questions to help you set up the spill scenario.
 
-The exact questions depends on the specific region being modeled but may include: spill
-information, wind conditions, river flow rates, and circulation patterns.
+The exact questions depend on the specific region being modeled but may include 
+questions about: wind conditions, river flow rates, circulation patterns, and the 
+type of spill to be modeled.
 If you need help answering a Wizard question, a Location File Help button is available
 on the Wizard title bar.
 
-The Location File Help topics also provide some sources of real-time and historical data
+The Location File Help topics and User Guides also provide some sources of real-time and historical data
 about the region and more technical information about the Location File development.
 
 Using Location Files
@@ -32,8 +41,8 @@ To get started using WebGNOME Location Files, visit:
 
 http://gnome-stage.orr.noaa.gov/#locations
 
-Location File Usage Examples
-============================
+Available Location Files
+========================
 
 Alaska Region
 -------------
@@ -42,6 +51,7 @@ Alaska Region
 Atlantic Region
 ---------------
 
+Boston and Vicinity | :ref:`boston_user_guide` | :ref:`boston_examples`
 
 Gulf of Mexico
 --------------
@@ -53,6 +63,7 @@ Pacific Region
 
 International
 -------------
+
 
 
 
@@ -77,8 +88,6 @@ Alaska
 
 Atlantic Region
 ---------------
-
-:ref:`boston_examples`
 
 :ref:`cascobay_examples`
 
