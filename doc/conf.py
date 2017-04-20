@@ -83,14 +83,29 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-import sphinx_bootstrap_theme
-html_theme = 'bootstrap'
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
+# Bootstrp theme is made for mobile -- not great for us.
+# import sphinx_bootstrap_theme
+# html_theme = 'bootstrap'
+# html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
 
-#html_theme = 'alabaster'
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+# these for the RTD theme:
+html_theme_options = {'collapse_navigation': False,
+                      'display_version': True,
+                      'navigation_depth': 4,
+                      'sticky_navigation': False,
+                      'prev_next_buttons_location': 'bottom',
+                      }
 
-
-html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'], }
+# html_theme = 'alabaster'
+# # not sure if this works...
+# html_sidebars = { '**': ['globaltoc.html',
+#                          'relations.html',
+#                          # 'sourcelink.html',
+#                          'searchbox.html',
+#                          ]}
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
