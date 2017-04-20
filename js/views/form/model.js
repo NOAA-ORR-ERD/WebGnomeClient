@@ -48,8 +48,8 @@ define([
             var name = this.$('#name').val();
             this.model.set('name', name);
 
-            //var uncertain = this.$('#uncertain:checked').val();
-            //this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
+            var uncertain = this.$('#uncertain:checked').val();
+            this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
             // var time_steps = this.$('#time_steps').val();
             // var time_steps_mins = parseFloat(time_steps, 10) * 60;
