@@ -24,6 +24,7 @@
     "grunt-inline": "^0.3.6",
     "grunt-jsdoc": "^0.6.7",
     "grunt-vulcanize": "^1.0.0",
+    "vulcanize": "1.14.8",
     "grunt-webdriver": "^0.5.2",
     "less-plugin-inline-urls": "^1.1.0"
   }

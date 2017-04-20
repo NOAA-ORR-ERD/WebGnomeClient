@@ -25,6 +25,7 @@ define([
                 for(var p = 0; p < platforms[keys[g]].length; p++){
                     if (name === platforms[keys[g]][p].name) {
                         this.set('type', keys[g], {silent: true});
+                        this.set('json_', 'webapi', {silent: true});
                         this.set(platforms[keys[g]][p]);
                     }
                 }
@@ -49,6 +50,7 @@ define([
                 swath_width_min: 30,
                 application_speed: 100,
                 application_speed_max: 200,
+                json_: 'webapi',
                 application_speed_min: 30,
                 pump_rate_min:10, 
                 pump_rate_max: 800,
@@ -88,6 +90,7 @@ define([
                 pump_rate_min:10, 
                 pump_rate_max: 800,
                 payload: 500,
+                json_: 'webapi',
                 max_op_time: 1,
                 transit_speed: 100,
                 fuel_load: 20,

@@ -30,7 +30,6 @@ define([
         },
 
         model: {
-            units: Backbone.Model,
             platform: Platform
         },
 
