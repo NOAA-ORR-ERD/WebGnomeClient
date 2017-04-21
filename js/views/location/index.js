@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'module',
     'ol',
     'views/default/map',
     'model/location',
@@ -12,9 +14,9 @@ define([
     'views/wizard/location',
     'views/default/help',
     'views/modal/help'
-], function($, _, Backbone, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
+], function($, _, Backbone, BaseView, module, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
     'use strict';
-    var locationsView = Backbone.View.extend({
+    var locationsView = BaseView.extend({
         className: 'page locations',
         mapView: null,
         popup: null,
@@ -30,6 +32,8 @@ define([
          * @todo decomp the popover into a new view? How else to get load click event?
          */
         initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             if (!_.isUndefined(options) && _.has(options, 'dom_target')) {
                 this.dom_target = options.dom_target;
             } else {
@@ -88,6 +92,12 @@ define([
             }, this));
         },
 
+        showHelp: function(){
+            var compiled = '<div class="gnome-help" title="Get Help on Location Files"></div>';
+            this.$('h1:first').append(compiled);
+            this.$('h1:first .gnome-help').tooltip();
+        },
+        
         loadHelp: function(e, options) {
             var name, helpView, helpModal;
             if (!_.isNull(e)){
@@ -182,6 +192,7 @@ define([
         render: function(){
             var compiled = _.template(LocationsTemplate);
             $(this.dom_target).append(this.$el.html(compiled));
+            BaseView.prototype.render.call(this);
 
             this.mapView.render();
             this.popup = new ol.Overlay({

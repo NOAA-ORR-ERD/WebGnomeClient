@@ -16,10 +16,6 @@ have a picnic planned for tomorrow, an up to date weather forecast which incorpo
 observations will provide more useful information. Similarly, the Location Files are a
 valuable resource for planning for a potential future spill but need to be modified to
 incorporate actual real-time environmental conditions in the case a spill occurs.
-
-.. raw:: html
-
-   <i class="gnome-help-icon"></i>
    
 Location File Wizard
 ====================
