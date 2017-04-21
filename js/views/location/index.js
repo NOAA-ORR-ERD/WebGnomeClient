@@ -19,9 +19,11 @@ define([
         mapView: null,
         popup: null,
 
-        events: {
-            'click .item': 'highlightLoc',
-            'click .item a': 'setupLocation'
+        events: function(){
+            return _.defaults({
+                'click .item': 'highlightLoc',
+                'click .item a': 'setupLocation'
+            }, BaseView.prototype.events);
         },
 
         /**
