@@ -205,6 +205,16 @@ define([
             this.start();
         },
 
+
+        next: function(){
+            BaseWizard.protoytpe.next.call(this);
+            this.checkWindDefault();
+        },
+
+        checkWindDefault: function(){
+
+        },
+
         dynamicWaterListener: function(substance){
             var waterExists = this.steps[this.steps.length - 2].className.indexOf('water-form') > -1;
             if (!_.isNull(substance) && !waterExists){

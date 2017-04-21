@@ -9,6 +9,7 @@ define([
     var baseWizard = Backbone.View.extend({
         steps: [],
         step: 0,
+        furthestStep: 0,
 
         start: function(){
             this.steps[this.step].render();
@@ -30,6 +31,7 @@ define([
             } else {
                 this.steps[this.step].render();
             }
+            this.furthestStep = this.step;
         },
 
         prev: function(){
