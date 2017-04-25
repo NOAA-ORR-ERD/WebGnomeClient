@@ -207,7 +207,7 @@ define([
 
 
         next: function(){
-            BaseWizard.protoytpe.next.call(this);
+            BaseWizard.prototype.next.call(this);
             this.checkWindDefault();
         },
 
