@@ -15,6 +15,7 @@ WebGNOME User Manual
    fate
    location_files
    goods
+   uncertainty
    references
 
 

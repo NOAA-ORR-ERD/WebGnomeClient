@@ -1,15 +1,16 @@
 define([
     'underscore',
     'jquery',
+    'module',
     'views/modal/form',
     'model/movers/grid_wind',
     'text!templates/form/griddedwind.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, FormModal, GridWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, GridWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
     var griddedWindForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
-        title: 'Load Wind Mover',
+        title: 'Create Wind (Mover Only)',
 
         events: function(){
             return _.defaults({
@@ -18,6 +19,7 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.body = _.template(GriddedWindTemplate);
             this.buttons = null;
