@@ -266,7 +266,12 @@ define([
 
         faq: function(event){
             event.preventDefault();
+            window.open("#faq");
+            /*
+            Ask Nathan about this because now the page renders before it finished loading
+            Also, lots of code in router that I don't want to mess with!
             webgnome.router.navigate('faq', true);
+            */
         },
 
         hotkeys: function(event){

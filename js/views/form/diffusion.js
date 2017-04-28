@@ -2,10 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'model/movers/random',
     'views/modal/form',
     'text!templates/form/diffusion.html'
-], function($, _, Backbone, DiffusionModel, FormModal, DiffusionTemplate){
+], function($, _, Backbone, module, DiffusionModel, FormModal, DiffusionTemplate){
 	'use strict';
 	var diffusionForm = FormModal.extend({
         title: 'Horizontal Diffusion',
@@ -15,6 +16,7 @@ define([
         },
 
         initialize: function(options, diffusionModel) {
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             if (!_.isUndefined(diffusionModel)){
                 this.model = diffusionModel;

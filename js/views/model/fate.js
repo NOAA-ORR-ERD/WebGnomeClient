@@ -817,16 +817,14 @@ define([
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('element_type').get('substance');
-            var substanceAPI;
-            if (_.isNull(substance)){
-                substanceAPI = 10;
-            } else {
-                substanceAPI = substance.get('api');
-            }
+            var substance_density;
+            
+            substance_density = spill.get('element_type').get('standard_density');
+            
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
-            var converted_amount = Math.round(converter.Convert(total_released, from_unit, substanceAPI, 'API degree', to_unit));
+            var converted_amount = Math.round(converter.Convert(total_released, from_unit, substance_density, 'kg/m^3', to_unit));
             this.$('#budget-table .info .amount-released').text(converted_amount + ' ' + to_unit);
             var spillDurationObj = spill.parseDuration();
             var spillDurationHrs = spillDurationObj.days * 24 + spillDurationObj.hours;
@@ -892,11 +890,11 @@ define([
                         } else {
                             var value = dataset[set].data[row][1];
                             if(dataset[set].label === 'Amount released'){
-                                 value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
+                                 value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
                                  to_unit = ' ' + to_unit;
                             } else {
                                 if(display.other === 'same'){
-                                    value = Math.round(converter.Convert(value, from_unit, substanceAPI, 'API degree', to_unit));
+                                    value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
                                 } else if (display.other === 'percent'){
                                     value = Math.round(value / dataset[0].data[row][1] * 100);
                                 } else {
@@ -1140,7 +1138,7 @@ define([
         convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var api = (!_.isNull(substance)) ? substance.get('api') : 10;
+            var density = (!_.isNull(substance)) ? substance.get('standard_density') : webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
             var data;
@@ -1158,7 +1156,7 @@ define([
                     for (i = 0; i < data.length; i++) {
                         arr = data[i];
                         for (k = 1; k < arr.length; k++) {
-                            arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
+                            arr[k] = parseFloat(converter.Convert(arr[k], from_unit, density, 'kg/m^3', to_unit));
                         }
                     }
                 }
@@ -1167,7 +1165,7 @@ define([
                 for (i = 0; i < data.length; i++) {
                     arr = data[i];
                     for (k = 1; k < arr.length; k++) {
-                        arr[k] = parseFloat(converter.Convert(arr[k], from_unit, api, 'API Degree', to_unit));
+                        arr[k] = parseFloat(converter.Convert(arr[k], from_unit, density, 'kg/m^3', to_unit));
                     }
                 }
             }
@@ -1361,7 +1359,7 @@ define([
             var to_units = this.$('#ics209 .vol-units').val() === null ? from_units : this.$('#ics209 .vol-units').val();
             var converter = new nucos.OilQuantityConverter();
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var api = (!_.isNull(substance)) ? substance.get('api') : 10;
+            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached', 'dissolution']);
             var report = {
                 spilled: 0,
@@ -1386,25 +1384,25 @@ define([
                     if(dataset[set].data[step][0] >= start && dataset[set].data[step][0] <= end){
                         var previous = 0;
                         if(dataset[set].data[step - 1]){
-                            previous = Math.round(parseFloat(converter.Convert(dataset[set].data[step - 1][1], from_units, api, 'API Degree', to_units)));
+                            previous = Math.round(parseFloat(converter.Convert(dataset[set].data[step - 1][1], from_units, density, 'kg/m^3', to_units)));
                         }
-                        var current = Math.round(parseFloat(converter.Convert(dataset[set].data[step][1], from_units, api, 'API Degree', to_units)));
+                        var current = Math.round(parseFloat(converter.Convert(dataset[set].data[step][1], from_units, density, 'kg/m^3', to_units)));
                         report[dataset[set].name] += current - previous;
                     }
                 }
                 for(var step2 in dataset[set].data){
                     if(dataset[set].data[step2][0] <= end){
-                        cumulative[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].data[step2][1], from_units, api, 'API Degree', to_units)));
+                        cumulative[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].data[step2][1], from_units, density, 'kg/m^3', to_units)));
                     }
                 }
                 for(var step3 in dataset[set].low){
                     if(dataset[set].low[step3][0] <= end){
-                        low[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].low[step3][1], from_units, api, 'API Degree', to_units)));
+                        low[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].low[step3][1], from_units, density, 'kg/m^3', to_units)));
                     }
                 }
                 for(var step4 in dataset[set].high){
                     if(dataset[set].high[step4][0] <= end){
-                        high[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].high[step4][1], from_units, api, 'API Degree', to_units)));
+                        high[dataset[set].name] = Math.round(parseFloat(converter.Convert(dataset[set].high[step4][1], from_units, density, 'kg/m^3', to_units)));
                     }
                 }
             }
@@ -1680,12 +1678,7 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
-            var api;
-            if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
-                api = 10;
-            } else {
-                api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
-            }
+            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var converter = new nucos.OilQuantityConverter();
             var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
             var waterDensity = water.getDensity();
@@ -1709,14 +1702,14 @@ define([
                     ].indexOf(this.dataset[set].name) !== -1){
                     var min = _.min(step.get('WeatheringOutput'), this.runIterator(set), this);
                     low_value = min[this.dataset[set].name];
-                    low_value = converter.Convert(low_value, 'kg', api, 'API degree', units);
+                    low_value = converter.Convert(low_value, 'kg', density, 'kg/m^3', units);
 
                     var max = _.max(step.get('WeatheringOutput'), this.runIterator(set), this);
                     high_value = max[this.dataset[set].name];
-                    high_value = converter.Convert(high_value, 'kg', api, 'API degree', units);
+                    high_value = converter.Convert(high_value, 'kg', density, 'kg/m^3', units);
 
                     nominal_value = nominal[this.dataset[set].name];
-                    nominal_value = converter.Convert(nominal_value, 'kg', api, 'API degree', units);
+                    nominal_value = converter.Convert(nominal_value, 'kg', density, 'kg/m^3', units);
                 }  else if (this.dataset[set].name === 'avg_viscosity') {
                     // Converting viscosity from m^2/s to cSt before assigning the values to be graphed
                     low_value = nucos.convert('Kinematic Viscosity', 'm^2/s', 'cSt', low[this.dataset[set].name]);

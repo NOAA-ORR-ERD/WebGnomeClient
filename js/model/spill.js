@@ -151,11 +151,11 @@ define([
             if (_.isUndefined(attrs)){
                 attrs = this.attributes;
             }
-            var substance = attrs.element_type.get('substance');
-            var massUnits = ['kg', 'ton', 'metric ton'];
-            if(_.isNull(substance) && massUnits.indexOf(attrs.units) === -1){
-                return 'Amount released must use units of mass when using non-weathering substance!\n\nAcceptable units: kilograms, tons, metric tons';
-            }
+//            var substance = attrs.element_type.get('substance');
+//            var massUnits = ['kg', 'ton', 'metric ton'];
+//            if(_.isNull(substance) && massUnits.indexOf(attrs.units) === -1){
+//                return 'Amount released must use units of mass when using non-weathering substance!\n\nAcceptable units: kilograms, tons, metric tons';
+//           }
         },
 
         validateSections: function(){
@@ -192,10 +192,10 @@ define([
                 return 'Amount must be greater than 0';
             }
 
-            if (massUnits.indexOf(attrs.units) === -1 && _.isNull(substance)){
-                this.validationContext = 'info';
-                return 'Amount released must use units of mass when using non-weathering substance!';
-            }
+            //if (massUnits.indexOf(attrs.units) === -1 && _.isNull(substance)){
+                //this.validationContext = 'info';
+                //return 'Amount released must use units of mass when using non-weathering substance!';
+            //}
 
             // if(nucos.convert)
         },

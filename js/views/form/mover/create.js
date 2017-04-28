@@ -1,13 +1,14 @@
 define([
     'underscore',
     'jquery',
+    'module',
     'views/modal/form',
     'model/movers/cats',
     'model/movers/grid_current',
     'text!templates/form/mover/create.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -20,6 +21,7 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.body = _.template(CreateMoverTemplate);
             this.buttons = null;

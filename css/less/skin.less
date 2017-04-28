@@ -350,6 +350,16 @@ img{
         // border-color: darken(#ccc, 10%);
     }
 }
+
+.gnome-help-icon{
+    .glyphicon;
+    .glyphicon-question-sign;
+    margin-left: 1px;
+    margin-right: 1px;
+    color: #ccc;
+    cursor: text;
+}
+
 .modal-dialog{
     z-index: 1040;
     .modal-content{
@@ -747,6 +757,10 @@ nav.navbar{
 
 .page.home{
     margin-top: -50px;
+
+    .panel-footer{
+        min-height: 150px;
+    }
 
     img{
         border-radius: 3px;
@@ -1454,6 +1468,11 @@ nav.navbar{
     }
 }
 
+.modal-header{
+    .close{
+        display: none;
+    }
+}
 .modal-dialog{
     .cancel{
         .btn;
@@ -2521,6 +2540,13 @@ nav.navbar{
             }
         }
     }
+
+    .help-content{
+        .close{
+            color: #000;
+            opacity: 0.5;
+        }
+    }
 }
 
 .modal.form-modal{
@@ -3385,6 +3411,14 @@ nav.navbar{
         .select {
             background-color: #428bca;
             color: white;
+            td {
+                background-color: #428bca;
+            }
+        }
+        .select:hover{
+            td{
+                background-color: #428bca;
+            }
         }
         span {
             font-size: 10px;

@@ -2,16 +2,17 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'views/modal/form',
     'views/form/map/goods',
     'views/form/map/upload',
     'views/form/map/param',
     'text!templates/form/map/type.html'
-], function($, _, Backbone, FormModal, GoodsMapForm, MapUploadForm, ParamMapForm, SelectTemplate){
+], function($, _, Backbone, module, FormModal, GoodsMapForm, MapUploadForm, ParamMapForm, SelectTemplate){
     'use strict';
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
-        className: 'modal form-modal shorelinetype-form',
+        className: 'modal form-modal model-form shorelinetype-form',
 
         events: function(){
             return _.defaults({
@@ -23,6 +24,7 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
         },
 

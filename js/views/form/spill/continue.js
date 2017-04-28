@@ -128,7 +128,7 @@ define([
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
 
-            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
+            var duration = (((parseInt(days, 10) * 24) + parseFloat(hours, 10)) * 60) * 60;
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
             this.model.set('name', name);

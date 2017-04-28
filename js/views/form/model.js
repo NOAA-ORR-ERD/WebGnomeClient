@@ -2,11 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'moment',
     'views/modal/form',
     'text!templates/form/model.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, FormModal, FormTemplate){
+], function($, _, Backbone, module, moment, FormModal, FormTemplate){
     'use strict';
     var modelForm = FormModal.extend({
         className: 'modal form-modal model-form',
@@ -14,6 +15,7 @@ define([
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
         initialize: function(options, model){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.model = model;
         },
@@ -48,8 +50,8 @@ define([
             var name = this.$('#name').val();
             this.model.set('name', name);
 
-            //var uncertain = this.$('#uncertain:checked').val();
-            //this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
+            var uncertain = this.$('#uncertain:checked').val();
+            this.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
             // var time_steps = this.$('#time_steps').val();
             // var time_steps_mins = parseFloat(time_steps, 10) * 60;
