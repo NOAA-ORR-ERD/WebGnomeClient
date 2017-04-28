@@ -139,7 +139,7 @@ define([
         },
 
         faq: function(title){
-            this.menu('add');
+            this.menu('remove');
             if (!_.isUndefined(title)){
                 this.views.push(new FAQView({topic: title}));
             } else {

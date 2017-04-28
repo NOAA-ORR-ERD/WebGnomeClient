@@ -187,7 +187,7 @@ define([
                 form.on('save', _.bind(function(){
                     this.dynamicWaterListener(form.model.get('element_type').get('substance'));
                 }, this));
-                
+
                 this.register(form);
                 this.steps[this.step].on('hidden', _.bind(function(){
                     this.close();
@@ -208,10 +208,17 @@ define([
 
         next: function(){
             BaseWizard.prototype.next.call(this);
-            this.checkWindDefault();
+            if (this.step > 1 && this.step <= this.furthestStep) {
+                this.checkWindDefault();
+            };
         },
 
-        checkWindDefault: function(){
+        checkWindDefault: function(){           
+            if (_.has(this.steps[this.step + 1], 'model') &&
+                this.steps[this.step + 1].model.get('obj_type').indexOf('Wind') != -1) {
+                this.steps[this.step + 1].model.set('timeseries', [[webgnome.model.get('start_time'), [0, 0]]])                
+            };
+            
 
         },
 

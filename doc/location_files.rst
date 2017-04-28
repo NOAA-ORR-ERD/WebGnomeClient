@@ -50,7 +50,8 @@ Atlantic Region
 Gulf of Mexico
 --------------
 
-
+* Mobile Bay | :ref:`mobile_user_guid` | :ref:`mobile_examples`
+    
 Pacific Region
 --------------
 
@@ -104,7 +105,6 @@ International
 
     :ref:`lmiss_examples`
 
-    :ref:`mobile_examples`
 
     :ref:`sabine_examples`
 

@@ -24,7 +24,8 @@ define([
         events: function(){
             return _.defaults({
                 'click .item': 'highlightLoc',
-                'click .item a': 'setupLocation'
+                'click .item a': 'setupLocation',
+                'click .doc': 'doc'
             }, BaseView.prototype.events);
         },
 
@@ -94,8 +95,8 @@ define([
 
         showHelp: function(){
             var compiled = '<div class="gnome-help" title="Get Help on Location Files"></div>';
-            this.$('h1:first').append(compiled);
-            this.$('h1:first .gnome-help').tooltip();
+            this.$('h2:first').append(compiled);
+            this.$('h2:first .gnome-help').tooltip();
         },
         
         loadHelp: function(e, options) {
@@ -118,6 +119,11 @@ define([
 
             this.$('.popup').popover('destroy');
             helpModal.render();
+        },
+
+        doc: function(e){
+            e.preventDefault();
+            window.open("doc/location_files.html");
         },
 
         dblClickPin: function(feature) {
