@@ -819,7 +819,7 @@ define([
             var substance = spill.get('element_type').get('substance');
             var substance_density;
             
-            substance_density = spill.get('element_type').get('standard_density')
+            substance_density = spill.get('element_type').get('standard_density');
             
             var from_unit = spill.get('units');
             var to_unit = display.released;
