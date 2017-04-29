@@ -216,7 +216,7 @@ define([
         checkWindDefault: function(){           
             if (_.has(this.steps[this.step + 1], 'model') &&
                 this.steps[this.step + 1].model.get('obj_type').indexOf('Wind') != -1) {
-                    this.steps[this.step + 1].model.set('timeseries', [[webgnome.model.get('start_time'), [0, 0]]])                
+                    this.steps[this.step + 1].model.set('timeseries', [[webgnome.model.get('start_time'), [0, 0]]]);                
             };
         },
 
