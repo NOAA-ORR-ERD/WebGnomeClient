@@ -9,6 +9,7 @@ define([
         complied: true,
 
         startTimeComplies: function(start_time) {
+            this.complied = true;
             this.each(_.bind(function(el, i, col){
                 if (start_time !== el.get('release').get('release_time')) {
                     this.complied = false;
