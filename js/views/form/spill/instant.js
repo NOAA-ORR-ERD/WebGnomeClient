@@ -80,7 +80,6 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm').format('YYYY-MM-DDTHH:mm:ss');
             
             this.model.set('name', name);
-            this.model.set('release', release);
             this.model.set('units', units);
             this.model.set('amount', amount);
             release.set('release_time', releaseTime);
