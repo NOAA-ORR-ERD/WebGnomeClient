@@ -20,7 +20,7 @@ define([
                 'element_type': this.getElementType(),
                 'name': 'Spill',
                 'amount': 1,
-                'units': ''
+                'units': 'bbl' //old code setting to kg for non-weathering substance is commented below
             };
         },
 
@@ -33,14 +33,15 @@ define([
             BaseModel.prototype.initialize.call(this, options);
             if(webgnome.hasModel() && webgnome.model.getElementType()){
                 this.set('element_type', webgnome.model.getElementType());
-                if (!_.isNull(this.get('element_type').get('substance')) && this.isNew()) {
+            }
+            /*    if (!_.isNull(this.get('element_type').get('substance')) && this.isNew()) {
                     this.set('units', 'bbl');
                 } else if(this.isNew()) {
                     this.set('units', 'kg');
                 }
             } else if(this.isNew()) {
                 this.set('units', 'kg');
-            }
+            }*/
             this.on('change', this.calculate, this);
             this.on('change:element_type', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
