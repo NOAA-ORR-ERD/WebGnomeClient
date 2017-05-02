@@ -218,9 +218,9 @@ define([
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM'
             var image_providers = Cesium.createDefaultImageryProviderViewModels();
             var default_image = new Cesium.ProviderViewModel({
-                name: 'None',
+                name: 'No imagery selected',
                 tooltip: '',
-                iconUrl: '/img/globe.png',
+                iconUrl: '/img/no_basemap.png',
                 creationFunction: function(){
                     return new Cesium.SingleTileImageryProvider({
                         url: '/img/globe.png'
