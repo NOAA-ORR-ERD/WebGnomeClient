@@ -210,14 +210,14 @@ define([
             BaseWizard.prototype.next.call(this);
             if (this.step > 1 && this.step <= this.furthestStep) {
                 this.checkWindDefault();
-            };
+            }
         },
 
         checkWindDefault: function(){           
             if (_.has(this.steps[this.step + 1], 'model') &&
                 this.steps[this.step + 1].model.get('obj_type').indexOf('Wind') !== -1) {
                     this.steps[this.step + 1].model.set('timeseries', [[webgnome.model.get('start_time'), [0, 0]]]);                
-            };
+            }
         },
 
         dynamicWaterListener: function(substance){

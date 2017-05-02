@@ -293,15 +293,22 @@ define([
             var start_point = this.model.get('release').get('start_position');
             var end_point = this.model.get('release').get('end_position');
             var compiled;
+            
+            var lat_formats = '64.5011N (decimal degrees) \n 64 30.066N (degrees decimal minutes) \n64 30 3.96N (degrees minutes seconds)'
+            var lon_formats = '165.4064W (decimal degrees) \n 165 24.384W (degrees decimal minutes) \n165 24 23.04W (degrees minutes seconds)'
 
             if (!_.isNull(e) && isSpillPoint) {
                 compiled = _.template(PositionSingleTemplate, {
-                    start_coords: {'lat': start_point[1], 'lon': start_point[0]}
+                    start_coords: {'lat': start_point[1], 'lon': start_point[0]},
+                    lat_formats: lat_formats,
+                    lon_formats: lon_formats
                 });
             } else {
                 compiled = _.template(PositionDoubleTemplate, {
                     start_coords: {'lat': start_point[1], 'lon': start_point[0]},
-                    end_coords: {'lat': end_point[1], 'lon': end_point[0]}
+                    end_coords: {'lat': end_point[1], 'lon': end_point[0]},
+                    lat_formats: lat_formats,
+                    lon_formats: lon_formats
                 });
             }
             this.$('#positionInfo').html('');

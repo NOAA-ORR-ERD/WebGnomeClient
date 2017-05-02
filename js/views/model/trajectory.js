@@ -215,7 +215,7 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM'
+            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             var image_providers = Cesium.createDefaultImageryProviderViewModels();
             var default_image = new Cesium.ProviderViewModel({
                 name: 'No imagery selected',
