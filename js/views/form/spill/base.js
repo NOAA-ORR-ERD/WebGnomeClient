@@ -334,7 +334,7 @@ define([
 		update: function(){
             this.emulsionUpdate();
             this.tabStatusSetter();
-            this.setCoords();
+            // this.setCoords();
 		},
 
         setCoords: function() {
@@ -465,15 +465,21 @@ define([
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
-            this.model.get('release').set('end_position', endPosition);
+            if(_.isUndefined(endPosition[0]) || _.isUndefined(endPosition[1])){
+                this.model.get('release').set('end_position', startPosition);
+            } else {
+                this.model.get('release').set('end_position', endPosition);
+            }
         },
 
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
-                if (coordsArray[i].indexOf('°') !== -1){
+                if (!_.isUndefined(coordsArray[i]) && coordsArray[i].indexOf(' ') !== -1){
                     coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
+                    coordsArray[i] = parseFloat(coordsArray[i]);
+                } else if (!_.isUndefined(coordsArray[i])) {
+                    coordsArray[i] = parseFloat(coordsArray[i]);
                 }
-                coordsArray[i] = parseFloat(coordsArray[i]);
             }
             return coordsArray;
         },
