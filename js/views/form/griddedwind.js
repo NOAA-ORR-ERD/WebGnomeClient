@@ -11,6 +11,7 @@ define([
     var griddedWindForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
         title: 'Create Wind (Mover Only)',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function(){
             return _.defaults({
@@ -22,7 +23,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.body = _.template(GriddedWindTemplate);
-            this.buttons = null;
+            //this.buttons = null;
         },
 
         render: function(){
