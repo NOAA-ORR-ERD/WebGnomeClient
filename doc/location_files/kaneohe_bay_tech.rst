@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Kaneohe, Oahu, Hawaii, location
+
 .. _kaneohe_bay_tech:
 
 About Kaneohe Bay
@@ -20,6 +23,8 @@ Offshore currents outside the bay were modeled in two parts. The first part is t
 Currents on the shelf and shelf break have two components: a tidal current with an average tidal excursion of about 2 miles on the outer coast and 1/2 mile inside the bay, and a wind-driven geostrophic flow. The wind-driven geostrophic flow was scaled over time to the along-shore component of the wind.
 
 For the deep waters off the shelf, the larger-scale North Central Pacific Flow controls this highly variable flow. Unpredictable eddies of variable sizes and speeds routinely transit the area and tend to dominate the currents.
+
+
 Current Patterns
 ===============================================
 
@@ -36,6 +41,8 @@ All current patterns were created with the NOAA Current Analysis for Trajectory 
 .. _TAP II: http://response.restoration.noaa.gov/tap
 
 The Kaneohe Bay Trajectory Analysis Planner (`TAP II`_ ™) is available free of charge from the Emergency Response Division (ERD) of NOAA OR&R. This program and its documentation can be used for oil spill planning and risk analysis. More information is available at http://response.restoration.noaa.gov/tap.
+
+
 References
 ===============================================
 

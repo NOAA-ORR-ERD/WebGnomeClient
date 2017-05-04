@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Charleston Harbor, South Carolina, Ashley, Cooper, Wando, location
+
 .. _charleston_harbor_tech:
 
 About Charleston Harbor
@@ -11,16 +14,22 @@ Background
 ===========================
 
 The currents within the modeled domain are mostly tidally driven, but there is a freshwater component to the flow. The Ashley and Wando Rivers are short and contribute limited runoff into the estuary. The Cooper River is the longest of the three rivers and contributes the significant amount of freshwater into the estuary. It extends upriver, to the north, and into Lake Moultrie. The flow from Lake Moultrie into the Cooper River is controlled by the Pinopolis Dam. The Charleston Harbor Location File is based on NOAA's tidal current predictions for various locations along the three rivers which incorporate average runoff conditions for each river.
+
+
 Current Patterns
 ===================================
 
 The currents in the Charleston Harbor Location File are simulated with eleven current patterns. The current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. There are three patterns for each of the tidal rivers – the Wando, the Cooper, and the Ashley – which are scaled to the tidal current forecast at the mouth of each river, the lower section of each river, and the upper section of each river. There is also a pattern at the harbor mouth and a simplified offshore current pattern. The picture below illustrates the model domain and the finite element domain.
+
+
 Charleston Harbor Location File Limitations
 =========================================================
 
 The Location File is designed to show the user how floating pollutants such as oil would move under "normal" flow conditions. It should not be used under extreme high runoff or low runoff conditions for the rivers. It should not be used under storm surge or tsunami conditions. The Location File should not be used to predict transport of pollutants along the outer coast. The model domain was extended past the entrance to the harbor to give the user an idea of how far offshore an ebb cycle can carry pollutants into the Atlantic Ocean. It was not meant to predict movement along the outer coast. 
 
 Note that the user is not allowed to start spills everywhere in the domain. This is done because we don't want the pollutant to move quickly outside of the modeling domain and because the modeled currents have high uncertainty along the fringes of the model domain. Remember, the current pattern is calibrated to tidal analysis done along the main channels of the Cooper, Wando, and Ashley Rivers and along the main shipping channel of the lower estuary.
+
+
 Information and References
 =======================================================
 

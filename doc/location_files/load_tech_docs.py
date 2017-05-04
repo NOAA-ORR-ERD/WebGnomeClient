@@ -33,22 +33,19 @@ for loc in locations:
     filename = loc.lower().replace(" ", "_") + "_tech.rst"
     print "creating:", filename
     with open(filename, 'w') as outfile:
-        contents = []
+        contents = [":orphan:"]
         for doc in docs:
+            contents.append("\n\n")  # make sure there's a newline between them!
             contents.extend(open(os.path.join(loc_dir, doc)).readlines())
-            contents.append("\n")  # make sure there's a newline between them!
-        # post process the header
-        final_contents = []
+            contents.append("\n")  # make sure there's a newline at the end
+        # look  for the header to add the reference name
         for i, line in enumerate(contents):
-            if ".. keywords" in line:
+            if line.strip() and all((c == line[0] for c in line.strip())):
                 break
-            else:
-                final_contents.append(line)
-        final_contents.extend(contents[i+2:])
+        # insert the name line:
+        contents.insert(i - 1, ".. _%s:\n\n" % filename[:-4])
 
-        outfile.write(":orphan:\n\n.. _%s:\n" % filename[:-4])
-
-        outfile.writelines(final_contents)
+        outfile.writelines(contents)
 
 
 

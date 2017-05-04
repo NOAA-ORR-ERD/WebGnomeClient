@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Passamaquoddy, Maine, New Brunswick, Fundy, location
+
 .. _passamaquoddy_bay_tech:
 
 About Passamaquoddy Bay, Maine
@@ -14,14 +17,20 @@ Background
 ==============================
 
 The tidal range (>20 feet with extremes nearing 30 feet) in Passamaquoddy Bay can present a challenge to navigation and piloting. The tidal range increases as you sail from west to east along the coast of Maine and New Brunswick, Canada. Starting with a range of 9 feet or so in Kittery, it reaches about 19 feet in Eastport, and 25 feet in Saint John, New Brunswick. The Bay of Fundy is known for having the world's largest tidal range at over 45 feet (The Hopewell Rocks).
+
+
 Current Patterns
 ====================================
 
 The Passamaquoddy Location File contains tidal circulation patterns developed at the Bedford Institute of Oceanography in Dartmouth, Nova Scotia, Canada. The model is an implementation of the QUODDY 3-dimensional finite element circulation model. The model was expanded to allow for the flooding and drying of intertidal areas (Greenberg et al 2005). This bay has an extensive network of intertidal flats, tidal pools and channels that become blocked at low tide, and simulating dry areas improves the circulation throughout the domain. The region supports many aquaculture sites which require accurate knowledge of the local circulation and water properties.
+
+
 GNOME Implementation
 ==============================================
 
 Typically, tidal current simulations in GNOME Location Files use a single current pattern driven by tidal harmonics. In order to capture the large tidal variation in Passamaquoddy Bay and allow for wetting and drying of the shoreline, twelve representative tide patterns covering a tidal cycle were selected and driven by the tide station at Estes Head. These patterns consist of maximum flood, minimum before ebb, maximum ebb, and minimum before flood, with two patterns in between each. The Lunar Semidiurnal or M2 tidal constituents were used to get a picture of the phase changes of the typical circulation over a tidal cycle (roughly 12 hours) with the tide station used to calibrate the amplitude. When the model is run, GNOME determines where in the tide cycle the flow is at a given time, then selects the appropriate two patterns to use and interpolates as necessary. Each pattern identifies any dry grid points so GNOME is able to simulate the shoreline edge movement from the rising and falling tide.
+
+
 References
 =====================================
 

@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   San Diego, location
+
 .. _san_diego_bay_tech:
 
 About San Diego Bay
@@ -18,12 +21,16 @@ The mouth of San Diego Bay has been modified by the construction of the Zuniga j
 Kelp forests extend approximately 2 km southward from Point Loma and along its western side. These thick kelp forests create seasonal damping of currents to about one-third their values outside (Jackson and Winant 1983).
 
 Offshore of San Diego Bay, the long-term averages of the currents are equatorward in all seasons, with velocities as high as 10 cm/s (Winant and Bratkovich 1981). Ninety-eight percent of current measurements are between 1 and 25 cm/s (Winant 1983).
+
+
 Current Patterns
 ===================================
 
 The currents in the San Diego Bay area are simulated with four current patterns. The two most significant circulations are the tides and the offshore current. Although the tides in San Diego Bay are asymmetrical (Chadwick and Largier 1999), they have been simulated as symmetrical in the Location File because, at this time, GNOME does not support separate tidal current patterns for flood and ebb. The Location File tides within the bay are controlled by the San Diego Bay Entrance Tide Station. Offshore currents are scaled to always flow southward in the Location File. These current patterns also simulate the diminished currents in the kelp forests off Point Loma.
 
 To simulate wind-driven currents in the Location File, two current patterns were developed, one with NNW winds and the other with orthogonal (WSW) winds. These current patterns are scaled with the relative component of the user's wind data. The approximately 3% ratio of currents to winds from Gaul and Stewart (1960) is used to scale the wind-driven currents to the wind.
+
+
 References
 ===========================================
 
