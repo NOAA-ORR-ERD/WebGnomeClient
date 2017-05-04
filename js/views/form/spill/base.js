@@ -112,6 +112,13 @@ define([
             this.on('show.bs.modal', _.bind(function(){
                 this.update();
             }, this));
+
+            this.$('.position input').tooltip({
+                trigger: 'focus',
+                html: true,
+                width: 200,
+                placement: 'bottom'
+            });
 		},
 
         setEmulsificationOverride: function(){
@@ -294,8 +301,8 @@ define([
             var end_point = this.model.get('release').get('end_position');
             var compiled;
             
-            var lat_formats = '64.5011N (decimal degrees) \n 64 30.066N (degrees decimal minutes) \n64 30 3.96N (degrees minutes seconds)';
-            var lon_formats = '165.4064W (decimal degrees) \n 165 24.384W (degrees decimal minutes) \n165 24 23.04W (degrees minutes seconds)';
+            var lat_formats = "64.5011N<br/>(decimal degrees)<br/>64 30.066N<br/>(degrees decimal minutes) <br/>64 30 3.96N<br/>(degrees minutes seconds)";
+            var lon_formats = '165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)';
 
             if (!_.isNull(e) && isSpillPoint) {
                 compiled = _.template(PositionSingleTemplate, {
