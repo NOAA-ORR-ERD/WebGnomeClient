@@ -16,7 +16,8 @@ define([
     var spillTypeForm = FormModal.extend({
         title: 'Select Spill Type',
         className: 'modal form-modal spilltype-form',
-
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
+        
         events: function(){
             return _.defaults({
                 'click .instant': 'instant',
@@ -33,8 +34,9 @@ define([
 
         render: function(options){
             this.body = _.template(FormTemplate);
-            this.buttons = null;
+            //this.buttons = null;
             FormModal.prototype.render.call(this, options);
+            this.$('.step2').hide();
         },
 
         spillHiddenCB: function(spillForm) {

@@ -13,7 +13,7 @@ define([
         
         getExtent: function(){
             var extent;
-            if (!_.isUndefined(this.get('spillable_area'))){
+            if (!_.isUndefined(this.get('spillable_area')) && this.get('spillable_area').length >= 1){
                 if (this.get('spillable_area').length === 1){
                     extent = ol.extent.boundingExtent(this.get('spillable_area')[0]);
                 } else {

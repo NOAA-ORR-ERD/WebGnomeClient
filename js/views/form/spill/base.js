@@ -293,15 +293,22 @@ define([
             var start_point = this.model.get('release').get('start_position');
             var end_point = this.model.get('release').get('end_position');
             var compiled;
+            
+            var lat_formats = '64.5011N (decimal degrees) \n 64 30.066N (degrees decimal minutes) \n64 30 3.96N (degrees minutes seconds)';
+            var lon_formats = '165.4064W (decimal degrees) \n 165 24.384W (degrees decimal minutes) \n165 24 23.04W (degrees minutes seconds)';
 
             if (!_.isNull(e) && isSpillPoint) {
                 compiled = _.template(PositionSingleTemplate, {
-                    start_coords: {'lat': start_point[1], 'lon': start_point[0]}
+                    start_coords: {'lat': start_point[1], 'lon': start_point[0]},
+                    lat_formats: lat_formats,
+                    lon_formats: lon_formats
                 });
             } else {
                 compiled = _.template(PositionDoubleTemplate, {
                     start_coords: {'lat': start_point[1], 'lon': start_point[0]},
-                    end_coords: {'lat': end_point[1], 'lon': end_point[0]}
+                    end_coords: {'lat': end_point[1], 'lon': end_point[0]},
+                    lat_formats: lat_formats,
+                    lon_formats: lon_formats
                 });
             }
             this.$('#positionInfo').html('');
@@ -334,7 +341,7 @@ define([
 		update: function(){
             this.emulsionUpdate();
             this.tabStatusSetter();
-            this.setCoords();
+            // this.setCoords();
 		},
 
         setCoords: function() {
@@ -465,15 +472,21 @@ define([
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
-            this.model.get('release').set('end_position', endPosition);
+            if(_.isUndefined(endPosition[0]) || _.isUndefined(endPosition[1])){
+                this.model.get('release').set('end_position', startPosition);
+            } else {
+                this.model.get('release').set('end_position', endPosition);
+            }
         },
 
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
-                if (coordsArray[i].indexOf('°') !== -1){
+                if (!_.isUndefined(coordsArray[i]) && coordsArray[i].indexOf(' ') !== -1){
                     coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
+                    coordsArray[i] = parseFloat(coordsArray[i]);
+                } else if (!_.isUndefined(coordsArray[i])) {
+                    coordsArray[i] = parseFloat(coordsArray[i]);
                 }
-                coordsArray[i] = parseFloat(coordsArray[i]);
             }
             return coordsArray;
         },
