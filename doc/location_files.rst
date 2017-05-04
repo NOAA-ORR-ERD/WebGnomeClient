@@ -40,23 +40,19 @@ Available Location Files
 Alaska Region
 -------------
 
-* Prince William Sound:
-
-:ref:`prince_william_sound_tech` | :ref:`pws_examples`
+* Prince William Sound | :ref:`prince_william_sound_tech` | :ref:`pws_examples`
 
 Atlantic Region
 ---------------
 
-* Boston and Vicinity:
-
-:ref:`boston_and_vicinity_tech` | :ref:`boston_examples`
+* Boston and Vicinity | :ref:`boston_and_vicinity_tech` | :ref:`boston_examples`
 
 
 Gulf of Mexico
 --------------
 
-* Mobile Bay | :ref:`mobile_user_guid` | :ref:`mobile_examples`
-    
+* Mobile Bay | :ref:`mobile_bay_tech` | :ref:`mobile_examples`
+
 Pacific Region
 --------------
 
