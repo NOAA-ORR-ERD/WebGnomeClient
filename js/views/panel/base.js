@@ -87,7 +87,7 @@ define([
             this.$('.panel-heading .perm-add').tooltip({
                 title: _.bind(function(){
                     var object = this.$('.panel-heading').text().trim();
-                    return 'Create ' + object;
+                    return 'Replace ' + object;
                 }, this),
                 delay: delay,
                 container: 'body'

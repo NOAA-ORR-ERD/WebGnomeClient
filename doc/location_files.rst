@@ -16,14 +16,14 @@ have a picnic planned for tomorrow, an up to date weather forecast which incorpo
 observations will provide more useful information. Similarly, the Location Files are a
 valuable resource for planning for a potential future spill but need to be modified to
 incorporate actual real-time environmental conditions in the case a spill occurs.
-   
+
 Location File Wizard
 ====================
 
 To get started using WebGNOME Location Files, visit:
 http://gnome-stage.orr.noaa.gov/#locations
 
-The Location File Wizard will guide you through setting up a scenario with a 
+The Location File Wizard will guide you through setting up a scenario with a
 series of questions. The exact questions depend on the specific region being modeled but may include
 questions about: wind conditions, river flow rates, circulation patterns, and the
 type of spill to be modeled.
@@ -40,16 +40,18 @@ Available Location Files
 Alaska Region
 -------------
 
-* Prince William Sound | :ref:`pws_user_guide` | :ref:`pws_examples`
+* Prince William Sound | :ref:`prince_william_sound_tech` | :ref:`pws_examples`
 
 Atlantic Region
 ---------------
 
-* Boston and Vicinity | :ref:`boston_user_guide` | :ref:`boston_examples`
+* Boston and Vicinity | :ref:`boston_and_vicinity_tech` | :ref:`boston_examples`
+
 
 Gulf of Mexico
 --------------
 
+* Mobile Bay | :ref:`mobile_bay_tech` | :ref:`mobile_examples`
 
 Pacific Region
 --------------
@@ -69,8 +71,6 @@ International
 
     :ref:`nslope_examples`
 
-
-
     :ref:`glacier_examples`
 
     :ref:`stef_examples`
@@ -79,7 +79,7 @@ International
     Atlantic Region
     ---------------
 
-    :ref:`cascobay_examples`
+    :ref:`casco_bay_tech` | :ref:`cascobay_examples`
 
     :ref:`narragan_examples`
 
@@ -104,7 +104,6 @@ International
 
     :ref:`lmiss_examples`
 
-    :ref:`mobile_examples`
 
     :ref:`sabine_examples`
 

@@ -12,7 +12,8 @@ define([
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
-
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
+                
         events: function(){
             return _.defaults({
                 'click .grid': 'grid',
@@ -24,7 +25,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.body = _.template(CreateMoverTemplate);
-            this.buttons = null;
+            //this.buttons = null;
         },
 
         render: function(){

@@ -19,7 +19,7 @@ from the Merrimack River, and wastewater outflow can affect the
 trajectories of oil slicks. In addition, one example demonstrates how
 model and observation limitations can be overcome by including Uncertainty 
 in the model solution. This knowledge will help you in designing your 
-own GNOME model runs.
+own WebGNOME model runs.
 
 Example 1
 ---------
@@ -47,6 +47,7 @@ in the following table as you advance through the Wizard.
 =======================  =================================================
 Start time:               As above for flood or ebb tide.
 Model duration:           1 day.
+Uncertainty:              Not included.
 Sewage outfall effects:   Don't consider outfall.
 Wind:                     5 knots from the SE.
 Spill type:               Instantaneous.
@@ -54,7 +55,6 @@ Time of Release:          Same as model start time.
 Amount released:          15,000 kg.
 Pollutant type:           Non-weathering.
 Position:                 42° 20.45’ N, 70° 57.44’ W (42.34083, -70.95733).
-Uncertainty:              Not included.
 =======================  =================================================
 
 Once you have run the model for both start times, zoom in to the spill area and 
@@ -141,7 +141,7 @@ Why do you think this type of information would be useful?
 
 To include the Minimum Regret (Uncertainty) solution,
 click the box labeled "Include the Minimum Regret (Uncertainty) 
-solution" in the Incident panel in Setup View.
+solution" in the Model Settings panel in Setup View.
 
 Answer:
 .......
@@ -243,7 +243,7 @@ Then click on the Create Spill Icon (plus sign) in the **Spill** panel.
 Choose Continuous Release. The spill duration in this example is 1/2
 hour. Use the Add Endpoint button to specify a spill along a transit.
 
-2. Use the Select Oil button to to open the ADIOS oil library. 
+2. Use the Select/Change Oil button to to open the ADIOS oil library. 
 From this interface you can select an oil that corresponds to an IFO
 or a diesel fuel. It doesn't matter which exact oil you select, as long 
 as it falls into one of these broad categories.

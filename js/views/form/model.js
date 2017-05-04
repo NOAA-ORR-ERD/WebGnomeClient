@@ -21,12 +21,15 @@ define([
         },
 
         render: function(options){
+            
+            
             this.body = _.template(FormTemplate, {
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
                 time_steps: this.model.get('time_step') / 60,
-                name: this.model.get('name')
+                name: this.model.get('name'),
+                mode: this.model.get('mode')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -36,6 +39,7 @@ define([
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
             });
+            
         },
 
         update: function() {

@@ -144,14 +144,14 @@ define([
 
                     if (neededModels.length > 0 || invalidSpills.length > 0){
                         if (neededModels.length > 0){
-                            msg += 'The models listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code><br />';
+                            msg += 'The components listed below will be added to the model.<br /><br /><code>' + neededModelsStr + '</code><br />';
                         }
                         if (invalidSpills.length > 0){
-                            msg += 'The following spill models were altered to be compatible.<br /><br /><code>' + invalidSpillsStr + '</code><br />';
+                            msg += 'The following spill(s) were altered to be compatible.<br /><br /><code>' + invalidSpillsStr + '</code><br />';
                         }
                         swal({
-                            title: 'Model Compliance',
-                            text: 'The model you loaded is not compliant with the web environment.' + msg,
+                            title: 'Save File Compliance',
+                            text: 'Some components of the Save File are not supported or are missing.' + msg,
                             type: 'warning',
                             closeOnConfirm: true,
                             confirmButtonText: 'Ok'

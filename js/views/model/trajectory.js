@@ -215,12 +215,12 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-
+            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             var image_providers = Cesium.createDefaultImageryProviderViewModels();
             var default_image = new Cesium.ProviderViewModel({
-                name: 'None',
+                name: 'No imagery selected',
                 tooltip: '',
-                iconUrl: '/img/globe.png',
+                iconUrl: '/img/no_basemap.png',
                 creationFunction: function(){
                     return new Cesium.SingleTileImageryProvider({
                         url: '/img/globe.png'
@@ -753,7 +753,8 @@ define([
                                 hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
                                 material: Cesium.Color.BLUE.withAlpha(0.25),
                                 outline: true,
-                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75)
+                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                                height: 0,
                             }
                         }));
                     }
@@ -778,6 +779,7 @@ define([
                             material: Cesium.Color.WHITE.withAlpha(0),
                             outline: true,
                             outlineColor: Cesium.Color.BLUE,
+                            height: 0,
                         }
                     });
                 } else {

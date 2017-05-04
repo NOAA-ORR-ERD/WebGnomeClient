@@ -12,11 +12,11 @@
             </div>
             <div class="col-sm-6">
                 <label for="start-lat">Latitude</label>
-                <input type="text" class="form-control geo-info start" name="lat" id="start-lat" value="{{ start_coords.lat }}">
+                <input type="text" class="form-control geo-info start" name="lat" id="start-lat" title="{{ lat_formats }}" value="{{ start_coords.lat }}">
             </div>
             <div class="col-md-6">
                 <label for="start-lng">Longitude</label>
-                <input type="text" class="form-control geo-info start" name="lng" id="start-lon" value="{{ start_coords.lon }}">
+                <input type="text" class="form-control geo-info start" name="lng" id="start-lon" title="{{ lon_formats }}" value="{{ start_coords.lon }}">
             </div>
             
             <div class="col-md-12 position-header">
@@ -24,11 +24,11 @@
             </div>
             <div class="col-md-6">
                 <label for="end-lat">Latitude</label>
-                <input type="text" class="form-control geo-info end" name="lat" id="end-lat" value="{{ end_coords.lat }}">
+                <input type="text" class="form-control geo-info end" name="lat" id="end-lat" title="{{ lat_formats }}" value="{{ end_coords.lat }}">
             </div>
             <div class="col-md-6">
                 <label for="end-lng">Longitude</label>
-                <input type="text" class="form-control geo-info end" name="lng" id="end-lon" value="{{ end_coords.lon }}">
+                <input type="text" class="form-control geo-info end" name="lng" id="end-lon" title="{{ lon_formats }}" value="{{ end_coords.lon }}">
             </div>
             <div class="col-md-6">
                 <a class="btn btn-primary btn-xs remove-endpoint">Remove Endpoint</a>

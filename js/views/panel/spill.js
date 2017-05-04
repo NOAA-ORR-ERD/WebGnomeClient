@@ -22,6 +22,7 @@ define([
 
         events: _.defaults({
             'click .substance-info': 'renderOilLibrary',
+            'click .substance-info .edit': 'renderOilLibrary'
         }, BasePanel.prototype.events),
 
         models: [
@@ -182,7 +183,9 @@ define([
             });
         },
 
-        renderOilLibrary: function() {
+        renderOilLibrary: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var element_type = webgnome.model.getElementType();
             var oilLib = new OilLibraryView({}, element_type);
             oilLib.on('save wizardclose', _.bind(function(){
