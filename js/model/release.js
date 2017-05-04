@@ -28,7 +28,7 @@ define([
             }
 
             if(_.isUndefined(this.get('release_time'))){
-                this.set('release_time', start_time.format('YYYY-MM-DDTHH:00:00'));
+                this.set('release_time', start_time.format('YYYY-MM-DDTHH:mm:00'));
             }
             var end_time = '';
             if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
