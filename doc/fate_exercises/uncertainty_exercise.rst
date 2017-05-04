@@ -24,42 +24,41 @@ Uncertainty Exercise
 |                                      | _                                    |
 +--------------------------------------+--------------------------------------+
 
-    .. rubric:: Uncertainty Exercise
-       :name: uncertainty-exercise
+Background
+----------
 
-    .. rubric:: Background
-       :name: background
 
-    In a real spill, the size of the release is often ambiguous. It is
-    not uncommon for the spiller to report a 10 barrel release and the
-    on-scene observers to estimate a 1000 barrel release. `Wind
-    speed <wind.html>`__ directly effects several oil weathering
-    processes, but the National Weather Service rarely forecasts exact
-    values for `wind speed <wind.html>`__. Instead, the wind is given as
-    a range of values.
+In a real spill, the size of the release is often ambiguous. It is
+not uncommon for the spiller to report a 10 barrel release and the
+on-scene observers to estimate a 1000 barrel release. `Wind
+speed <wind.html>`__ directly effects several oil weathering
+processes, but the National Weather Service rarely forecasts exact
+values for `wind speed <wind.html>`__. Instead, the wind is given as
+a range of values.
 
-    These two factors are examples of the
-    `uncertainty <Uncertainty.html>`__ inherent in forecasting oil slick
-    fate and behavior. ADIOS2 allows you to incorporate this uncertainty
-    in your model predictions.
+These two factors are examples of the
+`uncertainty <Uncertainty.html>`__ inherent in forecasting oil slick
+fate and behavior. ADIOS2 allows you to incorporate this uncertainty
+in your model predictions.
 
-    .. rubric:: Incident
-       :name: incident
 
-    On June 2, at 1800 hours, a barge carrying diesel (Fuel Oil No.2)
-    hits a rock and releases and unknown amount of oil. The strike team
-    on-scene thinks it was 1000 bbl, but it could be half that or twice
-    that. They won't know for certain until they sound the tanks. The
-    spill is twenty miles offshore and the NOAA/HAZMAT trajectory model
-    predicts that the oil will first impact the beach after about two
-    days.
+Incident
+--------
 
-    Winds are forecast to be from the Northwest at 10-20 knots. Sediment
-    load is negligible. Seas are fully developed. Water temperature is
-    65 F.
+On June 2, at 1800 hours, a barge carrying diesel (Fuel Oil No.2)
+hits a rock and releases and unknown amount of oil. The strike team
+on-scene thinks it was 1000 bbl, but it could be half that or twice
+that. They won't know for certain until they sound the tanks. The
+spill is twenty miles offshore and the NOAA/HAZMAT trajectory model
+predicts that the oil will first impact the beach after about two
+days.
 
-    .. rubric:: ADIOS2 Model Input
-       :name: adios2-model-input
+Winds are forecast to be from the Northwest at 10-20 knots. Sediment
+load is negligible. Seas are fully developed. Water temperature is
+65 F.
+
+Model Input
+-----------
 
     Oil: diesel (Fuel Oil N0.2)
 
@@ -101,47 +100,42 @@ Uncertainty Exercise
     #. Click OK
        `For more information on Release <release.html>`__
 
-    .. rubric:: Discussion of Model Output
-       :name: discussion-of-model-output
+Discussion of Model Output
+--------------------------
 
-    What are the implications for shoreline impact ?
+What are the implications for shoreline impact ?
 
-    What would the oil look like ?
+What would the oil look like ?
 
-    Suppose the Coast Guard wants you to give them information for the
-    `ICS 209 <ics_209.htm>`__ form pertaining to the 8 hour operational
-    period beginning 0700 on June 3. Do you think that the answers are
-    really this accurate ?
+Suppose the Coast Guard wants you to give them information for the
+`ICS 209 <ics_209.htm>`__ form pertaining to the 8 hour operational
+period beginning 0700 on June 3. Do you think that the answers are
+really this accurate ?
 
-    Try letting some of the oil hit the beach after 2 days and recheck
-    the `ICS form <ics_209.htm>`__. Where would the beach impact
-    estimates likely come from ?
+Try letting some of the oil hit the beach after 2 days and recheck
+the `ICS form <ics_209.htm>`__. Where would the beach impact
+estimates likely come from ?
 
-    Do you think they would be accurate?
+Do you think they would be accurate?
 
-     
 
-    --------------
+--------------
 
-    `|image2|\ Top <#ADIOS>`__ `|image3|\ Back <Exercise.html>`__
-    `Home <Contents.html>`__
+.. `|image2|\ Top <#ADIOS>`__ `|image3|\ Back <Exercise.html>`__
+.. `Home <Contents.html>`__
 
-    ::
+.. ::
+..  
 
-        Last updated July 7, 2000
-        Send comments to adiosmail@hazmat.noaa.gov
-
- 
-
-.. |image0| image:: imagesUncer/UnPict.gif
-   :width: 75px
-   :height: 60px
-.. |image1| image:: Images/inProg.gif
-   :width: 30px
-   :height: 30px
-.. |image2| image:: Images/UpArrow.gif
-   :width: 32px
-   :height: 32px
-.. |image3| image:: Images/LeftArrow.gif
-   :width: 32px
-   :height: 32px
+.. .. |image0| image:: imagesUncer/UnPict.gif
+..    :width: 75px
+..    :height: 60px
+.. .. |image1| image:: Images/inProg.gif
+..    :width: 30px
+..    :height: 30px
+.. .. |image2| image:: Images/UpArrow.gif
+..    :width: 32px
+..    :height: 32px
+.. .. |image3| image:: Images/LeftArrow.gif
+..    :width: 32px
+..    :height: 32px
