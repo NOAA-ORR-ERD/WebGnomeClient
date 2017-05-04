@@ -1,11 +1,11 @@
 define([
     'model/movers/base'
 ], function(BaseMover){
-    var gridCurrentMover = BaseMover.extend({
+    var pyCurrentMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.current_movers.GridCurrentMover'
+            obj_type: 'gnome.movers.py_current_movers.PyCurrentMover'
         }
     });
 
-    return gridCurrentMover;
+    return pyCurrentMover;
 });

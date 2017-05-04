@@ -142,7 +142,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.py_current_movers.PyCurrentMover',
                     'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.CurrentCycleMover',
                     'gnome.movers.wind_movers.GridWindMover'

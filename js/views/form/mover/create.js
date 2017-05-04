@@ -8,7 +8,7 @@ define([
     'text!templates/form/mover/create.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, CatsMover, PyCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -54,7 +54,7 @@ define([
         },
 
         grid: function(){
-            this.model = new GridCurrentMover();
+            this.model = new PyCurrentMover();
             this.nextStep();
         },
 

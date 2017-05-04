@@ -15,7 +15,7 @@ define([
 
         models: [
             'gnome.movers.current_movers.CatsMover',
-            'gnome.movers.current_movers.GridCurrentMover'
+            'gnome.movers.py_current_movers.PyCurrentMover'
         ],
 
         initialize: function(options){
@@ -50,7 +50,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover'
+                    'gnome.movers.py_current_movers.PyCurrentMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var compiled = _.template(CurrentPanelTemplate, {
