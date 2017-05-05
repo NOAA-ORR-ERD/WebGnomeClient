@@ -27,7 +27,6 @@ define([
             
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
-                title: 'Edit ' + name,
                 active: this.model.get('on'),
                 scale_value: this.model.get('scale_value')
             });
