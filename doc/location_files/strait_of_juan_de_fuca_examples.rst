@@ -70,7 +70,7 @@ switch from Map View to Setup View. In Setup View are various panels which
 allow you to edit the model setup. In the **Wind** panel, click on the edit 
 (pencil) icon next to the wind entry (named "Wind #1 unless you specified 
 a different name in the Wizard). Here you can change the wind direction 
-and speed. (For a constant wind, the date & time is not important as the 
+and speed. (For a constant wind, the Date & Time Field is not important as the 
 same values will be applied at all model times.) You may want to read the 
 help available about conventions for entering wind data - these are 
 available by clicking on the question mark icon at the top of the form.
