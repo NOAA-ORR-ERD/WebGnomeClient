@@ -7,33 +7,34 @@ Chemical Dispersant Exercise
 
 
     +--------------------------------------+--------------------------------------+
-    | |image0|                             | .. rubric:: ADIOS 2 Exercises:       |
+    | |image0|                             | .. rubric:: Fate Exercises:          |
     |                                      |    Chemical Dispersant               |
-    |                                      |    :name: adios-2-exercises-chemical |
-    |                                      | -dispersant                          |
+    |                                      |                                      |
+    |                                      |                                      |
     +--------------------------------------+--------------------------------------+
 
 
-    .. rubric:: Incident
-       :name: incident
+Incident
+========
 
-    At 0700 on April 4th, 2000, a collision occurred between a shrimp
-    boat and a freighter about 30 miles southeast of Galveston, Texas at
-    28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
-    were lost. The National Weather Service marine forecast indicates
-    that the winds will be from the southwest at 10-20 knots for the
-    next 36 hours.
+At 0700 on April 4th, 2016, a collision occurred between a shrimp
+boat and a freighter about 30 miles southeast of Galveston, Texas at
+28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
+were lost. The National Weather Service marine forecast indicates
+that the winds will be from the southwest at 10-20 knots for the
+next 36 hours.
 
-    Approval has been given for the application of dispersants. Corexit
-    9500 has been loaded onto a DC-4, and the aircraft is on standby in
-    Houma, Louisiana. Unfortunately, the aircraft has a mechinical
-    problem with the dispersant equipment. The contractor indicates that
-    they will be able to disperse the next day. *Commander Jones would
-    like to know if the oil will emulsify to the extent that dispersants
-    will not work.*
+Approval has been given for the application of dispersants. Corexit
+9500 has been loaded onto a DC-4, and the aircraft is on standby in
+Houma, Louisiana. Unfortunately, the aircraft has a mechanical
+problem with the dispersant equipment. The contractor indicates that
+they will be able to disperse the next day.
 
-    .. rubric:: ADIOS2 Model Input
-       :name: adios2-model-input
+**Commander Jones would like to know if the oil will emulsify to the extent that dispersants will not work.**
+
+
+Model Input
+===========
 
     Oil: IFO 180
 
@@ -76,38 +77,34 @@ Chemical Dispersant Exercise
     #. Enter 315 as Amount Spilled and choose bbl from the popup menu
     #. Click OK
 
-    .. rubric:: Discussion
-       :name: discussion
+Discussion
+==========
 
-    *Commander Jones would like to know if the oil will emulsify to the
-    extent that dispersants will not work.*
+**Commander Jones would like to know if the oil will emulsify to the
+extent that dispersants will not work.**
 
-    IFO-180's do not normally emulsify, however, the oil may weather and
-    become very viscous so that dispersant may be less effective. You
-    can address this issue by using the Oil Viscosity Graph. *Click
-    Viscosity (located at the top of the window).* Notice that after 12
-    hours, dispersability is restricted. The effectiveness of
-    dispersants will be questionable. Ask your SSC for further guidence.
+IFO-180's do not normally emulsify, however, the oil may weather and
+become very viscous so that dispersant may be less effective. You
+can address this issue by using the Oil Viscosity Graph.
 
-    |image1|
+ * Click Viscosity (located at the top of the window).
+ * Notice that after 12 hours, dispersability is restricted. The effectiveness of
+dispersants will be questionable. Ask your SSC for further guidence.
 
-    Dispersibility versus viscosity.
 
-    |image2| 
 
-     
+|image1|
 
-    --------------
+Dispersibility versus viscosity.
 
-    `|image3|\ Top <#ADIOS>`__ `|image4|\ Back <Exercise.html>`__
-    `Home <Contents.html>`__
+|image2| 
 
-    ::
 
-        Last updated June 6, 2000
-        Send comments to adiosmail@hazmat.noaa.gov
+--------------
 
-     
+`|image3|\ Top <#ADIOS>`__ `|image4|\ Back <Exercise.html>`__
+`Home <Contents.html>`__
+
 
 .. |image0| image:: images/dispersant_pict.gif
    :width: 149px
