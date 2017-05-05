@@ -52,13 +52,15 @@ Sewage outfall effects:   Don't consider outfall.
 Wind:                     5 knots from the SE.
 Spill type:               Instantaneous.
 Time of Release:          Same as model start time.
-Amount released:          15,000 kg.
+Amount released:          100 bbls.
 Pollutant type:           Non-weathering.
 Position:                 42° 20.45’ N, 70° 57.44’ W (42.34083, -70.95733).
 =======================  =================================================
 
 Once you have run the model for both start times, zoom in to the spill area and 
-examine the differences in beach impacts between the two spills.
+examine the differences in beach impacts between the two spills. To more easily 
+visualize the difference between the spill impacts, you could take
+a screenshot of the map at the end of the first run.
 
 How do the two spills differ in the amount and location of pollutant?
 
@@ -78,8 +80,6 @@ the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time. 
 So it is a good ideal to always change the spill start time first.
 
-2. To more easily visualize the difference between the spill impacts, 
-consider taking a screenshot of the map at the end of the first run.
 
 Answer:
 .......
@@ -167,7 +167,7 @@ Example 4
 The Merrimack River has very high flows in the spring. This
 strong pulse of fresh water into the Gulf of Maine leads to a coastal
 current in Massachusetts Bay. Run two spill scenarios of 70,000 gallons
-(237,000 kg) of non-weathering oil near the entrance to Gloucester Harbor at 
+of non-weathering oil near the entrance to Gloucester Harbor at 
 42° 34.73’ N, 70° 38.97’ W (42.57883 N, -70.64900). 
 Run one scenario during the spring freshet, on May 15, 2000 at 3:45 p.m. 
 Run another scenario during the fall on

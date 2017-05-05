@@ -94,7 +94,8 @@ settings.
 
 2. The run duration can be edited in the Model Settings panel.
 
-2. **Not sure how to change the river flow rate yet**
+2. **Not sure how to change the river flow rate yet** w/o rerunning the 
+wizard (i.e. starting from scratch -- this is an open ticket)
 
 Answer:
 .......
