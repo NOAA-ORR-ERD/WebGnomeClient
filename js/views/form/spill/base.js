@@ -30,7 +30,7 @@ define([
                 'click .oil-select': 'elementSelect',
                 'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
-                'blur .geo-info': 'manualMapInput',
+                'keyup .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'show.bs.model': 'renderPositionInfo',
@@ -113,12 +113,7 @@ define([
                 this.update();
             }, this));
 
-            this.$('.position input').tooltip({
-                trigger: 'focus',
-                html: true,
-                width: 200,
-                placement: 'bottom'
-            });
+
 		},
 
         setEmulsificationOverride: function(){
@@ -320,6 +315,20 @@ define([
             }
             this.$('#positionInfo').html('');
             this.$('#positionInfo').html(compiled);
+            this.$('.position input[name="lat"]').tooltip({
+                trigger: 'focus',
+                html: true,
+                width: 200,
+                placement: 'top',
+                viewport: 'body'
+            });
+            this.$('.position input[name="lng"]').tooltip({
+                trigger: 'focus',
+                html: true,
+                width: 200,
+                placement: 'top',
+                viewport: 'body'
+            });
         },
 
         addEndpoint: function(e) {
@@ -474,8 +483,10 @@ define([
         },
 
         manualMapInput: function(){
-            var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
-            var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
+            var start = [this.$('#start-lon').val(), this.$('#start-lat').val()];
+            var end = [this.$('#end-lon').val(), this.$('#end-lat').val()];
+            var startCoords = this.coordsParse(_.clone(start));
+            var endCoords = this.coordsParse(_.clone(end));
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
@@ -484,6 +495,29 @@ define([
             } else {
                 this.model.get('release').set('end_position', endPosition);
             }
+            if(start.toString().indexOf(' ') !== -1){
+                this.showParsedCoords('start');
+            } else {
+                this.hideParseCoords('start');
+            }
+
+            if(end.toString().indexOf(' ') !== -1){
+                this.showParsedCoords('end');
+            } else {
+                this.hideParseCoords('end');
+            }
+
+        },
+
+        showParsedCoords: function(position){
+            var coords = this.model.get('release').get(position + '_position');
+            this.$('.' + position + '-lat-parse').text('Parsed as: ' + coords[1].toPrecision(4));
+            this.$('.' + position + '-lon-parse').text('Parsed as: ' + coords[0].toPrecision(4));
+        },
+
+        hideParseCoords: function(position){
+            this.$('.' + position + '-lat-parse').text('');
+            this.$('.' + position + '-lon-parse').text(''); 
         },
 
         coordsParse: function(coordsArray){
