@@ -34,7 +34,7 @@ Example 1.
 
 Tides are an important part of the circulation within Kaneohe
 Bay. To compare the effects of tides in this region, you will simulate a
-100-barrel spill off Kualoa Point at 21° 30.7’N, 157° 49.26’W. Start the
+100-barrel spill off Kualoa Point at 21° 30.7'N, 157° 49.26'W. Start the
 spill at two different times in the tidal cycle, once at the beginning
 of a flood tide (8:15 p.m. on Jan. 9, 2001) and once at the beginning of
 an ebb tide (3:15 a.m. on Jan 10, 2001). Set a constant wind from the
@@ -73,7 +73,7 @@ Example 2.
 Wind both moves the oil along the water's surface and drives
 currents. To see how changing winds affect an oil slick's trajectory,
 run a new spill scenario with a release that occurred north of Moku Manu
-at 21° 28.83’N, 157° 43.3’W. This 70,000-gallon "spill" occurred at 3:15
+at 21° 28.83'N, 157° 43.3'W. This 70,000-gallon "spill" occurred at 3:15
 a.m. on Jan. 10, 2001 (the same time as the previous example). Run this
 scenario once with no wind, then rerun it with a 10-knot east wind.
 
@@ -104,7 +104,7 @@ spill that includes the "Minimum Regret" solution to see where the spill
 is expected to go, and where else the spill *might* go.
 
 Rerun the previous scenario (with the 10-knot east wind). This time, run
-GNOME with the “Minimum Regret” solution.
+GNOME with the "Minimum Regret" solution.
 
 **"Zoom in" to your spill area and briefly discuss the difference
 between the "Best Guess" (black) and "Minimum Regret" (red)
@@ -112,7 +112,7 @@ trajectories. Why do you think this type of information would be
 useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the “Include Minimum Regret” box under **Model Settings** in
+    click the "Include Minimum Regret" box under **Model Settings** in
     the Summary List.
 
     **Answer:** The "Minimum Regret" solution shows where else the spill
@@ -140,7 +140,7 @@ previous examples, the pollutant that spilled did not change with time
 types of pollutants.
 
 Run two scenarios for a "spill" that occurs within Kaneohe Bay at 21°
-26.38’N, 157° 47.85’W. The spill occurs at 2:00 p.m. on July 2, 2000.
+26.38'N, 157° 47.85'W. The spill occurs at 2:00 p.m. on July 2, 2000.
 Winds at the time were 0 knot. First simulate a spill of 70,000 gallons
 of **fuel oil #6** (a common fuel on merchant vessels), then simulate a
 spill of the same amount of **jet fuel**. You can record the mass

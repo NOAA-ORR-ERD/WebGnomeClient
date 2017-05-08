@@ -11,7 +11,7 @@ Try out these examples to learn the basics of modeling oil spills in
 Narragansett Bay. Explore how the changing tides affect the trajectories
 of oil slicks, how wind can move an oil slick in a different direction
 from the currents, and how model and observation limitations can be
-overcome by considering both the “Best Guess” and the “Minimum Regret”
+overcome by considering both the "Best Guess" and the "Minimum Regret"
 (Uncertainty) solutions. This knowledge will help you in designing your
 own GNOME model runs.
 
@@ -128,7 +128,7 @@ trajectories. Why do you think this type of information would be
 useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the “Include Minimum Regret” box under **Model Settings** in
+    click the "Include Minimum Regret" box under **Model Settings** in
     the Summary List.
 
     **Answer:** The "Minimum Regret" solution covers a larger area than
@@ -178,10 +178,10 @@ the table below.
     spill.
 
     To view the mass balance for each scenario, click the right-pointing
-    triangle next to the spill description (“Fuel Oil #6: 1000 barrels”)
+    triangle next to the spill description ("Fuel Oil #6: 1000 barrels")
     under **Spills** in the Summary List. Then click the right-pointing
-    triangle next to “Splot Mass Balance” to view the mass balance for
-    the “Best Guess” trajectory.
+    triangle next to "Splot Mass Balance" to view the mass balance for
+    the "Best Guess" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. (Your numbers may differ slightly.)

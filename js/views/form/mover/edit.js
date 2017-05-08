@@ -9,7 +9,7 @@ define([
     'use strict';
     var modelForm = FormModal.extend({
         className: 'modal form-modal model-form',
-        title: 'Edit Currents',
+        title: 'Edit Current Attributes ',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
         events: function() {

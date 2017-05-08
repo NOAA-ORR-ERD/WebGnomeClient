@@ -76,7 +76,7 @@ By the end of two days, almost all of the gasoline has
 evaporated and dispersed. (For the crude oil spill, only about a 
 third of the spill had evaporated and dispersed in two days.) 
 Much less shoreline is oiled because the
-gasoline isn’t around long enough to travel very far.
+gasoline isn't around long enough to travel very far.
 
 Example 3.
 ----------
@@ -101,10 +101,10 @@ Answer:
 
 Now the beach impacts of the "Best Guess" trajectory
 affect both Hinchinbrook and Montague Islands. In problem 1, the
-“Best Guess” trajectory impacted only Hinchinbrook Island, while the
+"Best Guess" trajectory impacted only Hinchinbrook Island, while the
 Uncertainty trajectory showed that Montague Island could possibly be
 affected as well. In this problem, you can see how a small shift in
-the wind has a dramatic effect on the spill’s trajectory.
+the wind has a dramatic effect on the spill's trajectory.
 
 Example Set II
 ==============

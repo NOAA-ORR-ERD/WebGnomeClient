@@ -80,7 +80,7 @@ Example 2.
 ----------
 
 Different types of pollutants weather differently. In this
-example, you’ll re-run the east wind spill (your Location File Save from
+example, you'll re-run the east wind spill (your Location File Save from
 the previous example), and compare the spill effects of the medium crude
 spill with those of a kerosene spill. Try to predict how the spills will
 differ in their behavior, and at the end of your 48-hour prediction,
