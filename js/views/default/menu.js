@@ -327,6 +327,10 @@ define([
                 this.toggleView('config');
             }
 
+            if(window.location.href.indexOf('adios') !== -1){
+                this.toggleView('config');
+            }
+
             if (window.location.href.indexOf('response') !== -1){
                 this.toggleView('response');
             }
