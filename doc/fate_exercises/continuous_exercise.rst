@@ -2,10 +2,7 @@
 :orphan:
 
 Continuous Release Exercise
-============================
-
-    .. rubric::
-       :name: section
+###########################
 
     +--------------------------------------+-----------------------------------------------+
     | |image_cont|                         | .. rubric:: GNOME Fate Exercises:             |
@@ -13,39 +10,49 @@ Continuous Release Exercise
     |                                      |    :name: GNOME-exercises-continuous-release  |
     +--------------------------------------+-----------------------------------------------+
 
-    .. rubric:: Incident
-       :name: incident
+Incident
+========
 
-    On August 24, 2000 at 0800, a jet aircraft carrying 450 gallons of
-    JP-5 crashes into a lake. The pilot and co-pilot exit the aircraft
-    safely and are not injured. Unfortunately, the aircraft sinks to the
-    bottom of the lake. The water temperature is reported to be 69°F.
-    On-scene observers report a 100 yard by 10 yard sheen.
+On August 24, 2016 at 0800, a jet aircraft carrying 450 gallons of
+JET-B crashes into a lake. The pilot and co-pilot exit the aircraft
+safely and are not injured. Unfortunately, the aircraft sinks to the
+bottom of the lake.
 
-    Local officials are concerned about fuel leaking from the aircraft
-    and would like to send a skimmer to the site. The owner of the
-    aircraft argues that the oil leaking from the aircraft is not
-    recoverable and a skimmer would be wasting both time and money.
-    *Local officials would like to know when the slick will dissipate
-    and not be observable.*
+The water temperature is reported to be 69°F.
 
-    The trajectory analysis team is given the following weather
-    forecast:
+On-scene observers report a 100 yard by 10 yard sheen.
 
-    Winds are currently from the north at less than 5 knots and are
-    expected to increase to 10 knots from the north later in the
-    afternoon. Tomorrow, August 25, the winds are forecast to be from
-    the northwest at 15 knots. August 26, the winds are predicted to be
-    from west at 5 knots or less.
+Local officials are concerned about fuel leaking from the aircraft
+and would like to send a skimmer to the site. The owner of the
+aircraft argues that the oil leaking from the aircraft is not
+recoverable and a skimmer would be wasting both time and money.
 
-    The team recommends running the oil weathering software, ADIOS, for
-    two different scenarios: 1) credible worst case and 2) a chronic
-    release.
+*Local officials would like to know when the slick will dissipate
+and not be observable.*
 
-    .. rubric:: GNOME Model Input
-       :name: GNOME-model-input
+The trajectory analysis team is given the following weather
+forecast:
 
-    Oil: JP-5
+Winds are currently from the north at less than 5 knots and are
+expected to increase to 10 knots from the north later in the
+afternoon.
+
+Tomorrow, August 25, the winds are forecast to be from the northwest at 15 knots.
+
+August 26, the winds are predicted to be from west at 5 knots or less.
+
+The team recommends running the GNOME oil weathering software, ADIOS, for
+two different scenarios:
+
+1) Credible worst case and
+
+2) A chronic release.
+
+
+Model Input
+===========
+
+    Oil: JET-B
 
     #. Click Oil
     #. Select JP-5 from the list of oils
