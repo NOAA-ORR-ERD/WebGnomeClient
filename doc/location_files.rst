@@ -56,6 +56,7 @@ Gulf of Mexico
 Pacific Region
 --------------
 
+* Strait of Juan de Fuca | :ref:`strait_of_juan_de_fuca_tech` | :ref:`strait_of_juan_de_fuca_examples`
 
 International
 -------------
@@ -113,7 +114,7 @@ International
     Pacific Region
     --------------
 
-    :ref:`juandefuca_examples`
+
 
     :ref:`cre_examples`
 

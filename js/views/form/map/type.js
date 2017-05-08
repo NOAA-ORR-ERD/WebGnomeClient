@@ -13,6 +13,7 @@ define([
     var mapTypeForm = FormModal.extend({
         title: 'Select Map Type',
         className: 'modal form-modal model-form shorelinetype-form',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function(){
             return _.defaults({
@@ -30,7 +31,6 @@ define([
 
         render: function(options){
             this.body = _.template(SelectTemplate);
-            this.buttons = null;
             FormModal.prototype.render.call(this, options);
         },
 

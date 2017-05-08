@@ -76,9 +76,9 @@ exits the bay, note the time that it started to exit. **
     Spill 1b, the neap tide spill, moves more to the south, affecting
     Willoughby Island and extensively oiling much of Glacier Bay's
     southwestern shoreline. Although the tidal velocities are greater
-    during the spring tide, the spill doesn’t quite get out of the bay.
+    during the spring tide, the spill doesn't quite get out of the bay.
     During the neap period, the flood tide velocities are comparatively
-    less, which might make you think that the spill wouldn’t go as far,
+    less, which might make you think that the spill wouldn't go as far,
     but it starts to leave the bay around noon on January 23.
 
 Example 2.
@@ -100,7 +100,7 @@ compare it with the 1b scenario. **
     **Note:** Before moving on, save your settings for spill 2b as a
     Location File Save (LFS) for use in the next example.
 
-    **Answer:** Wind dramatically changes the oil’s trajectory and
+    **Answer:** Wind dramatically changes the oil's trajectory and
     causes the floating oil to beach. In the scenario with no wind, the
     oil moved south along the coast, moving and spreading only under the
     influence of the water currents and turbulence. In the "south wind"
@@ -129,7 +129,7 @@ trajectories. Why do you think this type of information would be
 useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the “Include Minimum Regret” box under **Model Settings** in
+    click the "Include Minimum Regret" box under **Model Settings** in
     the Summary List.
 
     **Answer:** In this scenario, the "Minimum Regret" solution differs
@@ -186,10 +186,10 @@ impacts?**
     appropriate item in the Summary List.
 
     To view the mass balance for each scenario, click the right-pointing
-    triangle next to the spill description (“Fuel Oil #6: 1000 barrels”)
+    triangle next to the spill description ("Fuel Oil #6: 1000 barrels")
     under **Spills** in the Summary List. Then click the right-pointing
-    triangle next to “Splot Mass Balance” to view the mass balance for
-    the “Best Guess” trajectory.
+    triangle next to "Splot Mass Balance" to view the mass balance for
+    the "Best Guess" trajectory.
 
     To quickly change the pollutant type, double-click the spill
     description ("Fuel Oil #6: 1000 barrels") under **Spills** in the

@@ -9,9 +9,9 @@ North Slope Example Problems
 Try out these examples to learn the basics of modeling oil spills in
 the waters off the North Slope of Alaska. In these examples, you
 will see how different winds, pollutants, and river flows can affect
-the trajectories of oil slicks. In addition, you’ll see how model
+the trajectories of oil slicks. In addition, you'll see how model
 and observation limitations can be overcome by considering both the
-“Best Estimate” and the “Minimum Regret” (Uncertainty) solutions.
+"Best Estimate" and the "Minimum Regret" (Uncertainty) solutions.
 This knowledge will help you in designing your own GNOME model runs.
 
 The first four examples are in Stefansson Sound, a region of the
@@ -26,11 +26,11 @@ Spill size:         As specified in each example.
 Pollutant type:     Non-weathering, unless specified.
 Model duration:     2 days, unless specified.
 Uncertainty:        Not included, unless specified.
-River Flow Rates:   Mackenzie, Kuparuk and Colville rates “low”, others as specified.
+River Flow Rates:   Mackenzie, Kuparuk and Colville rates "low", others as specified.
 =================  ============================================
 
 
-Use WebGNOME’s North Slope Location File to answer the
+Use WebGNOME's North Slope Location File to answer the
 following questions. Be sure to carefully read and enter all the
 information in each problem.
 
@@ -49,14 +49,14 @@ after 2 days. Your scenario should first include 20-knot winds
 from the east, then 20-knot winds from the west.
 
 The Sag,
-Shaviovik, Canning, and Canning-Tamariak rivers’ flows should be
+Shaviovik, Canning, and Canning-Tamariak rivers' flows should be
 moderately high: 50, 20, 50, and 50 cm/s, respectively.
 
 Set a
 spill of 1000 gallons of medium crude between the Maguire Islands
 and the mainland, at approximately 70° 12.07'N, 146° 24.16'W.
 
-“Zoom in” to the spill area and describe how the trajectory changes with the wind conditions?
+"Zoom in" to the spill area and describe how the trajectory changes with the wind conditions?
 
 How do the beach impacts differ?
 
@@ -72,7 +72,7 @@ left corner of the window!)
 
 2. To model a point source spill that continues for several hours, you
 will need to enter the ending time in the Spill Information window.
-To do this, click the box labeled “Different end release time” and
+To do this, click the box labeled "Different end release time" and
 enter the ending time (1500 on July 1, 2004).
 
 **Note:** You will need to use the spill settings from the east wind
@@ -93,7 +93,7 @@ Example 2.
 ----------
 
 Different types of pollutants weather differently. In this example,
-you’ll re-run the east wind spill (your Location File Save from
+you'll re-run the east wind spill (your Location File Save from
 the previous example), and compare the spill effects of the
 medium crude spill with those of a kerosene spill. Try to predict
 how the spills will differ in their behavior, and at the end of
@@ -118,11 +118,11 @@ balance that GNOME calculates for each product.
 **Hints:**
 
 To view the mass balance for each scenario, click the
-right-pointing triangle next to the spill description (“Medium
-Crude: 1000 gallons”) under **Spills** in the Summary List (the left
+right-pointing triangle next to the spill description ("Medium
+Crude: 1000 gallons") under **Spills** in the Summary List (the left
 section of the Map Window). Then click the right pointing triangle
-next to “Splot Mass Balance” to view the mass balance for the “Best
-Estimate” trajectory.
+next to "Splot Mass Balance" to view the mass balance for the "Best
+Estimate" trajectory.
 
 Answer:
 .......
@@ -153,35 +153,35 @@ oil spill.
 Example 3.
 
 Forecasts of environmental parameters are inherently uncertain. For
-example, wind and weather forecasts can be “off” in their speed,
-direction, or timing. GNOME supports a “Minimum Regret” solution
-in addition to the “Best Estimate” solution that you have been
-running. The “Minimum Regret” solution takes into account our
+example, wind and weather forecasts can be "off" in their speed,
+direction, or timing. GNOME supports a "Minimum Regret" solution
+in addition to the "Best Estimate" solution that you have been
+running. The "Minimum Regret" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
-Rerun the east wind scenario from Example 1, but this time, run GNOME with the “Minimum Regret” solution turned on.
+Rerun the east wind scenario from Example 1, but this time, run GNOME with the "Minimum Regret" solution turned on.
 
-“Zoom in” to the spill area and briefly discuss the difference between the “Best Estimate” (black) and “Minimum Regret” (red) trajectories. Why do you think this type of information would be useful?
+"Zoom in" to the spill area and briefly discuss the difference between the "Best Estimate" (black) and "Minimum Regret" (red) trajectories. Why do you think this type of information would be useful?
 
 
 **Hint:**
 
 To include the Minimum Regret (Uncertainty) solution,
-click the box labeled “Include the Minimum Regret solution” under
+click the box labeled "Include the Minimum Regret solution" under
 **Model Settings** in the Summary List.
 
 Answer:
 .......
 
-The “Minimum Regret” solution shows where the spill
+The "Minimum Regret" solution shows where the spill
 could go if the currents, winds, or other model inputs were set
-differently. In this case, the “Minimum Regret” solution shows that
+differently. In this case, the "Minimum Regret" solution shows that
 the spill effects could be more severe in the regions depicted by
-the “Best Estimate” scenario, and the spill could be more far-
+the "Best Estimate" scenario, and the spill could be more far-
 reaching, traveling to more areas of Mikkelson Bay, Foggy Island
 Bay, and Point Brower.
 
-Responders use both the “Best Estimate” and “Minimum Regret”
+Responders use both the "Best Estimate" and "Minimum Regret"
 trajectories to make decisions about how they will allocate response
 resources. A highly valued environmental resource (e.g. an
 endangered species) may be important enough to protect, even if it
@@ -196,16 +196,16 @@ continues for about 9 hours (until 1800). You should observe the
 spill effects for 1 day. Your scenario should first include a
 very slow (5 cm/s) current speed on the Sag River, then a faster
 flow (100 cm/s, or 1 m/s). In your scenario, include a series of
-winds that will “push” the oil upriver. Set the 100-barrel
-“non-weathering” spill in the Sag delta at approximately 70°
+winds that will "push" the oil upriver. Set the 100-barrel
+"non-weathering" spill in the Sag delta at approximately 70°
 19.03'N, 147° 55.34'W.
 
-“Zoom in” to the spill area and note the effects of the different river flows on the spill trajectory and beach impacts.
+"Zoom in" to the spill area and note the effects of the different river flows on the spill trajectory and beach impacts.
 
 **Hints:**
 
 To make the changes for this scenario, double-click the
-name of your Location File (“North Slope”) in the Summary List. The
+name of your Location File ("North Slope") in the Summary List. The
 Location File Welcome window will appear with all the settings you
 have chosen. You only have to enter information that you are
 changing, so in the Model Settings window, change the run duration
@@ -244,8 +244,8 @@ series such as this, or make up your own winds:
 |     07/01/2004   | 2000           | 10              |     ENE             |
 +------------------+----------------+-----------------+---------------------+
 
-To enter the winds in the Variable Winds window, first click “Delete
-All” to clear any winds from your previous work. Next, because the
+To enter the winds in the Variable Winds window, first click "Delete
+All" to clear any winds from your previous work. Next, because the
 wind observations are 1 hour apart, enter an auto-increment time of
 1 hour. To enter a wind, click within the blue Wind Target on the
 point that represents the wind speed and direction you want to enter
@@ -254,7 +254,7 @@ circle). If necessary, you can hold down your mouse button and drag
 to adjust the wind speed and direction to the combination you want.
 
 Finally, to change the details of the spill, double-click the spill
-description (“Kerosene / Jet Fuels: 1000 gallons”) in the Summary List. In the Spill
+description ("Kerosene / Jet Fuels: 1000 gallons") in the Summary List. In the Spill
 Information window, make the appropriate changes to the spill
 details.
 
@@ -290,7 +290,7 @@ Spill Location:                As specified.
 ============================  ======================================================
 
 
-Use GNOME’s Standard Mode and the North Slope Location File to
+Use GNOME's Standard Mode and the North Slope Location File to
 answer the following questions:
 
 Example 5.
@@ -344,15 +344,15 @@ saved files, re-run the scenarios from Example 5, but this time
 change the pollutant type to a light product, such as gasoline.
 
 
-How does the “weathering” of the pollutants affect the spill impacts?
+How does the "weathering" of the pollutants affect the spill impacts?
 
 
 **Hints:**
 
 To quickly change the pollutant type, double-click the
-spill description (“Medium Crude: 1000 gallons”) under **Spills** in
+spill description ("Medium Crude: 1000 gallons") under **Spills** in
 the Summary List (the left section of the Map Window). In the Spill
-Information window, choose “gasoline” from the Pollutant pull-down
+Information window, choose "gasoline" from the Pollutant pull-down
 menu.
 
 Answer:
@@ -362,10 +362,10 @@ Heavier oils remain in the environment longer than
 lighter, refined products. Beach impacts from the crude oil spill
 are much more extensive than for the gasoline spill in both wind
 scenarios. (To view the mass balance for a scenario, click the
-right-pointing triangle next to the spill description, “Gasoline:
-1000 gallons”, under **Spills** in the Summary List. Then click the
-right-pointing triangle next to “Splot Mass Balance” to view the
-mass balance for the “Best Estimate” trajectory. You should see that
+right-pointing triangle next to the spill description, "Gasoline:
+1000 gallons", under **Spills** in the Summary List. Then click the
+right-pointing triangle next to "Splot Mass Balance" to view the
+mass balance for the "Best Estimate" trajectory. You should see that
 about 98% of the gasoline evaporated and dispersed in each of these
 scenarios.)
 
@@ -384,8 +384,8 @@ dialog boxes:
 
    -  Wind speed is zero.
    -  Model duration is 2 days.
-   -  Colville River flow set as “low”.
-   -  Pollutant type is “non-weathering”.
+   -  Colville River flow set as "low".
+   -  Pollutant type is "non-weathering".
    -  Spill location is a point east of Gwydyr Bay, between the Return
       Islands and the mainland (70° 25'N, 148° 42'W).
 
@@ -416,22 +416,22 @@ Example 8.
 ----------
 
 Forecasts of environmental parameters are inherently uncertain. For
-example, wind and weather forecasts can be “off” in the speed,
-direction, or timing of the winds. GNOME supports a “Minimum
-Regret” solution in addition to the “Best Estimate” solution that
+example, wind and weather forecasts can be "off" in the speed,
+direction, or timing of the winds. GNOME supports a "Minimum
+Regret" solution in addition to the "Best Estimate" solution that
 you have been running. The Minimum Regret solution takes into
 account our uncertainty in wind, horizontal mixing, and currents.
 Using your saved file from Example 7 (a), add the Minimum Regret
 (Uncertainty) solution to your settings to see where else the
 spill might go.
 
-Briefly discuss the difference between the “Best Estimate” (black) and “Minimum Regret” (red) trajectories. Why do you think this type of information would be useful?
+Briefly discuss the difference between the "Best Estimate" (black) and "Minimum Regret" (red) trajectories. Why do you think this type of information would be useful?
 
 
 **Hint:**
 
 To include the Minimum Regret (Uncertainty) solution,
-click the box labeled “Include the Minimum Regret solution” under
+click the box labeled "Include the Minimum Regret solution" under
 **Model Settings** in the Summary List.
 
 Answer:
@@ -440,7 +440,7 @@ Answer:
 The Minimum Regret solution shows more extensive impacts
 in all directions. In addition, it shows that there could be oil
 contact in the river delta, outside the Return Islands, and east of
-Gwydyr Bay. Responders use the “minimum regret” trajectory to make
+Gwydyr Bay. Responders use the "minimum regret" trajectory to make
 decisions about how they will allocate response resources. Sometimes
 a highly valued environmental resource (e.g. an endangered species)
 may be important enough to protect, even if it has a low probability
@@ -452,14 +452,14 @@ Example 9.
 The Colville River also influences the large-scale circulation of
 this region. To compare the effects of different river flow
 rates, simulate a spill that occurs on August 17, 2001 at 1200.
-Set the model duration to 2 days, and don’t include the Minimum
+Set the model duration to 2 days, and don't include the Minimum
 Regret solution. The wind is constant during this time at 20
 knots from the east. For now, set both the Colville and Kuparuk
-River flow rates to “Low”. The pollutant released is 1000 barrels
+River flow rates to "Low". The pollutant released is 1000 barrels
 of medium crude, spilled at the mouth of the Colville River (70°
 27'N, 150° 9'W). It continues to spill for the next 24 hours.
 
-After you’ve run the low river flow conditions, re-run the
+After you've run the low river flow conditions, re-run the
 simulation with a medium (10,000 cfs), and then high (20,000 cfs),
 flow rate for the Colville River only.
 
@@ -468,8 +468,8 @@ What effect(s) do the Colville River flow changes have on the trajectory and sho
 **Hint:**
 
 To model a continuous release, in the **Spill
-Information** window, click the box labeled “Different end release
-time”, and enter August 18th as the end release time.
+Information** window, click the box labeled "Different end release
+time", and enter August 18th as the end release time.
 
 Answer:
 ............
@@ -477,11 +477,11 @@ Answer:
 Higher river flows keep the oil offshore longer so that
 response equipment, like skimmers and boom, can be mobilized.
 
-In the low flow condition (shown below), the “Best Estimate” or
+In the low flow condition (shown below), the "Best Estimate" or
 Forecast trajectory shows that after 2 days, heavy oiling has
 occurred in the Colville River delta.
 
-The “Best Estimate” or Forecast trajectory shows that after 2 days,
+The "Best Estimate" or Forecast trajectory shows that after 2 days,
 heavy oiling has occurred in the Colville River delta.
 
 Low river flow condition
@@ -513,7 +513,7 @@ Most of the oil is pushed offshore by the higher river flow.
 High river flow condition
 .........................
 
-.. |The “Best Estimate” or Forecast trajectory shows that after 2 days, heavy oiling has occurred in the Colville River delta.| image:: images/NSlope_Ex/image1.png
+.. |The "Best Estimate" or Forecast trajectory shows that after 2 days, heavy oiling has occurred in the Colville River delta.| image:: images/NSlope_Ex/image1.png
    :width: 5.97811in
    :height: 2.54323in
 .. |The extent of beaching in the delta is not as severe. Fresh water from the higher river flow is pushing the oil out of the inlet, and the wind is pushing the oil west of the delta. The oil remains offshore.| image:: images/NSlope_Ex/image2.png

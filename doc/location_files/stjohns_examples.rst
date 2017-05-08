@@ -103,7 +103,7 @@ scenario without any wind?**
     the Summary List, then change the wind speed and direction in the
     Constant or Variable Wind window.
 
-    **Answer:** Some of these winds dramatically change the oil’s
+    **Answer:** Some of these winds dramatically change the oil's
     trajectory and others have minimal effect. In the scenario with no
     wind, the oil moved upriver under the influence of the tides. With
     the addition of a north wind, the spill quickly beaches on the

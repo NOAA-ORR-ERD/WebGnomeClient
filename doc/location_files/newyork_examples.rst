@@ -10,7 +10,7 @@ Try out these examples to learn the basics of modeling oil spills in New
 York Harbor. Explore how the changing tides affect the trajectories of
 oil slicks, how wind can move an oil slick in a different direction from
 the currents, and how model and observation limitations can be overcome
-by considering both the “Best Estimate” and the “Minimum Regret”
+by considering both the "Best Estimate" and the "Minimum Regret"
 (Uncertainty) solutions. This knowledge will help you in designing your
 own GNOME model runs.
 
@@ -74,7 +74,7 @@ differ in the amount and location of pollutant? **
     and forth with the tides, while slowly moving seaward. Little
     shoreline is impacted by the spill. When the spill starts with the
     flood tide, the spill moves much further up the harbor. Oil moves
-    nearly as far north as Governor’s Island. When released on the flood
+    nearly as far north as Governor's Island. When released on the flood
     tide, the spill has the potential to impact the shoreline on Staten
     Island and the area that the ebb tide spill could affect.
 
@@ -97,7 +97,7 @@ previous example? **
     Constant or Variable Wind window.
 
     **Answer:** With the WSW wind, almost all the oil impacts shorelines
-    to the east of the spill, including Governor’s Island, both sides of
+    to the east of the spill, including Governor's Island, both sides of
     the East River and Brooklyn.
 
 Example 3.
@@ -118,7 +118,7 @@ between the "Best Estimate" (black) and "Minimum Regret" (red)
 trajectories. Why do you think this type of information would be useful?
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the “Include the Minimum Regret solution” box under **Model
+    click the "Include the Minimum Regret solution" box under **Model
     Settings** in the Summary List.
 
     **Answer:** The "Minimum Regret" solution covers a larger area than
@@ -167,10 +167,10 @@ record your results from the mass balance in the table below.
     spill.
 
     To view the mass balance for each scenario, click the right-pointing
-    triangle next to the spill description (“Fuel Oil #6: 1000 barrels”)
+    triangle next to the spill description ("Fuel Oil #6: 1000 barrels")
     under **Spills** in the Summary List. Then click the right-pointing
-    triangle next to “Splot Mass Balance” to view the mass balance for
-    the “Best Estimate” trajectory.
+    triangle next to "Splot Mass Balance" to view the mass balance for
+    the "Best Estimate" trajectory.
 
     **Answer:** Heavier oils remain in the environment longer than
     lighter, refined products. (Your numbers may differ slightly.)

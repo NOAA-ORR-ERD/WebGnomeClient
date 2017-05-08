@@ -7,9 +7,10 @@ define([
     'views/default/map',
     'views/panel/base',
     'views/form/mover/create',
+    'views/form/mover/edit',
     'text!templates/panel/current.html',
     'views/modal/form'
-], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, CurrentPanelTemplate, FormModal){
+], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, EditMoverForm, CurrentPanelTemplate, FormModal){
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -32,8 +33,22 @@ define([
             }, this));
             form.render();
         },
-
+        
         edit: function(e){
+            e.stopPropagation();
+            var id = this.getID(e);
+
+            var currentMover = webgnome.model.get('movers').get(id);
+            var currentForm = new EditMoverForm(null, currentMover);
+            currentForm.on('save', function(){
+                currentForm.on('hidden', currentForm.close);
+            });
+            currentForm.on('wizardclose', currentForm.close);
+            currentForm.render();
+        },
+
+        //keeping this for now in case i really break something!
+        edit_old: function(e){
             e.stopPropagation();
             var id = this.getID(e);
 

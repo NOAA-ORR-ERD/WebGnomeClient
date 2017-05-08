@@ -30,7 +30,7 @@ define([
                 'click .oil-select': 'elementSelect',
                 'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
-                'blur .geo-info': 'manualMapInput',
+                'keyup .geo-info': 'manualMapInput',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'show.bs.model': 'renderPositionInfo',
@@ -112,6 +112,8 @@ define([
             this.on('show.bs.modal', _.bind(function(){
                 this.update();
             }, this));
+
+
 		},
 
         setEmulsificationOverride: function(){
@@ -294,8 +296,8 @@ define([
             var end_point = this.model.get('release').get('end_position');
             var compiled;
             
-            var lat_formats = '64.5011N (decimal degrees) \n 64 30.066N (degrees decimal minutes) \n64 30 3.96N (degrees minutes seconds)';
-            var lon_formats = '165.4064W (decimal degrees) \n 165 24.384W (degrees decimal minutes) \n165 24 23.04W (degrees minutes seconds)';
+            var lat_formats = "64.5011N<br/>(decimal degrees)<br/>64 30.066N<br/>(degrees decimal minutes) <br/>64 30 3.96N<br/>(degrees minutes seconds)";
+            var lon_formats = '165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)';
 
             if (!_.isNull(e) && isSpillPoint) {
                 compiled = _.template(PositionSingleTemplate, {
@@ -313,6 +315,20 @@ define([
             }
             this.$('#positionInfo').html('');
             this.$('#positionInfo').html(compiled);
+            this.$('.position input[name="lat"]').tooltip({
+                trigger: 'focus',
+                html: true,
+                width: 200,
+                placement: 'top',
+                viewport: 'body'
+            });
+            this.$('.position input[name="lng"]').tooltip({
+                trigger: 'focus',
+                html: true,
+                width: 200,
+                placement: 'top',
+                viewport: 'body'
+            });
         },
 
         addEndpoint: function(e) {
@@ -467,8 +483,10 @@ define([
         },
 
         manualMapInput: function(){
-            var startCoords = this.coordsParse([this.$('#start-lon').val(), this.$('#start-lat').val()]);
-            var endCoords = this.coordsParse([this.$('#end-lon').val(), this.$('#end-lat').val()]);
+            var start = [this.$('#start-lon').val(), this.$('#start-lat').val()];
+            var end = [this.$('#end-lon').val(), this.$('#end-lat').val()];
+            var startCoords = this.coordsParse(_.clone(start));
+            var endCoords = this.coordsParse(_.clone(end));
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];
             this.model.get('release').set('start_position', startPosition);
@@ -477,6 +495,29 @@ define([
             } else {
                 this.model.get('release').set('end_position', endPosition);
             }
+            if(start.toString().indexOf(' ') !== -1){
+                this.showParsedCoords('start');
+            } else {
+                this.hideParseCoords('start');
+            }
+
+            if(end.toString().indexOf(' ') !== -1){
+                this.showParsedCoords('end');
+            } else {
+                this.hideParseCoords('end');
+            }
+
+        },
+
+        showParsedCoords: function(position){
+            var coords = this.model.get('release').get(position + '_position');
+            this.$('.' + position + '-lat-parse').text('Parsed as: ' + coords[1].toPrecision(4));
+            this.$('.' + position + '-lon-parse').text('Parsed as: ' + coords[0].toPrecision(4));
+        },
+
+        hideParseCoords: function(position){
+            this.$('.' + position + '-lat-parse').text('');
+            this.$('.' + position + '-lon-parse').text(''); 
         },
 
         coordsParse: function(coordsArray){

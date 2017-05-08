@@ -14,7 +14,8 @@ define([
         className: 'col-md-6 model object complete panel-view',
 
         events: _.defaults({
-            'blur input': 'updateModel'
+            'blur input': 'updateModel',
+            'click input[type="checkbox"]': 'updateModel'
         }, BasePanel.prototype.events),
 
         render: function() {
@@ -83,8 +84,7 @@ define([
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
 
             webgnome.model.save(null, {
-                validate: false,
-                silent: true
+                validate: false
             });
         }
     });

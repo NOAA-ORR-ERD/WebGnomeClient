@@ -63,14 +63,8 @@ define([
         },
 
         calculateSI: function(){
-            if(this.get('element_type') && this.get('element_type').get('substance')){
-                // caluclate si w/ substance api
-                var oilConverter = new nucos.OilQuantityConverter();
-                this._amount_si = oilConverter.Convert(this.get('amount'), this.get('units'), this.get('element_type').get('substance').get('api'), 'API Degree', 'kg');
-            } else {
-                // calculate si straight volume
-                this._amount_si = nucos.convert('Mass', this.get('units'), 'kg', this.get('amount'));
-            }
+            var oilConverter = new nucos.OilQuantityConverter();
+            this._amount_si = oilConverter.Convert(this.get('amount'), this.get('units'), this.get('element_type').get('standard_density'), 'kg/m^3', 'kg');
         },
 
         parseDuration: function(){
