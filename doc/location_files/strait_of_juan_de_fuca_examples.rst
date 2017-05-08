@@ -10,7 +10,7 @@ Try out these examples to learn the basics of modeling oil spills in the
 Strait of Juan de Fuca. Explore how winds, current reversals, and
 changing tides can affect the trajectories of oil slicks. In addition,
 you'll see how model and observation limitations can be overcome by
-considering both the “Best Guess” and the “Minimum Regret” (Uncertainty)
+considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
 solutions. This knowledge will help you in designing your own GNOME
 model runs.
 
@@ -46,8 +46,8 @@ Time of Release:              Same as model start time.
 Spill Duration:               2 hours.
 Amount released:              1000 barrels.
 Pollutant type:               Non-weathering.
-Start Position:               48° 20’N, 124° 20’W.
-End Position                  48° 14’N, 124°W.
+Start Position:               48° 20'N, 124° 20'W.
+End Position                  48° 14'N, 124°W.
 ===========================   =================================================
 
 Once you have run the model for all three cases examine the differences in 
@@ -134,9 +134,9 @@ View page.
     much more extensive around Dungeness Spit than for the gasoline
     spill, most of which evaporated and dispersed. (To view the mass
     balance for a scenario, click the right-pointing triangle next to
-    the spill description (“Fuel Oil #6: 1000 barrels”) under **Spills**
+    the spill description ("Fuel Oil #6: 1000 barrels") under **Spills**
     in the Summary List. Then click the right-pointing triangle next to
-    “Splot Mass Balance” to view the mass balance for the “Best Guess”
+    "Splot Mass Balance" to view the mass balance for the "Best Guess"
     trajectory.)
 
 **2(b)** Can you change the wind to make the beach impacts more

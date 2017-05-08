@@ -35,7 +35,7 @@ Example 1.
 
 Tides are an important part of the circulation near Apra Harbor.
 To compare the effects of tides in this region, set a 40,000-gallon
-spill at the entrance to Apra Harbor (13° 27.08’N, 144° 37.26’E).
+spill at the entrance to Apra Harbor (13° 27.08'N, 144° 37.26'E).
 Observe the effects of tides by starting the spill at two different
 times in the tidal cycle. First, run the spill in GNOME at the beginning
 of an ebb tide (7:15 a.m. on July 2, 2000), then run it again at the
@@ -67,12 +67,12 @@ significant tidal currents.
 Example 2.
 ----------
 
-Guam’s offshore circulation is heavily influenced by the North
+Guam's offshore circulation is heavily influenced by the North
 Pacific Equatorial Current, which moves westward across the Pacific
 between 8° and 15° N. The effects of this current can be seen by
 simultaneously modeling two spills--one on the northwest coast of Guam
-(13° 38.06’N, 144° 48.64’E) and one near the southwest coast (13°
-16.42’N, 144° 36.92’E). Start both spills at 2 p.m. on July 2, 2000, set
+(13° 38.06'N, 144° 48.64'E) and one near the southwest coast (13°
+16.42'N, 144° 36.92'E). Start both spills at 2 p.m. on July 2, 2000, set
 each spill to 100 barrels, and run the simulation for 3 days.
 
 **Where are the currents taking these spills?**
@@ -96,7 +96,7 @@ each spill to 100 barrels, and run the simulation for 3 days.
 
 3. Wind both moves the oil along the water's surface and drives
    currents. To see how winds affect an oil slick's trajectory, set a
-   30,000-gallon spill in Apra Harbor (13° 27.25’N, 144° 39.71’E) at the
+   30,000-gallon spill in Apra Harbor (13° 27.25'N, 144° 39.71'E) at the
    same date and time (2 p.m. on July 2, 2000). Run the spill for 1 day
    with no wind, then add a 5-knot east wind to the model and rerun it.
 

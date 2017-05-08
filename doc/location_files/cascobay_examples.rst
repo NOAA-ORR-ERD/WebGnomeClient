@@ -11,7 +11,7 @@ Try out these examples to learn the basics of modeling oil spills in
 Casco Bay. Explore how the changing tides affect the trajectories of oil
 slicks, how wind can move an oil slick in a different direction from the
 currents, and how model and observation limitations can be overcome by
-considering both the “Best Guess” and the “Minimum Regret” (Uncertainty)
+considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
 solutions. This knowledge will help you in designing your own GNOME
 model runs.
 
@@ -31,10 +31,10 @@ Pollutant type: Non-weathering, unless specified.
 
 Spill size: 1000 barrels (bbls), unless specified.
 
-Spill: (Examples 1-3) A point source on Jordan Reef at 43° 37’ N, 70°
-11.22’ W
+Spill: (Examples 1-3) A point source on Jordan Reef at 43° 37' N, 70°
+11.22' W
 
-(Example 4) A point source in Portland Harbor at 43° 39’ N, 70° 15.2’ W.
+(Example 4) A point source in Portland Harbor at 43° 39' N, 70° 15.2' W.
 
 Use GNOME's Standard Mode and the Casco Bay Location File to answer the
 following questions:
@@ -50,7 +50,7 @@ beginning of an ebb tide.
 
 **(a)** First, set up GNOME for a spill that occurs on February 9, 2001
 at 0545 (the beginning of a flood tide). Place a spill on Jordan Reef at
-43° 37’ N, 70° 11.22’ W (southeast of the main channel entrance to
+43° 37' N, 70° 11.22' W (southeast of the main channel entrance to
 Portland Harbor).
 
 **Observe the effects of tides on the spill trajectory and beach
@@ -111,7 +111,7 @@ scenario without any wind?**
     **Wind** in the Summary List, then enter the wind speed and
     direction in the Constant Wind window.
 
-    **Answer:** Wind dramatically changes the oil’s trajectory and
+    **Answer:** Wind dramatically changes the oil's trajectory and
     causes the floating oil to beach. In the scenario with no wind, the
     oil moved south along the coast; however, in the "wind" scenario,
     most of the oil beaches along the northeastern shoreline of Cape
@@ -121,28 +121,28 @@ Example 3.
 ----------
 
 Forecasts of environmental parameters are inherently uncertain.
-For example, wind and weather forecasts can be “off” in the speed,
-direction, or timing of the winds. GNOME supports a “Minimum Regret”
-solution in addition to the “Best Guess” solution that you have been
-running. The “Minimum Regret” solution takes into account our
+For example, wind and weather forecasts can be "off" in the speed,
+direction, or timing of the winds. GNOME supports a "Minimum Regret"
+solution in addition to the "Best Guess" solution that you have been
+running. The "Minimum Regret" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents. Now you will add
-the “Minimum Regret” solution to see where else the spill might go.
+the "Minimum Regret" solution to see where else the spill might go.
 
 Rerun the flood tide spill from Example 1 (0545 on February 9, 2001),
 but first make these changes: (1) change the wind to 8 knots from the
-south; and (2) include the “Minimum Regret” solution.
+south; and (2) include the "Minimum Regret" solution.
 
-Briefly discuss the difference between the “Best Guess” (black) and
-“Minimum Regret” (red) trajectories. Why do you think this type of
+Briefly discuss the difference between the "Best Guess" (black) and
+"Minimum Regret" (red) trajectories. Why do you think this type of
 information would be useful?
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
-    click the “Include Minimum Regret” box under **Model Settings** in
+    click the "Include Minimum Regret" box under **Model Settings** in
     the Summary List.
 
-    **Answer:** Although our “Best Guess” solution shows very little, if
+    **Answer:** Although our "Best Guess" solution shows very little, if
     any, oil impact on Long Island or in Portland Harbor at the mouth of
-    the Fore River, the “Minimum Regret” solution shows that there could
+    the Fore River, the "Minimum Regret" solution shows that there could
     be oil contact in these areas. Responders use the "minimum regret"
     trajectory to make decisions about how they will allocate response
     resources. Sometimes a highly valued environmental resource (e.g. an
@@ -154,11 +154,11 @@ Example 4.
 
 Different types of pollutants weather differently. In the
 previous examples, the pollutant that spilled did not change with time
-(it was "non-weathering"). Now you are going to run a “What if?”
+(it was "non-weathering"). Now you are going to run a "What if?"
 scenario that compares the effects of different types of pollutants.
 
 A tanker loading product at 2:30 p.m. (1430), July 24, 2001 in Portland
-Harbor spills oil into the harbor (43° 39’ N, 70° 15.2’ W). At the time
+Harbor spills oil into the harbor (43° 39' N, 70° 15.2' W). At the time
 of the spill, winds were from the southwest at 4 knots.
 
 Run the above scenario for a tanker spilling **fuel oil #6** and for a
@@ -169,10 +169,10 @@ write down the mass balance for each scenario in the table below.
 impacts?**
 
     **Hint:** To view the mass balance for each scenario, click the
-    right-pointing triangle next to the spill description (“Fuel Oil #6:
-    1000 barrels”) under **Spills** in the Summary List. Then click the
-    right-pointing triangle next to “Splot Mass Balance” to view the
-    mass balance for the “Best Guess” trajectory.
+    right-pointing triangle next to the spill description ("Fuel Oil #6:
+    1000 barrels") under **Spills** in the Summary List. Then click the
+    right-pointing triangle next to "Splot Mass Balance" to view the
+    mass balance for the "Best Guess" trajectory.
 
 +----------------------------+-----------------+---------------+
 |                            | **Fuel Oil #6   | **Jet Fuel    |

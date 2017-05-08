@@ -44,7 +44,7 @@ Wind can have a significant effect on a spill because it both
 moves the oil along the water's surface and drives currents. To compare
 the effects of different winds, you will simulate a spill that occurs on
 August 25, 2003, at approximately 1300, with a duration of 2 days. Leave
-the river flow rates for both the Sabine and Neches Rivers at “low”.
+the river flow rates for both the Sabine and Neches Rivers at "low".
 Your scenario should include winds of 10 knots in each of the cardinal
 directions, changing hourly, moving first clockwise, then
 counterclockwise. Set a spill of 1000 gallons of fuel oil #6 in the
@@ -84,17 +84,17 @@ the different wind conditions?
 
     Refloating of oil is a possibility after oil has beached. In this
     scenario, you can see some of the beached oil (represented by tiny
-    x’s on the shore) refloat (changing to tiny dots on the water) and
+    x's on the shore) refloat (changing to tiny dots on the water) and
     continue to move further away from the initial point of beach
     contact. Refloating can also occur when a spill of very heavy oil
     (having a density of 1.01 g/cc) moves through freshwater partly
     submerged, then resurfaces once it reaches the denser ocean water.
 
-(b) Approximately how much of the lake’s shoreline on Blue Buck Point is
+(b) Approximately how much of the lake's shoreline on Blue Buck Point is
 oiled?
 
     **Hints:** The quickest way to measure a distance on the map is to
-    “zoom in,” then use the ruler button in the GNOME toolbar. Click the
+    "zoom in," then use the ruler button in the GNOME toolbar. Click the
     ruler button, then click and drag on the map to measure the oiled
     shoreline. Continue to hold down the mouse button to read the
     distance, shown in kilometers (km), miles (mi), and nautical miles
@@ -116,11 +116,11 @@ balance in the table.
 the "weathering" of the pollutants affects the spill impacts.**
 
     **Hints:** To view the mass balance for the scenario, click the
-    right-pointing triangle next to the spill description (“Fuel Oil #6:
-    1000 barrels”) under **Spills** in the Summary List (the left
+    right-pointing triangle next to the spill description ("Fuel Oil #6:
+    1000 barrels") under **Spills** in the Summary List (the left
     section of the Map Window). Then click the right-pointing triangle
-    next to “Splot Mass Balance” to view the mass balance for the “Best
-    Guess” trajectory.
+    next to "Splot Mass Balance" to view the mass balance for the "Best
+    Guess" trajectory.
 
     To quickly change the pollutant type, double-click the spill
     description ("Fuel Oil #6: 1000 barrels") under **Spills** in the
@@ -172,8 +172,8 @@ the "weathering" of the pollutants affects the spill impacts.**
 Example 3.
 ----------
 
-We’ve seen the behavior of two different pollutants under varying
-wind conditions. Next we’ll see how the gasoline spill would behave if
+We've seen the behavior of two different pollutants under varying
+wind conditions. Next we'll see how the gasoline spill would behave if
 there was no wind. Change the wind conditions to no wind and rerun the
 gasoline spill.
 
@@ -182,14 +182,14 @@ the beach impacts differ? After 48 hours, has any gasoline contacted the
 shore?**
 
     **Hint:** To change the wind conditions, double-click **Wind** in
-    the Summary List. In the Variable Winds window, click “Delete All”
-    to remove all the winds, enter a zero-knot wind, then click “Add New
-    Record”.
+    the Summary List. In the Variable Winds window, click "Delete All"
+    to remove all the winds, enter a zero-knot wind, then click "Add New
+    Record".
 
     **Answer:** With the winds, the oil first reaches shoreline (the
     south shore of the lake) about 27 hours after the spill occurs.
     Without the winds, the oil tends to move down the center of the
-    lake, and doesn’t impact any shorelines within the 48 hours
+    lake, and doesn't impact any shorelines within the 48 hours
     post-spill.
 
 Example 4.
@@ -205,7 +205,7 @@ reach the shoreline? Is the movement of the spill faster or slower? Does
 oil go off the map?**
 
     **Hint:** To change the river flow rates, double-click the name of
-    your Location File, "Sabine Lake”, under **Location File** in the
+    your Location File, "Sabine Lake", under **Location File** in the
     Summary List. In the windows that follow, you can change any of the
     conditions that you set earlier. In this case, you only want to
     change the river flow rates. In the Setting River Flow window,
@@ -228,9 +228,9 @@ flood tide and once at the beginning of an ebb tide.
 
 **(a)** First, simulate a spill that occurs on August 27, 2003 at 2:56
 am (0256) (the beginning of a flood tide), with a duration of 2 days.
-River flow rates for both rivers are “low”, and there are no winds. Set
+River flow rates for both rivers are "low", and there are no winds. Set
 a 1000-barrel spill of non-weathering pollutant in the northern section
-of Sabine Pass (29° 45.41’N, 93° 53.71’W). To view the effect of the
+of Sabine Pass (29° 45.41'N, 93° 53.71'W). To view the effect of the
 tide changes, click the box labeled "Show Currents" under **Model
 Settings** in the Summary List.
 
@@ -249,7 +249,7 @@ impacts.**
     the *model* start time to the *spill* start time, you should always
     change the spill start time first.
 
-    Don’t forget to change the river flow rates to low.
+    Don't forget to change the river flow rates to low.
 
     **Note:** In order to compare the spill trajectories, save your
     settings as a Location File Save (LFS) by choosing **Save** from the
@@ -264,9 +264,9 @@ impacts.**
 
 **Compare the effects of the ebb tide with the previous example.**
 
-    **Answer:** When the spill starts on the ebb tide, the spill doesn’t
+    **Answer:** When the spill starts on the ebb tide, the spill doesn't
     spread out as readily, and it moves more quickly out to the gulf.
-    (If we’re lucky, from there it will move away from shore and not
+    (If we're lucky, from there it will move away from shore and not
     cause any further impacts.) You can see that a lot of oil refloating
     occurs in this scenario, in which oil beaches then is swept back
     into the water. After 48 hours in this scenario, the mass balance
@@ -297,9 +297,9 @@ solution in addition to the "Best Guess" solution that you have been
 running. The Minimum Regret solution takes into account our uncertainty
 in wind, horizontal mixing, and currents.
 
-Add the “Minimum Regret" (Uncertainty) solution to your flood tide
+Add the "Minimum Regret" (Uncertainty) solution to your flood tide
 scenario (spill 5a) to observe the effects of this feature. You may want
-to turn off the “Currents” feature.
+to turn off the "Currents" feature.
 
 Briefly discuss the difference between the "Best Guess" (black) and
 "Minimum Regret" (red) trajectories. Why do you think this type of

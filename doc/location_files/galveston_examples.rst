@@ -45,8 +45,8 @@ once at the beginning of a flood tide.
 
 **(a)** First, set up GNOME for a spill that occurs on October 18, 2000
 at 0540 (the beginning of an ebb tide). Place a spill in the shipping
-channel at 29° 30.43’ N, 94° 52.49’ W. Then set a second spill outside
-of the channel at 29° 31.48’ N, 94° 50.59’ W.
+channel at 29° 30.43' N, 94° 52.49' W. Then set a second spill outside
+of the channel at 29° 31.48' N, 94° 50.59' W.
 
 **Describe the differences in the trajectory and beach impacts between
 the two spills. **
@@ -100,7 +100,7 @@ Wind can have a significant effect on a spill because it both
 moves the oil along the water's surface and drives currents\ **.** Open
 the saved file for the ebb tide spills, which do not have the wind
 blowing. Rerun only the spill that occurred outside the channel (29°
-31.48’ N, 94° 50.59’ W), adding first a **5-knot ENE wind**, then adding
+31.48' N, 94° 50.59' W), adding first a **5-knot ENE wind**, then adding
 a **20-knot ENE wind** to the scenario.
 
 **How do the oil's trajectory and shoreline impacts change from the
@@ -126,9 +126,9 @@ scenario without any wind?**
    "non-weathering"). Now you will compare the effects of different
    types of pollutants by changing the pollutant type of each of these
    spills. Open your saved file for the ebb tide spills again, then
-   change the pollutant type of the channel spill (at 29° 30.43’ N, 94°
-   52.49’ W) to **gasoline** and the other spill (at 29° 31.48’ N, 94°
-   50.59’ W) to **fuel oil #6**.
+   change the pollutant type of the channel spill (at 29° 30.43' N, 94°
+   52.49' W) to **gasoline** and the other spill (at 29° 31.48' N, 94°
+   50.59' W) to **fuel oil #6**.
 
 **How does the "weathering" of these pollutants affect the spill
 impacts?**
@@ -152,7 +152,7 @@ impacts?**
    uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous **fuel oil #6** scenario, increasing the wind to 10
-knots from the NE. This time, run GNOME with the “Minimum Regret”
+knots from the NE. This time, run GNOME with the "Minimum Regret"
 solution turned on to see where the spill is expected to go, and where
 else the spill *might* go.
 
@@ -183,7 +183,7 @@ Example 5.
 In this example, you will examine the effects of the discharge of
 the San Jacinto River and Buffalo Bayou by comparing spills that occur
 with "low" and "high" flow. Set a new, non-weathering spill near
-Atkinson Island at 29° 36.75’ N, 94° 57.57’ W. This spill occurs on
+Atkinson Island at 29° 36.75' N, 94° 57.57' W. This spill occurs on
 October 19, 2000 at 8:00 a.m. (0800). There is no wind when this spill
 occurs. Run the spill for 2 days with (a) the San Jacinto River and
 Buffalo Bayou flow "low" and (b) the San Jacinto River and Buffalo Bayou
@@ -214,7 +214,7 @@ Example 6.
 This example will demonstrate how the offshore scaling can affect
 the trajectory of a spill. First, set a new spill that occurs on October
 19, 2000 at 0630 (the beginning of an ebb tide) at Bolivar Roads (29°
-20.71’ N, 94° 43.82’ W). All river flows are low, and there are no winds
+20.71' N, 94° 43.82' W). All river flows are low, and there are no winds
 at this time. Then run the spill for 1 day with each of these scalings:
 **15 cm/s 55°T**, **15 cm/s 235°T**, and **15 cm/s 145°T. **
 

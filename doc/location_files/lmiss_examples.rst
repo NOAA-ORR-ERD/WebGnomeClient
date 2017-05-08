@@ -55,7 +55,7 @@ the different river flow conditions.
     window, change the stage height value to 10, then 15 for the next
     run.
 
-    **Note:** Let’s use the spill settings from your last model run
+    **Note:** Let's use the spill settings from your last model run
     (stage height set to 15 feet) for later examples. Before moving on,
     save your settings as a Location File Save (LFS) by choosing Save
     from the GNOME File menu.
@@ -86,7 +86,7 @@ the shoreline impacts differ?**
 
     **Answer:** Even a very light wind dramatically changes the oil's
     trajectory! When the spill occurs with the 5-knot east wind, the oil
-    travels downriver past Sixtymile Pt., beaching along the river’s
+    travels downriver past Sixtymile Pt., beaching along the river's
     right descending bank. With the west wind, the oil moves a similar
     distance; however, in this scenario, the most affected shorelines of
     those of the left descending bank

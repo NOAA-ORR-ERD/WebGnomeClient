@@ -147,7 +147,7 @@ go.
 Rerun the previous spill with a high river flow rate, but first make
 these changes: (1) change the wind to 15 knots from the east; (2) change
 the spill start time to 0100 on March 15, 2000; (3) reset the model
-duration to 1 day; and (4) include the “Minimum Regret” solution.
+duration to 1 day; and (4) include the "Minimum Regret" solution.
 
 "Zoom in" to your spill area and examine the difference
 between the "Best Guess" (black) and "Minimum Regret" (red)
