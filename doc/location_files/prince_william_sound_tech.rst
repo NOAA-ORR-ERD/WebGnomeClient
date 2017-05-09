@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Prince, William, Sound, Alaska, Exxon, Valdez, location
+
 .. _prince_william_sound_tech:
 
 About Prince William Sound
@@ -14,10 +17,14 @@ Background
 Prince William Sound is one of the larger estuaries in North America. Its waters have a surface area of approximately 10,000 square kilometers. Rivers and a significant number of tide-water glaciers supply fresh water to the sound. The circulation is thought to be primarily tidally driven.
 
 Prince William Sound has two main connections to the Gulf of Alaska: Hinchinbrook Entrance and Montague Strait, with some smaller channels on the eastern side. Three smaller fjords connect to Prince William Sound and probably affect the circulation: Port Valdez, Port Wells and Orca bay.
+
+
 Current Patterns
 ==============================
 
 The Prince William Sound Location File uses five current patterns to simulate the circulation and tides. The tides at Hinchinbrook Strait, Port Wells, and Montague Strait are each simulated with a single current pattern. The tides in Valdez Arm and Port Fidalgo are simulated with the same current pattern. The fifth current pattern simulates a net flow of about .5 knot into Prince William Sound through Hinchinbrook Entrance and out of Prince William Sound through Montague Strait and, to a lesser extent, Latouche, Elrington, and Prince of Wales Passages.
+
+
 References
 ===============================================
 

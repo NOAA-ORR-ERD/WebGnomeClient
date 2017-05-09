@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Long Island, Connecticut, New York, location
+
 .. _central_long_island_sound_tech:
 
 About Central Long Island Sound
@@ -12,11 +15,15 @@ Background
 =============================================
 
 Long Island Sound is connected to the ocean by the East River to the west and by three passes to the east. Its major source of fresh water is the Connecticut River, toward the eastern end of the sound. Despite this unusual configuration, it possesses a longitudinal salinity gradient. The sound has a distinct transport of less-saline water flowing eastward at the surface, and an opposing flow of saltier water along the bottom (Gordon, 1980). The East River serves as a conduit for a net export of salt at 1.2 x 104 kilograms/second (Bowman, 1975).
+
+
 Current Patterns
 ======================================
 
 The model uses a single current pattern scaled to the tides 1 mile SSE of Sachem Head
 (41° 13'N, 72° 42'W).
+
+
 
 References
 ==========================================

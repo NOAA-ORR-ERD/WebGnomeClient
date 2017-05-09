@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Santa Barbara, location
+
 .. _santa_barbara_channel_tech:
 
 About Santa Barbara Channel
@@ -18,12 +21,16 @@ The circulation in the Santa Barbara Channel is driven by (Harms 1996):
 * Alongshelf pressure gradients.
 
 The Santa Barbara Channel Location File simulates mean conditions in the six circulation modes defined by Harms (1996). To include the transitional periods and different intensities in the main circulation modes you must work in GNOME's Diagnostic Mode. (For training in the use of GNOME's GIS Output or Diagnostic Mode, contact NOAA ERD at GNOMEWizard@hazmat.noaa.gov or at (206) 526-6317.) Using the Location File, you may not be able to simulate real conditions on a particular day; however, the Location File is sufficient for building intuition and creating scenarios.
+
+
 Current Patterns
 ======================================
 
 The user's six circulation choices were created using combinations of three current patterns: two barotropic patterns representing flow along the mainland and island shelves, and a current pattern representing flow due to typical density (temperature) gradients in the Santa Barbara Channel. All current patterns were created by the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
 
 The current pattern representing the density gradients is the minimum barotropic mode (Galt, 1980, and Galt, et al. 1978) derived from a data assimilation model courtesy of Dr. Dong-Ping Wang (State University of New York), Dept. of the Interior Mineral Management Service, and the University of California (San Diego) Center for Coastal Studies. The model is a three-dimensional primitive-equation, coastal ocean general circulation model with a constant z coordinate that uses three-dimensional "blending" for data assimilation (Chen & Wang, submitted). An average of the model spring density fields (days 86 to 156 of year 1994) was used to create the local dynamic height fields. A level of no motion of 250 meters (m) was assumed since the model is homogeneous below 250 m. The NOAA CATS hydrodynamic application was used to calculate the corresponding current pattern.
+
+
 References
 ===================================================
 

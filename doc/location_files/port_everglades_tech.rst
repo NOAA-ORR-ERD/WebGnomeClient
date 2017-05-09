@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Everglades, Florida, Lauderdale, Hollywood, Dania, location
+
 .. _port_everglades_tech:
 
 About Port Everglades
@@ -14,6 +17,8 @@ Port Everglades is an enclosed port with a narrow opening to the Atlantic Ocean.
 There are no major rivers entering Port Everglades. The largest river entering the area is the New River to the north, in Fort Lauderdale. The New River does not input enough fresh water to significantly drive surface currents when compared to the tides. Current patterns were therefore not included for the New River system.
 
 Cooling water discharge from the Florida Power and Light discharge canal south of Berth 29 is reported to affect ships in varying ways, depending upon the output of the plant and the size and draft of the ship. The discharge canal outfall is predicted to have minimal effects on the currents of the Port Everglades area and is limited to daytime hours.
+
+
 Current Patterns
 ========================================
 
@@ -24,6 +29,8 @@ All current patterns were created with the NOAA Current Analysis for Trajectory 
 The Florida Power and Light discharge canal pattern can be turned on or off, with no option to modify the current speed.
 
 The outside mean current pattern is set to flow from the north to the south. This pattern should not be relied upon to reflect any variability in the currents. Caution should be exercised with the use of these currents.
+
+
 References
 ===========================================
 

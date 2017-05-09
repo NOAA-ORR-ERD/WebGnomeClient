@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Columbia, estuary, Oregon, Washington, location
+
 .. _columbia_river_estuary_tech:
 
 About Columbia River Estuary
@@ -11,10 +14,14 @@ Background
 ==============================
 
 The Columbia River Estuary is the second largest river in the United States and the largest river to flow into the eastern North Pacific. The drainage area is 660,480 km\ :sup:`2`, covering much of the U.S. Pacific Northwest and southwestern Canada (Simenstad et al., 1990). The Columbia River Estuary Location File covers the section of the Columbia River from the Pacific Ocean to approximately River Mile 47.
+
+
 Current Patterns
 =====================================
 
 The Columbia River Estuary Location File contains two current patterns. One is scaled to the tidal predictions at Tongue Point, Oregon (46° 13.15'N, 123° 46.00'W). The other represents the river flow minus the mean river flow in the tidal predictions and is scaled according to the river flow rate(s) entered by the user. Since the tidal record contains a mean current of 0.2 m/s, the scaleable river flow represents the difference between the user transport and the transport in the tidal predictions. Both current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
+
+
 River Flow Estimation
 ======================================
 
@@ -41,6 +48,8 @@ The Columbia River Estuary Location File scales all current patterns relative to
 ,
 
 where  is the mean flow in the tidal record at Tongue Point (approximately 0.2 m/s), and (m3) is the river's cross sectional area at Tongue Point.
+
+
 References
 ===============================================================
 

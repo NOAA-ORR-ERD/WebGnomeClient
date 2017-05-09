@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Detroit, Great Lakes, Michigan, Ontario, location
+
 .. _detroit_river_tech:
 
 About Detroit River
@@ -12,10 +15,14 @@ Background
 =======================
 
 The Detroit River flows from Lake St. Clair on the north to Lake Erie on the south. The river is approximately 32 miles long and forms part of the international boundary between the United States and Canada. The upper third of the river is narrow channel whereas the lower two-thirds widens and has many islands.
+
+
 Current Patterns
 ====================================
 
 The Detroit River Location File contains one current pattern. The current pattern was created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. The tidal current pattern is calibrated using the NOAA Center for Operational Oceanographic Products and Services (CO-OPS) port stations in the Detroit River. It should be noted that the model should not be used if the river is ice covered.
+
+
 References
 ==================================================================
 
