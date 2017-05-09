@@ -41,7 +41,7 @@ define([
 
         events: {
             // 'click .navbar-brand': 'home',
-            'click .new': 'newModel',
+            //'click .new': 'newModel',
             'click .edit': 'editModel',
             'click .load': 'load',
             'click .locations': 'locations',
@@ -170,12 +170,10 @@ define([
                         webgnome.riskCalc.destroy();
                     }
                     webgnome.riskCalc = undefined;
-                   
 
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
                     }
-
                     this.contextualize();
                     cb();                                                 
                 }
@@ -233,6 +231,9 @@ define([
                         webgnome.router.navigate('config', true);
                     }
                 });
+                if (window.location.href.indexOf('config') !== -1) {
+                    window.location.reload();
+                }
                 localStorage.setItem('view', 'trajectory');
             });
         },
