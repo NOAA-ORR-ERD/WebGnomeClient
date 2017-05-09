@@ -94,7 +94,7 @@ settings.
 
 2. The run duration can be edited in the Model Settings panel.
 
-3. The :ref:`Mobile Bay User Guide <mobile_bay_tech> explains how the currents 
+3. The :ref:`Mobile Bay User Guide <mobile_bay_tech>` explains how the currents 
 due to the river are scaled based on the river flows into the Bay. Since this 
 scaling is linear, an increase in the river flow from 30 kcfs to 300 kcfs implies 
 the scaling should be increased by a factor of 10. If you click the edit icon (pencil)
