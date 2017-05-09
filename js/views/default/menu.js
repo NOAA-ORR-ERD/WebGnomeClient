@@ -284,17 +284,8 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel()){
-                this.disableMenuItem('save');
-            } else {
-                this.enableMenuItem('save');
-            }
-            
-            if(webgnome.hasModel()){
-                this.enableMenuItem('edit');
-            } else {
-                this.disableMenuItem('edit');
-            }
+            this.enableMenuItem('save');
+            this.enableMenuItem('edit');
 
             if(webgnome.cache.length > 0){
                 this.enableMenuItem('rewind');
