@@ -280,7 +280,6 @@ define([
             } else {
                 coordinate = new ol.geom.Point([this.$('#nws #lon').val(), this.$('#nws #lat').val()]);
                 coords = new ol.proj.transform([this.$('#nws #lon').val(), this.$('#nws #lat').val()], 'EPSG:4326', 'EPSG:3857');
-                console.log(coords)
                 feature = new ol.Feature(new ol.geom.Point(coordinate));
             }
 
