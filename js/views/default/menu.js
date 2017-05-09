@@ -170,12 +170,15 @@ define([
                         webgnome.riskCalc.destroy();
                     }
                     webgnome.riskCalc = undefined;
-                   
 
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
                     }
 
+                    if (window.location.href.indexOf('config') !== -1) {
+                        window.location.reload();
+                    }
+                    
                     this.contextualize();
                     cb();                                                 
                 }
