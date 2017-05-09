@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   North Slope, Alaska, Stefansson, Harrison, Gwydyr, sound, bay, Mackenzie, Beaufort, location
+
 .. _north_slope_tech:
 
 About North Slope, Alaska
@@ -40,6 +43,8 @@ In this Location File, seven North Slope rivers are simulated. Unfortunately, ea
 A result of the limitations in simulating the rivers is that more information is needed from the user in order to set the river flows within a reasonable margin of error. In this Location File, the user needs to set a flow velocity near (generally < 1 NM) the mouth of each river. The user can either (1) make an estimate by throwing an orange into the river channel and tracking it with a global positioning system (GPS), pacing off the distance traveled, or by using some other estimation method; or (2) guess a range of values and see what happens in the model. The current speeds of the rivers can be measured using many different units. To help the user with conversions of the various units, we've provided two conversion tables in Appendix A. 
 
 In general, the higher the river flow, the harder it is for oil to move up into the river. Wind can partly overcome the river flow to move oil, but the complicated geometry of these river mouths (e.g., braided rivers with deltas and many barrier islands) means the wind would have to change direction in just the right combination of speeds and directions in order to move the oil through these complicated channels.
+
+
 Acknowledgements
 ================================================
 
@@ -48,6 +53,8 @@ We would like to thank **British Petroleum** for sponsoring the fieldwork in Gwy
 .. _Environment Canada – Water Survey of Canada: http://www.ec.gc.ca/rhc-wsc/
 
 Additional thanks to `Environment Canada – Water Survey of Canada`_ for access to hydrometric data for the Mackenzie River watershed.
+
+
 Circulation
 ====================================
 
@@ -58,14 +65,20 @@ Wind-driven Ekman transport can alter the across-shelf surface pressure gradient
 West Dock Break
 
 We have been careful to simulate the cut through West Dock causeway to allow the coastal circulation to pass through. The surface circulation in this Location File flows both through the West Dock and as a jet around the margin of the causeway, returning shoreward on the other side, as seen in the field (Hachmeister et al. 1987, Savoie and Wilson 1986, Short et al. 1988a).
+
+
 Current Patterns
 ========================================
 
 This Location File has eight current patterns: one component of the wind-driven currents in the lagoon systems; and seven river systems: the Mackenzie, Colville, Kuparuk, Sagavanirktok (Sag), Shaviovik, Canning, and Tamayariak Rivers. All were created with the NOAA Current Analysis for Trajectory Simulations (CATS) hydrodynamic model.
+
+
 Wind-Driven Currents
 ==============================================
 
 Wind-driven currents were simulated in the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic model, using the Wind-Driven Analysis Currents model. This model was used with linear physics so that the wind-driven currents could be related to a time-average of the wind data entered by the user. Both easterly winds and resultant baroclinic flow were simulated in the CATS model, so the wind velocity that the user enters is decomposed into those two components. The total current velocity is then related to the wind stress calculated from the winds input by the user. The wind-driven circulation patterns in this Location File were scaled with respect to the western boundary circulation in the Harrison and Gwydyr Bay Location File. The scaling in the Harrison and Gwydyr Bays Location File was created from fieldwork conducted during August 2001.
+
+
 Mackenzie River Flow
 ==============================================
 
@@ -81,12 +94,16 @@ To obtain real-time or historical flow values for the Mackenzie River, see the E
 .. _Canadian Mackenzie GEWEX: http://www.usask.ca/geography/MAGS/Data/discharge/discharge_e.html
 
 **Note:** For the Mackenzie River, high, mean, and low estimates were derived from `historical data recorded from 1972 to 2010`_ (and from investigation of the hydrology of the Mackenzie River by the Water Survey of Canada. Additional analysis of these data was provided by the `Canadian Mackenzie GEWEX`_ (Global Energy & Water Cycle Experiment) Study. In situ measurements of discharge and the resultant current speeds at principal channels of the Mackenzie were provided by Water Survey of Canada (Roger Pilling – Hydrometric Supervisor, personal communication, June 21, 2012).
+
+
 Colville River Flow
 ============================================
 
 The Colville River flows into Harrison Bay and is simulated with user interaction in this Location File. The user can choose one of three flow values as estimates of the flow rate. 
 
 The three flow rates (20,000 cfs, 10,000 cfs, and 3,000 cfs) are estimates of high, medium, and low flow rates for river flow after the extremes of the spring freshet have passed. The 1996 Colville River Delta Channel Assessment by Shannon & Wilson, Inc. was used for flow estimates. 
+
+
 Kuparuk River Flow
 ==================================================
 
@@ -97,10 +114,14 @@ The three flow values available in the pull-down menu are the mean flow rate (22
 .. _USGS Current Water Data for the Nation: http://waterdata.usgs.gov/nwis/rt
 
 To obtain real-time or historical flow values for the Kuparuk River, visit `USGS Current Water Data for the Nation`_ . On the interactive map, click Alaska (AK). Next, either click the Kuparuk River on the Alaska map or select "Statewide Streamflow Table." Under the heading, "Arctic Slope", select station number "15896000" for the station Kuparuk River near Deadhorse, Alaska.
+
+
 Stefansson Sound River Flows
 ==================================================
 
 The Stefansson Sound river flows are simulated with user interaction in this Location File. Unfortunately, very little information is available on riverbed bathymetry and flow rates in this region of the Arctic. The Sag River does have a river gauge, with forecasts made at the river's mouth in the Beaufort Sea; however, these forecasts are not available online. In order to create a useful planning tool in this Location File, we have estimated river circulation patterns and likely river flow rates, based on other rivers in the U.S. We have included simple methods for measuring river currents in the *River Flows* Help Topic. If measurements of surface currents are unavailable, we recommend that the user choose high and low values for the river flow, and run the model with these values to evaluate the difference.
+
+
 References
 =================================
 

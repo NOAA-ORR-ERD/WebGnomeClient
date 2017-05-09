@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   ROPME, Indian, location
+
 .. _ropme_sea_area_tech:
 
 About the Regional Organization for the Protection of the Marine Environment (ROPME) sea area
@@ -16,10 +19,14 @@ The inner ROPME Sea Area is a semi-enclosed marginal sea with inverse estuarine 
 Evaporation (Sugden 1965 and Hunter 1982) and wind (Wright 1974 and Hughes and Junter 1979) are major driving forces in the Gulf circulation. Evaporation occurs more in winter due to high wind speeds, even though surface temperatures are higher in summer. The overall circulation in the inner ROPME Sea Area is cyclonic, with relatively fresh water entering through the Strait of Hormuz. In winter, the cyclonic circulation is primarily found in the southern portion. This cyclonic circulation gradually expands to extend farther north during the summer. Average rainfall in the region is very small (on the order of 7 cm/year) and is not a significant influence on the circulation. River discharge is small and occurs in the north at Shatt-al-Arab. River flow can be traced equatorward along the Arabian coast, with the plume extending approximately 20 km wide along the Iraqi coastline (Mathews et al. 1979). Reservoirs and dams in Iraq, Syria, and Turkey have reduced the river flow into the inner ROPME Sea Area at Shatt-al-Arab.
 
 Tides are mostly diurnal and semidiurnal and are not significant for the residual circulation (and hence the transport of pollutants, such as oil), except near topographic features (Hughes and Hunter 1979). The tides are complex standing waves with two amphidromic points for the semidiurnal constituents (northwest and southeast ends) and one for the diurnal constituents (central, near Bahrain).
+
+
 Current Patterns
 ====================================================
 
 Three current patterns are used to simulate the circulation in the inner ROPME Sea Area. These include a reverse estuarine flow, river flow, and a wind-driven circulation derived with NNW winds. Tidal flows are not simulated in the Location File because it is concerned with a large scale (>10 km) region and long (> 1 day) timescale simulations.
+
+
 
 References
 ==============================================

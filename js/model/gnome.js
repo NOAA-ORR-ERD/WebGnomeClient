@@ -64,7 +64,8 @@ define([
         fileOutputters: [
             'gnome.outputters.netcdf.NetCDFOutput',
             'gnome.outputters.shape.ShapeOutput',
-            'gnome.outputters.kmz.KMZOutput'
+            'gnome.outputters.kmz.KMZOutput',
+            'gnome.outputters.image.IceImageOutput'
         ],
         model: {
             spills: {

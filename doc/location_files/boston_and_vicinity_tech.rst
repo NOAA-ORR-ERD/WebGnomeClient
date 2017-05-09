@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Boston, location
+
 .. _boston_and_vicinity_tech:
 
 About Boston and Vicinity
@@ -22,6 +25,8 @@ Both Massachusetts Bay and Boston Harbor have a strong seasonal cycle in water p
 Wastewater outflow from the two former treatment facilities at Nut Island and Deer Island contributed a significant portion of the annual mean freshwater flux to Boston Harbor. This input resulted in surface currents that were significant near the outflow points (Geyer et al. 1992). Because these facilities are no longer in operation, these currents are not modeled in this Location File.
 
 The new Effluent Outfall Tunnel will discharge effluent at a depth of 30 m, at a distance of 14 km out in Massachusetts Bay. There are several diffusers along the underwater pipe. Density-driven mean currents from the new outflow are predicted to be 2-4 cm/s at the surface in the winter and at the pycnocline (15-20 m depth) in the summer. The surface current is predicted to spiral out clockwise within about 5 km from the outflow site (Signell et al. 2000). These currents generally have very little effect on oil spill trajectories. Within this Location File, currents are simulated for the outflow, and the user is given the option of including this current pattern in case he/she wants to simulate a wintertime spill directly over the outflow in no-wind conditions.
+
+
 Current Patterns
 =======================================
 
@@ -36,6 +41,8 @@ Another current pattern represents the arm of the Gulf of Maine circulation that
 Spring runoff in rivers that enter the Gulf of Maine, particularly the Merrimack River to the north, results in an increase in the counterclockwise circulation in Massachusetts Bay (Geyer et al. 1992). This circulation, sometimes referred to as the Massachusetts Coastal Current (MCC), is represented in the Location File by a current pattern that is scaled to a maximum flow of 15 cm/s in May and slower velocities of 12 cm/s and 4 cm/s in April and June, respectively. Although there is frequently another high pulse of freshwater input from the Merrimack River in the fall, this pulse does not lead to a corresponding increase in the MCC due to low stratification during fall. The reference point for this current pattern lies just east of Gloucester (42° 35' N, 70° 39' W). Year-to-year variability in this current is represented by a 50% along-current and 20% cross-current uncertainty in the Location File.
 
 Sewage outfall is predicted to have little, if any, effect on the surface transportation of oil in the region, with the possible exception of a wintertime scenario within 5 km of the outflow location with little or no winds. If the user chooses to simulate these effects in GNOME, the currents are scaled to 4 cm/s at the outfall exit.
+
+
 References
 ==============================================================
 
