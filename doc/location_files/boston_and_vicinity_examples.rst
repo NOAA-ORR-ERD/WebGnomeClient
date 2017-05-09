@@ -7,7 +7,7 @@
 
 :orphan:
 
-.. _boston_examples:
+.. _boston_and_vicinity_examples:
 
 Boston Example Problems
 =======================
