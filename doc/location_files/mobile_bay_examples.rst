@@ -1,7 +1,7 @@
 
 :orphan:
 
-.. _mobile_examples:
+.. _mobile_bay_examples:
 
 Mobile Example Problems
 =======================
@@ -81,7 +81,7 @@ high river runoff on the transport of the spill. Set the spill at 30°
 37' N, 88° 1' W and set the run time to 0530 on March 14, 2000 (a flood
 tide is just starting at this time). Run the spill two times in GNOME,
 the first time with a low (30 kcfs) river flow and the second time with
-a high (200 kcfs) river flow. Change the model run duration to 3 days
+a high (300 kcfs) river flow. Change the model run duration to 3 days
 for this example problem.
 
 What are the differences in beach impacts between these two
@@ -94,8 +94,13 @@ settings.
 
 2. The run duration can be edited in the Model Settings panel.
 
-2. **Not sure how to change the river flow rate yet** w/o rerunning the 
-wizard (i.e. starting from scratch -- this is an open ticket)
+3. The :ref:`Mobile Bay User Guide <mobile_bay_tech>` explains how the currents 
+due to the river are scaled based on the river flows into the Bay. Since this 
+scaling is linear, an increase in the river flow from 30 kcfs to 300 kcfs implies 
+the scaling should be increased by a factor of 10. If you click the edit icon (pencil)
+next to the River Currents in the currents panel, you'll be able to edit the Scale 
+Value. If you started with the low river flow case, you'll be increasing this value 
+from ~0.197 to 1.97.
 
 Answer:
 .......
@@ -147,7 +152,7 @@ go.
 Rerun the previous spill with a high river flow rate, but first make
 these changes: (1) change the wind to 15 knots from the east; (2) change
 the spill start time to 0100 on March 15, 2000; (3) reset the model
-duration to 1 day; and (4) include the “Minimum Regret” solution.
+duration to 1 day; and (4) include the "Minimum Regret" solution.
 
 "Zoom in" to your spill area and examine the difference
 between the "Best Guess" (black) and "Minimum Regret" (red)
@@ -222,24 +227,10 @@ as it falls into one of these broad categories.
 3. To view the mass balance for each scenario switch to the Fate View.
 
 
-**Answer:** Heavier oils remain in the environment longer than
+Answer:
+-------
+
+Heavier oils remain in the environment longer than
 lighter, refined products. You can see that the beach impacts from
 the medium crude spill are more extensive than for the gasoline
-spill. (Your numbers may differ slightly.)
-
-+----------------------------+------------------+--------------+
-|                            | **Medium Crude   | **Gasoline   |
-|                            | (bbls)**         | (bbls)**     |
-+----------------------------+------------------+--------------+
-| Released                   | 10,000           | 10,000       |
-+----------------------------+------------------+--------------+
-| Floating                   |                  |              |
-+----------------------------+------------------+--------------+
-| Beached                    |                  |              |
-+----------------------------+------------------+--------------+
-| Evaporated                 |                  |              |
-+----------------------------+------------------+--------------+
-| Dispersed                  |                  |              |
-+----------------------------+------------------+--------------+
-| Off map                    |                  |              |
-+----------------------------+------------------+--------------+
+spill. 

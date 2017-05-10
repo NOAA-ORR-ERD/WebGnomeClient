@@ -49,7 +49,8 @@ define([
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
-                'click .nws-manual': 'nwsSubmit'
+                'keyup #nws #lat': 'nwsSubmit',
+                'keyup #nws #lon': 'nwsSubmit'
             }, formModalHash);
         },
 
@@ -226,6 +227,10 @@ define([
                 this.originalTimeseries = this.model.get('timeseries');
             }
 
+            if(_.has(this, 'coords')){
+                delete this.coords;
+            }
+
             if(e.target.hash === '#constant'){
                 if(this.$('.constant-compass canvas').length === 0){
                     this.$('.constant-compass').compassRoseUI({
@@ -249,19 +254,7 @@ define([
                 if(this.$('#wind-form-map canvas').length === 0){
                     this.ol.render();
                     this.ol.setMapOrientation();
-                    this.ol.map.on('click', _.bind(function(e){
-                        this.clearError();
-                        this.source.forEachFeature(function(feature){
-                            this.source.removeFeature(feature);
-                        }, this);
-                        var feature = new ol.Feature(new ol.geom.Point(e.coordinate));
-                        var coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-                        this.source.addFeature(feature);
-                        var coordObj = {lat: coords[1], lon: coords[0]};
-                        this.nwsFetch(coordObj);
-                        this.$('.save').addClass('disabled');
-                        this.populateDateTime();
-                    }, this));
+                    this.ol.map.on('click', _.bind(this.updateNWSMap, this));
 
                     var spill = webgnome.model.get('spills').at(0);
                     if (spill) {
@@ -276,6 +269,32 @@ define([
             }
             this.update();
             $(window).trigger('resize');
+            this.populateDateTime();
+        },
+
+        updateNWSMap: function(e){
+            var coordinate, feature, coords;
+            if(_.has(e, 'coordinate')){
+                coordinate = new ol.geom.Point(e.coordinate);
+                feature = new ol.Feature(coordinate);
+                coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
+                this.$('#nws #lat').val(coords[1]);
+                this.$('#nws #lon').val(coords[0]);
+            } else {
+                coordinate = new ol.geom.Point([this.$('#nws #lon').val(), this.$('#nws #lat').val()]);
+                coords = new ol.proj.transform([this.$('#nws #lon').val(), this.$('#nws #lat').val()], 'EPSG:4326', 'EPSG:3857');
+                feature = new ol.Feature(new ol.geom.Point(coordinate));
+            }
+
+            this.clearError();
+            this.source.forEachFeature(function(feature){
+                if(feature.name !== 'spill'){
+                    this.source.removeFeature(feature);
+                }
+            }, this);
+            this.source.addFeature(feature);
+            var coordObj = {lat: coords[1], lon: coords[0]};
+            this.nwsFetch(coordObj);
             this.populateDateTime();
         },
 
@@ -309,22 +328,14 @@ define([
 
         nwsSubmit: function(e) {
             e.preventDefault();
-
             var coords = {};
             coords.lat = parseFloat(this.$('#nws #lat').val());
             coords.lon = parseFloat(this.$('#nws #lon').val());
-
-            this.nwsFetch(coords);
+            this.updateNWSMap(e);
         },
 
         nwsFetch: function(coords) {
             this.nws = new NwsWind(coords);
-            this.nws.fetch({
-                success: _.bind(this.nwsLoad, this),
-                error: _.bind(this.nwsError, this)
-            });
-            this.$('#nws #lat').val(coords.lat);
-            this.$('#nws #lon').val(coords.lon);
         },
 
         setupUpload: function(){
@@ -379,6 +390,7 @@ define([
             this.unbindBaseMouseTrap();
             this.$('.save').removeClass('disabled');
             this.populateDateTime();
+            this.save();
         },
 
         nwsError: function(){
@@ -803,9 +815,16 @@ define([
         },
 
         save: function(){
-            if(_.isUndefined(this.nws) || !this.nws.fetching){
+            if(_.isUndefined(this.nws) || this.nws.fetched){
                 this.update();
                 FormModal.prototype.save.call(this);
+            } else {
+                this.$('.save').addClass('disabled');
+                this.nws.fetch({
+                    success: _.bind(this.nwsLoad, this),
+                    error: _.bind(this.nwsError, this)
+                });
+                this.nws.fetched = true;
             }
         },
 

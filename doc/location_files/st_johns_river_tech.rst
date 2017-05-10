@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   St. Johns, Florida, location
+
 .. _st_johns_river_tech:
 
 About St. Johns River, Florida
@@ -18,12 +21,16 @@ The St. Johns River circulation is controlled by the moderate tides. Although th
 The two jetties at the entrance to the St. Johns River are built of rip-rap, which is permeable to spilled oil. We have simulated these jetties as solid structures in this Location File, for ease of implementation. If you have any trajectories that bring oil near the jetties, you should consider that oil could go through the jetties, in addition to the results of your trajectory.
 
 Within this Location File, the extensive marsh areas are simulated as solid shoreline. Thus, GNOME will show that oil has beached on the shoreline and will not show any penetration into marsh regions. When running your scenarios, you should consider that any oil at the edge of a marsh could potentially move into the marsh.
+
+
 Current Patterns
 ==========================================
 
 Two current patterns are used in this Location File: one for tides and one for the nearshore circulation outside of the St. Johns River entrance. Both of these currents were created using the NOAA Circulation Analysis for Trajectory Simulations (CATS) hydrodynamic model. The tidal circulation is keyed to the main tide station at the St. Johns River entrance, which is located between the jetties. 
 
 In this region, the alongshore flow can reverse, but most commonly flows to the north. We have scaled the offshore circulation to be approximately 10 centimeters/second (cm/s). 
+
+
 References
 =========================================
 

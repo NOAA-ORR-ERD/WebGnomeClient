@@ -98,7 +98,7 @@ html_theme_options = {'collapse_navigation': False,
                       'sticky_navigation': False,
                       'prev_next_buttons_location': 'bottom',
                       }
-
+html_use_smartypants = False
 # html_theme = 'alabaster'
 # # not sure if this works...
 # html_sidebars = { '**': ['globaltoc.html',

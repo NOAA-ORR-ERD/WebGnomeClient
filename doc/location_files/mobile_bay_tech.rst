@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Mobile, Alabama, gulf, Mexico, Tennessee, Georgia, Mississippi, location
+
 .. _mobile_bay_tech:
 
 About Mobile Bay
@@ -14,6 +17,8 @@ Background
 Mobile Bay is a drowned river estuary that is relatively broad and shallow. The bay has a mean depth of about 10 feet (3 meters). Mobile Bay is the terminus for the Mobile River, the Tombigbee-Black Warrior River, and the Alabama-Coosa-Tallapoosa River. Man-made channels, drainage areas, and oyster reefs have significantly altered the circulation of the bay. Most (about 85%) of the water exchange between Mobile Bay and the Gulf of Mexico is through Main Pass Sound. The remainder of the water flows through Pass aux Herons into Mississippi Sound.
 
 Ships entering the bay travel along the Main Ship Channel (40 feet, or 12 meters, deep) and the Theodore Ship Channel (27 feet, or 8 meters, deep).
+
+
 Current Patterns
 ===================================
 
@@ -59,6 +64,8 @@ WindScaleFactor = 0.0
 RiverTransport > 141 cfs (4000 m3/s)
 
 Wind-driven current velocities are multiplied by the WindScaleFactor to scale them with fresh water input.
+
+
 References
 ====================================================
 

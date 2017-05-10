@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Tampa, Florida, location
+
 .. _tampa_bay_tech:
 
 About the Tampa Bay
@@ -14,6 +17,8 @@ Background
 Tampa Bay is one of the few estuaries in the U.S. that is not associated with a large river. Located in west-central Florida, where the winters are warm and the summers are hot and humid, the total Tampa Bay watershed (comprised of the Hillsborough, Alafia, Little Manatee, and Manatee Rivers) receives an average of 50 to 56 inches of precipitation each year, depending on the location. More than half (60%) of the precipitation occurs from June to September. (M.S. Flannery, "Tampa and Sarasota Bays: Watersheds and Tributaries" NOAA Estuary of the Month, pp 18-48.)
 
 Tampa Bay is a broad, shallow, well-mixed tidal estuary with a surface area of 346 square miles and an average depth of 12 feet. The tidal range is also small, about 2 feet. These features lead to primarily horizontal circulation with the ebb and flood tides not necessarily exactly canceling. (C.R. Goodwin, "Circulation of Tampa and Sarasota Bays" NOAA Estuary of the Month, pp 49-64.) GNOME does not simulate these tidal recirculation areas, but these features are generally small (4 nm in diameter or less).
+
+
 Current Patterns
 ===================================
 
@@ -27,6 +32,8 @@ Longboat Pass	27° 26.5' N,	82°, 41.4' W
 **Clearwater Pass** drives the circulation in the southern portion of St. Joseph Sound through Clearwater Harbor and The Narrows, including Hurricane Pass, Dunedin Pass, and Clearwater Pass. **Blind Pass** drives the circulation through south of The Narrows through Boca Ciega Bay, including Johns Pass and Blind Pass. **Tampa Bay Entrance** drives the circulation throughout Tampa Bay. **Longboat Pass** drives the circulation from Anna Maria Sound south through Sarasota Bay.
 
 The **Offshore** current pattern is tied to the northerly component of the wind forecast and is scaled so that a south wind of 4.5 m/s will generate a 15 cm/s current to the north (after Cragg and Sturges 1974).
+
+
 References
 =================================================
 

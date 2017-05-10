@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Apra, Guam, location
+
 .. _apra_harbor_tech:
 
 About Apra Harbor, Guam
@@ -16,6 +19,8 @@ Guam's currents are heavily influenced by the North Pacific Equatorial Current, 
 Winds are dominated by the Trade Winds, which generally come from a direction between east and northeast. Although Guam lies southeast of the heaviest tropical cyclone activity in the western Pacific (Eldredge 1983), tropical cyclones often affect Guam weather during the wet season (July through November). This Location File does not attempt to simulate currents during a tropical cyclone.
 
 Reef systems exist along the modeled coastline. Fine-scale surface current patterns within the reefs, and between the reefs and the shore, are complex and were not modeled because of resolution considerations and lack of sufficient observational data. Also, land-sea breeze effects on nearshore circulation were not simulated.
+
+
 Current Patterns
 =================================
 
@@ -24,6 +29,8 @@ The Apra Harbor Location File contains two current patterns, one for tidal curre
 The simplified tidal currents used in the Location File do not represent the eddies that Maas indicates are present in the harbor. Tidal ranges within the harbor are usually less than one meter. Tidal current records were not available, so a ten-year record of simulated current time series was constructed by differentiating the tidal height file. This record was scaled to 1-1/2 knots maximal tidal current at the entrance to the harbor.
 
 The residual currents were modeled using the NOAA hydrodynamics model Wind Analysis of Currents (WAC), which generates current patterns in part by using wind stress as a forcing function. The steady state winds were 15 knots from the east to represent the Trade Winds. The flow convergence at Orote Peninsula was simulated by assuming a set down in water surface elevation at the northern and southern part of the island compared to mean ocean levels offshore.
+
+
 References
 ==============================================================
 

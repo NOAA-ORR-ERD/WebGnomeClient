@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Narragansett, Rhode Island, location
+
 .. _narragansett_bay_tech:
 
 About Narragansett Bay
@@ -17,6 +20,8 @@ The bay is 25 miles (40 kilometers) long and 10 miles (16 kilometers) wide, cove
 Circulation in the region is driven primarily by tides. Secondary circulation patterns result from winds (Weisberg 1976; Weisberg and Sturges 1976; Gordon and Spaulding 1987). Variability in river flow does not have a significant impact on surface current variability in the Providence River section of Narragansett Bay (Weisberg 1976), and is unlikely to significantly impact other regions of the bay.
 
 There is some evidence of flow resulting from the sudden arrest of a strong southward wind. Strong southward winds blowing over a period of time would tend to push water out of the Bay. Upon removal of the wind stress, water will flow back into the Bay to compensate. This aspect of the circulation in Narragansett Bay is not represented in the Location File currents.
+
+
 Current Patterns
 ==============================================
 
@@ -27,6 +32,8 @@ Two wind-driven circulation patterns are used to simulate wind-driven flow: one 
 A steady Providence River outflow circulation pattern is used to simulate a net surface outflow from Narragansett Bay.
 
 All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
+
+
 References
 ===============================================================
 

@@ -99,6 +99,9 @@ define([
 
         clickName: function() {
             var modelForm = new ModelForm({}, webgnome.model);
+            if(webgnome.model.get('name') === 'ADIOS Model_'){
+                webgnome.model.set('name', 'ADIOS Model');
+            }
             modelForm.on('save wizardclose', _.bind(function(){
                 this.render();
             }, this));

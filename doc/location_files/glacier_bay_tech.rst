@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Glacier, Alaska, location
+
 .. _glacier_bay_tech:
 
 About Glacier Bay, Alaska
@@ -13,10 +16,14 @@ Background
 ==========================
 
 As a recently deglaciated fjord, tides and freshwater outflow dominate the currents in Glacier Bay. The seasonal cycle of freshwater outflow is accounted for in the tidal coefficients, although on any day the actual runoff could be quite different. Without real-time monitoring of freshwater flows from glaciers or rain, climatology was the only option to use in the Glacier Bay Location File.
+
+
 Current Patterns
 ==================================
 
 The tidal current pattern was simulated in the NOAA Circulation Analysis for Trajectory Simulations (CATS) hydrodynamic model using the WAC submodel with shallow water wave dynamics. The tidal time dependence is simulated using the tidal coefficients from the tidal station west of Beardslee Island (58° 28' N, 136° 02' W).
+
+
 References
 ==============================================================
 

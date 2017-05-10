@@ -1,7 +1,7 @@
 
 :orphan:
 
-.. _pws_examples:
+.. _prince_william_sound_examples:
 
 Prince William Sound Example Problems
 =====================================
@@ -40,11 +40,12 @@ Uncertainty model runs for 2 days?
 1. Choose any medium crude from the Oil Library. 
  
 2. The Uncertainty or "Minimum Regret" solution is on by default (there is a checkbox 
-to turn it on/off in the Model Settings Wizard dialog box). If you want to rerun the 
-same scenario with or without the Uncertainty solution, it can also be accessed by 
-using the buttons on the Menu Bar to switch from Map View to Setup View. In Setup View 
-you can edit any of the parameters previously specified in the Wizard.
-
+to turn it on/off in the Model Settings Wizard dialog box). Rather than stepping through 
+the Wizard again you can switch to Setup View to make changes to your model settings.
+Use the buttons on the Menu Bar to switch from Map View to Setup View. 
+In Setup View are various panels which 
+allow you to edit the model setup. In the **Model Settings** panel, you can toggle the 
+uncertainty solution on or off. 
 
 Answer:
 -------
@@ -76,7 +77,7 @@ By the end of two days, almost all of the gasoline has
 evaporated and dispersed. (For the crude oil spill, only about a 
 third of the spill had evaporated and dispersed in two days.) 
 Much less shoreline is oiled because the
-gasoline isn’t around long enough to travel very far.
+gasoline isn't around long enough to travel very far.
 
 Example 3.
 ----------
@@ -94,17 +95,15 @@ entry). By hovering over the first list item you will get an option to add anoth
 (+ icon). Choose to add another row below and then enter the additional wind
 information for this example.
 
-**THIS REQUIRES A FIX TO THE WIND TIME DEFAULTS!!!**
-
 Answer:
 -------
 
 Now the beach impacts of the "Best Guess" trajectory
 affect both Hinchinbrook and Montague Islands. In problem 1, the
-“Best Guess” trajectory impacted only Hinchinbrook Island, while the
+"Best Guess" trajectory impacted only Hinchinbrook Island, while the
 Uncertainty trajectory showed that Montague Island could possibly be
 affected as well. In this problem, you can see how a small shift in
-the wind has a dramatic effect on the spill’s trajectory.
+the wind has a dramatic effect on the spill's trajectory.
 
 Example Set II
 ==============
@@ -180,22 +179,7 @@ The currents within the central sound are much weaker
 than in the western passages, so the northern spill spreads out more
 uniformly with some net movement to the north. The more southern
 spill spreads out in the direction of the current and travels much
-further. The mass balances for your trajectories should be similar
-to these results:
-
-+----------------------------+----------------+----------------+
-| **                         | **Spill #1**   | **Spill #2**   |
-| Mass Balance**             |                |                |
-|                            | **(bbl)**      | **(bbl)**      |
-+----------------------------+----------------+----------------+
-| Floating                   | 837            | 777            |
-+----------------------------+----------------+----------------+
-| Beached                    | 0              | 52             |
-+----------------------------+----------------+----------------+
-| Evaporated                 | 163            | 171            |
-+----------------------------+----------------+----------------+
-| Dispersed                  |                |                |
-+----------------------------+----------------+----------------+
+further. 
 
 Example 2.
 ----------
@@ -232,17 +216,6 @@ The wind makes the spills move in an easterly direction.
 Both spills have significantly more beach impacts with the wind
 blowing the oil onshore.
 
-+----------------------------+----------------+----------------+
-| **                         | **Spill #1**   | **Spill #2**   |
-| Mass Balance**             |                |                |
-|                            | **(bbl)**      | **(bbl)**      |
-+----------------------------+----------------+----------------+
-| Floating                   | 599            | 117            |
-+----------------------------+----------------+----------------+
-| Beached                    | 238            | 712            |
-+----------------------------+----------------+----------------+
-| Evaporated                 | 163            | 171            |
-+----------------------------+----------------+----------------+
 
 Example 3.
 ----------
@@ -296,14 +269,3 @@ Lighter products evaporate more quickly than heavier
 products. These gasoline spills have few beach impacts because the
 product is evaporating so quickly.
 
-+----------------------------+----------------+----------------+
-| **                         | **Spill #1**   | **Spill #2**   |
-| Mass Balance**             |                |                |
-|                            | **(bbl)**      | **(bbl)**      |
-+----------------------------+----------------+----------------+
-| Floating                   | 15             | 19             |
-+----------------------------+----------------+----------------+
-| Beached                    | 0              | 3              |
-+----------------------------+----------------+----------------+
-| Evaporated and Dispersed   | 985            | 978            |
-+----------------------------+----------------+----------------+

@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Galveston, trinity, west, east, bay, Mexico, gulf, Texas, location
+
 .. _galveston_bay_tech:
 
 About Galveston Bay
@@ -12,6 +15,8 @@ Background
 ==================================
 
 Galveston Bay is broad and very shallow (typically only 6-12 feet deep), except for dredged channels. Winds and tides dominate the circulation in the bay. However, meteorological tides (storm surge) can significantly raise or lower sea level, causing extensive flooding and currents that can overcome the tides. Even modest storms can affect sea level more than the astronomical tides when there is a persistent onshore or offshore wind.
+
+
 
 
 Current Patterns
@@ -56,6 +61,8 @@ The small circulation driven by the P.H. Robinson power plant flow-through circu
 **5. Offshore Circulation**
 
 An offshore circulation pattern was derived assuming a barotropic setup. The offshore circulation pattern is scaled by the alongshore (55° True) component of the offshore velocity entered by the GNOME user.
+
+
 References
 =========================================
 
@@ -132,6 +139,8 @@ Tools and information for emergency responders and planners, and others concerne
 `Hydrodynamic & Oil Spill Modeling - Galveston Bay`_
 
 An animated computer model of currents in Galveston Bay provided by the Texas Water Development Board and the Texas General Land Office.
+
+
 Acknowledgements
 =================================
 

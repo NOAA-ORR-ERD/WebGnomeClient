@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Casco Bay, New England, Maine, Portland Harbor, location
+
 .. _casco_bay_tech:
 
 About Casco Bay
@@ -20,12 +23,16 @@ The main channel entrance to Portland Harbor lies between Cushing Island and the
 The Casco Bay region has extensive mudflats, particularly in the areas of the Fore River, the Presumpscot River, Back Cove, Mackworth Island, Little and Great Diamond Islands, Little and Great Chebeague Islands, Cousins and Littlejohn Islands, and Mussel Cove. Mudflats are typically exposed at low tide and submerged at high tide. GNOME does not model currents in these regions; only diffusion and wind move oil across mudflats to shoreline.
 
 The Bath Iron Works (BIW) Dry-Dock is in northeast Portland Harbor and is indicated as a rectangular island on the Location File map. This dry-dock--9 barges lashed together--is due to be removed in 2001. It will be replaced by a cruise ship terminal at a later date. The Casco Bay Location File models currents going around the dry-dock.
+
+
 Current Patterns
 ========================================
 
 The Casco Bay Location File uses one current pattern to simulate tidal circulation. The tidal current pattern is scaled to tides in the Portland Harbor entrance southwest of Cushing Island (43.63°N, 70.21°W).
 
 All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
+
+
 References
 ==================================
 

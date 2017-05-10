@@ -10,7 +10,7 @@ Norfolk Example Problems
 Try out these examples to learn the basics of modeling oil spills in the
 Norfolk/Hampton Roads area. Explore how changing tides, winds, and
 pollutants can affect the trajectory of an oil slick. In addition,
-you’ll see how model and observation limitations can be overcome by
+you'll see how model and observation limitations can be overcome by
 considering both the "Best Guess" and the "Minimum Regret" (Uncertainty)
 solutions. This knowledge will help you in designing your own GNOME
 model runs.
@@ -62,7 +62,7 @@ impacts between the two spills.
     change both the spill start and end times, and the model start time.
     To do this, under **Spills** in the Summary List (the left section
     of the Map Window), double-click the description of your spill,
-    "[Name you’ve provided]: Non-Weathering: 100 barrels". In the Spill
+    "[Name you've provided]: Non-Weathering: 100 barrels". In the Spill
     Information window, change the Release Start Time to June 23 at 1700
     and the Release End time to June 25 at 1700. GNOME will then prompt
     you to change the model start time to match the spill start time.
@@ -184,7 +184,7 @@ write down the mass balance for each product in the table below.
     the spill (36° 59.07' N, 76° 20.08' W).
 
 (2) To view the mass balance for each scenario, click the right-pointing
-triangle next to the spill description ("[Name you’ve provided]: Fuel
+triangle next to the spill description ("[Name you've provided]: Fuel
 Oil #6: 30000 gallons") under Spills in the Summary List. Then click the
 right pointing triangle next to "Splot Mass Balance" to view the mass
 balance for the "Best Guess" trajectory.

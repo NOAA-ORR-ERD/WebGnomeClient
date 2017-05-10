@@ -7,7 +7,7 @@
 
 :orphan:
 
-.. _boston_examples:
+.. _boston_and_vicinity_examples:
 
 Boston Example Problems
 =======================
@@ -54,7 +54,7 @@ Spill type:               Instantaneous.
 Time of Release:          Same as model start time.
 Amount released:          100 bbls.
 Pollutant type:           Non-weathering.
-Position:                 42° 20.45’ N, 70° 57.44’ W.
+Position:                 42° 20.45' N, 70° 57.44' W.
 =======================  =================================================
 
 Once you have run the model for both start times, zoom in to the spill area and 
@@ -136,7 +136,7 @@ running. The "Minimum Regret" solution takes into account our
 uncertainty in wind, horizontal mixing, and currents.
 
 Rerun the previous scenario, increasing the wind to 10 knots from the
-NW. This time, run WebGNOME with the “Minimum Regret” solution turned on.
+NW. This time, run WebGNOME with the "Minimum Regret" solution turned on.
 
 Examine the difference between the "Best Guess" (black) and "Minimum Regret" (red) trajectories.
 Why do you think this type of information would be useful?
@@ -186,7 +186,7 @@ The Merrimack River has very high flows in the spring. This
 strong pulse of fresh water into the Gulf of Maine leads to a coastal
 current in Massachusetts Bay. Run two 1-day spill scenarios of 70,000 gallons
 of non-weathering oil near the entrance to Gloucester Harbor at 
-42° 34.73’ N, 70° 38.97’ W. 
+42° 34.73' N, 70° 38.97' W. 
 Run one scenario during the spring freshet, on May 15, 2000 at 3:45 p.m. 
 Run another scenario during the fall on
 October 15, 2000 at 7:15 p.m. Both of these times represent the
@@ -218,8 +218,8 @@ compares the effects of different types of pollutants.
 
 A damaged vessel begins to leak fuel as it heads into Boston Harbor
 along Nantasket Roads. The vessel spills 30,000 gallons of product
-between 6:00 and 7:00 p.m. on May 4, 2000 as it travels from 42° 19.16’
-N, 70° 53.55’ W to 42° 18.76’ N, 70° 55.25’ W. Winds are 5 knots from the W.
+between 6:00 and 7:00 p.m. on May 4, 2000 as it travels from 42° 19.16'
+N, 70° 53.55' W to 42° 18.76' N, 70° 55.25' W. Winds are 5 knots from the W.
 
 A scenario that includes weathering requires additional water property
 information. In the Water panel, enter a water temperature of 55° F and 
@@ -288,7 +288,7 @@ studies suggest that the discharge will have little or no effect on
 surface currents in the region in the summer and a small effect on
 surface currents in the winter. To demonstrate how this discharge may
 impact spilled oil trajectories, run a 100-barrel linear spill over the
-outfall site from 42° 24.97’ N, 70° 47.04’ W to 42° 21.96’ N, 70° 46.98’
+outfall site from 42° 24.97' N, 70° 47.04' W to 42° 21.96' N, 70° 46.98'
 W. Leave the substance as the diesel used in the last example.
 Start the spill at noon on February 15. Run WebGNOME twice for this
 spill, once with the sewage outfall effects option turned on, and once

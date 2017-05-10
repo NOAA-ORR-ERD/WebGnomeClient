@@ -1,5 +1,8 @@
 :orphan:
 
+.. keywords
+   Strait, Juan de Fuca, Vancouver, Washington, location
+
 .. _strait_of_juan_de_fuca_tech:
 
 About the Strait of Juan de Fuca
@@ -13,12 +16,16 @@ Background
 
 The Strait of Juan de Fuca is a glacially carved fjord lying between Washington State and Vancouver Island, British Columbia. The western entrance to Juan de Fuca is about 200 m deep. Near Victoria, the shelf is about 60 m deep and extends southward to separate the Strait into eastern and western sections.
 The eastern Strait separates about 135 km east of the mouth into a northern portion and a southern portion. The northern portion goes through the San Juan Archipelago (via Rosario Strait, Haro Strait and San Juan Channel) into the Strait of Georgia. The southern portion enters Puget Sound through Admiralty Inlet. The Strait of Juan de Fuca is a major transportation lane for Canadian and U.S. commercial and recreational ships and boats. There are oil refineries in Padilla Bay (off of Rosario Strait) and the Strait of Georgia.
+
+
 Freshwater sources and estuarine circulation
 =====================================================
 
 The waters of the Strait of Juan de Fuca are partially mixed and weakly stratified. The primary freshwater source (approximately 75%) is the Fraser River in British Columbia (Herlinveaux and Tullly, 1961). The Fraser river flow has a strong seasonal cycle, with a maximum flow rate in early June at the peak of the high altitude snowmelt. The remaining fresh water enters the Strait through Puget Sound (Washington rivers), along the Olympic Peninsula, and along Vancouver Island. Rivers on Vancouver Island are a freshwater source an order of magnitude smaller than the Fraser River, with a peak in the winter during heavy rains (Masson and Cummins, 1999).
 
 Vigorous mixing occurs at entrances/exits to the Strait--in Rosario Strait, Boundary Pass (linking the Straits of Georgia and Juan de Fuca) and Admiralty Inlet (connecting the Strait of Juan de Fuca with Puget Sound). This vigorous mixing, caused primarily by high currents flowing over sills, serves to mix salty and fresh water, decreasing overall salinity gradients of the Strait of Juan de Fuca waters.
+
+
 Tides
 ======================
 
@@ -29,6 +36,8 @@ Tides account for 83%-86% of the current variability in the Strait of Juan de Fu
 **Local winds** appear to play an insignificant role in surface currents in the Strait of Juan de Fuca. On the other hand, **coastal winds** are highly correlated with pulses of relatively warm, fresh water that enter the Strait during offshore storms and southwesterly winds (Hickey et al., 1991; Holbrook et al., 1980a; Holbrook et al., 1980b). These pulses occur most often in winter, typically at a rate of 2-3 times a month and lasting 2-7 days (Holbrook and Halpern, 1982; Holbrook et al., 1980a; Holbrook et al., 1980b). These pulses can be sufficiently strong to overcome the mean estuarine currents and cause surface currents in the Strait to reverse direction as far inland as Dungeness Spit (Ebbesmeyer at al., 1990; Frisch et al., 1981; Holbrook et al., 1980b). Occasionally, a storm will occur in the summer and reverse currents as well (Frisch et al., 1981; Hickey et al., 1991; Holbrook et al., 1980b).
 
 Typical surface currents in the western Strait are 20-40 cm/s, with little variability in the summer and high variability in the winter. Sometimes, wintertime surface currents in the western Strait are 30 cm/s *inbound*. The region where mean, outgoing estuarine currents meet incoming, storm- induced currents can have convergence zones and strong currents that flow across the Strait (e.g. Hodgins, 1994). This has important implications for any surface pollutants, which can be pushed on shore from this convergence of opposing surface currents.
+
+
 Current Patterns
 =================================
 
@@ -135,6 +144,8 @@ Times Series
 0.0
 
 The eddy circulation patterns were tested by setting up the Strait of Juan de Fuca in GNOME to produce data for the NOAA Trajectory Analysis Planner (TAP) model. Trajectories were run with and without the eddy circulation pattern (all other physics, such as diffusion and tides, were set up as in the Location File). The addition of the eddy patterns significantly improved the simulation of known collection zones within the Strait.
+
+
 References
 =============================================
 
