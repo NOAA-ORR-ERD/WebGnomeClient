@@ -618,10 +618,14 @@ define([
         },
 
         writeValues: function(){
+            var direction = this.$('.input-direction').val();
+            if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
+            }
             this.$('.additional-wind-compass').compassRoseUI('update', {
-                    speed: this.$('.input-speed').val(),
-                    direction: this.$('.input-direction').val()
-                });
+                speed: this.$('.input-speed').val(),
+                direction: direction
+            });
         },
 
         variableRoseUpdate: function(magnitude, direction){
@@ -644,7 +648,7 @@ define([
                 var direction = this.$('.input-direction').val();
                 var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
-                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+                    direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
                 }
                 entry = [date, [speed, direction]];
                 var tsCopy = _.clone(this.model.get('timeseries'));
