@@ -20,6 +20,7 @@ define([
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             this.on('change:wind', this.windChange, this);
+            this.windChange();
         },
 
         windChange: function() {
