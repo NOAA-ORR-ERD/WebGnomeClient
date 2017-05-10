@@ -5,6 +5,7 @@ define([
     'model/oil/library',
     'text!templates/oil/table.html'
 ], function($, _, Backbone, OilLib, OilTableTemplate){
+    'use strict';
     var oilTableView = Backbone.View.extend({
         id: 'tableContainer',
         ready: false,
@@ -83,13 +84,13 @@ define([
                 var quality_index = parseFloat(cell.textContent);
 
                 if (quality_index <= 50.0) {
-                    cell.classList = ['danger'];
+                    $(cell).addClass('danger');
                 }
                 else if (quality_index <= 70.0) {
-                    cell.classList = ['warning'];
+                    $(cell).addClass('warning');
                 }
                 else {
-                    cell.classList = ['success'];
+                    $(cell).addClass('success');
                 }
             });
         },
