@@ -674,8 +674,9 @@ define([
             } else {
                 row = this.$(e.target).parents('tr')[0];
             }
+            var index;
             if (!_.isUndefined(row)) {
-                var index = $(row).data('tsindex');
+                index = $(row).data('tsindex');
                 var entry = this.model.get('timeseries')[index];
                 var speed = this.$('.input-speed').val();
                 var direction = this.$('.input-direction').val();
