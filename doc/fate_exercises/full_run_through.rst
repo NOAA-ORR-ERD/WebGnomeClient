@@ -1,0 +1,180 @@
+
+:orphan:
+
+A Complete Annotated Example
+############################
+
+
+Incident
+========
+
+You need something to model in order to try it out :-)
+
+Using a simple example to start:
+
+ * A leak developed in an offshore platform off the coast of Louisiana.
+
+ * The operators estimate that they lost 10000 gal. of a medium crude oil over a five hour period beginning at 0500 this morning.
+
+ * The weather forecast for the next few hours is:
+
+
+    Marine Zone Forecast:
+
+    Synopsis: HIGH PRESSURE WILL BEGIN TO MOVE EAST THURSDAY. A COLD FRONT WILL PUSH THROUGH THE COASTAL WATERS SATURDAY MORNING ALLOWING HIGH PRESSURE TO SETTLE OVER THE NORTHERN GULF AGAIN THROUGH THE FIRST PART OF NEXT WEEK.
+
+    Tonight: Southeast winds 5 to 10 knots. Seas 1 foot or less. Dominant period 5 seconds.
+
+    Wednesday: Southeast winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+
+    Wednesday:  NightSouth winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+
+    Thursday: South winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+
+    Thursday: NightSouth winds 10 to 15 knots. Seas 1 to 3 feet. Dominant period 5 seconds.
+
+    Friday: Southwest winds 10 to 15 knots. Seas 2 to 4 feet. Dominant period 5 seconds. Slight chance of showers and thunderstorms.
+
+* Water termpurature is a key driver of evaporation -- you can find teh actual ocean tempurature fro may in-situ insturments, such as those found on the `NOAA National Data Buoy Center web site  <http://www.ndbc.noaa.gov/>`_.
+
+IN thise case, `Station FRWL1 <http://www.ndbc.noaa.gov/station_page.php?station=FRWL1>`_
+
+At 0700 on April 4th, 2016, a collision occurred between a shrimp
+boat and a freighter about 30 miles southeast of Galveston, Texas at
+28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
+were lost. The National Weather Service marine forecast indicates
+that the winds will be from the southwest at 10-20 knots for the
+next 36 hours.
+
+Approval has been given for the application of dispersants. Corexit
+9500 has been loaded onto a DC-4, and the aircraft is on standby in
+Houma, Louisiana. Unfortunately, the aircraft has a mechanical
+problem with the dispersant equipment. The contractor indicates that
+they will be able to disperse the next day.
+
+**Commander Jones would like to know if the oil will emulsify to the extent that dispersants will not work.**
+
+
+Model Input
+===========
+
+Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click select the "New" menu and select "Oil Fate Wizard"
+
+Scenario Settings
+-----------------
+
+  #. Click Scenario Settings
+  #. Give the incident a name
+  #. Set the start time: 0700 on April 4th, 2016
+  #. Set the model duration to 2 days
+  #. Click Save
+
+Oil:
+----
+
+IFO 180.
+
+  #. Click Oil
+  #. There are multiple ways to find an IFO-180 in the database. Here are a few options:
+     * type "IFO" in the search box
+     * type "180" in the search box
+     * select Refined-Intermediate Fuel Oil in the "Category" selection
+  #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know its a more specific oil.
+  #. Click "More Info" if you want to see the details of the oil.
+  #. Click "Select" to select the oil.
+
+Spill:
+------
+Instantaneous release of 315 bbls.
+
+  #. Click "Spill" to set the spill properties
+  #. Select "Instantaneous Release"
+  #. Set Amount Released to 315
+  #. Make sure the units are set to "bbl"
+  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Click Save
+
+Water:
+------
+
+Water temperature has significant effects on evaporation rates.
+
+Ideally, you would find a field data for water temp in the region, perhaps from the NDBC web site (for the US):
+
+``http://www.ndbc.noaa.gov/``
+
+As of May 9, 2017, the water temp south of Mobile is 75.6 F (station 42012).
+
+Or use an approximation for the season
+
+    #. Click Water
+    #. Enter 75.6 and choose F from the popup menu.
+    #. Select 32 (avg. oceanic) from the Salinity popup menu
+    #. Select 5 mg/l (ocean) from the Water Sediment Load popup menu
+    #. Leave Wave Height at "Compute from Wind (Unlimited Fetch)"
+
+
+Wind:
+-----
+
+Winds will be from the southwest at 10-20 knots for the
+next 36 hours
+
+    #. Click Wind
+
+    #. Select the Constant Wind Tab
+
+    #. Set the direction to "SW"
+
+    #. Set the speed to 15 knots
+
+    #. Adjust the "Speed Uncertainty" slider until you get "9.3 - 19.6"
+
+    #. Click Save
+
+Run the model
+-------------
+
+Click "Solve"
+
+
+Discussion
+==========
+
+**Commander Jones would like to know if the oil will emulsify to the
+extent that dispersants will not work.**
+
+IFO-180's do not normally emulsify, however, the oil may weather and
+become very viscous so that dispersant may be less effective. You
+can address this issue by using the Oil Viscosity Graph.
+
+ * Click Viscosity (located at the top of the window).
+ * Notice that after 12 hours, dispersability is restricted. The effectiveness of
+   dispersants will be questionable. Ask your SSC for further guidence.
+
+** Add discussion of uncertainty**
+
+
+
+|image1|
+
+Dispersibility versus viscosity.
+
+|image2| 
+
+
+--------------
+
+`|image3|\ Top <#ADIOS>`__ `|image4|\ Back <Exercise.html>`__
+`Home <Contents.html>`__
+
+
+.. |image0| image:: images/dispersant_pict.gif
+   :width: 149px
+   :height: 104px
+.. |image1| image:: images/DispToVisc.gif
+   :width: 186px
+   :height: 83px
+.. |image2| image:: images/DisperVis.gif
+   :width: 333px
+   :height: 321px
