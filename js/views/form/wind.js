@@ -136,7 +136,7 @@ define([
                 }
             }, this));
             
-            this.direction_last_appended = 'down'
+            this.direction_last_appended = 'down';
         },
 
         render: function(options){
@@ -538,11 +538,11 @@ define([
 
             if (index - newIndex >= 0) {
                 this.modifyTimeseriesEntry(e, index);
-                this.direction_last_appended = 'up'
+                this.direction_last_appended = 'up';
 
             } else {
                 this.modifyTimeseriesEntry(e, newIndex);
-                this.direction_last_appended = 'down'
+                this.direction_last_appended = 'down';
             }
         },
 
@@ -567,13 +567,13 @@ define([
                 this.$('.above').on('click', _.bind(function(e) {
                     var newIndex = index - 1;
                     this.addRowHelper(e, index, newIndex, {'interval': interval});
-                    this.direction_last_appended = 'up'
+                    this.direction_last_appended = 'up';
                 }, this));
 
                 this.$('.below').on('click', _.bind(function(e) {
                     var newIndex = index + 1;
                     this.addRowHelper(e, index, newIndex, {'interval': interval});
-                    this.direction_last_appended = 'down'
+                    this.direction_last_appended = 'down';
                 }, this));
 
                 this.$('.popover').one('hide.bs.popover', _.bind(function(){
@@ -694,14 +694,13 @@ define([
                 //this.renderTimeseries();
             }
             var parentRow = this.$(e.target).parents('tr')[0];
-            var index = this.$(parentRow).data('tsindex');
+            index = this.$(parentRow).data('tsindex');
 
             var interval = this.$('#incrementCount').val();
-            var nextIndex = index + 1
+            var nextIndex = index + 1;
             if (this.direction_last_appended === 'up') {
-                nextIndex = index - 1
+                nextIndex = index - 1;
             }
-            var interval = this.$('#incrementCount').val();
             this.addRowHelper(e, index, nextIndex, {'interval': interval});
             
         },
