@@ -18,10 +18,11 @@ define([
     'views/form/beached',
     'model/element',
     'model/environment/water',
-    'model/environment/wind'
+    'model/environment/wind',
+    'model/movers/wind'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        BeachedView, ElementType, Water, Wind){
+        BeachedView, ElementType, Water, Wind, WindMover){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
@@ -180,12 +181,18 @@ define([
             if(!wind){
                 wind = new Wind();
             }
-            var form = new WindForm({}, {'model': wind}) ;
-            form.on('hidden', form.close);
-            form.on('save', _.bind(function(){
-                webgnome.model.get('environment').add(wind, {merge:true});
+            var windMover = webgnome.model.get('movers').findWhere({obj_type: 'gnome.movers.wind_movers.WindMover'});
+            if(!windMover){
+                windMover = new WindMover();
+            }
+            windMover.set('wind', wind);
+            var windForm = new WindForm(null, {'superModel': windMover, 'model': windMover.get('wind')});
+            windForm.on('hidden', windForm.close);
+            windForm.on('save', _.bind(function(){
+                webgnome.model.get('movers').add(windMover);
+                webgnome.model.get('environment').add(windMover.get('wind'));
             }, this));
-            form.render();
+            windForm.render();
         },
 
         solve: function(){
