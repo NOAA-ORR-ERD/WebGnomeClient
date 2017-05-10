@@ -43,6 +43,7 @@ define([
                 'click .trash': 'removeTimeseriesEntry',
                 'click .ok': 'enterTimeseriesEntry',
                 'click .add-row': 'addTimeseriesRow',
+                'click .add-another': 'addAnotherEntry',
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
@@ -134,6 +135,8 @@ define([
                     this.$('.popover').popover('hide');
                 }
             }, this));
+            
+            this.direction_last_appended = 'down'
         },
 
         render: function(options){
@@ -535,8 +538,11 @@ define([
 
             if (index - newIndex >= 0) {
                 this.modifyTimeseriesEntry(e, index);
+                this.direction_last_appended = 'up'
+
             } else {
                 this.modifyTimeseriesEntry(e, newIndex);
+                this.direction_last_appended = 'down'
             }
         },
 
@@ -561,11 +567,13 @@ define([
                 this.$('.above').on('click', _.bind(function(e) {
                     var newIndex = index - 1;
                     this.addRowHelper(e, index, newIndex, {'interval': interval});
+                    this.direction_last_appended = 'up'
                 }, this));
 
                 this.$('.below').on('click', _.bind(function(e) {
                     var newIndex = index + 1;
                     this.addRowHelper(e, index, newIndex, {'interval': interval});
+                    this.direction_last_appended = 'down'
                 }, this));
 
                 this.$('.popover').one('hide.bs.popover', _.bind(function(){
@@ -656,6 +664,50 @@ define([
                 $(row).remove();
                 this.renderTimeseries();
             }
+        },
+
+        addAnotherEntry: function(e){
+            e.preventDefault();
+            var row;
+            if (e.which === 13) {
+                row = this.$('tr.edit')[0];
+            } else {
+                row = this.$(e.target).parents('tr')[0];
+            }
+            if (!_.isUndefined(row)) {
+                var index = $(row).data('tsindex');
+                var entry = this.model.get('timeseries')[index];
+                var speed = this.$('.input-speed').val();
+                var direction = this.$('.input-direction').val();
+                var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
+                if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
+                    direction = this.$('.variable-compass')[0].settings['cardinal-angle'](direction);
+                }
+                entry = [date, [speed, direction]];
+                var tsCopy = _.clone(this.model.get('timeseries'));
+                _.each(tsCopy, _.bind(function(el, i, array){
+                    if (index === i){
+                        array[i] = entry;
+                    }
+                }, this));
+
+                this.model.set('timeseries', tsCopy);
+                this.$('.additional-wind-compass').remove();
+                $('.xdsoft_datetimepicker:last').remove();
+                //$(row).remove();
+                //this.renderTimeseries();
+            }
+            var parentRow = this.$(e.target).parents('tr')[0];
+            var index = this.$(parentRow).data('tsindex');
+
+            var interval = this.$('#incrementCount').val();
+            var nextIndex = index + 1
+            if (this.direction_last_appended === 'up') {
+                nextIndex = index - 1
+            }
+            var interval = this.$('#incrementCount').val();
+            this.addRowHelper(e, index, nextIndex, {'interval': interval});
+            
         },
 
         cancelTimeseriesEntry: function(e){
