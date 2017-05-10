@@ -350,9 +350,9 @@ define([
         },
 
         moversTimeComplianceCheck: function(model) {
-            model.save(null, {
-                validate: false,
-                success: _.bind(function(model) {
+            // model.save(null, {
+                // validate: false,
+                // success: _.bind(function(model) {
                     var msg = model.isTimeValid();
                     if ( msg !== '' && $('.modal').length === 0) {
                         swal({
@@ -381,8 +381,8 @@ define([
                             }
                         }, this));
                     }
-                }, this)
-            });
+                // }, this)
+            // });
         },
 
         formatDuration: function() {
