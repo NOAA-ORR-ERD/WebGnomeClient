@@ -29,7 +29,7 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 webgnome.model.get('movers').add(mover);
-                webgnome.model.get('environment').add(mover.get('current'))
+                webgnome.model.get('environment').add(mover.get('current'));
                 webgnome.model.save(null, {validate: false});
             }, this));
             form.render();
