@@ -19,7 +19,7 @@ define([
                 'release': new GnomeRelease(),
                 'element_type': this.getElementType(),
                 'name': 'Spill',
-                'amount': 1,
+                'amount': 100,
                 'units': 'bbl' //old code setting to kg for non-weathering substance is commented below
             };
         },

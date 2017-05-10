@@ -40,31 +40,36 @@ define([
         },
 
         events: {
-            // 'click .navbar-brand': 'home',
-            'click .new': 'newModel',
-            'click .edit': 'editModel',
-            'click .load': 'load',
-            'click .locations': 'locations',
-            'click .save': 'save',
+            //'click .new': 'newModel',
+            //'click .gnome': 'gnome',
             'click a.debugView': 'debugView',
+            
+            'click .navbar-brand': 'home',
+            
+            // "new" menu
+            'click .locations': 'locations',
+            'click .adios': 'adios',
+            'click .setup': 'setup',
+            'click .load': 'load',
+             
+            'click .edit': 'editModel',
+            'click .save': 'save',
 
-            'click .run': 'run',
-            'click .rewind': 'rewind',
-            // 'click .step': 'step',
-            // 'click .rununtil': 'rununtil',
-            'click .netcdf': 'netcdf',
-            'click .kmz': 'kmz',
-            'click .shape': 'shape',
-
+            //"help" menu
             'click .about': 'about',
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
-
-            'click .gnome': 'gnome',
-            'click .adios': 'adios',
-            'click .setup': 'setup',
-            'click .home': 'home',
+            
+            'click .run': 'run',
+            'click .rewind': 'rewind',
+            // 'click .step': 'step',
+            // 'click .rununtil': 'rununtil',
+            
+            //export menu
+            'click .netcdf': 'netcdf',
+            'click .kmz': 'kmz',
+            'click .shape': 'shape',
 
             'click .app-menu-link': 'openAppMenu',
             'click .app-menu-close': 'closeAppMenu',
@@ -107,7 +112,13 @@ define([
 
         home: function(event){
             event.preventDefault();
-            webgnome.router.navigate('', true);
+            this.resetModel(function(){
+                webgnome.model = new GnomeModel({
+                    mode: 'gnome',
+                    name: 'Model',
+                });
+                webgnome.router.navigate('', true);
+                });
         },
 
         run: function(){
@@ -170,12 +181,10 @@ define([
                         webgnome.riskCalc.destroy();
                     }
                     webgnome.riskCalc = undefined;
-                   
 
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
-                    }
-
+                    }                    
                     this.contextualize();
                     cb();                                                 
                 }
@@ -233,6 +242,9 @@ define([
                         webgnome.router.navigate('config', true);
                     }
                 });
+                if (window.location.href.indexOf('config') !== -1) {
+                    window.location.reload();
+                }
                 localStorage.setItem('view', 'trajectory');
             });
         },
@@ -284,17 +296,8 @@ define([
         },
 
         contextualize: function(){
-            if(!webgnome.hasModel()){
-                this.disableMenuItem('save');
-            } else {
-                this.enableMenuItem('save');
-            }
-            
-            if(webgnome.hasModel()){
-                this.enableMenuItem('edit');
-            } else {
-                this.disableMenuItem('edit');
-            }
+            this.enableMenuItem('save');
+            this.enableMenuItem('edit');
 
             if(webgnome.cache.length > 0){
                 this.enableMenuItem('rewind');

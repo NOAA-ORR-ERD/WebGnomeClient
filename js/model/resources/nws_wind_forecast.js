@@ -6,6 +6,7 @@ define([
     'use strict';
     var nwsWind = Backbone.Model.extend({
         fetching: false,
+        fetched: false,
 
         initialize: function(options){
             Backbone.Model.prototype.initialize.call(this, options);

@@ -13,6 +13,7 @@ WebGNOME User Manual
    introduction
    basics
    fate
+   transport
    location_files
    goods
    uncertainty
