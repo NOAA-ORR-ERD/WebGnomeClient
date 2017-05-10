@@ -14,6 +14,7 @@ define([
     'model/environment/wind',
     'model/environment/water',
     'model/environment/waves',
+    'model/environment/env_objs',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
@@ -48,7 +49,7 @@ define([
     'collection/movers',
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
-    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
+    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
     WindMover, RandomMover, CatsMover, IceMover, PyCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
@@ -80,6 +81,7 @@ define([
                 'gnome.environment.tide.Tide': TideModel,
                 'gnome.environment.environment.Water': WaterModel,
                 'gnome.environment.waves.Waves': WavesModel,
+                'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
