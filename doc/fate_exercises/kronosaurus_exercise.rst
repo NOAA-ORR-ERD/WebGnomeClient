@@ -12,7 +12,7 @@ Incident
 Kronosaurus, an ancient Atlantic sea monster, damages a tanker vessel, causing an instantaneous (one hour or less) spill of 1000-5000 bbl  of Abu Safah medium crude. Wind is 10 knots (+/-5 knots) from North. Water is 25 C in open ocean (fetch unlimited) and the seas are fully developed.
 
 
-Use Web GNOME's Fate Mode to provide mass balance and viscosity estimates.
+Use WebGNOME's Fate Mode to provide mass balance and viscosity estimates.
 
 
 Model Input

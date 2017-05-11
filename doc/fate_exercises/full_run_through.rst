@@ -1,5 +1,4 @@
 
-:orphan:
 
 A Complete Annotated Example
 ############################
@@ -39,7 +38,7 @@ Using a simple example to start:
 
 * Water temperature is a key control on evaporation rates -- you can find the actual ocean temperature from many in-situ instruments, such as those found on the `NOAA National Data Buoy Center web site  <http://www.ndbc.noaa.gov/>`_.
 
-In this case, at the time of this writting, `Station FRWL1 <http://www.ndbc.noaa.gov/station_page.php?station=FRWL1>`_ is indicating a water temperature of 77.4 °F.
+For example, at the time of this writing, `Station FRWL1 <http://www.ndbc.noaa.gov/station_page.php?station=FRWL1>`_ is indicating a water temperature of 77.4 °F.
 
 If there is no in-situ data available, you can use climatology to get close.
 
@@ -54,7 +53,7 @@ Scenario Settings
 
   #. Click Scenario Settings
   #. Give the incident a name -- anything you like
-  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that GNOME is not time-zone aware -- all input need to be in the same timezone.
+  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that WebGNOME is not time-zone aware -- all input need to be in the same timezone.
   #. Set the model duration to 3 - 5 days
   #. Click Save
 
@@ -63,7 +62,7 @@ Scenario Settings
 Selecting an Oil:
 -----------------
 
-The ADIOS Oil Library provides a database of
+The ADIOS Oil Library provides a database of many oils with extensive properties required to run an oil weathering model. You can use the WEbINterface to search this database to find an appropriate oil for the simulation.
 
 "Medium Crude" in this case.
 
@@ -71,14 +70,14 @@ The ADIOS Oil Library provides a database of
 
 There are multiple ways to find an appropriate oil in the database.
 
-The list view presents the records that meet the current selection criteria -- this is the full set initially. This list includes a few of the records fields:
+The list view presents the records that meet the current selection criteria -- this is the full set initially. This list includes a few of the records' fields:
 
-  - Name: the name of the oil
-  - Location: the regions the oil came from.
-  - API: TEH oils API Gravity (density)
-  - Quality Score: an estimate of the completeness of the record,
+  - **Name:** the name of the oil
+  - **Location:** the region the oil came from
+  - **API:** The oil's API Gravity (density)
+  - **Quality Score:** an estimate of the completeness of the record,
     records with higher quality scores have more data, and will
-    result in more precise forecasts in the model.
+    result in more precise forecasts in the model
 
 
 The list is sorted by default alphabetically by name, but if you click on the column headers, you can see it sorted by that field.

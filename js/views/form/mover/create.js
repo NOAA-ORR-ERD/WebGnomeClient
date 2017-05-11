@@ -68,11 +68,16 @@ define([
             formData.append('session', localStorage.getItem('session'));
         },
 
-        reset: function(file){
-            setTimeout(_.bind(function(){
+        reset: function(file, immediate){
+            if(immediate){
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 10000);
+            } else {
+                setTimeout(_.bind(function(){
+                    this.$('.dropzone').removeClass('dz-started');
+                    this.dropzone.removeFile(file);
+                }, this), 10000);
+            }
         },
 
         progress: function(e, percent){
@@ -82,7 +87,7 @@ define([
             }
         },
 
-        loaded: function(e, response){
+        loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
             this.model.set('name', json_response.filename.split('/').pop());
@@ -90,6 +95,10 @@ define([
                 success: _.bind(function(){
                     this.trigger('save', this.model);
                     this.hide();
+                }, this),
+                error: _.bind(function(model, e){
+                    this.error(e.responseText);
+                    this.reset(file, true);
                 }, this)
             });
         },

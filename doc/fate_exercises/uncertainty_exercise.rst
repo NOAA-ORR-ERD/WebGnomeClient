@@ -4,25 +4,12 @@
 Uncertainty Exercise
 ====================
 
-+--------------------------------------+--------------------------------------+
-| |image0|                             | .. rubric:: ADIOS2 Exercises:        |
-|                                      |    Uncertainty\ |image1|             |
-|                                      |    :name: adios2-exercises-uncertain |
-|                                      | ty                                   |
-|                                      |                                      |
-|                                      | -  `Instantaneous                    |
-|                                      |    Release <#Instantaneous>`__       |
-|                                      | -  `Continuous                       |
-|                                      |    Release <#Continuous>`__          |
-|                                      | -  Leaking Tank                      |
-|                                      | -  `Chemical                         |
-|                                      |    Dispersant <#Chemical>`__         |
-|                                      | -  `Uncertainty <#Uncertainty>`__    |
-|                                      | -  Emulsification Constant           |
-|                                      | -  Mechanical Cleanup                |
-|                                      | -  `Burning <burning_exercise.htm>`_ |
-|                                      | _                                    |
-+--------------------------------------+--------------------------------------+
++--------------------------------------+----------------------------------------+
+| |image0|                             | .. rubric:: Fate Exercises:            |
+|                                      |    Uncertainty  |image1|               |
+|                                      |                                        |
++--------------------------------------+----------------------------------------+
+
 
 Background
 ----------
@@ -38,7 +25,7 @@ a range of values.
 
 These two factors are examples of the
 `uncertainty <Uncertainty.html>`__ inherent in forecasting oil slick
-fate and behavior. ADIOS2 allows you to incorporate this uncertainty
+fate and behavior. WebGNOME allows you to incorporate this uncertainty
 in your model predictions.
 
 

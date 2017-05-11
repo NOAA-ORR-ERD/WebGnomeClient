@@ -33,7 +33,7 @@ they will be able to disperse the next day.
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click select the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
 Scenario Settings
 -----------------
