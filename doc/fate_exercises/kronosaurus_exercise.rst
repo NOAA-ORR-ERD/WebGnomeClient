@@ -3,8 +3,8 @@
 
 .. Exercise 1_Fate_uncertainty:
 
-Introductory Excercise
-######################
+Introductory Exercise
+#####################
 
 Incident
 ========
