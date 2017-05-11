@@ -54,7 +54,7 @@ Scenario Settings
 
   #. Click Scenario Settings
   #. Give the incident a name -- anything you like
-  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that GNOME is not time-zone aware -- all input need to be in the same timezone.
+  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that WebGNOME is not time-zone aware -- all input need to be in the same timezone.
   #. Set the model duration to 3 - 5 days
   #. Click Save
 

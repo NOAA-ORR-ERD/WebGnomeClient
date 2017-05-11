@@ -21,7 +21,7 @@ On the second day, dispersants are proposed on 20% of the surface slick with an 
 
 The on-scene command wants an ICS 209 form prepared for day 2 of the spill.
 
-Use Web GNOME's Fate Mode to provide the data for the ICS 209 form.
+Use WebGNOME's Fate Mode to provide the data for the ICS 209 form.
 
 
 Model Input
