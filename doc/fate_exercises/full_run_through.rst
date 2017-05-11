@@ -16,69 +16,89 @@ Using a simple example to start:
 
  * The operators estimate that they lost 10000 gal. of a medium crude oil over a five hour period beginning at 0500 this morning.
 
- * The weather forecast for the next few hours is:
-
+ * The weather forecast for the next few hours is::
 
     Marine Zone Forecast:
 
-    Synopsis: HIGH PRESSURE WILL BEGIN TO MOVE EAST THURSDAY. A COLD FRONT WILL PUSH THROUGH THE COASTAL WATERS SATURDAY MORNING ALLOWING HIGH PRESSURE TO SETTLE OVER THE NORTHERN GULF AGAIN THROUGH THE FIRST PART OF NEXT WEEK.
+    Synopsis: HIGH PRESSURE WILL BEGIN TO MOVE EAST THURSDAY. A COLD FRONT WILL PUSH
+    THROUGH THE COASTAL WATERS SATURDAY MORNING ALLOWING HIGH PRESSURE TO SETTLE
+    OVER THE NORTHERN GULF AGAIN THROUGH THE FIRST PART OF NEXT WEEK.
 
-    Tonight: Southeast winds 5 to 10 knots. Seas 1 foot or less. Dominant period 5 seconds.
+    Tonight: Southeast winds 5 to 10 knots. Seas 1 foot or less.
 
-    Wednesday: Southeast winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+    Wednesday: Southeast winds 5 to 10 knots. Seas 1 to 2 feet.
 
-    Wednesday:  NightSouth winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+    Wednesday:  NightSouth winds 5 to 10 knots. Seas 1 to 2 feet.
 
-    Thursday: South winds 5 to 10 knots. Seas 1 to 2 feet. Dominant period 5 seconds.
+    Thursday: South winds 5 to 10 knots. Seas 1 to 2 feet.
 
-    Thursday: NightSouth winds 10 to 15 knots. Seas 1 to 3 feet. Dominant period 5 seconds.
+    Thursday: NightSouth winds 10 to 15 knots. Seas 1 to 3 feet.
 
-    Friday: Southwest winds 10 to 15 knots. Seas 2 to 4 feet. Dominant period 5 seconds. Slight chance of showers and thunderstorms.
+    Friday: Southwest winds 10 to 15 knots. Seas 2 to 4 feet.
+            Slight chance of showers and thunderstorms.
 
-* Water termpurature is a key driver of evaporation -- you can find teh actual ocean tempurature fro may in-situ insturments, such as those found on the `NOAA National Data Buoy Center web site  <http://www.ndbc.noaa.gov/>`_.
+* Water temperature is a key control on evaporation rates -- you can find the actual ocean temperature from many in-situ instruments, such as those found on the `NOAA National Data Buoy Center web site  <http://www.ndbc.noaa.gov/>`_.
 
-IN thise case, `Station FRWL1 <http://www.ndbc.noaa.gov/station_page.php?station=FRWL1>`_
+In this case, at the time of this writting, `Station FRWL1 <http://www.ndbc.noaa.gov/station_page.php?station=FRWL1>`_ is indicating a water temperature of 77.4 °F.
 
-At 0700 on April 4th, 2016, a collision occurred between a shrimp
-boat and a freighter about 30 miles southeast of Galveston, Texas at
-28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
-were lost. The National Weather Service marine forecast indicates
-that the winds will be from the southwest at 10-20 knots for the
-next 36 hours.
-
-Approval has been given for the application of dispersants. Corexit
-9500 has been loaded onto a DC-4, and the aircraft is on standby in
-Houma, Louisiana. Unfortunately, the aircraft has a mechanical
-problem with the dispersant equipment. The contractor indicates that
-they will be able to disperse the next day.
-
-**Commander Jones would like to know if the oil will emulsify to the extent that dispersants will not work.**
+If there is no in-situ data available, you can use climatology to get close.
 
 
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click select the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
 Scenario Settings
 -----------------
 
   #. Click Scenario Settings
-  #. Give the incident a name
-  #. Set the start time: 0700 on April 4th, 2016
-  #. Set the model duration to 2 days
+  #. Give the incident a name -- anything you like
+  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that GNOME is not time-zone aware -- all input need to be in the same timezone.
+  #. Set the model duration to 3 - 5 days
   #. Click Save
 
-Oil:
-----
+.. _selecting_an_oil:
 
-IFO 180.
+Selecting an Oil:
+-----------------
 
-  #. Click Oil
-  #. There are multiple ways to find an IFO-180 in the database. Here are a few options:
-     * type "IFO" in the search box
-     * type "180" in the search box
-     * select Refined-Intermediate Fuel Oil in the "Category" selection
+The ADIOS Oil Library provides a database of
+
+"Medium Crude" in this case.
+
+  * Click Oil -- This will bring up the ADIOS Oil Library interface (it may take a moment to load the first time)
+
+There are multiple ways to find an appropriate oil in the database.
+
+The list view presents the records that meet the current selection criteria -- this is the full set initially. This list includes a few of the records fields:
+
+  - Name: the name of the oil
+  - Location: the regions the oil came from.
+  - API: TEH oils API Gravity (density)
+  - Quality Score: an estimate of the completeness of the record,
+    records with higher quality scores have more data, and will
+    result in more precise forecasts in the model.
+
+
+The list is sorted by default alphabetically by name, but if you click on the column headers, you can see it sorted by that field.
+
+Generics
+........
+
+THe database includes a number of "generic" oils -- these are oils that represent a particular oil type, but are not from a particular field (for crudes) or a particular refinery. If all you know is the product spilled is, e.g. a "medium crude", or "diesel fuel", then choosing a generic will result behavior typical of that type.
+
+The Generic oils all have a "\*Generic" at the start of their name so they will sort to the top in the alphabetical listing.
+
+The Search Box
+..............
+
+if you type any text in the search box, the list will be reduced to those records that have the text in any part of the name or location. So typing in "IFO" will result in finding oils from Cal**IFO**rnia.
+
+
+
+
+
   #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know its a more specific oil.
   #. Click "More Info" if you want to see the details of the oil.
   #. Click "Select" to select the oil.

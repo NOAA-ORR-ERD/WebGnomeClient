@@ -10,7 +10,9 @@ ADIOS Oil Library
 
 In order to simulate the fate of oil spilled in the environment, a fairly detailed description of the chemistry of the oil in question needs to be provided. WebGNOME provides the ADIOS Oil Library and an integrated component of the system. The library consists of 1000s of crude oils and refined products that span a range of oils that are typically transported.
 
-Each record in the library provides the data necessary to run the model as well as a few informative and helath and safety properties of interest, such as flash point.
+The Library also includes a set of "generic" oils -- these represent "typical" oils of various types. These are good choice if you don't know which specific oil was (or will be) spilled, and want something that will behave appropriately, rather than arbitrarily selecting an oil that may be unusual.
+
+Each record in the library provides the data necessary to run the model as well as a few informative and health and safety properties of interest, such as flash point.
 
 Some oil records are more complete than others. They each hold enough information to run the model, but may be missing important components. If anything is missing, the values are estimated from the known values using industry-standard algorithms. If an value is estimated is it displayed in red, so the user is aware of possible uncertainties. In addition, a "Quality Score" is provided, based on how much data associated with a record are measured, rather than estimated. If you are not sure which record to choose, a recored with a higher quality score will give more precise results in the fate model.
 
