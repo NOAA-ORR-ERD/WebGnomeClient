@@ -78,15 +78,17 @@ define([
         },
 
         toggleView: function(e){
+            var view;
             if(_.isObject(e)){
-                var view = this.$(e.target).attr('class').replace('view ', '');
+                view = this.$(e.target).attr('class').replace('view ', '');
                 this.$('.view-toggle .switch').attr('class', 'switch ' + view);
 
                 webgnome.router.navigate(view, true);
             } else {
+                view = e;
                 this.$('.view-toggle .switch').attr('class', 'switch ' + e);
             }
-
+            this.$('.view-toggle .switch').attr('data-original-title', this.$('.view-toggle .' + view).data('original-title'));
         },
 
         openAppMenu: function(event){
@@ -200,7 +202,7 @@ define([
             event.preventDefault();
             this.resetModel(function(){
                 webgnome.router.navigate('load', true);
-                });
+            });
         },
 
         locations: function(event){
@@ -349,6 +351,13 @@ define([
             this.$('a').tooltip({
                 placement: 'right',
                 container: 'body'
+            });
+            this.$('.view-toggle .view').tooltip({
+                placement: 'bottom',
+                container: 'body'
+            });
+            this.$('.view-toggle .switch').tooltip({
+                placement: 'bottom'
             });
         },
 
