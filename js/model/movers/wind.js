@@ -20,10 +20,13 @@ define([
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             this.on('change:wind', this.windChange, this);
+            this.windChange();
         },
 
         windChange: function() {
-            this.listenTo(this.get('wind'), 'change:timeseries', this.triggerWindChange);
+            if(this.get('wind')){
+                this.listenTo(this.get('wind'), 'change:timeseries', this.triggerWindChange);
+            }
         },
 
         triggerWindChange: function(wind) {
