@@ -226,6 +226,9 @@ define([
                     }
                 });
                 localStorage.setItem('view', 'fate');
+                if (window.location.href.indexOf('adios') !== -1) {
+                    window.location.reload();
+                }
             });
         },
 
@@ -242,10 +245,10 @@ define([
                         webgnome.router.navigate('config', true);
                     }
                 });
+                localStorage.setItem('view', 'trajectory');
                 if (window.location.href.indexOf('config') !== -1) {
                     window.location.reload();
                 }
-                localStorage.setItem('view', 'trajectory');
             });
         },
 

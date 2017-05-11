@@ -14,6 +14,7 @@ define([
     'model/environment/wind',
     'model/environment/water',
     'model/environment/waves',
+    'model/environment/env_objs',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
@@ -38,6 +39,7 @@ define([
     'model/weatherers/natural_dispersion',
     'model/weatherers/manual_beaching',
     'model/weatherers/fay_gravity_viscous',
+    'model/weatherers/langmuir',
     'model/weatherers/weathering_data',
     'model/weatherers/dissolution',
     'model/weatherers/roc_skim',
@@ -48,11 +50,11 @@ define([
     'collection/movers',
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
-    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
+    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
+    WindMover, RandomMover, CatsMover, IceMover, PyCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, WeatheringData, DissolutionWeatherer,
+    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
     RocSkimResponse, RocBurnResponse, RocDisperseResponse,
     UserPrefs, RiskModel,
     MoversCollection, SpillsCollection){
@@ -81,13 +83,14 @@ define([
                 'gnome.environment.tide.Tide': TideModel,
                 'gnome.environment.environment.Water': WaterModel,
                 'gnome.environment.waves.Waves': WavesModel,
+                'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
                 'gnome.movers.random_movers.RandomMover': RandomMover,
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
-                'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
+                'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
                 'gnome.movers.wind_movers.GridWindMover': GridWindMover,
                 'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.current_movers.ComponentMover': ComponentMover
@@ -111,6 +114,7 @@ define([
                 'gnome.weatherers.natural_dispersion.NaturalDispersion': NaturalDispersionWeatherer,
                 'gnome.weatherers.manual_beaching.Beaching': BeachingWeatherer,
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
+                'gnome.weatherers.spreading.Langmuir': Langmuir,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
                 'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
                 'gnome.weatherers.roc.Skim': RocSkimResponse,
@@ -137,6 +141,7 @@ define([
                     new NaturalDispersionWeatherer({name: '_natural', on: false}),
                     new EmulsificationWeatherer({on: false}),
                     new FayGravityViscous({on: false}),
+                    new Langmuir({on: false}),
                     new DissolutionWeatherer({on: false})
                 ]),
                 movers: new MoversCollection(),
@@ -348,9 +353,9 @@ define([
         },
 
         moversTimeComplianceCheck: function(model) {
-            model.save(null, {
-                validate: false,
-                success: _.bind(function(model) {
+            // model.save(null, {
+                // validate: false,
+                // success: _.bind(function(model) {
                     var msg = model.isTimeValid();
                     if ( msg !== '' && $('.modal').length === 0) {
                         swal({
@@ -379,8 +384,8 @@ define([
                             }
                         }, this));
                     }
-                }, this)
-            });
+                // }, this)
+            // });
         },
 
         formatDuration: function() {
@@ -557,10 +562,13 @@ define([
         configureWaterRelations: function(child){
             if(child.get('obj_type') !== 'gnome.environment.environment.Water'){ return; }
 
+            var environment = this.get('environment');
             var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
             var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
             var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var fay_gravity_viscous = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.spreading.FayGravityViscous'});
+            var langmuir = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.spreading.Langmuir'});
 
             if(evaporation){
                 evaporation.set('water', water);
@@ -571,6 +579,13 @@ define([
 
             if(fay_gravity_viscous){
                 fay_gravity_viscous.set('water', water);
+            }
+
+            if(langmuir){
+                langmuir.set('water', water);
+                if(wind){
+                    langmuir.set('wind', wind);
+                }
             }
 
             this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));

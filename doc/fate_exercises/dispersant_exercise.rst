@@ -50,11 +50,15 @@ Oil:
 IFO 180.
 
   #. Click Oil
-  #. There are multiple ways to find an IFO-180 in teh database. Here are a few options:
+  #. There are multiple ways to find an IFO-180 in the database. Here are a few options:
+
      * type "IFO" in the search box
+
      * type "180" in the search box
-     * select Refined-Intermediate Fuel Oil in the "Catagory" selection
-  #. You probably want to select "*GENERIC-INTERMEDIATE FUEL OIL 180" unless you know its a more specific oil.
+
+     * select Refined-Intermediate Fuel Oil in the "Category" selection
+
+  #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know it's a more specific oil.
   #. Click "More Info" if you want to see the details of the oil.
   #. Click "Select" to select the oil.
 
@@ -125,9 +129,9 @@ can address this issue by using the Oil Viscosity Graph.
 
  * Click Viscosity (located at the top of the window).
  * Notice that after 12 hours, dispersability is restricted. The effectiveness of
-dispersants will be questionable. Ask your SSC for further guidence.
+   dispersants will be questionable. Ask your SSC for further guidance.
 
-** Add discussion of uncertainty**
+**Add discussion of uncertainty**
 
 
 
