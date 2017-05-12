@@ -21,10 +21,10 @@ define([
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',
         name: 'oillib',
-        title: 'Oil Library',
+        title: 'ADIOS Oil Library',
         size: 'lg',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="backOil">Back</button><button type="button" class="save">Select</button>',
-        
+
         events: function(){
             // Overwriting the update listeners so they do not fire for the chosen input box
             var formModalHash = FormModal.prototype.events;
@@ -37,7 +37,7 @@ define([
             formModalHash['show.bs.modal'] = 'scrollToSelect';
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
-        
+
         initialize: function(options, elementModel){
             this.module = module;
             this.oilTable = new OilTable(elementModel);
@@ -52,7 +52,7 @@ define([
             }
 
             // Passed oilTable's events hash to this view's events
-            
+
             this.oilTable.on('renderTable', this.renderTable, this);
 
             // Initialized oilDistinct collection so it is available for the view render
@@ -82,7 +82,7 @@ define([
 
                     // Grabbing the minimum and maximum api, and viscosity values from the fetched collection
                     // so the slider only covers the range of relevant values when rendered
-                    
+
                     this.findMinMax(['api', 'viscosity', 'pour_point']);
 
                     if (this.viscosity_max.toString().length > 3){
@@ -220,7 +220,7 @@ define([
                     var offset = this.$('.select').offset();
                     this.$el.animate({scrollTop: offset.top - 200});
                 }, this), 25);
-                
+
             }
         },
 
