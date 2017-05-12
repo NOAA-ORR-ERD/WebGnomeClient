@@ -8,9 +8,9 @@ Sample Files
 This example will use the following files. These files were all obtained through the 
 GNOME Data Server :doc:`GOODS <../goods>` at http://gnome.orr.noaa.gov/goods
 
-* Map :download:`text <LA_shoreline.bna>`
-* Winds :download:`text <Winds.nws>`
-* Currents :download:`netcdf <LA_currents.nc>`
+* Map :download:`LA_shoreline.bna <LA_shoreline.bna>`
+* Winds :download:`Winds.nws <Winds.nws>`
+* Currents :download:`LA_currents.nc <LA_currents.nc>`
 
 Incident
 ========
