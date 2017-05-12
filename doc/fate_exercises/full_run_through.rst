@@ -132,96 +132,160 @@ There are three tabs on the page:
 Setting the Spill conditions:
 -----------------------------
 
-Instantaneous release of 315 bbls.
+10,000 gal. over five hours.
 
-  #. Click "Spill" to set the spill properties
-  #. Select "Instantaneous Release"
-  #. Set Amount Released to 315
-  #. Make sure the units are set to "bbl"
-  #. Leave the Confidence in Spill Amount at "Certain"
-  #. Click Save
+  * Click "Spill" to set the spill properties
+
+WebGNOME supports an instantaneous release (release of less than an hour or so) or a "continuous release" - for a leak over time.
+
+
+Instantaneous Release
+.....................
+
+  #. Click "Instantaneous Release"
+  #. Set Amount Released the desired quantity
+  #. Make sure to set the units appropriately.
+     WebGNOME supports both volume (bbl, gal) and mass (metric ton, kg) units. The density of the oil will be used to convert between them.
+  #. The "Confidence in Spill Amount" slider lets you set how confident you are in the
+     amount spilled. If it is left at "Certain", then the model will be run once with
+     the amount you set. If set toward "Uncertain", the model will be run multiple times, using a range of values. In the final output, you will be able to see a range of results.
+  #. You can examine or change the Oil selected from this dialog as well.
+  #. Click **Save** when you are happy with the settings.
+
+Continuous Release
+..................
+
+  #. Click "Instantaneous Release"
+
+  #. Set the duration of the release. For this example, it should be set to 5 hours.
+     The default is the duration of the model run -- make sure to reset that if you
+     don't want such a long release.
+
+  #. You can now either:
+
+     * Set the Amount Released the desired quantity -- and the release rate will be computed.
+
+     or
+
+     * Set the Release Rate -- and the Amount Released will be computed.
+
+  #. Make sure to set the units appropriately.
+     WebGNOME supports both volume (bbl, gal) and mass (metric ton, kg) units. The density of the oil will be used to convert between them.
+
+  #. The "Confidence in Spill Amount" slider lets you set how confident you are in the
+     amount spilled. If it is left at "Certain", then the model will be run once with
+     the amount you set. If set toward "Uncertain", the model will be run multiple times, using a range of values. In the final output, you will be able to see a range of results.
+
+  #. You can examine or change the Oil selected from this dialog as well.
+
+  #. For this example, set:
+
+     * The Release Duration to 5 hours
+     * The Amount Released to 10000 gal.
+
+     You will see the Release Rate gets set to 2000 gal/hr
+
+  #. Click **Save** when you are happy with the settings.
+
 
 Water:
 ------
 
+The Water setting allow you to set the conditions of the water body the spill is on. This includes water temperature, salinity, sediment load, and wave conditions.
+
+Temperature
+...........
+
 Water temperature has significant effects on evaporation rates.
 
-Ideally, you would find a field data for water temp in the region, perhaps from the NDBC web site (for the US):
+Ideally, you would find field data for water temp in the region -- see above.
 
-``http://www.ndbc.noaa.gov/``
+Or you can use an appropriate estimate for the time of year -- there are some hints provided on the dialog.
 
-As of May 9, 2017, the water temp south of Mobile is 75.6 F (station 42012).
+ * For this example, set the temperature to 77.4 °F. Be sure to set the appropriate units!
 
-Or use an approximation for the season
 
-    #. Click Water
-    #. Enter 75.6 and choose F from the popup menu.
-    #. Select 32 (avg. oceanic) from the Salinity popup menu
-    #. Select 5 mg/l (ocean) from the Water Sediment Load popup menu
-    #. Leave Wave Height at "Compute from Wind (Unlimited Fetch)"
+Salinity and Sediment load
+..........................
+
+Salinity and Sediment Load effect the rate of OIl Sediment Aggregate formation. IN most cases, you can select an appropriate value from the pick list for fresh, brackish or salt water. If you do know more precise values, they can be set by selecting "other value" and typing in the value.
+
+For this example, leave the defaults -- suitable for open ocean.
+
+
+Wave Height
+...........
+
+Wave Energy has a strong effect on the dispersion of the oil. If you know the wave height in the region at the time of the spill, you can set it directly. It should be the height of the "Seas" as swell does not drive dispersion very much.
+
+As dispersion is driven primarily by locally generated waves (white capping!) you usually want to us the default setting of "Compute from Wind (unlimited fetch)". However, if the spill is in a fetch-limited region (such as a small bay) then you may want to use "Compute from Wind and Fetch", and then set the fetch.
+
+* For this example, the default of "Compute from Wind (unlimited fetch)" is most appropriate.
+
+* Click **Save** when the settings are complete.
 
 
 Wind:
 -----
 
-Winds will be from the southwest at 10-20 knots for the
-next 36 hours
+The wind conditions have a large effect on the fate of an oil spill. Stronger winds result in faster evaporation, and increase the wave energy resulting in faster dispersion.
 
-    #. Click Wind
+* Click **Wind** to set the wind conditions
 
-    #. Select the Constant Wind Tab
+There are a number of ways to set the wind
 
-    #. Set the direction to "SW"
+Constant Wind:
+..............
 
-    #. Set the speed to 15 knots
+If the wind conditions are expected to be fairly steady throughout the duration of the event, a single wind speed and direction can be used. In this case, the direction does not effect the results, so you can set the speed, and leave 0 degrees (N) in place.
 
-    #. Adjust the "Speed Uncertainty" slider until you get "9.3 - 19.6"
+Make sure to set the correct units.
+
+The speed and direction of the wind can be set by typing the values in or clicking on the compass rose -- you will see the values change to match where the rose is clicked.
+
+The Speed Uncertainty slider can be set to indicate how certain you are of the wind speed --  how good you think the forecast is. If it is set to "Certain", then the model will run with the value you set. If it is set to uncertain, then the model will be run multiple times, using values higher and lower than what was set, the the results will indicate a range of possible results.
+
+Variable Wind:
+..............
+
+If the Winds are expected to vary considerably over the duration of the spill, then you can set a variable wind record:
+
+ * Select "Variable Wind"
+
+The variable wind form allows you to set the wind speed an direction at any number of times for the duration of the model run. The model will interpolate in between the specific times you specify.
+
+The "Inc.(hrs):" setting allows you to set the timestep between each input. If you have a forecast that is for every 6 hours, for example, you can set "Inc.(hrs):" to 6.
+
+For the forecast above, every 12 hours is appropriate. You can re-set the specific time if you like, the data do not have to be in even intervals.
+
+    #. Set "Inc.(hrs):" to 12
+
+    #. Set the unit to knots: all input needs to be in the same units.
+
+    To set the records:
+
+    #. Move your mouse over the first time in the list, and click the "pencil" icon to edit it: In this case, the forecast give a range -- "5 to 10 knots". This is typical in a forecast. It is usually best to select a value in the middle of that range.
+
+       #. Type in 7 for the Speed, and SE for direction ( or 135 -- wind from the SE is from 135 degrees from North)
+
+       #. Click the check mark to save the record, or the "Plus Sign" to add a new record.
+
+       #. The time will have been increased by the value you set: 12 hours in this case.
+
+       #. The forecast in this case calls for the same speed and direction, so you can just click the check mark to save or the plus sign to add a new record.
+
+
+    #. Repeat the procedure above, to match the forecast.
+
+       * Be sure to provide enough wind data to cover the full model run length.
+
+
+    #. The Speed Uncertainty slider can be set to indicate how certain you are of the wind speed --  how good you think the forecast is. If it is set to "Certain", then the model will run with the value you set. If it is set to uncertain, then the model will be run multiple times, using values higher and lower than what was set, the the results will indicate a range of possible results.
 
     #. Click Save
+
 
 Run the model
 -------------
 
 Click "Solve"
-
-
-Discussion
-==========
-
-**Commander Jones would like to know if the oil will emulsify to the
-extent that dispersants will not work.**
-
-IFO-180's do not normally emulsify, however, the oil may weather and
-become very viscous so that dispersant may be less effective. You
-can address this issue by using the Oil Viscosity Graph.
-
- * Click Viscosity (located at the top of the window).
- * Notice that after 12 hours, dispersability is restricted. The effectiveness of
-   dispersants will be questionable. Ask your SSC for further guidence.
-
-** Add discussion of uncertainty**
-
-
-
-|image1|
-
-Dispersibility versus viscosity.
-
-|image2| 
-
-
---------------
-
-`|image3|\ Top <#ADIOS>`__ `|image4|\ Back <Exercise.html>`__
-`Home <Contents.html>`__
-
-
-.. |image0| image:: images/dispersant_pict.gif
-   :width: 149px
-   :height: 104px
-.. |image1| image:: images/DispToVisc.gif
-   :width: 186px
-   :height: 83px
-.. |image2| image:: images/DisperVis.gif
-   :width: 333px
-   :height: 321px
