@@ -77,7 +77,7 @@ Oil Transport Exercises
 =======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    transport_exercises/location_file_exercise
    transport_exercises/manual_exercise
