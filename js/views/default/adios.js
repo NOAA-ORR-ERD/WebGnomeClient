@@ -186,6 +186,7 @@ define([
                 windMover = new WindMover();
             }
             windMover.set('wind', wind);
+            windMover.set('extrapolate', true)
             var windForm = new WindForm(null, {'superModel': windMover, 'model': windMover.get('wind')});
             windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(){
