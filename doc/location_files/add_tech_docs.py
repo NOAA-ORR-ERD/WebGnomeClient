@@ -21,7 +21,10 @@ WEBGNOMEAPI_REPO = "../../../webgnomeapi"
 tech_files_location = os.path.join(WEBGNOMEAPI_REPO, "help/views/model/locations/")
 
 locations = os.listdir(tech_files_location)
-locations.remove(".DS_Store")
+try:
+    locations.remove(".DS_Store")
+except ValueError:
+    pass
 
 # loop through them one by one:
 for loc in locations:

@@ -70,14 +70,14 @@ Using Location Files
 
 Location Files were created to guide users through the model setup for a specific region. They come 
 pre-packaged with a map, horizontal diffusion, and surface currents already created. Learn more in 
-the Location Files section of the User Guide.
+the :doc:`Location Files <location_files>` section of the User Guide.
 
 
 Oil Transport Exercises
 =======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    transport_exercises/location_file_exercise
    transport_exercises/manual_exercise
