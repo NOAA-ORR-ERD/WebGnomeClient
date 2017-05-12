@@ -50,6 +50,13 @@ img{
     }
 }
 
+.webgnome_logo{
+        display: inline-block;
+        position: relative;
+        width: 30%;
+        padding: 25px 0;
+    }
+
 .form-group{
     &.static{
         margin-bottom: 0px;
@@ -679,7 +686,7 @@ nav.navbar{
             background: rgba(0, 0, 0, 0.09);
             border-radius: 4px;
             border: 1px solid #afafaf;
-            width: 209px;
+            width: 158px;
             position: relative;
             color: #979797;
             box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
@@ -703,6 +710,7 @@ nav.navbar{
                 &.response{
                     .glyphicon;
                     .glyphicon-dashboard;
+                    display: none;
                 }
 
                 &.trajectory, &.fate, &.config, &.response{
@@ -3041,6 +3049,7 @@ nav.navbar{
             &.roc-skim .icon, &.roc-disperse .icon, &.roc-burn .icon{
                 background-color: #BE302D;
             }
+            
         }
         .slider{
             margin-top: 40px;
@@ -3055,6 +3064,15 @@ nav.navbar{
             }
         }
 
+    }
+
+    &.responsetype-form{
+        .col-md-6:first-child{
+            width: 100%;
+        }
+        .col-md-6:nth-child(2){
+            display: none;
+        }
     }
     
 
@@ -3369,6 +3387,10 @@ nav.navbar{
 
     .estimated {
         padding-top: 10px;
+    }
+    
+    .attributes{
+        display: none;
     }
 }
 

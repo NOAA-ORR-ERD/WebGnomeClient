@@ -6,7 +6,7 @@ Columbia River Estuary Example Problem
 --------------------------------------
 
 This exercise will introduce the basics of setting up a transport model in WebGNOME using the 
-Columbia River Estuary "Location File". :doc:`Location Files <location_files>` contain pre-packaged
+Columbia River Estuary "Location File". :doc:`Location Files <../location_files>` contain pre-packaged
 information about the tides, currents, and shorelines for a specific region.
 
 The example setup will explore how the changing river flow alters the
@@ -49,7 +49,7 @@ Position:                 46° 15.1' N, 123° 33.5' W.
 Run the model and observe what happens. You can use the Layers panel on the right 
 hand side to view the current patterns used in the Location File which include tidal 
 currents and river flow. Learn more in 
-the :doc:`Columbia River Location File User Guide <location_files\columbia_river_estuary_tech>`
+the :doc:`Columbia River Location File User Guide <../location_files/columbia_river_estuary_tech>`
 
 Return to Setup View to add Winds
 ---------------------------------
@@ -96,7 +96,7 @@ to be more representative of high flow conditions.
 To scale the river currents, without going back through the Location File Wizard
 you can select "River Currents" from the Currents panel in Setup View. Click the pencil icon next to this 
 item to edit and you will see a "Scale Value" parameter. How this value is derived from the river flow is explained 
-in the :doc:`Columbia River Location File User Guide <location_files\columbia_river_estuary_tech>`. For now, 
+in the :doc:`Columbia River Location File User Guide <../location_files/columbia_river_estuary_tech>`. For now, 
 just increase this value to 0.4 which is the scale value for a higher river flow of ~500,000 cfs.
 
 Re-run the model and see how the impacts change. (You might also try switching back to the earlier flood tide spill 

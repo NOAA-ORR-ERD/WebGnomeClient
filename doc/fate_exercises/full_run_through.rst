@@ -46,15 +46,15 @@ If there is no in-situ data available, you can use climatology to get close.
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Fate Wizard" under "Weathering Only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
 Scenario Settings
 -----------------
 
   #. Click Scenario Settings
   #. Give the incident a name -- anything you like
-  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use an time to start -- it defaults to today. Note that WebGNOME is not time-zone aware -- all input need to be in the same timezone.
-  #. Set the model duration to 3 - 5 days
+  #. Set the start time: If you are going to use data from a specific time, this is important. Otherwise, you can use any time to start -- it defaults to today. Note that WebGNOME is not time-zone aware -- all input needs to be in the same timezone.
+  #. Set the model duration to 3 days -- usually there is no need to run the model longer than 5 days or so.
   #. Click Save
 
 .. _selecting_an_oil:
@@ -62,7 +62,7 @@ Scenario Settings
 Selecting an Oil:
 -----------------
 
-The ADIOS Oil Library provides a database of many oils with extensive properties required to run an oil weathering model. You can use the WEbINterface to search this database to find an appropriate oil for the simulation.
+The ADIOS Oil Library provides a database of many oils with extensive properties required to run an oil weathering model. You can use the Web Interface to search this database to find an appropriate oil for the simulation.
 
 "Medium Crude" in this case.
 
@@ -82,28 +82,56 @@ The list view presents the records that meet the current selection criteria -- t
 
 The list is sorted by default alphabetically by name, but if you click on the column headers, you can see it sorted by that field.
 
+
 Generics
 ........
 
-THe database includes a number of "generic" oils -- these are oils that represent a particular oil type, but are not from a particular field (for crudes) or a particular refinery. If all you know is the product spilled is, e.g. a "medium crude", or "diesel fuel", then choosing a generic will result behavior typical of that type.
+The database includes a number of "generic" oils -- these are oils that represent a particular oil type, but are not from a particular field (for crudes) or a particular refinery. If all you know is the product spilled is, e.g. a "medium crude", or "diesel fuel", then choosing a generic will result in behavior typical of that type.
 
-The Generic oils all have a "\*Generic" at the start of their name so they will sort to the top in the alphabetical listing.
+The Generic oils all have a "\*GENERIC" at the start of their name so they will sort to the top in the alphabetical listing.
 
 The Search Box
 ..............
 
-if you type any text in the search box, the list will be reduced to those records that have the text in any part of the name or location. So typing in "IFO" will result in finding oils from Cal**IFO**rnia.
+If you type any text in the search box, the list will be reduced to those records that have the text in any part of the name or location or oil category. So typing in "IFO" will result in finding oils from Cal**IFO**rnia, as well as any oil with "IFO" in the name, and all oils in the "Intermediate Fuel Oil" Category.
+
+Categories
+..........
+
+The oils in the database are all sorted into various categories of oils: crude or refined products, etc. If a category is selected, only oils that fit that category will be displayed. Some of the categories are broad an overlapping, for instance, in "Refined - Light Product", you will find both Gasoline and Kerosene.
+
+If you are looking for a product that fits within a certain category of oil types, selecting that category will help you refine your search quickly.
 
 
+API slider
+..........
+
+The API slider lets you set a range you want of the oil's API gravity. Only oils that fall within that range will be displayed.
 
 
+Selecting an Oil
+................
 
-  #. You probably want to select ``*GENERIC-INTERMEDIATE FUEL OIL 180`` unless you know its a more specific oil.
-  #. Click "More Info" if you want to see the details of the oil.
-  #. Click "Select" to select the oil.
+Clicking anywhere on the oil record in the list will select that oil. The final selection is recorded (and the form closed) when you click the "Select" Button
 
-Spill:
-------
+
+Seeing the Complete Oil Record
+..............................
+
+If you move the mouse over a record, a blue button labeled "more" will show on the right hand side. Clicking that button brings you to the Oil's properties page.
+
+There are three tabs on the page:
+
+ * **General Info:**  Names, categories, reference, etc.
+ * **Properties:** The physical properties of the oil.
+ * **Distillation:** The distillation cuts of the oil. This shows how the oil is broken down by boiling point -- important for computing the evaporation of the oil.
+
+**NOTE:** Most oil records are not complete. Any properties that are not included in the record that are needed by the model are estimated -- estimated values are shown in red so that it is clear what has been actually measured, and what has been calculated.
+
+
+Setting the Spill conditions:
+-----------------------------
+
 Instantaneous release of 315 bbls.
 
   #. Click "Spill" to set the spill properties

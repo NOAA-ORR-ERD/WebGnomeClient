@@ -522,7 +522,7 @@ define([
 
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
-                if (!_.isUndefined(coordsArray[i]) && coordsArray[i].indexOf(' ') !== -1){
+                if (!_.isUndefined(coordsArray[i]) && coordsArray[i].trim().indexOf(' ') !== -1){
                     coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
                     coordsArray[i] = parseFloat(coordsArray[i]);
                 } else if (!_.isUndefined(coordsArray[i])) {
