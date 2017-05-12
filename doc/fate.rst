@@ -36,7 +36,7 @@ Oil Fate Exercises
 ==================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    fate_exercises/kronosaurus_exercise
    fate_exercises/full_run_through
