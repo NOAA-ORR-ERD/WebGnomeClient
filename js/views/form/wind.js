@@ -371,7 +371,7 @@ define([
             }
         },
 
-        loaded: function(e, response){
+        loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
             this.model.set('name', json_response.name);
