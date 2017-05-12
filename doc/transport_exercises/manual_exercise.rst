@@ -9,7 +9,7 @@ This example will use the following files. These files were all obtained through
 GNOME Data Server :doc:`GOODS <../goods>` at http://gnome.orr.noaa.gov/goods
 
 * Map :download:`text <LA_shoreline.bna>`
-* Winds :download:`test <winds.nws>`
+* Winds :download:`text <Winds.nws>`
 * Currents :download:`netcdf <LA_currents.nc>`
 
 Incident
@@ -96,9 +96,7 @@ Explore
 There are many other WebGNOME features to explore. For instance, try:
 
 * Click the "No Map" icon on the top right in Map View to add background imagery.
-* Using the Layers menu on the right hand side of Map View to visualize currents (you'll need to 
-rerun the model)
+* Using the Layers menu on the right hand side of Map View to visualize currents (you'll need to rerun the model)
 * Export the output as a KMZ for Google Earth or shapefile for GIS applications
-* Change the substance from non-weathering to an oil from the ADIOS oil database and explore Fate View 
--- note, you'll also need to add data in the Water panel to compute weathering
+* Change the substance from non-weathering to an oil from the ADIOS oil database and explore Fate View -- note, you'll also need to add data in the Water panel to compute weathering
 
