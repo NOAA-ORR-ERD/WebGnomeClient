@@ -50,6 +50,12 @@ img{
     }
 }
 
+.webgnome_logo{
+        display: inline-block;
+        position: relative;
+        width: 30%;
+    }
+
 .form-group{
     &.static{
         margin-bottom: 0px;
@@ -532,6 +538,13 @@ nav.navbar{
         .model{
             display: none;
         }
+    }
+    
+    
+    .navbar-gnome-icon{
+        display: inline-block;
+        position: relative;
+        bottom: 5px;
     }
 
     .app-menu-link{
@@ -2986,13 +2999,7 @@ nav.navbar{
         }
     }
 
-    &.shorelinetype-form.gnome{
-        .waterWorld, .parameterized{
-            display:none;
-        }
-    }
-
-    &.spilltype-form, &.responsetype-form, &.shorelinetype-form, &.current-form{
+    &.spilltype-form, &.responsetype-form, &.shorelinetype-form, &.current-form, &.griddedwind-form{
         .option{
             &.instant .icon{
                 background-image: url(/img/spill-instantaneous.png);
@@ -3005,6 +3012,27 @@ nav.navbar{
             }
             &.well-blowout .icon{
                 background-image: url(/img/spill-well.png);
+            }
+            &.waterWorld .icon{
+                background-image: url(/img/infinite-ocean.png);
+            }
+            &.parameterized .icon{
+                background-image: url(/img/parameterized-shoreline.png);
+            }
+            &.upload .icon{
+                background-image: url(/img/shoreline.png);
+            }
+            &.infinite-ocean .icon{
+                background-image: url(/img/infinte-ocean.png);
+            }
+            &.cats .icon{
+                background-image: url(/img/cats-output.png);
+            }
+            &.grid .icon{
+                background-image: url(/img/surface-current.png);
+            }
+            &.gridwind .icon{
+                background-image: url(/img/wind.png);
             }
             &.adios-burn .icon, &.roc-burn .icon{
                 background-image: url(/img/burn.png);
@@ -3347,6 +3375,10 @@ nav.navbar{
 
     .estimated {
         padding-top: 10px;
+    }
+    
+    .attributes{
+        display: none;
     }
 }
 

@@ -1,22 +1,11 @@
 define([
-    'underscore',
-    'backbone',
-    'model/movers/base',
-    'model/environment/env_objs'
-], function(_, Backbone, BaseModel, GridCurrent){
-    var pyCurrentMover = BaseModel.extend({
+    'model/movers/base'
+], function(BaseMover){
+    var gridCurrentMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.py_current_movers.PyCurrentMover',
-            name: 'PyCurrentMover',
-        },
-        model: {
-            current: GridCurrent
-        },
-
-        initialize: function(options) {
-            BaseModel.prototype.initialize.call(this, options);
-        },
+            obj_type: 'gnome.movers.current_movers.GridCurrentMover'
+        }
     });
 
-    return pyCurrentMover;
+    return gridCurrentMover;
 });

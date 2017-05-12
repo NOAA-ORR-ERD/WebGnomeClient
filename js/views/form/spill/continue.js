@@ -185,6 +185,7 @@ define([
                     amount = this.rate * duration;
                 }
                 this.$('#spill-amount').val(amount);
+                this.model.set('amount', amount);
                 var units = this.$('#rate-units').val().split('/')[0];
                 this.$('#units').val(units);
                 this.updateAmountSlide();

@@ -379,6 +379,10 @@ define([
                 success: _.bind(function(){
                     this.trigger('save', this.model);
                     this.hide();
+                }, this),
+                error: _.bind(function(model, e){
+                    this.error(e.responseText);
+                    this.reset(file, true);
                 }, this)
             });
         },
