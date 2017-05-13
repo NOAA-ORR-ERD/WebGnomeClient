@@ -39,9 +39,9 @@ Oil Fate Exercises
 
    fate_exercises/full_run_through
    fate_exercises/dispersant_exercise
+   fate_exercises/continuous_exercise
    fate_exercises/ics_209_exercise.rst
 
 ..   fate_exercises/instantaneous_exercise
-..   fate_exercises/continuous_exercise
 ..   fate_exercises/uncertainty_exercise
 

@@ -40,8 +40,7 @@ Tomorrow, August 25, the winds are forecast to be from the northwest at 15 knots
 
 August 26, the winds are predicted to be from west at 5 knots or less.
 
-The team recommends running the WebGNOME oil weathering software, for
-two different scenarios:
+The team recommends running the WebGNOME in Fate Mode, for two different scenarios:
 
 1) Credible worst case and
 
@@ -51,40 +50,39 @@ two different scenarios:
 Model Input
 ===========
 
-Oil: JET-B
+Begin on the home page by clicking "Fate Wizard" under "weathering only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
-#. Click Oil
-#. Select JP-5 from the list of oils
-#. Click Select
+Scenario Settings
+-----------------
 
-Winds: variable 5-10 knots
+  #. Click Scenario Settings
+  #. Give the incident a name
+  #. Set the start time: 0800 on August 24, 2016
+  #. Set the model duration to 2 days -- jet fuel is not very persistent.
+  #. Click Save
 
-#. Click Wind/Wave
-#. Select Variable Wind
-#. Select August 24 at 0800 hours
-#. Enter Speed as 5 and choose knots from the popup menu.
-#. Enter N for North or 0 as the Direction
-#. Click Add
-   Repeat this process for the remainder of the weather forecast. 10
-   knots from the north on the afternoon of August 24. By the
-   morning of August 25, the winds will be from the northwest at 15
-   knots. By the morning of August 26, the winds are forecast to be
-   from west at 5 knots or less.
-#. Click OK.
 
-Water: temperature 69°F
+Oil:
+----
 
-#. Click Water
-#. Enter 69 as the Temperature and choose F from the popup menu
-#. Select 0 (fresh water) from the Salinity popup menu
-#. Select 50 (avg. river/estuary) from the Water Sediment Load popup
-   menu
-#. Click OK
+JET-B
+
+  #. Click Oil
+  #. There are multiple ways to find an Jet fuel in the database. But this is probably the easiest:
+
+     * type "jet" in the search box
+
+  #. select "FUEL OIL NO.1 (JET B, ALASKA)". Different Jet fuels have are suited to different engine types, but will behave similarly in the environment.
+  #. Click "More Info" if you want to see the details of the oil.
+  #. Click "Select" to select the oil.
+
+Spill:
+------
 
 Release: 1000 gallons
 
-.. rubric:: Discussion
-   :name: discussion
+Discussion
+..........
 
 *Local officials would like to know when the slick will dissipate
 and not be observable.*
@@ -92,45 +90,90 @@ and not be observable.*
 A credible worst case scenario might be all of the oil was released
 at once.
 
-#. Click Release
-#. Select Instantaneous Release
-#. Select the Time of Release as August 24 at 0800 hours
-#. Enter 1000 as Amount Spilled and choose gal from the popup menu
-#. Click OK
-#. Click OK
-#. Click Solve.
+  #. Click "Spill" to set the spill properties
+  #. Select "Instantaneous Release"
+  #. Set Amount Released to 1000
+  #. Make sure the units are set to "gal"
+  #. Leave the Confidence in Spill Amount at "Certain"
+  #. Click Save
 
-From the Output menu, select the Oil Budget Table. This will show
+Water:
+------
+
+69°F
+
+  #. Click Water
+  #. Enter 69 and choose F from the popup menu.
+  #. Select 0 (Fresh Water) from the Salinity popup menu -- This is a lake.
+  #. Select 5 mg/l (ocean) from the Water Sediment Load popup menu -- this low sediment load is reasonable for a lake.
+  #. Leave Wave Height at "Compute from Wind (Unlimited Fetch)". If the lake is small, you may want to limit the fetch.
+
+
+Wind:
+-----
+
+Winds are currently from the north at less than 5 knots and are
+expected to increase to 10 knots from the north later in the
+afternoon.
+
+Tomorrow, August 25, the winds are forecast to be from the northwest at 15 knots.
+
+August 26, the winds are predicted to be from west at 5 knots or less.
+
+For more detail on using the variable wind dialog, see: :ref:`Setting a Variable Wind <variable_wind_form>`
+
+    #. Click Wind
+
+    #. Select "Variable Wind"
+    #. Set the units to knots
+    #. The initial record should be set to August 24 at 0800 hours
+    #. Click on the pencil to edit the first record
+    #. Enter Speed as 5
+    #. Enter N for North or 0 as the Direction
+    #. Click the "Plus Sign" to add another record
+    #. The time will be incremented by the value in the "Inc. (hrs)" setting.
+    #. Repeat this process for the remainder of the weather forecast.
+       10 knots from the north on the afternoon of August 24. By the
+       morning of August 25, the winds will be from the northwest at 15
+       knots. By the morning of August 26, the winds are forecast to be
+       from west at 5 knots or less.
+    #. When done, click the Check box on the last record
+
+Click **Save** when done.
+
+Run the model
+-------------
+
+Click "Solve"
+
+Discussion
+==========
+
+The first view on the model run is the Oil Budget Table. This will show
 that most of the oil has evaporated and dispersed within the first
-10-hours after the release.
+8-10 hours after the release.
 
-The trajectory analysis team recommend a chronic release scenario.
-WebGNOME has a minimum release value of 84 gallons per hour. For this
-scenario, you could do a chronic release of 84 gallons per hour for
-11 hours.
+The trajectory analysis team recommends a chronic release scenario.
+For this scenario, you could do a chronic release of 1000 gallons
+over 12 hours.
 
-#. Click Release
-#. Un-select the Instantaneous Release
-#. Select Continuous Release
-#. Select the Time of Release as August 24 at 0800 hours
-#. Enter Duration of Release as 11 and select hours from the popup
-   menu
-#. Select Amount Spilled
-#. Enter 1000 as the Amount and choose gal from the popup menu
-#. Click OK
-#. Click Solve.
+#. Click the pencil icon in the upper right corner to go back to setting mode.
+#. Click **Spill**
+#. Click **Delete** in the lower left to delete this spill
+#. Click **Spill** again to set up a new spill
+#. Click "Continuous Release"
+#. Select the release duration to 0 days and 12 hours.
+#. Select Amount Released to 1000 gal.
+#. Click **Save**
+#. Click **Solve**
 
-At this chronic release rate, the slick dissipates about as fast as
-it is leaking out. Please note that WebGNOME releases the oil in
-hourly intervals. This chronic release is equivalent to spilling 1.4
-gallons per minute, a rather small amount. For either the
+At this chronic release rate, the slick dissipates almost as fast as
+it is leaking out. This chronic release is equivalent to spilling less than 2
+gallons per minute, a rather small rate. For either the
 instantaneous or continuous release, the oil will likely dissipate
 in half a day. 
 
 --------------
-
-`|image1|\ Top <#ADIOS>`__ `|image2|\ Back <Exercise.html>`__
-`Home <Contents.html>`__
 
 
 .. |image_cont| image:: images/contPict.gif
