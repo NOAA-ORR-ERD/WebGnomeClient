@@ -102,13 +102,13 @@ define([
             	value = ui.value - slider_min;
             }
 
-            if(this.model.get('amount')) {
+            if(this.model.get('amount') !== 0) {
                 var amount = this.model.get('amount');
 
                 if(value === 0){
                     this.$('.slider .tooltip-inner').text(amount);
                 } else {
-                	var sigma = value / slider_scale * (2.0 / 3.0) * amount
+                	var sigma = value / slider_scale * (2.0 / 3.0) * amount;
                     var bottom = Math.round(amount - sigma);
                     var top = Math.round(amount + sigma);
 
