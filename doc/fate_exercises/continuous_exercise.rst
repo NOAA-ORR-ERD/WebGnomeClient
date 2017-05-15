@@ -72,7 +72,7 @@ JET-B
 
      * type "jet" in the search box
 
-  #. Select "*GENERIC JET FUEL". Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
+  #. Select "FUEL OIL NO.1 (JET B, ALASKA)". Different Jet fuels have are suited to different turbine engine types, but will behave similarly in the environment.
   #. Click "More Info" if you want to see the details of the oil.
   #. Click "Select" to select the oil.
 
