@@ -58,7 +58,8 @@ define([
             'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
             'click .ice-tc input[type="radio"]': 'toggleIceData',
             'click .view-gnome-mode': 'viewGnomeMode',
-            'click .view-weathering': 'viewWeathering'
+            'click .view-weathering': 'viewWeathering',
+            'click .layers .title': 'toggleLayerPanel'
         },
 
         initialize: function(options){
@@ -78,13 +79,21 @@ define([
         },
 
         modelListeners: function(){
+            this.listenTo(webgnome.model, 'change:map', this.mapListener);
+            this.listenTo(webgnome.model, 'change:map', this.resetMap);
             webgnome.model.get('map').on('change', this.resetMap, this);
+            webgnome.model.get('movers').on('add remove', this.renderControls, this);
             webgnome.model.on('change', this.contextualize, this);
             this.spillListeners();
+            this.mapListener();
+        },
+
+        mapListener: function(){
+            this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
         },
 
         spillListeners: function(){
-            webgnome.model.get('spills').on('add change remove', this.resetSpills, this);
+            this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
         },
 
         render: function(){
@@ -94,6 +103,10 @@ define([
             } else {
                 this.renderNoTrajectory();
             }
+        },
+
+        toggleLayerPanel: function(){
+            this.$('.layers').toggleClass('expanded');
         },
 
         viewGnomeMode: function() {
@@ -113,30 +126,26 @@ define([
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 
-        createTooltipObject: function(title) {
-            return {
-                "title": title,
-                "container": "body",
-                "placement": "bottom"
-            };
-        },
-
-        setupControlTooltips: function() {
-            this.controls.play.tooltip(this.createTooltipObject("Play"));
-            this.controls.pause.tooltip(this.createTooltipObject("Pause"));
-            this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
-            this.controls.back.tooltip(this.createTooltipObject("Step Back"));
-            this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
-        },
-
         renderTrajectory: function() {
+            this.renderControls();
+
+            // add a 250ms timeout to the map render to give js time to add the compiled
+            // to the dom before trying to draw the map.
+            setTimeout(_.bind(this.renderCesiumMap, this), 250);
+        },
+
+        renderControls: function(){
+            if(this.$('.controls').length > 0){
+                this.$('.controls').remove();
+                this.$('.layers').remove();
+            }
+
             var date;
             if(webgnome.hasModel()){
                 date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             } else {
                 date = moment().format('M/DD/YYYY HH:mm');
             }
-
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
             var currents = webgnome.model.get('movers').filter(function(mover){
@@ -174,10 +183,8 @@ define([
                 ice: ice,
                 tc_ice: tc_ice,
             });
-            this.$el.append(compiled);
-            this.$('.layers .title').click(_.bind(function(){
-                this.$('.layers').toggleClass('expanded');
-            }, this));
+            this.$el.prepend(compiled);
+
             
             this.controls = {
                 'play': this.$('.controls .play'),
@@ -205,10 +212,22 @@ define([
             if(localStorage.getItem('advanced') === 'true'){
                 this.toggle();
             }
+        },
+            
+        createTooltipObject: function(title) {
+            return {
+                "title": title,
+                "container": "body",
+                "placement": "bottom"
+            };
+        },
 
-            // add a 250ms timeout to the map render to give js time to add the compiled
-            // to the dom before trying to draw the map.
-            setTimeout(_.bind(this.renderCesiumMap, this), 250);
+        setupControlTooltips: function() {
+            this.controls.play.tooltip(this.createTooltipObject("Play"));
+            this.controls.pause.tooltip(this.createTooltipObject("Pause"));
+            this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
+            this.controls.back.tooltip(this.createTooltipObject("Step Back"));
+            this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
         },
 
         renderCesiumMap: function(){
@@ -249,21 +268,7 @@ define([
                 })
             });
 
-            this.spills = [];
-            this.layers.spills = this.spills;
-            webgnome.model.get('spills').forEach(_.bind(function(spill){
-                var release = spill.get('release');
-                this.spills.push(this.viewer.entities.add({
-                    name: spill.get('name'),
-                    id: spill.get('id'),
-                    position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
-                    billboard: {
-                        image: '/img/spill-pin.png',
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM
-                    },
-                    description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
-                }));
-            }, this));
+            this.renderSpills();
 
             if (this.tc_ice.length > 0) {
                 this.toggleIceTC();
@@ -1071,32 +1076,29 @@ define([
             e.target.blur();
         },
 
-        // renderSpills: function(){
-        //     // foreach spill add at feature to the source
-        //     var spills = webgnome.model.get('spills');
-        //     spills.forEach(function(spill){
-        //         var start_position = spill.get('release').get('start_position');
-        //         var end_position = spill.get('release').get('end_position');
-        //         var geom;
-        //         if(start_position.length > 2 && start_position[0] === end_position[0] && start_position[1] === end_position[1]){
-        //             start_position = [start_position[0], start_position[1]];
-        //             geom = new ol.geom.Point(ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()));
-        //         } else {
-        //             start_position = [start_position[0], start_position[1]];
-        //             end_position = [end_position[0], end_position[1]];
-        //             geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
-        //         }
-        //         var feature = new ol.Feature({
-        //             geometry: geom,
-        //             spill: spill.get('id')
-        //         });
-        //         this.SpillIndexSource.addFeature(feature);
-        //     }, this);
-        // },
+        renderSpills: function(){
+            this.spills = [];
+            this.layers.spills = this.spills;
+            webgnome.model.get('spills').forEach(_.bind(function(spill){
+                var release = spill.get('release');
+                this.spills.push(this.viewer.entities.add({
+                    name: spill.get('name'),
+                    id: spill.get('id'),
+                    position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
+                    billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+                    },
+                    description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
+                }));
+            }, this));
+        },
 
         resetSpills: function(){
-            // remove all spills from the source.
-            this.SpillIndexSource.clear();
+            // remove all spills from the source
+            for(var spill in this.spills){
+                this.viewer.entities.remove(this.spills[spill]);    
+            }
             this.renderSpills();
         },
 
@@ -1190,8 +1192,14 @@ define([
         },
 
         resetMap: function(){
-            this.ol.redraw = true;
-            this.render();
+            webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
+                this.viewer.dataSources.remove(this.layers.map);
+                this.layers.map = new Cesium.GeoJsonDataSource();
+                this.viewer.dataSources.add(this.layers.map.load(geojson, {
+                    strokeWidth: 0,
+                    stroke: Cesium.Color.WHITE.withAlpha(0)
+                }));
+            }, this));
         },
 
         blur: function(e, ui){
@@ -1199,24 +1207,25 @@ define([
         },
 
         close: function(){
-            if (this.modelMode !== 'adios'){
-                this.pause();
-                if(webgnome.model){
-                    webgnome.model.off('change', this.contextualize, this);
-                    webgnome.model.off('sync', this.spillListeners, this);
-                    webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-                }
-                webgnome.cache.off('step:recieved', this.renderStep, this);
-                webgnome.cache.off('step:failed', this.pause, this);
-                webgnome.cache.off('rewind', this.rewind, this);
+            // if (this.modelMode !== 'adios'){
+            //     this.pause();
+            //     if(webgnome.model){
+            //         webgnome.model.off('change', this.contextualize, this);
+            //         webgnome.model.off('sync', this.spillListeners, this);
+            //         webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
+            //     }
+            //     webgnome.cache.off('step:recieved', this.renderStep, this);
+            //     webgnome.cache.off('step:failed', this.pause, this);
+            //     webgnome.cache.off('rewind', this.rewind, this);
 
-                Mousetrap.unbind('space');
-                Mousetrap.unbind('right');
-                Mousetrap.unbind('left');
-                this.unbind();
-                this.viewer.destroy();
-            }
-            this.remove();
+            //     Mousetrap.unbind('space');
+            //     Mousetrap.unbind('right');
+            //     Mousetrap.unbind('left');
+            //     this.unbind();
+            //     this.viewer.destroy();
+            // }
+            this.$el.hide();            
+            // this.remove();
         }
     });
 

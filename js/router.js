@@ -116,7 +116,12 @@ define([
         trajectory: function(){
             if(webgnome.hasModel()){
                 this.menu('add');
-                this.views.push(new TrajectoryView());
+                if(_.isUndefined(this.trajView)){
+                    this.trajView = new TrajectoryView();
+                } else {
+                    this.trajView.$el.show();
+                }
+                this.views.push(this.trajView);
                 localStorage.setItem('view', 'trajectory');
             } else {
                 this.navigate('', true);
