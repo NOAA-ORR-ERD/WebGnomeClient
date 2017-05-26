@@ -272,6 +272,18 @@ define([
             this.populateDateTime();
         },
 
+        coordsParse: function(coordsArray){
+            for (var i = 0; i < coordsArray.length; i++){
+                if (!_.isUndefined(coordsArray[i]) && coordsArray[i].trim().indexOf(' ') !== -1){
+                    coordsArray[i] = nucos.sexagesimal2decimal(coordsArray[i]);
+                    coordsArray[i] = parseFloat(coordsArray[i]);
+                } else if (!_.isUndefined(coordsArray[i])) {
+                    coordsArray[i] = parseFloat(coordsArray[i]);
+                }
+            }
+            return coordsArray;
+        },
+
         updateNWSMap: function(e){
             var coordinate, feature, coords;
             if(_.has(e, 'coordinate')){
@@ -281,9 +293,17 @@ define([
                 this.$('#nws #lat').val(coords[1]);
                 this.$('#nws #lon').val(coords[0]);
             } else {
-                coordinate = new ol.geom.Point([this.$('#nws #lon').val(), this.$('#nws #lat').val()]);
-                coords = new ol.proj.transform([this.$('#nws #lon').val(), this.$('#nws #lat').val()], 'EPSG:4326', 'EPSG:3857');
-                feature = new ol.Feature(new ol.geom.Point(coordinate));
+                var pointcoords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
+                pointcoords = this.coordsParse(_.clone(pointcoords));
+                if (_.isNaN(pointcoords[0])){
+                    pointcoords[0] = 0;
+                }
+                if (_.isNaN(pointcoords[1])) {
+                    pointcoords[1] = 0;
+                }
+                coordinate = new ol.geom.Point(pointcoords);
+                coords = new ol.proj.transform(pointcoords, 'EPSG:4326', 'EPSG:3857');
+                feature = new ol.Feature(new ol.geom.Point(coords));
             }
 
             this.clearError();
@@ -371,7 +391,7 @@ define([
             }
         },
 
-        loaded: function(file, response){
+        loaded: function(e, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
             this.model.set('name', json_response.name);
@@ -379,10 +399,6 @@ define([
                 success: _.bind(function(){
                     this.trigger('save', this.model);
                     this.hide();
-                }, this),
-                error: _.bind(function(model, e){
-                    this.error(e.responseText);
-                    this.reset(file, true);
                 }, this)
             });
         },

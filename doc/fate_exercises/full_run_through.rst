@@ -245,6 +245,8 @@ The speed and direction of the wind can be set by typing the values in or clicki
 
 The Speed Uncertainty slider can be set to indicate how certain you are of the wind speed --  how good you think the forecast is. If it is set to "Certain", then the model will run with the value you set. If it is set to uncertain, then the model will be run multiple times, using values higher and lower than what was set, the the results will indicate a range of possible results.
 
+.. _variable_wind_form:
+
 Variable Wind:
 ..............
 
