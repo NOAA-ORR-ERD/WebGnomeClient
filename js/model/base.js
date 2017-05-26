@@ -40,7 +40,7 @@ define([
                             // if the embedded class isn't an object it can only have one type of object in
                             // the given collection, so set it.
                             for(var obj in embeddedData){
-                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true, silent: true});
+                                response[key].add(this.setChild(embeddedClass, embeddedData[obj]), {merge: true});
                             }
                         } else {
                             // the embedded class is an object therefore we can assume
