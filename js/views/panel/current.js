@@ -168,8 +168,8 @@ define([
                     if (mov.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         var env_id = mov.get('current').id;
                         for (var i = 0; i < envs.length; i++)
-                            if (envs.models[i].id === env_id){
-                                envs.remove(i);
+                            if (envs.models [i].id === env_id){
+                                envs.remove(env_id);
                             }
                     }
                     webgnome.model.get('movers').remove(id);
