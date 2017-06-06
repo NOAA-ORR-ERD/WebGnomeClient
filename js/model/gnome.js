@@ -20,6 +20,7 @@ define([
     'model/movers/cats',
     'model/movers/ice',
     'model/movers/grid_current',
+    'model/movers/py_current',
     'model/movers/grid_wind',
     'model/movers/current_cycle',
     'model/movers/component',
@@ -51,7 +52,7 @@ define([
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
+    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
@@ -91,6 +92,7 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
+                'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
                 'gnome.movers.wind_movers.GridWindMover': GridWindMover,
                 'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.current_movers.ComponentMover': ComponentMover
