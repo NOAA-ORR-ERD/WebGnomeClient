@@ -51,6 +51,8 @@ define([
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
             'click .base input': 'toggleLayers',
+            'click .env-grid input': 'toggleEnvGrid',
+            'click .env-uv input': 'toggleEnvUV',
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
@@ -152,6 +154,7 @@ define([
                 return [
                     'gnome.movers.current_movers.CatsMover',
                     'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.py_current_movers.PyCurrentMover',
                     'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.CurrentCycleMover',
                     'gnome.movers.wind_movers.GridWindMover'
@@ -176,16 +179,29 @@ define([
             });
             this.tc_ice = tc_ice;
 
+            var env_objs = webgnome.model.get('environment').filter(function(obj) {
+                return obj.get('obj_type') === 'gnome.environment.environment_objects.GridCurrent'
+            });
+            var active_env_objs = [];
+            env_objs.forEach(function(obj){
+                active_env_objs.push(obj.get('id'));
+            });
+            this.active_env_objs = active_env_objs;
+
             var compiled = _.template(ControlsTemplate, {
                 date: date,
                 currents: currents,
                 active_currents: active_currents,
                 ice: ice,
                 tc_ice: tc_ice,
+                env_objs: env_objs,
+                active_env_objs: active_env_objs,
             });
-            this.$el.prepend(compiled);
+            this.$el.append(compiled);
+            this.$('.layers .title').click(_.bind(function(){
+                this.$('.layers').toggleClass('expanded');
+            }, this));
 
-            
             this.controls = {
                 'play': this.$('.controls .play'),
                 'pause': this.$('.controls .play'),
@@ -197,7 +213,7 @@ define([
                 'progress': this.$('.controls .progress-bar'),
                 'date': this.$('.controls .position')
             };
-            
+
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             this.controls.seek.slider({
                 create: _.bind(function(){
@@ -306,7 +322,7 @@ define([
             //     this.$el.addClass('contracted');
             //     this.contracted = true;
             // }
-            
+
             if(this.ol.map){
                 this.ol.map.updateSize();
             }
@@ -443,6 +459,7 @@ define([
         drawStep: function(step){
             if(!step){ return; }
             this.renderSpill(step);
+            this.renderEnvVector(step);
             this.renderCurrent(step);
             this.renderIce(step);
 
@@ -611,8 +628,34 @@ define([
             }
         },
 
+        renderEnvVector: function(step){
+            if(this.checked_env_vec && this.checked_env_vec.length > 0 && this.layers.uv){
+                // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
+                var id = this.checked_env_vec[0];
+                var env = webgnome.model.get('environment').findWhere({id: id});
+                var mag_data = env.mag_data
+                var dir_data = env.dir_data
+                env.interpVecsToTime(step.get('TrajectoryGeoJsonOutput').time_stamp, mag_data, dir_data);
+                if(this.current_arrow[id]){
+                    for(var uv = mag_data.length; uv--;){
+                        this.layers.uv[id].get(uv).show = true;
+                        if(this.layers.uv[id].get(uv).rotation !== dir_data[uv]){
+                            this.layers.uv[id].get(uv).rotation = dir_data[uv];
+                        }
+                        if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
+                            this.layers.uv[id].get(uv).image = this.uvImage(mag_data[uv], id);
+                        }
+                    }
+                } else if(this.layers.uv[id]){
+                    for(var h = this.layers.uv[id].length; h--;){
+                        this.layers.uv[id].get(h).show = false;
+                    }
+                }
+            }
+        },
+
         uvImage: function(magnitude, id){
-            return this.current_arrow[id][Math.round(Math.abs(magnitude)*10)/10];
+            return this.current_arrow[id][Math.round(magnitude*10)/10];
         },
 
         // renderIceImage: function(step){
@@ -795,6 +838,129 @@ define([
             }
         },
 
+        toggleEnvGrid: function(e){
+            if(!this.grids){
+                this.grids = {};
+            }
+            var existing_grids = _.keys(this.grids);
+            for(var grid = 0; grid < existing_grids.length; grid++){
+                for(var prims = this.grids[existing_grids[grid]].length; prims--;){
+                    this.grids[existing_grids[grid]][prims].show = false;
+                }
+            }
+
+            var id = this.$(e.currentTarget).attr('id').replace('grid-', '');
+            if(_.has(this.grids, id)){
+                // need to hide the entire set of grids.
+                for(var active_prim = this.grids[id].length; active_prim--;){
+                    this.grids[id][active_prim].show = true;
+                }
+            } else if(id !== 'none-grid'){
+                var env = webgnome.model.get('environment').findWhere({id: id});
+                env.getGrid(_.bind(function(data){
+                    var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
+                    this.grids[env.get('id')]  = [];
+                    var batch = 3000;
+                    var batch_limit = Math.ceil((data.length/8) / batch);
+                    var segment = 0;
+                    var num_sides = 0;
+                    var grid_type = env.get('grid').obj_type;
+                    if (grid_type[grid_type.length - 1] === 'U') {
+                        //if unstructured
+                        num_sides = 3;
+                    } else {
+                        num_sides = 4;
+                    }
+                    var line_len = (num_sides * 2) + 2;
+                    for(var b = 0; b < batch_limit; b++){
+                        // setup the new batch
+                        var geo = [];
+
+                        // build the batch
+                        var limit = Math.min(segment + batch, data.length / line_len);
+                        for(var cell = segment; cell < limit; cell++){
+                            var cell_offset = cell * line_len;
+                            geo.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.SimplePolylineGeometry({
+                                    positions: Cesium.Cartesian3.fromDegreesArray(data.slice(cell_offset, cell_offset + line_len))
+                                }),
+                                attributes: {
+                                    color: color
+                                },
+                                allowPicking: false
+                            }));
+                        }
+
+                        segment += batch;
+
+                        // send the batch to the gpu/cesium
+                        this.grids[env.get('id')].push(this.viewer.scene.primitives.add(new Cesium.Primitive({
+                            geometryInstances: geo,
+                            appearance: new Cesium.PerInstanceColorAppearance({
+                                flat: true,
+                                translucent: false
+                            })
+                        })));
+                    }
+
+                }, this));
+            }
+        },
+
+        toggleEnvUV: function(e){
+            var checked = this.$('.env-uv input:checked');
+            var uv_layers = _.keys(this.layers.uv);
+            for(var l = 0; l < uv_layers.length; l++){
+                for(var bb = this.layers.uv[uv_layers[l]].length; bb--;){
+                    this.layers.uv[uv_layers[l]].get(bb).show = false;
+                }
+            }
+
+            var id = $(checked[0]).attr('id').replace('uv-', '');
+            if (checked.length > 0 && id !== 'none-uv'){
+                this.checked_env_vec = [];
+
+                this.$('.env-uv input:checked').each(_.bind(function(i, input){
+                    var env = webgnome.model.get('environment').findWhere({id: id});
+                    env.getNodes(_.bind(function(centers){
+                        if(!this.layers.uv){
+                            this.layers.uv = {};
+                        }
+
+                        if(!this.layers.uv[id]){
+                            this.layers.uv[id] = new Cesium.BillboardCollection();
+                            this.viewer.scene.primitives.add(this.layers.uv[id]);
+                            this.generateUVTextures(this.layers.uv[id], id);
+                        }
+                        var layer = this.layers.uv[id];
+
+                        // update the positions of any existing centers
+                        var existing_length = this.layers.uv[id].length;
+                        var _off = 0;
+                        for(var existing = 0; existing < existing_length; existing++){
+                            _off = existing*2
+                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
+                            layer.get(existing).show = false;
+                        }
+
+                        var create_length = centers.length / 2;
+
+                        for(var c = existing_length; c < create_length; c++){
+                            _off = c*2
+                            layer.add({
+                                show: false,
+                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
+                                image: this.current_arrow[id][0]
+                            });
+                        }
+                    }, this));
+                    this.checked_env_vec.push(id);
+                }, this));
+            } else {
+                this.checked_env_vec = [];
+            }
+        },
+
         toggleGrid: function(e){
             if(!this.grids){
                 this.grids = {};
@@ -851,7 +1017,7 @@ define([
                             })
                         })));
                     }
-                        
+
                 }, this));
             }
         },
@@ -926,7 +1092,7 @@ define([
                 this.current_arrow[id] = {};
                 // generate a canvas based texture for each size arrow we want
                 // 0.0, 0.1, 0.2, etc...
-                
+
                 var canvas = document.createElement('canvas');
                 canvas.width = 7;
                 canvas.height = 7;

@@ -4,15 +4,15 @@
         <a class="rewind"><span></span></a>
         <a class="back"><span></span></a>
         <a class="play"><span></span></a>
-        <a class="next"><span></span></a>            
+        <a class="next"><span></span></a>
     </div>
     <div class="seek"><div></div><div class="progress"><div class="progress-bar" role="progressbar"></div></div></div>
     <div class="position">{{ date }}</div>
     <div class="gnome-help" title="Get Help on Map View"></div>
-    
+
 </div>
 
-  
+
 
 <div class="layers">
     <div class="title">Layers</div>
@@ -43,6 +43,82 @@
                         <label for="map_bounds"><input type="checkbox" id="map_bounds">Map Bounds</label>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-primary" id='accor'>
+        <div class="panel-heading">
+            <a role="button" data-toggle="collapse" href="#all">Environmental Data</a>
+        </div>
+        <div class="panel-collapse collapse" id="all">
+            <div class="panel-secondary">
+                <div class="panel-heading">
+                    <a role="button" data-toggle="collapse" href="#grid">Grids</a>
+                </div>
+                <div class="panel-collapse collapse" id="grid">
+                    <div class="panel-body">
+                        <form role="form" class="form-horizontal checkboxes env-grid">
+                        {% if(env_objs.length !== 0){ %}
+                            <div class="radio">
+                                <label for="none-grid" class="curLabel">
+                                    <input type="radio" class="env_objs" name="grid" id="none-grid" checked>
+                                    None
+                                </label>
+                            </div>
+                        {% } %}
+
+                        {% if(env_objs.length > 0){ %}
+                            {% for (var i = 0; i < env_objs.length; i++){ %}
+                                <div class="radio">
+                                    <label for="grid-{{ env_objs[i].get('id') }}" class="curLabel">
+                                        <input type="radio" name="grid" class="grid" id="grid-{{ env_objs[i].get('id') }}">
+                                        {{ env_objs[i].get('name') }}
+                                    </label>
+                                </div>
+                            {% } %}
+                        {% } %}
+                        </form>
+
+                        {% if(env_objs.length === 0){ %}
+                            No environment data available for visualization
+                        {% } %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-secondary">
+                <div class="panel-heading">
+                    <a role="button" data-toggle="collapse" href="#env-uv">U/V</a>
+                </div>
+                <div class="panel-collapse collapse" id="env-uv">
+                    <div class="panel-body">
+                        <form role="form" class="form-horizontal checkboxes env-uv">
+                        {% if(env_objs.length !== 0){ %}
+                            <div class="radio">
+                                <label for="none-uv" class="curLabel">
+                                    <input type="radio" class="env_objs" name="uv" id="none-uv" checked>
+                                    None
+                                </label>
+                            </div>
+                        {% } %}
+
+                        {% if(env_objs.length > 0){ %}
+                            {% for (var i = 0; i < env_objs.length; i++){ %}
+                                <div class="radio">
+                                    <label for="uv-{{ env_objs[i].get('id') }}" class="curLabel">
+                                        <input type="radio" name="uv" class="uv" id="uv-{{ env_objs[i].get('id') }}">
+                                        {{ env_objs[i].get('name') }}
+                                    </label>
+                                </div>
+                            {% } %}
+                        {% } %}
+                        </form>
+
+                        {% if(env_objs.length === 0){ %}
+                            No environment uv available for visualization
+                        {% } %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -120,7 +196,7 @@
                             </div>
                         {% } %}
                     {% } %}
-        
+
                     {% if(ice.length > 0){ %}
                         {% for (var i = 0; i < ice.length; i++){ %}
                             <div class="radio">
