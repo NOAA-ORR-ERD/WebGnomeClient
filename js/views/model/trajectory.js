@@ -197,10 +197,7 @@ define([
                 env_objs: env_objs,
                 active_env_objs: active_env_objs,
             });
-            this.$el.append(compiled);
-            this.$('.layers .title').click(_.bind(function(){
-                this.$('.layers').toggleClass('expanded');
-            }, this));
+            this.$el.prepend(compiled);
 
             this.controls = {
                 'play': this.$('.controls .play'),
@@ -655,7 +652,7 @@ define([
         },
 
         uvImage: function(magnitude, id){
-            return this.current_arrow[id][Math.round(magnitude*10)/10];
+            return this.current_arrow[id][Math.round(Math.abs(magnitude)*10)/10];
         },
 
         // renderIceImage: function(step){
