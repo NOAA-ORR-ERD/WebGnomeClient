@@ -170,7 +170,7 @@ define([
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            this.get('movers').on('sync', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -358,11 +358,11 @@ define([
             // model.save(null, {
                 // validate: false,
                 // success: _.bind(function(model) {
-                    var msg = model.isTimeValid();
-                    if ( msg !== '' && $('.modal').length === 0) {
+                    var isTimeValid = model.isTimeValid();
+                    if ( isTimeValid.msg !== '') {
                         swal({
                             title: 'Error',
-                            text: msg,
+                            text: isTimeValid.msg,
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Fix',
