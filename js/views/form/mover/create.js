@@ -96,7 +96,8 @@ define([
         loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.filename.split('/').pop());
+            //this.model.set('name', json_response.filename.split('/').pop());
+            this.model.set('name', json_response.name);
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);

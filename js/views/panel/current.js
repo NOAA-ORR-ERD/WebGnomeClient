@@ -19,6 +19,7 @@ define([
             'gnome.movers.current_movers.GridCurrentMover',
             'gnome.movers.py_current_movers.PyCurrentMover'
         ],
+        
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
@@ -49,20 +50,6 @@ define([
             });
             currentForm.on('wizardclose', currentForm.close);
             currentForm.render();
-        },
-
-        //keeping this for now in case i really break something!
-        edit_old: function(e){
-            e.stopPropagation();
-            var id = this.getID(e);
-
-            var current = webgnome.model.get('movers').get(id);
-            var currentView = new FormModal({title: 'Edit Current', model: current});
-            currentView.on('save', function(){
-                currentView.on('hidden', currentView.close);
-            });
-            currentView.on('wizardclose', currentView.close);
-            currentView.render();
         },
 
         render: function(){

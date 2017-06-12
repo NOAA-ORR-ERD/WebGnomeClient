@@ -170,7 +170,8 @@ define([
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            this.get('movers').on('sync change:on', this.moversTimeComplianceWarning, this);
+            this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -355,39 +356,50 @@ define([
         },
 
         moversTimeComplianceCheck: function(model) {
+            model.get('movers').forEach(function(mover) {
+                var name = mover.get('name');
+                var msg = mover.isTimeValid();
+                //add this info to logger? the check just changes time_compliance attribute
+            });
+        },
+        
+        moversTimeComplianceWarning: function(model) {
             // model.save(null, {
-                // validate: false,
-                // success: _.bind(function(model) {
-                    var msg = model.isTimeValid();
-                    if ( msg !== '' && $('.modal').length === 0) {
+            // validate: false,
+            // success: _.bind(function(model) {
+                // }, this)
+            // });
+            
+            var msg = model.isTimeValid();
+            if ( msg !== '') {
+                swal({
+                    title: 'Error',
+                    text: msg,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Fix',
+                    cancelButtonText: 'Ignore'
+                }).then(_.bind(function(options) {
+                    if (options) {
                         swal({
-                            title: 'Error',
-                            text: msg,
+                            title: 'Select a correction option:',
+                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
                             type: 'warning',
                             showCancelButton: true,
-                            confirmButtonText: 'Fix',
-                            cancelButtonText: 'Ignore'
-                        }).then(_.bind(function(options) {
-                            if (options) {
-                                swal({
-                                    title: 'Select a correction option:',
-                                    text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Change Model Start',
-                                    cancelButtonText: 'Extrapolate Mover'
-                                }).then(_.bind(function(fit){
-                                    if (fit) {
-                                        this.fitToInterval(model.get('real_data_start'));
-                                    } else {
-                                        model.set('extrapolate', true);
-                                    }
-                                }, this));
+                            confirmButtonText: 'Change Model Start',
+                            cancelButtonText: 'Extrapolate Mover'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                this.fitToInterval(model.get('real_data_start'));
+                                model.set('time_compliance','valid');
+                            } else {
+                                model.set('extrapolate', true);
+                                model.set('time_compliance','valid');
                             }
                         }, this));
                     }
-                // }, this)
-            // });
+                }, this));
+            }
         },
 
         formatDuration: function() {

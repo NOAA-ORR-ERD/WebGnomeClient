@@ -449,7 +449,6 @@ define([
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
                 this.model.set('name', this.$('#name').val());
                 
-                
                 this.$('.additional-wind-compass').remove();
             }
 

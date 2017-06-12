@@ -46,8 +46,8 @@ define([
                 baseline.data[1] = [end + offset, 0];
                 }
 
-                var fc = '#f9563e'
-                if (spill.get('on') != true) {
+                var fc = '#f9563e';
+                if (spill.get('on') !== true) {
                     fc = '#fc9585';
                 }
                 timelinedata.push({
@@ -81,8 +81,11 @@ define([
             
             webgnome.model.get('movers').forEach(function(mover){
                 
+                var start;
+                var end;
+                
                 if(mover.get('real_data_start') === "-inf"){
-                    start = -Infinity;
+                   start = -Infinity;
                 } else {
                     start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
                 }
@@ -97,15 +100,15 @@ define([
                 }
                  
                  
-                var name = mover.get('name')
+                var name = mover.get('name');
                 
                 if(mover.get('obj_type') === 'gnome.movers.wind_movers.WindMover'){
-                    var wind = mover.get('wind')
-                    var name = wind.get('name')
+                    var wind = mover.get('wind');
+                    name = wind.get('name');
                 }
                     
-                fc = '#D6A0FF';
-                if (mover.get('on') != true) {
+                var fc = '#D6A0FF';
+                if (mover.get('on') !== true) {
                     fc = 'rgba(214, 160, 255, 0.5)';
                 }
                 

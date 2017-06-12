@@ -8,15 +8,24 @@ define([
 
         events: {
             'click .new, .add': 'new',
-            'click .edit,.single': 'edit',
+            'click .edit': 'edit',
             'click .delete': 'delete',
             'mouseover .single': 'hover',
-            'mouseout .list': 'unhover'
+            'mouseout .list': 'unhover',
+            'click input[id="active"]': 'active'
         },
 
         initialize: function(options){
             BaseView.prototype.initialize.call(this, options);
             this.listenTo(webgnome.model, 'sync', this.render);
+        },
+        
+        active: function(e) {
+            e.stopPropagation();
+            var active = this.$('#active:checked').val();    
+            var id = this.getID(e);
+            var current = webgnome.model.get('movers').get(id);
+            current.set('on', _.isUndefined(active) ? false : true);
         },
 
         rerender: function(model, xhr){

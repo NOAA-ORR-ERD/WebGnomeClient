@@ -1340,6 +1340,7 @@ nav.navbar{
                         line-height: auto;
                     }
                 }
+                
 
                 h5{
                     white-space: nowrap;
@@ -1364,13 +1365,20 @@ nav.navbar{
                     float:right;
                 }
                 
-                .time_check_pass{
+                .time_check{
                     .glyphicon;
-                    .glyphicon-ok;
+                    .glyphicon-time;
                     color: green;
                     padding: 2px;
                     float:right;
-                    margin-right: 20px;
+                    margin-right: 10px;
+                    &.valid {
+                        color: green;
+                    }
+                    &.invalid {
+                        color: red;
+                    }
+
                 }
                 
                 
