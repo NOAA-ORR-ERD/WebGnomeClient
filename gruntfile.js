@@ -132,7 +132,11 @@ module.exports = function(grunt){
                     "module": true,
                     "require": true,
                     "Promise": true,
-                    "Uint8Array": true
+                    "Uint8Array": true,
+                    "Float32Array": true,
+                    "Float64Array": true,
+                    "ArrayBuffer": true,
+                    "Blob": true
                 }
             },
             all: src

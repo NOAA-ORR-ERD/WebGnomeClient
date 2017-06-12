@@ -279,7 +279,7 @@ define([
                         1223: 204
                     };
                 // check for conditions and support for blob / arraybuffer response type
-                if (window.FormData && ((options.dataType && (options.dataType == 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob)))))
+                if (window.FormData && ((options.dataType && (options.dataType === 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob)))))
                 {
                     var xhrCallbacks = {},
                         xhrId=0;

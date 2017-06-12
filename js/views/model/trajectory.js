@@ -180,7 +180,7 @@ define([
             this.tc_ice = tc_ice;
 
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
-                return obj.get('obj_type') === 'gnome.environment.environment_objects.GridCurrent'
+                return obj.get('obj_type') === 'gnome.environment.environment_objects.GridCurrent';
             });
             var active_env_objs = [];
             env_objs.forEach(function(obj){
@@ -630,8 +630,8 @@ define([
                 // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
                 var id = this.checked_env_vec[0];
                 var env = webgnome.model.get('environment').findWhere({id: id});
-                var mag_data = env.mag_data
-                var dir_data = env.dir_data
+                var mag_data = env.mag_data;
+                var dir_data = env.dir_data;
                 env.interpVecsToTime(step.get('TrajectoryGeoJsonOutput').time_stamp, mag_data, dir_data);
                 if(this.current_arrow[id]){
                     for(var uv = mag_data.length; uv--;){
@@ -935,7 +935,7 @@ define([
                         var existing_length = this.layers.uv[id].length;
                         var _off = 0;
                         for(var existing = 0; existing < existing_length; existing++){
-                            _off = existing*2
+                            _off = existing*2;
                             layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
                             layer.get(existing).show = false;
                         }
@@ -943,7 +943,7 @@ define([
                         var create_length = centers.length / 2;
 
                         for(var c = existing_length; c < create_length; c++){
-                            _off = c*2
+                            _off = c*2;
                             layer.add({
                                 show: false,
                                 position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
