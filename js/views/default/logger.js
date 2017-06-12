@@ -116,12 +116,17 @@ define([
             }
 
             if(_.isObject(message)){
-                var source = message.name.replace('[', '').split('.')[0];
-                if(source !== 'gnome' && source !== 'webgnome_api'){
-                    source = 'misc';
+                if (! _.isUndefined(message.name)) {
+                    var source = message.name.replace('[', '').split('.')[0];
+                    if(source !== 'gnome' && source !== 'webgnome_api'){
+                        source = 'misc';
+                    }
+                    var ts = message.time + ' ' + message.date;
+                    this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
+                } else {
+                    this.$('.window .logs').append('<li class="misc">' + message.message + '</li>');
                 }
-                var ts = message.time + ' ' + message.date;
-                this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
+                
                 this.count++;
             }
 
