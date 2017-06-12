@@ -30,7 +30,7 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 webgnome.model.get('movers').add(mover);
-                if (mover['attributes']['obj_type'] === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                if (mover.attributes.obj_type === 'gnome.movers.py_current_movers.PyCurrentMover') {
                     webgnome.model.get('environment').add(mover.get('current'));
                 }
                 webgnome.model.save(null, {validate: false});
@@ -167,10 +167,11 @@ define([
                     var envs = webgnome.model.get('environment');
                     if (mov.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         var env_id = mov.get('current').id;
-                        for (var i = 0; i < envs.length; i++)
+                        for (var i = 0; i < envs.length; i++) {
                             if (envs.models [i].id === env_id){
                                 envs.remove(env_id);
                             }
+                        }
                     }
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {

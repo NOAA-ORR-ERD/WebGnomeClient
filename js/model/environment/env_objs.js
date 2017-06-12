@@ -25,7 +25,7 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.held_by = []
+            this.held_by = [];
         },
 
         resetRequest: function(){
@@ -66,10 +66,10 @@ define([
                     this.requesting = false;
                     this.requested_nodes = true;
                     var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT
+                    var dtl = dtype.BYTES_PER_ELEMENT;
                     var num_nodes = nodes.byteLength / (2*dtl);
-                    this.nodes = new dtype(nodes)
-                    this.env_obj_cache.setItem(this.id + 'nodes', this.nodes, )
+                    this.nodes = new dtype(nodes);
+                    this.env_obj_cache.setItem(this.id + 'nodes', this.nodes);
                     return this.nodes;
                 }, this )});
             } else if(callback) {
@@ -99,7 +99,7 @@ define([
                     this.requesting = false;
                     this.requested_grid = true;
                     var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT
+                    var dtl = dtype.BYTES_PER_ELEMENT;
                     var grid_type = this.get('grid').obj_type;
                     var num_sides = 0;
                     if (grid_type[grid_type.length - 1] === 'U') {
@@ -118,7 +118,7 @@ define([
                     var og = new dtype(grid);
                     for(var cell = 0; cell < num_cells; cell++){
                         var cell_offset = cell*(line_coord_len);
-                        var og_off = cell*(num_sides*2)
+                        var og_off = cell*(num_sides*2);
                         this.grid.set(og.slice(og_off, og_off+(num_sides*2)), cell_offset);
                         this.grid.set(og.slice(og_off, og_off+2), cell_offset+(num_sides*2));
                     }
@@ -141,16 +141,16 @@ define([
                     if(value) {
                         console.log(this.id + ' vectors found in store');
                         var dtype = Float32Array;
-                        var dtl = dtype.BYTES_PER_ELEMENT
+                        var dtl = dtype.BYTES_PER_ELEMENT;
                         this.requested_vectors = true;
                         this.vec_data = value[0];
-                        var shape = value[1]
+                        var shape = value[1];
                         this.num_times = parseInt(shape[1]);
                         this.num_vecs = parseInt(shape[2]);
-                        this.time_axis = []
+                        this.time_axis = [];
                         for (var i=0; i < this.get('time').data.length; i++) {
-                            var t = this.get('time').data[i]
-                            this.time_axis.push(moment(t.replace('T',' ')).unix())
+                            var t = this.get('time').data[i];
+                            this.time_axis.push(moment(t.replace('T',' ')).unix());
                         }
                         this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
                         this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
@@ -181,21 +181,21 @@ define([
                     this.requesting = false;
                     this.requested_vectors = true;
                     var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT
+                    var dtl = dtype.BYTES_PER_ELEMENT;
                     var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
                     var num_times = parseInt(shape[1]);
                     var num_vecs = parseInt(shape[2]);
 
-                    var datalen = num_times * num_vecs * dtl
-                    this.vec_data = new Float32Array(uv_data)
-                    this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape], )
+                    var datalen = num_times * num_vecs * dtl;
+                    this.vec_data = new Float32Array(uv_data);
+                    this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
                     
-                    this.num_times = num_times
-                    this.num_vecs = num_vecs
-                    this.time_axis = []
+                    this.num_times = num_times;
+                    this.num_vecs = num_vecs;
+                    this.time_axis = [];
                     for (var i=0; i < this.get('time').data.length; i++) {
-                        var t = this.get('time').data[i]
-                        this.time_axis.push(moment(t.replace('T',' ')).unix())
+                        var t = this.get('time').data[i];
+                        this.time_axis.push(moment(t.replace('T',' ')).unix());
                     }
                     this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
                     this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
@@ -210,7 +210,8 @@ define([
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {
             // returns interpolated direction and magnitude in time
-            timestamp = moment(timestamp.replace('T',' ')).unix()
+            timestamp = moment(timestamp.replace('T',' ')).unix();
+            var n = 0;
             var time_axis = this.time_axis,
                 idx = time_axis.length - 1,
                 rv = {},
@@ -220,7 +221,7 @@ define([
                 data = this.vec_data;
             if(time_axis[idx] <= timestamp) {
                 //after or equal to data end so return data end
-                for (var n = this.num_vecs;n--;) {
+                for (n = this.num_vecs;n--;) {
                     dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                     mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                 }
@@ -229,7 +230,7 @@ define([
                 //before or equal to data start so return data start
                 u_offset = 0;
                 v_offset = this.num_vecs * this.num_times;
-                for (var n = this.num_vecs;n--;) {
+                for (n = this.num_vecs;n--;) {
                     dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                     mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                 }
@@ -244,10 +245,9 @@ define([
                         u0 = u_offset,
                         u1 = (idx+1) * this.num_vecs,
                         v0 = v_offset,
-                        v1 = u1 + this.num_times * this.num_vecs,
-                        data = this.vec_data;
-                    var alpha = (timestamp - t0) / (t1 - t0)
-                    for (var n = this.num_vecs;n--;) {
+                        v1 = u1 + this.num_times * this.num_vecs;
+                    var alpha = (timestamp - t0) / (t1 - t0);
+                    for (n = this.num_vecs;n--;) {
                         //mag_out has interpolated dx, this._temp has interpolated dy
                         mag_out[n] = data[u0 + n] + (data[u1 + n] - data[u0 + n]) * alpha;
                         this._temp[n] = data[v0 + n] + (data[v1 + n] - data[v0 + n]) * alpha;
@@ -256,7 +256,7 @@ define([
                     }
                     return;
                 } else if (time_axis[idx] === timestamp) {
-                    for (var n = this.num_vecs;n--;) {
+                    for (n = this.num_vecs;n--;) {
                         dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                         mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                     }
