@@ -22,13 +22,13 @@ define([
         },
 
         render: function(){
-            var start = parseInt(moment(webgnome.model.get('start_time')).format('x'), 10);
-            var end = parseInt(start + (webgnome.model.get('duration') * 1000), 10);
+            var model_start = parseInt(moment(webgnome.model.get('start_time')).format('x'), 10);
+            var model_end = parseInt(model_start + (webgnome.model.get('duration') * 1000), 10);
             var offset = (webgnome.model.get('duration') / 12) * 1000;
-            var baseline = {label: "empty", data: [[start - offset, 0],[end + offset, 0]]};
+            var baseline = {label: "empty", data: [[model_start - offset, 0],[model_end + offset, 0]]};
 
             var timelinedata = [
-                {label: 'Model', start: start, end: end},
+                {label: 'Model', start: model_start, end: model_end, fillColor: '#9A9EAB'},
             ];
 
             // spills
@@ -38,12 +38,23 @@ define([
                     parseInt(moment(spill.get('release').get('end_release_time')).format('x'), 10),
                     parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
                 );
+                
+                if (start < model_start) {
+                    baseline.data[0] = [start - offset, 0];
+                }
+                if (end > model_end) {
+                baseline.data[1] = [end + offset, 0];
+                }
 
+                var fc = '#f9563e'
+                if (spill.get('on') != true) {
+                    fc = '#fc9585';
+                }
                 timelinedata.push({
                     label: spill.get('name'),
                     start: start,
                     end: end,
-                    fillColor: '#FFE6A0'
+                    fillColor: fc
                 });
             });
 
@@ -51,52 +62,25 @@ define([
                 if(weatherer.get('obj_type').indexOf('cleanup') !== -1){
                     var start = parseInt(moment(weatherer.get('active_start')).format('x'), 10);
                     var end = parseInt(moment(weatherer.get('active_stop')).format('x'), 10);
-
+                    if (start < model_start) {
+                        baseline.data[0] = [start - offset, 0];
+                    }
+                    if (end > model_end) {
+                        baseline.data[1] = [end + offset, 0];
+                    }
+                                  
                     timelinedata.push({
                         label: weatherer.get('name'),
                         start: start,
                         end: end,
-                        fillColor: '#FFA0A0'
+                        fillColor: '#ffd970'
                     });
                 }
             });
 
-            // general movers w/ bundle collection for inf
-            var bundle = [];
+            
             webgnome.model.get('movers').forEach(function(mover){
-                if(mover.get('real_data_start') === '-inf' && mover.get('real_data_stop') === 'inf' && mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover'){
-                    bundle.push(mover);
-                } else if(mover.get('obj_type') !== 'gnome.movers.wind_movers.WindMover') {
-                    var start, end;
-
-                    if(mover.get('real_data_start') === "-inf"){
-                        start = -Infinity;
-                    } else {
-                        start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                    }
-
-                    if(mover.get('real_data_stop') === 'inf'){
-                        end = Infinity;
-                    } else {
-                        end = Math.max(
-                            parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
-                            parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
-                        );
-                    }
-
-                    timelinedata.push({
-                        label: mover.get('name'),
-                        start: start,
-                        end: end,
-                        fillColor: '#D6A0FF'
-                    });
-                }
-            });
-
-            // windmovers and their winds
-            var windmovers = webgnome.model.get('movers').where({obj_type: 'gnome.movers.wind_movers.WindMover'});
-            for(var m = 0; m < windmovers.length; m++){
-                var mover = windmovers[m];
+                
                 if(mover.get('real_data_start') === "-inf"){
                     start = -Infinity;
                 } else {
@@ -111,45 +95,28 @@ define([
                         parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
                     );
                 }
-
+                 
+                 
+                var name = mover.get('name')
+                
+                if(mover.get('obj_type') === 'gnome.movers.wind_movers.WindMover'){
+                    var wind = mover.get('wind')
+                    var name = wind.get('name')
+                }
+                    
+                fc = '#D6A0FF';
+                if (mover.get('on') != true) {
+                    fc = 'rgba(214, 160, 255, 0.5)';
+                }
+                
                 timelinedata.push({
-                    label: mover.get('name'),
+                    label: name,
                     start: start,
                     end: end,
-                    fillColor: '#D6A0FF'
+                    fillColor: fc
                 });
+            });
 
-                if(mover.get('wind')){
-                    var wind = mover.get('wind');
-
-                    if(wind.get('timeseries').length > 1){
-                        start = moment(wind.get('timeseries')[0][0]).format('x');
-                        end = moment(wind.get('timeseries')[wind.get('timeseries').length - 1][0]).format('x');
-                    }
-
-                    timelinedata.push({
-                        label: mover.get('name') + ' - ' + wind.get('name'),
-                        start: start,
-                        end: end,
-                        fillColor: 'rgba(214, 160, 255, 0.5)'
-                    });
-                }
-            }
-
-            // inf mover bundle
-            var label = '';
-            for(var i = 0; i < bundle.length; i++){
-                label += bundle[i].get('name') + ', ';
-            }
-
-            if(bundle.length > 0){
-                timelinedata.push({
-                    start: -Infinity,
-                    end: Infinity,
-                    label: label,
-                    fillColor: '#D6A0FF'
-                });
-            }
 
             // dynamically set the height of the timeline div
             var height = (timelinedata.length * 20) + 40;

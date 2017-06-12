@@ -38,6 +38,7 @@ define([
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
             }, this));
+            
             windForm.render();
         },
 
@@ -168,6 +169,14 @@ define([
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
                 
+                var data_status = 1
+                var start_date = moment(ts[0][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000; //need to parse these to do comparisons...moment or parseInt or something...
+                var end_date = moment(ts[ts.length-1][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                var model_start = moment(webgnome.model.get('start_time'), 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
+                if(start_date > model_start) {
+                    data_status = 3;
+                }
+
                 for (var entry in ts){
                     var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[entry][1][0]));
@@ -199,7 +208,8 @@ define([
                         fillColor: '#7a7a7a',
                         arrawLength: 5
                     },
-                    id: windMover.get('id')
+                    id: windMover.get('id'),
+                    data_status: data_status
                 });
 
                 if (ts.length > 24){
@@ -215,7 +225,8 @@ define([
                         direction: {
                             show: false
                         },
-                        id: windMover.get('id')
+                        id: windMover.get('id'),
+                        data_status: data_status
                     });
                 }
             }
