@@ -193,22 +193,27 @@ define([
         },
 
         updateAmountSlide: function(ui){
+        	var slider_min = this.$( ".slider" ).slider( "option", "min" );
+        	var slider_max = this.$( ".slider" ).slider( "option", "max" );
+            var slider_scale = slider_max - slider_min;
             var value;
-            if(!_.isUndefined(ui)){
-                value = ui.value;
+
+            if(_.isUndefined(ui)){
+                value = this.$('.slider').slider('value') - slider_min;
             } else {
-                value = this.$('.slider').slider('value');
+            	value = ui.value - slider_min;
             }
-            if(this.model.get('amount') !== 0){
+
+            if(this.model.get('amount') !== 0) {
                 var amount = this.model.get('amount');
+
                 if(value === 0){
                     this.$('#amount-tooltip').text(amount);
                 } else {
-                    var bottom = parseInt(Math.round((amount * (1 - ((value / 25.0) * 5)))), 10);
-                    if (bottom < 0) {
-                        bottom = 0;
-                    }
-                    var top = parseInt(Math.round((amount * (1 + ((value / 25.0) * 5)))), 10);
+                	var sigma = value / slider_scale * (2.0 / 3.0) * amount;
+                    var bottom = Math.round(amount - sigma);
+                    var top = Math.round(amount + sigma);
+
                     this.$('#amount-tooltip').text(bottom + ' - ' + top);
                 }
             }

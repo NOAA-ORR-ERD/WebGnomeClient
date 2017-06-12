@@ -8,7 +8,7 @@ define([
         urlRoot: '/map/',
         requesting: false,
         requested: false,
-        geo_json: '',
+        geo_json: undefined,
         geographical: false,
         
         getExtent: function(){
@@ -50,11 +50,14 @@ define([
 
         resetRequest: function(){
             this.requested = false;
+            delete this.geo_json;
         },
 
         getGeoJSON: function(callback){
             var url = this.urlRoot + this.get('id') + '/geojson';
-            if(!this.requesting && !this.requested){
+            if(!this.requesting && !this.requested && _.isUndefined(this.geo_json)){
+                console.log('request is being sent');
+                console.trace();
                 this.requesting = true;
                 $.get(url, null, _.bind(function(geo_json){
                     this.requesting = false;
@@ -64,6 +67,9 @@ define([
                 }, this));
             } else if (this.requested && this.geo_json) {
                 callback(this.geo_json);
+            } else {
+                // make it wait and try again later
+                _.delay(_.bind(this.getGeoJSON, this), 500, callback);
             }
             return null;
         }

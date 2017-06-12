@@ -5,10 +5,11 @@ define([
     'views/modal/form',
     'model/movers/cats',
     'model/movers/grid_current',
+    'model/movers/py_current',
     'text!templates/form/mover/create.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, CatsMover, GridCurrentMover, PyCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -18,6 +19,7 @@ define([
             return _.defaults({
                 'click .grid': 'grid',
                 'click .cats': 'cats',
+                'click .py_grid': 'py_grid',
             }, FormModal.prototype.events);
         },
 
@@ -60,6 +62,11 @@ define([
 
         cats: function(){
             this.model = new CatsMover();
+            this.nextStep();
+        },
+
+        py_grid: function(){
+            this.model = new PyCurrentMover();
             this.nextStep();
         },
 

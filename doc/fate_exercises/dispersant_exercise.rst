@@ -14,7 +14,7 @@ Chemical Dispersant Exercise
 Incident
 ========
 
-At 0700 on April 4th, 2016, a collision occurred between a shrimp
+At 0700 on April 4th, 2017, a collision occurred between a shrimp
 boat and a freighter about 30 miles southeast of Galveston, Texas at
 28° 55.9'N, 94° 21.5'W. Initial reports indicate 315 bbls of IFO 180
 were lost. The National Weather Service marine forecast indicates
@@ -127,33 +127,12 @@ IFO-180's do not normally emulsify, however, the oil may weather and
 become very viscous so that dispersant may be less effective. You
 can address this issue by using the Oil Viscosity Graph.
 
- * Click Viscosity (located at the top of the window).
- * Notice that after 12 hours, dispersability is restricted. The effectiveness of
-   dispersants will be questionable. Ask your SSC for further guidance.
-
-**Add discussion of uncertainty**
-
-
-
-|image1|
-
-Dispersibility versus viscosity.
-
-|image2| 
-
-
---------------
-
-`|image3|\ Top <#ADIOS>`__ `|image4|\ Back <Exercise.html>`__
-`Home <Contents.html>`__
+ #. Click the Weathering tab to see the oil properties graphs.
+ #. Click the Viscosity tab to see how the viscosity of the oil is changing with time.
+ #. Notice that after about 12 hours, dispersability is restricted. The effectiveness of
+    dispersants will be questionable. Ask your SSC for further guidance.
 
 
 .. |image0| image:: images/dispersant_pict.gif
    :width: 149px
    :height: 104px
-.. |image1| image:: images/DispToVisc.gif
-   :width: 186px
-   :height: 83px
-.. |image2| image:: images/DisperVis.gif
-   :width: 333px
-   :height: 321px
