@@ -166,11 +166,12 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
-            this.get('spills').on('sync', this.spillsTimeCompliance, this);
+            this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
+            this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('sync change:on', this.moversTimeComplianceWarning, this);
+            this.get('movers').on('sync save', this.moversTimeComplianceWarning, this);
             this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
@@ -208,12 +209,22 @@ define([
             }
         },
 
-        spillsTimeCompliance: function() {
-            var start_time = this.get('start_time');
+        
+        spillsTimeComplianceCheck: function(model) {
+                    
+            model.get('spills').forEach(function(spill) {
+                var name = spill.get('name');
+                var msg = spill.isTimeValid();
+                //add this info to logger? the check just changes time_compliance attribute
+            });
+        },
+        
+        spillsTimeComplianceWarning: function(model) {
             
-            if (!this.get('spills').startTimeComplies(start_time)) {
+            var msg = model.isTimeValid();
+            if ( msg !== '') {
                 swal({
-                    title: "The spill start time is not the same as the model start time!",
+                    title: msg,
                     text: "Would you like to change the model start time to match the spill's start time?",
                     type: "warning",
                     showCancelButton: true,
@@ -221,7 +232,7 @@ define([
                     cancelButtonText: "No"
                 }).then(_.bind(function(correct){
                     if (correct) {
-                        var spillStart = this.get('spills').at(0).get('release').get('release_time');
+                        var spillStart = model.get('release').get('release_time');
                         this.set('start_time', spillStart);
                         this.save();
                     }
@@ -229,6 +240,53 @@ define([
             }
         },
 
+        moversTimeComplianceCheck: function(model) {
+            model.get('movers').forEach(function(mover) {
+                var name = mover.get('name');
+                var msg = mover.isTimeValid();
+                //add this info to logger? the check just changes time_compliance attribute
+            });
+        },
+        
+        moversTimeComplianceWarning: function(model) {
+            // model.save(null, {
+            // validate: false,
+            // success: _.bind(function(model) {
+                // }, this)
+            // });
+            
+            var msg = model.isTimeValid();
+            if ( msg !== '') {
+                swal({
+                    title: 'Error',
+                    text: msg,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Fix',
+                    cancelButtonText: 'Ignore'
+                }).then(_.bind(function(options) {
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option:',
+                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Change Model Start',
+                            cancelButtonText: 'Extrapolate Mover'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                this.fitToInterval(model.get('real_data_start'));
+                                model.set('time_compliance','valid');
+                            } else {
+                                model.set('extrapolate', true);
+                                model.set('time_compliance','valid');
+                            }
+                        }, this));
+                    }
+                }, this));
+            }
+        },
+        
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
@@ -355,52 +413,7 @@ define([
             this.save();
         },
 
-        moversTimeComplianceCheck: function(model) {
-            model.get('movers').forEach(function(mover) {
-                var name = mover.get('name');
-                var msg = mover.isTimeValid();
-                //add this info to logger? the check just changes time_compliance attribute
-            });
-        },
-        
-        moversTimeComplianceWarning: function(model) {
-            // model.save(null, {
-            // validate: false,
-            // success: _.bind(function(model) {
-                // }, this)
-            // });
-            
-            var msg = model.isTimeValid();
-            if ( msg !== '') {
-                swal({
-                    title: 'Error',
-                    text: msg,
-                    type: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Fix',
-                    cancelButtonText: 'Ignore'
-                }).then(_.bind(function(options) {
-                    if (options) {
-                        swal({
-                            title: 'Select a correction option:',
-                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Change Model Start',
-                            cancelButtonText: 'Extrapolate Mover'
-                        }).then(_.bind(function(fit){
-                            if (fit) {
-                                this.fitToInterval(model.get('real_data_start'));
-                                model.set('time_compliance','valid');
-                            } else {
-                                model.set('extrapolate', true);
-                                model.set('time_compliance','valid');
-                            }
-                        }, this));
-                    }
-                }, this));
-            }
-        },
+
 
         formatDuration: function() {
             var duration = this.get('duration');

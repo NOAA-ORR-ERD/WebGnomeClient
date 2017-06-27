@@ -16,11 +16,13 @@ define([
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
             this.on('change', this.resetRequest, this);
-            if(webgnome.hasModel()){
-                this.isTimeValid();
-            } else {
-                setTimeout(_.bind(this.isTimeValid,this),2);
-            }   
+            if (!this.isNew()) {
+                if(webgnome.hasModel()){
+                    this.isTimeValid();
+                } else {
+                    setTimeout(_.bind(this.isTimeValid,this),2);
+                }   
+            }
         },
 
         resetRequest: function(){
@@ -101,7 +103,8 @@ define([
             this.set('time_compliance', 'valid');
             var msg = '';
 
-            if ((!extrapolate && on) && (active_start === '-inf' || active_start > model_start)) {
+            if ((!extrapolate) && (active_start === '-inf' || active_start > model_start)) {
+                
                 if (real_data_start === real_data_stop) {
                     return msg;
                 }

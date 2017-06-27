@@ -22,10 +22,11 @@ define([
         
         active: function(e) {
             e.stopPropagation();
-            var active = this.$('#active:checked').val();    
+            var active = e.target.checked;
             var id = this.getID(e);
             var current = webgnome.model.get('movers').get(id);
-            current.set('on', _.isUndefined(active) ? false : true);
+            current.set('on',active)
+            webgnome.model.save()
         },
 
         rerender: function(model, xhr){
