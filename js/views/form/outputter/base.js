@@ -167,7 +167,13 @@ define([
                 webgnome.cache.rewind();
                 this.loadingModal.hide();
                 this.removeOutputter();
-                window.location.href = webgnome.config.api + '/export/output/' + this.model.get('obj_type');
+                if(this.model.get('obj_type') === 'gnome.outputters.netcdf.NetCDFOutput'){
+                    window.location.href = webgnome.config.api + '/export/output/' + this.model.get('obj_type') + '/' + this.model.get('name');
+                } else if (this.model.get('obj_type') === 'gnome.outputters.kmz.KMZOutput'){
+                    window.location.href = webgnome.config.api + '/export/output/' + this.model.get('obj_type') + '/' + this.model.get('name');
+                } else {
+                    window.location.href = webgnome.config.api + '/export/output/' + this.model.get('obj_type');
+                }
                 FormModal.prototype.save.call(this);
             }, this), false);
         },
