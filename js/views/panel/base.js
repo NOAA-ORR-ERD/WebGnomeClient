@@ -25,8 +25,8 @@ define([
             var active = e.target.checked;
             var id = this.getID(e);
             var current = webgnome.model.get('movers').get(id);
-            current.set('on',active)
-            webgnome.model.save()
+            current.set('on',active);
+            webgnome.model.save();
         },
 
         rerender: function(model, xhr){

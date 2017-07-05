@@ -215,7 +215,7 @@ define([
             var model_start = webgnome.model.get('start_time');
             var model_stop = webgnome.model.getEndTime();
             var spill_start = this.get('release').get('release_time');
-            var msg = ""
+            var msg = "";
             
             if(spill_start > model_start) {
                     msg = "The spill starts after the model start time";

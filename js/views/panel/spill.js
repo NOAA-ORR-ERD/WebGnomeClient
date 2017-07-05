@@ -77,8 +77,8 @@ define([
             var active = e.target.checked;  
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
-            spill.set('on',active)
-            webgnome.model.save()
+            spill.set('on',active);
+            webgnome.model.save();
         },
 
         render: function(){

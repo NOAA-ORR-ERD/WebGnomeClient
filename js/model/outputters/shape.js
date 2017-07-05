@@ -12,7 +12,7 @@ define([
                 'obj_type': 'gnome.outputters.shape.ShapeOutput',
                 'name': 'Model.shp',
                 'filename': 'Model.shp',
-                'output_timestep': 900
+                'output_timestep': 3600
             }, FileOutputterModel.prototype.defaults);
         },
 
