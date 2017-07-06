@@ -103,13 +103,13 @@ define([
             this.set('time_compliance', 'valid');
             var msg = '';
 
-            if ((!extrapolate) && (active_start === '-inf' || active_start > model_start)) {
+            if ((!extrapolate) && (active_start <= model_start)) {
                 
                 if (real_data_start === real_data_stop) {
                     return msg;
                 }
                 
-                if (real_data_start > model_start) {
+                if ((real_data_start > model_start) && (real_data_start > active_start )) {
                     msg = 'Mover data begins after model start time';
                     this.set('time_compliance', 'invalid');
                     return msg;
