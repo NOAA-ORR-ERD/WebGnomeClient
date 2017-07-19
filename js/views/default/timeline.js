@@ -89,14 +89,14 @@ define([
                     //start = -Infinity;
                     //end = Infinity;
                     start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                    end = parseInt(start + offset/20, 10)
+                    end = parseInt(start + offset/20, 10);
                 } else {
                     
                     if(mover.get('real_data_start') === "-inf"){
                        start = -Infinity;
                     } else {
                         start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                    };
+                    }
 
                     if(mover.get('real_data_stop') === 'inf'){
                         end = Infinity;
@@ -105,7 +105,7 @@ define([
                             parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
                             parseInt(start + offset/20, 10)
                         );
-                    };
+                    }
                 
                 }
                  
