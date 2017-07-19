@@ -217,13 +217,17 @@ define([
             var spill_start = this.get('release').get('release_time');
             var msg = "";
             
-            if(spill_start > model_start) {
+            if((spill_start > model_start) & (spill_start < model_stop)) {
                     msg = "The spill starts after the model start time";
-                    this.set('time_compliance', 'invalid');
+                    this.set('time_compliance', 'semivalid');
                 }
             else if(spill_start < model_start) {
                 msg = "The spill starts before the model start time";
                 this.set('time_compliance', 'invalid');
+            }
+            else if(spill_start >= model_stop) {
+                msg = "The spill starts after the model end time";
+                this.set('time_compliance','invalid')
             }
             else { 
                 this.set('time_compliance', 'valid');

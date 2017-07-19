@@ -21,7 +21,7 @@ define([
             this.listenTo(webgnome.model, 'change:start_time change:duration', this.render);
         },
 
-        render: function(){
+        render: _.debounce(function(){
             var model_start = parseInt(moment(webgnome.model.get('start_time')).format('x'), 10);
             var model_end = parseInt(model_start + (webgnome.model.get('duration') * 1000), 10);
             var offset = (webgnome.model.get('duration') / 12) * 1000;
@@ -84,29 +84,34 @@ define([
                 var start;
                 var end;
                 
-                if(mover.get('real_data_start') === "-inf"){
-                   start = -Infinity;
-                } else {
+                if ((mover.get('real_data_start')) === (mover.get('real_data_stop'))) {
+                    //Differing opinions on what should be shown in this case -- I'm going with actual data
+                    //start = -Infinity;
+                    //end = Infinity;
                     start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                }
-
-                if(mover.get('real_data_stop') === 'inf'){
-                    end = Infinity;
+                    end = parseInt(start + offset/20, 10)
                 } else {
-                    end = Math.max(
-                        parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
-                        parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
-                    );
-                }
-                 
-                 
-                var name = mover.get('name');
-                
-                if(mover.get('obj_type') === 'gnome.movers.wind_movers.WindMover'){
-                    var wind = mover.get('wind');
-                    name = wind.get('name');
-                }
                     
+                    if(mover.get('real_data_start') === "-inf"){
+                       start = -Infinity;
+                    } else {
+                        start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
+                    };
+
+                    if(mover.get('real_data_stop') === 'inf'){
+                        end = Infinity;
+                    } else {
+                        end = Math.max(
+                            parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
+                            parseInt(start + offset/20, 10)
+                        );
+                    };
+                
+                }
+                 
+                
+                var name = mover.get('name');
+                                    
                 var fc = '#D6A0FF';
                 if (mover.get('on') !== true) {
                     fc = 'rgba(214, 160, 255, 0.5)';
@@ -156,7 +161,7 @@ define([
                     }
                 }
             });
-        },
+        }, 10),
     });
 
     return timelineView;
