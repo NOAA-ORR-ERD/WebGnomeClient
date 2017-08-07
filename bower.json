@@ -40,6 +40,7 @@
     "sweetalert2": "^2.1.1",
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round/archive/master.zip",
     "toastr": "^2.1.2",
-    "raphael": "~2.1.4"
+    "raphael": "~2.1.4",
+    "RecordRTC": "~5.4.2"
   }
 }

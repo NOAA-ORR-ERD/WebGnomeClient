@@ -54,7 +54,8 @@ require.config({
         'jquery-mousewheel': 'lib/jquery-mousewheel/jquery.mousewheel',
         'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter',
         'toastr': 'lib/toastr/toastr',
-        raphael: 'lib/raphael/raphael'
+        raphael: 'lib/raphael/raphael',
+        recordrtc: 'lib/recordrtc/RecordRTC'
     },
     shim: {
         jquery: {

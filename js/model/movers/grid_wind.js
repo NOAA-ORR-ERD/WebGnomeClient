@@ -3,7 +3,7 @@ define([
 ], function(BaseMover){
     var gridWindMover = BaseMover.extend({
         defaults: {
-            obj_type: 'gnome.movers.wind_movers.GridWindMover'
+            obj_type: 'gnome.movers.grid_wind.GridWindMover'
         }
     });
 

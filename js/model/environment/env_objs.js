@@ -7,14 +7,11 @@ define([
     'localforage',
 ], function(_, $, Backbone, BaseModel, moment, localforage){
     'use strict';
-    var gridCurrentModel = BaseModel.extend({
+    var baseEnvObj = BaseModel.extend({
+        urlRoot: '/environment/',
         env_obj_cache : localforage.createInstance({name: 'Environment Object Data Cache',
                                                     }),
-        urlRoot: '/environment/',
-        defaults: {
-            obj_type: 'gnome.environment.environment_objects.GridCurrent'
-        },
-        
+
         initialize: function(attrs, options) {
             BaseModel.prototype.initialize.call(this, attrs, options);
             if(!this.requested_vectors){
@@ -263,9 +260,8 @@ define([
                     return;
                 }
             }
-//(timestamp - t0) / (t1 - t0)
         },
     });
 
-    return gridCurrentModel;
+    return baseEnvObj;
 });
