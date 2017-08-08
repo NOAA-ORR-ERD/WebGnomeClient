@@ -13,9 +13,13 @@ define([
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
-    'recordrtc',
-    'html2canvas'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap){
+    'gif',
+    'gifworker',
+    //'recordrtc',
+    'html2canvas',
+    'ccapture',
+    'whammy'
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, GIF){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -287,10 +291,10 @@ define([
                 mapProjection: new Cesium.WebMercatorProjection(),
                 selectedImageryProviderViewModel: default_image,
                 imageryProviderViewModels: image_providers,
-                clock: new Cesium.Clock({
-                    canAnimate: false,
-                    shouldAnimate: false
-                }),
+//                clockViewModel: new Cesium.Clock({
+//                   canAnimate: false,
+//                  shouldAnimate: false
+//             }),
                 contextOptions: {
                     webgl:{preserveDrawingBuffer:true}
                 },
@@ -299,7 +303,7 @@ define([
             this.meta_canvas = document.createElement('canvas')
             this.meta_canvas.width = this.viewer.canvas.width;
             this.meta_canvas.height = this.viewer.canvas.height;
-            this.meta_canvas_ctx = this.meta_canvas.getContext('2d')
+            this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true})
             //$('.map').append(this.meta_canvas);
 
             this.renderSpills();
@@ -333,11 +337,26 @@ define([
                             framerate:24,
                             quality:40
                             }
+
+            this.capturer = new CCapture({format: 'gif',
+                                          framerate:24,
+                                          verbose:true,
+                                          workersPath: 'js/lib/gif.js/dist/'});
+/*
+            var metacap = _.bind(function(scene, cur_time) {
+                if (this.is_recording) {
+                    this.capturer.capture(this.meta_canvas);
+                }
+            }, this);
+            this.viewer.scene.postRender.addEventListener(metacap);
+*/
+/*
             this.recorder = RecordRTC(this.meta_canvas, rec_opts);
             this.recorder.start=this.recorder.startRecording
             this.recorder.pause=this.recorder.pauseRecording
             this.recorder.resume=this.recorder.resumeRecording
             this.recorder.stop=this.recorder.stopRecording
+
             //this.recorder = new MediaRecorder(this.viewer.canvas.captureStream());
             //this.recorder = new MediaRecorder(this.meta_canvas.captureStream(25));
             //this.recorder.addEventListener('dataavailable', function(event) {
@@ -348,7 +367,7 @@ define([
                 //});
             this.recorder.start()
             this.recorder.pause()
-
+*/
             this.load();
         },
 
@@ -427,7 +446,8 @@ define([
                 this.controls.play.hide();
                 this.controls.stoprecord.show();
                 this.controls.record.hide();
-                this.recorder.resume();
+                this.capturer.start();
+                //this.recorder.resume();
                 this.loop();
             }
         },
@@ -440,6 +460,11 @@ define([
                 this.controls.pause.hide();
                 this.controls.record.show();
                 this.controls.stoprecord.hide();
+                this.capturer.stop();
+                this.capturer.save(function(blob){
+                    webgnome.invokeSaveAsDialog(blob, 'gnome-run.gif');
+                });
+/*
                 this.recorder.stop(function(url) {
                     console.log(url);
                     this.recorder.save('gnome-run.webm')
@@ -447,6 +472,7 @@ define([
                     this.recorder.start()
                     this.recorder.pause()
                 }.bind(this));
+*/
                 //this.recorder = new MediaStreamRecorder(this.meta_canvas.captureStream());
                 
             }
@@ -458,7 +484,7 @@ define([
                 this.controls.pause.show();
                 this.controls.play.hide();
                 if(this.is_recording) {
-                    this.recorder.resume();
+                    //this.recorder.resume();
                 }
                 this.loop();
             }
@@ -468,7 +494,7 @@ define([
             if($('.modal:visible').length === 0){
                 this.state = 'pause';
                 if(this.is_recording){
-                    this.recorder.pause();
+                    //this.recorder.pause();
                 }
                 this.controls.play.show();
                 this.controls.pause.hide();
@@ -479,8 +505,8 @@ define([
         rewind: function(){
             this.pause();
             if(this.is_recording){
-                this.recorder.clearRecordedData();
-                this.stoprecord();
+                //this.recorder.clearRecordedData();
+                //this.stoprecord();
             }
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
@@ -556,7 +582,12 @@ define([
                 this.pause();
             }
             this.$('.tooltip-inner').text(time);
+            this.viewer.scene.render();
+
             this.renderSlider();
+            if(this.is_recording){
+                this.capturer.capture(this.meta_canvas);
+            }
         },
 
         renderSlider: function() {
@@ -599,7 +630,7 @@ define([
             if(!this.les){
                 // this is the first time le are being rendered
                 // create a new datasource to handle the entities
-                this.les = new Cesium.BillboardCollection();
+                this.les = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
                 this.layers.particles = this.les;
                 this.certain_collection = [];
                 this.uncertain_collection = [];
@@ -757,14 +788,15 @@ define([
                 var dir_data = env.dir_data;
                 env.interpVecsToTime(step.get('TrajectoryGeoJsonOutput').time_stamp, mag_data, dir_data);
                 if(this.current_arrow[id]){
+                    var billboards=this.layers.uv[id]._billboards;
                     for(var uv = mag_data.length; uv--;){
-                        this.layers.uv[id].get(uv).show = true;
-                        if(this.layers.uv[id].get(uv).rotation !== dir_data[uv]){
-                            this.layers.uv[id].get(uv).rotation = dir_data[uv];
-                        }
-                        if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
-                            this.layers.uv[id].get(uv).image = this.uvImage(mag_data[uv], id);
-                        }
+                        billboards[uv].show = true;
+                        //if(billboards[uv].rotation !== dir_data[uv]){
+                        billboards[uv].rotation = dir_data[uv];
+                        //}
+                        //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
+                        billboards[uv].image = this.uvImage(mag_data[uv], id);
+                        //}
                     }
                 } else if(this.layers.uv[id]){
                     for(var h = this.layers.uv[id].length; h--;){
@@ -1048,7 +1080,7 @@ define([
                         }
 
                         if(!this.layers.uv[id]){
-                            this.layers.uv[id] = new Cesium.BillboardCollection();
+                            this.layers.uv[id] = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
                             this.viewer.scene.primitives.add(this.layers.uv[id]);
                             this.generateUVTextures(this.layers.uv[id], id);
                         }
@@ -1059,7 +1091,7 @@ define([
                         var _off = 0;
                         for(var existing = 0; existing < existing_length; existing++){
                             _off = existing*2;
-                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
+                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0);
                             layer.get(existing).show = false;
                         }
 
@@ -1069,7 +1101,7 @@ define([
                             _off = c*2;
                             layer.add({
                                 show: false,
-                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
+                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0),
                                 image: this.current_arrow[id][0]
                             });
                         }
@@ -1364,20 +1396,22 @@ define([
 
         renderSpills: function(){
             this.spills = [];
-            this.layers.spills = this.spills;
-            webgnome.model.get('spills').forEach(_.bind(function(spill){
-                var release = spill.get('release');
-                this.spills.push(this.viewer.entities.add({
-                    name: spill.get('name'),
-                    id: spill.get('id'),
-                    position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
-                    billboard: {
-                        image: '/img/spill-pin.png',
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM
-                    },
-                    description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
-                }));
-            }, this));
+            if(this.layers){
+                this.layers.spills = this.spills;
+                webgnome.model.get('spills').forEach(_.bind(function(spill){
+                    var release = spill.get('release');
+                    this.spills.push(this.viewer.entities.add({
+                        name: spill.get('name'),
+                        id: spill.get('id'),
+                        position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
+                        billboard: {
+                            image: '/img/spill-pin.png',
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+                        },
+                        description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
+                    }));
+                }, this));
+            }
         },
 
         resetSpills: function(){

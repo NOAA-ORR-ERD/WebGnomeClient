@@ -55,7 +55,11 @@ require.config({
         'php-date-formatter': 'lib/php-date-formatter/js/php-date-formatter',
         'toastr': 'lib/toastr/toastr',
         raphael: 'lib/raphael/raphael',
-        recordrtc: 'lib/recordrtc/RecordRTC'
+        //recordrtc: 'lib/recordrtc/RecordRTC',
+        ccapture: 'lib/ccapture.js/src/CCapture',
+        whammy: 'lib/whammy/whammy',
+        gif: 'lib/gif.js/dist/gif',
+        gifworker: 'lib/gif.js/dist/gif.worker'
     },
     shim: {
         jquery: {
