@@ -13,13 +13,13 @@ define([
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
+    'html2canvas',
+    'ccapture',
     'gif',
     'gifworker',
     //'recordrtc',
-    'html2canvas',
-    'ccapture',
     'whammy'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, GIF){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -223,8 +223,8 @@ define([
                 'date': this.$('.controls .position')
             };
 
-            this.controls.stoprecord.hide()
-            this.controls.pause.hide()
+            this.controls.stoprecord.hide();
+            this.controls.pause.hide();
 
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             this.controls.seek.slider({
@@ -303,10 +303,10 @@ define([
             });
 
             this.viewer.scene.rethrowRenderErrors = true;
-            this.meta_canvas = document.createElement('canvas')
+            this.meta_canvas = document.createElement('canvas');
             this.meta_canvas.width = this.viewer.canvas.width;
             this.meta_canvas.height = this.viewer.canvas.height;
-            this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true})
+            this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
             //$('.map').append(this.meta_canvas);
 
             this.renderSpills();
@@ -339,7 +339,7 @@ define([
                                 framerate:5,
                                 verbose:true,
                                 motionBlurFrames:0,
-                                workersPath: 'js/lib/gif.js/dist/'}
+                                workersPath: 'js/lib/gif.js/dist/'};
 
             this.capturer = new CCapture(_.clone(this.capture_opts));
 /*
@@ -464,7 +464,7 @@ define([
                 this.capturer.save(function(blob){
                     webgnome.invokeSaveAsDialog(blob, 'gnome-run.gif');
                 });
-                this.capturer = new CCapture(_.clone(this.capture_opts))
+                this.capturer = new CCapture(_.clone(this.capture_opts));
 /*
                 this.recorder.stop(function(url) {
                     console.log(url);
@@ -596,7 +596,7 @@ define([
             //$('.buttons', ctrls).hide();
             //$('.gnome-help', ctrls).hide();
             var ctx = this.meta_canvas_ctx;
-            var cesiumCanvas = this.viewer.canvas
+            var cesiumCanvas = this.viewer.canvas;
             /*
             var data = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="45">' +
                        '<foreignObject width="100%" height="100%">' +
@@ -1076,12 +1076,6 @@ define([
                 this.$('.env-uv input:checked').each(_.bind(function(i, input){
                     var env = webgnome.model.get('environment').findWhere({id: id});
                     var addVecsToLayer = _.bind(function(centers){
-                        if (env.mag_data.length != centers.length/2){
-                            if (!env.requested_centers) {
-                                env.getCenters(addVecsToLayer)
-                                return
-                            }
-                        }
                         if(!this.layers.uv){
                             this.layers.uv = {};
                         }

@@ -33,7 +33,7 @@ define([
         getMetadata: function() {
             var url = this.urlRoot + this.id + '/metadata';
             $.get(url, null, _.bind(function(metadata){
-                this.data_location = metadata['data_location'];
+                this.data_location = metadata.data_location;
 /*
                 this.data_shape = metadata['data_shape'];
                 this.grid_shape = metadata['grid_shape'];
