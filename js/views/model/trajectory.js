@@ -210,6 +210,7 @@ define([
 
             this.controls = {
                 'record': this.$('.controls .record'),
+                'recordcontrols': this.$('.controls .recordcontrols'),
                 'stoprecord': this.$('.controls .stoprecord'),
                 'play': this.$('.controls .play'),
                 'pause': this.$('.controls .pause'),
@@ -252,6 +253,7 @@ define([
         setupControlTooltips: function() {
             this.controls.record.tooltip(this.createTooltipObject("Record"));
             this.controls.stoprecord.tooltip(this.createTooltipObject("End Recording"));
+            this.controls.recordcontrols.tooltip(this.createTooltipObject("Recording Settings"));
             this.controls.play.tooltip(this.createTooltipObject("Play"));
             this.controls.pause.tooltip(this.createTooltipObject("Pause"));
             this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
@@ -300,6 +302,7 @@ define([
                 },
             });
 
+            this.viewer.scene.rethrowRenderErrors = true;
             this.meta_canvas = document.createElement('canvas')
             this.meta_canvas.width = this.viewer.canvas.width;
             this.meta_canvas.height = this.viewer.canvas.height;
@@ -332,16 +335,13 @@ define([
             } else {
                 // fly to a gridded current instead
             }
-            var rec_opts = {type:"canvas",
-                            disableLogs:false,
-                            framerate:24,
-                            quality:40
-                            }
+            this.capture_opts = {format: 'gif',
+                                framerate:5,
+                                verbose:true,
+                                motionBlurFrames:0,
+                                workersPath: 'js/lib/gif.js/dist/'}
 
-            this.capturer = new CCapture({format: 'gif',
-                                          framerate:24,
-                                          verbose:true,
-                                          workersPath: 'js/lib/gif.js/dist/'});
+            this.capturer = new CCapture(_.clone(this.capture_opts));
 /*
             var metacap = _.bind(function(scene, cur_time) {
                 if (this.is_recording) {
@@ -464,6 +464,7 @@ define([
                 this.capturer.save(function(blob){
                     webgnome.invokeSaveAsDialog(blob, 'gnome-run.gif');
                 });
+                this.capturer = new CCapture(_.clone(this.capture_opts))
 /*
                 this.recorder.stop(function(url) {
                     console.log(url);
@@ -1074,7 +1075,13 @@ define([
 
                 this.$('.env-uv input:checked').each(_.bind(function(i, input){
                     var env = webgnome.model.get('environment').findWhere({id: id});
-                    env.getNodes(_.bind(function(centers){
+                    var addVecsToLayer = _.bind(function(centers){
+                        if (env.mag_data.length != centers.length/2){
+                            if (!env.requested_centers) {
+                                env.getCenters(addVecsToLayer)
+                                return
+                            }
+                        }
                         if(!this.layers.uv){
                             this.layers.uv = {};
                         }
@@ -1105,7 +1112,14 @@ define([
                                 image: this.current_arrow[id][0]
                             });
                         }
-                    }, this));
+                    }, this);
+
+                    if (env.data_location === 'nodes') {
+                        env.getNodes(addVecsToLayer);
+                    } else {
+                        env.getCenters(addVecsToLayer);
+                    }
+                    
                     this.checked_env_vec.push(id);
                 }, this));
             } else {

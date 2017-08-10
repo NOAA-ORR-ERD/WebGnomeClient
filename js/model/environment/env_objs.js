@@ -15,7 +15,8 @@ define([
         initialize: function(attrs, options) {
             BaseModel.prototype.initialize.call(this, attrs, options);
             if(!this.requested_vectors){
-                var vecs = this.getVecs(null);
+                this.getVecs(null);
+                this.getMetadata(null);
             }
             this.on('change', this.resetRequest, this);
             localforage.config({
@@ -27,6 +28,20 @@ define([
 
         resetRequest: function(){
             this.requested = false;
+        },
+
+        getMetadata: function() {
+            var url = this.urlRoot + this.id + '/metadata';
+            $.get(url, null, _.bind(function(metadata){
+                this.data_location = metadata['data_location'];
+/*
+                this.data_shape = metadata['data_shape'];
+                this.grid_shape = metadata['grid_shape'];
+                this.ntimes = metadata['ntimes']
+                this.nodes_shape = metadata['nodes_shape']
+                this.centers_shape = metadata['centers_shape']
+*/
+            }, this ));
         },
 
         getNodes: function(callback){
@@ -72,6 +87,52 @@ define([
             } else if(callback) {
                 callback(this.nodes);
                 return this.nodes;
+            }
+        },
+
+        getCenters: function(callback){
+            var ur = this.urlRoot + this.id + '/centers';
+            if(!this.requesting && !this.requested_centers){
+                this.env_obj_cache.getItem(this.id + 'centers').then(_.bind(function(value){
+                    if(value) {
+                        console.log(this.id + ' centers found in store');
+                        this.requested_centers = true;
+                        this.centers = value;
+                        if (callback) {
+                            callback(this.centers);
+                        }
+                        return this.centers;
+                    }
+                },this)).catch(function(err) {
+                    console.log(err);
+                });
+                this.requesting = true;
+                $.ajax({url: ur,
+                        type: "GET",
+                        dataType: "binary",
+                        responseType:"arraybuffer",
+                        processData:"false",
+                        headers: {
+                            'Accept' : 'application/octet-stream',
+                            'Access-Control-Allow-Request-Method': 'GET',
+                            'Content-Type': 'binary',
+                        },
+                        xhrFields:{
+                            withCredentials: true
+                        },
+                        success: _.bind(function(centers, sts, response){
+                    this.requesting = false;
+                    this.requested_centers = true;
+                    var dtype = Float32Array;
+                    var dtl = dtype.BYTES_PER_ELEMENT;
+                    var num_centers = centers.byteLength / (2*dtl);
+                    this.centers = new dtype(centers);
+                    this.env_obj_cache.setItem(this.id + 'centers', this.centers);
+                    return this.centers;
+                }, this )});
+            } else if(callback) {
+                callback(this.centers);
+                return this.centers;
             }
         },
 
