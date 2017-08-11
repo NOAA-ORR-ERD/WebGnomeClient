@@ -33,20 +33,22 @@ Tides dominate the circulation within Galveston Bay and are represented in the L
 During high runoff periods, river input is also important in driving the Galveston Bay circulation. Three main tributaries of the bay are simulated in this Location File: the Trinity River, the San Jacinto River, and Buffalo Bayou. The Trinity River is simulated as a single current pattern, while the San Jacinto River and Buffalo Bayou inputs are combined into one current pattern. Each of the river flow rates is calculated from the transport rates or stage heights that the GNOME user enters. Stage height is converted to flow rate through rating curves provided by the U.S. Geological Survey (USGS). Formulae for the conversions are detailed below. All flow calculation results are calculated in cubic feet/second (cfs) and all stage height data are assumed to be in feet.
 
 **(a) Trinity River**
-A 9th order polynomial fit to the rating curve yielded the following equation relating Trinity River flow rate, , to stage height near Liberty, Texas (station 08067000), .
+A 9th order polynomial fit to the rating curve yielded the following equation relating Trinity River flow rate, *flow_Tr*, to stage height near Liberty, Texas (station 08067000), *Tr*.
 
-
+*flow_Tr* = (−3.237200497277822*10\ :sup:`−4` Tr\ :sup:`9` + 5.730374402263*10\ :sup:`−2` Tr\ :sup:`8` −4.39356026997217* Tr\ :sup:`7` +1.903947923307952*10\ :sup:`2` Tr\ :sup:`6` −5.091414135633288*10\ :sup:`3` Tr\ :sup:`5` +8.570693130551324*10\ :sup:`4` Tr\ :sup:`4` −8.785856324310122*10\ :sup:`5` Tr\ :sup:`3` +4.860075540379636*10\ :sup:`6` Tr\ :sup:`2` −9.059453584957751*10\ :sup:`6` Tr − 1.746415386161943*10\ :sup:`7`)
 
 The calculated flow rate is used to scale the Trinity River current pattern.
 
 **(b) San Jacinto River and Buffalo Bayou**
-A 7th order polynomial fit to the rating curve yielded the following equation relating San Jacinto River flow rate, , to stage height near Sheldon, Texas (station 08072050), .
+A 7th order polynomial fit to the rating curve yielded the following equation relating San Jacinto River flow rate, *flow_SJ*, to stage height near Sheldon, Texas (station 08072050), *SJ*.
 
+*flow_SJ* = (−8.962534216177780*10\ :sup:`−4` SJ\ :sup:`7` + 8.090710430776*10\ :sup:`−2` SJ\ :sup:`6` −2.87704742826949*SJ\ :sup:`5` +52.01494119132756*SJ\ :sup:`4` −497.7695044340068*SJ\ :sup:`3`
++2598.874761983057* SJ\ :sup:`2` − 2873.610938411168* SJ + 2078.345299841351)
 
+A 7th order polynomial fit to the rating curve yielded the following equation relating Buffalo Bayou flow rate, *flow_BB*, to stage height at Houston, Texas (station 08074000), *BB*.
 
-A 7th order polynomial fit to the rating curve yielded the following equation relating Buffalo Bayou flow rate, , to stage height at Houston, Texas (station 08074000), .
-
-
+*flow_BB* =102 (−1.67309*10\ :sup:`−9` BB\ :sup:`7` + 2.1083008*10\ :sup:`−7` BB\ :sup:`6` −1.113042545*10\ :sup:`−5` BB\ :sup:`5` +3.5192710537*10\ :sup:`−4` BB\ :sup:`4` −8.35199297309*10\ :sup:`−3` BB\ :sup:`3` +0.19852883938503* BB\ :sup:`2`
++0.59674875618414* BB − 2.70649020121096)
 
 The flow rates for the San Jacinto River and Buffalo Bayou are combined and then converted to a scaling coefficient.
 

@@ -14,7 +14,7 @@ This location file simulates the transport of spilled oil in the waters surround
 Current Patterns
 ==================
 
-The New York Harbor Location File extends from the Lower Hudson River and Upper Bay to the Lower Bay. It also includes the East River, Newark Bay, Kill van Kull and Arthur Kill. This area consists of multiple freshwater sources from several major and minor river systems that mix with the tidal current. This circulation is simulated with 8 tidal current patterns. All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. Each pattern is scaled to tidal prediction station. The predicted tides are asymmetrical, but are simulated as symmetrical in the Location File because GNOME does not support separate tidal current patterns for flood and ebb. 
+The New York Harbor Location File extends from the Lower Hudson River and Upper Bay to the Lower Bay. It also includes the East River, Newark Bay, Kill van Kull and Arthur Kill. This area consists of multiple freshwater sources from several major and minor river systems that mix with the tidal current. This circulation is simulated with 8 tidal current patterns. All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. Each pattern is scaled to a tidal prediction station. The predicted tides are asymmetrical, but are simulated as symmetrical in the Location File because GNOME does not support separate tidal current patterns for flood and ebb. 
 
 
 References
