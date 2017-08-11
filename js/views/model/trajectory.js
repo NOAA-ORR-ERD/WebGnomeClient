@@ -13,8 +13,13 @@ define([
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
-    'jqueryui/widgets/slider'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap){
+    'html2canvas',
+    'ccapture',
+    'gif',
+    'gifworker',
+    //'recordrtc',
+    'whammy'
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -43,6 +48,8 @@ define([
             'mouseout .help-button': 'helpBlur',
             'focusout .help-button': 'helpBlur',
             'click .play': 'play',
+            'click .record': 'record',
+            'click .stoprecord': 'stoprecord',
             'click .pause': 'pause',
             'click .back': 'prev',
             'click .next': 'next',
@@ -157,7 +164,7 @@ define([
                     'gnome.movers.py_current_movers.PyCurrentMover',
                     'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.CurrentCycleMover',
-                    'gnome.movers.wind_movers.GridWindMover'
+                    'gnome.movers.py_wind_movers.PyWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
@@ -180,7 +187,9 @@ define([
             this.tc_ice = tc_ice;
 
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
-                return obj.get('obj_type') === 'gnome.environment.environment_objects.GridCurrent';
+                var ot = obj.get('obj_type').split('.');
+                ot.pop();
+                return ot.join('.') === 'gnome.environment.environment_objects';
             });
             var active_env_objs = [];
             env_objs.forEach(function(obj){
@@ -200,8 +209,11 @@ define([
             this.$el.prepend(compiled);
 
             this.controls = {
+                'record': this.$('.controls .record'),
+                'recordcontrols': this.$('.controls .recordcontrols'),
+                'stoprecord': this.$('.controls .stoprecord'),
                 'play': this.$('.controls .play'),
-                'pause': this.$('.controls .play'),
+                'pause': this.$('.controls .pause'),
                 'seek': this.$('.seek > div:first'),
                 'back': this.$('.controls .back'),
                 'forward': this.$('.controls .next'),
@@ -210,6 +222,9 @@ define([
                 'progress': this.$('.controls .progress-bar'),
                 'date': this.$('.controls .position')
             };
+
+            this.controls.stoprecord.hide();
+            this.controls.pause.hide();
 
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             this.controls.seek.slider({
@@ -236,6 +251,9 @@ define([
         },
 
         setupControlTooltips: function() {
+            this.controls.record.tooltip(this.createTooltipObject("Record"));
+            this.controls.stoprecord.tooltip(this.createTooltipObject("End Recording"));
+            this.controls.recordcontrols.tooltip(this.createTooltipObject("Recording Settings"));
             this.controls.play.tooltip(this.createTooltipObject("Play"));
             this.controls.pause.tooltip(this.createTooltipObject("Pause"));
             this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
@@ -275,11 +293,21 @@ define([
                 mapProjection: new Cesium.WebMercatorProjection(),
                 selectedImageryProviderViewModel: default_image,
                 imageryProviderViewModels: image_providers,
-                clock: new Cesium.Clock({
-                    canAnimate: false,
-                    shouldAnimate: false
-                })
+//                clockViewModel: new Cesium.Clock({
+//                   canAnimate: false,
+//                  shouldAnimate: false
+//             }),
+                contextOptions: {
+                    webgl:{preserveDrawingBuffer:true}
+                },
             });
+
+            this.viewer.scene.rethrowRenderErrors = true;
+            this.meta_canvas = document.createElement('canvas');
+            this.meta_canvas.width = this.viewer.canvas.width;
+            this.meta_canvas.height = this.viewer.canvas.height;
+            this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
+            //$('.map').append(this.meta_canvas);
 
             this.renderSpills();
 
@@ -307,7 +335,39 @@ define([
             } else {
                 // fly to a gridded current instead
             }
+            this.capture_opts = {format: 'gif',
+                                framerate:5,
+                                verbose:true,
+                                motionBlurFrames:0,
+                                workersPath: 'js/lib/gif.js/dist/'};
 
+            this.capturer = new CCapture(_.clone(this.capture_opts));
+/*
+            var metacap = _.bind(function(scene, cur_time) {
+                if (this.is_recording) {
+                    this.capturer.capture(this.meta_canvas);
+                }
+            }, this);
+            this.viewer.scene.postRender.addEventListener(metacap);
+*/
+/*
+            this.recorder = RecordRTC(this.meta_canvas, rec_opts);
+            this.recorder.start=this.recorder.startRecording
+            this.recorder.pause=this.recorder.pauseRecording
+            this.recorder.resume=this.recorder.resumeRecording
+            this.recorder.stop=this.recorder.stopRecording
+
+            //this.recorder = new MediaRecorder(this.viewer.canvas.captureStream());
+            //this.recorder = new MediaRecorder(this.meta_canvas.captureStream(25));
+            //this.recorder.addEventListener('dataavailable', function(event) {
+                    //var url = URL.createObjectURL(event.data);
+                    //console.log(url);
+                    //this.recorder = new MediaRecorder(this.viewer.canvas.captureStream());
+                    //this.recorder.pause();
+                //});
+            this.recorder.start()
+            this.recorder.pause()
+*/
             this.load();
         },
 
@@ -350,7 +410,7 @@ define([
                     // the cache has the step, just render it
                     setTimeout(_.bind(function(){
                         this.renderStep({step: this.controls.seek.slider('value')});
-                    }, this), 16);
+                    }, this), 160);
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();
@@ -378,10 +438,55 @@ define([
             }
         },
 
+        record: function() {
+            if($('.modal:visible').length === 0){
+                this.state = 'play';
+                this.is_recording = true;
+                this.controls.pause.show();
+                this.controls.play.hide();
+                this.controls.stoprecord.show();
+                this.controls.record.hide();
+                this.capturer.start();
+                //this.recorder.resume();
+                this.loop();
+            }
+        },
+
+        stoprecord: function() {
+            if($('.modal:visible').length === 0){
+                this.state = 'pause';
+                this.is_recording = false;
+                this.controls.play.show();
+                this.controls.pause.hide();
+                this.controls.record.show();
+                this.controls.stoprecord.hide();
+                this.capturer.stop();
+                this.capturer.save(function(blob){
+                    webgnome.invokeSaveAsDialog(blob, 'gnome-run.gif');
+                });
+                this.capturer = new CCapture(_.clone(this.capture_opts));
+/*
+                this.recorder.stop(function(url) {
+                    console.log(url);
+                    this.recorder.save('gnome-run.webm')
+                    this.recorder.reset()
+                    this.recorder.start()
+                    this.recorder.pause()
+                }.bind(this));
+*/
+                //this.recorder = new MediaStreamRecorder(this.meta_canvas.captureStream());
+                
+            }
+        },
+
         play: function(){
             if($('.modal:visible').length === 0){
                 this.state = 'play';
-                this.controls.play.addClass('pause').removeClass('play');
+                this.controls.pause.show();
+                this.controls.play.hide();
+                if(this.is_recording) {
+                    //this.recorder.resume();
+                }
                 this.loop();
             }
         },
@@ -389,13 +494,21 @@ define([
         pause: function(){
             if($('.modal:visible').length === 0){
                 this.state = 'pause';
-                this.controls.play.addClass('play').removeClass('pause');
+                if(this.is_recording){
+                    //this.recorder.pause();
+                }
+                this.controls.play.show();
+                this.controls.pause.hide();
                 // this.controls.progress.removeClass('active progress-bar-striped');
             }
         },
 
         rewind: function(){
             this.pause();
+            if(this.is_recording){
+                //this.recorder.clearRecordedData();
+                //this.stoprecord();
+            }
             this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.renderStep({step: 0});
@@ -470,13 +583,55 @@ define([
                 this.pause();
             }
             this.$('.tooltip-inner').text(time);
+            this.viewer.scene.render();
+
+            this.renderSlider();
+            if(this.is_recording){
+                this.capturer.capture(this.meta_canvas);
+            }
+        },
+
+        renderSlider: function() {
+            var ctrls = $('.seek');
+            //$('.buttons', ctrls).hide();
+            //$('.gnome-help', ctrls).hide();
+            var ctx = this.meta_canvas_ctx;
+            var cesiumCanvas = this.viewer.canvas;
+            /*
+            var data = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="45">' +
+                       '<foreignObject width="100%" height="100%">' +
+                       ctrls.outerHTML+
+                       '</foreignObject>' +
+                       '</svg>';
+            var DOMURL = window.URL || window.webkitURL || window;
+
+            var img = new Image();
+            img.crossOrigin = "anonymous";
+            var svg = new Blob([data], {type: 'image/svg+xml'});
+            var url = DOMURL.createObjectURL(svg);
+
+            img.onload = function() {
+              ctx.drawImage(cesiumCanvas,0,0);
+              ctx.drawImage(img, 0, 0);
+              DOMURL.revokeObjectURL(url);
+            }
+
+            img.src = url;
+            */
+            html2canvas(ctrls, {
+                //height:550,
+                onrendered: function(canvas) {
+                    ctx.drawImage(cesiumCanvas,0,0);
+                    ctx.drawImage(canvas,65,0);
+                }
+            });
         },
 
         renderSpill: function(step){
             if(!this.les){
                 // this is the first time le are being rendered
                 // create a new datasource to handle the entities
-                this.les = new Cesium.BillboardCollection();
+                this.les = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
                 this.layers.particles = this.les;
                 this.certain_collection = [];
                 this.uncertain_collection = [];
@@ -634,14 +789,15 @@ define([
                 var dir_data = env.dir_data;
                 env.interpVecsToTime(step.get('TrajectoryGeoJsonOutput').time_stamp, mag_data, dir_data);
                 if(this.current_arrow[id]){
+                    var billboards=this.layers.uv[id]._billboards;
                     for(var uv = mag_data.length; uv--;){
-                        this.layers.uv[id].get(uv).show = true;
-                        if(this.layers.uv[id].get(uv).rotation !== dir_data[uv]){
-                            this.layers.uv[id].get(uv).rotation = dir_data[uv];
-                        }
-                        if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
-                            this.layers.uv[id].get(uv).image = this.uvImage(mag_data[uv], id);
-                        }
+                        billboards[uv].show = true;
+                        //if(billboards[uv].rotation !== dir_data[uv]){
+                        billboards[uv].rotation = dir_data[uv];
+                        //}
+                        //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
+                        billboards[uv].image = this.uvImage(mag_data[uv], id);
+                        //}
                     }
                 } else if(this.layers.uv[id]){
                     for(var h = this.layers.uv[id].length; h--;){
@@ -919,13 +1075,13 @@ define([
 
                 this.$('.env-uv input:checked').each(_.bind(function(i, input){
                     var env = webgnome.model.get('environment').findWhere({id: id});
-                    env.getNodes(_.bind(function(centers){
+                    var addVecsToLayer = _.bind(function(centers){
                         if(!this.layers.uv){
                             this.layers.uv = {};
                         }
 
                         if(!this.layers.uv[id]){
-                            this.layers.uv[id] = new Cesium.BillboardCollection();
+                            this.layers.uv[id] = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
                             this.viewer.scene.primitives.add(this.layers.uv[id]);
                             this.generateUVTextures(this.layers.uv[id], id);
                         }
@@ -936,7 +1092,7 @@ define([
                         var _off = 0;
                         for(var existing = 0; existing < existing_length; existing++){
                             _off = existing*2;
-                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
+                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0);
                             layer.get(existing).show = false;
                         }
 
@@ -946,11 +1102,18 @@ define([
                             _off = c*2;
                             layer.add({
                                 show: false,
-                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
+                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0),
                                 image: this.current_arrow[id][0]
                             });
                         }
-                    }, this));
+                    }, this);
+
+                    if (env.data_location === 'nodes') {
+                        env.getNodes(addVecsToLayer);
+                    } else {
+                        env.getCenters(addVecsToLayer);
+                    }
+                    
                     this.checked_env_vec.push(id);
                 }, this));
             } else {
@@ -1241,20 +1404,22 @@ define([
 
         renderSpills: function(){
             this.spills = [];
-            this.layers.spills = this.spills;
-            webgnome.model.get('spills').forEach(_.bind(function(spill){
-                var release = spill.get('release');
-                this.spills.push(this.viewer.entities.add({
-                    name: spill.get('name'),
-                    id: spill.get('id'),
-                    position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
-                    billboard: {
-                        image: '/img/spill-pin.png',
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM
-                    },
-                    description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
-                }));
-            }, this));
+            if(this.layers){
+                this.layers.spills = this.spills;
+                webgnome.model.get('spills').forEach(_.bind(function(spill){
+                    var release = spill.get('release');
+                    this.spills.push(this.viewer.entities.add({
+                        name: spill.get('name'),
+                        id: spill.get('id'),
+                        position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
+                        billboard: {
+                            image: '/img/spill-pin.png',
+                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM
+                        },
+                        description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
+                    }));
+                }, this));
+            }
         },
 
         resetSpills: function(){

@@ -3,9 +3,9 @@ define([
     'jquery',
     'backbone',
     'model/base',
-    'model/environment/wind',
+    'model/environment/gridwind',
     'model/environment/water'
-], function(_, $, Backbone, BaseModel, WindModel, WaterModel){
+], function(_, $, Backbone, BaseModel, GridWindModel, WaterModel){
     'use strict';
     var WavesModel = BaseModel.extend({
         urlRoot: '/environment',
@@ -14,7 +14,7 @@ define([
         },
 
         model: {
-            wind: WindModel,
+            wind: GridWindModel,
             water: WaterModel
         }
     });

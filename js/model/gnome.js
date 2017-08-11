@@ -14,14 +14,15 @@ define([
     'model/environment/wind',
     'model/environment/water',
     'model/environment/waves',
-    'model/environment/env_objs',
+    'model/environment/gridcurrent',
+    'model/environment/gridwind',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
     'model/movers/ice',
     'model/movers/grid_current',
     'model/movers/py_current',
-    'model/movers/grid_wind',
+    'model/movers/py_wind',
     'model/movers/current_cycle',
     'model/movers/component',
     'model/outputters/trajectory',
@@ -52,7 +53,7 @@ define([
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
+    GridWindModel, WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, PyWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
@@ -85,6 +86,7 @@ define([
                 'gnome.environment.environment.Water': WaterModel,
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
+                'gnome.environment.environment_objects.GridWind': GridWindModel,
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
@@ -93,7 +95,7 @@ define([
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
                 'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
-                'gnome.movers.wind_movers.GridWindMover': GridWindMover,
+                'gnome.movers.py_wind_movers.PyWindMover': PyWindMover,
                 'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.current_movers.ComponentMover': ComponentMover
             },
@@ -564,12 +566,27 @@ define([
             this.save(null, {validate: false, success: cb});
         },
 
+        getDefaultWind: function() {
+            // Returns the first object in the environments collection that has 'wind' in it's object type
+            // or null if there is nothing that matches
+            var env_objs = this.get('environment');
+            if (env_objs) {
+                for (var i = 0; i < env_objs.length; i++) {
+                    var otype = env_objs.at(i).get('obj_type').toLowerCase();
+                    if (otype.includes('wind')) {
+                        return env_objs.at(i);
+                    }
+                }
+            }
+            return null;
+        },
+
         configureWindRelations: function(child){
-            if(child.get('obj_type') !== 'gnome.environment.wind.Wind'){ return; }
+            if(!child.get('obj_type').toLowerCase().includes('wind')){ return; }
 
             // if a wind object was added/changed/edited on the environment collection attach the first one in the list
-            // to all of the other related objects.
-            var wind = this.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            // to all of the other related objects if the other object's wind parameter is None
+            var wind = this.getDefaultWind();
             if(wind){
                 var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 if(evaporation){
@@ -591,7 +608,7 @@ define([
 
             var environment = this.get('environment');
             var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var wind = this.getDefaultWind();
             var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
             var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var fay_gravity_viscous = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.spreading.FayGravityViscous'});
@@ -620,7 +637,7 @@ define([
 
         updateWaves: function(cb){
             var environment = this.get('environment');
-            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var wind = this.getDefaultWind();
             var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
 
             if(wind && water){
@@ -656,7 +673,7 @@ define([
                         }
 
                         var dissolution = this.get('weatherers').where({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
-                        for(var di = 0; di < dissolution.lenght; di++){
+                        for(var di = 0; di < dissolution.length; di++){
                             dissolution[di].set('waves', waves);
                         }
 
