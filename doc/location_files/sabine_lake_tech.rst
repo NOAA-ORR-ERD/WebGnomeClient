@@ -81,8 +81,8 @@ Forecasts, warnings, and observations for Lake Charles area locations. Click a l
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division: http://response.restoration.noaa.gov
+.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
 
-`NOAA's Emergency Response Division`_
+`NOAA's Emergency Response Division (ERD)`_
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.

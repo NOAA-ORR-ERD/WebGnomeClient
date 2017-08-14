@@ -30,6 +30,9 @@ The currents in the San Diego Bay area are simulated with four current patterns.
 
 To simulate wind-driven currents in the Location File, two current patterns were developed, one with NNW winds and the other with orthogonal (WSW) winds. These current patterns are scaled with the relative component of the user's wind data. The approximately 3% ratio of currents to winds from Gaul and Stewart (1960) is used to scale the wind-driven currents to the wind.
 
+All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
+
+
 
 References
 ===========================================
@@ -77,8 +80,8 @@ Current conditions and weather forecast.
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division: http://response.restoration.noaa.gov
+.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
 
-`NOAA's Emergency Response Division`_
+`NOAA's Emergency Response Division (ERD)`_
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.

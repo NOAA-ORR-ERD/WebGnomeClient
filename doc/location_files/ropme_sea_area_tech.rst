@@ -14,7 +14,7 @@ The Regional Organization for the Protection of the Marine Environment (ROPME) S
 Background
 ==================================
 
-The inner ROPME Sea Area is a semi-enclosed marginal sea with inverse estuarine circulation. This marginal sea is 990 km long with a maximum width of 338 km. The surface area is approximately 239,000 km2, and with an average depth of 36 m, its volume is 8,630 km3. The entrance at the Strait of Hormuz is 56 km wide at the narrowest point. The depth of the entrance is approximately 100 m, but this area does not have a sill. Instead, the sea floor gradually deepens from the inner ROPME Sea Area through the Strait of Hormuz into the outer ROPME Sea Area, which is approximately 900 m deep. The bathymetry of the inner ROPME Sea Area has a deeper channel toward the Iranian coast, with broad shelves on the Arabian side.
+The inner ROPME Sea Area is a semi-enclosed marginal sea with inverse estuarine circulation. This marginal sea is 990 km long with a maximum width of 338 km. The surface area is approximately 239,000 km\ :sup:`2`, and with an average depth of 36 m, its volume is 8,630 km\ :sup:`3`. The entrance at the Strait of Hormuz is 56 km wide at the narrowest point. The depth of the entrance is approximately 100 m, but this area does not have a sill. Instead, the sea floor gradually deepens from the inner ROPME Sea Area through the Strait of Hormuz into the outer ROPME Sea Area, which is approximately 900 m deep. The bathymetry of the inner ROPME Sea Area has a deeper channel toward the Iranian coast, with broad shelves on the Arabian side.
 
 Evaporation (Sugden 1965 and Hunter 1982) and wind (Wright 1974 and Hughes and Junter 1979) are major driving forces in the Gulf circulation. Evaporation occurs more in winter due to high wind speeds, even though surface temperatures are higher in summer. The overall circulation in the inner ROPME Sea Area is cyclonic, with relatively fresh water entering through the Strait of Hormuz. In winter, the cyclonic circulation is primarily found in the southern portion. This cyclonic circulation gradually expands to extend farther north during the summer. Average rainfall in the region is very small (on the order of 7 cm/year) and is not a significant influence on the circulation. River discharge is small and occurs in the north at Shatt-al-Arab. River flow can be traced equatorward along the Arabian coast, with the plume extending approximately 20 km wide along the Iraqi coastline (Mathews et al. 1979). Reservoirs and dams in Iraq, Syria, and Turkey have reduced the river flow into the inner ROPME Sea Area at Shatt-al-Arab.
 
@@ -26,6 +26,7 @@ Current Patterns
 
 Three current patterns are used to simulate the circulation in the inner ROPME Sea Area. These include a reverse estuarine flow, river flow, and a wind-driven circulation derived with NNW winds. Tidal flows are not simulated in the Location File because it is concerned with a large scale (>10 km) region and long (> 1 day) timescale simulations.
 
+All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
 
 
 References
@@ -57,9 +58,9 @@ Please contact any of the following for wind forecasts and historical data:
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division: http://response.restoration.noaa.gov
+.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
 
-`NOAA's Emergency Response Division`_
+`NOAA's Emergency Response Division (ERD)`_
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
 
