@@ -22,7 +22,8 @@ define([
 
         events: _.defaults({
             'click .substance-info': 'renderOilLibrary',
-            'click .substance-info .edit': 'renderOilLibrary'
+            'click .substance-info .edit': 'renderOilLibrary',
+            'click input[id="spill_active"]': 'spill_active'
         }, BasePanel.prototype.events),
 
         models: [
@@ -69,6 +70,15 @@ define([
             spillView.on('wizardclose', spillView.close);
 
             spillView.render();
+        },
+        
+        spill_active: function(e) {
+            e.stopPropagation();
+            var active = e.target.checked;  
+            var id = this.getID(e);
+            var spill = webgnome.model.get('spills').get(id);
+            spill.set('on',active);
+            webgnome.model.save();
         },
 
         render: function(){

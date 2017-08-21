@@ -8,7 +8,7 @@ define([
     var windMover = BaseModel.extend({
         defaults: {
             obj_type: 'gnome.movers.wind_movers.WindMover',
-            name: 'WindMover',
+            //name: 'WindMover',
             active_start: '-inf',
             active_stop: 'inf'
         },

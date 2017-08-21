@@ -5,10 +5,11 @@ define([
     'views/modal/form',
     'model/movers/cats',
     'model/movers/grid_current',
+    'model/movers/py_current',
     'text!templates/form/mover/create.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, CatsMover, GridCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, CatsMover, GridCurrentMover, PyCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -18,6 +19,7 @@ define([
             return _.defaults({
                 'click .grid': 'grid',
                 'click .cats': 'cats',
+                'click .py_grid': 'py_grid',
             }, FormModal.prototype.events);
         },
 
@@ -63,6 +65,11 @@ define([
             this.nextStep();
         },
 
+        py_grid: function(){
+            this.model = new PyCurrentMover();
+            this.nextStep();
+        },
+
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
         },
@@ -89,7 +96,8 @@ define([
         loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.filename.split('/').pop());
+            //this.model.set('name', json_response.filename.split('/').pop());
+            this.model.set('name', json_response.name);
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);

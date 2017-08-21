@@ -20,12 +20,14 @@ define([
         className: 'col-md-3 wind panel-view object',
 
         models: [
-            'gnome.environment.wind.Wind'
+            'gnome.environment.wind.Wind',
+            'gnome.movers.wind_movers.WindMover'
         ],
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
             this.listenTo(webgnome.model.get('environment'), 'change add remove', this.rerender);
+            this.listenTo(webgnome.model.get('movers'), 'change add remove', this.rerender);
         },
 
         new: function(){
@@ -38,6 +40,7 @@ define([
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
             }, this));
+            
             windForm.render();
         },
 
@@ -167,7 +170,8 @@ define([
                 var data = [];
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
-                
+               
+
                 for (var entry in ts){
                     var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
                     var speed = nucos.convert('Velocity', wind.get('units'), unit, parseFloat(ts[entry][1][0]));
@@ -199,7 +203,7 @@ define([
                         fillColor: '#7a7a7a',
                         arrawLength: 5
                     },
-                    id: windMover.get('id')
+                    id: windMover.get('id'),
                 });
 
                 if (ts.length > 24){
@@ -215,7 +219,7 @@ define([
                         direction: {
                             show: false
                         },
-                        id: windMover.get('id')
+                        id: windMover.get('id'),
                     });
                 }
             }

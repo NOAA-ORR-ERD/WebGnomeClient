@@ -16,6 +16,13 @@ define([
         initialize: function(options){
             BaseModel.prototype.initialize.call(this, options);
             this.on('change', this.resetRequest, this);
+            if (!this.isNew()) {
+                if(webgnome.hasModel()){
+                    this.isTimeValid();
+                } else {
+                    setTimeout(_.bind(this.isTimeValid,this),2);
+                }   
+            }
         },
 
         resetRequest: function(){
@@ -93,23 +100,53 @@ define([
             var real_data_stop = this.get('real_data_stop');
             var extrapolate = this.get('extrapolate');
             var on = this.get('on');
+            this.set('time_compliance', 'valid');
             var msg = '';
 
-            if ((!extrapolate && on) && (active_start === '-inf' || active_start > model_start)) {
-                if (real_data_start === real_data_stop) {
-                    return msg;
+            if ((!extrapolate) & (real_data_start !== real_data_stop)) { 
+            
+                //check for invalid data (model won't run at all)
+                if (active_start <= model_start){
+                    
+                    if (real_data_start > model_start) {
+                        msg = 'Mover data begins after model start time';
+                        this.set('time_compliance', 'invalid');
+                        return msg;
+                    }
+
+                    if (real_data_stop <= model_start) {
+                        msg = 'Mover contains no data within model run time';
+                        this.set('time_compliance', 'invalid');
+                        return msg;
+                    }
+                    
+                } else {
+                    
+                    if (real_data_start > active_start) {
+                        msg = 'Mover data begins after mover start time';
+                        this.set('time_compliance', 'invalid');
+                        return msg;
+                    }
                 }
                 
-                if (real_data_start > model_start) {
-                    msg = 'Mover data begins after model start time';
-                    return msg;
+                //check for semi-valid data (model will run for awhile...)
+                
+                if (active_stop < model_stop) {
+                    if (real_data_stop < active_stop) {
+                        msg = 'Mover data ends before mover end time';
+                        this.set('time_compliance', 'semivalid');
+                        return msg;  
+                    }                   
                 }
-
-                if (real_data_stop < model_start) {
-                    msg = 'Mover contains no data within model run time';
-                    return msg;
+                else {
+                    if (real_data_stop < model_stop) {
+                        msg = 'Mover data ends before model end time';
+                        this.set('time_compliance', 'semivalid');
+                        return msg;  
+                    }
                 }
-            }
+            }               
+            
 
             return msg;
         }

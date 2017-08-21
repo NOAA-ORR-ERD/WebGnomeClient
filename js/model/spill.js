@@ -47,8 +47,15 @@ define([
             this.on('change:release', this.addListeners, this);
             this.addListeners();
             this.calculate();
+            if (!this.isNew()) {
+                if(webgnome.hasModel()){
+                    this.isTimeValid();
+                } else {
+                    setTimeout(_.bind(this.isTimeValid,this),2);
+                }   
+            }
         },
-
+        
         calculate: function(){
             this.calculateSI();
             this.calculatePerLEMass();
@@ -202,6 +209,32 @@ define([
             }
 
             return release.validateLocation(attrs);
+        },
+        
+        isTimeValid: function() {
+            var model_start = webgnome.model.get('start_time');
+            var model_stop = webgnome.model.getEndTime();
+            var spill_start = this.get('release').get('release_time');
+            var msg = "";
+            
+            if((spill_start > model_start) & (spill_start < model_stop)) {
+                    msg = "The spill starts after the model start time";
+                    this.set('time_compliance', 'semivalid');
+                }
+            else if(spill_start < model_start) {
+                msg = "The spill starts before the model start time";
+                this.set('time_compliance', 'invalid');
+            }
+            else if(spill_start >= model_stop) {
+                msg = "The spill starts after the model end time";
+                this.set('time_compliance','invalid');
+            }
+            else { 
+                this.set('time_compliance', 'valid');
+            }
+            
+            return msg;
+
         },
 
         toTree: function(){

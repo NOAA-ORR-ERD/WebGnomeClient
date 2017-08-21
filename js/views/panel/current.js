@@ -16,8 +16,10 @@ define([
 
         models: [
             'gnome.movers.current_movers.CatsMover',
-            'gnome.movers.current_movers.GridCurrentMover'
+            'gnome.movers.current_movers.GridCurrentMover',
+            'gnome.movers.py_current_movers.PyCurrentMover'
         ],
+        
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
@@ -29,7 +31,9 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 webgnome.model.get('movers').add(mover);
-                //webgnome.model.get('environment').add(mover.get('current'));
+                if (mover.attributes.obj_type === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                    webgnome.model.get('environment').add(mover.get('current'));
+                }
                 webgnome.model.save(null, {validate: false});
             }, this));
             form.render();
@@ -48,25 +52,12 @@ define([
             currentForm.render();
         },
 
-        //keeping this for now in case i really break something!
-        edit_old: function(e){
-            e.stopPropagation();
-            var id = this.getID(e);
-
-            var current = webgnome.model.get('movers').get(id);
-            var currentView = new FormModal({title: 'Edit Current', model: current});
-            currentView.on('save', function(){
-                currentView.on('hidden', currentView.close);
-            });
-            currentView.on('wizardclose', currentView.close);
-            currentView.render();
-        },
-
         render: function(){
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover'
+                    'gnome.movers.current_movers.GridCurrentMover',
+                    'gnome.movers.py_current_movers.PyCurrentMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var compiled = _.template(CurrentPanelTemplate, {
@@ -159,6 +150,16 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed){
                 if(isConfirmed){
+                    var mov = webgnome.model.get('movers').get(id);
+                    var envs = webgnome.model.get('environment');
+                    if (mov.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                        var env_id = mov.get('current').id;
+                        for (var i = 0; i < envs.length; i++) {
+                            if (envs.models [i].id === env_id){
+                                envs.remove(env_id);
+                            }
+                        }
+                    }
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {
                         validate: false

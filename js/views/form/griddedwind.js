@@ -3,11 +3,11 @@ define([
     'jquery',
     'module',
     'views/modal/form',
-    'model/movers/grid_wind',
+    'model/movers/py_wind',
     'text!templates/form/griddedwind.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, GridWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, PyWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
     var griddedWindForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
         title: 'Create Wind (Mover Only)',
@@ -53,7 +53,7 @@ define([
         },
 
         gridwind: function(){
-            this.model = new GridWindMover();
+            this.model = new PyWindMover();
             this.nextStep();
         },
 
@@ -83,7 +83,7 @@ define([
         loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.filename.split('/').pop());
+            this.model.set('name', json_response.name);
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);

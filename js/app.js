@@ -267,6 +267,113 @@ define([
 
                 return tree;
             };
+
+            // use this transport for "binary" data type
+            $.ajaxTransport("+binary", function(options, originalOptions, jqXHR){
+                var callback,
+                    xhrSuccessStatus = {
+                        // file protocol always yields status code 0, assume 200
+                        0: 200,
+                        // Support: IE9
+                        // #1450: sometimes IE returns 1223 when it should be 204
+                        1223: 204
+                    };
+                // check for conditions and support for blob / arraybuffer response type
+                if (window.FormData && ((options.dataType && (options.dataType === 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob)))))
+                {
+                    var xhrCallbacks = {},
+                        xhrId=0;
+                    return {
+                        // create new XMLHttpRequest
+                        send: function(headers, complete){
+                            // setup all variables
+                            var i,
+                                xhr = options.xhr(),
+                                id = ++xhrId;
+                            xhr.open( options.type, options.url, options.async, options.username, options.password );
+                            if ( options.xhrFields ) {
+                                for ( i in options.xhrFields ) {
+                                    xhr[ i ] = options.xhrFields[ i ];
+                                }
+                            }
+                            // Override mime type if needed
+                            if ( options.mimeType && xhr.overrideMimeType ) {
+                                xhr.overrideMimeType( options.mimeType );
+                            }
+
+                            // X-Requested-With header
+                            // For cross-domain requests, seeing as conditions for a preflight are
+                            // akin to a jigsaw puzzle, we simply never set it to be sure.
+                            // (it can always be set on a per-request basis or even using ajaxSetup)
+                            // For same-domain requests, won't change header if already provided.
+                            if ( !options.crossDomain && !headers["X-Requested-With"] ) {
+                                headers["X-Requested-With"] = "XMLHttpRequest";
+                            }
+
+                            // Set headers
+                            for ( i in headers ) {
+                                xhr.setRequestHeader( i, headers[ i ] );
+                            }
+
+                            xhr.responseType = "arraybuffer";
+
+                            // Callback
+                            callback = function( type ) {
+                                return function() {
+                                    if ( callback ) {
+                                        delete xhrCallbacks[ id ];
+                                        callback = xhr.onload = xhr.onerror = null;
+
+                                        if ( type === "abort" ) {
+                                            xhr.abort();
+                                        } else if ( type === "error" ) {
+                                            complete(
+                                                // file: protocol always yields status 0; see #8605, #14207
+                                                xhr.status,
+                                                xhr.statusText
+                                            );
+                                        } else {
+                                            complete(
+                                                xhrSuccessStatus[ xhr.status ] || xhr.status,
+                                                xhr.statusText,
+                                                // Support: IE9
+                                                // Accessing binary-data responseText throws an exception
+                                                // (#11426)
+                                                {binary: xhr.response},
+                                                xhr.getAllResponseHeaders()
+                                            );
+                                        }
+                                    }
+                                };
+                            };
+
+                            // Listen to events
+                            xhr.onload = callback();
+                            xhr.onerror = callback("error");
+
+                            // Create the abort callback
+                            callback = xhrCallbacks[ id ] = callback("abort");
+
+                            try {
+                                // Do send the request (this may raise an exception)
+                                xhr.send( options.hasContent && options.data || null );
+                            } catch ( e ) {
+                                // #14683: Only rethrow if this hasn't been notified as an error yet
+                                if ( callback ) {
+                                    throw e;
+                                }
+                            }
+                        },
+
+                        abort: function() {
+                            if ( callback ) {
+                                callback();
+                            }
+                        }
+                    };
+                }
+            });
+
         },
 
         getForm: function(obj_type){
@@ -302,7 +409,56 @@ define([
                 }
             }
             return false;
-        }
+        },
+
+        invokeSaveAsDialog: function(file, fileName) {
+            if (!file) {
+                throw 'Blob object is required.';
+            }
+
+            if (!file.type) {
+                try {
+                    file.type = 'video/webm';
+                } catch (e) {}
+            }
+
+            var fileExtension = (file.type || 'video/webm').split('/')[1];
+
+            if (fileName && fileName.indexOf('.') !== -1) {
+                var splitted = fileName.split('.');
+                fileName = splitted[0];
+                fileExtension = splitted[1];
+            }
+
+            var fileFullName = (fileName || (Math.round(Math.random() * 9999999999) + 888888888)) + '.' + fileExtension;
+
+            if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
+                return navigator.msSaveOrOpenBlob(file, fileFullName);
+            } else if (typeof navigator.msSaveBlob !== 'undefined') {
+                return navigator.msSaveBlob(file, fileFullName);
+            }
+
+            var hyperlink = document.createElement('a');
+            hyperlink.href = URL.createObjectURL(file);
+            hyperlink.download = fileFullName;
+
+            hyperlink.style = 'display:none;opacity:0;color:transparent;';
+            (document.body || document.documentElement).appendChild(hyperlink);
+
+            if (typeof hyperlink.click === 'function') {
+                hyperlink.click();
+            } else {
+                hyperlink.target = '_blank';
+                hyperlink.dispatchEvent(new MouseEvent('click', {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true
+                }));
+            }
+
+            URL.revokeObjectURL(hyperlink.href);
+}
+
     };
 
     return app;

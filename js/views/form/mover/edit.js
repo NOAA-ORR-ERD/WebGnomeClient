@@ -38,11 +38,11 @@ define([
         update: function() {
 
             var name = this.$('#name').val();
-            var active = this.$('#active:checked').val();
+            //var active = this.$('#active:checked').val();
             var scale_value = this.$('#scale_value').val();
             
             this.model.set('name', name);
-            this.model.set('on', _.isUndefined(active) ? false : true);
+            //this.model.set('on', _.isUndefined(active) ? false : true);
             this.model.set('scale_value', scale_value);
 
         },

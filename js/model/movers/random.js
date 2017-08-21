@@ -1,10 +1,10 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
+    'model/movers/base'
+], function(_, Backbone, BaseMover){
     'use strict';
-    var randomMover = BaseModel.extend({
+    var randomMover = BaseMover.extend({
         urlRoot: '/mover/',
 
         defaults: {
@@ -37,6 +37,7 @@ define([
                 return 'Diffusion coefficient and Uncertainty factor must be numbers!';
             }
         },
+        
 
         toTree: function() {
             var tree = Backbone.Model.prototype.toTree.call(this, false);

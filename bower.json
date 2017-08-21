@@ -15,7 +15,7 @@
     "bootstrap": "3.*.*",
     "datetimepicker": "2.*.*",
     "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git#3.15.1",
-    "cesium": "https://cesiumjs.org/releases/Cesium-1.28.zip",
+    "cesium": "https://github.com/AnalyticalGraphicsInc/cesium/releases/download/1.36/Cesium-1.36.zip",
     "jquery-file-upload": "9.10.1",
     "respond": "1.4.2",
     "compass-rose-ui": "1.1.*",
@@ -40,6 +40,7 @@
     "sweetalert2": "^2.1.1",
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round/archive/master.zip",
     "toastr": "^2.1.2",
-    "raphael": "~2.1.4"
+    "raphael": "~2.1.4",
+    "ccapture.js": "https://github.com/NOAA-ORR-ERD/ccapture.js/archive/1.0.6.1.zip"
   }
 }

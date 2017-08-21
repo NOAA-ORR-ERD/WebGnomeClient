@@ -14,7 +14,7 @@ define([
         className: 'col-md-3 griddedwind object panel-view',
 
         models: [
-            'gnome.movers.wind_movers.GridWindMover'
+            'gnome.movers.py_wind_movers.PyWindMover'
         ],
 
         initialize: function(options){
@@ -27,6 +27,9 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 webgnome.model.get('movers').add(mover);
+                if (mover.attributes.obj_type === 'gnome.movers.py_wind_movers.PyWindMover') {
+                    webgnome.model.get('environment').add(mover.get('wind'));
+                }
                 webgnome.model.save(null, {validate: false});
             }, this));
             form.render();
@@ -48,7 +51,7 @@ define([
         render: function(){
             var griddedwind = webgnome.model.get('movers').filter(function(mover){
                 return [
-                    'gnome.movers.wind_movers.GridWindMover'
+                    'gnome.movers.py_wind_movers.PyWindMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var compiled = _.template(GriddedWindPanelTemplate, {

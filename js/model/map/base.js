@@ -57,7 +57,6 @@ define([
             var url = this.urlRoot + this.get('id') + '/geojson';
             if(!this.requesting && !this.requested && _.isUndefined(this.geo_json)){
                 console.log('request is being sent');
-                console.trace();
                 this.requesting = true;
                 $.get(url, null, _.bind(function(geo_json){
                     this.requesting = false;

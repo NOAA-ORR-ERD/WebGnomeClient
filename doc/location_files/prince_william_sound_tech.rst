@@ -24,6 +24,14 @@ Current Patterns
 
 The Prince William Sound Location File uses five current patterns to simulate the circulation and tides. The tides at Hinchinbrook Strait, Port Wells, and Montague Strait are each simulated with a single current pattern. The tides in Valdez Arm and Port Fidalgo are simulated with the same current pattern. The fifth current pattern simulates a net flow of about .5 knot into Prince William Sound through Hinchinbrook Entrance and out of Prince William Sound through Montague Strait and, to a lesser extent, Latouche, Elrington, and Prince of Wales Passages.
 
+All current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application.
+
+
+Winds
+==============================
+
+The winds in Prince William Sound can be influenced by cold air drainage through the fjord areas. Under certain conditions, particularly for spills near the entrances of the passages, model uncertainties will increase. 
+
 
 References
 ===============================================
@@ -55,8 +63,8 @@ Current weather observations, forecasts, and warnings for the entire U.S.
 **Oil Spill Response**
 
 
-.. _NOAA's Emergency Response Division: http://response.restoration.noaa.gov
+.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
 
-`NOAA's Emergency Response Division`_
+`NOAA's Emergency Response Division (ERD)`_
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.

@@ -14,13 +14,15 @@ define([
     'model/environment/wind',
     'model/environment/water',
     'model/environment/waves',
-    'model/environment/env_objs',
+    'model/environment/gridcurrent',
+    'model/environment/gridwind',
     'model/movers/wind',
     'model/movers/random',
     'model/movers/cats',
     'model/movers/ice',
     'model/movers/grid_current',
-    'model/movers/grid_wind',
+    'model/movers/py_current',
+    'model/movers/py_wind',
     'model/movers/current_cycle',
     'model/movers/component',
     'model/outputters/trajectory',
@@ -51,7 +53,7 @@ define([
     'collection/spills'
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
-    WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, GridWindMover, CurrentCycleMover, ComponentMover,
+    GridWindModel, WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, PyWindMover, CurrentCycleMover, ComponentMover,
     TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
@@ -84,6 +86,7 @@ define([
                 'gnome.environment.environment.Water': WaterModel,
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
+                'gnome.environment.environment_objects.GridWind': GridWindModel,
             },
             movers: {
                 'gnome.movers.wind_movers.WindMover': WindMover,
@@ -91,7 +94,8 @@ define([
                 'gnome.movers.current_movers.CatsMover': CatsMover,
                 'gnome.movers.current_movers.IceMover': IceMover,
                 'gnome.movers.current_movers.GridCurrentMover': GridCurrentMover,
-                'gnome.movers.wind_movers.GridWindMover': GridWindMover,
+                'gnome.movers.py_current_movers.PyCurrentMover': PyCurrentMover,
+                'gnome.movers.py_wind_movers.PyWindMover': PyWindMover,
                 'gnome.movers.current_movers.CurrentCycleMover': CurrentCycleMover,
                 'gnome.movers.current_movers.ComponentMover': ComponentMover
             },
@@ -164,11 +168,13 @@ define([
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
-            this.get('spills').on('sync', this.spillsTimeCompliance, this);
+            this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
+            this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('change add', this.moversTimeComplianceCheck, this);
+            this.get('movers').on('sync save', this.moversTimeComplianceWarning, this);
+            this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
             this.on('sync', webgnome.cache.rewind, webgnome.cache);
@@ -205,12 +211,22 @@ define([
             }
         },
 
-        spillsTimeCompliance: function() {
-            var start_time = this.get('start_time');
+        
+        spillsTimeComplianceCheck: function(model) {
+                    
+            model.get('spills').forEach(function(spill) {
+                var name = spill.get('name');
+                var msg = spill.isTimeValid();
+                //add this info to logger? the check just changes time_compliance attribute
+            });
+        },
+        
+        spillsTimeComplianceWarning: function(model) {
             
-            if (!this.get('spills').startTimeComplies(start_time)) {
+            var msg = model.isTimeValid();
+            if ( msg !== '') {
                 swal({
-                    title: "The spill start time is not the same as the model start time!",
+                    title: msg,
                     text: "Would you like to change the model start time to match the spill's start time?",
                     type: "warning",
                     showCancelButton: true,
@@ -218,7 +234,7 @@ define([
                     cancelButtonText: "No"
                 }).then(_.bind(function(correct){
                     if (correct) {
-                        var spillStart = this.get('spills').at(0).get('release').get('release_time');
+                        var spillStart = model.get('release').get('release_time');
                         this.set('start_time', spillStart);
                         this.save();
                     }
@@ -226,6 +242,53 @@ define([
             }
         },
 
+        moversTimeComplianceCheck: function(model) {
+            model.get('movers').forEach(function(mover) {
+                var name = mover.get('name');
+                var msg = mover.isTimeValid();
+                //add this info to logger? the check just changes time_compliance attribute
+            });
+        },
+        
+        moversTimeComplianceWarning: function(model) {
+            // model.save(null, {
+            // validate: false,
+            // success: _.bind(function(model) {
+                // }, this)
+            // });
+            
+            var msg = model.isTimeValid();
+            if ( msg !== '') {
+                swal({
+                    title: 'Error',
+                    text: msg,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Fix',
+                    cancelButtonText: 'Ignore'
+                }).then(_.bind(function(options) {
+                    if (options) {
+                        swal({
+                            title: 'Select a correction option:',
+                            text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
+                            type: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Change Model Start',
+                            cancelButtonText: 'Extrapolate Mover'
+                        }).then(_.bind(function(fit){
+                            if (fit) {
+                                this.fitToInterval(model.get('real_data_start'));
+                                model.set('time_compliance','valid');
+                            } else {
+                                model.set('extrapolate', true);
+                                model.set('time_compliance','valid');
+                            }
+                        }, this));
+                    }
+                }, this));
+            }
+        },
+        
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
@@ -352,41 +415,7 @@ define([
             this.save();
         },
 
-        moversTimeComplianceCheck: function(model) {
-            // model.save(null, {
-                // validate: false,
-                // success: _.bind(function(model) {
-                    var msg = model.isTimeValid();
-                    if ( msg !== '' && $('.modal').length === 0) {
-                        swal({
-                            title: 'Error',
-                            text: msg,
-                            type: 'warning',
-                            showCancelButton: true,
-                            confirmButtonText: 'Fix',
-                            cancelButtonText: 'Ignore'
-                        }).then(_.bind(function(options) {
-                            if (options) {
-                                swal({
-                                    title: 'Select a correction option:',
-                                    text: '<ul style="text-align:left"><li>Extrapolate the data (this option will extrapolate at both the beginning and end of the time series as necesssary)</li><li>Change the model start time to match the data (if you have set any spills, these start times may also need to be changed)</li></ul>',
-                                    type: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Change Model Start',
-                                    cancelButtonText: 'Extrapolate Mover'
-                                }).then(_.bind(function(fit){
-                                    if (fit) {
-                                        this.fitToInterval(model.get('real_data_start'));
-                                    } else {
-                                        model.set('extrapolate', true);
-                                    }
-                                }, this));
-                            }
-                        }, this));
-                    }
-                // }, this)
-            // });
-        },
+
 
         formatDuration: function() {
             var duration = this.get('duration');
@@ -537,12 +566,27 @@ define([
             this.save(null, {validate: false, success: cb});
         },
 
+        getDefaultWind: function() {
+            // Returns the first object in the environments collection that has 'wind' in it's object type
+            // or null if there is nothing that matches
+            var env_objs = this.get('environment');
+            if (env_objs) {
+                for (var i = 0; i < env_objs.length; i++) {
+                    var otype = env_objs.at(i).get('obj_type').toLowerCase();
+                    if (otype.includes('wind')) {
+                        return env_objs.at(i);
+                    }
+                }
+            }
+            return null;
+        },
+
         configureWindRelations: function(child){
-            if(child.get('obj_type') !== 'gnome.environment.wind.Wind'){ return; }
+            if(!child.get('obj_type').toLowerCase().includes('wind')){ return; }
 
             // if a wind object was added/changed/edited on the environment collection attach the first one in the list
-            // to all of the other related objects.
-            var wind = this.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            // to all of the other related objects if the other object's wind parameter is None
+            var wind = this.getDefaultWind();
             if(wind){
                 var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
                 if(evaporation){
@@ -564,7 +608,7 @@ define([
 
             var environment = this.get('environment');
             var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
-            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var wind = this.getDefaultWind();
             var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
             var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var fay_gravity_viscous = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.spreading.FayGravityViscous'});
@@ -593,7 +637,7 @@ define([
 
         updateWaves: function(cb){
             var environment = this.get('environment');
-            var wind = environment.findWhere({obj_type: 'gnome.environment.wind.Wind'});
+            var wind = this.getDefaultWind();
             var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
 
             if(wind && water){
@@ -629,7 +673,7 @@ define([
                         }
 
                         var dissolution = this.get('weatherers').where({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
-                        for(var di = 0; di < dissolution.lenght; di++){
+                        for(var di = 0; di < dissolution.length; di++){
                             dissolution[di].set('waves', waves);
                         }
 

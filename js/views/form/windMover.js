@@ -59,6 +59,7 @@ define([
 
 	        var active = this.$('#active').is(':checked');
 	        this.model.set('on', active);
+            
 		}
 
 	});
