@@ -19,6 +19,7 @@ define([
     'views/form/spill/continue',
     'views/form/wind',
     'model/element',
+    'model/movers/wind',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
     'text!templates/model/fate/no_weathering.html',
@@ -34,7 +35,9 @@ define([
     'flotneedle',
     'moment-round',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate, RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindForm, ElementModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate,
+            RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, 
+            WindForm, ElementModel, WindmoverModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -205,9 +208,9 @@ define([
                     this.$('.water').addClass('missing');
                 }
 
-                //if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
-                //    this.$('.wind').addClass('missing');
-                //}
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.wind.Wind'}).length === 0){
+                   this.$('.wind').addClass('missing');
+                }
             }
         },
 
@@ -287,6 +290,7 @@ define([
 
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(windForm.model, {merge: true});
+                webgnome.model.get('movers').add(new WindmoverModel({wind: windForm.model}));
                 webgnome.model.save(null, {silent: true});
             }, this));
 
