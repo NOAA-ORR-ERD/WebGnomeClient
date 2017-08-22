@@ -614,6 +614,11 @@ define([
                         burns[b].set('wind', wind);
                     }
                 }
+
+                var dissolution = this.get('weatherers').where({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
+                if(dissolution){
+                    dissolution.set('wind');
+                }
                 this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
             }
         },
