@@ -37,34 +37,28 @@ define([
 
         initialize: function(options){
             BaseView.prototype.initialize.call(this, options);
-            this.render();
+            if(webgnome.hasModel()){
+                if(webgnome.model.validResponse()){
+                    this.render();
+                } else {
+                    this.renderNoResponse();
+                }
+            } else {
+                this.renderNoResponse();
+            }
         },
 
-        render: function(){
-            var template, skim, burn, disperse;
-            if(webgnome.hasModel()){
-                skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
-                burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
-                disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
-                if(skim || burn || disperse){
-                    template = ResponseTemplate;
-                } else {
-                    this.setup_listeners();
-                    template = NoResponseTemplate;
-                }
-                
-                this.setup_listeners();
-      
+        renderNoResponse: function(){
+            if(webgnome.model.validResponse()){
+                this.render();
             } else {
-                template = NoResponseTemplate;
-                this.setup_listeners();
+                if(this.attached === false){
+                    this.setup_listeners();
+                    this.$el.appendTo('body');
+                    this.attached = true;
+                }
+                this.$el.html(_.template(NoResponseTemplate));
             }
-            this.$el.html(_.template(template));
-            if(this.attached === false){
-                this.$el.appendTo('body');
-                this.attached = true;
-            }
-            
             if(webgnome.model.get('spills').length === 0){
                 this.$('.spill').addClass('missing');
             }
@@ -81,12 +75,22 @@ define([
                 this.$('.wind').addClass('missing');
             }
 
+            skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
+            burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
+            disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
             if(_.isUndefined(skim) && _.isUndefined(burn) && _.isUndefined(disperse)){
                 this.$('.response').addClass('missing');
             }
 
-            this.load();
+        },
 
+        render: function(){
+            this.$el.html(_.template(ResponseTemplate));
+            if(this.attached === false){
+                this.$el.appendTo('body');
+                this.attached = true;
+            }
+            this.load();
         },
 
         load: function(){
@@ -514,8 +518,8 @@ define([
         },
 
         setup_listeners: function(){
-            this.listenTo(webgnome.model, 'change', this.render);
-            this.listenTo(webgnome.model.get('spills'), 'change add remove', this.render);
+            this.listenTo(webgnome.model, 'change', this.renderNoResponse);
+            this.listenTo(webgnome.model.get('spills'), 'change add remove', this.renderNoResponse);
         },
 
         formatNeedleLabel: function(text, n){
