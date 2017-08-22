@@ -17,10 +17,11 @@ define([
     'views/form/spill/instant',
     'views/form/spill/continue',
     'model/element',
+    'model/movers/wind',
     'views/form/wind'
 ], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView,
-            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ElementModel, WindForm){
+            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ElementModel, WindmoverModel, WindForm){
     var responseView = BaseView.extend({
         className: 'response-view',
         children: [],
@@ -476,6 +477,7 @@ define([
 
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(windForm.model, {merge: true});
+                webgnome.model.get('movers').add(new WindmoverModel({wind: windForm.model}));
                 webgnome.model.save(null, {silent: true});
             }, this));
 
