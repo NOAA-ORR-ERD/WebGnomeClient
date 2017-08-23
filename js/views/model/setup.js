@@ -19,11 +19,12 @@ define([
     'views/panel/current',
     'views/panel/spill',
     'views/panel/response',
+    'views/panel/roc-response',
     'views/panel/beached',
     'views/default/timeline',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm, ModelPanel,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, BeachedPanel, TimelineView){
+    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -76,6 +77,7 @@ define([
                 this.current = new CurrentPanel(),
                 this.spill = new SpillPanel(),
                 this.response = new ResponsePanel(),
+                this.roc_response = new RocResponsePanel(),
                 this.beached = new BeachedPanel()
             ];
 
@@ -90,7 +92,10 @@ define([
                 this.spill.$el
             );
 
-            this.$('.response-objects').append(this.response.$el);
+            this.$('.response-objects').append(
+                this.response.$el,
+                this.roc_response.$el
+            );
 
             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
                 this.$('.response-objects').append(this.beached.$el);
