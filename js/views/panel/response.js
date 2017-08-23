@@ -58,7 +58,7 @@ define([
         },
 
         filter: function(weatherers){
-            var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
+            var filteredNames = ["ChemicalDispersion", "Skimmer", "cleanup.Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
