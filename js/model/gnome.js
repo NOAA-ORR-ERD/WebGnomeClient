@@ -615,7 +615,7 @@ define([
                     }
                 }
 
-                var dissolution = this.get('weatherers').where({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
+                var dissolution = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
                 if(dissolution){
                     dissolution.set('wind');
                 }
