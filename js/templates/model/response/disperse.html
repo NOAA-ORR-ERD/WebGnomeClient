@@ -15,7 +15,7 @@
     <tbody>
 {% for(var r in responses) { %}
         <tr data-response="{{ responses[r].get('id') }}">
-            <td>{{ responses[r].get('name') }}</td>p
+            <td>{{ responses[r].get('name') }}</td>
             <td>{{ Math.round((results[responses[r].get('id')]['time_spraying'] / 60 / 60) * 100) / 100 }} hrs</td>
             <td>{{ responses[r].get('disp_oil_ratio') }}</td>
             <td></td>
