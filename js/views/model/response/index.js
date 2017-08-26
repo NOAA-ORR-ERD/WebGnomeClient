@@ -108,7 +108,7 @@ define([
                     }
                 }
             } else {
-                webgnome.cache.on('step:recieved', this.buildDataset, this);
+                this.listenTo(webgnome.cache, 'step:recieved', this.buildDataset);
                 setTimeout(function(){
                     webgnome.cache.step();
                 }, 200);
@@ -124,7 +124,7 @@ define([
             if(step.get('step_num') === webgnome.cache.length - 1){
                 this.renderTables();
                 if(step.get('step_num') < webgnome.model.get('num_time_steps')){
-                    webgnome.cache.on('step:recieved', this.buildDataset, this);
+                    this.listenTo(webgnome.cache, 'step:recieved', this.buildDataset);
                     setTimeout(function(){
                         webgnome.cache.step();
                     }, 200);
@@ -380,7 +380,7 @@ define([
         renderTables: function(){
             this.renderBurn();
             this.renderSkim();
-            this.renderDisperse(); 
+            this.renderDisperse();
         },
 
         runIterator: function(set){
