@@ -16,7 +16,9 @@ define([
             this.dataset = options.dataset ? options.dataset : {};
             this.responses = options.responses ? options.responses : '';
             this.results = options.results ? options.results: '';
-            this.render();
+            if (this.responses.length > 0){
+                this.render();
+            }
         },
 
         closeChild: function(){
