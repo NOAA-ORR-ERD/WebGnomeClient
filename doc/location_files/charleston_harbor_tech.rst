@@ -7,7 +7,7 @@
 
 About Charleston Harbor
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Charleston Harbor is an estuary along the southeast coast of the United States and serves as the major port for the city of Charleston, South Carolina. The estuary is formed by the junction of the Ashley, Cooper, and Wando Rivers at 32°49'7.10"N 79°55'40.41"W. Charleston Harbor is part of the Intracoastal Waterway along the East Coast of the United States. 
+Charleston Harbor is an estuary along the southeast coast of the United States and serves as the major port for the city of Charleston, South Carolina. The estuary is formed by the junction of the Ashley, Cooper, and Wando Rivers at 32° 49.12’N, 79° 55.67’W. Charleston Harbor is part of the Intracoastal Waterway along the East Coast of the United States. 
 
 
 Background
@@ -19,7 +19,7 @@ The currents within the modeled domain are mostly tidally driven, but there is a
 Current Patterns
 ===================================
 
-The currents in the Charleston Harbor Location File are simulated with eleven current patterns. The current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. There are three patterns for each of the tidal rivers – the Wando, the Cooper, and the Ashley – which are scaled to the tidal current forecast at the mouth of each river, the lower section of each river, and the upper section of each river. There is also a pattern at the harbor mouth and a simplified offshore current pattern. The picture below illustrates the model domain and the finite element domain.
+The currents in the Charleston Harbor Location File are simulated with eleven current patterns. The current patterns were created with the NOAA Current Analysis for Trajectory Simulation (CATS) hydrodynamic application. There are three patterns for each of the tidal rivers – the Wando, the Cooper, and the Ashley – which are scaled to the tidal current forecast at the mouth of each river, the lower section of each river, and the upper section of each river. There is also a pattern at the harbor mouth and a simplified offshore current pattern. 
 
 
 Charleston Harbor Location File Limitations
