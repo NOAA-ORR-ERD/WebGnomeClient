@@ -41,6 +41,6 @@
     "moment-round": "https://github.com/NOAA-ORR-ERD/moment-round/archive/master.zip",
     "toastr": "^2.1.2",
     "raphael": "~2.1.4",
-    "ccapture.js": "https://github.com/NOAA-ORR-ERD/ccapture.js/archive/1.0.6.1.zip"
+    "ccapture.js": "https://github.com/NOAA-ORR-ERD/ccapture.js/archive/1.0.6.2.zip"
   }
 }
