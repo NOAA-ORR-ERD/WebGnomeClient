@@ -14,10 +14,6 @@ define([
 
         initialize: function(attrs, options) {
             BaseModel.prototype.initialize.call(this, attrs, options);
-            if(!this.requested_vectors){
-                this.getVecs(null);
-                this.getMetadata(null);
-            }
             this.on('change', this.resetRequest, this);
             localforage.config({
                 name: 'WebGNOME Cache',
