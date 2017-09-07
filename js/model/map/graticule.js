@@ -78,6 +78,8 @@ Graticule.prototype = {
     activate: function() {
         this.on = true;
         this.scene.postRender.addEventListener(this.refreshGraticule, this);
+        //imperceptible position shift to allow immediate redraw of graticule.
+        this.scene.camera.position.x = this.scene.camera.position.x +1;
     },
     deactivate: function() {
         this.on = false;
@@ -92,11 +94,11 @@ Graticule.prototype = {
                 this.labels.get(i).show = false;
             }
         }
-        this.scene.camera.percentChanged=0.5
         this.scene.postRender.removeEventListener(this.refreshGraticule, this);
     },
 
     intDivFunc: function(a, b) {
+        //integer division 
         return a / b >= 0 ? Math.floor(a/b) : Math.ceil(a/b);
     },
     
@@ -118,8 +120,7 @@ Graticule.prototype = {
     
     get_frustum_dimensions: function() {
         /*
-        Helper function to convert the relative frustum coordinates into absolute lon/lat coordinates
-        returns an array of Cartesian3, organized as [bl, tl, tr, br]
+        Helper function to get the lon/lat dimensions of the frustum. Returns a Cesium.Cartographic
         */
         var frustum = this.scene.camera.frustum;
 
@@ -248,7 +249,7 @@ Graticule.prototype = {
             this.refresh_scale();
             this.setupLines();
             this.setupLabels();
-            this.scene.primitives.lowerToBottom(this.lines);
+            this.scene.primitives.raiseToTop(this.lines);
             this.scene.primitives.lowerToBottom(this.labels);
             this._prevCamPos = this.scene.camera.position.clone()
         }

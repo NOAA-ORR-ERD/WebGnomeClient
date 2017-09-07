@@ -306,7 +306,7 @@ define([
             $('.cesium-widget-credits').hide();
             this.graticule = new Graticule(true, this.viewer.scene, 10);
             this.graticule.activate();
-            //this.viewer.scene.fxaa = false;
+            this.viewer.scene.fxaa = false;
 
             this.renderSpills();
 
@@ -319,10 +319,12 @@ define([
             }
 
             this.layers.map = new Cesium.GeoJsonDataSource();
+            this.layers.map.clampToGround = true;
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                 var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
-                    stroke: Cesium.Color.WHITE.withAlpha(0)
+                    stroke: Cesium.Color.WHITE.withAlpha(0),
+                    fill: Cesium.Color.GREEN.withAlpha(0.4)
                 }));
                 if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
                     var bounds = webgnome.model.get('map').get('map_bounds');
@@ -424,7 +426,7 @@ define([
                             framerate:6,
                             verbose:true,
                             motionBlurFrames:0,
-                            workersPath: 'js/lib/gif.js/dist/'};
+                            workersPath: 'js/lib/ccapture.js/src/'};
                 $.each($('.recordmenu form').serializeArray(), function(_, kv) {
                     if (kv.name === 'framerate' || kv.name === 'skip') {
                         paramObj[kv.name] = parseInt(kv.value,10);
@@ -481,8 +483,6 @@ define([
         },
 
         play: function(){
-            var d = this.graticule.get_frustum_dimensions();
-            this.graticule.refreshGraticule();
             if($('.modal:visible').length === 0){
                 this.state = 'play';
                 this.controls.pause.show();
@@ -978,6 +978,12 @@ define([
                 }
             } else if(this.layers.bounds){
                 this.layers.bounds.show = false;
+            }
+
+            if(checked_layers.indexOf('graticule') !== -1) {
+                this.graticule.activate();
+            } else {
+                this.graticule.deactivate();
             }
         },
 
