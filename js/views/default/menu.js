@@ -260,6 +260,7 @@ define([
 
         save: function(event){
             event.preventDefault();
+            webgnome.cache.rewind();
             window.location.href = webgnome.config.api + '/download';
         },
 
