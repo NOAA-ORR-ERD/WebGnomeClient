@@ -12,8 +12,8 @@ define([
 
         initialize: function(options){
             BaseResponseForm.prototype.initialize.call(this, options);
-            this.listenTo(this.model, 'change:offload_to', this.toggleBargeTime);
-            this.listenTo(this.model, 'change:recovery', this.toggleRecovery);
+            // this.listenTo(this.model, 'change:offload_to', this.toggleBargeTime);
+            // this.listenTo(this.model, 'change:recovery', this.toggleRecovery);
         },
 
         render: function(){
@@ -23,14 +23,14 @@ define([
             this.timeseries = new TimeseriesView({model: this.model});
             this.$('.timeseries').append(this.timeseries.$el);
 
-            this.$('#barge_arrival').datetimepicker({
-                format: webgnome.config.date_format.datetimepicker,
-                allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
-            });
+            // this.$('#barge_arrival').datetimepicker({
+            //     format: webgnome.config.date_format.datetimepicker,
+            //     allowTimes: webgnome.config.date_format.half_hour_times,
+            //     step: webgnome.config.date_format.time_step
+            // });
 
-            this.toggleBargeTime();
-            this.toggleRecovery();
+            // this.toggleBargeTime();
+            // this.toggleRecovery();
         },
 
         toggleBargeTime: function(){

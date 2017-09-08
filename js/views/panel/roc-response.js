@@ -6,22 +6,22 @@ define([
     'sweetalert',
     'views/panel/base',
     'views/form/response/type',
-    'text!templates/panel/response.html',
-    'views/form/response/disperse',
-    'views/form/response/insituBurn',
-    'views/form/response/skim',
+    'text!templates/panel/roc-response.html',
+    'views/form/response/roc_disperse',
+    'views/form/response/roc_burn',
+    'views/form/response/roc_skim',
     'flot',
     'flottime',
     'flotgantt',
 ], function($, _, Backbone, moment, swal, BasePanel, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView){
     var responsePanel = BasePanel.extend({
-        className: 'col-md-3 response panel-view',
+        className: 'col-md-3 response panel-view roc',
 
         models: [
             'gnome.model.Model',
-            'gnome.weatherers.cleanup.Burn',
-            'gnome.weatherers.cleanup.ChemicalDispersion',
-            'gnome.weatherers.cleanup.Skimmer'
+            'gnome.weatherers.roc.Burn',
+            'gnome.weatherers.roc.Disperse',
+            'gnome.weatherers.roc.Skim'
         ],
 
         initialize: function(options){
@@ -31,7 +31,7 @@ define([
         },
 
         new: function(){
-            var typeForm = new ResponseTypeForm();
+            var typeForm = new ResponseTypeForm({className: 'modal form-modal responsetype-form roc'});
             typeForm.render();
             typeForm.on('hidden', typeForm.close);
         },
@@ -49,7 +49,8 @@ define([
                 this.$('.panel').addClass('complete');
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
-                this.graphReponses(this.responses);
+                this.$('.panel-body').css('padding-top','0px');
+                // this.graphReponses(this.responses);
             } else {
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
@@ -58,7 +59,7 @@ define([
         },
 
         filter: function(weatherers){
-            var filteredNames = ["ChemicalDispersion", "Skimmer", "cleanup.Burn"];
+            var filteredNames = ["Disperse", "Skim", "Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
                 if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
@@ -71,9 +72,9 @@ define([
             var yticks = [];
             var dataset = [];
             var colors = {
-                'gnome.weatherers.cleanup.Burn': '#CB4B4B',
-                'gnome.weatherers.cleanup.ChemicalDispersion': '#AFD8F8',
-                'gnome.weatherers.cleanup.Skimmer': '#EDC240'
+                'gnome.weatherers.roc.Burn': '#CB4B4B',
+                'gnome.weatherers.roc.Disperse': '#AFD8F8',
+                'gnome.weatherers.roc.Skim': '#EDC240'
             };
             var t = responses.length;
             for (var i in responses){
@@ -143,6 +144,7 @@ define([
         },
 
         hover: function(e){
+            return e; // no op for now;
             var id = this.getID(e);
 
             var coloredSet = [];
@@ -158,7 +160,8 @@ define([
             this.responsePlot.draw();
         },
 
-        unhover: function(){
+        unhover: function(e){
+            return e; // no op for now;
             this.responsePlot.setData(this.responseDataset);
             this.responsePlot.draw();
         },
@@ -170,14 +173,14 @@ define([
             var responseView;
             var nameArray = response.get('obj_type').split('.');
             switch (nameArray[nameArray.length - 1]){
-                case "ChemicalDispersion":
-                    responseView = new ResponseDisperseView(null, response);
+                case "Disperse":
+                    responseView = new ResponseDisperseView({model: response});
                     break;
                 case "Burn":
-                    responseView = new ResponseBurnView(null, response);
+                    responseView = new ResponseBurnView({model: response});
                     break;
-                case "Skimmer":
-                    responseView = new ResponseSkimView(null, response);
+                case "Skim":
+                    responseView = new ResponseSkimView({model: response});
                     break;
             }
 
