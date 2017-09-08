@@ -15,9 +15,9 @@ define([
     'mousetrap',
     'html2canvas',
     'ccapture',
+    'model/map/graticule',
     'gif',
     'gifworker',
-    //'recordrtc',
     'whammy'
 ], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture){
     'use strict';
@@ -293,21 +293,20 @@ define([
                 mapProjection: new Cesium.WebMercatorProjection(),
                 selectedImageryProviderViewModel: default_image,
                 imageryProviderViewModels: image_providers,
+                creditContainer: 'map',
 //                clockViewModel: new Cesium.Clock({
 //                   canAnimate: false,
 //                  shouldAnimate: false
 //             }),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:true}
+                    webgl:{preserveDrawingBuffer:true,
+                           antialias: false},
                 },
             });
-
-            this.viewer.scene.rethrowRenderErrors = true;
-            this.meta_canvas = document.createElement('canvas');
-            this.meta_canvas.width = this.viewer.canvas.width;
-            this.meta_canvas.height = this.viewer.canvas.height;
-            this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
-            //$('.map').append(this.meta_canvas);
+            $('.cesium-widget-credits').hide();
+            this.graticule = new Graticule(true, this.viewer.scene, 10);
+            this.graticule.activate();
+            this.viewer.scene.fxaa = false;
 
             this.renderSpills();
 
@@ -320,28 +319,29 @@ define([
             }
 
             this.layers.map = new Cesium.GeoJsonDataSource();
+            this.layers.map.clampToGround = true;
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                this.viewer.dataSources.add(this.layers.map.load(geojson, {
+                var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
-                    stroke: Cesium.Color.WHITE.withAlpha(0)
+                    stroke: Cesium.Color.WHITE.withAlpha(0),
+                    fill: Cesium.Color.GREEN.withAlpha(0.4)
                 }));
+                if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
+                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    this.viewer.flyTo(loading, {
+                        duration: 0.25
+                    });
+                } else {
+                    // fly to a gridded current instead
+                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    this.viewer.flyTo(loading, {
+                        duration: 0.25
+                    });
+                }
             }, this));
 
-            if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                var bounds = webgnome.model.get('map').get('map_bounds');
-                this.viewer.flyTo(this.layers.map, {
-                    duration: 0.25
-                });
-            } else {
-                // fly to a gridded current instead
-            }
-            this.capture_opts = {format: 'gif',
-                                framerate:5,
-                                verbose:true,
-                                motionBlurFrames:0,
-                                workersPath: 'js/lib/gif.js/dist/'};
 
-            this.capturer = new CCapture(_.clone(this.capture_opts));
+
 /*
             var metacap = _.bind(function(scene, cur_time) {
                 if (this.is_recording) {
@@ -350,24 +350,7 @@ define([
             }, this);
             this.viewer.scene.postRender.addEventListener(metacap);
 */
-/*
-            this.recorder = RecordRTC(this.meta_canvas, rec_opts);
-            this.recorder.start=this.recorder.startRecording
-            this.recorder.pause=this.recorder.pauseRecording
-            this.recorder.resume=this.recorder.resumeRecording
-            this.recorder.stop=this.recorder.stopRecording
 
-            //this.recorder = new MediaRecorder(this.viewer.canvas.captureStream());
-            //this.recorder = new MediaRecorder(this.meta_canvas.captureStream(25));
-            //this.recorder.addEventListener('dataavailable', function(event) {
-                    //var url = URL.createObjectURL(event.data);
-                    //console.log(url);
-                    //this.recorder = new MediaRecorder(this.viewer.canvas.captureStream());
-                    //this.recorder.pause();
-                //});
-            this.recorder.start()
-            this.recorder.pause()
-*/
             this.load();
         },
 
@@ -438,6 +421,23 @@ define([
             }
         },
 
+        getCaptureOpts: function() {
+            var paramObj = {format: 'gif',
+                            framerate:6,
+                            verbose:true,
+                            motionBlurFrames:0,
+                            workersPath: 'js/lib/ccapture.js/src/'};
+                $.each($('.recordmenu form').serializeArray(), function(_, kv) {
+                    if (kv.name === 'framerate' || kv.name === 'skip') {
+                        paramObj[kv.name] = parseInt(kv.value,10);
+                    } else {
+                        paramObj[kv.name] = kv.value;
+                    }
+            });
+            paramObj.workersPath = 'js/lib/gif.js/dist/';
+            return paramObj;
+        },
+
         record: function() {
             if($('.modal:visible').length === 0){
                 this.state = 'play';
@@ -446,7 +446,15 @@ define([
                 this.controls.play.hide();
                 this.controls.stoprecord.show();
                 this.controls.record.hide();
+                this.controls.recordcontrols.prop('disabled', true);
+                this.capture_opts = this.getCaptureOpts();
+                this.meta_canvas = document.createElement('canvas');
+                this.meta_canvas.width = this.viewer.canvas.width;
+                this.meta_canvas.height = this.viewer.canvas.height;
+                this.meta_canvas_ctx = this.meta_canvas.getContext('2d', {preserveDrawingBuffer: true});
+                this.capturer = new CCapture(_.clone(this.capture_opts));
                 this.capturer.start();
+                this.capturer.skipped = 0;
                 //this.recorder.resume();
                 this.loop();
             }
@@ -460,22 +468,17 @@ define([
                 this.controls.pause.hide();
                 this.controls.record.show();
                 this.controls.stoprecord.hide();
+                this.controls.recordcontrols.prop('disabled', false);
                 this.capturer.stop();
-                this.capturer.save(function(blob){
-                    webgnome.invokeSaveAsDialog(blob, 'gnome-run.gif');
-                });
-                this.capturer = new CCapture(_.clone(this.capture_opts));
-/*
-                this.recorder.stop(function(url) {
-                    console.log(url);
-                    this.recorder.save('gnome-run.webm')
-                    this.recorder.reset()
-                    this.recorder.start()
-                    this.recorder.pause()
-                }.bind(this));
-*/
-                //this.recorder = new MediaStreamRecorder(this.meta_canvas.captureStream());
-                
+                this.controls.record.removeClass('record');
+                this.controls.record.addClass('processingrecording');
+                this.controls.record.prop('disabled', true);
+                this.capturer.save(_.bind(function(blob){
+                    this.controls.record.addClass('record');
+                    this.controls.record.removeClass('processingrecording');
+                    this.controls.record.prop('disabled', false);
+                    webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
+                }, this));
             }
         },
 
@@ -583,11 +586,16 @@ define([
                 this.pause();
             }
             this.$('.tooltip-inner').text(time);
-            this.viewer.scene.render();
+            //this.viewer.scene.render();
 
             this.renderSlider();
             if(this.is_recording){
-                this.capturer.capture(this.meta_canvas);
+                if(this.capturer.skipped < this.capture_opts.skip) {
+                    this.capturer.skipped++;
+                } else {
+                    this.capturer.capture(this.meta_canvas);
+                    this.capturer.skipped = 0;
+                }
             }
         },
 
@@ -597,34 +605,16 @@ define([
             //$('.gnome-help', ctrls).hide();
             var ctx = this.meta_canvas_ctx;
             var cesiumCanvas = this.viewer.canvas;
-            /*
-            var data = '<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="45">' +
-                       '<foreignObject width="100%" height="100%">' +
-                       ctrls.outerHTML+
-                       '</foreignObject>' +
-                       '</svg>';
-            var DOMURL = window.URL || window.webkitURL || window;
 
-            var img = new Image();
-            img.crossOrigin = "anonymous";
-            var svg = new Blob([data], {type: 'image/svg+xml'});
-            var url = DOMURL.createObjectURL(svg);
-
-            img.onload = function() {
-              ctx.drawImage(cesiumCanvas,0,0);
-              ctx.drawImage(img, 0, 0);
-              DOMURL.revokeObjectURL(url);
+            if(this.is_recording) {
+                html2canvas(ctrls, {
+                    //height:550,
+                    onrendered: function(canvas) {
+                        ctx.drawImage(cesiumCanvas,0,0);
+                        ctx.drawImage(canvas,65,0);
+                    }
+                });
             }
-
-            img.src = url;
-            */
-            html2canvas(ctrls, {
-                //height:550,
-                onrendered: function(canvas) {
-                    ctx.drawImage(cesiumCanvas,0,0);
-                    ctx.drawImage(canvas,65,0);
-                }
-            });
         },
 
         renderSpill: function(step){
@@ -988,6 +978,12 @@ define([
                 }
             } else if(this.layers.bounds){
                 this.layers.bounds.show = false;
+            }
+
+            if(checked_layers.indexOf('graticule') !== -1) {
+                this.graticule.activate();
+            } else {
+                this.graticule.deactivate();
             }
         },
 
