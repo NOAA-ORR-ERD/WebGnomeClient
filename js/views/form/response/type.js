@@ -108,7 +108,7 @@ define([
                     webgnome.model.get('weatherers').add(burn);
                     webgnome.model.save(null, {validate: false});
                     form.on('hidden', function(){
-                        form.triger('wizardclose');
+                        form.trigger('wizardclose');
                     });
                 });
             }));

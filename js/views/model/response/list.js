@@ -9,43 +9,50 @@ define([
     var listView = BaseView.extend({
 
         events: {
-            'click tr': 'clickResponse'
+            'click tbody tr': 'clickSystem'
         },
 
         initialize: function(options){
-            this.dataset = options.dataset ? options.dataset : {};
-            this.responses = options.responses ? options.responses : '';
-            this.results = options.results ? options.results: '';
-            this.render();
+            this.weatherers = options.weatherers ? options.weatherers : '';
+            this.process = options.process ? options.process : '';
+            this.colors  = options.colors;
+            if (this.weatherers.length > 0){
+                this.render();
+            }
         },
 
         closeChild: function(){
             delete this.child;
             this.render();
+            this.trigger('select');
         },
 
-        clickResponse: function(e){
-            var id = $(e.currentTarget).data('response');
-            var name = webgnome.model.get('weatherers').get(id).get('name');
-            this.child = new SingleView({dataset: this.dataset[id], response_name: name, process: this.process});
+        clickSystem: function(e){
+            this.trigger('select', this.$el);
+            var id = $(e.currentTarget).data('weatherer');
+            var weatherer = webgnome.model.get('weatherers').get(id);
+            this.child = new SingleView({
+                weatherer: weatherer,
+                process: this.process,
+                colors: this.colors
+             });
             this.listenTo(this.child, 'close', this.closeChild);
             this.$el.html(this.child.$el);
             this.child.render();
         },
 
-        render: function(results, dataset){
+        render: function(){
             if(_.isUndefined(this.child)){
                 
                 this.$el.html(
                     _.template(this.template, {
-                        responses: this.responses,
-                        results: !_.isUndefined(results) ? results : this.results,
+                        weatherers: this.weatherers,
                         api: this.getAPI(), 
                         converter: new nucos.OilQuantityConverter(),
-                        units: webgnome.model.get('spills').at(0).get('units')
+                        units: webgnome.model.get('spills').at(0).get('units'),
+                        systems: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems
                     })
                 );
-                this.results = !_.isUndefined(results) ? results : this.results;
             } else {
                 this.child.render();
             }

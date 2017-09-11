@@ -59,7 +59,7 @@
                         <label for="throughput" class="col-sm-6 control-label">Throughput Efficiency:</label>
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="number" class="form-control" id="throughput" name="throughput" value="{{ throughput }}">
+                                <input type="number" class="form-control" id="_throughput" name="_throughput" value="{{ _throughput }}">
                                 <span class="input-group-addon">%</span>
                             </div>
                         </div>
@@ -83,8 +83,13 @@
 
                     <div class="form-group">
                         <label for="recovery" class="col-sm-6 control-label">Recovery Effenciency:</label>
+
                         <div class="col-sm-6">
-                            <div class="radio">
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="_recovery_ef" name="_recovery_ef" value="{{ _recovery_ef }}">
+                                <span class="input-group-addon">%</span>
+                            </div>
+                           <!--<div class="radio">
                                 <label><input type="radio" name="recovery" value="2"> ROC high value</label>
                                 <label><input type="radio" name="recovery" value="1"> ROC nominal value</label>
                                 <label><input type="radio" name="recovery" value="0"> ROC low value</label>
@@ -95,7 +100,7 @@
                             <div class="input-group">
                                 <input type="number" class="form-control" id="recovery_ef" name="recovery_ef" value="{{ recovery_ef }}">
                                 <span class="input-group-addon">%</span>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -181,7 +186,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <label class="col-sm-6 control-label">Offload To:</label>
                         <div class="col-sm-6">
                             <div class="radio">
@@ -205,7 +210,7 @@
                                 <span class="input-group-addon"><i></i></span>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>

@@ -537,6 +537,21 @@ define([
             return false;
         },
 
+        validResponse: function(){
+            var skim, burn, disperse;
+            if(this.validWeathering()){
+                skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
+                burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
+                disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
+                if(_.isUndefined(skim) && _.isUndefined(burn) && _.isUndefined(disperse)){
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            return false;
+        },
+
         resetLocation: function(cb){
             // clear any location relevant objects from the model.
 
@@ -598,6 +613,11 @@ define([
                     for(var b = 0; b < burns.length; b++){
                         burns[b].set('wind', wind);
                     }
+                }
+
+                var dissolution = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.dissolution.Dissolution'});
+                if(dissolution){
+                    dissolution.set('wind');
                 }
                 this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
             }

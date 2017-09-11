@@ -23,6 +23,18 @@ define([
             }
         },
 
+        isActive: function(datetime){
+            dt_u = moment(datetime).format('X');
+            for(var e = 0; e < this.get('timeseries').length; e++){
+                var start_ts = moment(this.get('timeseries')[e][0]);
+                var end_ts = moment(this.get('timeseries')[e][1]);
+                if(start_ts.format('X') < dt_u && end_ts.format('X') > dt_u){
+                    return true;
+                }
+            }
+            return false;
+        },
+
         /**
          * check whether or not the weatherer applies to a given day
          * @param  {String} date YYYY-MM-DD string representation of a day
@@ -66,10 +78,9 @@ define([
             };
         },
 
-        decimalToPercent: function(attr_name){
-            var dec = this.get(attr_name);
-            var per = dec * 100;
-            this.set('_' + attr_name, per, {silent: true, parse: false});
+        decimalToPercent: function(val){
+            var per = val * 100;
+            return per;
         }
     });
 
