@@ -182,7 +182,8 @@ Graticule.prototype = {
                                 followSurface : true,
                                 show: false,
                                 material : material,
-                                width : 1});
+                                width : 1,
+                                eyeOffset : new Cesium.Cartesian3(0,0,-1),});
             }
         }
     },
@@ -195,12 +196,13 @@ Graticule.prototype = {
                 this.labels.add({
                     positions: Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
                     show: false,
-                    font: '18px Helvetica',
+                    font: '18px Arial',
                     text: 'undef',
-                    fillColor: Cesium.Color.DARKGRAY,
+                    fillColor: Cesium.Color.BLACK,
                     backgroundColor: new Cesium.Color(1.0,1.0,1.0,0),
                     outlineWidth: 0,
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    eyeOffset : new Cesium.Cartesian3(0,0,-2),
                     });
             }
         }
@@ -250,7 +252,7 @@ Graticule.prototype = {
             this.setupLines();
             this.setupLabels();
             this.scene.primitives.raiseToTop(this.lines);
-            this.scene.primitives.lowerToBottom(this.labels);
+            this.scene.primitives.raiseToTop(this.labels);
             this._prevCamPos = this.scene.camera.position.clone()
         }
     },

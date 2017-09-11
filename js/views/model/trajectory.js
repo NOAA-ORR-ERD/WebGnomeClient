@@ -306,7 +306,7 @@ define([
             $('.cesium-widget-credits').hide();
             this.graticule = new Graticule(true, this.viewer.scene, 10);
             this.graticule.activate();
-            this.viewer.scene.fxaa = false;
+            //this.viewer.scene.fxaa = false;
 
             this.renderSpills();
 
@@ -1013,7 +1013,7 @@ define([
                     var batch_limit = Math.ceil((data.length/8) / batch);
                     var segment = 0;
                     var num_sides = 0;
-                    var grid_type = env.get('grid').obj_type;
+                    var grid_type = env.get('grid').get('obj_type');
                     if (grid_type[grid_type.length - 1] === 'U') {
                         //if unstructured
                         num_sides = 3;
@@ -1089,7 +1089,7 @@ define([
                         for(var existing = 0; existing < existing_length; existing++){
                             _off = existing*2;
                             layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0);
-                            layer.get(existing).show = false;
+                            layer.get(existing).show = true;
                         }
 
                         var create_length = centers.length / 2;
@@ -1097,7 +1097,7 @@ define([
                         for(var c = existing_length; c < create_length; c++){
                             _off = c*2;
                             layer.add({
-                                show: false,
+                                show: true,
                                 position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0),
                                 image: this.current_arrow[id][0]
                             });

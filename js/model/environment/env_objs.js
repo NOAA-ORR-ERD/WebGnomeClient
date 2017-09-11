@@ -78,6 +78,9 @@ define([
                     var num_nodes = nodes.byteLength / (2*dtl);
                     this.nodes = new dtype(nodes);
                     this.env_obj_cache.setItem(this.id + 'nodes', this.nodes);
+                    if(callback) {
+                        callback(this.nodes);
+                    }
                     return this.nodes;
                 }, this )});
             } else if(callback) {
@@ -124,6 +127,9 @@ define([
                     var num_centers = centers.byteLength / (2*dtl);
                     this.centers = new dtype(centers);
                     this.env_obj_cache.setItem(this.id + 'centers', this.centers);
+                    if(callback) {
+                        callback(this.centers);
+                    }
                     return this.centers;
                 }, this )});
             } else if(callback) {
@@ -154,7 +160,7 @@ define([
                     this.requested_grid = true;
                     var dtype = Float32Array;
                     var dtl = dtype.BYTES_PER_ELEMENT;
-                    var grid_type = this.get('grid').obj_type;
+                    var grid_type = this.get('grid').get('obj_type');
                     var num_sides = 0;
                     if (grid_type[grid_type.length - 1] === 'U') {
                         num_sides = 3;
@@ -202,8 +208,8 @@ define([
                         this.num_times = parseInt(shape[1]);
                         this.num_vecs = parseInt(shape[2]);
                         this.time_axis = [];
-                        for (var i=0; i < this.get('time').data.length; i++) {
-                            var t = this.get('time').data[i];
+                        for (var i=0; i < this.get('time').get("data").length; i++) {
+                            var t = this.get('time').get("data")[i];
                             this.time_axis.push(moment(t.replace('T',' ')).unix());
                         }
                         this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
@@ -247,8 +253,8 @@ define([
                     this.num_times = num_times;
                     this.num_vecs = num_vecs;
                     this.time_axis = [];
-                    for (var i=0; i < this.get('time').data.length; i++) {
-                        var t = this.get('time').data[i];
+                    for (var i=0; i < this.get('time').get("data").length; i++) {
+                        var t = this.get('time').get("data")[i];
                         this.time_axis.push(moment(t.replace('T',' ')).unix());
                     }
                     this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));

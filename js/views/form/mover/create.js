@@ -98,6 +98,12 @@ define([
             this.model.set('filename', json_response.filename);
             //this.model.set('name', json_response.filename.split('/').pop());
             this.model.set('name', json_response.name);
+            if (this.model.get('obj_type') === 'gnome.movers.py_movers.PyCurrentMover') {
+                // Must include a 'current' otherwise the API will not add it and later on
+                // the current object referenced by environment obj collection will disassociate
+                // from the one referenced by this mover
+                this.model.set('current', {data_file: json_response.filename, grid_file: json_response.filename, obj_type: 'gnome.environment.environment_objects.GridCurrent'});
+            }
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);
