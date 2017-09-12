@@ -18,7 +18,8 @@ define([
                 dosage_type: 'auto',
                 dosage: null,
                 dispersant: '1',
-                disp_eff: null,
+                disp_eff: 0.75,
+                _disp_eff: 75,
                 loading_type: 'simultaneous',
                 units: new Backbone.Model({
                     pass_length: 'nm',
@@ -35,7 +36,13 @@ define([
 
     	initialize: function(options) {
     		ROCWeatherer.prototype.initialize.call(this, options);
+            this.on('change:_disp_eff', this.percentToDecimal('disp_eff'));
     	},
+
+        parse: function(attributes){
+            attributes._disp_eff = this.decimalToPercent(attributes.disp_eff);
+            return ROCWeatherer.prototype.parse.call(this, attributes);
+        }
 
     });
     return ROCDisperseModel;
