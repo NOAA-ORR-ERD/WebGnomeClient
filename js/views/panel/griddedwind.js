@@ -19,6 +19,7 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.model, 'change:duration chage:start_time', this.rerender);
             this.listenTo(webgnome.model.get('movers'), 'add change remove', this.rerender);
         },
 
