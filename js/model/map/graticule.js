@@ -196,13 +196,15 @@ Graticule.prototype = {
                 this.labels.add({
                     positions: Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
                     show: false,
-                    font: '18px Arial',
+                    font: '60px Arial',
                     text: 'undef',
                     fillColor: Cesium.Color.BLACK,
-                    backgroundColor: new Cesium.Color(1.0,1.0,1.0,0),
-                    outlineWidth: 0,
+                    backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8),
+                    outlineColor: Cesium.Color.WHITE,
+                    outlineWidth: 1,
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
                     eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                    scale : 0.3
                     });
             }
         }
@@ -225,23 +227,25 @@ Graticule.prototype = {
 
         var topDist = Math.min((this.lat_lines + 3) * ciLat, 90-offLat);
         var rightDist = (this.lon_lines + 3) * ciLon;
-
-        for(var i=0; i < (this.lon_lines + 4); i++) {
-            this.lines.get(i).positions = Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 90),-90),
-                                                                              i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 90),-90),
-                                                                              i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 90),-90)]);
+        for( var i=0; i < (this.lon_lines + 4); i++ ) {
+            this.lines.get(i).positions = Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
+                                                                              i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
+                                                                              i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]);
             this.lines.get(i).show = true;
         }
-        for(var j=0;j < (this.lat_lines + 4); j++) {
+        for( var j=0;j < (this.lat_lines + 4); j++ ) {
             if (j * ciLat + offLat > 90) {
                 break;
             }
-            this.lines.get(i+j).positions = Cesium.Cartesian3.fromDegreesArray([offLon, Math.max(Math.min(j * ciLat + offLat, 90),-90),
-                                                                                offLon + rightDist/2, Math.max(Math.min(j * ciLat + offLat, 90),-90),
-                                                                                offLon + rightDist, Math.max(Math.min(j * ciLat + offLat, 90),-90)]);
+            var latLinePoints = [];
+            for( var p=0; p < 2*(this.lon_lines+4); p++ ) {
+                latLinePoints[2*p] = offLon + p * rightDist/(2*(this.lon_lines+4));
+                latLinePoints[2*p+1] = Math.max(Math.min(j * ciLat + offLat, 89),-89)
+            }
+            this.lines.get(i+j).positions = Cesium.Cartesian3.fromDegreesArray(latLinePoints);
             this.lines.get(i+j).show = true;
         }
-        for (var k = i+j; k < this.linePoolSize; k++) {
+        for ( var k = i+j; k < this.linePoolSize; k++ ) {
             this.lines.get(k).show = false;
         }
     },
@@ -285,7 +289,7 @@ Graticule.prototype = {
         }
     },
     genDMSLabel: function(dim, radians) {
-        var tot_seconds = Math.round(radians/Cesium.Math.RADIANS_PER_ARCSECOND);
+        var tot_seconds = Math.abs(Math.round(radians/Cesium.Math.RADIANS_PER_ARCSECOND));
         var seconds = tot_seconds % 60;
         var minutes = this.intDivFunc(tot_seconds % 3600, 60);
         var degrees = this.intDivFunc(tot_seconds, 3600);
@@ -296,9 +300,9 @@ Graticule.prototype = {
             hemi = radians > 0 ? 'N' : 'S';
         }
         if(seconds) {
-            return degrees + '\xB0 ' + minutes + '\' ' + seconds + '" ' + hemi;
+            return degrees + '\xB0' + minutes + '\'' + seconds + '" ' + hemi;
         } else if (minutes) {
-            return degrees + '\xB0 ' + minutes + '\' ' + hemi;
+            return degrees + '\xB0' + minutes + '\' ' + hemi;
         } else {
             return degrees + '\xB0 ' + hemi;
         }
