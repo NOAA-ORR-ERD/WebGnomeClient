@@ -12,7 +12,7 @@ define([
 
         initialize: function(options){
             BaseResponseForm.prototype.initialize.call(this, options);
-            this.listenTo(this.model, 'change:burn', this.toggleBurn);
+            // this.listenTo(this.model, 'change:burn', this.toggleBurn);
         },
 
         render: function(){
@@ -23,7 +23,7 @@ define([
             this.timeseries = new TimeseriesView({model: this.model});
             this.$('.timeseries').append(this.timeseries.$el);
 
-            this.toggleBurn();
+            // this.toggleBurn();
         },
 
         toggleBurn: function(){
