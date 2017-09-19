@@ -952,7 +952,7 @@ nav.navbar{
                 &.missing{
                     background: #D27B7B;
                     &:before{
-                        content: "\002b";
+                        content: "\e014";
                     }
                 }
                 &.optional{
@@ -960,6 +960,27 @@ nav.navbar{
                     &:before{
                         content: "\e031";
                     }
+
+                }
+            }
+
+            .add{
+                &:before{
+                    content: "\002b";
+                }                    
+                font-size: 50px;
+                position: absolute;
+                right: 20px;
+                top: 0;
+                bottom: 0;
+                color: #adadad;
+
+                &.small{
+                    font-size: 25px;
+                    top: 5px;
+                    right: 15px;
+                    font-weight: bold;
+                    height: 35px;
                 }
             }
 
@@ -3168,6 +3189,14 @@ nav.navbar{
                 display: none;
             }
             .null-substance {
+                display: none;
+            }
+        }
+        &.roc{
+            .position{
+                display:none;
+            }
+            #oilInfo{
                 display: none;
             }
         }
