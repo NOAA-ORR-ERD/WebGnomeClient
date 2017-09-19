@@ -41,7 +41,7 @@ define([
             };
         },
 
-        models: {
+        model: {
             units: Backbone.Model
         },
 
