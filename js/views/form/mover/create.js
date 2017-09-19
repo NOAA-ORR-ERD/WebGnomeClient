@@ -14,7 +14,7 @@ define([
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
-                
+
         events: function(){
             return _.defaults({
                 'click .grid': 'grid',
@@ -47,7 +47,7 @@ define([
                 paramName: 'new_mover',
                 maxFiles: 1,
                 //acceptedFiles: '.nc, .cur',
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code> 
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code>
             });
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
@@ -98,7 +98,7 @@ define([
             this.model.set('filename', json_response.filename);
             //this.model.set('name', json_response.filename.split('/').pop());
             this.model.set('name', json_response.name);
-            if (this.model.get('obj_type') === 'gnome.movers.py_movers.PyCurrentMover') {
+            if (this.model.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                 // Must include a 'current' otherwise the API will not add it and later on
                 // the current object referenced by environment obj collection will disassociate
                 // from the one referenced by this mover

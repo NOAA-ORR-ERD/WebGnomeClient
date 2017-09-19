@@ -285,7 +285,7 @@ define([
                 homeButton: false,
                 timeline: false,
                 sceneModePicker: false,
-                targetFrameRate: 30,
+                targetFrameRate: 60,
                 navigationHelpButton: false,
                 navigationInstructionsInitiallyVisible: false,
                 skyAtmosphere: false,
@@ -294,13 +294,12 @@ define([
                 selectedImageryProviderViewModel: default_image,
                 imageryProviderViewModels: image_providers,
                 creditContainer: 'map',
-//                clockViewModel: new Cesium.Clock({
-//                   canAnimate: false,
-//                  shouldAnimate: false
-//             }),
+                clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
+                   canAnimate: false,
+                  shouldAnimate: false
+                })),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:true,
-                           antialias: false},
+                    webgl:{preserveDrawingBuffer:false},
                 },
             });
             $('.cesium-widget-credits').hide();
@@ -1088,7 +1087,7 @@ define([
                         var _off = 0;
                         for(var existing = 0; existing < existing_length; existing++){
                             _off = existing*2;
-                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0);
+                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
                             layer.get(existing).show = true;
                         }
 
@@ -1098,7 +1097,7 @@ define([
                             _off = c*2;
                             layer.add({
                                 show: true,
-                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1],0),
+                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
                                 image: this.current_arrow[id][0]
                             });
                         }
