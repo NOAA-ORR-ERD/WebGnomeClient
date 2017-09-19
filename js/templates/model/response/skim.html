@@ -21,7 +21,7 @@
             <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['emulsion_collected'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
             <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['water_collected'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
             <td>{{ Math.round(converter.Convert(systems[weatherers[r].get('id')]['water_retained'], 'kg', api, 'API degree', units))}} {{units}}(s)</td>
-            <td>{{ systems[weatherers[r].get('id')]['num_fills'] }}</td>
+            <td>{{ Math.round(systems[weatherers[r].get('id')]['num_fills'] * 10 ) / 10 }}</td>
             <td>{{ Math.round(systems[weatherers[r].get('id')]['area_covered']) }} ac</td>
         </tr>
 {% } %}
