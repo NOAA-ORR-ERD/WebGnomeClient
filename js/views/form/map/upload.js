@@ -7,7 +7,8 @@ define([
     'dropzone',
     'text!templates/default/dropzone.html',
     'model/map/bna'
-], function(_, $, Backbone, FormModal, UploadTemplate, Dropzone, DropzoneTemplate, MapBNAModel){
+], function(_, $, Backbone, FormModal, UploadTemplate,
+            Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
@@ -35,6 +36,8 @@ define([
 
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('persist_upload',
+                            $('input#persist_upload')[0].checked);
         },
 
         reset: function(file){

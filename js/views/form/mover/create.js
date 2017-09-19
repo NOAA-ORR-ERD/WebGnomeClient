@@ -72,6 +72,8 @@ define([
 
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('persist_upload',
+                            $('input#persist_upload')[0].checked);
         },
 
         reset: function(file, immediate){

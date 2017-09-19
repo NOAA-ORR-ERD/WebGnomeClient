@@ -22,9 +22,11 @@ define([
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindMoverModel, WindModel,
-    NwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
+            Dropzone, DropzoneTemplate,
+            FormModal, FormTemplate,
+            VarInputTemplate, VarStaticTemplate, PopoverTemplate,
+            OlMapView, WindMoverModel, WindModel, NwsWind){
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -375,6 +377,8 @@ define([
 
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('persist_upload',
+                            $('input#persist_upload')[0].checked);
         },
 
         reset: function(file){
