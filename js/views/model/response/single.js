@@ -146,7 +146,7 @@ define([
                 var output = step.get('WeatheringOutput');
                 var system = output.nominal.systems[this.weatherer.get('id')];
                 var step_t = 0;
-                if(this.weatherer.isActive(output.time_stamp) || !_.isUndefined(system.state)){
+                if(system.state.length > 0){
                     // is active this time step
                     for(var s = 0; s < system.state.length; s++){
                         var active = this.paper.rect(x, y, system.state[s][1] * ratio, 30);
@@ -154,6 +154,14 @@ define([
                         active.attr('stroke-width', '0');
                         x += system.state[s][1] * ratio;
                         step_t += system.state[s][1];
+                    }
+                    if (step_t < webgnome.model.get('time_step')) {
+                        var time_remaining = webgnome.model.get('time_step') - step_t;
+                        var left = this.paper.rect(x, y, time_remaining * ratio, 30);
+                        left.attr('fill', 'gray');
+                        left.attr('stroke-width', '0');
+                        x += time_remaining * ratio;
+                        step_t += time_remaining;
                     }
                 } else {
                     // not active this time step
