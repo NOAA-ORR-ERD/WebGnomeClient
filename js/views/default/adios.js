@@ -96,6 +96,10 @@ define([
             this.$('.option, .item').tooltip({
                 container: 'body'
             });
+            this.$('.add').tooltip({
+                container: 'body',
+                placement: 'left'
+            });
         },
 
         clickName: function() {
