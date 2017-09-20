@@ -575,7 +575,7 @@ define([
             this.renderCurrent(step);
             this.renderIce(step);
 
-            var time = moment(step.get('TrajectoryGeoJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
 
             this.controls.date.text(time);
             this.frame = step.get('step_num');
@@ -661,7 +661,79 @@ define([
 
             }
 
-            var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
+            var certain = step.get('SpillJsonOutput').certain[0];
+            var uncertain = step.get('SpillJsonOutput').uncertain[0];
+            var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
+            if(uncertain) {
+                for(f = 0; f < uncertain.length; f++){
+                    if(!this.uncertain_collection[f]){
+                        // create a new point
+                        this.uncertain_collection.push(this.les.add({
+                            position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
+                            color: Cesium.Color.RED.withAlpha(
+                                uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
+                            ),
+                            image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image
+                        }));
+                    } else {
+                        this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
+
+                        if(uncertain.status[f] === 3){
+                            this.uncertain_collection[f].image = this.les_beached_image;
+                        } else {
+                            this.uncertain_collection[f].image = this.les_point_image;
+                        }
+
+                        // set the opacity of particle if the mass has changed
+                        if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
+                            this.uncertain_collection[f].color = Cesium.Color.RED.withAlpha(
+                                uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
+                            );
+                        }
+                    }
+                    this.uncertain_collection[f].show = visible;
+                }
+            }
+            for(var f = 0; f < certain.length; f++){
+                if(!this.certain_collection[f]){
+                    // create a new point
+                    this.certain_collection.push(this.les.add({
+                        position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
+                        color: Cesium.Color.BLACK.withAlpha(
+                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
+                        ),
+                        image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image
+                    }));
+                } else {
+                    // update the point position and graphical representation
+                    this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
+                    if(certain.status[f] === 3){
+                        this.certain_collection[f].image = this.les_beached_image;
+                    } else {
+                        this.certain_collection[f].image = this.les_point_image;
+                    }
+                    // set the opacity of particle if the mass has changed
+                    if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
+                        this.certain_collection[f].color = Cesium.Color.BLACK.withAlpha(
+                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
+                        );
+                    }
+                }
+                this.certain_collection[f].show = visible;
+            }
+            if(this.certain_collection.length > certain.length){
+                // we have entites that were created for a future step but the model is now viewing a previous step
+                // hide the leftover particles
+                for(var l = certain.length; l < this.certain_collection.length; l++){
+                    this.certain_collection[l].show = false;
+                }
+                if(uncertain) {
+                    for(var l = uncertain.length; l < this.uncertain_collection.length; l++){
+                        this.uncertain_collection[l].show = false;
+                    }
+                }
+            }
+            /*var certain_json_features = step.get('TrajectoryGeoJsonOutput').certain.features;
             var uncertain_json_features = step.get('TrajectoryGeoJsonOutput').uncertain.features;
             var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
             var num_les = certain_json_features.length > uncertain_json_features.length ? certain_json_features.length : uncertain_json_features.length;
@@ -743,7 +815,7 @@ define([
                         this.uncertain_collection[l].show = false;
                     }
                 }
-            }
+            }*/
         },
 
         renderCurrent: function(step){
