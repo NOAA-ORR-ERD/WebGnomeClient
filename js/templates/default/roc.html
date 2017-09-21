@@ -31,7 +31,7 @@
                             <div class="col-sm-12"><p>Click to enter the scenario settings.</p></div>
                         {% } %}
                     </div>
-                    <div class="option substance" title="Click to select the oil to release.">
+                    <div class="option substance">
                         <div class="icon {% if(!substance){ %}missing {% } %}"></div>
                         <div class="title">Oil</div>
                         {% if(substance && substance.get('api')){ %}
@@ -47,11 +47,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="adds small" title="Click to select the oil to release."></div>
                         {% } else { %}
                             <div class="col-sm-12"><p>Click to select the oil to release.</p></div>
+                            <div class="add" title="Click to select the oil to release."></div>
                         {% } %}
                     </div>
-                    <div class="option spill" title="Click to set/edit the amount of oil released.">
+                    <div class="option spill">
                         <div class="icon {% if(!spills.length > 0){ %}missing {% } %}"></div>
                         <div class="title">Spill</div>
                         {% if(spills.length > 0){ %}
@@ -83,9 +85,10 @@
                             </div>
                         {% } else { %}
                             <div class="col-sm-12"><p>Click to set the amount of oil released.</p></div>
+                            <div class="add" title="Click to set the amount of oil released."></div>
                         {% } %}
                     </div>
-                    <div class="option water" title="Click to set/edit water conditions.">
+                    <div class="option water">
                         <div class="icon {% if(!water){ %}missing {% } %}"></div>
                         <div class="title">Water</div>
                         {% if(water){ %}
@@ -117,9 +120,10 @@
                             </div>
                         {% } else { %}
                             <div class="col-sm-12"><p>Click to set water conditions</p></div>
+                            <div class="add" title="Click to set/edit water conditions."></div>
                         {% } %}
                     </div>
-                    <div class="option wind" title="Click to set/edit wind speed and direction.">
+                    <div class="option wind">
                         <div class="icon {% if(!wind){ %}missing {% } %}"></div>
                         <div class="title">Wind</div>
                         {% if(wind){ %}
@@ -144,6 +148,7 @@
                             </div>
                         {% } else { %}
                             <div class="col-sm-12"><p>Click to set wind speed and direction</p></div>
+                            <div class="add" title="Click to set wind speed and direction."></div>
                         {% } %}
                     </div>
                 </div>
@@ -151,8 +156,8 @@
         </div>
         <div class="col-md-6">
             <div class="row input">
-                <div class="option skimmer" title="Click to add a new mechanical system.">
-                    <div class="icon {% if(!skimmers.length > 0){ %}missing {% } %}"></div>
+                <div class="option skimmer">
+                    <div class="icon {% if(!skimmers.length > 0){ %}optional {% } %}"></div>
                     <div class="title">Mechanical</div>
                     {% if(skimmers.length > 0){ %}
                         <div class="col-md-12">
@@ -167,14 +172,16 @@
                             </div>
                         {% } %}
                         </div>
+                        <div class="add small" title="Click to add a new mechanical system."></div>
                     {% } else { %}
                         <div class="col-sm-12"><p>Click to add a new mechanical system.</p></div>
+                        <div class="add" title="Click to add a new mechanical system."></div>
                     {% } %}
                 </div>
             </div>
             <div class="row input">
-                <div class="option burn" title="Click to add a new mechanical system.">
-                    <div class="icon {% if(!burns.length > 0){ %}missing {% } %}"></div>
+                <div class="option burn">
+                    <div class="icon {% if(!burns.length > 0){ %}optional {% } %}"></div>
                     <div class="title">Burn</div>
                     {% if(burns.length > 0){ %}
                         <div class="col-md-12">
@@ -189,14 +196,16 @@
                             </div>
                         {% } %}
                         </div>
+                        <div class="add small" title="Click to add a new mechanical system."></div>
                     {% } else { %}
                         <div class="col-sm-12"><p>Click to add a new burn system.</p></div>
+                        <div class="add" title="Click to add a new mechanical system."></div>
                     {% } %}
                 </div>
             </div>
             <div class="row input">
-                <div class="option disperse" title="Click to add a new dispersant system.">
-                    <div class="icon {% if(!disperses.length > 0){ %}missing {% } %}"></div>
+                <div class="option disperse">
+                    <div class="icon {% if(!disperses.length > 0){ %}optional {% } %}"></div>
                     <div class="title">Dispersant</div>
                     {% if(disperses.length > 0){ %}
                         <div class="col-md-12">
@@ -211,8 +220,10 @@
                             </div>
                         {% } %}
                         </div>
+                        <div class="add small" title="Click to add a new dispersant system."></div>
                     {% } else { %}
                         <div class="col-sm-12"><p>Click to add a new dispersant system.</p></div>
+                        <div class="add" title="Click to add a new dispersant system."></div>
                     {% } %}
                 </div>
             </div>

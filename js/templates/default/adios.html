@@ -8,7 +8,7 @@
     </div>
     <div class="row input">
         <div class="col-md-6 col-md-offset-3">
-            <div class="option name" title="Click to edit the scenario name">
+            <div class="option name">
                 <div class="icon {% if(!(model.get('name') !== 'ADIOS Model_')){ %}missing {% } %}"></div>
                 <div class="title">Scenario Settings</div>
                 {% if (model.get('name') !== 'ADIOS Model_'){ %}
@@ -29,9 +29,10 @@
                     </div>
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to enter the scenario settings.</p></div>
+                    <div class="add" title="Click to edit the scenario name"></div>
                 {% } %}
             </div>
-            <div class="option substance" title="Click to select the oil to release.">
+            <div class="option substance" >
                 <div class="icon {% if(!substance){ %}missing {% } %}"></div>
                 <div class="title">Oil</div>
                 {% if(substance && substance.get('api')){ %}
@@ -49,9 +50,10 @@
                     </div>
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to select the oil to release.</p></div>
+                    <div class="add" title="Click to select the oil to release."></div>
                 {% } %}
             </div>
-            <div class="option spill" title="Click to set/edit the amount of oil released.">
+            <div class="option spill" >
                 <div class="icon {% if(!spills.length > 0){ %}missing {% } %}"></div>
                 <div class="title">Spill</div>
                 {% if(spills.length > 0){ %}
@@ -83,9 +85,10 @@
                     </div>
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to set the amount of oil released.</p></div>
+                    <div class="add" title="Click to set/edit the amount of oil released."></div>
                 {% } %}
             </div>
-            <div class="option water" title="Click to set/edit water conditions.">
+            <div class="option water" >
                 <div class="icon {% if(!water){ %}missing {% } %}"></div>
                 <div class="title">Water</div>
                 {% if(water){ %}
@@ -117,9 +120,10 @@
                     </div>
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to set water conditions</p></div>
+                    <div class="add" title="Click to set/edit water conditions."></div>
                 {% } %}
             </div>
-            <div class="option wind" title="Click to set/edit wind speed and direction.">
+            <div class="option wind" >
                 <div class="icon {% if(!wind){ %}missing {% } %}"></div>
                 <div class="title">Wind</div>
                 {% if(wind){ %}
@@ -144,6 +148,7 @@
                     </div>
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to set wind speed and direction</p></div>
+                    <div class="add" title="Click to set/edit wind speed and direction."></div>
                 {% } %}
             </div>
         </div>
@@ -155,7 +160,7 @@
     </div>
     <div class="row input">
         <div class="col-md-6 col-md-offset-3">
-            <div class="option response" title="Click to add a response option for oil removal/recovery.">
+            <div class="option response" >
                 <div class="icon optional"></div>
                 <div class="title">Response Options</div>
                 {% if(responses.length > 0){ %}
@@ -191,11 +196,13 @@
                             </div>
                         {% } %}
                     </div>
+                    <div class="add small"></div>
                 {% }  else { %}
                     <div class="col-sm-12"><p>Click to add a response option for oil removal/recovery.</p></div>
+                    <div class="add" title="Click to add a response option for oil removal/recovery."></div>
                 {% } %}
             </div>
-            <div class="option beached" title="Click to add oil beaching events.">
+            <div class="option beached" >
                 <div class="icon optional"></div>
                 <div class="title">Observed Beaching</div>
                 {% if (beached_ts && beached_ts.length > 0){ %}
@@ -214,6 +221,7 @@
                         {% } %}
                 {% } else { %}
                     <div class="col-sm-12"><p>Click to add oil beaching events.</p></div>
+                    <div class="add" title="Click to add oil beaching events."></div>
                 {% } %}
             </div>
         </div>

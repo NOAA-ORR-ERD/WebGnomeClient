@@ -26,6 +26,7 @@ define([
     'model/movers/current_cycle',
     'model/movers/component',
     'model/outputters/trajectory',
+    'model/outputters/spill',
     'model/outputters/weathering',
     'model/outputters/current',
     'model/outputters/ice_raw',
@@ -54,7 +55,7 @@ define([
 ], function(_, $, Backbone, moment, swal,
     BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
     GridWindModel, WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, PyWindMover, CurrentCycleMover, ComponentMover,
-    TrajectoryOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
+    TrajectoryOutputter, SpillOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
     KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
     NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
     RocSkimResponse, RocBurnResponse, RocDisperseResponse,
@@ -101,6 +102,7 @@ define([
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
+                'gnome.outputters.geo_json.SpillJsonOutput': SpillOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,
@@ -135,7 +137,7 @@ define([
                 duration: 86400,
                 map: new MapModel(),
                 outputters: new Backbone.Collection([
-                    new TrajectoryOutputter(),
+                    new SpillOutputter(),
                     new WeatheringOutputter(),
                     new CurrentOutputter(),
                     new IceOutputter()

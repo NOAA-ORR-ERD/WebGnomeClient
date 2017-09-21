@@ -28,7 +28,7 @@ define([
             for(var e = 0; e < this.get('timeseries').length; e++){
                 var start_ts = moment(this.get('timeseries')[e][0]);
                 var end_ts = moment(this.get('timeseries')[e][1]);
-                if(start_ts.format('X') < dt_u && end_ts.format('X') > dt_u){
+                if(start_ts.format('X') <= dt_u && end_ts.format('X') > dt_u){
                     return true;
                 }
             }

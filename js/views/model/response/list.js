@@ -16,9 +16,7 @@ define([
             this.weatherers = options.weatherers ? options.weatherers : '';
             this.process = options.process ? options.process : '';
             this.colors  = options.colors;
-            if (this.weatherers.length > 0){
-                this.render();
-            }
+            this.render();
         },
 
         closeChild: function(){
@@ -42,19 +40,21 @@ define([
         },
 
         render: function(){
-            if(_.isUndefined(this.child)){
-                
-                this.$el.html(
-                    _.template(this.template, {
-                        weatherers: this.weatherers,
-                        api: this.getAPI(), 
-                        converter: new nucos.OilQuantityConverter(),
-                        units: webgnome.model.get('spills').at(0).get('units'),
-                        systems: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems
-                    })
-                );
-            } else {
-                this.child.render();
+            if(this.weatherers.length > 0){
+                if(_.isUndefined(this.child)){
+                    
+                    this.$el.html(
+                        _.template(this.template, {
+                            weatherers: this.weatherers,
+                            api: this.getAPI(), 
+                            converter: new nucos.OilQuantityConverter(),
+                            units: webgnome.model.get('spills').at(0).get('units'),
+                            systems: webgnome.cache.inline[webgnome.cache.inline.length - 1].get('WeatheringOutput').nominal.systems
+                        })
+                    );
+                } else {
+                    this.child.render();
+                }
             }
         },
 
