@@ -102,7 +102,7 @@ define([
             },
             outputters: {
                 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput': TrajectoryOutputter,
-                'gnome.outputters.geo_json.SpillJsonOutput': SpillOutputter,
+                'gnome.outputters.json.SpillJsonOutput': SpillOutputter,
                 'gnome.outputters.weathering.WeatheringOutput': WeatheringOutputter,
                 'gnome.outputters.json.CurrentJsonOutput': CurrentOutputter,
                 'gnome.outputters.json.IceJsonOutput': IceOutputter,

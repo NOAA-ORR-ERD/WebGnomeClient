@@ -765,7 +765,7 @@ define([
                 var env = webgnome.model.get('environment').findWhere({id: id});
                 var mag_data = env.mag_data;
                 var dir_data = env.dir_data;
-                env.interpVecsToTime(step.get('TrajectoryGeoJsonOutput').time_stamp, mag_data, dir_data);
+                env.interpVecsToTime(step.get('SpillJsonOutput').time_stamp, mag_data, dir_data);
                 if(this.current_arrow[id]){
                     var billboards=this.layers.uv[id]._billboards;
                     for(var uv = mag_data.length; uv--;){

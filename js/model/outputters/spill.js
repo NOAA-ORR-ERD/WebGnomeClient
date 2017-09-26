@@ -8,7 +8,7 @@ define([
         urlRoot: '/outputter/',
 
         defaults: {
-            'obj_type': 'gnome.outputters.geo_json.SpillJsonOutput',
+            'obj_type': 'gnome.outputters.json.SpillJsonOutput',
             'name': 'Outputter',
             'output_timestep': null,
             'output_last_step': 'true',
