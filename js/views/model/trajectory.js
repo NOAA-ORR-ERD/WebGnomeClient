@@ -323,7 +323,7 @@ define([
                 var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
                     stroke: Cesium.Color.WHITE.withAlpha(0),
-                    fill: Cesium.Color.GREEN.withAlpha(0.4)
+                    //fill: Cesium.Color.GREEN.withAlpha(0.4)
                 }));
                 if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
                     var bounds = webgnome.model.get('map').get('map_bounds');
