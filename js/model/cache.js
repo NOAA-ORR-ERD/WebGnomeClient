@@ -3,12 +3,16 @@ define([
     'underscore',
     'backbone',
     'localforage',
-    'model/step'
-], function($, _, Backbone, localforage, StepModel){
+    'model/step',
+    'model/async_step'
+], function($, _, Backbone, localforage, StepModel, AsyncStepModel){
     'use strict';
     var cache = Backbone.Collection.extend({
+        socketRoute: '/step_socket',
         fetching: false,
         inline: [],
+        isAsync: true,
+        numAck: 0,
 
         initialize: function(options, model){
             this.gnome_model = model;
@@ -17,6 +21,7 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
+            this.socketConnect();
         },
 
         checkState: function(){
@@ -33,7 +38,7 @@ define([
                         this.inline.push(step);
                         this.fetching = false;
                         this.length++;
-                        this.trigger('step:recieved', step);
+                        this.trigger('step:received', step);
                     }, this),
                     error: _.bind(function(){
                         this.fetching = false;
@@ -81,7 +86,79 @@ define([
             this.length = 0;
             this.trigger('reset');
             this.inline = [];
-        }
+        },
+
+        socketConnect: function(){
+            //console.log('Attaching logger socket routes...');
+            console.log('Connecting to step namespace');
+            this.socket = io.connect(webgnome.config.api + this.socketRoute);
+            this.socket.on('step', _.bind(this.socketProcessStep, this));
+            this.socket.on('step_started', _.bind(this.stepStarted,this));
+            this.socket.on('end', _.bind(this.endStream, this));
+        },
+        stepStarted: function(event){
+            console.log('step namespace started on api');
+        },
+        socketProcessStep: function(step){
+            var stepm = new StepModel(step)
+            this.inline.push(stepm);
+            this.length++;
+            this.trigger('step:buffered');
+            if(this.length === 1) {
+                this.trigger('step:received', stepm);
+            }
+            if(!this.isAsync) {
+                this.sendStepAck(step)
+            }
+        },
+        setAsyncOn: function() {
+            if(!this.isAsync) {
+                this.isAsync = false;
+                this.socket.emit('isAsync', this.isAsync);
+            }
+        },
+        setAsyncOff: function() {
+            if(this.isAsync) {
+                this.isAsync = false;
+                this.socket.emit('isAsync', this.isAsync);
+            }
+        },
+        sendHalt: function() {
+            console.log('halting model. cache length: ', this.length);
+            this.socket.emit('halt');
+        },
+        sendStepAck: function(step) {
+            if(step.step_num) {
+                this.socket.emit('ack', step.step_num, this.numAck);
+            } else {
+                console.log('step has no step_num, using cache length');
+                this.socket.emit('ack', this.length, this.numAck);
+            }
+            this.numAck++;
+        },
+
+        getSteps: function() {
+            var step = new AsyncStepModel();
+            this.streaming = true;
+            step.fetch({
+                success: _.bind(function(step){
+                    console.log('getSteps success!')
+                }, this),
+                error: _.bind(function(){
+                    console.log('getSteps success!')
+                }, this)
+            });
+        },
+
+        endStream: function() {
+            this.streaming = false;
+            this.trigger('step:done');
+        },
+
+        haltSteps: function() {
+            this.socket.emit('haltSteps', localStorage.getItem('session'));
+        },
+
     });
 
     return cache;

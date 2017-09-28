@@ -66,11 +66,12 @@ define([
         url: '/model',
         ajax: [],
         ref_hash: {},
-        fileOutputters: [
+        nonStandardOutputters: [
             'gnome.outputters.netcdf.NetCDFOutput',
             'gnome.outputters.shape.ShapeOutput',
             'gnome.outputters.kmz.KMZOutput',
-            'gnome.outputters.image.IceImageOutput'
+            'gnome.outputters.image.IceImageOutput',
+            'gnome.outputters.geo_json.TrajectoryGeoJsonOutput'
         ],
         model: {
             spills: {

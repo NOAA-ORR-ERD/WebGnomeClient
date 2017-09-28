@@ -24,8 +24,7 @@ define([
         initialize: function(){
             this.setupToasts();
             this.render();
-            this.socketUrl = webgnome.config.api + this.socketRoute;
-            this.startSocket();
+            this.socketConnect();
         },
 
         setupToasts: function(){
@@ -64,28 +63,17 @@ define([
             }
         },
 
-        startSocket: function(){
-            this.log('Connecting...');
-            this.socket = io.connect(this.socketUrl);
-            this.socket.on('connect', _.bind(this.socketConnect, this));
-            this.socket.on('error', _.bind(this.socketError, this));
-            this.socket.on('you_just_connected', _.bind(this.socketLog, this));
-            this.socket.on('log', _.bind(this.socketLog, this));
-        },
-
-        closeSocket: function(){
-            this.socket.disconnect();
-            this.socket.removeAllListeners();
-            this.socket = null;
-        },
-
-        socketError: function(error){
-            this.log({type: 'error', message: 'Failed to connect!'});
-            this.log({type: 'warning', message: 'Interactve logging has been disabled'});
-        },
-
         socketConnect: function(){
-            this.log('Connected!');
+            //console.log('Attaching logger socket routes...');
+            console.log('Connecting to logger namespace');
+            this.socket = io.connect(webgnome.config.api + this.socketRoute);
+            this.socket.on('log', _.bind(this.socketLog, this));
+            this.socket.on('logger_started', _.bind(this.loggerStarted,this));
+            this.socket.emit('start_logger');
+        },
+
+        loggerStarted: function(event){
+            console.log('logger started on api');
         },
 
         socketLog: function(event){
@@ -200,7 +188,6 @@ define([
         },
 
         close: function(){
-            this.closeSocket();
             this.clearToasts();
             Backbone.View.prototype.close.call(this);
         }

@@ -38,7 +38,7 @@ define([
         state: 'loading',
         frame: 0,
         contracted: false,
-        fps: 10,
+        fps: 20,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -242,7 +242,7 @@ define([
                 this.toggle();
             }
         },
-            
+
         createTooltipObject: function(title) {
             return {
                 "title": title,
@@ -300,7 +300,7 @@ define([
                   shouldAnimate: false
                 })),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:false},
+                    webgl:{preserveDrawingBuffer:true},
                 },
             });
             $('.cesium-widget-credits').hide();
@@ -378,7 +378,7 @@ define([
             this.updateProgress();
             this.state = 'pause';
             webgnome.cache.on('step:buffered', this.updateProgress, this)
-            webgnome.cache.on('step:recieved', this.renderStep, this);
+            //webgnome.cache.on('step:received', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
 
             if(localStorage.getItem('autorun') === 'true'){
@@ -397,7 +397,13 @@ define([
                     }, this), 1000/this.fps);
                 } else  {
                     this.updateProgress();
-                    webgnome.cache.step();
+                    if (!webgnome.cache.streaming) {
+                        webgnome.cache.getSteps();
+                    } else {
+                        setTimeout(_.bind(function(){
+                            this.renderStep({step: this.controls.seek.slider('value')});
+                        }, this), 1000/this.fps);
+                    }
                 }
                 if(this.state === 'next'){
                     this.pause();
@@ -407,11 +413,11 @@ define([
             }
         },
 
-        updateProgress: function(){
+        updateProgress: _.throttle(function(){
             this.controls.progress.addClass('progress-bar-stripes active');
             var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);
             this.controls.progress.css('width', percent + '%');
-        },
+        }, 20),
 
         togglePlay: function(e){
             e.preventDefault();
@@ -485,6 +491,9 @@ define([
 
         play: function(){
             if($('.modal:visible').length === 0){
+                if (webgnome.cache.length === this.controls.seek.slider('value')) {
+                    //webgnome.cache.on('step:received', this.renderStep, this);
+                }
                 this.state = 'play';
                 this.controls.pause.show();
                 this.controls.play.hide();
@@ -497,6 +506,7 @@ define([
 
         pause: function(){
             if($('.modal:visible').length === 0){
+                //webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'pause';
                 if(this.is_recording){
                     //this.recorder.pause();
@@ -1099,7 +1109,7 @@ define([
                     } else {
                         env.getCenters(addVecsToLayer);
                     }
-                    
+
                     this.checked_env_vec.push(id);
                 }, this));
             } else {
@@ -1411,7 +1421,7 @@ define([
         resetSpills: function(){
             // remove all spills from the source
             for(var spill in this.spills){
-                this.viewer.entities.remove(this.spills[spill]);    
+                this.viewer.entities.remove(this.spills[spill]);
             }
             this.renderSpills();
         },
@@ -1538,7 +1548,7 @@ define([
             //     this.unbind();
             //     this.viewer.destroy();
             // }
-            this.$el.hide();            
+            this.$el.hide();
             // this.remove();
         }
     });

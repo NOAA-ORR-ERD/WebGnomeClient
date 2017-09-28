@@ -91,9 +91,9 @@ define([
             var invalidOutputters = [];
 
             for (var i = 0; i < outputterKeys.length; i++){
-                var isFileOutputter = webgnome.model.fileOutputters.indexOf(outputterKeys[i]) > -1;
+                var isNonStandardOutputter = webgnome.model.nonStandardOutputters.indexOf(outputterKeys[i]) > -1;
                 var outputterExists = outputters.findWhere({'obj_type': outputterKeys[i]});
-                if (!outputterExists && !isFileOutputter){
+                if (!outputterExists && !isNonStandardOutputter){
                     invalidOutputters.push(outputterKeys[i]);
                 }
             }
