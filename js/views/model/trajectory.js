@@ -242,7 +242,7 @@ define([
                 this.toggle();
             }
         },
-            
+
         createTooltipObject: function(title) {
             return {
                 "title": title,
@@ -300,7 +300,7 @@ define([
                   shouldAnimate: false
                 })),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:false},
+                    webgl:{preserveDrawingBuffer:true},
                 },
             });
             $('.cesium-widget-credits').hide();
@@ -1099,7 +1099,7 @@ define([
                     } else {
                         env.getCenters(addVecsToLayer);
                     }
-                    
+
                     this.checked_env_vec.push(id);
                 }, this));
             } else {
@@ -1411,7 +1411,7 @@ define([
         resetSpills: function(){
             // remove all spills from the source
             for(var spill in this.spills){
-                this.viewer.entities.remove(this.spills[spill]);    
+                this.viewer.entities.remove(this.spills[spill]);
             }
             this.renderSpills();
         },
@@ -1538,7 +1538,7 @@ define([
             //     this.unbind();
             //     this.viewer.destroy();
             // }
-            this.$el.hide();            
+            this.$el.hide();
             // this.remove();
         }
     });
