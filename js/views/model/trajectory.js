@@ -38,6 +38,7 @@ define([
         state: 'loading',
         frame: 0,
         contracted: false,
+        fps: 10,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -376,6 +377,7 @@ define([
         load: function(){
             this.updateProgress();
             this.state = 'pause';
+            webgnome.cache.on('step:buffered', this.updateProgress, this)
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
 
@@ -392,7 +394,7 @@ define([
                     // the cache has the step, just render it
                     setTimeout(_.bind(function(){
                         this.renderStep({step: this.controls.seek.slider('value')});
-                    }, this), 160);
+                    }, this), 1000/this.fps);
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();
@@ -433,7 +435,7 @@ define([
                         paramObj[kv.name] = kv.value;
                     }
             });
-            paramObj.workersPath = 'js/lib/gif.js/dist/';
+            paramObj.workersPath = 'js/lib/ccapture.js/src/';
             return paramObj;
         },
 
