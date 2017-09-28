@@ -4,10 +4,11 @@ define([
     'backbone',
     'views/modal/form',
     'text!templates/form/map/upload.html',
+    'text!templates/default/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html',
     'model/map/bna'
-], function(_, $, Backbone, FormModal, UploadTemplate,
+], function(_, $, Backbone, FormModal, UploadTemplate, FileItemTemplate,
             Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
@@ -32,6 +33,22 @@ define([
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+
+            $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
+                var target_ref = $(e.target).attr("href"); // activated tab
+                var target = $(target_ref).find('div#file_list').empty();
+
+                console.log('target: ', target);
+
+                $.get('/uploaded').done(function(result){
+                    console.log('result: ', result);
+                    var fileItemTemplate = _.template(FileItemTemplate);
+
+                    $.each(result, function (index, file) {
+                        $(target).append(fileItemTemplate({'file': file}));
+                    });
+                });
+            });
         },
 
         sending: function(e, xhr, formData){

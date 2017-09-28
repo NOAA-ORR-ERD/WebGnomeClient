@@ -1,7 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
+    'backbone',
+    'sweetalert'
 ], function($, _, Backbone, swal){
     'use strict';
     var helpModel = Backbone.Model.extend({
