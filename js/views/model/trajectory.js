@@ -377,8 +377,7 @@ define([
         load: function(){
             this.updateProgress();
             this.state = 'pause';
-            webgnome.cache.on('step:buffered', this.updateProgress, this)
-            //webgnome.cache.on('step:received', this.renderStep, this);
+            webgnome.cache.on('step:buffered', this.updateProgress, this);
             webgnome.cache.on('step:failed', this.pause, this);
 
             if(localStorage.getItem('autorun') === 'true'){
@@ -492,7 +491,7 @@ define([
         play: function(){
             if($('.modal:visible').length === 0){
                 if (webgnome.cache.length === this.controls.seek.slider('value')) {
-                    //webgnome.cache.on('step:received', this.renderStep, this);
+                    webgnome.cache.on('step:received', this.renderStep, this);
                 }
                 this.state = 'play';
                 this.controls.pause.show();
@@ -506,7 +505,7 @@ define([
 
         pause: function(){
             if($('.modal:visible').length === 0){
-                //webgnome.cache.off('step:received', this.renderStep, this);
+                webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'pause';
                 if(this.is_recording){
                     //this.recorder.pause();
@@ -523,10 +522,10 @@ define([
                 //this.recorder.clearRecordedData();
                 //this.stoprecord();
             }
-            this.controls.seek.slider('value', 0);
             this.controls.progress.css('width', 0);
             this.renderStep({step: 0});
             this.frame = 0;
+            this.controls.seek.slider('value', 0);
         },
 
         rewindClick: function(e){
@@ -566,7 +565,7 @@ define([
             this.state = 'pause';
         },
 
-        renderStep: function(source){
+        renderStep: _.throttle(function(source){
             var step;
             if(_.has(source, 'step')){
                 webgnome.cache.at(source.step, _.bind(function(err, step){
@@ -578,7 +577,7 @@ define([
                 step = source;
                 this.drawStep(step);
             }
-        },
+        },16),
 
         drawStep: function(step){
             if(!step){ return; }
@@ -685,6 +684,7 @@ define([
                             color: Cesium.Color.RED.withAlpha(
                                 uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                             ),
+                            eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image
                         }));
                     } else {
@@ -714,6 +714,7 @@ define([
                         color: Cesium.Color.BLACK.withAlpha(
                             certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                         ),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
                         image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image
                     }));
                 } else {

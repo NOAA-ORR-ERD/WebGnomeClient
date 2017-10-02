@@ -13,6 +13,7 @@ define([
         inline: [],
         isAsync: true,
         numAck: 0,
+        model: StepModel,
 
         initialize: function(options, model){
             this.gnome_model = model;
@@ -21,7 +22,6 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.socketConnect();
         },
 
         checkState: function(){
@@ -91,6 +91,7 @@ define([
         socketConnect: function(){
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to step namespace');
+            console.trace();
             this.socket = io.connect(webgnome.config.api + this.socketRoute);
             this.socket.on('step', _.bind(this.socketProcessStep, this));
             this.socket.on('step_started', _.bind(this.stepStarted,this));
@@ -100,13 +101,13 @@ define([
             console.log('step namespace started on api');
         },
         socketProcessStep: function(step){
-            var stepm = new StepModel(step)
-            this.inline.push(stepm);
+            
+            this.inline.push(new StepModel(step));
             this.length++;
             this.trigger('step:buffered');
-            if(this.length === 1) {
-                this.trigger('step:received', stepm);
-            }
+            //if(this.length === 1) {
+                this.trigger('step:received', {step: step.step_num});
+            //}
             if(!this.isAsync) {
                 this.sendStepAck(step)
             }
@@ -140,6 +141,7 @@ define([
         getSteps: function() {
             var step = new AsyncStepModel();
             this.streaming = true;
+            this.socketConnect();
             step.fetch({
                 success: _.bind(function(step){
                     console.log('getSteps success!')
@@ -153,6 +155,8 @@ define([
         endStream: function() {
             this.streaming = false;
             this.trigger('step:done');
+            this.socket.removeAllListeners()
+            this.socket.disconnect()
         },
 
         haltSteps: function() {
