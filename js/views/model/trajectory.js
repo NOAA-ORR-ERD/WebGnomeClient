@@ -675,6 +675,7 @@ define([
                             color: Cesium.Color.RED.withAlpha(
                                 uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                             ),
+                            eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image
                         }));
                     } else {
@@ -704,6 +705,7 @@ define([
                         color: Cesium.Color.BLACK.withAlpha(
                             certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                         ),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
                         image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image
                     }));
                 } else {

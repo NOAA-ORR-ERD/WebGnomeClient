@@ -119,6 +119,9 @@ require.config({
         },
         localforage: {
             exports: 'localforage'
+        },
+        ccapture: {
+            deps: ['gifworker', 'gif']
         }
     }
 });
