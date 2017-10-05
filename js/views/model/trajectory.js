@@ -19,7 +19,7 @@ define([
     'gif',
     'gifworker',
     'whammy'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture){
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -38,6 +38,7 @@ define([
         state: 'loading',
         frame: 0,
         contracted: false,
+        fps: 10,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -241,7 +242,7 @@ define([
                 this.toggle();
             }
         },
-            
+
         createTooltipObject: function(title) {
             return {
                 "title": title,
@@ -299,7 +300,7 @@ define([
                   shouldAnimate: false
                 })),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:false},
+                    webgl:{preserveDrawingBuffer:true},
                 },
             });
             $('.cesium-widget-credits').hide();
@@ -323,16 +324,17 @@ define([
                 var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
                     stroke: Cesium.Color.WHITE.withAlpha(0),
-                    fill: Cesium.Color.GREEN.withAlpha(0.4)
+                    //fill: Cesium.Color.GREEN.withAlpha(0.4)
                 }));
+                var bounds;
                 if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
                     });
                 } else {
                     // fly to a gridded current instead
-                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
                     });
@@ -376,6 +378,7 @@ define([
         load: function(){
             this.updateProgress();
             this.state = 'pause';
+            webgnome.cache.on('step:buffered', this.updateProgress, this);
             webgnome.cache.on('step:recieved', this.renderStep, this);
             webgnome.cache.on('step:failed', this.pause, this);
 
@@ -392,7 +395,7 @@ define([
                     // the cache has the step, just render it
                     setTimeout(_.bind(function(){
                         this.renderStep({step: this.controls.seek.slider('value')});
-                    }, this), 160);
+                    }, this), 1000/this.fps);
                 } else  {
                     this.updateProgress();
                     webgnome.cache.step();
@@ -433,7 +436,7 @@ define([
                         paramObj[kv.name] = kv.value;
                     }
             });
-            paramObj.workersPath = 'js/lib/gif.js/dist/';
+            paramObj.workersPath = 'js/lib/ccapture.js/src/';
             return paramObj;
         },
 
@@ -673,6 +676,7 @@ define([
                             color: Cesium.Color.RED.withAlpha(
                                 uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                             ),
+                            eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image
                         }));
                     } else {
@@ -702,6 +706,7 @@ define([
                         color: Cesium.Color.BLACK.withAlpha(
                             certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                         ),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
                         image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image
                     }));
                 } else {
@@ -724,11 +729,12 @@ define([
             if(this.certain_collection.length > certain.length){
                 // we have entites that were created for a future step but the model is now viewing a previous step
                 // hide the leftover particles
-                for(var l = certain.length; l < this.certain_collection.length; l++){
+                var l;
+                for(l = certain.length; l < this.certain_collection.length; l++){
                     this.certain_collection[l].show = false;
                 }
                 if(uncertain) {
-                    for(var l = uncertain.length; l < this.uncertain_collection.length; l++){
+                    for(l = uncertain.length; l < this.uncertain_collection.length; l++){
                         this.uncertain_collection[l].show = false;
                     }
                 }
@@ -1097,7 +1103,7 @@ define([
                     } else {
                         env.getCenters(addVecsToLayer);
                     }
-                    
+
                     this.checked_env_vec.push(id);
                 }, this));
             } else {
@@ -1409,7 +1415,7 @@ define([
         resetSpills: function(){
             // remove all spills from the source
             for(var spill in this.spills){
-                this.viewer.entities.remove(this.spills[spill]);    
+                this.viewer.entities.remove(this.spills[spill]);
             }
             this.renderSpills();
         },
@@ -1536,7 +1542,7 @@ define([
             //     this.unbind();
             //     this.viewer.destroy();
             // }
-            this.$el.hide();            
+            this.$el.hide();
             // this.remove();
         }
     });

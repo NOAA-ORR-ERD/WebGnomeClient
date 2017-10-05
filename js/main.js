@@ -57,8 +57,8 @@ require.config({
         raphael: 'lib/raphael/raphael',
         ccapture: 'lib/ccapture.js/src/CCapture',
         whammy: 'lib/whammy/whammy',
-        gif: 'lib/gif.js/dist/gif',
-        gifworker: 'lib/gif.js/dist/gif.worker'
+        gif: 'lib/ccapture.js/src/gif',
+        gifworker: 'lib/ccapture.js/src/gif.worker'
     },
     shim: {
         jquery: {
@@ -119,6 +119,9 @@ require.config({
         },
         localforage: {
             exports: 'localforage'
+        },
+        ccapture: {
+            deps: ['gifworker', 'gif']
         }
     }
 });
