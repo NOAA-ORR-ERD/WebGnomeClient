@@ -12,6 +12,7 @@ define([
             Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
+        className: 'modal form-modal upload-form',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
 
         initialize: function(options){
@@ -36,16 +37,23 @@ define([
 
             $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
                 var target_ref = $(e.target).attr("href"); // activated tab
-                var target = $(target_ref).find('div#file_list').empty();
-
-                console.log('target: ', target);
+                var target = $(target_ref).find('tbody#file_list').empty();
 
                 $.get('/uploaded').done(function(result){
                     console.log('result: ', result);
                     var fileItemTemplate = _.template(FileItemTemplate);
 
+                    function fileSize(bytes) {
+                        var exp = Math.log(bytes) / Math.log(1024) | 0;
+                        var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+
+                        return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                    }
+
                     $.each(result, function (index, file) {
-                        $(target).append(fileItemTemplate({'file': file}));
+                        $(target).append(fileItemTemplate({'file': file,
+                        	                                  'fileSize': fileSize,
+                                                           }));
                     });
                 });
             });
