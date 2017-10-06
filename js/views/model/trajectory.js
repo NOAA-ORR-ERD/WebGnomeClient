@@ -38,7 +38,7 @@ define([
         state: 'loading',
         frame: 0,
         contracted: false,
-        fps: 20,
+        fps: 30,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -398,10 +398,13 @@ define([
                     this.updateProgress();
                     if (!webgnome.cache.streaming) {
                         webgnome.cache.getSteps();
-                    } else {
+                    } else if (webgnome.cache.isAsync){
                         setTimeout(_.bind(function(){
                             this.renderStep({step: this.controls.seek.slider('value')});
                         }, this), 1000/this.fps);
+                    } else {
+                        webgnome.cache.requestNext()
+                        setTimeout(null, 1000/this.fps)
                     }
                 }
                 if(this.state === 'next'){
@@ -468,10 +471,8 @@ define([
 
         stoprecord: function() {
             if($('.modal:visible').length === 0){
-                this.state = 'pause';
+                this.pause();
                 this.is_recording = false;
-                this.controls.play.show();
-                this.controls.pause.hide();
                 this.controls.record.show();
                 this.controls.stoprecord.hide();
                 this.controls.recordcontrols.prop('disabled', false);
@@ -490,7 +491,7 @@ define([
 
         play: function(){
             if($('.modal:visible').length === 0){
-                if (webgnome.cache.length === this.controls.seek.slider('value')) {
+                if (webgnome.cache.length === this.controls.seek.slider('value') || !webgnome.cache.isAsync) {
                     webgnome.cache.on('step:received', this.renderStep, this);
                 }
                 this.state = 'play';
@@ -507,12 +508,8 @@ define([
             if($('.modal:visible').length === 0){
                 webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'pause';
-                if(this.is_recording){
-                    //this.recorder.pause();
-                }
                 this.controls.play.show();
                 this.controls.pause.hide();
-                // this.controls.progress.removeClass('active progress-bar-striped');
             }
         },
 

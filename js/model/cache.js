@@ -11,7 +11,7 @@ define([
         socketRoute: '/step_socket',
         fetching: false,
         inline: [],
-        isAsync: true,
+        isAsync: false,
         numAck: 0,
         model: StepModel,
 
@@ -95,6 +95,7 @@ define([
             this.socket = io.connect(webgnome.config.api + this.socketRoute);
             this.socket.on('step', _.bind(this.socketProcessStep, this));
             this.socket.on('step_started', _.bind(this.stepStarted,this));
+            this.socket.on('sync_step', _.bind(this.syncClient, this));
             this.socket.on('end', _.bind(this.endStream, this));
         },
         stepStarted: function(event){
@@ -105,35 +106,31 @@ define([
             this.inline.push(new StepModel(step));
             this.length++;
             this.trigger('step:buffered');
-            //if(this.length === 1) {
-                this.trigger('step:received', {step: step.step_num});
-            //}
-            if(!this.isAsync) {
-                this.sendStepAck(step)
-            }
+            this.trigger('step:received', {step: step.step_num});
         },
-        setAsyncOn: function() {
-            if(!this.isAsync) {
-                this.isAsync = false;
-                this.socket.emit('isAsync', this.isAsync);
-            }
+        setAsync: function(b){
+            b = boolean(b);
+            this.isAsync = b;
+            this.socket.emit('isAsync', this.isAsync);
         },
-        setAsyncOff: function() {
-            if(this.isAsync) {
-                this.isAsync = false;
-                this.socket.emit('isAsync', this.isAsync);
-            }
+        syncClient: function(step) {
+            this.socketProcessStep(step);
         },
+
+        requestNext: function() {
+            this.socket.emit('ack', this.length);
+        },
+
         sendHalt: function() {
             console.log('halting model. cache length: ', this.length);
             this.socket.emit('halt');
         },
         sendStepAck: function(step) {
             if(step.step_num) {
-                this.socket.emit('ack', step.step_num, this.numAck);
+                this.socket.emit('ack', step.step_num);
             } else {
                 console.log('step has no step_num, using cache length');
-                this.socket.emit('ack', this.length, this.numAck);
+                this.socket.emit('ack', this.length);
             }
             this.numAck++;
         },
