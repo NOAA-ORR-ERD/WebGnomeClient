@@ -15,6 +15,19 @@ define([
         className: 'modal form-modal upload-form',
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
 
+        events: function(){
+            var formModalHash = FormModal.prototype.events;
+
+            delete formModalHash['change input'];
+            delete formModalHash['keyup input'];
+            formModalHash['change input:not(tbody input)'] = 'update';
+            formModalHash['keyup input:not(tbody input)'] = 'update';
+
+            return _.defaults({
+                'click .open-file': 'useUploadedFile'
+            }, formModalHash);
+        },
+
         initialize: function(options){
             this.body = _.template(UploadTemplate);
             FormModal.prototype.initialize.call(this, options);
@@ -40,7 +53,6 @@ define([
                 var target = $(target_ref).find('tbody#file_list').empty();
 
                 $.get('/uploaded').done(function(result){
-                    console.log('result: ', result);
                     var fileItemTemplate = _.template(FileItemTemplate);
 
                     function fileSize(bytes) {
@@ -89,7 +101,22 @@ define([
             this.dropzone.disable();
             $('input.dz-hidden-input').remove();
             Backbone.View.prototype.close.call(this);
-        }
+        },
+
+        useUploadedFile: function(e) {
+            if (this.$('.popover').length === 0) {
+                var thisOrig = this;
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var fileName = parentRow.cells[0].innerText
+
+                $.post('/map/activate', {'file-name': fileName})
+                .done(function(response){
+                    var map = new MapBNAModel(JSON.parse(response));
+                    thisOrig.trigger('save', map);
+                    thisOrig.hide();
+                });
+            }
+        },
     });
 
     return mapUploadForm;
