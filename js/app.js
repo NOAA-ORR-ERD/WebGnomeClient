@@ -27,6 +27,7 @@ define([
 
             this.config = this.getConfig();
             this.configure();
+            this.capabilities();
 
             this.config.date_format.half_hour_times = this.generateHalfHourTimesArray();
             this.config.date_format.time_step = 30;
@@ -375,6 +376,21 @@ define([
                 }
             });
 
+        },
+
+        capabilities: function(){
+            var thisApp = this;
+
+            $.get(this.config.api + '/uploaded')
+            .done(function(result) {
+                // We are just trying to figure out whether our API server
+                // supports persistent uploads.  If we succeed here at all,
+                // then persistent uploads are indeed supported
+                thisApp.config.can_persist = true;
+            })
+            .fail(function() {
+                thisApp.config.can_persist = false;
+            });
         },
 
         getForm: function(obj_type){

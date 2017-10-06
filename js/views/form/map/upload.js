@@ -4,13 +4,13 @@ define([
     'backbone',
     'views/modal/form',
     'text!templates/form/map/upload.html',
-    'text!templates/form/map/upload_noactivate.html',
+    'text!templates/form/map/upload_activate.html',
     'text!templates/default/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html',
     'model/map/bna'
 ], function(_, $, Backbone, FormModal,
-            UploadTemplate, UploadNoActivateTemplate, FileItemTemplate,
+            UploadTemplate, UploadActivateTemplate, FileItemTemplate,
             Dropzone, DropzoneTemplate, MapBNAModel){
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
@@ -31,15 +31,12 @@ define([
         },
 
         initialize: function(options){
-        	    var uploadTemplate = UploadNoActivateTemplate;
-            $.get('/uploaded').done(function(result){
-                // We are just trying to figure out whether our API server
-                // supports persistent uploads.  If we succeed here at all,
-                // then persistent uploads are indeed supported
-                uploadTemplate = UploadTemplate;
-            });
+            if (webgnome.config.can_persist) {
+                this.body = _.template(UploadActivateTemplate);
+            } else {
+                this.body = _.template(UploadTemplate);
+            }
 
-            this.body = _.template(uploadTemplate);
             FormModal.prototype.initialize.call(this, options);
         },
 
