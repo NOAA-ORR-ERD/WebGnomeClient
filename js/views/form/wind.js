@@ -15,6 +15,9 @@ define([
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
+    'text!templates/form/map/upload.html',
+    'text!templates/form/map/upload_activate.html',
+    'text!templates/default/uploaded_file.html',
     'views/default/map',
     'model/movers/wind',
     'model/environment/wind',
@@ -24,8 +27,9 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
             Dropzone, DropzoneTemplate,
-            FormModal, FormTemplate,
+            FormModal, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
+            UploadTemplate, UploadActivateTemplate, FileItemTemplate,
             OlMapView, WindMoverModel, WindModel, NwsWind){
     'use strict';
     var windForm = FormModal.extend({
@@ -52,7 +56,8 @@ define([
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
                 'keyup #nws #lat': 'nwsSubmit',
-                'keyup #nws #lon': 'nwsSubmit'
+                'keyup #nws #lon': 'nwsSubmit',
+                'click .open-file': 'useUploadedFile'
             }, formModalHash);
         },
 
@@ -142,7 +147,7 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(WindFormTemplate, {
                 constant_datetime: moment(this.model.get('timeseries')[0][0]).format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
@@ -361,6 +366,14 @@ define([
         },
 
         setupUpload: function(){
+            this.$('#upload_form').empty();
+            if (webgnome.config.can_persist) {
+                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+            } else {
+                this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+
+
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/mover/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
@@ -373,6 +386,49 @@ define([
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+            
+            $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
+                var target_ref = $(e.target).attr("href"); // activated tab
+                var target = $(target_ref).find('tbody#file_list').empty();
+
+                $.get('/uploaded').done(function(result){
+                    var fileItemTemplate = _.template(FileItemTemplate);
+
+                    function fileSize(bytes) {
+                        var exp = Math.log(bytes) / Math.log(1024) | 0;
+                        var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+
+                        return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                    }
+
+                    $.each(result, function (index, file) {
+                        $(target).append(fileItemTemplate({'file': file,
+                        	                                  'fileSize': fileSize,
+                                                           }));
+                    });
+                });
+            });
+        },
+
+        useUploadedFile: function(e) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var fileName = parentRow.cells[0].innerText
+
+                $.post('/environment/activate', {'file-name': fileName})
+                .done(function(response){
+                    var json_response = JSON.parse(response);
+                    thisForm.model.set('filename', json_response.filename);
+                    thisForm.model.set('name', json_response.name);
+                    thisForm.model.save(null, {
+                        success: _.bind(function(){
+                            thisForm.trigger('save', this.model);
+                            thisForm.hide();
+                        }, this)
+                    });
+                });
+            }
         },
 
         sending: function(e, xhr, formData){
@@ -425,7 +481,7 @@ define([
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
 
-            if (active !== 'nws' && active !== 'variable') {
+            if (active === 'constant') {
                 var speed = this.form[active].speed.val();
                 var direction = this.form[active].direction.val();
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
