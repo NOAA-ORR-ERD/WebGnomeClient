@@ -373,7 +373,6 @@ define([
                 this.$('#upload_form').append(_.template(UploadTemplate));
             }
 
-
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/mover/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
@@ -386,7 +385,7 @@ define([
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
-            
+
             $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
                 var target_ref = $(e.target).attr("href"); // activated tab
                 var target = $(target_ref).find('tbody#file_list').empty();
