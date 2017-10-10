@@ -5,9 +5,14 @@ define([
     'views/modal/form',
     'model/movers/py_wind',
     'text!templates/form/griddedwind.html',
+    'text!templates/default/upload.html',
+    'text!templates/default/upload_activate.html',
+    'text!templates/default/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, PyWindMover, GriddedWindTemplate, Dropzone, DropzoneTemplate){
+], function(_, $, module, FormModal, PyWindMover, GriddedWindTemplate,
+            UploadTemplate, UploadActivateTemplate, FileItemTemplate,
+            Dropzone, DropzoneTemplate){
     var griddedWindForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
         title: 'Create Wind (Mover Only)',
@@ -16,6 +21,7 @@ define([
         events: function(){
             return _.defaults({
                 'click .gridwind': 'gridwind',
+                'click .open-file': 'useUploadedFile'
             }, FormModal.prototype.events);
         },
 
@@ -38,6 +44,13 @@ define([
         },
 
         setupUpload: function(){
+            this.$('#upload_form').empty();
+            if (webgnome.config.can_persist) {
+                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+            } else {
+                this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/mover/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
@@ -50,6 +63,41 @@ define([
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+
+            $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
+                var target_ref = $(e.target).attr("href"); // activated tab
+                var target = $(target_ref).find('tbody#file_list').empty();
+
+                $.get('/uploaded').done(function(result){
+                    var fileItemTemplate = _.template(FileItemTemplate);
+
+                    function fileSize(bytes) {
+                        var exp = Math.log(bytes) / Math.log(1024) | 0;
+                        var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+
+                        return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                    }
+
+                    $.each(result, function (index, file) {
+                        $(target).append(fileItemTemplate({'file': file,
+                        	                                  'fileSize': fileSize,
+                                                           }));
+                    });
+                });
+            });
+        },
+
+        useUploadedFile: function(e) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var fileName = parentRow.cells[0].innerText
+
+                $.post('/environment/activate', {'file-name': fileName})
+                .done(function(response){
+                    thisForm.loaded(e, response);
+                });
+            }
         },
 
         gridwind: function(){
@@ -86,6 +134,7 @@ define([
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
             this.model.set('name', json_response.name);
+
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);

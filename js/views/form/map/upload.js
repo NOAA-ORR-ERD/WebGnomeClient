@@ -112,15 +112,13 @@ define([
 
         useUploadedFile: function(e) {
             if (this.$('.popover').length === 0) {
-                var thisOrig = this;
+                var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
                 var fileName = parentRow.cells[0].innerText
 
                 $.post('/map/activate', {'file-name': fileName})
                 .done(function(response){
-                    var map = new MapBNAModel(JSON.parse(response));
-                    thisOrig.trigger('save', map);
-                    thisOrig.hide();
+                    thisForm.loaded(e, response);
                 });
             }
         },

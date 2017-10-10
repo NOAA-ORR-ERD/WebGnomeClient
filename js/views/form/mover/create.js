@@ -99,33 +99,7 @@ define([
 
                 $.post('/environment/activate', {'file-name': fileName})
                 .done(function(response){
-                    var json_response = JSON.parse(response);
-                    thisForm.model.set('filename', json_response.filename);
-                    thisForm.model.set('name', json_response.name);
-
-                    if (thisForm.model.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover')
-                    {
-                        // Must include a 'current' otherwise the API will not
-                        // add it and later on the current object referenced by
-                        // environment obj collection will disassociate from
-                        // the one referenced by this mover
-                        thisForm.model.set('current',
-                                           {data_file: json_response.filename,
-                                            grid_file: json_response.filename,
-                                            obj_type: 'gnome.environment.environment_objects.GridCurrent'
-                                            });
-                    }
-
-                    thisForm.model.save(null, {
-                        success: _.bind(function(){
-                            this.trigger('save', this.model);
-                            this.hide();
-                        }, thisForm),
-                        error: _.bind(function(model, e){
-                            this.error(e.responseText);
-                            this.reset(file, true);
-                        }, thisForm)
-                    });
+                    thisForm.loaded(e, response);
                 });
             }
         },
@@ -176,10 +150,14 @@ define([
             this.model.set('name', json_response.name);
 
             if (this.model.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
-                // Must include a 'current' otherwise the API will not add it and later on
-                // the current object referenced by environment obj collection will disassociate
-                // from the one referenced by this mover
-                this.model.set('current', {data_file: json_response.filename, grid_file: json_response.filename, obj_type: 'gnome.environment.environment_objects.GridCurrent'});
+                // Must include a 'current' otherwise the API will not add it
+                // and later on the current object referenced by environment
+                // obj collection will disassociate from the one referenced
+                // by this mover
+                this.model.set('current', {data_file: json_response.filename,
+                                           grid_file: json_response.filename,
+                                           obj_type: 'gnome.environment.environment_objects.GridCurrent'
+                                           });
             }
 
             this.model.save(null, {

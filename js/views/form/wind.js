@@ -417,15 +417,7 @@ define([
 
                 $.post('/environment/activate', {'file-name': fileName})
                 .done(function(response){
-                    var json_response = JSON.parse(response);
-                    thisForm.model.set('filename', json_response.filename);
-                    thisForm.model.set('name', json_response.name);
-                    thisForm.model.save(null, {
-                        success: _.bind(function(){
-                            thisForm.trigger('save', this.model);
-                            thisForm.hide();
-                        }, this)
-                    });
+                    thisForm.loaded(e, response);
                 });
             }
         },
