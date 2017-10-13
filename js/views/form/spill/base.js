@@ -31,6 +31,7 @@ define([
                 'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
                 'keyup .geo-info': 'manualMapInput',
+                'keyup .input-sm': 'emulsionUpdate',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'show.bs.model': 'renderPositionInfo',
@@ -355,7 +356,7 @@ define([
         },
 
 		update: function(){
-            this.emulsionUpdate();
+            //this.emulsionUpdate();
             this.tabStatusSetter();
             // this.setCoords();
 		},
