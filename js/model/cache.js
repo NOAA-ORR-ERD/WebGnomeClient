@@ -11,7 +11,8 @@ define([
         socketRoute: '/step_socket',
         fetching: false,
         inline: [],
-        isAsync: false,
+        isAsync: true,
+        isHalted: false,
         numAck: 0,
         model: StepModel,
 
@@ -86,28 +87,44 @@ define([
             this.length = 0;
             this.trigger('reset');
             this.inline = [];
+            if(this.streaming) {
+                this.socket.disconnect();
+                this.streaming = false;
+            }
         },
 
         socketConnect: function(){
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to step namespace');
-            console.trace();
             this.socket = io.connect(webgnome.config.api + this.socketRoute);
             this.socket.on('step', _.bind(this.socketProcessStep, this));
-            this.socket.on('step_started', _.bind(this.stepStarted,this));
+            this.socket.on('prepared', _.bind(this.begin,this));
             this.socket.on('sync_step', _.bind(this.syncClient, this));
-            this.socket.on('end', _.bind(this.endStream, this));
+            this.socket.on('complete', _.bind(this.endStream, this));
+            this.socket.on('timeout', _.bind(this.timedOut, this));
+            this.socket.on('killed', _.bind(this.killed, this));
         },
         stepStarted: function(event){
             console.log('step namespace started on api');
         },
         socketProcessStep: function(step){
-            
-            this.inline.push(new StepModel(step));
+            var sm = new StepModel(step)
+            this.inline.push(sm);
             this.length++;
             this.trigger('step:buffered');
-            this.trigger('step:received', {step: step.step_num});
+            this.trigger('step:received', sm);
+            if(!this.isAsync){
+                this.sendStepAck(step);
+            }
         },
+        begin: function() {
+            // this is this.socket.connected in socket.io v1.0+
+            if(!this.streaming){
+                this.sendStepAck({step:-1});
+                this.streaming = true;
+            }
+        },
+
         setAsync: function(b){
             b = boolean(b);
             this.isAsync = b;
@@ -117,14 +134,20 @@ define([
             this.socketProcessStep(step);
         },
 
-        requestNext: function() {
-            this.socket.emit('ack', this.length);
-        },
-
         sendHalt: function() {
             console.log('halting model. cache length: ', this.length);
             this.socket.emit('halt');
+            this.isHalted = true;
         },
+
+        resume: function() {
+            if(this.isHalted) {
+                console.log('resuming model');
+                this.socket.emit('ack', this.length)
+            }
+            this.isHalted = false;
+        },
+
         sendStepAck: function(step) {
             if(step.step_num) {
                 this.socket.emit('ack', step.step_num);
@@ -136,30 +159,55 @@ define([
         },
 
         getSteps: function() {
-            var step = new AsyncStepModel();
-            this.streaming = true;
-            this.socketConnect();
-            step.fetch({
-                success: _.bind(function(step){
-                    console.log('getSteps success!')
-                }, this),
-                error: _.bind(function(){
-                    console.log('getSteps success!')
-                }, this)
-            });
+            if(!this.streaming) {
+                // this is this.socket.connected in socket.io v1.0+
+                if(!this.socket){
+                    this.socketConnect();
+                }
+                var step = new AsyncStepModel();
+                step.fetch({
+                    success: _.bind(function(step){
+                        console.log('getSteps success!')
+                    }, this),
+                    error: _.bind(function(){
+                        console.log('getSteps success!')
+                    }, this)
+                });
+            }
         },
 
-        endStream: function() {
+        endStream: function(msg) {
             this.streaming = false;
+            this.isHalted = false;
+            if(msg){
+                console.info(msg);
+            }
             this.trigger('step:done');
+            //this.socket.removeAllListeners()
+            this.socket.disconnect()
+        },
+
+        timedOut: function(msg) {
+            this.streaming = false;
+            this.isHalted = false;
+            this.trigger('step:timeout');
+            if(msg){
+                console.error('Model run timed out.');
+            } else {
+                console.error(msg);
+            }
             this.socket.removeAllListeners()
             this.socket.disconnect()
         },
 
-        haltSteps: function() {
-            this.socket.emit('haltSteps', localStorage.getItem('session'));
-        },
-
+        killed: function(msg) {
+            this.endStream(null);
+            if(msg){
+                console.error('Model run killed.');
+            } else {
+                console.error(msg);
+            }
+        }
     });
 
     return cache;

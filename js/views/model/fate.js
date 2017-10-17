@@ -152,6 +152,7 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
+            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             if(!webgnome.hasModel()){
                 webgnome.router.navigate('', true);
             } else if(webgnome.model.validWeathering()){
@@ -338,19 +339,19 @@ define([
                 // incase trajectory triggered a /step but it hasn't returned yet
                 // and the user just toggled the switch to fate view
                 // add a listener to handle that pending step.
-                if(webgnome.cache.fetching){
-                    webgnome.cache.once('step:recieved', this.load, this);
-                } else {
-                    while(this.frame < webgnome.cache.length){
-                        webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
-                        this.frame++;
-                    }
+                while(this.frame < webgnome.cache.length){
+                    webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
+                    this.frame++;
+                }
+                this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
+                if(webgnome.cache.streaming && webgnome.cache.isHalted){
+                    webgnome.cache.resume()
                 }
             } else {
-                webgnome.cache.on('step:recieved', this.buildDataset, this);
-                setTimeout(function(){
-                    webgnome.cache.step();
-                }, 200);
+                this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
+                if(!webgnome.cache.streaming) {
+                    setTimeout(_.bind(webgnome.cache.getSteps, webgnome.cache), 2000);
+                }
             }
             if(localStorage.getItem('autorun') === 'true'){
                 localStorage.setItem('autorun', '');
@@ -363,25 +364,14 @@ define([
             // on the last step render the graph and if there are more steps start the steping.
             if(step.get('step_num') === webgnome.cache.length - 1){
                 this.renderGraphs();
-                if(step.get('step_num') < webgnome.model.get('num_time_steps')){
-                    webgnome.cache.on('step:recieved', this.buildDataset, this);
-                    setTimeout(function(){
-                        webgnome.cache.step();
-                    }, 200);
-                }
             }
         },
 
         reset: function(){
-            webgnome.cache.off('step:recieved', this.buildDataset, this);
-            if(webgnome.cache.fetching){
-                webgnome.cache.once('step:recieved', this.reset, this);
-            } else {
-                webgnome.cache.on('step:recieved', this.buildDataset, this);
-                this.dataset = undefined;
-                this.frame = 0;
-                this.renderLoop();
-            }
+            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
+            this.dataset = undefined;
+            this.frame = 0;
+            this.load();
         },
 
         render: function(){
@@ -550,7 +540,7 @@ define([
                 });
             }
         },
-
+/*
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
                 webgnome.cache.step();
@@ -558,13 +548,13 @@ define([
                 this.renderGraphs();
             }
         },
-
+*/
         showHelp: function(){
             this.$('.gnome-help').show();
             this.$('.gnome-help').tooltip();
         },
 
-        renderGraphs: function(){
+        renderGraphs: _.throttle(function(){
             // find active tab and render it's graph.
             var parentTabId = this.$('.active a').attr('href');
             var active = this.$(parentTabId + ' .active a').attr('href');
@@ -596,7 +586,7 @@ define([
             } else if(active === '#ics209') {
                 this.renderGraphICS(this.dataset);
             }
-        },
+        },200),
 
         renderGraphOilBudget: function(dataset){
             var cloneset = this.pruneDataset(JSON.parse(JSON.stringify(dataset)), [
@@ -1595,14 +1585,16 @@ define([
             if(_.has(step.get('WeatheringOutput'), 'nominal')){
                 this.formatStep(step);
                 if(this.validateDataset()){
-                    webgnome.cache.step();
                     this.frame++;
                     this.renderGraphs();
                 } else {
-                    webgnome.cache.off('step:recieved', this.buildDataset, this);
+                    this.stopListening(webgnome.cache, 'step:received', this.buildDataset);
                     delete this.dataset;
                     this.frame = 0;
                     this.load();
+                    if(!webgnome.cache.isAsync){
+                        webgnome.cache.sendStepAck(step);
+                    }
                 }
             } else {
                 swal({
@@ -1937,7 +1929,7 @@ define([
         close: function(){
             $('.xdsoft_datetimepicker').remove();
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
-            webgnome.cache.off('step:recieved', this.buildDataset, this);
+            this.stopListening(webgnome.cache, 'step:received', this.buildDataset);
             webgnome.cache.off('rewind', this.reset, this);
 
             this.rendered = false;

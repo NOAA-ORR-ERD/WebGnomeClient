@@ -39,6 +39,7 @@ define([
         frame: 0,
         contracted: false,
         fps: 30,
+        rframe: 0,
 
         events: {
             'click .spill-button .fixed': 'toggleSpill',
@@ -52,6 +53,7 @@ define([
             'click .record': 'record',
             'click .stoprecord': 'stoprecord',
             'click .pause': 'pause',
+            'click .stop': 'stop',
             'click .back': 'prev',
             'click .next': 'next',
             'click .rewind': 'rewindClick',
@@ -389,22 +391,26 @@ define([
         loop: function(){
             if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
                this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
-                if (webgnome.cache.length > this.controls.seek.slider('value')){
+                if (webgnome.cache.length > this.controls.seek.slider('value') && webgnome.cache.length !== 0){
                     // the cache has the step, just render it
-                    setTimeout(_.bind(function(){
+                    this.rframe = setTimeout(_.bind(function(){
                         this.renderStep({step: this.controls.seek.slider('value')});
                     }, this), 1000/this.fps);
                 } else  {
                     this.updateProgress();
+                    if(webgnome.cache.isHalted){
+                        webgnome.cache.resume();
+                    }
+                    if (webgnome.cache.length === this.controls.seek.slider('value')) {
+                        this.listenTo(webgnome.cache, 'step:received', this.renderStep);
+                        //webgnome.cache.on('step:received', this.renderStep, this);
+                    }
                     if (!webgnome.cache.streaming) {
                         webgnome.cache.getSteps();
-                    } else if (webgnome.cache.isAsync){
-                        setTimeout(_.bind(function(){
+                    } else {
+                        this.rframe = setTimeout(_.bind(function(){
                             this.renderStep({step: this.controls.seek.slider('value')});
                         }, this), 1000/this.fps);
-                    } else {
-                        webgnome.cache.requestNext()
-                        setTimeout(null, 1000/this.fps)
                     }
                 }
                 if(this.state === 'next'){
@@ -492,41 +498,47 @@ define([
         play: function(){
             if($('.modal:visible').length === 0){
                 if (webgnome.cache.length === this.controls.seek.slider('value') || !webgnome.cache.isAsync) {
-                    webgnome.cache.on('step:received', this.renderStep, this);
+                    this.listenTo(webgnome.cache, 'step:received', this.renderStep);
+                    //webgnome.cache.on('step:received', this.renderStep, this);
                 }
                 this.state = 'play';
                 this.controls.pause.show();
                 this.controls.play.hide();
-                if(this.is_recording) {
-                    //this.recorder.resume();
-                }
                 this.loop();
             }
         },
 
         pause: function(){
             if($('.modal:visible').length === 0){
-                webgnome.cache.off('step:received', this.renderStep, this);
+                this.stopListening(webgnome.cache, 'step:received', this.renderStep);
+                //webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'pause';
                 this.controls.play.show();
                 this.controls.pause.hide();
             }
         },
 
-        rewind: function(){
-            this.pause();
-            if(this.is_recording){
-                //this.recorder.clearRecordedData();
-                //this.stoprecord();
+        stop: function() {
+            if($('.modal:visible').length === 0){
+                this.pause();
+                webgnome.cache.sendHalt();
             }
+        },
+
+        rewind: function(){
             this.controls.progress.css('width', 0);
-            this.renderStep({step: 0});
             this.frame = 0;
             this.controls.seek.slider('value', 0);
         },
 
         rewindClick: function(e){
-            webgnome.cache.rewind();
+            this.pause();
+            clearTimeout(this.rframe)
+            setTimeout(_.bind(function(){
+                this.renderStep({step: 0});
+                webgnome.cache.rewind();
+            }, this), 20);
+            
         },
 
         prev: function(){
@@ -562,14 +574,17 @@ define([
             this.state = 'pause';
         },
 
-        renderStep: _.throttle(function(source){
+        renderStep: _.debounce(function(source){
             var step;
             if(_.has(source, 'step')){
+                //step = webgnome.cache.inline[source.step];
+                //this.drawStep(step);
                 webgnome.cache.at(source.step, _.bind(function(err, step){
                     if(!err){
                         this.drawStep(step);
                     }
                 }, this));
+                
             } else {
                 step = source;
                 this.drawStep(step);
