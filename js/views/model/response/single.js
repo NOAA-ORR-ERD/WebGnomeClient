@@ -279,21 +279,21 @@ define([
             draw_legendskim.attr('fill', 'green');
             draw_legendskim.attr('stroke', 'white');
             // label skim
-            draw_legendskimlabel = paper.text(center - (legend_width / 2) + 25, 37 + 10, 'Skim Time');
+            var draw_legendskimlabel = paper.text(center - (legend_width / 2) + 25, 37 + 10, 'Skim Time');
             draw_legendskimlabel.attr({'text-anchor': 'start'});
 
             var draw_legendtransit = paper.rect(center - (legend_width / 2) + 77, 30 + 10, 15, 15);
             draw_legendtransit.attr('fill', 'red');
             draw_legendtransit.attr('stroke', 'white');
             // label transit
-            draw_legendtransitlabel = paper.text(center - (legend_width / 2) + 97, 37 + 10, 'Transit Time');
+            var draw_legendtransitlabel = paper.text(center - (legend_width / 2) + 97, 37 + 10, 'Transit Time');
             draw_legendtransitlabel.attr({'text-anchor': 'start'});
             
             var draw_legendoffload = paper.rect(center - (legend_width / 2) + 158, 30 + 10, 15, 15);
             draw_legendoffload.attr('fill', 'orange');
             draw_legendoffload.attr('stroke', 'white');
             // label offload
-            draw_legendoffloadlabel = paper.text(center - (legend_width / 2) + 178, 37 + 10, 'Offload/Rig Time');
+           var draw_legendoffloadlabel = paper.text(center - (legend_width / 2) + 178, 37 + 10, 'Offload/Rig Time');
             draw_legendoffloadlabel.attr({'text-anchor': 'start'});
         },
 
@@ -318,9 +318,9 @@ define([
                 grid[i] = Array();
                 // grid[i]['line'] = paper.path('M'+lines*i+' 110L'+lines*i+' 450');
                 // grid[i]['line'].attr('stroke', '#ddd');
-                if(i != 0){
-                    grid[i]['label'] = paper.text(spacing*i, 95, i);
-                    grid[i]['label'].attr('fill', '#999');
+                if(i !== 0){
+                    grid[i].label = paper.text(spacing*i, 95, i);
+                    grid[i].label.attr('fill', '#999');
                 }
             }
         },

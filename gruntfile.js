@@ -136,7 +136,10 @@ module.exports = function(grunt){
                     "Float32Array": true,
                     "Float64Array": true,
                     "ArrayBuffer": true,
-                    "Blob": true
+                    "Blob": true,
+                    "navigator": true,
+                    "URL": true,
+                    "MouseEvent": true
                 }
             },
             all: src
