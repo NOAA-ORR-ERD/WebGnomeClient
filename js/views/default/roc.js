@@ -154,6 +154,7 @@ define([
                 spillTypeForm.render();
                 spillTypeForm.on('hidden', spillTypeForm.close);
                 spillTypeForm.on('select', _.bind(function(form){
+                    form.showGeo = false;
                     form.$el.addClass('roc');
                     form.on('wizardclose', form.close);
                     form.on('save', _.bind(function(){
