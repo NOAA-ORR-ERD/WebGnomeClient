@@ -31,6 +31,7 @@ define([
                 'click .null-substance': 'setSubstanceNull',
                 'contextmenu #spill-form-map': 'update',
                 'keyup .geo-info': 'manualMapInput',
+                'keyup .input-sm': 'emulsionUpdate',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'show.bs.model': 'renderPositionInfo',
@@ -67,8 +68,8 @@ define([
 				this.model = spillModel;
 			}
 
-            this.showGeo = true;
-            this.showSubstance = true;
+            this.showGeo = options.showGeo ? options.showGeo : true;
+            this.showSubstance = options.showSubstance ? options.showSubstance : true;
             if(this.model.get('name') === 'Spill'){
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
@@ -241,6 +242,7 @@ define([
             var oilExists = !_.isNull(substance);
             if (oilExists){
                 compiled = _.template(SubstanceTemplate, {
+                    size: this.showGeo ? '12': '6',
                     name: substance.get('name'),
                     api: Math.round(substance.get('api') * 1000) / 1000,
                     temps: substance.parseTemperatures(),
@@ -355,7 +357,7 @@ define([
         },
 
 		update: function(){
-            this.emulsionUpdate();
+            //this.emulsionUpdate();
             this.tabStatusSetter();
             // this.setCoords();
 		},

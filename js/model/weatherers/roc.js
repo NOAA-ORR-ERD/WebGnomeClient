@@ -24,7 +24,7 @@ define([
         },
 
         isActive: function(datetime){
-            dt_u = moment(datetime).format('X');
+            var dt_u = moment(datetime).format('X');
             for(var e = 0; e < this.get('timeseries').length; e++){
                 var start_ts = moment(this.get('timeseries')[e][0]);
                 var end_ts = moment(this.get('timeseries')[e][1]);
