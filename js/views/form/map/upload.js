@@ -26,7 +26,8 @@ define([
             formModalHash['keyup input:not(tbody input)'] = 'update';
 
             return _.defaults({
-                'click .open-file': 'useUploadedFile'
+                'click .open-file': 'useUploadedFile',
+                'click .open-folder': 'useUploadFolder'
             }, formModalHash);
         },
 
@@ -41,6 +42,7 @@ define([
         },
 
         render: function(){
+            formThis = this;
             FormModal.prototype.render.call(this);
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/map/upload',
@@ -50,6 +52,7 @@ define([
                 //acceptedFiles: '.bna',
                 dictDefaultMessage: 'Drop <code>.bna</code> file here to upload (or click to navigate)'
             });
+
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
@@ -59,22 +62,7 @@ define([
                 var target_ref = $(e.target).attr("href"); // activated tab
                 var target = $(target_ref).find('tbody#file_list').empty();
 
-                $.get('/uploaded').done(function(result){
-                    var fileItemTemplate = _.template(FileItemTemplate);
-
-                    function fileSize(bytes) {
-                        var exp = Math.log(bytes) / Math.log(1024) | 0;
-                        var result = (bytes / Math.pow(1024, exp)).toFixed(2);
-
-                        return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
-                    }
-
-                    $.each(result, function (index, file) {
-                        $(target).append(fileItemTemplate({'file': file,
-                        	                                  'fileSize': fileSize,
-                                                           }));
-                    });
-                });
+                formThis.renderFileList(target, []);
             });
         },
 
@@ -110,6 +98,29 @@ define([
             Backbone.View.prototype.close.call(this);
         },
 
+        renderFileList: function(target, sub_folders) {
+            upload_path = $(['/uploads'].concat(sub_folders)).get().join('/');
+            console.log('renderFileList(): target = ' + target + ', path = ' + upload_path);
+
+
+            $.get(upload_path).done(function(result){
+                var fileItemTemplate = _.template(FileItemTemplate);
+
+                function fileSize(bytes) {
+                    var exp = Math.log(bytes) / Math.log(1024) | 0;
+                    var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+
+                    return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                }
+
+                $.each(result, function (index, file) {
+                    $(target).append(fileItemTemplate({'file': file,
+                    	                                  'fileSize': fileSize,
+                                                       }));
+                });
+            });
+        },
+
         useUploadedFile: function(e) {
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
@@ -121,6 +132,28 @@ define([
                     thisForm.loaded(e, response);
                 });
             }
+        },
+
+        useUploadFolder: function(e) {
+
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var folderName = parentRow.cells[0].innerText;
+
+                breadcrumbs = thisForm.$('.breadcrumb');
+                breadcrumbs.append($('<li>').append(folderName));
+
+                sub_folders = breadcrumbs.find('li')
+                              .map(function (idx, item) {
+                                  return item.innerText;
+                              }).slice(1).toArray();
+                console.log('Use the upload folders: ' + sub_folders);
+
+                var target = $(thisForm).find('tbody#file_list').empty();
+
+                thisForm.renderFileList(target, sub_folders);
+                }
         },
     });
 

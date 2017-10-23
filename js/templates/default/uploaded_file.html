@@ -2,6 +2,10 @@
     <td>{{ file.name }}</td>
     <td>{{ fileSize(file.size) }}</td>
     <td>
-        <span class="glyphicon glyphicon-open open-file" title="Open File"></span>
+        {% if(file.type === 'f'){ %}
+            <span class="glyphicon glyphicon-open open-file" title="Open File"></span>
+        {% } else { %}
+            <span class="glyphicon glyphicon-folder-open open-folder" title="Open Folder"></span>
+        {% } %}
     </td>
 </tr>
