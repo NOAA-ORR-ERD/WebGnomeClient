@@ -399,7 +399,10 @@ define([
                 success: _.bind(function(){
                     this.trigger('save', this.model);
                     this.hide();
-                }, this)
+                }, this),
+                error: _.bind(function(){
+                    this.error('An error occured while creating this object.');
+                })
             });
         },
 
