@@ -8,10 +8,11 @@ define([
     'text!templates/default/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html',
-    'model/map/bna'
+    'model/map/bna',
+    'model/uploads/upload_folder'
 ], function(_, $, Backbone, FormModal,
             UploadTemplate, UploadActivateTemplate, FileItemTemplate,
-            Dropzone, DropzoneTemplate, MapBNAModel){
+            Dropzone, DropzoneTemplate, MapBNAModel, UploadFolder) {
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         className: 'modal form-modal upload-form',
@@ -27,7 +28,8 @@ define([
 
             return _.defaults({
                 'click .open-file': 'useUploadedFile',
-                'click .open-folder': 'useUploadFolder'
+                'click .open-folder': 'openFolder',
+                'click .breadcrumb li': 'useBreadcrumbFolder'
             }, formModalHash);
         },
 
@@ -58,12 +60,11 @@ define([
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
 
-            $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
-                var target_ref = $(e.target).attr("href"); // activated tab
-                var target = $(target_ref).find('tbody#file_list').empty();
-
-                formThis.renderFileList(target, []);
-            });
+            if (webgnome.config.can_persist) {
+	            this.uploadFolder = new UploadFolder();
+	            this.uploadFolder.bind("reset", _.bind(this.renderFileList, this));
+	            this.uploadFolder.fetch({reset: true});
+            }
         },
 
         sending: function(e, xhr, formData){
@@ -98,26 +99,28 @@ define([
             Backbone.View.prototype.close.call(this);
         },
 
-        renderFileList: function(target, sub_folders) {
-            upload_path = $(['/uploads'].concat(sub_folders)).get().join('/');
-            console.log('renderFileList(): target = ' + target + ', path = ' + upload_path);
+        renderFileList: function(uploadFolder) {
+            var fileList = this.$('tbody#file_list').empty();
+            var fileItemTemplate = _.template(FileItemTemplate);
 
+            function fileSize(bytes) {
+                var exp = Math.log(bytes) / Math.log(1024) | 0;
+                var result = (bytes / Math.pow(1024, exp)).toFixed(2);
 
-            $.get(upload_path).done(function(result){
-                var fileItemTemplate = _.template(FileItemTemplate);
+                return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+            }
 
-                function fileSize(bytes) {
-                    var exp = Math.log(bytes) / Math.log(1024) | 0;
-                    var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+            uploadFolder.each(function (file, index) {
+                $(fileList).append(fileItemTemplate({'file': file.toJSON(),
+                                                     'fileSize': fileSize,
+                                                     }));
+            });
 
-                    return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
-                }
+            breadcrumbs = this.$('.breadcrumb').empty();
+            breadcrumbs.append($('<li>').append('uploads'));
 
-                $.each(result, function (index, file) {
-                    $(target).append(fileItemTemplate({'file': file,
-                    	                                  'fileSize': fileSize,
-                                                       }));
-                });
+            $(uploadFolder.subFolders).each(function (index, folder) {
+                breadcrumbs.append($('<li>').append(folder));
             });
         },
 
@@ -126,35 +129,35 @@ define([
                 var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
                 var fileName = parentRow.cells[0].innerText
+                var filePath = this.uploadFolder.subFolders.concat(fileName).join('/');
 
-                $.post('/map/activate', {'file-name': fileName})
+                $.post('/map/activate', {'file-name': filePath})
                 .done(function(response){
                     thisForm.loaded(e, response);
                 });
             }
         },
 
-        useUploadFolder: function(e) {
-
+        openFolder: function(e) {
             if (this.$('.popover').length === 0) {
-                var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
                 var folderName = parentRow.cells[0].innerText;
 
-                breadcrumbs = thisForm.$('.breadcrumb');
+                breadcrumbs = this.$('.breadcrumb');
                 breadcrumbs.append($('<li>').append(folderName));
 
-                sub_folders = breadcrumbs.find('li')
-                              .map(function (idx, item) {
-                                  return item.innerText;
-                              }).slice(1).toArray();
-                console.log('Use the upload folders: ' + sub_folders);
-
-                var target = $(thisForm).find('tbody#file_list').empty();
-
-                thisForm.renderFileList(target, sub_folders);
-                }
+                this.uploadFolder.subFolders.push(folderName);                
+                this.uploadFolder.fetch({reset: true});
+            }
         },
+
+        useBreadcrumbFolder: function(e) {
+            if (this.$('.popover').length === 0) {
+                this.uploadFolder.subFolders.length = $(e.target).index();
+                this.uploadFolder.fetch({reset: true});
+            }
+        }
+
     });
 
     return mapUploadForm;

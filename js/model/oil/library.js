@@ -4,7 +4,7 @@ define([
     'backbone',
     'fuse',
     'moment'
-], function(_, $, Backbone, Fuse, moment){
+], function(_, $, Backbone, Fuse, moment) {
     'use strict';
     var oilLib = Backbone.Collection.extend({
         ready: false,
@@ -12,8 +12,8 @@ define([
         sortAttr: 'name',
         sortDir: 1,
 
-        initialize: function(){
-            if(!this.loaded){
+        initialize: function() {
+            if(!this.loaded) {
                 this.fetch({
                     success: _.bind(this.setReady, this)
                 });
@@ -21,11 +21,11 @@ define([
             }
         },
 
-        url: function(){
+        url: function() {
             return webgnome.config.oil_api + '/oil';
         },
 
-        fetchOil: function(id, cb){
+        fetchOil: function(id, cb) {
             var Oil = Backbone.Model.extend({
                 urlRoot: this.url
             });
