@@ -44,7 +44,6 @@ define([
         },
 
         render: function(){
-            formThis = this;
             FormModal.prototype.render.call(this);
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/map/upload',
@@ -107,7 +106,7 @@ define([
                 var exp = Math.log(bytes) / Math.log(1024) | 0;
                 var result = (bytes / Math.pow(1024, exp)).toFixed(2);
 
-                return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                return result + ' ' + (exp === 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
             }
 
             uploadFolder.each(function (file, index) {
@@ -116,7 +115,7 @@ define([
                                                      }));
             });
 
-            breadcrumbs = this.$('.breadcrumb').empty();
+            var breadcrumbs = this.$('.breadcrumb').empty();
             breadcrumbs.append($('<li>').append('uploads'));
 
             $(uploadFolder.subFolders).each(function (index, folder) {
@@ -128,7 +127,7 @@ define([
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
-                var fileName = parentRow.cells[0].innerText
+                var fileName = parentRow.cells[0].innerText;
                 var filePath = this.uploadFolder.subFolders.concat(fileName).join('/');
 
                 $.post('/map/activate', {'file-name': filePath})
@@ -143,7 +142,7 @@ define([
                 var parentRow = this.$(e.target).parents('tr')[0];                
                 var folderName = parentRow.cells[0].innerText;
 
-                breadcrumbs = this.$('.breadcrumb');
+                var breadcrumbs = this.$('.breadcrumb');
                 breadcrumbs.append($('<li>').append(folderName));
 
                 this.uploadFolder.subFolders.push(folderName);                

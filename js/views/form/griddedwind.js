@@ -75,7 +75,7 @@ define([
                         var exp = Math.log(bytes) / Math.log(1024) | 0;
                         var result = (bytes / Math.pow(1024, exp)).toFixed(2);
 
-                        return result + ' ' + (exp == 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+                        return result + ' ' + (exp === 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
                     }
 
                     $.each(result, function (index, file) {
@@ -91,7 +91,7 @@ define([
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
-                var fileName = parentRow.cells[0].innerText
+                var fileName = parentRow.cells[0].innerText;
 
                 $.post('/environment/activate', {'file-name': fileName})
                 .done(function(response){
