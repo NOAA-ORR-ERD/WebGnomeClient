@@ -10,7 +10,6 @@ define([
     'sweetalert',
     'dropzone',
     'text!templates/default/dropzone.html',
-    'views/modal/form',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
@@ -19,18 +18,20 @@ define([
     'text!templates/default/upload_activate.html',
     'text!templates/default/uploaded_file.html',
     'views/default/map',
+    'views/modal/form',
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
+    'model/uploads/upload_folder',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
-            Dropzone, DropzoneTemplate,
-            FormModal, WindFormTemplate,
+            Dropzone, DropzoneTemplate, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
             UploadTemplate, UploadActivateTemplate, FileItemTemplate,
-            OlMapView, WindMoverModel, WindModel, NwsWind){
+            OlMapView, FormModal,
+            WindMoverModel, WindModel, NwsWind, UploadFolder) {
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
@@ -57,7 +58,9 @@ define([
                 'click .clear-winds': 'clearTimeseries',
                 'keyup #nws #lat': 'nwsSubmit',
                 'keyup #nws #lon': 'nwsSubmit',
-                'click .open-file': 'useUploadedFile'
+                'click .open-file': 'useUploadedFile',
+                'click .open-folder': 'openFolder',
+                'click .breadcrumb li': 'useBreadcrumbFolder'
             }, formModalHash);
         },
 
@@ -386,26 +389,26 @@ define([
             this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
 
-            $('.nav-tabs a[href="#use_uploaded"]').on('shown.bs.tab', function (e) {
-                var target_ref = $(e.target).attr("href"); // activated tab
-                var target = $(target_ref).find('tbody#file_list').empty();
+            if (webgnome.config.can_persist) {
+	            this.uploadFolder = new UploadFolder();
+	            this.uploadFolder.bind("reset", _.bind(this.renderFileList, this));
+	            this.uploadFolder.fetch({reset: true});
+            }
+        },
 
-                $.get('/uploaded').done(function(result){
-                    var fileItemTemplate = _.template(FileItemTemplate);
+        renderFileList: function(uploadFolder) {
+            var fileList = this.$('tbody#file_list').empty();
+            var fileItemTemplate = _.template(FileItemTemplate);
 
-                    function fileSize(bytes) {
-                        var exp = Math.log(bytes) / Math.log(1024) | 0;
-                        var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+            uploadFolder.each(function (file, index) {
+                $(fileList).append(fileItemTemplate({'file': file}));
+            });
 
-                        return result + ' ' + (exp === 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
-                    }
+            var breadcrumbs = this.$('.breadcrumb').empty();
+            breadcrumbs.append($('<li>').append('uploads'));
 
-                    $.each(result, function (index, file) {
-                        $(target).append(fileItemTemplate({'file': file,
-                        	                                  'fileSize': fileSize,
-                                                           }));
-                    });
-                });
+            $(uploadFolder.subFolders).each(function (index, folder) {
+                breadcrumbs.append($('<li>').append(folder));
             });
         },
 
@@ -414,11 +417,32 @@ define([
                 var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
                 var fileName = parentRow.cells[0].innerText;
+                var filePath = this.uploadFolder.subFolders.concat(fileName).join('/');
 
-                $.post('/environment/activate', {'file-name': fileName})
+                $.post('/environment/activate', {'file-name': filePath})
                 .done(function(response){
                     thisForm.loaded(e, response);
                 });
+            }
+        },
+
+        openFolder: function(e) {
+            if (this.$('.popover').length === 0) {
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var folderName = parentRow.cells[0].innerText;
+
+                var breadcrumbs = this.$('.breadcrumb');
+                breadcrumbs.append($('<li>').append(folderName));
+
+                this.uploadFolder.subFolders.push(folderName);                
+                this.uploadFolder.fetch({reset: true});
+            }
+        },
+
+        useBreadcrumbFolder: function(e) {
+            if (this.$('.popover').length === 0) {
+                this.uploadFolder.subFolders.length = $(e.target).index();
+                this.uploadFolder.fetch({reset: true});
             }
         },
 

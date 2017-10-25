@@ -31,6 +31,13 @@ define([
             }
         },
 
+        formattedSize: function() {
+            var bytes = this.get('size');
+            var exp = Math.log(bytes) / Math.log(1024) | 0;
+            var result = (bytes / Math.pow(1024, exp)).toFixed(2);
+
+            return result + ' ' + (exp === 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
+        },
     });
 
     return FileObj;

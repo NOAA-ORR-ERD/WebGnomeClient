@@ -102,17 +102,8 @@ define([
             var fileList = this.$('tbody#file_list').empty();
             var fileItemTemplate = _.template(FileItemTemplate);
 
-            function fileSize(bytes) {
-                var exp = Math.log(bytes) / Math.log(1024) | 0;
-                var result = (bytes / Math.pow(1024, exp)).toFixed(2);
-
-                return result + ' ' + (exp === 0 ? 'bytes': 'KMGTPEZY'[exp - 1] + 'B');
-            }
-
             uploadFolder.each(function (file, index) {
-                $(fileList).append(fileItemTemplate({'file': file.toJSON(),
-                                                     'fileSize': fileSize,
-                                                     }));
+                $(fileList).append(fileItemTemplate({'file': file}));
             });
 
             var breadcrumbs = this.$('.breadcrumb').empty();
