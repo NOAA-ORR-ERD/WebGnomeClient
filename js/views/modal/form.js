@@ -15,7 +15,8 @@ define([
     var PseudoMultipleInheritance = BaseForm.extend(BaseModal.prototype);
     var formModal = PseudoMultipleInheritance.extend({
         className: 'modal form-modal',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
+                 '<button type="button" class="save">Save</button>',
         form: [],
 
         events: {

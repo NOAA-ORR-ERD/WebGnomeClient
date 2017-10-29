@@ -16,16 +16,24 @@ define([
 
         initialize: function () {
             // This will be called when an item is added. pushed or unshifted
-            this.on('add', function(model) {
-                console.log('File got added: ' + model.name);
+            this.on('add', function(file) {
+                console.log('File got added: ' + file.get('name'));
+                file.save();
             });
             // This will be called when an item is removed, popped or shifted
-            this.on('remove',  function(model) {
-                console.log('File got removed: ' + model.name);
+            this.on('remove',  function(file) {
+                console.log('File got removed: ' + file.get('name'));
+                file.delete();
             });
             // This will be called when an item is updated
-            this.on('change', function(model) {
-                console.log('File got changed: ' + model.name);
+            this.on('change', function(file) {
+                console.log('UploadFolder: File got changed from: ' + file.previous('name') +
+                            ' to: ' + file.get('name'));
+
+                file.set('new_name', file.get('name'), {silent:true});
+                file.set('name', file.previous('name'), {silent:true});
+
+                file.save();
             });
         },
 

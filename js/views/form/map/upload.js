@@ -3,16 +3,19 @@ define([
     'jquery',
     'backbone',
     'views/modal/form',
+    'views/form/uploads/create_file_modal',
     'text!templates/default/upload.html',
     'text!templates/default/upload_activate.html',
     'text!templates/default/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html',
     'model/map/bna',
-    'model/uploads/upload_folder'
-], function(_, $, Backbone, FormModal,
+    'model/uploads/upload_folder',
+    'model/uploads/file'
+], function(_, $, Backbone, FormModal, CreateFileModal,
             UploadTemplate, UploadActivateTemplate, FileItemTemplate,
-            Dropzone, DropzoneTemplate, MapBNAModel, UploadFolder) {
+            Dropzone, DropzoneTemplate, MapBNAModel,
+            UploadFolder, FileModel) {
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         className: 'modal form-modal upload-form',
@@ -29,7 +32,8 @@ define([
             return _.defaults({
                 'click .open-file': 'useUploadedFile',
                 'click .open-folder': 'openFolder',
-                'click .breadcrumb li': 'useBreadcrumbFolder'
+                'click .new-folder': 'createNewFolderView',
+                'click .breadcrumb li': 'useBreadcrumbFolder',
             }, formModalHash);
         },
 
@@ -61,7 +65,8 @@ define([
 
             if (webgnome.config.can_persist) {
 	            this.uploadFolder = new UploadFolder();
-	            this.uploadFolder.bind("reset", _.bind(this.renderFileList, this));
+                this.uploadFolder.bind("reset", _.bind(this.renderFileList, this));
+                this.uploadFolder.bind("add", _.bind(this.renderFileList, this));
 	            this.uploadFolder.fetch({reset: true});
             }
         },
@@ -99,19 +104,48 @@ define([
         },
 
         renderFileList: function(uploadFolder) {
+            var thisForm = this;
             var fileList = this.$('tbody#file_list').empty();
             var fileItemTemplate = _.template(FileItemTemplate);
 
-            uploadFolder.each(function (file, index) {
+            this.uploadFolder.each(function (file, index) {
                 $(fileList).append(fileItemTemplate({'file': file}));
+                if (file.get('type') === 'f') {
+                    var fileListItem = fileList[0].children[index];
+                    fileListItem.draggable = true;
+                    fileListItem.ondragstart= function (ev) {
+                        var fileName = ev.target.firstElementChild.textContent;
+                        ev.dataTransfer.setData("file", fileName);
+                    };
+                    fileListItem.ondragend = function(ev) {
+                        if(ev.dataTransfer.dropEffect !== 'none'){
+                            $(this).remove();
+                        }
+                    };
+                } else if (file.get('type') === 'd') {
+                    fileList[0].children[index].ondragover = function (ev) {
+                        ev.preventDefault();
+                    };
+                    $(fileList[0].children[index]).bind("drop",
+                                                        _.bind(thisForm.moveFile, thisForm));
+                }
             });
 
             var breadcrumbs = this.$('.breadcrumb').empty();
             breadcrumbs.append($('<li>').append('uploads'));
 
-            $(uploadFolder.subFolders).each(function (index, folder) {
+            $(this.uploadFolder.subFolders).each(function (index, folder) {
                 breadcrumbs.append($('<li>').append(folder));
             });
+        },
+
+        moveFile: function(e, data) {
+            var fileToMove = e.originalEvent.dataTransfer.getData('file');
+            var destinationFolder = e.target.textContent;
+            var fileToChange = this.uploadFolder.where({name: fileToMove})[0];
+
+            console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
+            fileToChange.set('name', destinationFolder);
         },
 
         useUploadedFile: function(e) {
@@ -138,6 +172,23 @@ define([
 
                 this.uploadFolder.subFolders.push(folderName);                
                 this.uploadFolder.fetch({reset: true});
+            }
+        },
+
+        createNewFolderView: function(e) {
+            if (this.$('.popover').length === 0) {
+                this.fileModel = new FileModel({name: 'new_folder',
+                                                size: 0,
+                                                type: 'd'});
+                this.createFileView = new CreateFileModal({}, this.fileModel);
+                this.createFileView.render();
+                this.createFileView.on('save', _.bind(this.createNewFolder, this));
+            }
+        },
+
+        createNewFolder: function(e, model) {
+            if (this.$('.popover').length === 0) {
+                this.uploadFolder.add(this.fileModel);
             }
         },
 
