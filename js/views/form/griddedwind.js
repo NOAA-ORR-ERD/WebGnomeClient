@@ -6,9 +6,9 @@ define([
     'model/movers/py_wind',
     'model/uploads/upload_folder',
     'text!templates/form/griddedwind.html',
-    'text!templates/default/upload.html',
-    'text!templates/default/upload_activate.html',
-    'text!templates/default/uploaded_file.html',
+    'text!templates/uploads/upload.html',
+    'text!templates/uploads/upload_activate.html',
+    'text!templates/uploads/uploaded_file.html',
     'dropzone',
     'text!templates/default/dropzone.html'
 ], function(_, $, module, FormModal, PyWindMover, UploadFolder,

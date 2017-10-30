@@ -4,7 +4,7 @@ define([
     'backbone',
     'model/uploads/file',
     'views/modal/form',
-    'text!templates/default/create_file.html'
+    'text!templates/form/create_file.html'
 ], function($, _, Backbone, FileModel, FormModal, CreateFileTemplate) {
     var createFileModalForm = FormModal.extend({
         title: 'Create New Folder',
