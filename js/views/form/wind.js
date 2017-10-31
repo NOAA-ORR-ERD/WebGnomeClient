@@ -16,27 +16,27 @@ define([
     'text!templates/form/wind/popover.html',
     'text!templates/uploads/upload.html',
     'text!templates/uploads/upload_activate.html',
-    'text!templates/uploads/uploaded_file.html',
     'views/default/map',
     'views/modal/form',
+    'views/uploads/upload_folder',
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
-    'model/uploads/upload_folder',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
             Dropzone, DropzoneTemplate, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
-            UploadTemplate, UploadActivateTemplate, FileItemTemplate,
-            OlMapView, FormModal,
-            WindMoverModel, WindModel, NwsWind, UploadFolder) {
+            UploadTemplate, UploadActivateTemplate,
+            OlMapView, FormModal, UploadFolder,
+            WindMoverModel, WindModel, NwsWind) {
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
         sliderValue: 0,
+
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -58,9 +58,6 @@ define([
                 'click .clear-winds': 'clearTimeseries',
                 'keyup #nws #lat': 'nwsSubmit',
                 'keyup #nws #lon': 'nwsSubmit',
-                'click .open-file': 'useUploadedFile',
-                'click .open-folder': 'openFolder',
-                'click .breadcrumb li': 'useBreadcrumbFolder'
             }, formModalHash);
         },
 
@@ -384,65 +381,15 @@ define([
                 //acceptedFiles: '.osm, .wnd, .txt, .dat',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
+            this.dropzone.on('error', _.bind(this.reset, this));
+            this.dropzone.on('success', _.bind(this.loaded, this));
 
             if (webgnome.config.can_persist) {
-	            this.uploadFolder = new UploadFolder();
-	            this.uploadFolder.bind("reset", _.bind(this.renderFileList, this));
-	            this.uploadFolder.fetch({reset: true});
-            }
-        },
-
-        renderFileList: function(uploadFolder) {
-            var fileList = this.$('tbody#file_list').empty();
-            var fileItemTemplate = _.template(FileItemTemplate);
-
-            uploadFolder.each(function (file, index) {
-                $(fileList).append(fileItemTemplate({'file': file}));
-            });
-
-            var breadcrumbs = this.$('.breadcrumb').empty();
-            breadcrumbs.append($('<li>').append('uploads'));
-
-            $(uploadFolder.subFolders).each(function (index, folder) {
-                breadcrumbs.append($('<li>').append(folder));
-            });
-        },
-
-        useUploadedFile: function(e) {
-            if (this.$('.popover').length === 0) {
-                var thisForm = this;
-                var parentRow = this.$(e.target).parents('tr')[0];                
-                var fileName = parentRow.cells[0].innerText;
-                var filePath = this.uploadFolder.subFolders.concat(fileName).join('/');
-
-                $.post('/environment/activate', {'file-name': filePath})
-                .done(function(response){
-                    thisForm.loaded(e, response);
-                });
-            }
-        },
-
-        openFolder: function(e) {
-            if (this.$('.popover').length === 0) {
-                var parentRow = this.$(e.target).parents('tr')[0];                
-                var folderName = parentRow.cells[0].innerText;
-
-                var breadcrumbs = this.$('.breadcrumb');
-                breadcrumbs.append($('<li>').append(folderName));
-
-                this.uploadFolder.subFolders.push(folderName);                
-                this.uploadFolder.fetch({reset: true});
-            }
-        },
-
-        useBreadcrumbFolder: function(e) {
-            if (this.$('.popover').length === 0) {
-                this.uploadFolder.subFolders.length = $(e.target).index();
-                this.uploadFolder.fetch({reset: true});
+                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
+                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
+                this.uploadFolder.render();
             }
         },
 
@@ -452,18 +399,18 @@ define([
                             $('input#persist_upload')[0].checked);
         },
 
-        reset: function(file){
-            setTimeout(_.bind(function(){
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 10000);
-        },
-
         progress: function(e, percent){
             if(percent === 100){
                 this.$('.dz-preview').addClass('dz-uploaded');
                 this.$('.dz-loading').fadeIn();
             }
+        },
+
+        reset: function(file){
+            setTimeout(_.bind(function(){
+                this.$('.dropzone').removeClass('dz-started');
+                this.dropzone.removeFile(file);
+            }, this), 10000);
         },
 
         loaded: function(e, response){
@@ -476,6 +423,17 @@ define([
                     this.hide();
                 }, this)
             });
+        },
+
+        activateFile: function(filePath) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+
+                $.post('/environment/activate', {'file-name': filePath})
+                .done(function(response){
+                    thisForm.loaded(filePath, response);
+                });
+            }
         },
 
         nwsLoad: function(model){
