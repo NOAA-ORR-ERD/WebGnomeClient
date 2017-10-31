@@ -381,28 +381,32 @@ define([
             this.model.get('release').set('end_position', end_position);
         },
 
-        initOilLib: function(){
-            if(_.isUndefined(this.oilLibraryView)){
+        initOilLib: function() {
+            if(_.isUndefined(this.oilLibraryView)) {
                 this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
                 this.oilLibraryView.render();
                 this.oilLibraryView.on('hidden', _.bind(this.show, this));
                 this.oilLibraryView.on('hidden', this.reloadOil, this);
                 this.oilLibraryView.on('hidden', this.tabStatusSetter, this);
             } else {
-                this.once('hidden', this.oilLibraryView.show, this.oilLibraryView);
+                this.once('hidden',
+                          this.oilLibraryView.show,
+                          this.oilLibraryView);
             }
             this.hide();
         },
 
         initOilInfo: function(){
-            this.oilInfoView = new OilInfoView({containerClass: '.oil-info'}, this.model.get('element_type').get('substance'));
+            this.oilInfoView = new OilInfoView({containerClass: '.oil-info'},
+                                               this.model.get('element_type').get('substance'));
             this.oilInfoView.on('hidden', _.bind(this.show, this));
             this.hide();
         },
 
 		elementSelect: function(){
             var spills = webgnome.model.get('spills');
-            if (this.model.isNew() && spills.length === 0 || !this.model.isNew() && spills.length === 1){
+            if (this.model.isNew() && spills.length === 0 ||
+                    !this.model.isNew() && spills.length === 1) {
                this.initOilLib();
             } else {
                 swal({

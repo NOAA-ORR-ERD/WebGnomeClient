@@ -35,12 +35,14 @@ define([
             this.load = new LoadView({simple: true, el: this.$('.load')});
         },
 
-        setup: function(e){
+        setup: function(e) {
             e.preventDefault();
+
             if(webgnome.hasModel()){
                 webgnome.model.set('mode', 'gnome');
                 webgnome.model.save({'name': 'Model'});
             }
+
             webgnome.router.navigate('config', true);
         },
 

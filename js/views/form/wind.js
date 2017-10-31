@@ -10,26 +10,33 @@ define([
     'sweetalert',
     'dropzone',
     'text!templates/default/dropzone.html',
-    'views/modal/form',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
+    'text!templates/uploads/upload.html',
+    'text!templates/uploads/upload_activate.html',
     'views/default/map',
+    'views/modal/form',
+    'views/uploads/upload_folder',
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal, Dropzone, DropzoneTemplate,
-    FormModal, FormTemplate, VarInputTemplate, VarStaticTemplate, PopoverTemplate, OlMapView, WindMoverModel, WindModel,
-    NwsWind){
+], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
+            Dropzone, DropzoneTemplate, WindFormTemplate,
+            VarInputTemplate, VarStaticTemplate, PopoverTemplate,
+            UploadTemplate, UploadActivateTemplate,
+            OlMapView, FormModal, UploadFolder,
+            WindMoverModel, WindModel, NwsWind) {
     'use strict';
     var windForm = FormModal.extend({
         title: 'Wind',
         className: 'modal form-modal wind-form',
         sliderValue: 0,
+
         events: function(){
             var formModalHash = FormModal.prototype.events;
             delete formModalHash['change input'];
@@ -50,7 +57,7 @@ define([
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
                 'keyup #nws #lat': 'nwsSubmit',
-                'keyup #nws #lon': 'nwsSubmit'
+                'keyup #nws #lon': 'nwsSubmit',
             }, formModalHash);
         },
 
@@ -140,7 +147,7 @@ define([
         },
 
         render: function(options){
-            this.body = _.template(FormTemplate, {
+            this.body = _.template(WindFormTemplate, {
                 constant_datetime: moment(this.model.get('timeseries')[0][0]).format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
@@ -359,6 +366,13 @@ define([
         },
 
         setupUpload: function(){
+            this.$('#upload_form').empty();
+            if (webgnome.config.can_persist) {
+                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+            } else {
+                this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/mover/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
@@ -367,21 +381,22 @@ define([
                 //acceptedFiles: '.osm, .wnd, .txt, .dat',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
+            this.dropzone.on('error', _.bind(this.reset, this));
+            this.dropzone.on('success', _.bind(this.loaded, this));
+
+            if (webgnome.config.can_persist) {
+                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
+                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
+                this.uploadFolder.render();
+            }
         },
 
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
-        },
-
-        reset: function(file){
-            setTimeout(_.bind(function(){
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 10000);
+            formData.append('persist_upload',
+                            $('input#persist_upload')[0].checked);
         },
 
         progress: function(e, percent){
@@ -389,6 +404,13 @@ define([
                 this.$('.dz-preview').addClass('dz-uploaded');
                 this.$('.dz-loading').fadeIn();
             }
+        },
+
+        reset: function(file){
+            setTimeout(_.bind(function(){
+                this.$('.dropzone').removeClass('dz-started');
+                this.dropzone.removeFile(file);
+            }, this), 10000);
         },
 
         loaded: function(e, response){
@@ -404,6 +426,17 @@ define([
                     this.error('An error occured while creating this object.');
                 })
             });
+        },
+
+        activateFile: function(filePath) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+
+                $.post('/environment/activate', {'file-name': filePath})
+                .done(function(response){
+                    thisForm.loaded(filePath, response);
+                });
+            }
         },
 
         nwsLoad: function(model){
@@ -424,7 +457,7 @@ define([
         update: function(compass){
             var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
 
-            if (active !== 'nws' && active !== 'variable') {
+            if (active === 'constant') {
                 var speed = this.form[active].speed.val();
                 var direction = this.form[active].direction.val();
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){

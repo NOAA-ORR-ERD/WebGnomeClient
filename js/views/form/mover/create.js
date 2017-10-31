@@ -1,15 +1,21 @@
 define([
-    'underscore',
     'jquery',
+    'underscore',
     'module',
     'views/modal/form',
+    'views/uploads/upload_folder',
     'model/movers/cats',
     'model/movers/grid_current',
     'model/movers/py_current',
     'text!templates/form/mover/create.html',
+    'text!templates/uploads/upload.html',
+    'text!templates/uploads/upload_activate.html',
     'dropzone',
     'text!templates/default/dropzone.html'
-], function(_, $, module, FormModal, CatsMover, GridCurrentMover, PyCurrentMover, CreateMoverTemplate, Dropzone, DropzoneTemplate){
+], function($, _, module, FormModal, UploadFolder,
+            CatsMover, GridCurrentMover, PyCurrentMover,
+            CreateMoverTemplate, UploadTemplate, UploadActivateTemplate,
+            Dropzone, DropzoneTemplate){
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -41,6 +47,13 @@ define([
         },
 
         setupUpload: function(){
+            this.$('#upload_form').empty();
+            if (webgnome.config.can_persist) {
+                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+            } else {
+                this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+
             this.dropzone = new Dropzone('.dropzone', {
                 url: webgnome.config.api + '/mover/upload',
                 previewTemplate: _.template(DropzoneTemplate)(),
@@ -49,10 +62,16 @@ define([
                 //acceptedFiles: '.nc, .cur',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code>
             });
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
+            this.dropzone.on('error', _.bind(this.reset, this));
+            this.dropzone.on('success', _.bind(this.loaded, this));
+
+            if (webgnome.config.can_persist) {
+                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
+                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
+                this.uploadFolder.render();
+            }
         },
 
         grid: function(){
@@ -72,8 +91,17 @@ define([
 
         sending: function(e, xhr, formData){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('persist_upload',
+                            $('input#persist_upload')[0].checked);
         },
 
+        progress: function(e, percent){
+            if(percent === 100){
+                this.$('.dz-preview').addClass('dz-uploaded');
+                this.$('.dz-loading').fadeIn();
+            }
+        },
+        
         reset: function(file, immediate){
             if(immediate){
                 this.$('.dropzone').removeClass('dz-started');
@@ -86,24 +114,30 @@ define([
             }
         },
 
-        progress: function(e, percent){
-            if(percent === 100){
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
+        close: function(){
+            if(this.dropzone){
+                this.dropzone.disable();
+                $('input.dz-hidden-input').remove();
             }
+            FormModal.prototype.close.call(this);
         },
-
+        
         loaded: function(file, response){
             var json_response = JSON.parse(response);
             this.model.set('filename', json_response.filename);
-            //this.model.set('name', json_response.filename.split('/').pop());
             this.model.set('name', json_response.name);
+
             if (this.model.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
-                // Must include a 'current' otherwise the API will not add it and later on
-                // the current object referenced by environment obj collection will disassociate
-                // from the one referenced by this mover
-                this.model.set('current', {data_file: json_response.filename, grid_file: json_response.filename, obj_type: 'gnome.environment.environment_objects.GridCurrent'});
+                // Must include a 'current' otherwise the API will not add it
+                // and later on the current object referenced by environment
+                // obj collection will disassociate from the one referenced
+                // by this mover
+                this.model.set('current', {data_file: json_response.filename,
+                                           grid_file: json_response.filename,
+                                           obj_type: 'gnome.environment.environment_objects.GridCurrent'
+                                           });
             }
+
             this.model.save(null, {
                 success: _.bind(function(){
                     this.trigger('save', this.model);
@@ -116,13 +150,16 @@ define([
             });
         },
 
-        close: function(){
-            if(this.dropzone){
-                this.dropzone.disable();
-                $('input.dz-hidden-input').remove();
+        activateFile: function(filePath) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+                
+                $.post('/environment/activate', {'file-name': filePath})
+                .done(function(response){
+                    thisForm.loaded(filePath, response);
+                });
             }
-            FormModal.prototype.close.call(this);
-        }
+        },
     });
     return createMoverForm;
 });

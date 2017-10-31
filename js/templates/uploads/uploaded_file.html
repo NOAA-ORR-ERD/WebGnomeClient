@@ -1,0 +1,11 @@
+<tr>
+    <td>{{ file.get('name') }}</td>
+    <td>{{ file.formattedSize() }}</td>
+    <td>
+        {% if(file.get('type') === 'f'){ %}
+            <span class="glyphicon glyphicon-open open-file" title="Open File"></span>
+        {% } else { %}
+            <span class="glyphicon glyphicon-folder-open open-folder" title="Open Folder"></span>
+        {% } %}
+    </td>
+</tr>
