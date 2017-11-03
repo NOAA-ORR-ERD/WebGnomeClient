@@ -113,7 +113,7 @@ define([
                                                 type: 'd'});
                 this.createFileView = new CreateFileModal({}, this.fileModel);
                 this.createFileView.render();
-                this.createFileView.on('save', _.bind(this.createNewFolder, this));
+                this.createFileView.once('save', _.bind(this.createNewFolder, this));
             }
         },
 
