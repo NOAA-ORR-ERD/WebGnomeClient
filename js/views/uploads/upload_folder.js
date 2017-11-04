@@ -71,11 +71,30 @@ define([
             $(this.model.subFolders).each(function (index, folder) {
                 breadcrumbs.append($('<li>').append(folder));
             });
+
+            breadcrumbs.children().each(function (index, crumb) {
+                crumb.ondragover = function (ev) {
+                    ev.preventDefault();
+                };
+                $(crumb).bind("drop", _.bind(thisForm.moveFileToBreadcrumb, thisForm));
+            });
         },
 
         moveFile: function(e, data) {
             var fileToMove = e.originalEvent.dataTransfer.getData('file');
             var destinationFolder = e.target.textContent;
+            var fileToChange = this.model.where({name: fileToMove})[0];
+
+            console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
+            fileToChange.set('name', destinationFolder);
+        },
+
+        moveFileToBreadcrumb: function(e, data) {
+            var fileToMove = e.originalEvent.dataTransfer.getData('file');
+
+            var crumbIndex = $(e.target).index();
+            var destinationFolder = '/' + this.model.subFolders.slice(0, crumbIndex).join('/');
+
             var fileToChange = this.model.where({name: fileToMove})[0];
 
             console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
@@ -96,7 +115,7 @@ define([
         openFolder: function(e) {
             if (this.$('.popover').length === 0) {
                 var parentRow = this.$(e.target).parents('tr')[0];                
-                var folderName = parentRow.cells[0].innerText;
+                var folderName = parentRow.cells[0].innerText.trim();
 
                 var breadcrumbs = this.$('.breadcrumb');
                 breadcrumbs.append($('<li>').append(folderName));

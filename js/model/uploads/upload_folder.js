@@ -20,11 +20,13 @@ define([
                 console.log('File got added: ' + file.get('name'));
                 file.save();
             });
+
             // This will be called when an item is removed, popped or shifted
             this.on('remove',  function(file) {
                 console.log('File got removed: ' + file.get('name'));
                 file.delete();
             });
+
             // This will be called when an item is updated
             this.on('change', function(file) {
                 console.log('UploadFolder: File got changed from: ' + file.previous('name') +
@@ -37,9 +39,13 @@ define([
             });
         },
 
+        comparator: function(file) {
+            return [file.get("type"), file.get("name")];
+        },
+
         parse: function(data) {
             return data;
-          }
+        }
     });
 
     return UploadFolder;

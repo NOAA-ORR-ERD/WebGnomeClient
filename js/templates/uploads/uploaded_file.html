@@ -1,5 +1,10 @@
 <tr>
-    <td>{{ file.get('name') }}</td>
+    <td>
+        {% if(file.get('type') === 'd'){ %}
+            <i class="glyphicon glyphicon-folder-close"></i>
+        {% } %}
+        {{ file.get('name') }}
+    </td>
     <td>{{ file.formattedSize() }}</td>
     <td>
         {% if(file.get('type') === 'f'){ %}
