@@ -80,7 +80,7 @@ module.exports = function(grunt){
                 src:[
                     'js/lib/ccapture.js/src/gif.worker.js'
                 ],
-                dest:'dist/build'
+                dest:'dist/build/'
             }
         },
         inline: {
