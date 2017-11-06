@@ -120,8 +120,15 @@ require.config({
         localforage: {
             exports: 'localforage'
         },
+        gifworker: {
+            exports: 'gifworker'
+        },
+        gif: {
+            exports: 'gif'
+        },
         ccapture: {
            deps: ['gifworker', 'gif']
+           exports: 'ccapture'
         }
     }
 });
