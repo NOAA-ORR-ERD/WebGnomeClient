@@ -127,7 +127,7 @@ require.config({
             exports: 'gif'
         },
         ccapture: {
-           deps: ['gifworker', 'gif']
+           deps: ['gifworker', 'gif'],
            exports: 'ccapture'
         }
     }
