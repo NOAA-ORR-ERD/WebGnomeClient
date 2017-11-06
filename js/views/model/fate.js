@@ -345,7 +345,7 @@ define([
                 }
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
                 if(webgnome.cache.streaming && webgnome.cache.isHalted){
-                    webgnome.cache.resume()
+                    webgnome.cache.resume();
                 }
             } else {
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);

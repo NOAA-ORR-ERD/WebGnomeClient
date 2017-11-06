@@ -534,7 +534,7 @@ define([
 
         rewindClick: function(e){
             this.pause();
-            clearTimeout(this.rframe)
+            clearTimeout(this.rframe);
             setTimeout(_.bind(function(){
                 this.renderStep({step: 0});
                 webgnome.cache.rewind();
