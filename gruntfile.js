@@ -74,6 +74,12 @@ module.exports = function(grunt){
                     'js/lib/cesium/Build/Documentation/images/**'
                 ],
                 dest: 'dist/build/'
+            },
+            ccapture: {
+                src:[
+                    'js/lib/ccapture.js/src/gif.worker.js'
+                ],
+                dest:'dist/build'
             }
         },
         inline: {
@@ -194,7 +200,7 @@ module.exports = function(grunt){
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'vulcanize:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'vulcanize:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
