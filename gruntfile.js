@@ -137,9 +137,9 @@ module.exports = function(grunt){
                     "Float64Array": true,
                     "ArrayBuffer": true,
                     "Blob": true,
-                    "URL": true,
                     "navigator": true,
-                    "MouseEvent": true,
+                    "URL": true,
+                    "MouseEvent": true
                 }
             },
             all: src
@@ -178,7 +178,7 @@ module.exports = function(grunt){
             }
         }
     });
-    
+
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-requirejs');

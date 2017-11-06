@@ -145,25 +145,25 @@ define([
 
         hover: function(e){
             return e; // no op for now;
-            var id = this.getID(e);
+            // var id = this.getID(e);
 
-            var coloredSet = [];
-            for(var dataset in this.responseDataset){
-                var ds = _.clone(this.responseDataset[dataset]);
-                if (this.responseDataset[dataset].id !== id){
-                    ds.color = '#ddd';
-                }
+            // var coloredSet = [];
+            // for(var dataset in this.responseDataset){
+            //     var ds = _.clone(this.responseDataset[dataset]);
+            //     if (this.responseDataset[dataset].id !== id){
+            //         ds.color = '#ddd';
+            //     }
 
-                coloredSet.push(ds);
-            }
-            this.responsePlot.setData(coloredSet);
-            this.responsePlot.draw();
+            //     coloredSet.push(ds);
+            // }
+            // this.responsePlot.setData(coloredSet);
+            // this.responsePlot.draw();
         },
 
         unhover: function(e){
             return e; // no op for now;
-            this.responsePlot.setData(this.responseDataset);
-            this.responsePlot.draw();
+            // this.responsePlot.setData(this.responseDataset);
+            // this.responsePlot.draw();
         },
 
         edit: function(e){

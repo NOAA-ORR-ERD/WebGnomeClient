@@ -125,7 +125,11 @@
     </div>
 
     <div class="row">
-    	<div id="oilInfo" class="col-md-6"></div>
+    	{% if(showGeo){ %}
+        <div id="oilInfo" class="col-md-6"></div>
         <div id="positionInfo" class="col-md-6 position"></div>
+        {% } else { %}
+        <div id="oilInfo" class="col-md-12"></div>
+        {% } %}
     </div>
 </form>

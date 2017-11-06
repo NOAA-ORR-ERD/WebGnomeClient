@@ -4,6 +4,7 @@ define([
     "use strict";
     var Graticule = function(DMS, scene, maxLines) {
 
+
         var DEGREE = 1.0;
         var MINUTE = DEGREE / 60.0;
         var SECOND = MINUTE / 60.0;
@@ -76,8 +77,9 @@ define([
         this.on = false;
         this._prevCamPos = this.scene.camera.position.clone();
     };
+
     Graticule.prototype = {
-        
+
         activate: function() {
             this.on = true;
             this.scene.postRender.addEventListener(this.refreshGraticule, this);
@@ -101,10 +103,10 @@ define([
         },
 
         intDivFunc: function(a, b) {
-            //integer division 
+            //integer division
             return a / b >= 0 ? Math.floor(a/b) : Math.ceil(a/b);
         },
-        
+
         get_step_size: function(reference_size) {
             /*
             Chooses the interval size for the graticule, based on where the
@@ -120,7 +122,7 @@ define([
             //ref_size is bigger than 40 Degrees
             return this.STEPS[this.STEP_COUNT-1];
         },
-        
+
         get_frustum_dimensions: function() {
             /*
             Helper function to get the lon/lat dimensions of the frustum. Returns a Cesium.Cartographic
@@ -190,7 +192,7 @@ define([
                 }
             }
         },
-        
+
         initLabels: function() {
             if (!this.labels) {
                 this.labels = this.scene.primitives.add(new Cesium.LabelCollection());
@@ -269,9 +271,9 @@ define([
             var center = this.scene.camera.position;
             var bl = this.scene.mapProjection.unproject(new Cesium.Cartesian3(center.x - frustum.right, center.y - frustum.top, 0));
             var intDivFunc = this.intDivFunc;
-            var line, label;
 
             var genLabel = this.DMS ? this.genDMSLabel : this.genDegLabel;
+            var line, label;
             for(var i=0; i < (this.lon_lines + 4); i++) {
                 line = this.lines.get(i);
                 label = this.labels.get(i);
@@ -322,7 +324,5 @@ define([
             return deg + '&#8451; ' + hemi;
         }
     };
-
     return Graticule;
 });
-

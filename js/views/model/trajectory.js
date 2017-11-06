@@ -19,7 +19,8 @@ define([
     'gif',
     'gifworker',
     'whammy'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule){    'use strict';
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -327,14 +328,15 @@ define([
                     stroke: Cesium.Color.WHITE.withAlpha(0),
                     //fill: Cesium.Color.GREEN.withAlpha(0.4)
                 }));
+                var bounds;
                 if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
                     });
                 } else {
                     // fly to a gridded current instead
-                    var bounds = webgnome.model.get('map').get('map_bounds');
+                    bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
                     });
@@ -537,7 +539,7 @@ define([
                 this.renderStep({step: 0});
                 webgnome.cache.rewind();
             }, this), 20);
-            
+
         },
 
         prev: function(){
@@ -583,7 +585,7 @@ define([
                         this.drawStep(step);
                     }
                 }, this));
-                
+
             } else {
                 step = source;
                 this.drawStep(step);
@@ -748,11 +750,12 @@ define([
             if(this.certain_collection.length > certain.length){
                 // we have entites that were created for a future step but the model is now viewing a previous step
                 // hide the leftover particles
-                for(var l = certain.length; l < this.certain_collection.length; l++){
+                var l;
+                for(l = certain.length; l < this.certain_collection.length; l++){
                     this.certain_collection[l].show = false;
                 }
                 if(uncertain) {
-                    for(var l = uncertain.length; l < this.uncertain_collection.length; l++){
+                    for(l = uncertain.length; l < this.uncertain_collection.length; l++){
                         this.uncertain_collection[l].show = false;
                     }
                 }

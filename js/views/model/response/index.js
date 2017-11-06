@@ -77,9 +77,9 @@ define([
                 this.$('.wind').addClass('missing');
             }
 
-            skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
-            burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
-            disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
+            var skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
+            var burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
+            var disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
             if(_.isUndefined(skim) && _.isUndefined(burn) && _.isUndefined(disperse)){
                 this.$('.response').addClass('missing');
             }
@@ -179,13 +179,14 @@ define([
         },
 
         toggleLists: function(view){
+            var child;
             if(!_.isUndefined(view)){
-                for(var child in this.children){
+                for(child in this.children){
                     this.children[child].$el.hide();
                 }
                 view.show();
             } else {
-                for(var child in this.children){
+                for(child in this.children){
                     this.children[child].$el.show();
                 }
             }
