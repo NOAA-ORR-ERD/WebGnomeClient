@@ -76,6 +76,7 @@ module.exports = function(grunt){
                 dest: 'dist/build/'
             },
             ccapture: {
+                expand: true,
                 src:[
                     'js/lib/ccapture.js/src/gif.worker.js'
                 ],
