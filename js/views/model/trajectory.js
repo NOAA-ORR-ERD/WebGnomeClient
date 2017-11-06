@@ -19,8 +19,7 @@ define([
     'gif',
     'gifworker',
     'whammy'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture){
-    'use strict';
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;

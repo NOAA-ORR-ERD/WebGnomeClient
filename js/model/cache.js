@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'localforage',
+    'socketio',
     'model/step',
     'model/async_step'
-], function($, _, Backbone, localforage, StepModel, AsyncStepModel){
+], function($, _, Backbone, localforage, io, StepModel, AsyncStepModel){
     'use strict';
     var cache = Backbone.Collection.extend({
         socketRoute: '/step_socket',
@@ -108,7 +109,7 @@ define([
             console.log('step namespace started on api');
         },
         socketProcessStep: function(step){
-            var sm = new StepModel(step)
+            var sm = new StepModel(step);
             this.inline.push(sm);
             this.length++;
             this.trigger('step:buffered');
@@ -126,7 +127,7 @@ define([
         },
 
         setAsync: function(b){
-            b = boolean(b);
+            b = Boolean(b);
             this.isAsync = b;
             this.socket.emit('isAsync', this.isAsync);
         },
@@ -143,7 +144,7 @@ define([
         resume: function() {
             if(this.isHalted) {
                 console.log('resuming model');
-                this.socket.emit('ack', this.length)
+                this.socket.emit('ack', this.length);
             }
             this.isHalted = false;
         },
@@ -167,10 +168,10 @@ define([
                 var step = new AsyncStepModel();
                 step.fetch({
                     success: _.bind(function(step){
-                        console.log('getSteps success!')
+                        console.log('getSteps success!');
                     }, this),
                     error: _.bind(function(){
-                        console.log('getSteps success!')
+                        console.log('getSteps success!');
                     }, this)
                 });
             }
@@ -184,7 +185,7 @@ define([
             }
             this.trigger('step:done');
             //this.socket.removeAllListeners()
-            this.socket.disconnect()
+            this.socket.disconnect();
         },
 
         timedOut: function(msg) {
@@ -196,8 +197,8 @@ define([
             } else {
                 console.error(msg);
             }
-            this.socket.removeAllListeners()
-            this.socket.disconnect()
+            this.socket.removeAllListeners();
+            this.socket.disconnect();
         },
 
         killed: function(msg) {
