@@ -48,7 +48,7 @@ define([
                     var fileListItem = fileList[0].children[index];
                     fileListItem.draggable = true;
                     fileListItem.ondragstart= function (ev) {
-                        var fileName = ev.target.firstElementChild.textContent;
+                        var fileName = ev.target.firstElementChild.textContent.trim();
                         ev.dataTransfer.setData("file", fileName);
                     };
                     fileListItem.ondragend = function(ev) {
@@ -82,7 +82,7 @@ define([
 
         moveFile: function(e, data) {
             var fileToMove = e.originalEvent.dataTransfer.getData('file');
-            var destinationFolder = e.target.textContent;
+            var destinationFolder = e.target.textContent.trim();
             var fileToChange = this.model.where({name: fileToMove})[0];
 
             console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
@@ -105,7 +105,7 @@ define([
             if (this.$('.popover').length === 0) {
                 var thisForm = this;
                 var parentRow = this.$(e.target).parents('tr')[0];                
-                var fileName = parentRow.cells[0].innerText;
+                var fileName = parentRow.cells[0].innerText.trim();
                 var filePath = this.model.subFolders.concat(fileName).join('/');
 
                 this.trigger('activate-file', filePath);
