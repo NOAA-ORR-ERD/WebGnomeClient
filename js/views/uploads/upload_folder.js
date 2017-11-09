@@ -18,6 +18,7 @@ define([
                 'click .open-folder': 'openFolder',
                 'click .new-folder': 'createNewFolderView',
                 'click .breadcrumb li': 'useBreadcrumbFolder',
+                'click .delete-file': 'deleteFile'
             };
         },
 
@@ -30,8 +31,7 @@ define([
         render: function(){
             this.$el.html(this.template());
 
-            this.model.bind("reset", _.bind(this.renderFileList, this));
-            this.model.bind("add", _.bind(this.renderFileList, this));
+            this.model.bind("reset add", _.bind(this.renderFileList, this));
             this.model.fetch({reset: true});
 
             return this;
@@ -42,6 +42,7 @@ define([
             var fileList = this.$('tbody#file_list').empty();
             var fileItemTemplate = _.template(FileItemTemplate);
 
+            console.log('renderFileList: begin model.each()');
             this.model.each(function (file, index) {
                 $(fileList).append(fileItemTemplate({'file': file}));
                 if (file.get('type') === 'f') {
@@ -64,6 +65,7 @@ define([
                                                         _.bind(thisForm.moveFile, thisForm));
                 }
             });
+            console.log('renderFileList: end model.each()');
 
             var breadcrumbs = this.$('.breadcrumb').empty();
             breadcrumbs.append($('<li>').append('uploads'));
@@ -81,24 +83,46 @@ define([
         },
 
         moveFile: function(e, data) {
+            var thisForm = this;
+            var subFolders = this.model.subFolders.slice();
+
             var fileToMove = e.originalEvent.dataTransfer.getData('file');
+            var oldFilePath = '/' + subFolders.concat(fileToMove).join('/');
             var destinationFolder = e.target.textContent.trim();
-            var fileToChange = this.model.where({name: fileToMove})[0];
 
             console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
-            fileToChange.set('name', destinationFolder);
+            var fileObj = new FileModel({name: fileToMove,
+                                         prev_name: oldFilePath,
+                                         size: 0,
+                                         type: 'f'});
+            
+            fileObj.urlRoot = webgnome.config.api +
+                              ['/uploads'].concat(subFolders).concat(destinationFolder).join('/');
+
+            fileObj.save(null, {success: function() {
+                thisForm.model.fetch({reset: true});
+            }});
         },
 
         moveFileToBreadcrumb: function(e, data) {
+            var thisForm = this;
             var fileToMove = e.originalEvent.dataTransfer.getData('file');
+            var oldFilePath = '/' + this.model.subFolders.join('/') + '/' + fileToMove;
 
             var crumbIndex = $(e.target).index();
-            var destinationFolder = '/' + this.model.subFolders.slice(0, crumbIndex).join('/');
+            var subFolders = this.model.subFolders.slice(0, crumbIndex);
 
-            var fileToChange = this.model.where({name: fileToMove})[0];
+            console.log('moving file ' + fileToMove + ' from old path ' + oldFilePath);
+            var fileObj = new FileModel({name: fileToMove,
+                                         prev_name: oldFilePath,
+                                         size: 0,
+                                         type: 'f'});
+            fileObj.urlRoot = webgnome.config.api +
+                              ['/uploads'].concat(subFolders).join('/');
 
-            console.log('moving file ' + fileToMove + ' to folder ' + destinationFolder);
-            fileToChange.set('name', destinationFolder);
+            fileObj.save(null, {success: function() {
+                thisForm.model.fetch({reset: true});
+            }});
         },
 
         activateFile: function(e) {
@@ -122,6 +146,28 @@ define([
 
                 this.model.subFolders.push(folderName);                
                 this.model.fetch({reset: true});
+            }
+        },
+
+        deleteFile: function(e) {
+            if (this.$('.popover').length === 0) {
+                var parentRow = this.$(e.target).parents('tr')[0];                
+                var fileName = parentRow.cells[0].innerText.trim();
+
+                var file = this.model.findWhere({name: fileName});
+
+                if (file) {
+                    file.destroy({
+                        success: function(model, response) {
+                            parentRow.remove();
+                        },
+                        error: function (model, response) {
+                            alert('failed to delete ' + fileName);
+                        }
+                    });
+                } else {
+                    console.log('file ' + fileName + ' not found in the collection');
+                }
             }
         },
 

@@ -1,6 +1,6 @@
 <tr>
     <td>
-        {% if(file.get('type') === 'd'){ %}
+        {% if(file.get('type') === 'd') { %}
             <i class="glyphicon glyphicon-folder-close"></i>
         {% } %}
         {{ file.get('name') }}
@@ -12,5 +12,6 @@
         {% } else { %}
             <span class="glyphicon glyphicon-folder-open open-folder" title="Open Folder"></span>
         {% } %}
+        <span class="glyphicon glyphicon-trash delete-file" title="Delete"></span>
     </td>
 </tr>
