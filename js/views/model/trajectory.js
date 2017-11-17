@@ -95,6 +95,7 @@ define([
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.get('movers').on('add remove', this.renderControls, this);
+            this.listenTo(webgnome.model, 'change', this.reset);
             webgnome.model.on('change', this.contextualize, this);
             this.spillListeners();
             this.mapListener();
@@ -308,7 +309,7 @@ define([
             $('.cesium-widget-credits').hide();
             this.graticule = new Graticule(true, this.viewer.scene, 10);
             this.graticule.activate();
-            //this.viewer.scene.fxaa = false;
+            this.viewer.scene.fxaa = true;
 
             this.renderSpills();
 
@@ -341,6 +342,7 @@ define([
                         duration: 0.25
                     });
                 }
+                this.load();
             }, this));
 
 
@@ -354,7 +356,6 @@ define([
             this.viewer.scene.postRender.addEventListener(metacap);
 */
 
-            this.load();
         },
 
         toggle: function(){
@@ -387,6 +388,42 @@ define([
                 localStorage.setItem('autorun', '');
                 this.play();
             }
+
+            var entity = this.viewer.entities.add({
+                label : {
+                    show : false,
+                    showBackground : true,
+                    font : '14px monospace',
+                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                    verticalOrigin : Cesium.VerticalOrigin.TOP,
+                    pixelOffset : new Cesium.Cartesian2(15, 0),
+                    eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                }
+            });
+
+            this.handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            this.viewer.scene.pickTranslucentDepth = true;
+            this.handler.setInputAction(_.bind(function(movement) {
+                var pickedObject = this.viewer.scene.pick(movement.position);
+                if (pickedObject) {
+                    console.log(pickedObject, pickedObject.id);
+                    //var cartographic = Cesium.Cartographic.fromCartesian(pickedObject.primitive.position);
+                    //var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+                    //var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+                    var envId = this.checked_env_vec[0];
+                    var env = webgnome.model.get('environment').findWhere({id: envId});
+                    var mag = env.mag_data[pickedObject.id].toFixed(2);
+                    var dir = Cesium.Math.toDegrees(env.dir_data[pickedObject.id]).toFixed(2);
+                    entity.position = pickedObject.primitive.position;
+                    entity.label.show = true;
+                    entity.label.text =
+                        'Mag: ' + ('   ' + mag).slice(-7) + 'm/s' +
+                        '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                } else {
+                    entity.label.show = false;
+                }
+                
+            }, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         },
 
         loop: function(){
@@ -533,13 +570,26 @@ define([
         },
 
         rewindClick: function(e){
-            this.pause();
+            this.stop();
             clearTimeout(this.rframe);
             setTimeout(_.bind(function(){
                 this.renderStep({step: 0});
                 webgnome.cache.rewind();
             }, this), 20);
+        },
 
+        reset:function() {
+            /*this.stopListening(webgnome.cache, 'step:received', this.renderStep);
+            //webgnome.cache.off('step:received', this.renderStep, this);
+            this.state = 'pause';
+            this.controls.play.show();
+            this.controls.pause.hide();
+            this.renderStep({step: 0});
+            this.controls.progress.css('width', 0);
+            this.frame = 0;
+            this.controls.seek.slider('value', 0);*/
+            this.rewindClick();
+            //this.trigger('rewind');
         },
 
         prev: function(){
@@ -583,6 +633,8 @@ define([
                 webgnome.cache.at(source.step, _.bind(function(err, step){
                     if(!err){
                         this.drawStep(step);
+                    } else {
+                        console.log(err);
                     }
                 }, this));
 
@@ -1114,7 +1166,8 @@ define([
                             layer.add({
                                 show: true,
                                 position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
-                                image: this.current_arrow[id][0]
+                                image: this.current_arrow[id][0],
+                                id: c
                             });
                         }
                     }, this);
@@ -1275,6 +1328,7 @@ define([
                 this.current_arrow[id][0] = layer.add({
                     image: canvas,
                     show: false,
+                    id: 0,
                 }).image;
 
                 var angle = 0.785398163;
@@ -1305,6 +1359,7 @@ define([
                     this.current_arrow[id][s_a] = layer.add({
                         image: canvas,
                         show: false,
+                        id: Math.round(a),
                     }).image;
                 }
             }

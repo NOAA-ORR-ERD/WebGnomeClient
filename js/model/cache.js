@@ -24,6 +24,8 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
+            this.listenTo(this.gnome_model, 'change', this.reset);
+            this.gnome_model.on('change', this.reset, this);
         },
 
         checkState: function(){
