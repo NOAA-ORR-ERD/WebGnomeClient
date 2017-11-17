@@ -628,13 +628,11 @@ define([
         renderStep: _.debounce(function(source){
             var step;
             if(_.has(source, 'step')){
-                //step = webgnome.cache.inline[source.step];
+                step = webgnome.cache.inline[source.step];
+                this.drawStep(step);
                 //this.drawStep(step);
                 webgnome.cache.at(source.step, _.bind(function(err, step){
                     if(!err){
-                        this.drawStep(step);
-                    } else {
-                        console.log(err);
                     }
                 }, this));
 
