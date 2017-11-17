@@ -5,7 +5,7 @@ define([
 ], function(_, $, Backbone){
     'use strict';
     var FileObj = Backbone.Model.extend({
-        idAttribute: "cid",
+        idAttribute: "name",
 
         defaults: {
             name: '',
