@@ -406,14 +406,14 @@ define([
             this.handler.setInputAction(_.bind(function(movement) {
                 var pickedObject = this.viewer.scene.pick(movement.position);
                 if (pickedObject) {
-                    console.log(pickedObject, pickedObject.id);
+                    console.log(pickedObject, pickedObject.id;
                     var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
                     entity.position = pickedObject.primitive.position;
                     entity.pickedObject = pickedObject
                     entity.label.show = true;
                     entity.label.text = new Cesium.CallbackProperty(_.bind(function(){
                                                                         var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-entity.pickedObject.primitive.dir)).toFixed(2);
-                                                                        return 'Mag: ' + ('   ' + entity.pickedObject.primitive.mag).slice(-7) + 'm/s' +
+                                                                        return 'Mag: ' + ('   ' + entity.pickedObject.primitive.mag.toFixed(2)).slice(-7) + 'm/s' +
                                                                             '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
                                                                     }, entity), false);
                         
