@@ -1,6 +1,7 @@
 define([
+    'underscore',
     'cesium',
-], function (Cesium) {
+], function (_, Cesium) {
     "use strict";
     var Graticule = function(DMS, scene, maxLines) {
 
@@ -74,8 +75,9 @@ define([
         this.linePoolSize = 40;
         this.initLines();
         this.initLabels();
-        this.on = false;
+        this.on = true;
         this._prevCamPos = this.scene.camera.position.clone();
+        this.prevOffLat = this.prevOffLon = 0
     };
 
     Graticule.prototype = {
@@ -84,7 +86,7 @@ define([
             this.on = true;
             this.scene.postRender.addEventListener(this.refreshGraticule, this);
             //imperceptible position shift to allow immediate redraw of graticule.
-            this.scene.camera.position.x = this.scene.camera.position.x +1;
+            //this.scene.camera.position.x = this.scene.camera.position.x +1;
         },
         deactivate: function() {
             this.on = false;
@@ -172,23 +174,29 @@ define([
             var width = Cesium.Math.toDegrees(dims.longitude);
             var height = Cesium.Math.toDegrees(dims.latitude);
 
+            if(this.currentIntervalLon === this.get_step_size(width / this.lon_lines)) {
+                this.changed_scale = true;
+            }
+
             this.currentIntervalLon = this.get_step_size(width / this.lon_lines);
             this.currentIntervalLat = this.get_step_size(height/ this.lat_lines);
         },
 
         initLines: function() {
             if (!this.lines) {
-                this.lines = this.scene.primitives.add(new Cesium.PolylineCollection());
-                var material = Cesium.Material.fromType('Color');
-                material.uniforms.color = Cesium.Color.BLACK;
-                material.translucent = false;
+                this.linegeo = [];
+                var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
                 for(var i=0; i < this.linePoolSize; i++) {
-                    this.lines.add({positions : Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
-                                    followSurface : true,
-                                    show: false,
-                                    material : material,
-                                    width : 1,
-                                    eyeOffset : new Cesium.Cartesian3(0,0,-1),});
+                    this.linegeo.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.SimplePolylineGeometry({
+                                    positions : Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
+                                    followSurface: false
+                                }),
+                                attributes: {
+                                    color: color
+                                },
+                                allowPicking: false
+                            }));
                 }
             }
         },
@@ -226,36 +234,70 @@ define([
             var intDivFunc = this.intDivFunc;
 
             var offLon = Cesium.Math.toDegrees(offsetPoint.longitude);
-            offLon = (intDivFunc(offLon, ciLon) - 2) * ciLon;
+            offLon = (intDivFunc(offLon, ciLon) - 8) * ciLon;
             var offLat = Cesium.Math.toDegrees(offsetPoint.latitude);
-            offLat = (intDivFunc(offLat, ciLat) - 2) * ciLat;
+            offLat = (intDivFunc(offLat, ciLat) - 8) * ciLat;
 
-            var topDist = Math.min((this.lat_lines + 3) * ciLat, 90-offLat);
-            var rightDist = (this.lon_lines + 3) * ciLon;
-            for( var i=0; i < (this.lon_lines + 4); i++ ) {
-                this.lines.get(i).positions = Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
-                                                                                  i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
-                                                                                  i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]);
-                this.lines.get(i).show = true;
+            if (Math.abs(offLon - this.prevOffLon) < 3*this.currentIntervalLon && 
+                Math.abs(offLat - this.prevOffLat) < 3*this.currentIntervalLat){
+                return;
+            } else {
+                this.prevOffLon = offLon;
+                this.prevOffLat = offLat;
             }
-            for( var j=0;j < (this.lat_lines + 4); j++ ) {
+
+            var topDist = Math.min((this.lat_lines + 9) * ciLat, 90-offLat);
+            var rightDist = (this.lon_lines + 9) * ciLon;
+            if (this.lines){
+                this.scene.primitives.remove(this.lines)
+            }
+            this.linegeo=[];
+            var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
+            for( var i=0; i < (this.lon_lines + 10); i++ ) {
+                this.linegeo.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.SimplePolylineGeometry({
+                                    positions: Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
+                                                                                  i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
+                                                                                  i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]),
+                                    followSurface: false
+                                }),
+                                attributes: {
+                                    color: color
+                                },
+                                allowPicking: false
+                            }));
+            }
+            for( var j=0;j < (this.lat_lines + 10); j++ ) {
                 if (j * ciLat + offLat > 90) {
                     break;
                 }
                 var latLinePoints = [];
-                for( var p=0; p < 2*(this.lon_lines+4); p++ ) {
-                    latLinePoints[2*p] = offLon + p * rightDist/(2*(this.lon_lines+4));
+                for( var p=0; p < 2*(this.lon_lines+10); p++ ) {
+                    latLinePoints[2*p] = offLon + p * rightDist/(2*(this.lon_lines+10));
                     latLinePoints[2*p+1] = Math.max(Math.min(j * ciLat + offLat, 89),-89);
                 }
-                this.lines.get(i+j).positions = Cesium.Cartesian3.fromDegreesArray(latLinePoints);
-                this.lines.get(i+j).show = true;
+                this.linegeo.push(new Cesium.GeometryInstance({
+                                geometry: new Cesium.SimplePolylineGeometry({
+                                    positions: Cesium.Cartesian3.fromDegreesArray(latLinePoints),
+                                    followSurface: false
+                                }),
+                                attributes: {
+                                    color: color
+                                },
+                                allowPicking: false
+                            }));
             }
-            for ( var k = i+j; k < this.linePoolSize; k++ ) {
-                this.lines.get(k).show = false;
-            }
+            this.lines = new Cesium.Primitive({
+                            geometryInstances: this.linegeo,
+                            appearance: new Cesium.PerInstanceColorAppearance({
+                                flat: true,
+                                translucent: false
+                            })
+                        });
+            this.scene.primitives.add(this.lines);
         },
 
-        refreshGraticule: function() {
+        refreshGraticule: _.throttle(function() {
             if(!this._prevCamPos.equals(this.scene.camera.position)) {
                 this.refresh_scale();
                 this.setupLines();
@@ -264,7 +306,7 @@ define([
                 this.scene.primitives.raiseToTop(this.labels);
                 this._prevCamPos = this.scene.camera.position.clone();
             }
-        },
+        },32),
 
         setupLabels : function() {
             var frustum = this.scene.camera.frustum;
@@ -274,23 +316,27 @@ define([
 
             var genLabel = this.DMS ? this.genDMSLabel : this.genDegLabel;
             var line, label;
-            for(var i=0; i < (this.lon_lines + 4); i++) {
-                line = this.lines.get(i);
+            for(var i=0; i < (this.lon_lines + 10); i++) {
+                line = this.linegeo[i].geometry;
                 label = this.labels.get(i);
-                var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line.positions[0]).longitude;
+                var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
                 label.position = Cesium.Cartesian3.fromRadians(lineLon, bl.latitude);
                 label.text = this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon);
                 label.show = true;
             }
-            for(var j=0;j < (this.lat_lines + 4); j++) {
-                line = this.lines.get(i+j);
-                label = this.labels.get(i+j);
-                var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line.positions[0]).latitude;
+            i--;
+            for(var j=i;j < this.linegeo.length; j++) {
+                if (!this.linegeo[j]) {
+                    console.trace();
+                }
+                line = this.linegeo[j].geometry;
+                label = this.labels.get(j);
+                var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
                 label.position = new Cesium.Cartesian3.fromRadians(bl.longitude, lineLat);
                 label.text = this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat);
                 label.show = true;
             }
-            for (var k = i+j; k < this.linePoolSize; k++) {
+            for (var k = j; k < this.linePoolSize; k++) {
                 this.labels.get(k).show = false;
             }
         },

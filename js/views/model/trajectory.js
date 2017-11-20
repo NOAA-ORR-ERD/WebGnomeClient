@@ -309,7 +309,7 @@ define([
             $('.cesium-widget-credits').hide();
             this.graticule = new Graticule(true, this.viewer.scene, 10);
             this.graticule.activate();
-            this.viewer.scene.fxaa = true;
+            this.viewer.scene.fxaa = false;
 
             this.renderSpills();
 
