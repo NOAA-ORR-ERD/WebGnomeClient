@@ -77,7 +77,7 @@ define([
         this.initLabels();
         this.on = true;
         this._prevCamPos = this.scene.camera.position.clone();
-        this.prevOffLat = this.prevOffLon = 0
+        this.prevOffLat = this.prevOffLon = 0;
     };
 
     Graticule.prototype = {
@@ -249,7 +249,7 @@ define([
             var topDist = Math.min((this.lat_lines + 9) * ciLat, 90-offLat);
             var rightDist = (this.lon_lines + 9) * ciLon;
             if (this.lines){
-                this.scene.primitives.remove(this.lines)
+                this.scene.primitives.remove(this.lines);
             }
             this.linegeo=[];
             var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
