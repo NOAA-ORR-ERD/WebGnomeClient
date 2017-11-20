@@ -407,18 +407,16 @@ define([
                 var pickedObject = this.viewer.scene.pick(movement.position);
                 if (pickedObject) {
                     console.log(pickedObject, pickedObject.id);
-                    //var cartographic = Cesium.Cartographic.fromCartesian(pickedObject.primitive.position);
-                    //var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
-                    //var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
-                    var envId = this.checked_env_vec[0];
-                    var env = webgnome.model.get('environment').findWhere({id: envId});
-                    var mag = env.mag_data[pickedObject.id].toFixed(2);
-                    var dir = Cesium.Math.toDegrees(env.dir_data[pickedObject.id]).toFixed(2);
+                    var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
                     entity.position = pickedObject.primitive.position;
+                    entity.pickedObject = pickedObject
                     entity.label.show = true;
-                    entity.label.text =
-                        'Mag: ' + ('   ' + mag).slice(-7) + 'm/s' +
-                        '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                    entity.label.text = new Cesium.CallbackProperty(_.bind(function(){
+                                                                        var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-entity.pickedObject.primitive.dir)).toFixed(2);
+                                                                        return 'Mag: ' + ('   ' + entity.pickedObject.primitive.mag).slice(-7) + 'm/s' +
+                                                                            '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                                                                    }, entity), false);
+                        
                 } else {
                     entity.label.show = false;
                 }
@@ -826,6 +824,8 @@ define([
                         if(this.layers.uv[id].get(uv).image !== this.uvImage(data.magnitude[uv], id)){
                             this.layers.uv[id].get(uv).image = this.uvImage(data.magnitude[uv], id);
                         }
+                        this.layers.uv[id].get(uv).dir = data.direction[uv];
+                        this.layers.uv[id].get(uv).mag = data.magnitude[uv];
                     }
                 } else if(this.layers.uv[id]){
                     for(var h = this.layers.uv[id].length; h--;){
@@ -852,6 +852,8 @@ define([
                         //}
                         //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
                         billboards[uv].image = this.uvImage(mag_data[uv], id);
+                        billboards[uv].mag = mag_data[uv];
+                        billboards[uv].dir = dir_data[uv];
                         //}
                     }
                 } else if(this.layers.uv[id]){
