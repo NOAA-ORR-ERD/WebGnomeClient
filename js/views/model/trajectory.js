@@ -409,7 +409,7 @@ define([
                     console.log(pickedObject, pickedObject.id);
                     var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
                     entity.position = pickedObject.primitive.position;
-                    entity.pickedObject = pickedObject
+                    entity.pickedObject = pickedObject;
                     entity.label.show = true;
                     entity.label.text = new Cesium.CallbackProperty(_.bind(function(){
                                                                         var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-entity.pickedObject.primitive.dir)).toFixed(2);
