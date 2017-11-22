@@ -78,6 +78,8 @@ define([
         this.on = true;
         this._prevCamPos = this.scene.camera.position.clone();
         this.prevOffLat = this.prevOffLon = 0;
+        this.color = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
+        this.dirty = false;
     };
 
     Graticule.prototype = {
@@ -85,23 +87,33 @@ define([
         activate: function() {
             this.on = true;
             this.scene.postRender.addEventListener(this.refreshGraticule, this);
-            //imperceptible position shift to allow immediate redraw of graticule.
-            //this.scene.camera.position.x = this.scene.camera.position.x +1;
+            this.dirty=true;
+            this.refreshGraticule();
         },
         deactivate: function() {
             this.on = false;
+            this.lines.show = false;
             var i = 0;
-            if(this.lines) {
+            /*if(this.lines) {
                 for(i = 0; i < this.linePoolSize; i++) {
                     this.lines.get(i).show = false;
                 }
-            }
+            }*/
             if(this.labels) {
                 for(i = 0; i < this.linePoolSize; i++) {
                     this.labels.get(i).show = false;
                 }
             }
             this.scene.postRender.removeEventListener(this.refreshGraticule, this);
+        },
+
+        setColor: function(color) {
+            if(!color) {
+                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
+            } else {
+                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(color)
+            }
+            this.dirty = true;
         },
 
         intDivFunc: function(a, b) {
@@ -185,7 +197,6 @@ define([
         initLines: function() {
             if (!this.lines) {
                 this.linegeo = [];
-                var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
                 for(var i=0; i < this.linePoolSize; i++) {
                     this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
@@ -193,7 +204,7 @@ define([
                                     followSurface: false
                                 }),
                                 attributes: {
-                                    color: color
+                                    color: this.color
                                 },
                                 allowPicking: false
                             }));
@@ -238,8 +249,9 @@ define([
             var offLat = Cesium.Math.toDegrees(offsetPoint.latitude);
             offLat = (intDivFunc(offLat, ciLat) - 8) * ciLat;
 
-            if (Math.abs(offLon - this.prevOffLon) < 3*this.currentIntervalLon && 
-                Math.abs(offLat - this.prevOffLat) < 3*this.currentIntervalLat){
+            if ((Math.abs(offLon - this.prevOffLon) < 3*this.currentIntervalLon && 
+                Math.abs(offLat - this.prevOffLat) < 3*this.currentIntervalLat) &&
+                !this.dirty){
                 return;
             } else {
                 this.prevOffLon = offLon;
@@ -252,7 +264,6 @@ define([
                 this.scene.primitives.remove(this.lines);
             }
             this.linegeo=[];
-            var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
             for( var i=0; i < (this.lon_lines + 10); i++ ) {
                 this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
@@ -262,7 +273,7 @@ define([
                                     followSurface: false
                                 }),
                                 attributes: {
-                                    color: color
+                                    color: this.color
                                 },
                                 allowPicking: false
                             }));
@@ -282,7 +293,7 @@ define([
                                     followSurface: false
                                 }),
                                 attributes: {
-                                    color: color
+                                    color: this.color
                                 },
                                 allowPicking: false
                             }));
@@ -298,13 +309,14 @@ define([
         },
 
         refreshGraticule: _.throttle(function() {
-            if(!this._prevCamPos.equals(this.scene.camera.position)) {
+            if(!this._prevCamPos.equals(this.scene.camera.position) || this.dirty) {
                 this.refresh_scale();
                 this.setupLines();
                 this.setupLabels();
-                this.scene.primitives.raiseToTop(this.lines);
+                this.scene.primitives.lowerToBottom(this.lines);
                 this.scene.primitives.raiseToTop(this.labels);
                 this._prevCamPos = this.scene.camera.position.clone();
+                this.dirty = false;
             }
         },32),
 

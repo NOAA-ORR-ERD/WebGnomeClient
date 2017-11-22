@@ -409,7 +409,7 @@ define([
                     console.log(pickedObject, pickedObject.id);
                     var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
                     entity.position = pickedObject.primitive.position;
-                    entity.pickedObject = pickedObject
+                    entity.pickedObject = pickedObject;
                     entity.label.show = true;
                     entity.label.text = new Cesium.CallbackProperty(_.bind(function(){
                                                                         var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-entity.pickedObject.primitive.dir)).toFixed(2);
@@ -1167,7 +1167,6 @@ define([
                                 show: true,
                                 position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
                                 image: this.current_arrow[id][0],
-                                id: c
                             });
                         }
                     }, this);
@@ -1331,15 +1330,15 @@ define([
                     id: 0,
                 }).image;
 
-                var angle = 0.785398163;
-                var width = 60;
+                var angle = Math.PI/5;
+                var width = 45;
                 var center = width / 2;
 
                 for(var a = 0.1; a < 3.0; a += 0.1){
                     var s_a = Math.round(a*10)/10;
                     canvas = document.createElement('canvas');
                     canvas.width = width;
-                    canvas.height = s_a * 60;
+                    canvas.height = s_a * 80;
                     ctx = canvas.getContext('2d');
 
                     var len = Math.abs(canvas.height / Math.log(canvas.height));
@@ -1348,7 +1347,7 @@ define([
                     var arr_left = [(center + len * Math.cos(rad - angle)), (0 + len * Math.sin(rad - angle))];
                     var arr_right =[(center + len * Math.cos(rad + angle)), (0 + len * Math.sin(rad + angle))];
 
-                    ctx.moveTo(center, canvas.height);
+                    ctx.moveTo(center, canvas.height/2);
                     ctx.lineTo(center, 0);
                     ctx.lineTo(arr_right[0], arr_right[1]);
                     ctx.moveTo(arr_left[0], arr_left[1]);
@@ -1359,7 +1358,6 @@ define([
                     this.current_arrow[id][s_a] = layer.add({
                         image: canvas,
                         show: false,
-                        id: Math.round(a),
                     }).image;
                 }
             }
