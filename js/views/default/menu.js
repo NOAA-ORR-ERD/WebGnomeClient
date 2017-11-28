@@ -2,6 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'sweetalert',
+    'toastr',
     'text!templates/default/menu.html',
     'views/modal/about',
     'views/modal/hotkeys',
@@ -9,10 +11,11 @@ define([
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
     'views/form/outputter/shape',
-    'sweetalert',
     'model/gnome',
     'bootstrap'
- ], function($, _, Backbone, MenuTemplate, AboutModal, HotkeysModal, LocationForm, NetCDFForm, KMZForm, ShapeForm, swal, GnomeModel) {
+ ], function($, _, Backbone, swal, toastr,
+             MenuTemplate, AboutModal, HotkeysModal, LocationForm,
+             NetCDFForm, KMZForm, ShapeForm, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -54,6 +57,7 @@ define([
              
             'click .edit': 'editModel',
             'click .save': 'save',
+            'click .persist': 'persist',
 
             //"help" menu
             'click .about': 'about',
@@ -262,6 +266,22 @@ define([
             event.preventDefault();
             webgnome.cache.rewind();
             window.location.href = webgnome.config.api + '/download';
+        },
+
+        persist: function(event){
+            event.preventDefault();
+            webgnome.cache.rewind();
+            console.log('Save the model on server...');
+
+            $.get('/persist')
+            .done(function(response){
+                toastr.success('Model saved.', 'Success!', {timeOut: 3000});
+            })
+            .fail(function(response) {
+                toastr.error('Model was not saved. Return: ' + response,
+                             'Failed!',
+                             {timeOut: 3000});
+            });
         },
 
         debugView: function(event){

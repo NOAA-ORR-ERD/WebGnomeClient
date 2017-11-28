@@ -42,7 +42,6 @@ define([
             var fileList = this.$('tbody#file_list').empty();
             var fileItemTemplate = _.template(FileItemTemplate);
 
-            console.log('renderFileList: begin model.each()');
             this.model.each(function (file, index) {
                 $(fileList).append(fileItemTemplate({'file': file}));
                 if (file.get('type') === 'f') {
@@ -65,7 +64,6 @@ define([
                                                         _.bind(thisForm.moveFile, thisForm));
                 }
             });
-            console.log('renderFileList: end model.each()');
 
             var breadcrumbs = this.$('.breadcrumb').empty();
             breadcrumbs.append($('<li>').append('uploads'));
