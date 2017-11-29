@@ -372,15 +372,18 @@ define([
 
         render: function(){
             var compiled = _.template(MenuTemplate);
-            $('body').append(this.$el.html(compiled));
+            $('body').append(this.$el.html(compiled({'can_persist': webgnome.config.can_persist})));
+
             this.$('a').tooltip({
                 placement: 'right',
                 container: 'body'
             });
+
             this.$('.view-toggle .view').tooltip({
                 placement: 'bottom',
                 container: 'body'
             });
+
             this.$('.view-toggle .switch').tooltip({
                 placement: 'bottom'
             });
