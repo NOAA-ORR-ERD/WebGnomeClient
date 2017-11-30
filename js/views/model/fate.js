@@ -172,7 +172,7 @@ define([
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
             webgnome.cache.on('rewind', this.reset, this);
             webgnome.cache.on('step:recieved', this.disableRAC, this);
-            webgnome.cache.on('step:failed', this.enableRAC, this);
+            webgnome.cache.on('complete', this.enableRAC, this);
         },
 
         generateColorArray: function(dataset) {

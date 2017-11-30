@@ -186,6 +186,7 @@ define([
                 console.info(msg);
             }
             this.trigger('step:done');
+            this.trigger('complete');
             //this.socket.removeAllListeners()
             this.socket.disconnect();
         },
