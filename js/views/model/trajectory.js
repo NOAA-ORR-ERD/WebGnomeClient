@@ -95,8 +95,8 @@ define([
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
             webgnome.model.get('map').on('change', this.resetMap, this);
             webgnome.model.get('movers').on('add remove', this.renderControls, this);
-            this.listenTo(webgnome.model, 'change', this.reset);
-            webgnome.model.on('change', this.contextualize, this);
+            //this.listenTo(webgnome.model, 'change', this.reset, this);
+            this.listenTo(webgnome.model, 'change', this.contextualize, this);
             this.spillListeners();
             this.mapListener();
         },
@@ -334,7 +334,7 @@ define([
                     bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
-                    });
+                    }).then(this.load());
                 } else {
                     // fly to a gridded current instead
                     bounds = webgnome.model.get('map').get('map_bounds');
@@ -342,7 +342,6 @@ define([
                         duration: 0.25
                     });
                 }
-                this.load();
             }, this));
 
 
@@ -565,29 +564,18 @@ define([
             this.controls.progress.css('width', 0);
             this.frame = 0;
             this.controls.seek.slider('value', 0);
+            if (!_.isUndefined(this.les)) {
+                this.les.removeAll();
+                delete this.les;
+            }
         },
 
         rewindClick: function(e){
             this.stop();
             clearTimeout(this.rframe);
             setTimeout(_.bind(function(){
-                this.renderStep({step: 0});
                 webgnome.cache.rewind();
             }, this), 20);
-        },
-
-        reset:function() {
-            /*this.stopListening(webgnome.cache, 'step:received', this.renderStep);
-            //webgnome.cache.off('step:received', this.renderStep, this);
-            this.state = 'pause';
-            this.controls.play.show();
-            this.controls.pause.hide();
-            this.renderStep({step: 0});
-            this.controls.progress.css('width', 0);
-            this.frame = 0;
-            this.controls.seek.slider('value', 0);*/
-            this.rewindClick();
-            //this.trigger('rewind');
         },
 
         prev: function(){
@@ -1616,6 +1604,7 @@ define([
             //     this.unbind();
             //     this.viewer.destroy();
             // }
+            this.stop();
             this.$el.hide();
             // this.remove();
         }

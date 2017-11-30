@@ -55,6 +55,7 @@ define([
                          DEGREE * 10,
                          DEGREE * 15,
                          DEGREE * 20,
+                         DEGREE * 20,
                          DEGREE * 30,
                          DEGREE * 40];
         this.DEG_COUNT = this.DEG_STEPS.length;
@@ -78,7 +79,7 @@ define([
         this.on = true;
         this._prevCamPos = this.scene.camera.position.clone();
         this.prevOffLat = this.prevOffLon = 0;
-        this.color = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
+        this.color = new Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(0.65));
         this.dirty = false;
     };
 
@@ -109,9 +110,9 @@ define([
 
         setColor: function(color) {
             if(!color) {
-                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1));
+                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(0.65));
             } else {
-                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(color)
+                this.color = Cesium.ColorGeometryInstanceAttribute.fromColor(color);
             }
             this.dirty = true;
         },
@@ -302,7 +303,7 @@ define([
                             geometryInstances: this.linegeo,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
-                                translucent: false
+                                translucent: true
                             })
                         });
             this.scene.primitives.add(this.lines);

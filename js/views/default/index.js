@@ -41,6 +41,8 @@ define([
             if(webgnome.hasModel()){
                 webgnome.model.set('mode', 'gnome');
                 webgnome.model.save({'name': 'Model'});
+            } else {
+                webgnome.router._cleanup();
             }
 
             webgnome.router.navigate('config', true);

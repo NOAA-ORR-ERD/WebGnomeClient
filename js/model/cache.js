@@ -24,8 +24,7 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.listenTo(this.gnome_model, 'change', this.reset);
-            this.gnome_model.on('change', this.reset, this);
+            this.listenTo(this.gnome_model, 'change', this.rewind);
         },
 
         checkState: function(){
@@ -55,8 +54,13 @@ define([
         rewind: function(override){
             if(this.length > 0 || override === true){
                 $.get('/rewind', _.bind(function(){
+                    this.length = 0;
+                    this.inline = [];
+                    if(this.streaming) {
+                        this.socket.emit('kill');
+                        this.streaming = false;
+                    }
                     this.trigger('rewind');
-                    this.reset();
                 }, this));
             }
         },
@@ -86,38 +90,32 @@ define([
             }
         },
 
-        reset: function(){
-            this.length = 0;
-            this.trigger('reset');
-            this.inline = [];
-            if(this.streaming) {
-                this.socket.disconnect();
-                this.streaming = false;
-            }
-        },
-
         socketConnect: function(){
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to step namespace');
-            this.socket = io.connect(webgnome.config.api + this.socketRoute);
-            this.socket.on('step', _.bind(this.socketProcessStep, this));
-            this.socket.on('prepared', _.bind(this.begin,this));
-            this.socket.on('sync_step', _.bind(this.syncClient, this));
-            this.socket.on('complete', _.bind(this.endStream, this));
-            this.socket.on('timeout', _.bind(this.timedOut, this));
-            this.socket.on('killed', _.bind(this.killed, this));
+                if(!this.socket){
+                this.socket = io.connect(webgnome.config.api + this.socketRoute);
+                this.socket.on('step', _.bind(this.socketProcessStep, this));
+                this.socket.on('prepared', _.bind(this.begin,this));
+                this.socket.on('sync_step', _.bind(this.syncClient, this));
+                this.socket.on('complete', _.bind(this.endStream, this));
+                this.socket.on('timeout', _.bind(this.timedOut, this));
+                this.socket.on('killed', _.bind(this.killed, this));
+            }
         },
         stepStarted: function(event){
             console.log('step namespace started on api');
         },
         socketProcessStep: function(step){
-            var sm = new StepModel(step);
-            this.inline.push(sm);
-            this.length++;
-            this.trigger('step:buffered');
-            this.trigger('step:received', sm);
-            if(!this.isAsync){
-                this.sendStepAck(step);
+            if(this.streaming) {
+                var sm = new StepModel(step);
+                this.inline.push(sm);
+                this.length++;
+                this.trigger('step:buffered');
+                this.trigger('step:received', sm);
+                if(!this.isAsync){
+                    this.sendStepAck(step);
+                }
             }
         },
         begin: function() {
@@ -139,7 +137,9 @@ define([
 
         sendHalt: function() {
             console.log('halting model. cache length: ', this.length);
-            this.socket.emit('halt');
+            if (!_.isUndefined(this.socket)){
+                this.socket.emit('halt');
+            }
             this.isHalted = true;
         },
 
@@ -199,7 +199,7 @@ define([
             } else {
                 console.error(msg);
             }
-            this.socket.removeAllListeners();
+            //this.socket.removeAllListeners();
             this.socket.disconnect();
         },
 

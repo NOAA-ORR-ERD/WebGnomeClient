@@ -171,12 +171,14 @@ define([
 
                                 webgnome.model.toggleWeatherers();
                                 webgnome.model.save(null, {validate: false});
+                                webgnome.router._cleanup();
                                 webgnome.router.navigate('config', true);
 
                             }
                         });
                     } else {
                         webgnome.model.toggleWeatherers();
+                        webgnome.router._cleanup();
                         webgnome.router.navigate('config', true);
                     }
                 }, this)
