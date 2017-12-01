@@ -93,8 +93,8 @@ define([
         modelListeners: function(){
             this.listenTo(webgnome.model, 'change:map', this.mapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
-            webgnome.model.get('map').on('change', this.resetMap, this);
-            webgnome.model.get('movers').on('add remove', this.renderControls, this);
+            this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
+            this.listenTo(webgnome.model.get('movers'), 'add remove', this.renderControls);
             //this.listenTo(webgnome.model, 'change', this.reset, this);
             this.listenTo(webgnome.model, 'change', this.contextualize, this);
             this.spillListeners();
@@ -1587,6 +1587,7 @@ define([
         },
 
         close: function(){
+            BaseView.prototype.close.call(this);
             // if (this.modelMode !== 'adios'){
             //     this.pause();
             //     if(webgnome.model){
