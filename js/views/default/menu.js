@@ -191,6 +191,7 @@ define([
                     if(_.has(webgnome, 'cache')){
                         webgnome.cache.rewind();
                         webgnome.router._cleanup();
+
                     }                    
                     this.contextualize();
                     cb();                                                 
