@@ -7,12 +7,14 @@ define([
     'moment',
     'sweetalert',
     'text!../config.json',
+    'model/cache',
     'model/session',
     'model/gnome',
     'model/risk/risk',
+    'model/user_prefs',
     'views/default/loading',
 ], function($, _, Backbone, Router, moment, swal,
-            config, SessionModel, GnomeModel, RiskModel, LoadingView) {
+            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
@@ -97,9 +99,11 @@ define([
                 // check if there's an active model on the server
                 // if there is attempt to load it and route to the map view.
                 
+                webgnome.cache = new Cache(null);
                 var gnomeModel = new GnomeModel();
                 gnomeModel.fetch({
                     success: function(model){
+                        webgnome.user_prefs = new UserPrefs();
                         if(model.id){
                             window.webgnome.model = model;
                             webgnome.model.changed = {};

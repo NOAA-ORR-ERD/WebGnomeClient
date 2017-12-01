@@ -331,7 +331,7 @@ define([
             this.enableMenuItem('save');
             this.enableMenuItem('edit');
 
-            if(webgnome.cache.length > 0){
+            if(webgnome.cache && webgnome.cache.length > 0){
                 this.enableMenuItem('rewind');
             } else {
                 this.disableMenuItem('rewind');

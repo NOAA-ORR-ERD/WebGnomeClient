@@ -556,7 +556,9 @@ define([
         stop: function() {
             if($('.modal:visible').length === 0){
                 this.pause();
-                webgnome.cache.sendHalt();
+                if(webgnome.cache){
+                    webgnome.cache.sendHalt();
+                }
             }
         },
 
@@ -1587,7 +1589,6 @@ define([
         },
 
         close: function(){
-            BaseView.prototype.close.call(this);
             // if (this.modelMode !== 'adios'){
             //     this.pause();
             //     if(webgnome.model){

@@ -182,10 +182,10 @@ define([
         _cleanup: function() {
             // Cleans up parts of the website (such as trajectory view) when necessary
             if (!_.isUndefined(webgnome.router.trajView)) {
-                    this.trajView.viewer.destroy();
-                    this.trajView.stopListening();
-                    this.trajView.remove();
-                    this.trajView = undefined;
+                this.trajView.viewer.destroy();
+                this.trajView.stopListening();
+                this.trajView.remove();
+                this.trajView = undefined;
             }
         }
 
