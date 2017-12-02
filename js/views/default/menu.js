@@ -56,6 +56,8 @@ define([
             'click .load': 'load',
              
             'click .edit': 'editModel',
+
+            // "Save" optional menu items
             'click .save': 'save',
             'click .persist': 'persist',
 

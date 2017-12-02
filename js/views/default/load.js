@@ -5,9 +5,15 @@ define([
     'dropzone',
     'sweetalert',
     'model/gnome',
+    'views/uploads/upload_folder',
     'text!templates/default/load.html',
+    'text!templates/uploads/upload.html',
+    'text!templates/uploads/upload_activate.html',
     'text!templates/default/dropzone.html'
-], function($, _, Backbone, Dropzone, swal, GnomeModel, LoadTemplate, DropzoneTemplate){
+], function($, _, Backbone, Dropzone, swal,
+            GnomeModel, UploadFolder,
+            LoadTemplate, UploadTemplate, UploadActivateTemplate,
+            DropzoneTemplate){
     'use strict';
     var loadView = Backbone.View.extend({
         className: 'page load',
@@ -20,12 +26,17 @@ define([
         },
 
         render: function(options){
-            var template = _.template(LoadTemplate, {
-                simple: options.simple
-            });
-
+            var template;
+            if (options.simple) {
+                template = _.template(LoadTemplate);
+            } else if (webgnome.config.can_persist) {
+                template = _.template(UploadActivateTemplate);
+            } else {
+                template = _.template(UploadTemplate);
+            }
             this.$el.html(template);
-            if(!options.simple){
+
+            if (!options.simple){
                 $('body').append(this.$el);
             }
 
@@ -37,10 +48,16 @@ define([
                 acceptedFiles: '.zip',
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
             this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
+            this.dropzone.on('error', _.bind(this.reset, this));
+            this.dropzone.on('success', _.bind(this.loaded, this));
+
+            if (!options.simple && webgnome.config.can_persist) {
+                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
+                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
+                this.uploadFolder.render();
+            }
         },
 
         sending: function(e, xhr, formData){
@@ -183,6 +200,17 @@ define([
                     }
                 }, this)
             });
+        },
+
+        activateFile: function(filePath) {
+            if (this.$('.popover').length === 0) {
+                var thisForm = this;
+
+                $.post('/activate', {'file-name': filePath})
+                .done(function(response){
+                    thisForm.loaded(filePath, response);
+                });
+            }
         },
 
         close: function(){
