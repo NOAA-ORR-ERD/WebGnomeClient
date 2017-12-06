@@ -14,6 +14,7 @@ define([
         inline: [],
         isAsync: true,
         isHalted: false,
+        isDead: false, //set if model on server is finished. reset during rewind
         numAck: 0,
         model: StepModel,
 
@@ -23,37 +24,19 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
+            this.rewind(true);
         },
 
         checkState: function(){
             this.rewind();
         },
 
-        step: function(){
-            var step = new StepModel();
-            this.trigger('step:sent');
-            if(!this.fetching){
-                this.fetching = true;
-                step.fetch({
-                    success: _.bind(function(step){
-                        this.inline.push(step);
-                        this.fetching = false;
-                        this.length++;
-                        this.trigger('step:received', step);
-                    }, this),
-                    error: _.bind(function(){
-                        this.fetching = false;
-                        this.trigger('step:failed');
-                    }, this)
-                });
-            }
-        },
-
         rewind: function(override){
-            if(this.length > 0 || override === true){
+            if(this.length >= 0 || override === true){
                 $.get('/rewind', _.bind(function(){
                     this.length = 0;
                     this.inline = [];
+                    this.isDead = false;
                     if(this.streaming) {
                         this.socket.emit('kill');
                         this.streaming = false;
@@ -118,7 +101,7 @@ define([
         },
         begin: function() {
             // this is this.socket.connected in socket.io v1.0+
-            if(!this.streaming){
+            if(!this.streaming && !this.isDead){
                 this.sendStepAck({step:-1});
                 this.streaming = true;
             }
@@ -142,11 +125,11 @@ define([
         },
 
         resume: function() {
-            if(this.isHalted) {
+            if(this.isHalted && !this.isDead) {
                 console.log('resuming model');
                 this.socket.emit('ack', this.length);
+                this.isHalted = false;
             }
-            this.isHalted = false;
         },
 
         sendStepAck: function(step) {
@@ -160,7 +143,7 @@ define([
         },
 
         getSteps: function() {
-            if(!this.streaming) {
+            if(!this.streaming && !this.isDead) {
                 // this is this.socket.connected in socket.io v1.0+
                 if(!this.socket){
                     this.socketConnect();
@@ -179,6 +162,7 @@ define([
 
         endStream: function(msg) {
             this.streaming = false;
+            this.isDead = true;
             this.isHalted = false;
             if(msg){
                 console.info(msg);

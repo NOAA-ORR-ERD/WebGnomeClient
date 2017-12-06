@@ -381,7 +381,7 @@ define([
             this.updateProgress();
             this.state = 'pause';
             webgnome.cache.on('step:buffered', this.updateProgress, this);
-            webgnome.cache.on('step:failed', this.pause, this);
+            webgnome.cache.on('step:failed', this.stop, this);
 
             if(localStorage.getItem('autorun') === 'true'){
                 localStorage.setItem('autorun', '');
@@ -1606,7 +1606,7 @@ define([
             //     this.unbind();
             //     this.viewer.destroy();
             // }
-            this.stop();
+            this.pause();
             this.$el.hide();
             // this.remove();
         }

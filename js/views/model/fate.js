@@ -170,9 +170,9 @@ define([
             this.formatXaxisLabel();
             this.render();
             $(window).on('scroll', this.tableOilBudgetStickyHeader);
-            webgnome.cache.on('rewind', this.reset, this);
-            webgnome.cache.on('step:recieved', this.disableRAC, this);
-            webgnome.cache.on('complete', this.enableRAC, this);
+            this.listenTo(webgnome.cache, 'rewind', this.reset);
+            this.listenTo(webgnome.cache, 'step:recieved', this.disableRAC);
+            this.listenTo(webgnome.cache, 'complete', this.enableRAC);
         },
 
         generateColorArray: function(dataset) {
@@ -1931,6 +1931,7 @@ define([
             $(window).off('scroll', this.tableOilBudgetStickyHeader);
             this.stopListening(webgnome.cache, 'step:received', this.buildDataset);
             webgnome.cache.off('rewind', this.reset, this);
+            webgnome.cache.sendHalt();
 
             this.rendered = false;
             Backbone.View.prototype.close.call(this);
