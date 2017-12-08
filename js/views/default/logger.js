@@ -77,7 +77,7 @@ define([
         },
 
         socketLog: function(event){
-            this.log(event);
+            //this.log(event); #disabled due to excessive DOM updates when API is sending DEBUG messages
             this.toast(event);
         },
 

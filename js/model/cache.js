@@ -162,7 +162,9 @@ define([
 
         endStream: function(msg) {
             this.streaming = false;
-            this.isDead = true;
+            if(this.length > 0) {
+                this.isDead = true;
+            }
             this.isHalted = false;
             if(msg){
                 console.info(msg);
