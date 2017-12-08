@@ -24,7 +24,7 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.rewind(true);
+            this.rewind();
         },
 
         checkState: function(){
@@ -32,7 +32,7 @@ define([
         },
 
         rewind: function(override){
-            if(this.length >= 0 || override === true){
+            if(this.length > 0 || override === true){
                 $.get('/rewind', _.bind(function(){
                     this.length = 0;
                     this.inline = [];
@@ -43,6 +43,14 @@ define([
                     }
                     this.trigger('rewind');
                 }, this));
+            } else { // if something fails on step 0, need to be able to reset without triggering a rewind everywhere
+                this.length = 0;
+                this.inline = [];
+                this.isDead = false;
+                if(this.streaming) {
+                    this.socket.emit('kill');
+                    this.streaming = false;
+                }
             }
         },
 
