@@ -1,9 +1,10 @@
 define([
+    'jquery',
     'underscore',
     'cesium',
-], function (_, Cesium) {
+], function ($, _, Cesium) {
     "use strict";
-    var Graticule = function(DMS, scene, maxLines) {
+    var Graticule = function(DMS, scene, maxLines, containerName) {
 
 
         var DEGREE = 1.0;
@@ -73,7 +74,8 @@ define([
         this.scene = scene;
         this.proj = scene.mapProjection;
         this.refresh_scale();
-        this.linePoolSize = 40;
+        this.linePoolSize = 50;
+        this.$labelContainer = $(containerName);
         this.initLines();
         this.initLabels();
         this.on = true;
@@ -93,6 +95,7 @@ define([
         },
         deactivate: function() {
             this.on = false;
+            $('.graticule-label').hide()
             this.lines.show = false;
             var i = 0;
             /*if(this.lines) {
@@ -100,11 +103,6 @@ define([
                     this.lines.get(i).show = false;
                 }
             }*/
-            if(this.labels) {
-                for(i = 0; i < this.linePoolSize; i++) {
-                    this.labels.get(i).show = false;
-                }
-            }
             this.scene.postRender.removeEventListener(this.refreshGraticule, this);
         },
 
@@ -215,22 +213,16 @@ define([
 
         initLabels: function() {
             if (!this.labels) {
-                this.labels = this.scene.primitives.add(new Cesium.LabelCollection());
-                this.labels.blendOption = Cesium.BlendOption.OPAQUE;
+                this.labels = []
+                var $div;
                 for (var i=0; i < this.linePoolSize; i++) {
-                    this.labels.add({
-                        positions: Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
-                        show: false,
-                        font: '60px Arial',
-                        text: 'undef',
-                        fillColor: Cesium.Color.BLACK,
-                        backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8),
-                        outlineColor: Cesium.Color.WHITE,
-                        outlineWidth: 1,
-                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                        scale : 0.3
-                        });
+                    $div = $("<div>", {"class": "graticule-label"});
+                    this.$labelContainer.prepend($div);
+                    $div.text("" + i);
+                    $div.css({"top": i*20 + "px"});
+                    //$div.hide();
+                    //$div.click(function(){ /* ... */ });
+                    this.labels.push($div);
                 }
             }
         },
@@ -314,8 +306,8 @@ define([
                 this.refresh_scale();
                 this.setupLines();
                 this.setupLabels();
-                this.scene.primitives.lowerToBottom(this.lines);
-                this.scene.primitives.raiseToTop(this.labels);
+                //this.scene.primitives.lowerToBottom(this.lines);
+                //this.scene.primitives.raiseToTop(this.labels);
                 this._prevCamPos = this.scene.camera.position.clone();
                 this.dirty = false;
             }
@@ -324,33 +316,46 @@ define([
         setupLabels : function() {
             var frustum = this.scene.camera.frustum;
             var center = this.scene.camera.position;
-            var bl = this.scene.mapProjection.unproject(new Cesium.Cartesian3(center.x - frustum.right, center.y - frustum.top, 0));
+            var bottomPos = center.y - frustum.top;
             var intDivFunc = this.intDivFunc;
 
             var genLabel = this.DMS ? this.genDMSLabel : this.genDegLabel;
             var line, label;
             for(var i=0; i < (this.lon_lines + 10); i++) {
                 line = this.linegeo[i].geometry;
-                label = this.labels.get(i);
+                label = this.labels[i];
+                var linePos = line._positions[0];
                 var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
-                label.position = Cesium.Cartesian3.fromRadians(lineLon, bl.latitude);
-                label.text = this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon);
-                label.show = true;
+                var labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                label.text(this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon));
+                label.css("bottom", 0 + "px");
+                label.css("top", "");
+                label.css("left", (labelPosition.x - label.width()/2) + "px");
+                if(this.on){
+                    label.show();
+                }
             }
             i--;
             for(var j=i;j < this.linegeo.length; j++) {
-                if (!this.linegeo[j]) {
-                    console.trace();
-                }
+                //if (!this.linegeo[j]) {
+                    //console.trace();
+                //}
                 line = this.linegeo[j].geometry;
-                label = this.labels.get(j);
+                label = this.labels[j];
+                linePos = line._positions[0];
                 var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
-                label.position = new Cesium.Cartesian3.fromRadians(bl.longitude, lineLat);
-                label.text = this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat);
-                label.show = true;
+                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                label.text(this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat));
+                label.css("bottom", "");
+                label.css("top", (labelPosition.y - label.height()/2) + "px");
+                label.css("left", "0px");
+                if(this.on){
+                    label.show();
+                }
             }
+            j--;
             for (var k = j; k < this.linePoolSize; k++) {
-                this.labels.get(k).show = false;
+                this.labels[k].hide();
             }
         },
         genDMSLabel: function(dim, radians) {
