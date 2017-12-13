@@ -1089,7 +1089,8 @@ define([
                         for(segment; segment < limit; segment++){
                             geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
-                                    positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2))
+                                    positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
+                                    followSurface: false,
                                 }),
                                 attributes: {
                                     color: color
@@ -1161,9 +1162,9 @@ define([
                     }, this);
 
                     if ('nodes'.includes(env.data_location)) {
-                        env.getNodes(addVecsToLayer);
+                        env.get('grid').getNodes(addVecsToLayer);
                     } else {
-                        env.getCenters(addVecsToLayer);
+                        env.get('grid').getCenters(addVecsToLayer);
                     }
 
                     this.checked_env_vec.push(id);
