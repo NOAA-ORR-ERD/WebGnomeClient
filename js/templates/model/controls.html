@@ -41,26 +41,42 @@
 
 <div class="layers">
     <div class="title">Layers</div>
+    
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#general">General</a>
+            <a role="button" data-toggle="collapse" href="#imagery">Imagery</a>
         </div>
-        <div id="general" class="panel-collapse collapse in">
+        <div id="imagery" class="panel-collapse collapse in">
             <div class="panel-body">
-                <strong>Visibility</strong>
                 <form role="form" class="form-horizontal checkboxes base">
-                    <!--<div class="checkbox">
-                        <label for="noaanavcharts"><input type="checkbox" id="noaanavcharts">NOAA Nav. Charts</label>
-                    </div>-->
-                    <div class="checkbox">
-                        <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap">Model Map</label>
+                    <div class="radio">
+                        <label for="no_image"><input type="radio" name="imagery" id="no_image" checked>No imagery</label>
                     </div>
-                    <div class="checkbox">
-                        <label for="spills"><input type="checkbox" checked="checked" id="spills">Spills</label>
+                    <div class="radio">
+                        <label for="noaanavcharts"><input type="radio" name="imagery" id="noaanavcharts">NOAA Navigational Charts</label>
                     </div>
-                    <div class="checkbox">
-                        <label for="particles"><input type="checkbox" checked="checked" id="particles">Particles</label>
+                    <div class="radio">
+                        <label for="bing_aerial"><input type="radio" name="imagery" id="bing_aerial">Bing Maps Aerial</label>
                     </div>
+                    <div class="radio">
+                        <label for="open_street_map"><input type="radio" name="imagery" id="open_street_map">Open Street Map</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <a role="button" data-toggle="collapse" href="#map_display">Model Map</a>
+        </div>
+        <div id="map_display" class="panel-collapse collapse">
+            <div class="panel-body">
+                <form role="form" class="form-horizontal checkboxes base">
+                    <div class="checkbox">
+                        <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap">Coastlines</label>
+                    </div>
+
                     <div class="checkbox">
                         <label for="spillableArea"><input type="checkbox" id="spillableArea">Spillable Area</label>
                     </div>
@@ -73,12 +89,44 @@
                 </form>
             </div>
         </div>
-    </div>
 
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <a role="button" data-toggle="collapse" href="#spills">Spills</a>
+        </div>
+        
+        <div class="panel-collapse collapse" id="spills">
+            {% if(model_spills.length > 0){ %}
+                {% for (var i = 0; i < model_spills.length; i++){ %}
+                    <div class="panel-secondary">
+                        
+                            <div class="panel-heading">
+                            <a role="button" data-toggle="collapse" href={{'#' + model_spills.models[i].get('id')}}>{{model_spills.models[i].get('name')}}</a>
+                            </div>                        
+                            <div class="panel-collapse collapse" id={{model_spills.models[i].get('id')}}>
+                                <div class="panel-body">
+                                    <form role="form" class="form-horizontal checkboxes base">
+                                    <div class="checkbox">
+                                        <label for="spills"><input type="checkbox" checked="checked" id="spills-{{model_spills.models[i].get('id')}}">Spill Location</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label for="particles"}><input type="checkbox" checked="checked" id="particles-{{model_spills.models[i].get('id')}}">Particles</label>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                       
+                {% } %}
+            {% } %}
+               
+        </div>
+    
     <div class="panel panel-primary" id='accor'>
         <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#all">Environmental Data</a>
+            <a role="button" data-toggle="collapse" href="#all">Gridded Environmental Data</a>
         </div>
+        
         <div class="panel-collapse collapse" id="all">
             <div class="panel-secondary">
                 <div class="panel-heading">
@@ -153,7 +201,7 @@
 
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#grids">Grids</a>
+            <a role="button" data-toggle="collapse" href="#grids">Grids (old)</a>
         </div>
         <div class="panel-collapse collapse" id="grids">
             <div class="panel-body">
@@ -199,7 +247,7 @@
 
     <div class="panel panel-primary">
         <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#uv">U&amp;V | Speed and Direction</a>
+            <a role="button" data-toggle="collapse" href="#uv">U&amp;V | Speed and Direction (old)</a>
         </div>
         <div class="panel-collapse collapse" id="uv">
             <div class="panel-body">
