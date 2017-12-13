@@ -161,6 +161,9 @@ define([
             }
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
+            
+            var model_spills = webgnome.model.get('spills')
+            
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
@@ -203,6 +206,7 @@ define([
 
             var compiled = _.template(ControlsTemplate, {
                 date: date,
+                model_spills: model_spills,
                 currents: currents,
                 active_currents: active_currents,
                 ice: ice,
@@ -269,21 +273,24 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
-            var image_providers = Cesium.createDefaultImageryProviderViewModels();
-            var default_image = new Cesium.ProviderViewModel({
-                name: 'No imagery selected',
-                tooltip: '',
-                iconUrl: '/img/no_basemap.png',
-                creationFunction: function(){
-                    return new Cesium.SingleTileImageryProvider({
-                        url: '/img/globe.png'
-                    });
-                },
-            });
-            image_providers.unshift(default_image);
+            
+            // Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
+            // var image_providers = Cesium.createDefaultImageryProviderViewModels();
+            // var default_image = new Cesium.ProviderViewModel({
+                // name: 'No imagery selected',
+                // tooltip: '',
+                // iconUrl: '/img/no_basemap.png',
+                // creationFunction: function(){
+                    // return new Cesium.SingleTileImageryProvider({
+                        // url: '/img/globe.png'
+                    // });
+                // },
+            // });
+            // image_providers.unshift(default_image);
+            
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
+                baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
                 homeButton: false,
@@ -295,8 +302,11 @@ define([
                 skyAtmosphere: false,
                 sceneMode: Cesium.SceneMode.SCENE2D,
                 mapProjection: new Cesium.WebMercatorProjection(),
-                selectedImageryProviderViewModel: default_image,
-                imageryProviderViewModels: image_providers,
+                //selectedImageryProviderViewModel: default_image,
+                //imageryProviderViewModels: image_providers,
+                imageryProvider : new Cesium.SingleTileImageryProvider({
+                    url: '/img/globe.png'
+                }),
                 creditContainer: 'map',
                 clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
                    canAnimate: false,
@@ -953,12 +963,43 @@ define([
                     this.layers.nav = this.viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
                         layers: '1',
                         url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                        //url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                     }));
-                    this.layers.nav.alpha = 0.60;
+                    this.layers.nav.alpha = 0.80;
                 }
             } else if(this.layers.nav) {
                 this.viewer.imageryLayers.remove(this.layers.nav);
                 delete this.layers.nav;
+            }
+            
+            if(checked_layers.indexOf('bing_aerial') !== -1){
+                var bing = new Cesium.BingMapsImageryProvider({
+                    layers: '1',
+                    url : 'https://dev.virtualearth.net',
+                    key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                });
+                if (!this.layers.sat1) {
+                    this.layers.sat1 = this.viewer.imageryLayers.addImageryProvider(bing);
+                    this.layers.sat1.alpha = 0.80;
+                }
+            } else if(this.layers.sat1) {
+                this.viewer.imageryLayers.remove(this.layers.sat1);
+                delete this.layers.sat1;
+            }
+            
+            if(checked_layers.indexOf('open_street_map') !== -1){
+                var osm = new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : 'https://a.tile.openstreetmap.org/',
+                });
+                if (!this.layers.sat2) {
+                    this.layers.sat2 = this.viewer.imageryLayers.addImageryProvider(osm);
+                    this.layers.sat2.alpha = 0.80;
+                }
+            } else if(this.layers.sat2) {
+                this.viewer.imageryLayers.remove(this.layers.sat2);
+                delete this.layers.sat2;
             }
 
             if(checked_layers.indexOf('modelmap') !== -1){
