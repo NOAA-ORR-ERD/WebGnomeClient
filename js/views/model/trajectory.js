@@ -1089,53 +1089,54 @@ define([
                     this.grids[existing_grids[grid]][prims].show = false;
                 }
             }
-
+            
+            //explore this vvv
             var id = this.$(e.currentTarget).attr('id').replace('grid-', '');
-            if(_.has(this.grids, id)){
+            var env = webgnome.model.get('environment').findWhere({id: id});
+            if(id === 'none-grid'){
+                return;
+            } else if(!env.get('grid')){
+                console.error('The environment object does not have a grid!', env.get('name'));
+            } else if(_.has(this.grids, env.get('grid').get('id'))){
+                var grid_id = env.get('grid').get('id');
                 // need to hide the entire set of grids.
-                for(var active_prim = this.grids[id].length; active_prim--;){
-                    this.grids[id][active_prim].show = true;
+                for(var active_prim = this.grids[grid_id].length; active_prim--;){
+                    this.grids[grid_id][active_prim].show = true;
                 }
             } else if(id !== 'none-grid'){
-                var env = webgnome.model.get('environment').findWhere({id: id});
-                env.getGrid(_.bind(function(data){
+                env.get('grid').getLines(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
-                    this.grids[env.get('id')]  = [];
+                    var grid_id = env.get('grid').get('id');
+                    this.grids[grid_id]  = [];
+                    var numLengths = data[0].length;
+                    var lengths = data[0];
+                    var lines = data[1];
                     var batch = 3000;
-                    var batch_limit = Math.ceil((data.length/8) / batch);
+                    var batch_limit = Math.ceil(numLengths / batch);
                     var segment = 0;
-                    var num_sides = 0;
-                    var grid_type = env.get('grid').get('obj_type');
-                    if (grid_type[grid_type.length - 1] === 'U') {
-                        //if unstructured
-                        num_sides = 3;
-                    } else {
-                        num_sides = 4;
-                    }
-                    var line_len = (num_sides * 2) + 2;
+                    var curOffset = 0;
                     for(var b = 0; b < batch_limit; b++){
                         // setup the new batch
                         var geo = [];
 
                         // build the batch
-                        var limit = Math.min(segment + batch, data.length / line_len);
-                        for(var cell = segment; cell < limit; cell++){
-                            var cell_offset = cell * line_len;
+                        var limit = Math.min(segment + batch, numLengths);
+                        for(segment; segment < limit; segment++){
                             geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
-                                    positions: Cesium.Cartesian3.fromDegreesArray(data.slice(cell_offset, cell_offset + line_len))
+                                    positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
+                                    followSurface: false,
                                 }),
                                 attributes: {
                                     color: color
                                 },
                                 allowPicking: false
                             }));
+                            curOffset = curOffset + lengths[segment]*2
                         }
 
-                        segment += batch;
-
                         // send the batch to the gpu/cesium
-                        this.grids[env.get('id')].push(this.viewer.scene.primitives.add(new Cesium.Primitive({
+                        this.grids[grid_id].push(this.viewer.scene.primitives.add(new Cesium.Primitive({
                             geometryInstances: geo,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
@@ -1143,7 +1144,6 @@ define([
                             })
                         })));
                     }
-
                 }, this));
             }
         },
@@ -1196,10 +1196,10 @@ define([
                         }
                     }, this);
 
-                    if (env.data_location === 'nodes') {
-                        env.getNodes(addVecsToLayer);
+                    if ('nodes'.includes(env.data_location)) {
+                        env.get('grid').getNodes(addVecsToLayer);
                     } else {
-                        env.getCenters(addVecsToLayer);
+                        env.get('grid').getCenters(addVecsToLayer);
                     }
 
                     this.checked_env_vec.push(id);

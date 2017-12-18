@@ -19,7 +19,6 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.held_by = [];
         },
 
         resetRequest: function(){
@@ -40,232 +39,76 @@ define([
             }, this ));
         },
 
-        getNodes: function(callback){
-            var ur = this.urlRoot + this.id + '/nodes';
-            if(!this.requesting && !this.requested_nodes){
-                this.env_obj_cache.getItem(this.id + 'nodes').then(_.bind(function(value){
-                    if(value) {
-                        console.log(this.id + ' nodes found in store');
-                        this.requested_nodes = true;
-                        this.nodes = value;
-                        if (callback) {
-                            callback(this.nodes);
-                        }
-                        return this.nodes;
-                    }
-                },this)).catch(function(err) {
-                    console.log(err);
-                });
-                this.requesting = true;
-                $.ajax({url: ur,
-                        type: "GET",
-                        dataType: "binary",
-                        responseType:"arraybuffer",
-                        processData:"false",
-                        headers: {
-                            'Accept' : 'application/octet-stream',
-                            'Access-Control-Allow-Request-Method': 'GET',
-                            'Content-Type': 'binary',
-                        },
-                        xhrFields:{
-                            withCredentials: true
-                        },
-                        success: _.bind(function(nodes, sts, response){
-                    this.requesting = false;
-                    this.requested_nodes = true;
-                    var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT;
-                    var num_nodes = nodes.byteLength / (2*dtl);
-                    this.nodes = new dtype(nodes);
-                    this.env_obj_cache.setItem(this.id + 'nodes', this.nodes);
-                    if(callback) {
-                        callback(this.nodes);
-                    }
-                    return this.nodes;
-                }, this )});
-            } else if(callback) {
-                callback(this.nodes);
-                return this.nodes;
-            }
-        },
-
-        getCenters: function(callback){
-            var ur = this.urlRoot + this.id + '/centers';
-            if(!this.requesting && !this.requested_centers){
-                this.env_obj_cache.getItem(this.id + 'centers').then(_.bind(function(value){
-                    if(value) {
-                        console.log(this.id + ' centers found in store');
-                        this.requested_centers = true;
-                        this.centers = value;
-                        if (callback) {
-                            callback(this.centers);
-                        }
-                        return this.centers;
-                    }
-                },this)).catch(function(err) {
-                    console.log(err);
-                });
-                this.requesting = true;
-                $.ajax({url: ur,
-                        type: "GET",
-                        dataType: "binary",
-                        responseType:"arraybuffer",
-                        processData:"false",
-                        headers: {
-                            'Accept' : 'application/octet-stream',
-                            'Access-Control-Allow-Request-Method': 'GET',
-                            'Content-Type': 'binary',
-                        },
-                        xhrFields:{
-                            withCredentials: true
-                        },
-                        success: _.bind(function(centers, sts, response){
-                    this.requesting = false;
-                    this.requested_centers = true;
-                    var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT;
-                    var num_centers = centers.byteLength / (2*dtl);
-                    this.centers = new dtype(centers);
-                    this.env_obj_cache.setItem(this.id + 'centers', this.centers);
-                    if(callback) {
-                        callback(this.centers);
-                    }
-                    return this.centers;
-                }, this )});
-            } else if(callback) {
-                callback(this.centers);
-                return this.centers;
-            }
-        },
-
-        getGrid: function(callback){
-            var ur = this.urlRoot + this.id + '/grid';
-            if(!this.requesting && !this.requested_grid){
-                this.requesting = true;
-                $.ajax({url: ur,
-                        type: "GET",
-                        dataType: "binary",
-                        responseType:"arraybuffer",
-                        processData:"false",
-                        headers: {
-                            'Accept' : 'application/octet-stream',
-                            'Access-Control-Allow-Request-Method': 'GET',
-                            'Content-Type': 'binary',
-                        },
-                        xhrFields:{
-                            withCredentials: true
-                        },
-                        success: _.bind(function(grid){
-                    this.requesting = false;
-                    this.requested_grid = true;
-                    var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT;
-                    var grid_type = this.get('grid').get('obj_type');
-                    var num_sides = 0;
-                    if (grid_type[grid_type.length - 1] === 'U') {
-                        num_sides = 3;
-                    } else {
-                        num_sides = 4;
-                    }
-                    var num_cells = grid.byteLength / (num_sides * 2 * dtl);
-                    var line_coord_len = num_sides * 2 + 2; // lon, lat per vertex, plus one extra to complete shape
-
-                    var buflen = num_cells * line_coord_len * dtl;
-                    var buffer = new ArrayBuffer(buflen);
-                    this.grid = new dtype(buffer);
-
-                    // make it a closed shape if it isn't.
-                    var og = new dtype(grid);
-                    for(var cell = 0; cell < num_cells; cell++){
-                        var cell_offset = cell*(line_coord_len);
-                        var og_off = cell*(num_sides*2);
-                        this.grid.set(og.slice(og_off, og_off+(num_sides*2)), cell_offset);
-                        this.grid.set(og.slice(og_off, og_off+2), cell_offset+(num_sides*2));
-                    }
-
-                    if(callback){
-                        callback(this.grid);
-                    }
-                    return this.grid;
-                }, this )});
-            } else if(callback) {
-                callback(this.grid);
-                return this.grid;
-            }
-        },
-
         getVecs: function(callback){
-            var ur = this.urlRoot + this.id + '/vectors';
-            if(!this.requesting && !this.requested_vectors){
-                this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
-                    if(value) {
-                        console.log(this.id + ' vectors found in store');
-                        var dtype = Float32Array;
-                        var dtl = dtype.BYTES_PER_ELEMENT;
-                        this.requested_vectors = true;
-                        this.vec_data = value[0];
-                        var shape = value[1];
-                        this.num_times = parseInt(shape[1]);
-                        this.num_vecs = parseInt(shape[2]);
-                        this.time_axis = [];
-                        for (var i=0; i < this.get('time').get("data").length; i++) {
-                            var t = this.get('time').get("data")[i];
-                            this.time_axis.push(moment(t.replace('T',' ')).unix());
-                        }
-                        this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                        this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                        this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                        if (callback) {
-                            callback(this.vec_data);
-                        }
-                        return this.vec_data;
-                    }
-                },this)).catch(function(err) {
-                    console.log(err);
-                });
-                this.requesting = true;
-                $.ajax({url: ur,
-                        type: "GET",
-                        dataType: "binary",
-                        responseType:"arraybuffer",
-                        processData:"false",
-                        headers: {
-                            'Accept' : 'application/octet-stream',
-                            'Access-Control-Allow-Request-Method': 'GET',
-                            'Content-Type': 'binary',
-                        },
-                        xhrFields:{
-                            withCredentials: true
-                        },
-                        success: _.bind(function(uv_data, sts, response){
-                    this.requesting = false;
-                    this.requested_vectors = true;
+            this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
+                if(value) {
+                    console.log(this.id + ' vectors found in store');
                     var dtype = Float32Array;
                     var dtl = dtype.BYTES_PER_ELEMENT;
-                    var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
-                    var num_times = parseInt(shape[1]);
-                    var num_vecs = parseInt(shape[2]);
-
-                    var datalen = num_times * num_vecs * dtl;
-                    this.vec_data = new Float32Array(uv_data);
-                    this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
-                    
-                    this.num_times = num_times;
-                    this.num_vecs = num_vecs;
+                    this.requested_vectors = true;
+                    this.vec_data = value[0];
+                    var shape = value[1];
+                    this.num_times = parseInt(shape[1]);
+                    this.num_vecs = parseInt(shape[2]);
                     this.time_axis = [];
-                    for (var i=0; i < this.get('time').get("data").length; i++) {
-                        var t = this.get('time').get("data")[i];
+                    for (var i=0; i < this.get('time').get('data').length; i++) {
+                        var t = this.get('time').get('data')[i];
                         this.time_axis.push(moment(t.replace('T',' ')).unix());
                     }
                     this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
                     this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
                     this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                    if (callback) {
+                        callback(this.vec_data);
+                    }
+                    return this.vec_data;
+                } else {
+                    if(!this.requesting && !this.requested_vectors){
+                        this.requesting = true;
+                        var ur = this.urlRoot + this.id + '/vectors';
+                        $.ajax({url: ur,
+                                type: "GET",
+                                dataType: "binary",
+                                responseType:"arraybuffer",
+                                processData:"false",
+                                headers: {
+                                    'Accept' : 'application/octet-stream',
+                                    'Access-Control-Allow-Request-Method': 'GET',
+                                    'Content-Type': 'binary',
+                                },
+                                xhrFields:{
+                                    withCredentials: true
+                                },
+                                success: _.bind(function(uv_data, sts, response){
+                            this.requesting = false;
+                            this.requested_vectors = true;
+                            var dtype = Float32Array;
+                            var dtl = dtype.BYTES_PER_ELEMENT;
+                            var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
+                            var num_times = parseInt(shape[1]);
+                            var num_vecs = parseInt(shape[2]);
 
-                }, this )});
-            } else if(callback) {
-                callback(this.vec_data);
-                return this.vec_data;
-            }
+                            var datalen = num_times * num_vecs * dtl;
+                            this.vec_data = new Float32Array(uv_data);
+                            this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
+                            
+                            this.num_times = num_times;
+                            this.num_vecs = num_vecs;
+                            this.time_axis = [];
+                            for (var i=0; i < this.get('time').get('data').length; i++) {
+                                var t = this.get('time').get('data')[i];
+                                this.time_axis.push(moment(t.replace('T',' ')).unix());
+                            }
+                            this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                            this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                            this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+
+                        }, this )});
+                    }
+                }
+            },this)).catch(function(err) {
+                console.log(err);
+            });
         },
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {
