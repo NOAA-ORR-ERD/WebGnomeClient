@@ -164,7 +164,7 @@ define([
             // or if there is a redraw request because of the map object changing
             
             var model_spills = webgnome.model.get('spills');
-            
+          
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
@@ -989,14 +989,43 @@ define([
                     image_layer = new Cesium.WebMapServiceImageryProvider({
                         layers: '1',
                         url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                });}
-               
+                });}               
                 this.layers.sat = this.viewer.imageryLayers.addImageryProvider(image_layer);
-                this.layers.sat.alpha = 0.80;
-              
+                this.layers.sat.alpha = 0.80;              
             } else  {
                 this.viewer.imageryLayers.remove(this.layers.sat);
                 delete this.layers.sat;
+
+            }
+            
+            if(checked_layers.indexOf('bing_aerial') !== -1){
+                var bing = new Cesium.BingMapsImageryProvider({
+                    layers: '1',
+                    url : 'https://dev.virtualearth.net',
+                    key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                });
+                if (!this.layers.sat1) {
+                    this.layers.sat1 = this.viewer.imageryLayers.addImageryProvider(bing);
+                    this.layers.sat1.alpha = 0.80;
+                }
+            } else if(this.layers.sat1) {
+                this.viewer.imageryLayers.remove(this.layers.sat1);
+                delete this.layers.sat1;
+            }
+            
+            if(checked_layers.indexOf('open_street_map') !== -1){
+                var osm = new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : 'https://a.tile.openstreetmap.org/',
+                });
+                if (!this.layers.sat2) {
+                    this.layers.sat2 = this.viewer.imageryLayers.addImageryProvider(osm);
+                    this.layers.sat2.alpha = 0.80;
+                }
+            } else if(this.layers.sat2) {
+                this.viewer.imageryLayers.remove(this.layers.sat2);
+                delete this.layers.sat2;
             }
 
             if(checked_layers.indexOf('modelmap') !== -1){
