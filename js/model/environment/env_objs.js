@@ -41,8 +41,8 @@ define([
         },
 
         getVecs: function(){
-            return new Promise((resolve, reject) => {
-                this.env_obj_cache.getItem(this.id + 'vectors').then((value) => {
+            return new Promise(_.bind(function(resolve, reject){
+                this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
                     if(value) {
                         console.log(this.id + ' vectors found in store');
                         var dtype = Float32Array;
@@ -80,7 +80,7 @@ define([
                                 xhrFields:{
                                     withCredentials: true
                                 },
-                                success: (uv_data, sts, response) => {
+                                success: _.bind(function(uv_data, sts, response){
                                     this.requesting = false;
                                     this.requested_vectors = true;
                                     var dtype = Float32Array;
@@ -104,15 +104,15 @@ define([
                                     this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
                                     this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
 
-                                },
-                                error: (jqXHR, sts, err) => reject(err),
+                                },this),
+                                error: function(jqXHR, sts, err){reject(err);},
                             });
                         } else {
                             reject(new Error('Request already in progress'));
                         }
                     }
-                }).catch((err) => reject(err));
-            });
+                }, this)).catch(reject);
+            }, this));
         },
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {

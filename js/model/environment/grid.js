@@ -38,8 +38,8 @@ define([
             Gets the nodes of the grid from the server. Until we add subclasses for the different grid types,
             the data received will always be a Nx2 array of points (lon0, lat0, lon1, lat1, ..., lonN, latN)
             */
-            return new Promise((resolve, reject) => {
-                this.grid_cache.getItem(this.id + 'nodes').then((value) => {
+            return new Promise(_.bind(function(resolve, reject){
+                this.grid_cache.getItem(this.id + 'nodes').then(_.bind(function(value){
                     if(value) {
                         console.log(this.id + ' nodes found in store');
                         this.requesting = false;
@@ -64,7 +64,7 @@ define([
                                 xhrFields:{
                                     withCredentials: true
                                 },
-                                success: (nodes, sts, response) => {
+                                success: _.bind(function(nodes, sts, response){
                                     this.requesting = false;
                                     this.requested_nodes = true;
                                     var dtype = Float32Array;
@@ -73,15 +73,15 @@ define([
                                     this.nodes = new dtype(nodes);
                                     this.grid_cache.setItem(this.id + 'nodes', this.nodes);
                                     resolve(this.nodes);
-                                    },
-                                error: (jqXHR, sts, err) => reject(err),
+                                }, this),
+                                error: function(jqXHR, sts, err){reject(err);},
                             });
                         } else {
                             reject(new Error('Request already in progress'));
                         }
                     }
-                }).catch((err) => reject(err));
-            });
+                }, this)).catch(reject);
+            }, this));
         },
 
         getCenters: function(){
@@ -89,8 +89,8 @@ define([
             Gets the centers of the grid from the server. Until we add subclasses for the different grid types,
             the data received will always be a Nx2 array of points (lon0, lat0, lon1, lat1, ..., lonN, latN)
             */
-            return new Promise((resolve, reject) => {
-                this.grid_cache.getItem(this.id + 'centers').then((value) => {
+            return new Promise(_.bind(function(resolve, reject){
+                this.grid_cache.getItem(this.id + 'centers').then(_.bind(function(value){
                     if(value) {
                         console.log(this.id + ' centers found in store');
                         this.requesting = false;
@@ -115,7 +115,7 @@ define([
                                 xhrFields:{
                                     withCredentials: true
                                 },
-                                success: (centers, sts, response) => {
+                                success: _.bind(function(centers, sts, response){
                                     this.requesting = false;
                                     this.requested_centers = true;
                                     var dtype = Float32Array;
@@ -123,19 +123,16 @@ define([
                                     var num_centers = centers.byteLength / (2*dtl);
                                     this.centers = new dtype(centers);
                                     this.grid_cache.setItem(this.id + 'centers', this.centers);
-                                    if(callback) {
-                                        callback(this.centers);
-                                    }
-                                    return this.centers;
-                                },
-                                error: (jqXHR, sts, err) => reject(err),
+                                    resolve(this.centers);
+                                }, this),
+                                error: function(jqXHR, sts, err){reject(err);},
                             });
                         } else {
                             reject(new Error('Request already in progress'));
                         }
                     }
-                }).catch((err) => reject(err));
-            });
+                }, this)).catch(reject);
+            }, this));
         },
 
         getLines: function(callback){
@@ -146,8 +143,8 @@ define([
             drawn, the grid image is complete. Do not override this function; all grids must provide line data
             in this format to be drawn on the Cesium canvas.
             */
-            return new Promise((resolve, reject) => {
-                this.grid_cache.getItem(this.id + 'lines').then((lineData) => {
+            return new Promise(_.bind(function(resolve, reject){
+                this.grid_cache.getItem(this.id + 'lines').then(_.bind(function(lineData){
                     if(lineData) {
                         console.log(this.id + ' lines found in store');
                         this.requesting = false;
@@ -177,7 +174,7 @@ define([
                                     xhrFields:{
                                         withCredentials: true
                                     },
-                                    success: (lines, sts, response) => {
+                                    success: _.bind(function(lines, sts, response){
                                         this.requesting = false;
                                         this.requested_lines = true;
                                         var num_lengths = parseInt(response.getResponseHeader('num_lengths'));
@@ -188,15 +185,15 @@ define([
                                         this._lines = new lineDtype(lines, num_lengths*lenDtl)
                                         this.grid_cache.setItem(this.id + 'lines', [lines, num_lengths]);
                                         resolve([this._lineLengths, this._lines]);
-                                    },
-                                    error: (jqXHR, sts, err) => reject(err),
+                                    },this),
+                                    error: function(jqXHR, sts, err){reject(err);},
                             });
                         } else {
                             reject(new Error('Request already in progress'));
                         }
                     }
-                }).catch((err) => reject(err));
-            });
+                },this)).catch(reject);
+            },this));
         },
     });
     return baseGridObj;

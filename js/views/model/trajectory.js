@@ -1073,7 +1073,7 @@ define([
                     this.grids[grid_id][active_prim].show = true;
                 }
             } else if(id !== 'none-grid'){
-                env.get('grid').getLines().then((data) => {
+                env.get('grid').getLines().then(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     var grid_id = env.get('grid').get('id');
                     this.grids[grid_id]  = [];
@@ -1113,7 +1113,7 @@ define([
                             })
                         })));
                     }
-                }).catch((err) => console.log(err));
+                }, this)).catch(console.log);
             }
         },
 
