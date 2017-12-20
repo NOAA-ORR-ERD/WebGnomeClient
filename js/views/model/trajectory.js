@@ -95,6 +95,7 @@ define([
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
             this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
             this.listenTo(webgnome.model.get('movers'), 'add remove', this.renderControls);
+            this.listenTo(webgnome.model.get('environment'), 'add remove', this.renderControls);
             //this.listenTo(webgnome.model, 'change', this.reset, this);
             this.listenTo(webgnome.model, 'change', this.contextualize, this);
             this.spillListeners();
@@ -303,12 +304,15 @@ define([
                   shouldAnimate: false
                 })),
                 contextOptions: {
-                    webgl:{preserveDrawingBuffer:true},
+                    webgl:{ 
+                        preserveDrawingBuffer:true,
+                    },
                 },
             });
             $('.cesium-widget-credits').hide();
             this.graticule = new Graticule(true, this.viewer.scene, 10, '.cesium-widget');
             this.graticule.activate();
+            this.viewer.scene.fog.enabled = false;
             this.viewer.scene.fxaa = false;
 
             this.renderSpills();
@@ -322,7 +326,7 @@ define([
             }
 
             this.layers.map = new Cesium.GeoJsonDataSource();
-            this.layers.map.clampToGround = true;
+            this.layers.map.clampToGround = false;
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                 var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
                     strokeWidth: 0,
@@ -334,7 +338,7 @@ define([
                     bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
-                    }).then(this.load());
+                    }).then(this.load);
                 } else {
                     // fly to a gridded current instead
                     bounds = webgnome.model.get('map').get('map_bounds');
@@ -1069,7 +1073,7 @@ define([
                     this.grids[grid_id][active_prim].show = true;
                 }
             } else if(id !== 'none-grid'){
-                env.get('grid').getLines(_.bind(function(data){
+                env.get('grid').getLines().then((data) => {
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     var grid_id = env.get('grid').get('id');
                     this.grids[grid_id]  = [];
@@ -1109,7 +1113,7 @@ define([
                             })
                         })));
                     }
-                }, this));
+                }).catch((err) => console.log(err));
             }
         },
 
@@ -1162,9 +1166,9 @@ define([
                     }, this);
 
                     if ('nodes'.includes(env.data_location)) {
-                        env.get('grid').getNodes(addVecsToLayer);
+                        env.get('grid').getNodes().then(addVecsToLayer);
                     } else {
-                        env.get('grid').getCenters(addVecsToLayer);
+                        env.get('grid').getCenters().then(addVecsToLayer);
                     }
 
                     this.checked_env_vec.push(id);

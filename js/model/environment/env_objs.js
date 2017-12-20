@@ -19,6 +19,7 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
+            this.appearance = new Backbone.Model();
         },
 
         resetRequest: function(){
@@ -39,34 +40,34 @@ define([
             }, this ));
         },
 
-        getVecs: function(callback){
-            this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
-                if(value) {
-                    console.log(this.id + ' vectors found in store');
-                    var dtype = Float32Array;
-                    var dtl = dtype.BYTES_PER_ELEMENT;
-                    this.requested_vectors = true;
-                    this.vec_data = value[0];
-                    var shape = value[1];
-                    this.num_times = parseInt(shape[1]);
-                    this.num_vecs = parseInt(shape[2]);
-                    this.time_axis = [];
-                    for (var i=0; i < this.get('time').get('data').length; i++) {
-                        var t = this.get('time').get('data')[i];
-                        this.time_axis.push(moment(t.replace('T',' ')).unix());
-                    }
-                    this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                    this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                    this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                    if (callback) {
-                        callback(this.vec_data);
-                    }
-                    return this.vec_data;
-                } else {
-                    if(!this.requesting && !this.requested_vectors){
-                        this.requesting = true;
-                        var ur = this.urlRoot + this.id + '/vectors';
-                        $.ajax({url: ur,
+        getVecs: function(){
+            return new Promise((resolve, reject) => {
+                this.env_obj_cache.getItem(this.id + 'vectors').then((value) => {
+                    if(value) {
+                        console.log(this.id + ' vectors found in store');
+                        var dtype = Float32Array;
+                        var dtl = dtype.BYTES_PER_ELEMENT;
+                        this.requesting = false;
+                        this.requested_vectors = true;
+                        this.vec_data = value[0];
+                        var shape = value[1];
+                        this.num_times = parseInt(shape[1]);
+                        this.num_vecs = parseInt(shape[2]);
+                        this.time_axis = [];
+                        for (var i=0; i < this.get('time').get('data').length; i++) {
+                            var t = this.get('time').get('data')[i];
+                            this.time_axis.push(moment(t.replace('T',' ')).unix());
+                        }
+                        this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                        this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                        this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                        resolve(this.vec_data);
+                    } else {
+                        if(!this.requesting && !this.requested_vectors){
+                            this.requesting = true;
+                            var ur = this.urlRoot + this.id + '/vectors';
+                            $.ajax({
+                                url: ur,
                                 type: "GET",
                                 dataType: "binary",
                                 responseType:"arraybuffer",
@@ -79,35 +80,38 @@ define([
                                 xhrFields:{
                                     withCredentials: true
                                 },
-                                success: _.bind(function(uv_data, sts, response){
-                            this.requesting = false;
-                            this.requested_vectors = true;
-                            var dtype = Float32Array;
-                            var dtl = dtype.BYTES_PER_ELEMENT;
-                            var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
-                            var num_times = parseInt(shape[1]);
-                            var num_vecs = parseInt(shape[2]);
+                                success: (uv_data, sts, response) => {
+                                    this.requesting = false;
+                                    this.requested_vectors = true;
+                                    var dtype = Float32Array;
+                                    var dtl = dtype.BYTES_PER_ELEMENT;
+                                    var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
+                                    var num_times = parseInt(shape[1]);
+                                    var num_vecs = parseInt(shape[2]);
 
-                            var datalen = num_times * num_vecs * dtl;
-                            this.vec_data = new Float32Array(uv_data);
-                            this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
-                            
-                            this.num_times = num_times;
-                            this.num_vecs = num_vecs;
-                            this.time_axis = [];
-                            for (var i=0; i < this.get('time').get('data').length; i++) {
-                                var t = this.get('time').get('data')[i];
-                                this.time_axis.push(moment(t.replace('T',' ')).unix());
-                            }
-                            this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                            this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                            this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                                    var datalen = num_times * num_vecs * dtl;
+                                    this.vec_data = new Float32Array(uv_data);
+                                    this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
+                                    
+                                    this.num_times = num_times;
+                                    this.num_vecs = num_vecs;
+                                    this.time_axis = [];
+                                    for (var i=0; i < this.get('time').get('data').length; i++) {
+                                        var t = this.get('time').get('data')[i];
+                                        this.time_axis.push(moment(t.replace('T',' ')).unix());
+                                    }
+                                    this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                                    this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                                    this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
 
-                        }, this )});
+                                },
+                                error: (jqXHR, sts, err) => reject(err),
+                            });
+                        } else {
+                            reject(new Error('Request already in progress'));
+                        }
                     }
-                }
-            },this)).catch(function(err) {
-                console.log(err);
+                }).catch((err) => reject(err));
             });
         },
 
@@ -166,6 +170,27 @@ define([
                     return;
                 }
             }
+        },
+        
+        genVecImages: function() {
+            /* Generates a list of images of various vector lengths. Should be overridden
+            on a per-model basis, or not implemented if the data represented is not a vector
+            quantity (eg GridTemperature)
+            */
+            throw {name : "NotImplementedError", message : "genVecImages is not implemented for the environment objects base class"}; 
+        },
+
+        genVectors: function() {
+            /* Generates a Cesium object that can be added to an existing Cesium.Scene in order
+            to produce a representation of this data. Instances of this class hold on to this
+            graphics object, and control updates for it*/
+            throw {name : "NotImplementedError", message : "genVectors is not implemented for the environment objects base class"}; 
+        },
+
+        updateVis: function(options) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            throw {name : "NotImplementedError", message : "updateVis is not implemented for the environment objects base class"};
         },
     });
 
