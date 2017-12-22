@@ -4,23 +4,22 @@
             <button type="button" class="btn record"><span></span></button>
             <button type="button" class="btn stoprecord"><span></span></button>
             <button type="button" class="btn recordcontrols dropdown-toggle" data-toggle="dropdown" data-trigger="hover" aria-haspopup="true" aria-expanded="false">
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
+            <span></span>
             </button>
-              <div class="recordmenu dropdown-menu">
-                    <form>
-                        <h5>Select Format</h5>
-                        <input type="radio" name="format" value="gif" checked> GIF<br>
-                        <input type="radio" name="format" value="webm"> WebM<br>
-                        <input type="radio" name="format" value="mp4"> MP4
-                        <h5>Settings</h5>
-                        FPS <input type="number" name="framerate" min="1" max="15" value="6"><br>
-                        Skip # <input type="number" name="skip" min="0" max="8" value="0"><br>
-                        Seek Bar <input type="checkbox" name="addseek" checked> <br>
-                        Name: <input type='text' name='name' value='webgnome_run'>
-                        
-                    </form>
-              </div>
+            <div class="recordmenu dropdown-menu">
+                <form>
+                    <h5>Select Format</h5>
+                    <input type="radio" name="format" value="gif" checked> GIF<br>
+                    <input type="radio" name="format" value="webm"> WebM<br>
+                    <input type="radio" name="format" value="mp4"> MP4
+                    <h5>Settings</h5>
+                    FPS <input type="number" name="framerate" min="1" max="15" value="6"><br>
+                    Skip # <input type="number" name="skip" min="0" max="8" value="0"><br>
+                    Seek Bar <input type="checkbox" name="addseek" checked> <br>
+                    Name: <input type='text' name='name' value='webgnome_run'>
+                    
+                </form>
+            </div>
         </div>
         <div class="btn-group">
             <button type="button" class="btn rewind"><span></span></button>
@@ -99,6 +98,24 @@
                         {% if(env_objs.length > 0){ %}
                             {% for (var i = 0; i < env_objs.length; i++){ %}
                                 <div class="radio">
+                                <button type="button" class="btn recordcontrols dropdown-toggle" data-toggle="dropdown" data-trigger="hover" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+              <div class="recordmenu dropdown-menu">
+                    <form>
+                        <h5>Select Format</h5>
+                        <input type="radio" name="format" value="gif" checked> GIF<br>
+                        <input type="radio" name="format" value="webm"> WebM<br>
+                        <input type="radio" name="format" value="mp4"> MP4
+                        <h5>Settings</h5>
+                        FPS <input type="number" name="framerate" min="1" max="15" value="6"><br>
+                        Skip # <input type="number" name="skip" min="0" max="8" value="0"><br>
+                        Seek Bar <input type="checkbox" name="addseek" checked> <br>
+                        Name: <input type='text' name='name' value='webgnome_run'>
+                        
+                    </form>
+              </div>
                                     <label for="grid-{{ env_objs[i].get('id') }}" class="curLabel">
                                         <input type="radio" name="grid" class="grid" id="grid-{{ env_objs[i].get('id') }}">
                                         {{ env_objs[i].get('name') }}

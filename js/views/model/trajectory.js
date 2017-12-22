@@ -1118,57 +1118,17 @@ define([
         },
 
         toggleEnvUV: function(e){
-            var checked = this.$('.env-uv input:checked');
-            var uv_layers = _.keys(this.layers.uv);
-            for(var l = 0; l < uv_layers.length; l++){
-                for(var bb = this.layers.uv[uv_layers[l]].length; bb--;){
-                    this.layers.uv[uv_layers[l]].get(bb).show = false;
-                }
+            if(!this.layers.uv){
+                this.layers.uv = {};
             }
-
+            var checked = this.$('.env-uv input:checked');
             var id = $(checked[0]).attr('id').replace('uv-', '');
             if (checked.length > 0 && id !== 'none-uv'){
-                this.checked_env_vec = [];
-
                 this.$('.env-uv input:checked').each(_.bind(function(i, input){
                     var env = webgnome.model.get('environment').findWhere({id: id});
-                    var addVecsToLayer = _.bind(function(centers){
-                        if(!this.layers.uv){
-                            this.layers.uv = {};
-                        }
-
-                        if(!this.layers.uv[id]){
-                            this.layers.uv[id] = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
-                            this.viewer.scene.primitives.add(this.layers.uv[id]);
-                            this.generateUVTextures(this.layers.uv[id], id);
-                        }
-                        var layer = this.layers.uv[id];
-
-                        // update the positions of any existing centers
-                        var existing_length = this.layers.uv[id].length;
-                        var _off = 0;
-                        for(var existing = 0; existing < existing_length; existing++){
-                            _off = existing*2;
-                            layer.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]);
-                            layer.get(existing).show = true;
-                        }
-
-                        var create_length = centers.length / 2;
-
-                        for(var c = existing_length; c < create_length; c++){
-                            _off = c*2;
-                            layer.add({
-                                show: true,
-                                position: Cesium.Cartesian3.fromDegrees(centers[_off], centers[_off+1]),
-                                image: this.current_arrow[id][0],
-                            });
-                        }
-                    }, this);
-
-                    if ('nodes'.includes(env.data_location)) {
-                        env.get('grid').getNodes().then(addVecsToLayer);
-                    } else {
-                        env.get('grid').getCenters().then(addVecsToLayer);
+                    if(!this.layers.uv[id]){
+                        this.layers.uv[id] = env.getVectors();
+                        this.viewer.scene.primitives.add(this.layers.uv[id]);
                     }
 
                     this.checked_env_vec.push(id);

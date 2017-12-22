@@ -82,7 +82,7 @@ define([
             }
         },
 
-        genVectors: function(options) {
+        genVectors: function() {
             /* Generates a Cesium object that can be added to an existing Cesium.Scene in order
             to produce a representation of this data. Instances of this class hold on to this
             graphics object, and control updates for it*/
@@ -123,6 +123,19 @@ define([
                         });
                 }
             }, this));
+        },
+
+        updateVis: function(options) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            this.appearance.set(options)
+            var bbs = this._vectors._billboards
+            for(var i = 0; i < bbs.length; i++) {
+                bbs[i].color = Cesium.Color[self.appearance.get('color')];
+                bbs[i].alpha = self.appearance.get('alpha');
+                bbs[i].scale = self.appearance.get('scale');
+                bbs[i].show = self.appearance.get('on');
+            }
         },
     });
     return gridCurrentModel;
