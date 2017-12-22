@@ -96,6 +96,7 @@ define([
             this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
             this.listenTo(webgnome.model.get('movers'), 'add remove', this.renderControls);
             this.listenTo(webgnome.model.get('environment'), 'add remove', this.renderControls);
+            this.listenTo(webgnome.model.get('spills'), 'add remove change', this.renderControls);
             //this.listenTo(webgnome.model, 'change', this.reset, this);
             this.listenTo(webgnome.model, 'change', this.contextualize, this);
             this.spillListeners();
@@ -162,6 +163,9 @@ define([
             }
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
+            
+            var model_spills = webgnome.model.get('spills');
+          
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
@@ -204,6 +208,7 @@ define([
 
             var compiled = _.template(ControlsTemplate, {
                 date: date,
+                model_spills: model_spills,
                 currents: currents,
                 active_currents: active_currents,
                 ice: ice,
@@ -270,21 +275,24 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-            Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
-            var image_providers = Cesium.createDefaultImageryProviderViewModels();
-            var default_image = new Cesium.ProviderViewModel({
-                name: 'No imagery selected',
-                tooltip: '',
-                iconUrl: '/img/no_basemap.png',
-                creationFunction: function(){
-                    return new Cesium.SingleTileImageryProvider({
-                        url: '/img/globe.png'
-                    });
-                },
-            });
-            image_providers.unshift(default_image);
+            
+            // Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
+            // var image_providers = Cesium.createDefaultImageryProviderViewModels();
+            // var default_image = new Cesium.ProviderViewModel({
+                // name: 'No imagery selected',
+                // tooltip: '',
+                // iconUrl: '/img/no_basemap.png',
+                // creationFunction: function(){
+                    // return new Cesium.SingleTileImageryProvider({
+                        // url: '/img/globe.png'
+                    // });
+                // },
+            // });
+            // image_providers.unshift(default_image);
+            
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
+                baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
                 homeButton: false,
@@ -296,8 +304,11 @@ define([
                 skyAtmosphere: false,
                 sceneMode: Cesium.SceneMode.SCENE2D,
                 mapProjection: new Cesium.WebMercatorProjection(),
-                selectedImageryProviderViewModel: default_image,
-                imageryProviderViewModels: image_providers,
+                //selectedImageryProviderViewModel: default_image,
+                //imageryProviderViewModels: image_providers,
+                imageryProvider : new Cesium.SingleTileImageryProvider({
+                    url: '/img/globe.png'
+                }),
                 creditContainer: 'map',
                 clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
                    canAnimate: false,
@@ -729,7 +740,14 @@ define([
 
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
-            var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
+            
+            var visible = [];
+            for (var s = 0; s < webgnome.model.get('spills').length; s++) {
+                //var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
+                var sid = "particles-" + webgnome.model.get('spills').models[s].get('id');
+                visible[s] = !this.checked_layers || this.checked_layers.indexOf(sid) !== -1 ? true : false;
+            }   
+            
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
                     if(!this.uncertain_collection[f]){
@@ -758,7 +776,7 @@ define([
                             );
                         }
                     }
-                    this.uncertain_collection[f].show = visible;
+                    this.uncertain_collection[f].show = visible[certain.spill_num[f]];
                 }
             }
             for(var f = 0; f < certain.length; f++){
@@ -787,7 +805,7 @@ define([
                         );
                     }
                 }
-                this.certain_collection[f].show = visible;
+                this.certain_collection[f].show = visible[certain.spill_num[f]];
             }
             if(this.certain_collection.length > certain.length){
                 // we have entites that were created for a future step but the model is now viewing a previous step
@@ -951,18 +969,67 @@ define([
             this.$('.layers input:checked').each(function(i, input){
                 checked_layers.push(input.id);
             });
-
-            if(checked_layers.indexOf('noaanavcharts') !== -1){
-                if (!this.layers.nav) {
-                    this.layers.nav = this.viewer.imageryLayers.addImageryProvider(new Cesium.WebMapServiceImageryProvider({
+            
+            if(checked_layers.indexOf('no_image') === -1){
+                
+                if(this.layers.sat) {
+                    this.viewer.imageryLayers.remove(this.layers.sat);
+                    delete this.layers.sat;
+                }
+                
+                var image_layer;
+                if(checked_layers.indexOf('bing_aerial') !== -1){
+                   image_layer = new Cesium.BingMapsImageryProvider({
+                        layers: '1',
+                        url : 'https://dev.virtualearth.net',
+                        key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                        mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                });} else if (checked_layers.indexOf('open_street_map') !== -1) {
+                    image_layer = new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : 'https://a.tile.openstreetmap.org/',
+                });} else if (checked_layers.indexOf('noaanavcharts') !== -1) {
+                    //tile service at url : 'http://tileservice.charts.noaa.gov/tiles/wmts' but has CORS issue 
+                    image_layer = new Cesium.WebMapServiceImageryProvider({
                         layers: '1',
                         url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                    }));
-                    this.layers.nav.alpha = 0.60;
+                });}               
+                this.layers.sat = this.viewer.imageryLayers.addImageryProvider(image_layer);
+                this.layers.sat.alpha = 0.80;              
+            } else  {
+                this.viewer.imageryLayers.remove(this.layers.sat);
+                delete this.layers.sat;
+
+            }
+            
+            if(checked_layers.indexOf('bing_aerial') !== -1){
+                var bing = new Cesium.BingMapsImageryProvider({
+                    layers: '1',
+                    url : 'https://dev.virtualearth.net',
+                    key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
+                    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
+                });
+                if (!this.layers.sat1) {
+                    this.layers.sat1 = this.viewer.imageryLayers.addImageryProvider(bing);
+                    this.layers.sat1.alpha = 0.80;
                 }
-            } else if(this.layers.nav) {
-                this.viewer.imageryLayers.remove(this.layers.nav);
-                delete this.layers.nav;
+            } else if(this.layers.sat1) {
+                this.viewer.imageryLayers.remove(this.layers.sat1);
+                delete this.layers.sat1;
+            }
+            
+            if(checked_layers.indexOf('open_street_map') !== -1){
+                var osm = new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : 'https://a.tile.openstreetmap.org/',
+                });
+                if (!this.layers.sat2) {
+                    this.layers.sat2 = this.viewer.imageryLayers.addImageryProvider(osm);
+                    this.layers.sat2.alpha = 0.80;
+                }
+            } else if(this.layers.sat2) {
+                this.viewer.imageryLayers.remove(this.layers.sat2);
+                delete this.layers.sat2;
             }
 
             if(checked_layers.indexOf('modelmap') !== -1){
@@ -970,28 +1037,25 @@ define([
             } else {
                 this.layers.map.show = false;
             }
-
-            var spill;
-            if(checked_layers.indexOf('spills') !== -1){
-                for(spill in this.layers.spills){
-                    this.layers.spills[spill].show = true;
-                }
-            } else {
-                for(spill in this.layers.spills){
-                    this.layers.spills[spill].show = false;
-                }
-            }
-
+            
             var part;
-            // start at two because of the two billboard primitives added for image reference
-            if(checked_layers.indexOf('particles') !== -1 && this.layers.particles){
-                for(part = 2; part < this.layers.particles.length; part++){
-                    this.layers.particles.get(part).show = true;
+            for (var i = 0; i < this.layers.spills.length; i++) {
+                if(checked_layers.indexOf('spills-' + this.layers.spills[i]._id) !== -1){                   
+                    this.layers.spills[i].show = true;                    
+                } else {                    
+                    this.layers.spills[i].show = false;
+                } 
+                
+                if(checked_layers.indexOf('particles-'  + this.layers.spills[i]._id) !== -1 && this.layers.particles[i]){
+                    for(part = 2; part < this.layers.particles[i].length; part++){
+                        this.layers.particles[i].get(part).show = true;
+                    }
+                } else if(this.layers.particles[i]) {
+                    for(part = 2; part < this.layers.particles[i].length; part++){
+                        this.layers.particles[i].get(part).show = false;
+                    }
                 }
-            } else if(this.layers.particles) {
-                for(part = 2; part < this.layers.particles.length; part++){
-                    this.layers.particles.get(part).show = false;
-                }
+                
             }
 
             var area;
