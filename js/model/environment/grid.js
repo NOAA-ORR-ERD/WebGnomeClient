@@ -5,12 +5,19 @@ define([
     'model/base',
     'moment',
     'localforage',
-], function(_, $, Backbone, BaseModel, moment, localforage){
+    'model/appearance',
+    'cesium'
+], function(_, $, Backbone, BaseModel, moment, localforage, Appearance, Cesium){
     'use strict';
     var baseGridObj = BaseModel.extend({
         urlRoot: '/grid/',
         grid_cache : localforage.createInstance({name: 'Grid Object Data Cache',
                                                     }),
+        default_appearance: {
+            on: true,
+            color: 'PINK',
+            alpha: 0.3,
+        },
 
         initialize: function(attrs, options) {
             BaseModel.prototype.initialize.call(this, attrs, options);
@@ -20,6 +27,12 @@ define([
                 storeName: 'webgnome_cache'
             });
             this.getMetadata();
+            this.set('_appearance', new Appearance({id: this.id}));
+            if(!this.get('_appearance').has('on')){
+                this.get('_appearance').set(this.default_appearance);
+            }
+            this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this._linesPrimitive = new Cesium.PrimitiveCollection();
         },
 
         resetRequest: function(){
@@ -195,6 +208,76 @@ define([
                 },this)).catch(reject);
             },this));
         },
+        
+        renderLines: function(batch, rebuild) {
+            if (!batch) {
+                batch = 3000;
+            }
+            return new Promise(_.bind(function(resolve, reject) {
+                if(rebuild) {
+                    this.getLines().then(_.bind(function(data){
+                        var appearance = this.get('_appearance');
+                        var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
+                            Cesium.Color[appearance.get('color')].withAlpha(appearance.get('alpha'))
+                        );
+                        var numLengths = data[0].length;
+                        var lengths = data[0];
+                        var lines = data[1];
+                        var batch_limit = Math.ceil(numLengths / batch);
+                        var segment = 0;
+                        var curOffset = 0;
+                        for(var b = 0; b < batch_limit; b++){
+                            // setup the new batch
+                            var geo = [];
+
+                            // build the batch
+                            var limit = Math.min(segment + batch, numLengths);
+                            for(segment; segment < limit; segment++){
+                                geo.push(new Cesium.GeometryInstance({
+                                    geometry: new Cesium.SimplePolylineGeometry({
+                                        positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
+                                        followSurface: false,
+                                    }),
+                                    attributes: {
+                                        color: colorAttr
+                                    },
+                                    allowPicking: false
+                                }));
+                                curOffset = curOffset + lengths[segment]*2
+                            }
+
+                            // send the batch to the gpu/cesium
+                            this._linesPrimitive.add(new Cesium.Primitive({
+                                geometryInstances: geo,
+                                appearance: new Cesium.PerInstanceColorAppearance({
+                                    flat: true,
+                                    translucent: false
+                                })
+                            }));
+                        }
+                        resolve(this._linesPrimitive);
+                    }, this)).catch(reject);
+                } else {
+                    resolve(this._linesPrimitive);
+                }
+            }, this));
+        },
+
+        updateVis: function(options) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            if(options) {
+                var prims = this._linesPrimitive;
+                var appearance = this.get('_appearance');
+                prims.show = appearance.get('on');
+                let changed = appearance.changedAttributes()
+                if (changed && changed['color']){
+                    this._linesPrimitive.removeAll();
+                    this.renderLines(3000, true);
+                }
+            }
+        },
+
     });
     return baseGridObj;
 });

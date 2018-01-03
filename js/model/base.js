@@ -107,6 +107,14 @@ define([
             }
             this.changed[attr][child.get('id')] = child.changed;
             this.trigger('change', this);
+        },
+
+        toJSON: function(options){
+            var rv = Backbone.Model.prototype.toJSON.call(this, options);
+            if (rv['_appearance']){
+                delete rv['_appearance'];
+            }
+            return rv
         }
     });
 

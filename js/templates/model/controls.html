@@ -126,77 +126,42 @@
         <div class="panel-heading">
             <a role="button" data-toggle="collapse" href="#all">Gridded Environmental Data</a>
         </div>
-        
-        <div class="panel-collapse collapse" id="all">
-            <div class="panel-secondary">
-                <div class="panel-heading">
-                    <a role="button" data-toggle="collapse" href="#grid">Grids</a>
-                </div>
-                <div class="panel-collapse collapse" id="grid">
-                    <div class="panel-body">
-                        <form role="form" class="form-horizontal checkboxes env-grid">
-                        {% if(env_objs.length !== 0){ %}
-                            <div class="radio">
-                                <label for="none-grid" class="curLabel">
-                                    <input type="radio" class="env_objs" name="grid" id="none-grid" checked>
-                                    None
-                                </label>
-                            </div>
+        <form role="form" class="form-horizontal checkboxes env-grid">
+            <table class="table table-sm table-hover env_objs">
+                <thead>
+                    <tr>
+                        <th scope="col" class="env_uv"><span></span></th>
+                        <th scope="col" class="env_grid"><span></span></th>
+                        <th scope="col" class="env_edit"><span></span></th>
+                        <th scope="col" class="env_name">Name Here</th>
+                    </tr>
+                </thead>
+                {% if(env_objs.length !== 0){ %}
+                <tfoot name="None">
+                    <td><input type="checkbox" id="none-uv" checked></td>
+                    <td><input type="checkbox" id="none-grid" checked></td>
+                    <td></td>
+                    <td>None</td>
+                </tfoot>
+                {% } %}
+                {% if(env_objs.length === 0){ %}
+                    No environment data available for visualization
+                {% } %}
+                <tbody>
+                    {% if(env_objs.length !== 0){ %}
+                        {% for (var i = 0; i < env_objs.length; i++){ %}
+                        <tr name="{{ env_objs[i].get('name') }}">
+                            <td><input class="uv" id="uv-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                            <td><input class="grid" id="grid-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                            <td></td>
+                            <td>{{ env_objs[i].get('name') }}</td>
+                        </tr>
                         {% } %}
+                    {% } %}
+                </tbody>
+            </table>
+        </form>
 
-                        {% if(env_objs.length > 0){ %}
-                            {% for (var i = 0; i < env_objs.length; i++){ %}
-                                <div class="radio">
-                                    <label for="grid-{{ env_objs[i].get('id') }}" class="curLabel">
-                                        <input type="radio" name="grid" class="grid" id="grid-{{ env_objs[i].get('id') }}">
-                                        {{ env_objs[i].get('name') }}
-                                    </label>
-                                </div>
-                            {% } %}
-                        {% } %}
-                        </form>
-
-                        {% if(env_objs.length === 0){ %}
-                            No environment data available for visualization
-                        {% } %}
-                    </div>
-                </div>
-            </div>
-            <div class="panel-secondary">
-                <div class="panel-heading">
-                    <a role="button" data-toggle="collapse" href="#env-uv">U/V</a>
-                </div>
-                <div class="panel-collapse collapse" id="env-uv">
-                    <div class="panel-body">
-                        <form role="form" class="form-horizontal checkboxes env-uv">
-                        {% if(env_objs.length !== 0){ %}
-                            <div class="radio">
-                                <label for="none-uv" class="curLabel">
-                                    <input type="radio" class="env_objs" name="uv" id="none-uv" checked>
-                                    None
-                                </label>
-                            </div>
-                        {% } %}
-
-                        {% if(env_objs.length > 0){ %}
-                            {% for (var i = 0; i < env_objs.length; i++){ %}
-                                <div class="radio">
-                                    <label for="uv-{{ env_objs[i].get('id') }}" class="curLabel">
-                                        <input type="radio" name="uv" class="uv" id="uv-{{ env_objs[i].get('id') }}">
-                                        {{ env_objs[i].get('name') }}
-                                    </label>
-                                </div>
-                            {% } %}
-                        {% } %}
-                        </form>
-
-                        {% if(env_objs.length === 0){ %}
-                            No environment uv available for visualization
-                        {% } %}
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="panel panel-primary">

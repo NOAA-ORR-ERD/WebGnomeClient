@@ -349,7 +349,8 @@ define([
                     bounds = webgnome.model.get('map').get('map_bounds');
                     this.viewer.flyTo(loading, {
                         duration: 0.25
-                    }).then(this.load);
+                    });
+                    this.load();
                 } else {
                     // fly to a gridded current instead
                     bounds = webgnome.model.get('map').get('map_bounds');
@@ -395,7 +396,7 @@ define([
         load: function(){
             this.updateProgress();
             this.state = 'pause';
-            webgnome.cache.on('step:buffered', this.updateProgress, this);
+            this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
             webgnome.cache.on('step:failed', this.stop, this);
 
             if(localStorage.getItem('autorun') === 'true'){
@@ -848,6 +849,17 @@ define([
         },
 
         renderEnvVector: function(step){
+            var envs = webgnome.model.get('environment')
+            for(var i = 0; i < envs.length; i++){
+                let env = envs.models[i]
+                if(env.get('_appearance') && env.get('_appearance').get('on')){
+                    if (env.get('_appearance').get('on') && !this.viewer.scene.primitives.contains(env._vectors)) {
+                        env.get('_appearance').set('on', false);
+                        return;
+                    }
+                    env.update(step.get('SpillJsonOutput').time_stamp)
+                }
+            }/*
             if(this.checked_env_vec && this.checked_env_vec.length > 0 && this.layers.uv){
                 // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
                 var id = this.checked_env_vec[0];
@@ -856,7 +868,7 @@ define([
                 var dir_data = env.dir_data;
                 env.interpVecsToTime(step.get('SpillJsonOutput').time_stamp, mag_data, dir_data);
                 if(this.current_arrow[id]){
-                    var billboards=this.layers.uv[id]._billboards;
+                    var billboards=env._vectors._billboards;
                     for(var uv = mag_data.length; uv--;){
                         billboards[uv].show = true;
                         //if(billboards[uv].rotation !== dir_data[uv]){
@@ -873,7 +885,7 @@ define([
                         this.layers.uv[id].get(h).show = false;
                     }
                 }
-            }
+            }*/
         },
 
         uvImage: function(magnitude, id){
@@ -1113,92 +1125,78 @@ define([
         },
 
         toggleEnvGrid: function(e){
-            if(!this.grids){
-                this.grids = {};
-            }
-            var existing_grids = _.keys(this.grids);
-            for(var grid = 0; grid < existing_grids.length; grid++){
-                for(var prims = this.grids[existing_grids[grid]].length; prims--;){
-                    this.grids[existing_grids[grid]][prims].show = false;
-                }
-            }
-            
-            //explore this vvv
-            var id = this.$(e.currentTarget).attr('id').replace('grid-', '');
-            var env = webgnome.model.get('environment').findWhere({id: id});
-            if(id === 'none-grid'){
-                return;
-            } else if(!env.get('grid')){
-                console.error('The environment object does not have a grid!', env.get('name'));
-            } else if(_.has(this.grids, env.get('grid').get('id'))){
-                var grid_id = env.get('grid').get('id');
-                // need to hide the entire set of grids.
-                for(var active_prim = this.grids[grid_id].length; active_prim--;){
-                    this.grids[grid_id][active_prim].show = true;
-                }
-            } else if(id !== 'none-grid'){
-                env.get('grid').getLines().then(_.bind(function(data){
-                    var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
-                    var grid_id = env.get('grid').get('id');
-                    this.grids[grid_id]  = [];
-                    var numLengths = data[0].length;
-                    var lengths = data[0];
-                    var lines = data[1];
-                    var batch = 3000;
-                    var batch_limit = Math.ceil(numLengths / batch);
-                    var segment = 0;
-                    var curOffset = 0;
-                    for(var b = 0; b < batch_limit; b++){
-                        // setup the new batch
-                        var geo = [];
-
-                        // build the batch
-                        var limit = Math.min(segment + batch, numLengths);
-                        for(segment; segment < limit; segment++){
-                            geo.push(new Cesium.GeometryInstance({
-                                geometry: new Cesium.SimplePolylineGeometry({
-                                    positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
-                                    followSurface: false,
-                                }),
-                                attributes: {
-                                    color: color
-                                },
-                                allowPicking: false
-                            }));
-                            curOffset = curOffset + lengths[segment]*2
-                        }
-
-                        // send the batch to the gpu/cesium
-                        this.grids[grid_id].push(this.viewer.scene.primitives.add(new Cesium.Primitive({
-                            geometryInstances: geo,
-                            appearance: new Cesium.PerInstanceColorAppearance({
-                                flat: true,
-                                translucent: false
-                            })
-                        })));
+            if (e.currentTarget.id === 'none-grid') {
+                var envs = webgnome.model.get('environment')
+                for(var i = 0; i < envs.length; i++){
+                    let env = envs.models[i]
+                    if(env.get('grid').get('_appearance')){
+                        env.get('grid').get('_appearance').set('on',false);
                     }
-                }, this)).catch(console.log);
+                }
+                envs = this.$('.env-grid input:checked');
+                for(i = 0; i < envs.length; i++) {
+                    if(envs[i].id !== 'none-grid' && envs[i].checked){
+                        envs[i].checked = false;
+                    }
+                }
+                if(!e.currentTarget.checked) {
+                    e.preventDefault();
+                }
+            } else {
+                let env_id = e.currentTarget.id.replace('grid-', '');
+                let env = webgnome.model.get('environment').findWhere({id: env_id});
+                let grid = env.get('grid');
+                if (!e.currentTarget.checked) { //unchecking a box
+                    if (this.$('.env-grid input:checked').length === 0) {
+                        this.$('.env-grid #none-grid').prop('checked', true);
+                    }
+                    grid.get('_appearance').set('on', false);
+                } else {
+                    this.$('.env-grid #none-grid').prop('checked', false);
+                    if(!this.viewer.scene.primitives.contains(grid._linesPrimitive)){
+                        this.viewer.scene.primitives.add(grid._linesPrimitive)
+                        grid.renderLines(3000, true)
+                    }
+                    grid.get('_appearance').set('on', true);
+                }
             }
         },
 
         toggleEnvUV: function(e){
-            if(!this.layers.uv){
-                this.layers.uv = {};
-            }
-            var checked = this.$('.env-uv input:checked');
-            var id = $(checked[0]).attr('id').replace('uv-', '');
-            if (checked.length > 0 && id !== 'none-uv'){
-                this.$('.env-uv input:checked').each(_.bind(function(i, input){
-                    var env = webgnome.model.get('environment').findWhere({id: id});
-                    if(!this.layers.uv[id]){
-                        this.layers.uv[id] = env.getVectors();
-                        this.viewer.scene.primitives.add(this.layers.uv[id]);
+            if (e.currentTarget.id === 'none-uv') {
+                var envs = webgnome.model.get('environment')
+                for(var i = 0; i < envs.length; i++){
+                    let env = envs.models[i]
+                    if(env.get('_appearance')){
+                        env.get('_appearance').set('on',false);
                     }
-
-                    this.checked_env_vec.push(id);
-                }, this));
+                }
+                envs = this.$('.env-uv input:checked');
+                for(i = 0; i < envs.length; i++) {
+                    if(envs[i].id !== 'none-uv' && envs[i].checked){
+                        envs[i].checked = false;
+                    }
+                }
+                if(!e.currentTarget.checked) {
+                    e.preventDefault();
+                }
             } else {
-                this.checked_env_vec = [];
+                var env_id = e.currentTarget.id.replace('uv-', '');
+                let env = webgnome.model.get('environment').findWhere({id: env_id});
+                if (!e.currentTarget.checked) { //unchecking a box
+                    if (this.$('.env-uv input:checked').length === 0) {
+                        this.$('.env-uv #none-uv').prop('checked', true);
+                    }
+                    env.get('_appearance').set('on', false);
+                } else {
+                    this.$('.env-uv #none-uv').prop('checked', false);
+                    if(!this.viewer.scene.primitives.contains(env._vectors)){
+                        env.genVectors(true).then(_.bind(function(vecs){
+                            this.viewer.scene.primitives.add(vecs);
+                            },this));
+                    }
+                    env.get('_appearance').set('on', true);
+                }
             }
         },
 
