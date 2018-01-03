@@ -244,7 +244,7 @@ define([
             });
 
             this.setupControlTooltips();
-
+            this.setupLayersTooltips();
             this.contextualize();
 
             if(localStorage.getItem('advanced') === 'true'){
@@ -269,6 +269,13 @@ define([
             this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
             this.controls.back.tooltip(this.createTooltipObject("Step Back"));
             this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
+        },
+
+        setupLayersTooltips: function() {
+            this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Grid"));
+            this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
+            this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
+            //this.$('.env-edit-btn').tooltip(this.createTooltipObject("Edit"));
         },
 
         renderCesiumMap: function(){

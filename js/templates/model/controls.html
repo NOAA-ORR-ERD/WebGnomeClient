@@ -124,43 +124,47 @@
     
     <div class="panel panel-primary" id='accor'>
         <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#all">Gridded Environmental Data</a>
+            <a role="button" data-toggle="collapse" href="#env_objs">Environmental Data</a>
         </div>
-        <form role="form" class="form-horizontal checkboxes env-grid">
-            <table class="table table-sm table-hover env_objs">
-                <thead>
-                    <tr>
-                        <th scope="col" class="env_uv"><span></span></th>
-                        <th scope="col" class="env_grid"><span></span></th>
-                        <th scope="col" class="env_edit"><span></span></th>
-                        <th scope="col" class="env_name">Name Here</th>
-                    </tr>
-                </thead>
-                {% if(env_objs.length !== 0){ %}
-                <tfoot name="None">
-                    <td><input type="checkbox" id="none-uv" checked></td>
-                    <td><input type="checkbox" id="none-grid" checked></td>
-                    <td></td>
-                    <td>None</td>
-                </tfoot>
-                {% } %}
-                {% if(env_objs.length === 0){ %}
-                    No environment data available for visualization
-                {% } %}
-                <tbody>
-                    {% if(env_objs.length !== 0){ %}
-                        {% for (var i = 0; i < env_objs.length; i++){ %}
-                        <tr name="{{ env_objs[i].get('name') }}">
-                            <td><input class="uv" id="uv-{{ env_objs[i].get('id') }}" type="checkbox"></td>
-                            <td><input class="grid" id="grid-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+        <div class="panel-collapse collapse" id="env_objs">
+            <div class="panel-body">
+                <form>
+                    <table class="table table-sm table-hover env_objs">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="env-uv-hdr"><span></span></th>
+                                <th scope="col" class="env-grid-hdr"><span></span></th>
+                                <th scope="col" class="env-edit-hdr"><span></span></th>
+                                <th scope="col" class="env-name">Name</th>
+                            </tr>
+                        </thead>
+                        {% if(env_objs.length !== 0){ %}
+                        <tfoot name="None">
+                            <td class="env-uv"><input type="checkbox" id="none-uv" checked></td>
+                            <td class="env-grid"><input type="checkbox" id="none-grid" checked></td>
                             <td></td>
-                            <td>{{ env_objs[i].get('name') }}</td>
-                        </tr>
+                            <td>None</td>
+                        </tfoot>
                         {% } %}
-                    {% } %}
-                </tbody>
-            </table>
-        </form>
+                        {% if(env_objs.length === 0){ %}
+                            No environment data available for visualization
+                        {% } %}
+                        <tbody>
+                            {% if(env_objs.length !== 0){ %}
+                                {% for (var i = 0; i < env_objs.length; i++){ %}
+                                <tr name="{{ env_objs[i].get('name') }}">
+                                    <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                                    <td class="env-grid"><input class="grid" id="grid-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                                    <td><button type="button" class="btn btn-sm btn-link env-edit-btn"><span></span></button></td>
+                                    <td>{{ env_objs[i].get('name') }}</td>
+                                </tr>
+                                {% } %}
+                            {% } %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
 
     </div>
 
