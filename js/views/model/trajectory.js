@@ -16,10 +16,11 @@ define([
     'html2canvas',
     'ccapture',
     'model/map/graticule',
+    'views/form/inspect',
     'gif',
     'gifworker',
-    'whammy'
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule){
+    'whammy',
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, InspectForm){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -63,6 +64,7 @@ define([
             'click .base input': 'toggleLayers',
             'click .env-grid input': 'toggleEnvGrid',
             'click .env-uv input': 'toggleEnvUV',
+            'click .env-edit-btn': 'openInspectModal',
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
@@ -1619,6 +1621,13 @@ define([
 
         blur: function(e, ui){
             ui.handle.blur();
+        },
+
+        openInspectModal: function(e) {
+            let env_id = e.currentTarget.id.replace('attr-', '');
+            let env = webgnome.model.get('environment').findWhere({id: env_id});
+            let mod = new InspectForm(null, env);
+            mod.render();
         },
 
         close: function(){
