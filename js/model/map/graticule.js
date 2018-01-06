@@ -306,7 +306,7 @@ define([
                 this.refresh_scale();
                 this.setupLines();
                 this.setupLabels();
-                //this.scene.primitives.lowerToBottom(this.lines);
+                this.scene.primitives.raiseToTop(this.lines);
                 //this.scene.primitives.raiseToTop(this.labels);
                 this._prevCamPos = this.scene.camera.position.clone();
                 this.dirty = false;

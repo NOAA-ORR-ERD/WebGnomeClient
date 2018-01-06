@@ -17,11 +17,12 @@ define([
     'ccapture',
     'model/map/graticule',
     'views/form/inspect',
+    'views/model/layers',
+    'views/model/controls',
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, InspectForm){
-    'use strict';
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, InspectForm, LayersView, ControlsView){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -33,6 +34,11 @@ define([
 
             return str;
         },
+        events: {
+            'click .view-gnome-mode': 'viewGnomeMode',
+            'click .view-weathering': 'viewWeathering',
+            'click .layers .title': 'toggleLayerPanel'
+        },
         id: 'map',
         spillToggle: false,
         spillCoords: [],
@@ -42,75 +48,18 @@ define([
         fps: 30,
         rframe: 0,
 
-        events: {
-            'click .spill-button .fixed': 'toggleSpill',
-            'click .spill-button .moving': 'toggleSpill',
-            'click .gnome-help': 'renderHelp',
-            'mouseout .spill-button': 'toggleSpillBlur',
-            'focusout .spill-button': 'toggleSpillBlur',
-            'mouseout .help-button': 'helpBlur',
-            'focusout .help-button': 'helpBlur',
-            'click .play': 'play',
-            'click .record': 'record',
-            'click .stoprecord': 'stoprecord',
-            'click .pause': 'pause',
-            'click .stop': 'stop',
-            'click .back': 'prev',
-            'click .next': 'next',
-            'click .rewind': 'rewindClick',
-            'slide .seek > div': 'seek',
-            'slidechange .seek > div': 'loop',
-            'slidestop .seek > div': 'blur',
-            'click .base input': 'toggleLayers',
-            'click .env-grid input': 'toggleEnvGrid',
-            'click .env-uv input': 'toggleEnvUV',
-            'click .env-edit-btn': 'openInspectModal',
-            'click .current-grid input': 'toggleGrid',
-            'click .current-uv input': 'toggleUV',
-            'click .ice-uv input': 'toggleUV',
-            'click .ice-grid input[type="radio"]': 'toggleGrid',
-            'click .ice-tc input[type="checkbox"]': 'toggleIceTC',
-            'click .ice-tc input[type="radio"]': 'toggleIceData',
-            'click .view-gnome-mode': 'viewGnomeMode',
-            'click .view-weathering': 'viewWeathering',
-            'click .layers .title': 'toggleLayerPanel'
-        },
-
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
             if (webgnome.model.get('mode') !== 'adios'){
-                webgnome.cache.on('rewind', this.rewind, this);
+                this.listenTo(webgnome.cache, 'rewind', this.rewind);
                 this.modelMode = 'gnome';
             } else {
                 this.modelMode = 'adios';
             }
             this.$el.appendTo('body');
-            if(webgnome.hasModel() && this.modelMode !== 'adios'){
-                this.modelListeners();
-            }
+            this.state = 'stopped'
             this.render();
-        },
-
-        modelListeners: function(){
-            this.listenTo(webgnome.model, 'change:map', this.mapListener);
-            this.listenTo(webgnome.model, 'change:map', this.resetMap);
-            this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
-            this.listenTo(webgnome.model.get('movers'), 'add remove', this.renderControls);
-            this.listenTo(webgnome.model.get('environment'), 'add remove', this.renderControls);
-            this.listenTo(webgnome.model.get('spills'), 'add remove change', this.renderControls);
-            //this.listenTo(webgnome.model, 'change', this.reset, this);
-            this.listenTo(webgnome.model, 'change', this.contextualize, this);
-            this.spillListeners();
-            this.mapListener();
-        },
-
-        mapListener: function(){
-            this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
-        },
-
-        spillListeners: function(){
-            this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
         },
 
         render: function(){
@@ -120,6 +69,45 @@ define([
             } else {
                 this.renderNoTrajectory();
             }
+            this.controls.$el.appendTo(this.$el);
+        },
+
+        renderNoTrajectory: function() {
+            this.$el.html(_.template(NoTrajMapTemplate));
+        },
+
+        renderTrajectory: function() {
+            this.controls = new ControlsView();
+            this.controlsListeners();
+            this.layersPanel = new LayersView();
+            this.layersListeners();
+            // add a 250ms timeout to the map render to give js time to add the compiled
+            // to the dom before trying to draw the map.
+            setTimeout(_.bind(this.renderCesiumMap, this), 250);
+        },
+
+        layersListeners: function(){
+            console.log("notimplemented");
+        },
+        controlsListeners: function() {
+            this.listenTo(this.controls, 'play', this.play);
+            this.listenTo(this.controls, 'pause', this.pause);
+            this.listenTo(this.controls, 'record', this.record);
+            this.listenTo(this.controls, 'stoprecord', this.stoprecord);
+            this.listenTo(this.controls, 'stop', this.stop);
+            this.listenTo(this.controls, 'back', this.prev);
+            this.listenTo(this.controls, 'next', this.goToStep);
+            this.listenTo(this.controls, 'rewind', this.rewindClick);
+            this.listenTo(this.controls, 'seek', this.goToStep);
+            this.listenTo(this.controls, 'loop', this.goToStep);
+        },
+
+        mapListener: function(){
+            this.listenTo(webgnome.model.get('map'), 'change', this.resetMap);
+        },
+
+        spillListeners: function(){
+            this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
         },
 
         toggleLayerPanel: function(){
@@ -139,145 +127,12 @@ define([
             webgnome.router.navigate('fate', true);
         },
 
-        renderNoTrajectory: function() {
-            this.$el.html(_.template(NoTrajMapTemplate));
-        },
-
-        renderTrajectory: function() {
-            this.renderControls();
-
-            // add a 250ms timeout to the map render to give js time to add the compiled
-            // to the dom before trying to draw the map.
-            setTimeout(_.bind(this.renderCesiumMap, this), 250);
-        },
-
-        renderControls: function(){
-            if(this.$('.controls').length > 0){
-                this.$('.controls').remove();
-                this.$('.layers').remove();
-            }
-
-            var date;
-            if(webgnome.hasModel()){
-                date = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
-            } else {
-                date = moment().format('M/DD/YYYY HH:mm');
-            }
-            // only compile the template if the map isn't drawn yet
-            // or if there is a redraw request because of the map object changing
-            
-            var model_spills = webgnome.model.get('spills');
-          
-            var currents = webgnome.model.get('movers').filter(function(mover){
-                return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
-                    'gnome.movers.py_current_movers.PyCurrentMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover',
-                    'gnome.movers.py_wind_movers.PyWindMover'
-                ].indexOf(mover.get('obj_type')) !== -1;
-            });
-            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
-            var active_currents = [];
-            if(current_outputter.get('on')){
-                current_outputter.get('current_movers').forEach(function(mover){
-                    active_currents.push(mover.get('id'));
-                });
-            }
-            this.checked_currents = active_currents;
-
-            var ice = webgnome.model.get('movers').filter(function(mover){
-                return mover.get('obj_type') === 'gnome.movers.current_movers.IceMover';
-            });
-            var ice_tc_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
-            var tc_ice = [];
-            ice_tc_outputter.get('ice_movers').forEach(function(mover){
-                tc_ice.push(mover.get('id'));
-            });
-            this.tc_ice = tc_ice;
-
-            var env_objs = webgnome.model.get('environment').filter(function(obj) {
-                var ot = obj.get('obj_type').split('.');
-                ot.pop();
-                return ot.join('.') === 'gnome.environment.environment_objects';
-            });
-            var active_env_objs = [];
-            env_objs.forEach(function(obj){
-                active_env_objs.push(obj.get('id'));
-            });
-            this.active_env_objs = active_env_objs;
-
-            var compiled = _.template(ControlsTemplate, {
-                date: date,
-                model_spills: model_spills,
-                currents: currents,
-                active_currents: active_currents,
-                ice: ice,
-                tc_ice: tc_ice,
-                env_objs: env_objs,
-                active_env_objs: active_env_objs,
-            });
-            this.$el.prepend(compiled);
-
-            this.controls = {
-                'record': this.$('.controls .record'),
-                'recordcontrols': this.$('.controls .recordcontrols'),
-                'stoprecord': this.$('.controls .stoprecord'),
-                'play': this.$('.controls .play'),
-                'pause': this.$('.controls .pause'),
-                'seek': this.$('.seek > div:first'),
-                'back': this.$('.controls .back'),
-                'forward': this.$('.controls .next'),
-                'fastforward' : this.$('.controls .fastfoward'),
-                'rewind': this.$('.controls .rewind'),
-                'progress': this.$('.controls .progress-bar'),
-                'date': this.$('.controls .position')
-            };
-
-            this.controls.stoprecord.hide();
-            this.controls.pause.hide();
-
-            var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
-            this.controls.seek.slider({
-                create: _.bind(function(){
-                    this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
-                }, this)
-            });
-
-            this.setupControlTooltips();
-            this.setupLayersTooltips();
-            this.contextualize();
-
-            if(localStorage.getItem('advanced') === 'true'){
-                this.toggle();
-            }
-        },
-
         createTooltipObject: function(title) {
             return {
                 "title": title,
                 "container": "body",
                 "placement": "bottom"
             };
-        },
-
-        setupControlTooltips: function() {
-            this.controls.record.tooltip(this.createTooltipObject("Record"));
-            this.controls.stoprecord.tooltip(this.createTooltipObject("End Recording"));
-            this.controls.recordcontrols.tooltip(this.createTooltipObject("Recording Settings"));
-            this.controls.play.tooltip(this.createTooltipObject("Play"));
-            this.controls.pause.tooltip(this.createTooltipObject("Pause"));
-            this.controls.rewind.tooltip(this.createTooltipObject("Rewind"));
-            this.controls.back.tooltip(this.createTooltipObject("Step Back"));
-            this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
-        },
-
-        setupLayersTooltips: function() {
-            this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Grid"));
-            this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
-            this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
-            //this.$('.env-edit-btn').tooltip(this.createTooltipObject("Edit"));
         },
 
         renderCesiumMap: function(){
@@ -337,14 +192,6 @@ define([
 
             this.renderSpills();
 
-            if (this.tc_ice.length > 0) {
-                this.toggleIceTC();
-            }
-
-            if (this.checked_currents.length > 0){
-                this.toggleUV();
-            }
-
             this.layers.map = new Cesium.GeoJsonDataSource();
             this.layers.map.clampToGround = false;
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
@@ -368,45 +215,11 @@ define([
                     });
                 }
             }, this));
-
-
-
-/*
-            var metacap = _.bind(function(scene, cur_time) {
-                if (this.is_recording) {
-                    this.capturer.capture(this.meta_canvas);
-                }
-            }, this);
-            this.viewer.scene.postRender.addEventListener(metacap);
-*/
-
-        },
-
-        toggle: function(){
-            // if(this.contracted === true){
-            //     this.$el.removeClass('contracted');
-            //     this.contracted = false;
-            // } else {
-            //     this.$el.addClass('contracted');
-            //     this.contracted = true;
-            // }
-
-            if(this.ol.map){
-                this.ol.map.updateSize();
-            }
-        },
-
-        contextualize: function(){
-            this.enableUI();
-            // set the slider to the correct number of steps
-            this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
         },
 
         load: function(){
-            this.updateProgress();
-            this.state = 'pause';
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
-            webgnome.cache.on('step:failed', this.stop, this);
+            this.listenTo(webgnome.cache, 'step:failed', this.stop);
 
             if(localStorage.getItem('autorun') === 'true'){
                 localStorage.setItem('autorun', '');
@@ -448,29 +261,41 @@ define([
             }, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         },
 
+        goToStep: function(s) {
+            if (this.state === 'paused') {
+                this.state = 'next';
+                this.frame = s['step'];
+            }
+            this.loop();
+        },
+
         loop: function(){
-            if(this.state === 'play' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
+            if(this.state === 'playing' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
                this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
-                if (webgnome.cache.length > this.controls.seek.slider('value') && webgnome.cache.length !== 0){
+                if (webgnome.cache.length > this.controls.getSliderValue() && webgnome.cache.length !== 0){
                     // the cache has the step, just render it
-                    this.rframe = setTimeout(_.bind(function(){
-                        this.renderStep({step: this.controls.seek.slider('value')});
-                    }, this), 1000/this.fps);
+                        this.rframe = setTimeout(
+                            _.bind(this.renderStep, this),
+                            1000/this.fps,
+                            {step:this.controls.getSliderValue()}
+                        );
                 } else  {
-                    this.updateProgress();
+                    this.controls.updateProgress();
                     if(webgnome.cache.isHalted){
                         webgnome.cache.resume();
                     }
-                    if (webgnome.cache.length === this.controls.seek.slider('value')) {
+                    if (webgnome.cache.length === this.controls.getSliderValue()) {
                         this.listenTo(webgnome.cache, 'step:received', this.renderStep);
                         //webgnome.cache.on('step:received', this.renderStep, this);
                     }
                     if (!webgnome.cache.streaming) {
                         webgnome.cache.getSteps();
                     } else {
-                        this.rframe = setTimeout(_.bind(function(){
-                            this.renderStep({step: this.controls.seek.slider('value')});
-                        }, this), 1000/this.fps);
+                        this.rframe = setTimeout(
+                            _.bind(this.renderStep, this),
+                            1000/this.fps,
+                            {step:this.controls.getSliderValue()}
+                        );
                     }
                 }
                 if(this.state === 'next'){
@@ -478,21 +303,6 @@ define([
                 }
             } else {
                 this.pause();
-            }
-        },
-
-        updateProgress: _.throttle(function(){
-            this.controls.progress.addClass('progress-bar-stripes active');
-            var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);
-            this.controls.progress.css('width', percent + '%');
-        }, 20),
-
-        togglePlay: function(e){
-            e.preventDefault();
-            if (this.state === 'play') {
-                this.pause();
-            } else {
-                this.play();
             }
         },
 
@@ -515,13 +325,8 @@ define([
 
         record: function() {
             if($('.modal:visible').length === 0){
-                this.state = 'play';
+                this.state = 'playing';
                 this.is_recording = true;
-                this.controls.pause.show();
-                this.controls.play.hide();
-                this.controls.stoprecord.show();
-                this.controls.record.hide();
-                this.controls.recordcontrols.prop('disabled', true);
                 this.capture_opts = this.getCaptureOpts();
                 this.meta_canvas = document.createElement('canvas');
                 this.meta_canvas.width = this.viewer.canvas.width;
@@ -539,17 +344,9 @@ define([
             if($('.modal:visible').length === 0){
                 this.pause();
                 this.is_recording = false;
-                this.controls.record.show();
-                this.controls.stoprecord.hide();
-                this.controls.recordcontrols.prop('disabled', false);
                 this.capturer.stop();
-                this.controls.record.removeClass('record');
-                this.controls.record.addClass('processingrecording');
-                this.controls.record.prop('disabled', true);
                 this.capturer.save(_.bind(function(blob){
-                    this.controls.record.addClass('record');
-                    this.controls.record.removeClass('processingrecording');
-                    this.controls.record.prop('disabled', false);
+                    this.controls.trigger('recording_saved');
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
                 }, this));
             }
@@ -557,13 +354,11 @@ define([
 
         play: function(){
             if($('.modal:visible').length === 0){
-                if (webgnome.cache.length === this.controls.seek.slider('value') || !webgnome.cache.isAsync) {
+                if (webgnome.cache.length === this.controls.controls.seek.slider('value') || !webgnome.cache.isAsync) {
                     this.listenTo(webgnome.cache, 'step:received', this.renderStep);
                     //webgnome.cache.on('step:received', this.renderStep, this);
                 }
-                this.state = 'play';
-                this.controls.pause.show();
-                this.controls.play.hide();
+                this.state = 'playing';
                 this.loop();
             }
         },
@@ -572,25 +367,21 @@ define([
             if($('.modal:visible').length === 0){
                 this.stopListening(webgnome.cache, 'step:received', this.renderStep);
                 //webgnome.cache.off('step:received', this.renderStep, this);
-                this.state = 'pause';
-                this.controls.play.show();
-                this.controls.pause.hide();
+                this.state = 'paused';
             }
         },
 
         stop: function() {
             if($('.modal:visible').length === 0){
                 this.pause();
-                if(webgnome.cache){
+                if(webgnome.cache && webgnome.cache.streaming){
                     webgnome.cache.sendHalt();
                 }
+                this.state = 'stopped'
             }
         },
 
         rewind: function(){
-            this.controls.progress.css('width', 0);
-            this.frame = 0;
-            this.controls.seek.slider('value', 0);
             if (!_.isUndefined(this.les)) {
                 this.les.removeAll();
                 delete this.les;
@@ -598,44 +389,14 @@ define([
         },
 
         rewindClick: function(e){
-            this.stop();
+            if (this.state !== 'stopped'){
+                this.stop();
+            }
+            this.frame = 0;
             clearTimeout(this.rframe);
             setTimeout(_.bind(function(){
                 webgnome.cache.rewind();
             }, this), 20);
-        },
-
-        prev: function(){
-            if($('.modal').length === 0){
-                this.pause();
-                this.controls.seek.slider('value', this.frame - 1);
-                this.renderStep({step: this.frame - 1});
-            }
-        },
-
-        next: function(){
-            if($('.modal').length === 0){
-                this.pause();
-                this.state = 'next';
-                this.loop();
-            }
-        },
-
-        seek: function(e, ui){
-            this.pause();
-            this.state = 'seek';
-            this.controls.seek.slider('value', ui.value);
-
-            if(ui.value <= webgnome.cache.length){
-                this.renderStep({step: ui.value});
-            } else {
-                this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
-            }
-        },
-
-        resetSeek: function(){
-            this.controls.seek.slider('value', this.frame);
-            this.state = 'pause';
         },
 
         renderStep: _.debounce(function(source){
@@ -664,12 +425,13 @@ define([
 
             var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
 
-            this.controls.date.text(time);
+            this.controls.controls.date.text(time);
             this.frame = step.get('step_num');
-            if(this.frame < webgnome.model.get('num_time_steps')){
-                this.controls.seek.slider('value', this.frame + 1);
+            if(this.frame < webgnome.model.get('num_time_steps') && this.state === 'playing'){
+                this.controls.controls.seek.slider('value', this.frame + 1);
             } else {
                 this.pause();
+                this.controls.pause();
             }
             this.$('.tooltip-inner').text(time);
             //this.viewer.scene.render();
@@ -964,210 +726,6 @@ define([
                 colorBuffer[3] = ~~(value * 255);
             } else {
                 colorBuffer[3] = ~~((value * 0.1666666667) * 255);
-            }
-        },
-
-        disableUI: function(){
-            // visually disable the interface and remove listeners
-            this.controls.seek.slider('option', 'disabled', true);
-            this.$('.buttons a').addClass('disabled');
-            Mousetrap.unbind('space');
-            Mousetrap.unbind('right');
-            Mousetrap.unbind('left');
-        },
-
-        enableUI: function(){
-            // visusally enable the interface and add listeners
-            this.controls.seek.slider('option', 'disabled', false);
-            this.$('.buttons a').removeClass('disabled');
-            Mousetrap.bind('space', _.bind(this.togglePlay, this));
-            Mousetrap.bind('right', _.bind(this.next, this));
-            Mousetrap.bind('left', _.bind(this.prev, this));
-        },
-
-        toggleLayers: function(event){
-            var checked_layers = this.checked_layers = [];
-            this.$('.layers input:checked').each(function(i, input){
-                checked_layers.push(input.id);
-            });
-            
-            if(checked_layers.indexOf('no_image') === -1){
-                
-                if(this.layers.sat) {
-                    this.viewer.imageryLayers.remove(this.layers.sat);
-                    delete this.layers.sat;
-                }
-                
-                var image_layer;
-                if(checked_layers.indexOf('bing_aerial') !== -1){
-                   image_layer = new Cesium.BingMapsImageryProvider({
-                        layers: '1',
-                        url : 'https://dev.virtualearth.net',
-                        key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                        mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                });} else if (checked_layers.indexOf('open_street_map') !== -1) {
-                    image_layer = new Cesium.createOpenStreetMapImageryProvider({
-                    layers: '1',
-                    url : 'https://a.tile.openstreetmap.org/',
-                });} else if (checked_layers.indexOf('noaanavcharts') !== -1) {
-                    //tile service at url : 'http://tileservice.charts.noaa.gov/tiles/wmts' but has CORS issue 
-                    image_layer = new Cesium.WebMapServiceImageryProvider({
-                        layers: '1',
-                        url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
-                });}               
-                this.layers.sat = this.viewer.imageryLayers.addImageryProvider(image_layer);
-                this.layers.sat.alpha = 0.80;              
-            } else  {
-                this.viewer.imageryLayers.remove(this.layers.sat);
-                delete this.layers.sat;
-
-            }
-            
-            if(checked_layers.indexOf('bing_aerial') !== -1){
-                var bing = new Cesium.BingMapsImageryProvider({
-                    layers: '1',
-                    url : 'https://dev.virtualearth.net',
-                    key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
-                    mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
-                });
-                if (!this.layers.sat1) {
-                    this.layers.sat1 = this.viewer.imageryLayers.addImageryProvider(bing);
-                    this.layers.sat1.alpha = 0.80;
-                }
-            } else if(this.layers.sat1) {
-                this.viewer.imageryLayers.remove(this.layers.sat1);
-                delete this.layers.sat1;
-            }
-            
-            if(checked_layers.indexOf('open_street_map') !== -1){
-                var osm = new Cesium.createOpenStreetMapImageryProvider({
-                    layers: '1',
-                    url : 'https://a.tile.openstreetmap.org/',
-                });
-                if (!this.layers.sat2) {
-                    this.layers.sat2 = this.viewer.imageryLayers.addImageryProvider(osm);
-                    this.layers.sat2.alpha = 0.80;
-                }
-            } else if(this.layers.sat2) {
-                this.viewer.imageryLayers.remove(this.layers.sat2);
-                delete this.layers.sat2;
-            }
-
-            if(checked_layers.indexOf('modelmap') !== -1){
-                this.layers.map.show = true;
-            } else {
-                this.layers.map.show = false;
-            }
-            
-            var part;
-            for (var i = 0; i < this.layers.spills.length; i++) {
-                if(checked_layers.indexOf('spills-' + this.layers.spills[i]._id) !== -1){                   
-                    this.layers.spills[i].show = true;                    
-                } else {                    
-                    this.layers.spills[i].show = false;
-                } 
-                
-                if(checked_layers.indexOf('particles-'  + this.layers.spills[i]._id) !== -1 && this.layers.particles[i]){
-                    for(part = 2; part < this.layers.particles[i].length; part++){
-                        this.layers.particles[i].get(part).show = true;
-                    }
-                } else if(this.layers.particles[i]) {
-                    for(part = 2; part < this.layers.particles[i].length; part++){
-                        this.layers.particles[i].get(part).show = false;
-                    }
-                }
-                
-            }
-
-            var area;
-            if(checked_layers.indexOf('spillableArea') !== -1){
-                if(!this.layers.spillable){
-                    this.layers.spillable = [];
-                    var polygons = webgnome.model.get('map').get('spillable_area');
-                    for(var poly in polygons){
-                        this.layers.spillable.push(this.viewer.entities.add({
-                            polygon: {
-                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
-                                material: Cesium.Color.BLUE.withAlpha(0.25),
-                                outline: true,
-                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
-                                height: 0,
-                            }
-                        }));
-                    }
-                } else {
-                    for(area in this.layers.spillable){
-                        this.layers.spillable[area].show = true;
-                    }
-                }
-            } else if(this.layers.spillable){
-                for(area in this.layers.spillable){
-                    this.layers.spillable[area].show = false;
-                }
-            }
-
-            if(checked_layers.indexOf('map_bounds') !== -1){
-                if(!this.layers.bounds){
-                    var map = webgnome.model.get('map');
-                    this.layers.bounds = this.viewer.entities.add({
-                        name: 'Map Bounds',
-                        polygon: {
-                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(map.get('map_bounds'))),
-                            material: Cesium.Color.WHITE.withAlpha(0),
-                            outline: true,
-                            outlineColor: Cesium.Color.BLUE,
-                            height: 0,
-                        }
-                    });
-                } else {
-                    this.layers.bounds.show = true;
-                }
-            } else if(this.layers.bounds){
-                this.layers.bounds.show = false;
-            }
-
-            if(checked_layers.indexOf('graticule') !== -1) {
-                this.graticule.activate();
-            } else {
-                this.graticule.deactivate();
-            }
-        },
-
-        toggleEnvGrid: function(e){
-            if (e.currentTarget.id === 'none-grid') {
-                var envs = webgnome.model.get('environment')
-                for(var i = 0; i < envs.length; i++){
-                    let env = envs.models[i]
-                    if(env.get('grid').get('_appearance')){
-                        env.get('grid').get('_appearance').set('on',false);
-                    }
-                }
-                envs = this.$('.env-grid input:checked');
-                for(i = 0; i < envs.length; i++) {
-                    if(envs[i].id !== 'none-grid' && envs[i].checked){
-                        envs[i].checked = false;
-                    }
-                }
-                if(!e.currentTarget.checked) {
-                    e.preventDefault();
-                }
-            } else {
-                let env_id = e.currentTarget.id.replace('grid-', '');
-                let env = webgnome.model.get('environment').findWhere({id: env_id});
-                let grid = env.get('grid');
-                if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-grid input:checked').length === 0) {
-                        this.$('.env-grid #none-grid').prop('checked', true);
-                    }
-                    grid.get('_appearance').set('on', false);
-                } else {
-                    this.$('.env-grid #none-grid').prop('checked', false);
-                    if(!this.viewer.scene.primitives.contains(grid._linesPrimitive)){
-                        this.viewer.scene.primitives.add(grid._linesPrimitive)
-                        grid.renderLines(3000, true)
-                    }
-                    grid.get('_appearance').set('on', true);
-                }
             }
         },
 
