@@ -650,7 +650,6 @@ define([
 
             var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
 
-            this.controls.date.text(time);
             this.frame = step.get('step_num');
             if(this.frame < webgnome.model.get('num_time_steps')){
                 this.controls.seek.slider('value', this.frame + 1);
