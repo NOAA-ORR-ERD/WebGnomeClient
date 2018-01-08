@@ -164,6 +164,7 @@ define([
                     finishForm.on('finish', function() {
                         webgnome.model.save().always(function() {
                             localStorage.setItem('view', 'trajectory');
+                            localStorage.setItem('autorun', true); 
                             webgnome.router.navigate('trajectory', true);
                         });
                     });
