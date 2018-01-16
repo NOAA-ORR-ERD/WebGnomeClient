@@ -14,7 +14,7 @@ Boston Example Problems
 
 
 Try out these examples to learn the basics of modeling oil spills in
-Boston Harbor and Vicinity. Explore how changing tides, winds, runoff
+Boston Harbor and vicinity. Explore how changing tides, winds, runoff
 from the Merrimack River, and wastewater outflow can affect the
 trajectories of oil slicks. In addition, one example demonstrates how
 model and observation limitations can be overcome by including Uncertainty 
@@ -27,11 +27,11 @@ Example 1
 Tides are an important part of the circulation in Boston Harbor.
 In this example, you will examine the effects of tides by starting a
 spill at two different times in the tidal cycle,
-once at the beginning of a flood tide
+once at the beginning of a flood tide:
 
 Start Time: May 4, 2000 at 6:00 p.m. (1800)
 
-and once at the beginning of an ebb tide
+and once at the beginning of an ebb tide:
 
 Start Time: May 5, 2000 at midnight (0000)
 
@@ -65,20 +65,24 @@ a screenshot of the map at the end of the first run.
 How do the two spills differ in the amount and location of pollutant?
 
 
-**Hints:**
+**Tip:**
 
-1. If you only want to change one spill parameter (like the start time 
+1.  If you only want to change one spill parameter (like the start time 
 of the spill in this example, there is no need to reload the Location File 
 and step through the Wizard. Instead, use the buttons on the Menu Bar to 
-switch from Map View to Setup View. In Setup View are various panels which 
+switch from Map View to Setup View. In Setup View there are various panels which 
 allow you to edit the model setup. In the **Spill** panel, click on the edit 
 (pencil) icon of the spill you created to edit the time of release. 
 
 When you change the start time of the spill, you will likely want to
-change both the spill start time and the model start time. If you change
-the spill start time first, WebGNOME will automatically
+change both the spill start time (done via clicking on the edit icon on the **Spill** panel)
+and the model start time (via the edit icon on the **Model Settings** panel.
+If you change the spill start time first, WebGNOME will automatically
 prompt you to change the model start time to match the spill start time. 
-So it is a good ideal to always change the spill start time first.
+So it is a good idea to always change the spill start time first.
+
+2.  In the Map View, you can open the **Layers** panel (top right) to select different basemaps 
+for familiarizing yourself with the local geography.
 
 
 Answer:
@@ -102,7 +106,7 @@ no wind.
 How do the oil's trajectory and shoreline impacts change from the previous example?
 
 
-**Hint:** 
+**Tip:** 
 
 To change the wind conditions in WebGNOME, in Setup View, 
 click on the edit icon in the **Wind** panel then enter the wind speed
@@ -141,7 +145,7 @@ NW. This time, run WebGNOME with the "Minimum Regret" solution turned on.
 Examine the difference between the "Best Guess" (black) and "Minimum Regret" (red) trajectories.
 Why do you think this type of information would be useful?
 
-**Hint:**
+**Tip:**
 
 To include the Minimum Regret (Uncertainty) solution,
 click the box labeled "Include the Minimum Regret (Uncertainty) 
@@ -195,9 +199,9 @@ beginning of a flood tide. In each case, there are no winds.
 How does the oil's trajectory change from the spring to the fall example?
 
 
-**Hints:**
+**Tip:**
 
-1. Remember to change the spill release time first rather than the model 
+Remember to change the spill release time first rather than the model 
 start time to automatically synchronize these two. 
 
 
@@ -225,7 +229,7 @@ A scenario that includes weathering requires additional water property
 information. In the Water panel, enter a water temperature of 55° F and 
 use the defaults for the other parameters.
 
-Run the above scenario for a barge carrying a heavy fuel oil (e.g an 
+Run the above scenario for a barge carrying a heavy fuel oil (e.g., an 
 IFO or Intermediate Fuel Oil) and for a fishing vessel carrying 
 a diesel fuel. At the end of your 24-hour
 prediction, write down the mass balance for each product in the table
@@ -247,7 +251,7 @@ below.
 +----------------------------+-----------------+---------------+
 
 
-**Hints:**
+**Tips:**
 
 1. The spills you have set in previous examples have
 been point source spills, representing catastrophic releases at a
@@ -292,12 +296,27 @@ outfall site from 42° 24.97' N, 70° 47.04' W to 42° 21.96' N, 70° 46.98'
 W. Leave the substance as the diesel used in the last example.
 Start the spill at noon on February 15. Run WebGNOME twice for this
 spill, once with the sewage outfall effects option turned on, and once
-with no sewage outfall effects.
+with no sewage outfall effects. 
+
+Model Parameters:
+
+=======================  =========================================================
+Start time:               February 15, 2000 12:00.
+Model duration:           1 day.
+Uncertainty:              Not included.
+Sewage outfall effects:   Run both cases.
+Wind:                     5 knots from the SE.
+Spill type:               Instantaneous.
+Time of Release:          Same as model start time.
+Amount released:          100 bbls.
+Pollutant type:           Non-weathering.
+Position:                 42° 24.97' N, 70° 47.04' W to 42° 21.96' N, 70° 46.98'W.
+=======================  =========================================================
 
 How does the wastewater outfall impact the oil's trajectory?
 
 
-**Hint:**
+**Tip:**
 
 To include the sewage outfall effects without relaunching the Wizard, you 
 will change a setting in the **Current** panel. Within this panel is a list of 
