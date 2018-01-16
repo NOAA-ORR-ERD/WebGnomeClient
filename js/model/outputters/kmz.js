@@ -12,7 +12,7 @@ define([
                 'obj_type': 'gnome.outputters.kmz.KMZOutput',
                 'name': 'Model.kmz',
                 'filename': 'Model.kmz',
-                'output_timestep': 900
+                'output_timestep': 3600
             }, FileOutputterModel.prototype.defaults);
         },
 
