@@ -67,17 +67,19 @@
                             <div class="col-md-4">
                                 <label>Amount: </label>
                                 {% var amount = spills[i].get('amount'); %}
-                                {%     if(spills[i].get('amount_uncertainty_scale') > 0){ %}
-                                {%        var value = spills[i].get('amount_uncertainty_scale'); %}
-                                {%        var bottom = parseInt(Math.round((amount * (1 - value))), 10); %}
-                                {%        if (bottom < 0) { %}
-                                {%            bottom = 0; %}
-                                {%        } %}
-                                {%        var top = parseInt(Math.round((amount * (1 + value))), 10);     %}
-                                {%        amount = bottom + ' - ' + top; %}
-                                {%    } %}
-                                {%    var units = spills[i].get('units'); %}
-                                {%    var info = amount + ' ' + units; %}
+
+                                {% if(spills[i].get('amount_uncertainty_scale') > 0) { %}
+                                {%     var value = spills[i].get('amount_uncertainty_scale'); %}
+                                {%     var sigma = value * (2.0 / 3.0) * amount; %}
+
+                                {%     var bottom = parseInt(Math.round(amount - sigma), 10); %}
+                                {%     var top = parseInt(Math.round(amount + sigma), 10); %}
+
+                                {%     amount = bottom + ' - ' + top; %}
+                                {% } %}
+
+                                {% var units = spills[i].get('units'); %}
+                                {% var info = amount + ' ' + units; %}
                                 <span class="label label-default amount">{{ info }}</span>
                             </div>
                         </div>
