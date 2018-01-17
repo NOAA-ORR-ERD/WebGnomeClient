@@ -1,12 +1,29 @@
 define([
     'underscore',
-    'backbone'
-], function(_, Backbone){
+    'backbone',
+    'model/appearance',
+    'collection/appearances',
+], function(_, Backbone, Appearance, AppearanceCollection){
     'use strict';
     var baseModel = Backbone.Model.extend({
+
+        default_appearance: {
+            on:true,
+        },
+
         initialize: function(attrs, options){
             Backbone.Model.prototype.initialize.call(this, attrs, options);
             this.on('sync', this.rewindModel, this);
+            
+            if(this.default_appearances) {
+                let apps = [];
+                for (let i = 0; i < this.default_appearances.length; i++) {
+                    apps.push(new Appearance(this.default_appearances[i],{default: this.default_appearances[i]}));
+                }
+                this.set('_appearance', new AppearanceCollection(apps, {id:this.id + '_appearances'}));
+            } else if(this.default_appearance) {
+                this.set('_appearance', new Appearance({id: this.id},{default: this.default_appearance}));
+            }
         },
 
         rewindModel: function(){
@@ -115,7 +132,7 @@ define([
                 delete rv['_appearance'];
             }
             return rv
-        }
+        },
     });
 
     return baseModel;

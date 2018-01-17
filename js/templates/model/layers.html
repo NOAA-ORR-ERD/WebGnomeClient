@@ -7,18 +7,18 @@
         </div>
         <div id="imagery" class="panel-collapse collapse in">
             <div class="panel-body">
-                <form role="form" class="form-horizontal checkboxes base">
+                <form role="form" class="form-horizontal checkboxes imagery_layers">
                     <div class="radio">
-                        <label for="no_image"><input type="radio" name="imagery" id="no_image" checked>No imagery</label>
+                        <label for="imagery-no_image"><input type="radio" name="imagery" id="imagery-no_image" checked>No imagery</label>
                     </div>
                     <div class="radio">
-                        <label for="noaanavcharts"><input type="radio" name="imagery" id="noaanavcharts">NOAA Navigational Charts</label>
+                        <label for="imagery-noaanavcharts"><input type="radio" name="imagery" id="imagery-noaanavcharts">NOAA Navigational Charts</label>
                     </div>
                     <div class="radio">
-                        <label for="bing_aerial"><input type="radio" name="imagery" id="bing_aerial">Bing Maps Aerial</label>
+                        <label for="imagery-bing_aerial"><input type="radio" name="imagery" id="imagery-bing_aerial">Bing Maps Aerial</label>
                     </div>
                     <div class="radio">
-                        <label for="open_street_map"><input type="radio" name="imagery" id="open_street_map">Open Street Map</label>
+                        <label for="imagery-open_street_map"><input type="radio" name="imagery" id="imagery-open_street_map">Open Street Map</label>
                     </div>
                 </form>
             </div>
@@ -31,19 +31,19 @@
         </div>
         <div id="map_display" class="panel-collapse collapse">
             <div class="panel-body">
-                <form role="form" class="form-horizontal checkboxes base">
+                <form role="form" class="form-horizontal checkboxes map_layers">
                     <div class="checkbox">
-                        <label for="modelmap"><input type="checkbox" checked="checked" id="modelmap">Coastlines</label>
+                        <label for="map-modelMap"><input type="checkbox" id="map-modelMap">Coastlines</label>
                     </div>
 
                     <div class="checkbox">
-                        <label for="spillableArea"><input type="checkbox" id="spillableArea">Spillable Area</label>
+                        <label for="map-spillableArea"><input type="checkbox" id="map-spillableArea">Spillable Area</label>
                     </div>
                     <div class="checkbox">
-                        <label for="map_bounds"><input type="checkbox" id="map_bounds">Map Bounds</label>
+                        <label for="map-mapBounds"><input type="checkbox" id="map-mapBounds">Map Bounds</label>
                     </div>
                     <div class="checkbox">
-                        <label for="graticule"><input type="checkbox" checked="checked" id="graticule">Graticule</label>
+                        <label for="map-graticule"><input type="checkbox" checked="checked" id="map-graticule">Graticule</label>
                     </div>
                 </form>
             </div>
@@ -54,32 +54,36 @@
         <div class="panel-heading">
             <a role="button" data-toggle="collapse" href="#spills">Spills</a>
         </div>
-        
         <div class="panel-collapse collapse" id="spills">
-            {% if(model_spills.length > 0){ %}
-                {% for (var i = 0; i < model_spills.length; i++){ %}
-                    <div class="panel-secondary">
-                        
-                            <div class="panel-heading">
-                            <a role="button" data-toggle="collapse" href={{'#' + model_spills.models[i].get('id')}}>{{model_spills.models[i].get('name')}}</a>
-                            </div>                        
-                            <div class="panel-collapse collapse" id={{model_spills.models[i].get('id')}}>
-                                <div class="panel-body">
-                                    <form role="form" class="form-horizontal checkboxes base">
-                                    <div class="checkbox">
-                                        <label for="spills"><input type="checkbox" checked="checked" id="spills-{{model_spills.models[i].get('id')}}">Spill Location</label>
-                                    </div>
-                                    <div class="checkbox">
-                                        <label for="particles"}><input type="checkbox" checked="checked" id="particles-{{model_spills.models[i].get('id')}}">Particles</label>
-                                    </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                       
-                {% } %}
-            {% } %}
-               
+            <div class="panel-body">
+                <form>
+                    <table class="table table-sm table-hover spills">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="spill-vis-hdr"><span></span></th>
+                                <th scope="col" class="spill-loc-hdr"><span></span></th>
+                                <th scope="col" class="spill-edit-hdr"><span></span></th>
+                                <th scope="col" class="spill-name">Name</th>
+                            </tr>
+                        </thead>
+                        {% if(model_spills.length === 0){ %}
+                            No spills available for visualization
+                        {% } %}
+                        <tbody>
+                            {% if(model_spills.length !== 0){ %}
+                                {% for (var i = 0; i < model_spills.length; i++){ %}
+                                <tr name="{{ model_spills.models[i].get('name') }}">
+                                    <td class="spill-vis"><input class="vis" id="vis-{{ model_spills.models[i].get('id') }}" type="checkbox"></td>
+                                    <td class="spill-loc"><input class="loc" id="loc-{{ model_spills.models[i].get('id') }}" type="checkbox"></td>
+                                    <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{ model_spills.models[i].get('id') }}"><span></span></button></td>
+                                    <td class='spill-name' id="name-{{ model_spills.models[i].get('id') }}">{{ model_spills.models[i].get('name') }}</td>
+                                </tr>
+                                {% } %}
+                            {% } %}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
         </div>
     
     <div class="panel panel-primary" id='accor'>

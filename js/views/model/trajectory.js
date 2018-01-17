@@ -37,7 +37,6 @@ define([
         events: {
             'click .view-gnome-mode': 'viewGnomeMode',
             'click .view-weathering': 'viewWeathering',
-            'click .layers .title': 'toggleLayerPanel'
         },
         id: 'map',
         spillToggle: false,
@@ -69,7 +68,6 @@ define([
             } else {
                 this.renderNoTrajectory();
             }
-            this.controls.$el.appendTo(this.$el);
         },
 
         renderNoTrajectory: function() {
@@ -79,15 +77,24 @@ define([
         renderTrajectory: function() {
             this.controls = new ControlsView();
             this.controlsListeners();
-            this.layersPanel = new LayersView();
-            this.layersListeners();
+
+            this.controls.$el.appendTo(this.$el);
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
-            setTimeout(_.bind(this.renderCesiumMap, this), 250);
+            setTimeout(_.bind(function() {
+                this.renderCesiumMap();
+                this.layersPanel = new LayersView();
+                this.layersListeners();
+                this.layersPanel.render();
+                this.layersPanel.$el.appendTo(this.$el);
+                this.show(); // to trigger flyTo
+            }, this), 250);
         },
 
         layersListeners: function(){
-            console.log("notimplemented");
+            this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
+            this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
+            this.listenTo(this.layersPanel, 'change:_map_layer', this.zoomToMap);
         },
         controlsListeners: function() {
             this.listenTo(this.controls, 'play', this.play);
@@ -110,10 +117,6 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
         },
 
-        toggleLayerPanel: function(){
-            this.$('.layers').toggleClass('expanded');
-        },
-
         viewGnomeMode: function() {
             webgnome.model.set('mode', 'gnome');
             webgnome.model.save(null, {
@@ -133,6 +136,74 @@ define([
                 "container": "body",
                 "placement": "bottom"
             };
+        },
+
+        addLayer: function(lay) {
+            if (!lay.id) {
+                console.error('Layer must have id attribute');
+            }
+            if (lay.type === 'cesium') {
+                if (lay.parentEl === 'primitive') {
+                    this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
+                } else if (lay.parentEl === 'entity') {
+                    this.layers[lay.id] = this.viewer.entities.add(lay.visObj);
+                } else if (lay.parentEl === 'imageryLayer') {
+                    this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
+                } else if (lay.parentEl === 'dataSource') {
+                    this.viewer.dataSources.add(lay.visObj);
+                    this.layers[lay.id] = lay.visObj;
+                } else {
+                    console.error('Tried to add an entity with invalid parentEl: ', lay.parentEl);
+                }
+            } else {
+                console.error('Tried to add an entity with invalid type: ', lay.type);
+            }
+        },
+
+        removeLayer: function(lay) {
+            if (!lay.id) {
+                console.error('Layer must have id attribute');
+            }
+            if (lay.type === 'cesium') {
+                if (lay.parentEl === 'primitive') {
+                    if(this.viewer.scene.primitives.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove primitive layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'entity') {
+                    if(this.viewer.entities.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove entity layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'imageryLayer') {
+                    if(this.viewer.imageryLayers.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove imagery layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'dataSource') {
+                    if(this.viewer.dataSources.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove datasource layer id: ', lay.id);
+                    }
+                } else {
+                    console.error('Tried to remove an entity with invalid parentEl: ', lay.parentEl);
+                }
+            } else {
+                console.error('Tried to remove an entity with invalid type: ', lay.type);
+            }
+        },
+
+        show: function() {
+            this.$el.show();
+            if (this._flyTo) {
+                let map_id = webgnome.model.get('map').id;
+                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._flyTo = false;
+            }
         },
 
         renderCesiumMap: function(){
@@ -189,7 +260,8 @@ define([
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
             this.viewer.scene.fxaa = false;
-
+            this.load();
+/*
             this.renderSpills();
 
             this.layers.map = new Cesium.GeoJsonDataSource();
@@ -215,6 +287,7 @@ define([
                     });
                 }
             }, this));
+*/
         },
 
         load: function(){
@@ -399,6 +472,12 @@ define([
             }, this), 20);
         },
 
+        updateLayers: function(step){
+            for(var i = 0; i < this.layers.length; i++) {
+                this.layers[i].update(step)
+            }
+        },
+
         renderStep: _.debounce(function(source){
             var step;
             if(_.has(source, 'step')){
@@ -466,131 +545,9 @@ define([
         },
 
         renderSpill: function(step){
-            if(!this.les){
-                // this is the first time le are being rendered
-                // create a new datasource to handle the entities
-                this.les = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
-                this.layers.particles = this.les;
-                this.certain_collection = [];
-                this.uncertain_collection = [];
-                this.viewer.scene.primitives.add(this.les);
-
-                var canvas = document.createElement('canvas');
-                canvas.width = 4;
-                canvas.height = 4;
-                var context2D = canvas.getContext('2d');
-                context2D.beginPath();
-                context2D.arc(2, 2, 2, 0, Cesium.Math.TWO_PI, true);
-                context2D.closePath();
-                context2D.fillStyle = 'rgb(255, 255, 255)';
-                context2D.fill();
-                this.les_point_image = this.les.add({image: canvas, show: false}).image;
-
-                canvas = document.createElement('canvas');
-                canvas.width = 10;
-                canvas.height = 10;
-                context2D = canvas.getContext('2d');
-                context2D.moveTo(0, 0);
-                context2D.lineTo(8, 8);
-                context2D.moveTo(8, 7);
-                context2D.lineTo(1, 0);
-                context2D.moveTo(0, 1);
-                context2D.lineTo(7, 8);
-
-                context2D.moveTo(0, 8);
-                context2D.lineTo(8, 0);
-                context2D.moveTo(7, 0);
-                context2D.lineTo(0, 7);
-                context2D.moveTo(1, 8);
-                context2D.lineTo(8, 1);
-
-                context2D.strokeStyle = 'rgb(255, 255, 255)';
-                context2D.stroke();
-                this.les_beached_image = this.les.add({image: canvas, show: false}).image;
-
-            }
-
-            var certain = step.get('SpillJsonOutput').certain[0];
-            var uncertain = step.get('SpillJsonOutput').uncertain[0];
-            
-            var visible = [];
-            for (var s = 0; s < webgnome.model.get('spills').length; s++) {
-                //var visible = !this.checked_layers || this.checked_layers.indexOf('particles') !== -1 ? true : false;
-                var sid = "particles-" + webgnome.model.get('spills').models[s].get('id');
-                visible[s] = !this.checked_layers || this.checked_layers.indexOf(sid) !== -1 ? true : false;
-            }   
-            
-            if(uncertain) {
-                for(f = 0; f < uncertain.length; f++){
-                    if(!this.uncertain_collection[f]){
-                        // create a new point
-                        this.uncertain_collection.push(this.les.add({
-                            position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
-                            color: Cesium.Color.RED.withAlpha(
-                                uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                            ),
-                            eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                            image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image
-                        }));
-                    } else {
-                        this.uncertain_collection[f].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
-
-                        if(uncertain.status[f] === 3){
-                            this.uncertain_collection[f].image = this.les_beached_image;
-                        } else {
-                            this.uncertain_collection[f].image = this.les_point_image;
-                        }
-
-                        // set the opacity of particle if the mass has changed
-                        if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
-                            this.uncertain_collection[f].color = Cesium.Color.RED.withAlpha(
-                                uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                            );
-                        }
-                    }
-                    this.uncertain_collection[f].show = visible[certain.spill_num[f]];
-                }
-            }
-            for(var f = 0; f < certain.length; f++){
-                if(!this.certain_collection[f]){
-                    // create a new point
-                    this.certain_collection.push(this.les.add({
-                        position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                        color: Cesium.Color.BLACK.withAlpha(
-                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                        ),
-                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                        image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image
-                    }));
-                } else {
-                    // update the point position and graphical representation
-                    this.certain_collection[f].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
-                    if(certain.status[f] === 3){
-                        this.certain_collection[f].image = this.les_beached_image;
-                    } else {
-                        this.certain_collection[f].image = this.les_point_image;
-                    }
-                    // set the opacity of particle if the mass has changed
-                    if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
-                        this.certain_collection[f].color = Cesium.Color.BLACK.withAlpha(
-                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                        );
-                    }
-                }
-                this.certain_collection[f].show = visible[certain.spill_num[f]];
-            }
-            if(this.certain_collection.length > certain.length){
-                // we have entites that were created for a future step but the model is now viewing a previous step
-                // hide the leftover particles
-                var l;
-                for(l = certain.length; l < this.certain_collection.length; l++){
-                    this.certain_collection[l].show = false;
-                }
-                if(uncertain) {
-                    for(l = uncertain.length; l < this.uncertain_collection.length; l++){
-                        this.uncertain_collection[l].show = false;
-                    }
-                }
+            let spills = webgnome.model.get('spills').models;
+            for (var s = 0; s < spills.length; s++) {
+                spills[s].update(step);
             }
         },
 
@@ -628,7 +585,7 @@ define([
                         env.get('_appearance').set('on', false);
                         return;
                     }
-                    env.update(step.get('SpillJsonOutput').time_stamp)
+                    env.update(step);
                 }
             }/*
             if(this.checked_env_vec && this.checked_env_vec.length > 0 && this.layers.uv){
@@ -1165,7 +1122,7 @@ define([
                 spillform.render();
             }
         },
-
+/*
         resetMap: function(){
             webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
                 this.viewer.dataSources.remove(this.layers.map);
@@ -1176,7 +1133,7 @@ define([
                 }));
             }, this));
         },
-
+*/
         blur: function(e, ui){
             ui.handle.blur();
         },

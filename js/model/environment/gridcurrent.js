@@ -7,7 +7,7 @@ define([
             obj_type: 'gnome.environment.environment_objects.GridCurrent'
         },
         default_appearance: {
-            on: true,
+            on: false,
             color: 'MEDIUMPURPLE',
             alpha: 0.7,
             scale: 1,

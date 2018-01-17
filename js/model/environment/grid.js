@@ -27,10 +27,6 @@ define([
                 storeName: 'webgnome_cache'
             });
             this.getMetadata();
-            this.set('_appearance', new Appearance({id: this.id}));
-            if(!this.get('_appearance').has('on')){
-                this.get('_appearance').set(this.default_appearance);
-            }
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._linesPrimitive = new Cesium.PrimitiveCollection();
         },

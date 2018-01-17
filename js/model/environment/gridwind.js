@@ -7,7 +7,7 @@ define([
             obj_type: 'gnome.environment.environment_objects.GridWind'
         },
         default_appearance: {
-            on: true,
+            on: false,
             color: 'BLUE',
             alpha: 0.7,
             scale: 1,

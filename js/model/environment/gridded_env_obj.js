@@ -15,7 +15,7 @@ define([
             variables: Backbone.Model
         },
         default_appearance: {
-            on: true,
+            on: false,
             color: 'MEDIUMPURPLE',
             alpha: 1,
             scale: 1,
@@ -28,14 +28,13 @@ define([
                 this.getVecs(null);
                 this.getMetadata(null);
             }
-            if(!this.get('_appearance').has('on')){
-                this.get('_appearance').set(this.default_appearance);
-            }
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
             this._gridlines = new Cesium.PrimitiveCollection();
             this.genVecImages();
         },
+
+
 
         resetRequest: function(){
             this.requested = false;
@@ -241,7 +240,7 @@ define([
             if(options) {
                 var bbs = this._vectors._billboards;
                 var appearance = this.get('_appearance');
-                if (appearance.changedAttributes(options)){
+                if (appearance.changedAttributes()){
                     for(var i = 0; i < bbs.length; i++) {
                         bbs[i].color = Cesium.Color[appearance.get('color')];
                         bbs[i].alpha = appearance.get('alpha');
@@ -252,23 +251,26 @@ define([
             }
         },
 
-        update: function(timestamp) {
+        update: function(step) {
             // returns interpolated direction and magnitude in time
-            var mag_data = this.mag_data;
-            var dir_data = this.dir_data;
-            this.interpVecsToTime(timestamp, mag_data, dir_data);
-            var billboards = this._vectors._billboards;
-            var gap = this.vec_max/this.n_vecs
-            for(var uv = mag_data.length; uv--;){
-                billboards[uv].show = true;
-                //if(billboards[uv].rotation !== dir_data[uv]){
-                billboards[uv].rotation = dir_data[uv];
-                //}
-                //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
-                billboards[uv].image = this._images[Math.round(Math.abs(mag_data[uv])/gap)];
-                billboards[uv].mag = mag_data[uv];
-                billboards[uv].dir = dir_data[uv];
-                //}
+            if(this.get('_appearance') && this.get('_appearance').get('on') && this._vectors.length > 0){
+                let timestamp = step.get('SpillJsonOutput').time_stamp
+                var mag_data = this.mag_data;
+                var dir_data = this.dir_data;
+                this.interpVecsToTime(timestamp, mag_data, dir_data);
+                var billboards = this._vectors._billboards;
+                var gap = this.vec_max/this.n_vecs
+                for(var uv = mag_data.length; uv--;){
+                    billboards[uv].show = true;
+                    //if(billboards[uv].rotation !== dir_data[uv]){
+                    billboards[uv].rotation = dir_data[uv];
+                    //}
+                    //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
+                    billboards[uv].image = this._images[Math.round(Math.abs(mag_data[uv])/gap)];
+                    billboards[uv].mag = mag_data[uv];
+                    billboards[uv].dir = dir_data[uv];
+                    //}
+                }
             }
         },
 

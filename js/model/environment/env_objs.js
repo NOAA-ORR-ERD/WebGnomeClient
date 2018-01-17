@@ -19,7 +19,6 @@ define([
                 name: 'WebGNOME Cache',
                 storeName: 'webgnome_cache'
             });
-            this.set('_appearance', new Appearance({id: this.id}));
         },
     });
 
