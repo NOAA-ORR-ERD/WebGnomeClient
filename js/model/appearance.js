@@ -27,26 +27,24 @@ define([
         },
 
         fetch: function(options) {
-            this.appearance_cache.getItem(this.get('id') + '_appearance').then(
-                _.bind(function(attrs) {
-                    if (attrs) {
-                        let keys = Object.keys(attrs);
-                        for (var i = 0; i < keys.length; i++) {
-                            if(this.has(keys[i]) && options && options.preserve){
-                                delete attrs[keys[i]];
+            return new Promise(_.bind(function(resolve, reject) {
+                this.appearance_cache.getItem(this.get('id') + '_appearance').then(
+                    _.bind(function(attrs) {
+                        if (attrs) {
+                            let keys = Object.keys(attrs);
+                            for (var i = 0; i < keys.length; i++) {
+                                if(this.has(keys[i]) && options && options.preserve){
+                                    delete attrs[keys[i]];
+                                }
                             }
+                            this.set(attrs, {silent:true});
+                            resolve(attrs);
+                        } else {
+                            resolve(attrs);
                         }
-                        this.set(attrs, {silent:true});
-                        if(options && options.success) {
-                            options.success(this, attrs, options);
-                        }
-                    } else {
-                        if(options && options.error) {
-                            options.error(this, attrs, options);
-                        }
-                    }
-                }, this)
-            );
+                    }, this)
+                );
+            }, this));
         },
 
         save: function(attrs, options) {

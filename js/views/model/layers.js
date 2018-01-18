@@ -16,8 +16,8 @@ define([
             'change .imagery_layers input': 'toggleImageryLayers',
             'change .map_layers input': 'toggleMapLayers',
             'change .spills input': 'toggleSpillLayers',
-            'click .env-grid input': 'toggleEnvGrid',
-            'click .env-uv input': 'toggleEnvUV',
+            'click .env-grid input': 'toggleGridLayers',
+            'click .env-uv input': 'toggleDataLayers',
             'click .env-edit-btn': 'openInspectModal',
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
@@ -169,6 +169,16 @@ define([
                     visObj: env_objs[i]._vectors,
                     appearance: env_objs[i].get('_appearance')
                 });
+                if (env_objs[i].has('grid')) {
+                    this.layers.add({
+                        type: 'cesium',
+                        parentEl: 'primitive',
+                        model: env_objs[i].get('grid'),
+                        id: env_objs[i].get('grid').get('id'),
+                        visObj: env_objs[i].get('grid')._linesPrimitive,
+                        appearance: env_objs[i].get('grid').get('_appearance')
+                    });
+                }
             }
             
             // Create legacy object layers
@@ -216,6 +226,14 @@ define([
             for (let k = 0; k < model_spills.length; k++) {
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('on');
                 $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('on');
+            }
+            let grid_checkboxes = $('.grid:input', this.el);
+            for (let k = 0; k < grid_checkboxes.length; k++) {
+                let l = this.layers.findWhere({id: grid_checkboxes[k].classList[0].replace('grid-','')})
+                if (l.appearance.get('on')) {
+                    grid_checkboxes[k].click();
+                    l.model.renderLines(3000);
+                }
             }
             
         },
@@ -326,6 +344,44 @@ define([
                 }
             }
             
+        },
+
+        toggleGridLayers: function(e) {
+            if (e.currentTarget.id === 'none-grid') {
+                let grids = this.$('.env-grid input:checked');
+                for(let i = 0; i < grids.length; i++) {
+                    if(grids[i].id !== 'none-grid' && grids[i].checked){
+                        grids[i].checked = false;
+                        let grid_id = grids[i].classList[0].replace('grid-', '');
+                        this.layers.findWhere({id: grid_id}).appearance.set('on', false);
+                    }
+                }
+                if(!e.currentTarget.checked) {
+                    e.preventDefault();
+                }
+            } else {
+                let grid_id = e.currentTarget.classList[0].replace('grid-', '');
+                let grid_layer = this.layers.findWhere({id: grid_id});
+                if (!e.currentTarget.checked) { //unchecking a box
+                    if (this.$('.env-grid input:checked').length === 0) {
+                        this.$('.env-grid #none-grid').prop('checked', true);
+                    }
+                    // Because grids can be shared, we must turn off all checkboxes that match this grid
+                    let grid_checkboxes = $(e.currentTarget.classList[0]);
+                    for (let i = 0; i < grid_checkboxes.length; i++) {
+                        grid_checkboxes[i].checked = false
+                    }
+                    grid_layer.appearance.set('on', false);
+                } else {
+                    this.$('.env-grid #none-grid').prop('checked', false);
+                    let grid_checkboxes = $(e.currentTarget.classList[0]);
+                    for (let i = 0; i < grid_checkboxes.length; i++) {
+                        grid_checkboxes[i].checked = true
+                    }
+                    grid_layer.appearance.set('on', true);
+                    grid_layer.model.renderLines(3000)
+                }
+            }
         },
 
         toggleLayers: function(e){

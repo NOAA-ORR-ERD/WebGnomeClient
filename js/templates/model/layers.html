@@ -118,7 +118,11 @@
                                 {% for (var i = 0; i < env_objs.length; i++){ %}
                                 <tr name="{{ env_objs[i].get('name') }}">
                                     <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" type="checkbox"></td>
-                                    <td class="env-grid"><input class="grid" id="grid-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                                    {% if (env_objs[i].has('grid')) { %}
+                                        <td class="env-grid"><input class="grid-{{ env_objs[i].get('grid').get('id') }} grid" type="checkbox"></td>
+                                    {% } else { %}
+                                        <td></td>
+                                    {% } %}
                                     <td><button type="button" class="btn btn-sm btn-link env-edit-btn" id="attr-{{ env_objs[i].get('id') }}"><span></span></button></td>
                                     <td class='env-name' id="name-{{ env_objs[i].get('id') }}">{{ env_objs[i].get('name') }}</td>
                                 </tr>

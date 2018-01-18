@@ -29,8 +29,12 @@ define([
             this.getMetadata();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._linesPrimitive = new Cesium.PrimitiveCollection();
+            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
         },
 
+        setupVis: function(attrs) {
+            this._linesPrimitive.show = this.get('_appearance').get('on');
+        },
         resetRequest: function(){
             this.requested = false;
         },
@@ -210,7 +214,7 @@ define([
                 batch = 3000;
             }
             return new Promise(_.bind(function(resolve, reject) {
-                if(rebuild) {
+                if(rebuild || this._linesPrimitive.length === 0) {
                     this.getLines().then(_.bind(function(data){
                         var appearance = this.get('_appearance');
                         var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
