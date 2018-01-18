@@ -92,15 +92,15 @@ define([
         },
 
         updateConstantSlide: function(ui) {
-        	var slider_min = this.$( ".slider" ).slider( "option", "min" );
-        	var slider_max = this.$( ".slider" ).slider( "option", "max" );
+            var slider_min = this.$( ".slider" ).slider( "option", "min" );
+            var slider_max = this.$( ".slider" ).slider( "option", "max" );
             var slider_scale = slider_max - slider_min;
             var value;
 
             if(_.isUndefined(ui)) {
                 value = this.$('.slider').slider('value') - slider_min;
             } else {
-            	value = ui.value - slider_min;
+                value = ui.value - slider_min;
             }
 
             if(this.model.get('amount') !== 0) {
@@ -109,7 +109,7 @@ define([
                 if(value === 0){
                     this.$('.slider .tooltip-inner').text(amount);
                 } else {
-                	var sigma = value / slider_scale * (2.0 / 3.0) * amount;
+                    var sigma = value / slider_scale * (2.0 / 3.0) * amount;
                     var bottom = Math.round(amount - sigma);
                     var top = Math.round(amount + sigma);
 

@@ -35,7 +35,7 @@ the next 48 hours. Water temperature is ~46°F.
 What is the difference in beach impacts between the "Best Guess" and
 Uncertainty model runs for 2 days?
 
-**Hints:**
+**Tips:**
 
 1. Choose any medium crude from the Oil Library. 
  
@@ -60,7 +60,7 @@ Example 2
 
 If this spill were gasoline in the same amount, how would the beach impacts differ?
 
-**Hints:** 
+**Tips:** 
 
 1. To quickly change the pollutant type, switch to Setup View and edit the 
 spill by clicking on the edit (pencil) icon in the Spill panel. Use the
@@ -86,7 +86,7 @@ If the wind shifts to 15 knots from the north at 11:00 pm (2300)
 on the first day (Feb. 24), how will your trajectory change? (Change the
 pollutant type back to a medium crude.)
 
-**Hint:** 
+**Tip:** 
 
 Open the Wind settings panel by clicking on the edit (pencil) icon at the bottom.
 If you entered the wind as a "Constant Wind" previously, you will need to switch to
@@ -144,7 +144,7 @@ William Sound at the following locations:
 How do the trajectories of these spills differ after 24 hours? What is
 the mass balance of each spill?
 
-**Hint:** 
+**Tips:** 
 
 1. The Location File Wizard will only prompt for the addition of one spill. To
 add the second spill, switch to Setup View and click the Create Spill (+) icon at 
@@ -190,7 +190,7 @@ wind from the east.
 How does the wind affect the trajectories? Note the changes in the
 mass balances.
 
-**Hint:** 
+**Tip:** 
 
 To add the wind condition to your model, in Setup View, click the 
 Edit Wind icon (pencil) at the bottom of the Wind panel.
@@ -226,7 +226,7 @@ Minimum Regret (Uncertainty) solution (red splots).
 How does this information change your forecast for potential beach
 impact areas?
 
-**Hint:** 
+**Tip:** 
 
 To quickly turn on the Minimum Regret solution, click the
 box labeled "Include the Minimum Regret (Uncertainty) solution" 

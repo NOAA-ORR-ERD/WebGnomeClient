@@ -58,7 +58,7 @@ a screenshot of the map at the end of each model run.
 How do the beach impacts differ in each case? How does the trajectory
 change?
 
-**Hints:** 
+**Tips:** 
 
 1. To change the current reversal conditions, but keep all other
 model settings the same **is not yet possible**. :(
@@ -108,7 +108,7 @@ product (e.g. IFO).
 Compare the differences in risk to Dungeness Spit (approximately 48°
 10'N, 123° 8'W) from the two different products.
 
-**Hints:**
+**Tips:**
 
 1. To start over and relaunch the Wizard, select **Load Save File**
 from the **New** pulldown menu.
@@ -152,7 +152,7 @@ the wind conditions back to a 10-knot wind from the east.
 
 **How do beach impacts change? Where is the uncertainty?**
 
-    **Hint:** When you change the start time of a spill, you will want
+    **Tip:** When you change the start time of a spill, you will want
     to change both the *spill* start time and the *model* start
     time\ **.** To do this, double-click the description of the spill
     ("Fuel Oil #6: 1000 barrels") under **Spills** in the Summary

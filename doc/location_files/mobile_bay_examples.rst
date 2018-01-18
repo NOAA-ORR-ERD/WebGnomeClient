@@ -43,7 +43,7 @@ Pollutant type:           Non-weathering.
 Position:                 30°22' N, 88° 1' W
 =======================  =================================================
 
-**Hints:**
+**Tips:**
 
 1. If you only want to change one spill parameter (like the start time 
 of the spill in this example, there is no need to reload the Location File 
@@ -87,7 +87,7 @@ for this example problem.
 What are the differences in beach impacts between these two
 scenarios?
 
-**Hints:**
+**Tips:**
 
 1. Once again, use the **Spill** panel in Setup View to change spill
 settings. 
@@ -122,7 +122,7 @@ a 15-knot wind from the northwest. Run this spill scenario for 2 days.
 
 How does the oil's trajectory change from the previous example?
 
-**Hint:**
+**Tip:**
 
 You created a spatially constant wind at 0 knots in the initial model setup. It
 shows up in a list (currently with just one entry) at the bottom of 
@@ -159,7 +159,7 @@ between the "Best Guess" (black) and "Minimum Regret" (red)
 trajectories. Why do you think this type of information would be
 useful?**
 
-**Hint:**
+**Tip:**
 
 To include the Minimum Regret (Uncertainty) solution,
 click the box labeled "Include the Minimum Regret (Uncertainty) 
@@ -213,7 +213,7 @@ the mass balance for each scenario in the table below.
 | Off map                    |                  |              |
 +----------------------------+------------------+--------------+
 
-**Hints:**
+**Tips:**
 
 1. You can make all the changes to the model setup in Setup View 
 or start over with the Wizard by choosing "Select a Location File" from 
