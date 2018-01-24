@@ -122,7 +122,7 @@ define([
                 if(_.isUndefined(this.trajView)){
                     this.trajView = new TrajectoryView();
                 } else {
-                    this.trajView.$el.show();
+                    this.trajView.show();
                 }
                 this.views.push(this.trajView);
                 localStorage.setItem('view', 'trajectory');

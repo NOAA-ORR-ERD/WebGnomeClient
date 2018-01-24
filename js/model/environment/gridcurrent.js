@@ -1,24 +1,28 @@
 define([
-    'model/environment/env_objs',
-    'model/environment/grid',
-    'backbone'
-], function(BaseEnvObj, BaseGridObj, BackBone){
+    'model/environment/gridded_env_obj',
+], function(GridEnvObj){
     'use strict';
-    var gridCurrentModel = BaseEnvObj.extend({
+    var gridCurrentModel = GridEnvObj.extend({
         defaults: {
             obj_type: 'gnome.environment.environment_objects.GridCurrent'
         },
-        model: {time: BackBone.Model,
-                grid: BaseGridObj,
-                variables: BackBone.Model},
+        default_appearance: {
+            on: false,
+            color: 'MEDIUMPURPLE',
+            alpha: 0.7,
+            scale: 1,
+        },
+        vec_max: 3.0,
+        n_vecs: 30,
         
         initialize: function(attrs, options) {
-            BaseEnvObj.prototype.initialize.call(this, attrs, options);
-            if(!this.requested_vectors){
-                this.getVecs(null);
-                this.getMetadata(null);
-            }
-        }
+            GridEnvObj.prototype.initialize.call(this, attrs, options);
+        },
+
+        genVecImages: function(maxSpeed, numSteps) {
+            GridEnvObj.prototype.genVecImages.call(this, this.vec_max, this.n_vecs);
+        },
+
     });
     return gridCurrentModel;
 });

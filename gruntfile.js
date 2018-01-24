@@ -124,6 +124,7 @@ module.exports = function(grunt){
                 "eqnull": true,
                 "eqeqeq": true,
                 "undef": true,
+                "esversion": 6,
                 "globals": {
                     "console": true,
                     "alert": true,
