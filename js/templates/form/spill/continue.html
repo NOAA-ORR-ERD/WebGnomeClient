@@ -38,13 +38,13 @@
 			<select class="form-control" id="units">
 				{% if (showSubstance){ %}
 					<option value="m^3">
-						cu. m.
+						cubic meters
 					</option>
 					<option value="gal">
-						gal
+						gallons
 					</option>
 					<option value="bbl">
-						bbl
+						barrels
 					</option>
 					<option value="ton">
 						tons
@@ -78,19 +78,19 @@
 			<select class="form-control" id="rate-units">
 				{% if (showSubstance){ %}
 					<option value="bbl/hr">
-						bbl/hr
+						barrels/hr
 					</option>
 					<option value="bbl/day">
-						bbl/day
+						barrels/day
 					</option>
 					<option value="gal/hr">
-						gal/hr
+						gallons/hr
 					</option>
 						<!--<option value="gal/min">
 						gal/min
 					</option> -->
 					<option value="m^3/hr">
-						cu. m./hr
+						cubic meters/hr
 					</option>
 					<option value="ton/hr">
 						tons/hr
@@ -99,7 +99,7 @@
 						metric tons/hr
 					</option>
 					<option value="kg/hr">
-						kg/hr
+						kilograms/hr
 					</option>
 				{% } else { %}
 					<option value="ton/hr">
@@ -109,7 +109,7 @@
 						metric tons/hr
 					</option>
 					<option value="kg/hr">
-						kg/hr
+						kilograms/hr
 					</option>
 				{% } %}
 			</select>

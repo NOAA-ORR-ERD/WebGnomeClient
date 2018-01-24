@@ -90,9 +90,11 @@ define([
         },
 
         showHelp: function(){
-            if(this.$('.gnome-help.alert').length === 0){
+            if(this.$('.help-content.alert').length === 0){
                 this.$('.modal-body').prepend(this.help.$el);
                 this.help.delegateEvents();
+            } else {
+                this.help.$el.detach();
             }
         },
 

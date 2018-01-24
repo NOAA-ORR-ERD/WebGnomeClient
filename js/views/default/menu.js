@@ -7,6 +7,7 @@ define([
     'text!templates/default/menu.html',
     'views/modal/about',
     'views/modal/hotkeys',
+    'views/model/persist_model_modal',
     'views/form/location',
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
@@ -14,8 +15,8 @@ define([
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
-             MenuTemplate, AboutModal, HotkeysModal, LocationForm,
-             NetCDFForm, KMZForm, ShapeForm, GnomeModel) {
+             MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
+             LocationForm, NetCDFForm, KMZForm, ShapeForm, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -59,7 +60,7 @@ define([
 
             // "Save" optional menu items
             'click .save': 'save',
-            'click .persist': 'persist',
+            'click .persist': 'persist_modal',
 
             //"help" menu
             'click .about': 'about',
@@ -272,12 +273,21 @@ define([
             window.location.href = webgnome.config.api + '/download';
         },
 
-        persist: function(event){
+        persist_modal: function(event) {
             event.preventDefault();
-            webgnome.cache.rewind();
-            console.log('Save the model on server...');
+            this.modelFileName = webgnome.model.attributes.name;
+            this.persistModelView = new PersistModelModal({}, this.modelFileName);
+            this.persistModelView.render();
+            this.persistModelView.once('save', _.bind(this.persist, this));
+        },
 
-            $.get('/persist')
+        persist: function(event){
+            var modelFileName = this.persistModelView.modelFileName;
+            console.log('Save the model on server as ' + modelFileName);
+
+            webgnome.cache.rewind();
+
+            $.post('/persist', {'name': modelFileName})
             .done(function(response){
                 toastr.success('Model saved.', 'Success!', {timeOut: 3000});
             })

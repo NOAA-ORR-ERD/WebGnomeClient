@@ -1,17 +1,12 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'model/uploads/file',
     'views/modal/form',
     'text!templates/form/create_file.html'
-], function($, _, Backbone, FileModel, FormModal, CreateFileTemplate) {
+], function($, _, FormModal, CreateFileTemplate) {
     var createFileModalForm = FormModal.extend({
         title: 'Create New Folder',
         className: 'modal form-modal create-file-form',
-
-        //events: function(){
-        //},
 
         initialize: function(options, fileModel) {
             this.fileModel = fileModel;

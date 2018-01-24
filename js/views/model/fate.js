@@ -853,13 +853,13 @@ define([
                     }
                     if(display.time === 'date'){
                         if(row === 0){
-                            row_html += '<th>Date - Time</th>';
+                            row_html += '<th>Date <br>&nbsp</th>';
                         } else {
                             row_html += '<td>' + ts_date.format(webgnome.config.date_format.moment) + '</td>';
                         }
                     } else {
                         if(row === 0){
-                            row_html += '<th>Time (hours)</th>';
+                            row_html += '<th>Time <br>(hours)</th>';
                         } else {
                             row_html += '<td>' + duration.asHours() + '</td>';
                         }
@@ -876,9 +876,9 @@ define([
 
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
-                                row_html +='<th style="background: ' + color + ';">' + dataset[set].label + ' (' + to_unit + ')</th>';
+                                row_html +='<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + to_unit + ')</th>';
                             } else {
-                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + ' (' + display.other + ')</th>';
+                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + display.other + ')</th>';
                             }
 
                         } else {
@@ -1052,6 +1052,9 @@ define([
                         }
                         dataset[i].yaxis = 2;
                         dataset[i].label = 'Surface Volume including Emulsion';
+                    }
+                    if (dataset[i].name === 'water_content') {
+                        dataset[i].label = 'Water Content of Emulsion';
                     }
                     dataset[i].needle = {
                         label: _.bind(this.formatNeedleLabel, this),

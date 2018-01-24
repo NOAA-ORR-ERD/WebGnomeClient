@@ -213,7 +213,7 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-            
+
             // Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             // var image_providers = Cesium.createDefaultImageryProviderViewModels();
             // var default_image = new Cesium.ProviderViewModel({
@@ -227,7 +227,7 @@ define([
                 // },
             // });
             // image_providers.unshift(default_image);
-            
+
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
                 baseLayerPicker: false,
@@ -253,7 +253,7 @@ define([
                   shouldAnimate: false
                 })),
                 contextOptions: {
-                    webgl:{ 
+                    webgl:{
                         preserveDrawingBuffer:true,
                     },
                 },
@@ -329,11 +329,11 @@ define([
                                                                         return 'Mag: ' + ('   ' + entity.pickedObject.primitive.mag.toFixed(2)).slice(-7) + 'm/s' +
                                                                             '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
                                                                     }, entity), false);
-                        
+
                 } else {
                     entity.label.show = false;
                 }
-                
+
             }, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
         },
 

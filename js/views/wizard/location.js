@@ -90,7 +90,7 @@ define([
                     // for now this is overriding the text in individual location file .json files 
                     // as they are not individually customized
                     if (el.title === 'Wind Type') {
-                            body = "<p>Wind can significantly influence oil movement and can force oil to move in a different direction from the currents.</p><p>The next form has several options for including a point (spatially constant) wind. You can:<ul><li>Enter values for a wind that is constant in direction and speed for the entire model run,</li><li>Enter values for a wind that varies in direction and/or speed over time,</li><li>Upload a file with wind data,</li><li>Link directly to the latest NOAA NWS marine forcast.</li></ul></p><p>If you'd like to use a gridded model product for winds, you can upload it later from the Setup View.";
+                            body = "<p>Wind can significantly influence oil movement and can force oil to move in a different direction from the currents.</p><p>The next form has several options for including a point (spatially constant) wind. You can:<ul><li>Enter values for a wind that is constant in direction and speed for the entire model run,</li><li>Enter values for a wind that varies in direction and/or speed over time,</li><li>Link directly to the latest NOAA NWS marine forecast,</li><li>Upload a file with wind data</li></ul></p><p>If you'd like to use a gridded model product for winds, you can upload it later from the Setup View.";
                     }
                     else {
                     	body = el.body;
@@ -164,6 +164,7 @@ define([
                     finishForm.on('finish', function() {
                         webgnome.model.save().always(function() {
                             localStorage.setItem('view', 'trajectory');
+                            localStorage.setItem('autorun', true); 
                             webgnome.router.navigate('trajectory', true);
                         });
                     });
