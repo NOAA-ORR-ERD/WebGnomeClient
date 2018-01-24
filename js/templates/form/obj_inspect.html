@@ -1,17 +1,13 @@
 <form class="form-horizontal" role="form">
-	<div class="form-group">
+    <div class="form-group">
         <label class="col-sm-5 control-label" for="name">Name:</label>
         <div class="col-sm-5">
             <input type="text" id="name" class="form-control" value="{{ name }}">
+        </div>
+        <label class="col-sm-5 control-label" for="active">On:</label>
+        <div class="col-sm-5">
+            <input type="checkbox" id="active" class="form-control" checked={{ active }}>
+        </div>
     </div>
-    
-    <br>
-    
-    <div class="form-group">
-        <label class="col-sm-5 control-label" for="scale_value">Scale Value:</label>
-		<div class="col-sm-5">
-			<input type="number" name="scale_value" value="{{ scale_value}}" id="scale_value">
-		</div>
-	</div>
     
 </form>

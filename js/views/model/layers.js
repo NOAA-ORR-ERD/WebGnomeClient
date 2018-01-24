@@ -42,7 +42,9 @@ define([
 
         modelListeners: function(){
             this.listenTo(webgnome.model.get('movers'), 'add remove', this.render);
-            this.listenTo(webgnome.model.get('environment'), 'add remove', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'add remove change', this.render);
+            //this.listenTo(webgnome.model.get('environment'), 'change:name', this.changeName);
+            //this.listenTo(webgnome.model.get('spills'), 'change:name', this.changeName);
             this.listenTo(webgnome.model.get('spills'), 'add remove change', this.render);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
@@ -89,10 +91,8 @@ define([
             this._map_layer = this.layers.findWhere({id: map.id});
             this._sa_layer = this.layers.findWhere({id: map.id + '_sa'});
             this._bounds_layer = this.layers.findWhere({id: map.id + '_bounds'});
-            if (e) {
-                if(webgnome.router.trajView) {
-                    webgnome.router.trajView._flyTo = true;
-                }
+            if(webgnome.router.trajView) {
+                webgnome.router.trajView._flyTo = true;
             }
         },
 
@@ -115,17 +115,9 @@ define([
             this.$('.layers').toggleClass('expanded');
         },
 
-        render: function(){
-            // only compile the template if the map isn't drawn yet
-            // or if there is a redraw request because of the map object changing
-
-            // Create map layers
+        addDefaultLayers: function() {
+            //Runs on first render to add layers for each existing model component.
             this.resetMap();
-            if(webgnome.router.trajView) {
-                webgnome.router.trajView._flyTo = true;
-            }
-
-            // Create spill layers 
             var model_spills = webgnome.model.get('spills');
             this._spill_layers=[];
             for (let i = 0; i < model_spills.length; i++) {
@@ -147,19 +139,11 @@ define([
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);
             }
-
-            // Create environment object layers
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
                 var ot = obj.get('obj_type').split('.');
                 ot.pop();
                 return ot.join('.') === 'gnome.environment.environment_objects';
             });
-            var active_env_objs = [];
-            env_objs.forEach(function(obj){
-                active_env_objs.push(obj.get('id'));
-            });
-            this.active_env_objs = active_env_objs;
-
             for (let i = 0; i < env_objs.length; i++) {
                 this.layers.add({
                     type: 'cesium',
@@ -180,7 +164,30 @@ define([
                     });
                 }
             }
-            
+        },
+
+        render: function(){
+            // only compile the template if the map isn't drawn yet
+            // or if there is a redraw request because of the map object changing
+
+            // Create map layers
+            if(this.layers.length == 0) {
+                this.addDefaultLayers();
+            }
+            // Create spill layers 
+            let model_spills = webgnome.model.get('spills');
+            // Create environment object layers
+            var env_objs = webgnome.model.get('environment').filter(function(obj) {
+                var ot = obj.get('obj_type').split('.');
+                ot.pop();
+                return ot.join('.') === 'gnome.environment.environment_objects';
+            });
+            var active_env_objs = [];
+            env_objs.forEach(function(obj){
+                active_env_objs.push(obj.get('id'));
+            });
+            this.active_env_objs = active_env_objs;
+
             // Create legacy object layers
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
@@ -209,6 +216,20 @@ define([
             });
             this.tc_ice = tc_ice;
 
+            // Before rendering HTML, save expand state of previous control groups
+            let show = {panel:false, map:false, spill:false, env:false};
+            if (this.$('.expanded', this.el)[0]) {
+                show.panel = true;
+                if (this.$('#map_display', this.el).hasClass('in')) {
+                    show.map = true;
+                }
+                if (this.$('#spills', this.el).hasClass('in')) {
+                    show.spill = true;
+                }
+                if (this.$('#env_objs', this.el).hasClass('in')) {
+                    show.env = true;
+                }
+            }
             //Render HTML
             this.$el.html(_.template(LayersTemplate, {
                 model_spills: model_spills,
@@ -219,6 +240,21 @@ define([
                 env_objs: env_objs,
                 active_env_objs: active_env_objs,
             }));
+
+            //Expand newly rendered control groups as necessary
+            if (show.panel) {
+                this.$('.layers', this.$el).addClass('expanded');
+            }
+            if (show.map) {
+                this.$('#map_display', this.$el).collapse('show');
+            }
+            if (show.spill) {
+                this.$('#spills', this.$el).collapse('show');
+            }
+            if (show.env) {
+                this.$('#env_objs', this.$el).collapse('show');
+            }
+
             this.setupLayersTooltips();
             $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('on');
             $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('on');
@@ -230,12 +266,18 @@ define([
             let grid_checkboxes = $('.grid:input', this.el);
             for (let k = 0; k < grid_checkboxes.length; k++) {
                 let l = this.layers.findWhere({id: grid_checkboxes[k].classList[0].replace('grid-','')})
-                if (l.appearance.get('on')) {
+                if (l && l.appearance.get('on')) {
                     grid_checkboxes[k].click();
                     l.model.renderLines(3000);
                 }
             }
-            
+            let env_checkboxes = $('.uv:input', this.el);
+            for (let k = 0; k < env_checkboxes.length; k++) {
+                let l = this.layers.findWhere({id: env_checkboxes[k].id.replace('uv-','')})
+                if (l && l.appearance.get('on')) {
+                    env_checkboxes[k].click();
+                }
+            }
         },
 
         triggerDefaultLayers: function() {
@@ -384,96 +426,48 @@ define([
             }
         },
 
-        toggleLayers: function(e){
-/*
-            if(e.target.name === 'imagery') {
-                this.toggleImageryLayers(e);
-            }
-            
-            var checked_layers = this.checked_layers = [];
-            this.$('.layers input:checked').each(function(i, input){
-                checked_layers.push(input.id);
-            });
-
-            if(checked_layers.indexOf('modelmap') !== -1){
-                this.layers.map.show = true;
+        toggleDataLayers: function(e) {
+            if (e.currentTarget.id === 'none-uv') {
+                let envs = this.$('.env-uv input:checked');
+                for (let i = 0; i < envs.length; i++) {
+                    if (envs[i].id !== 'none-uv' && envs[i].checked) {
+                        envs[i].checked = false;
+                        let env_id = envs[i].id.replace('uv-', '');
+                        this.layers.findWhere({id: env_id}).appearance.set('on', false);
+                        
+                    }
+                }
+                if(!e.currentTarget.checked) {
+                    e.preventDefault();
+                }
             } else {
-                this.layers.map.show = false;
-            }
-            
-            var part;
-            for (var i = 0; i < this.layers.spills.length; i++) {
-                if(checked_layers.indexOf('spills-' + this.layers.spills[i]._id) !== -1){                   
-                    this.layers.spills[i].show = true;                    
-                } else {                    
-                    this.layers.spills[i].show = false;
-                } 
-                
-                if(checked_layers.indexOf('particles-'  + this.layers.spills[i]._id) !== -1 && this.layers.particles[i]){
-                    for(part = 2; part < this.layers.particles[i].length; part++){
-                        this.layers.particles[i].get(part).show = true;
+                let env_id = e.currentTarget.id.replace('uv-', '');
+                let env_layer = this.layers.findWhere({id: env_id});
+                if (!e.currentTarget.checked) { //unchecking a box
+                    if (this.$('.env-uv input:checked').length === 0) {
+                        this.$('.env-uv #none-uv').prop('checked', true);
                     }
-                } else if(this.layers.particles[i]) {
-                    for(part = 2; part < this.layers.particles[i].length; part++){
-                        this.layers.particles[i].get(part).show = false;
-                    }
-                }
-                
-            }
-
-            var area;
-            if(checked_layers.indexOf('spillableArea') !== -1){
-                if(!this.layers.spillable){
-                    this.layers.spillable = [];
-                    var polygons = webgnome.model.get('map').get('spillable_area');
-                    for(var poly in polygons){
-                        this.layers.spillable.push(this.viewer.entities.add({
-                            polygon: {
-                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
-                                material: Cesium.Color.BLUE.withAlpha(0.25),
-                                outline: true,
-                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
-                                height: 0,
-                            }
-                        }));
-                    }
+                    env_layer.appearance.set('on', false);
                 } else {
-                    for(area in this.layers.spillable){
-                        this.layers.spillable[area].show = true;
-                    }
-                }
-            } else if(this.layers.spillable){
-                for(area in this.layers.spillable){
-                    this.layers.spillable[area].show = false;
+                    this.$('.env-uv #none-uv').prop('checked', false);
+                    env_layer.appearance.set('on', true);
+                    env_layer.model.genVectors();
                 }
             }
+        },
 
-            if(checked_layers.indexOf('map_bounds') !== -1){
-                if(!this.layers.bounds){
-                    var map = webgnome.model.get('map');
-                    this.layers.bounds = this.viewer.entities.add({
-                        name: 'Map Bounds',
-                        polygon: {
-                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(map.get('map_bounds'))),
-                            material: Cesium.Color.WHITE.withAlpha(0),
-                            outline: true,
-                            outlineColor: Cesium.Color.BLUE,
-                            height: 0,
-                        }
-                    });
-                } else {
-                    this.layers.bounds.show = true;
-                }
-            } else if(this.layers.bounds){
-                this.layers.bounds.show = false;
-            }
+        openInspectModal: function(e) {
+            let obj_id = e.currentTarget.id.replace('attr-', '');
+            let l = this.layers.findWhere({id: obj_id});
+            let mod = new InspectForm(null, l);
+            mod.render();
+        },
 
-            if(checked_layers.indexOf('graticule') !== -1) {
-                this.graticule.activate();
-            } else {
-                this.graticule.deactivate();
+        changeName: function(e) {
+            let l = this.layers.findWhere({id: e.get('id')})
+            if (l) {
+                this.$('#name-' + l.id).text(e.get('name'));
             }
-*/
         },
 
         close: function(){

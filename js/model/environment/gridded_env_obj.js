@@ -193,7 +193,7 @@ define([
             graphics object, and control updates for it*/
             //rebuild currently broken
             return new Promise(_.bind(function(resolve, reject) {
-                if (rebuild) {
+                if (rebuild || this._vectors.length < 100) {
                     var addVecsToLayer = _.bind(function(centers) {
                         if(!this._images){
                             this.genVecImages();

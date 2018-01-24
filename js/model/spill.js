@@ -330,6 +330,7 @@ define([
             //Currently it displays all particles in SpillJsonOutput. This is incorrect behavior.
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
+            var appearance = this.get('_appearance').findWhere({id:'les'});
 
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
@@ -343,10 +344,11 @@ define([
                                 ),
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
                                 image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
-                                show: this.get('_appearance').findWhere({id:'les'}).get('on'),
+                                show: appearance.get('on'),
                             })
                         );
                     } else {
+                        this._uncertain[f].show = appearance.get('on');
                         this._uncertain[f].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
 
                         if(uncertain.status[f] === 3){
@@ -374,10 +376,11 @@ define([
                         ),
                         eyeOffset : new Cesium.Cartesian3(0,0,-2),
                         image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
-                                show: this.get('_appearance').findWhere({id:'les'}).get('on'),
+                                show: appearance.get('on'),
                     }));
                 } else {
                     // update the point position and graphical representation
+                    this._certain[f].show = appearance.get('on');
                     this._certain[f].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
                     if(certain.status[f] === 3){
                         this._certain[f].image = this._les_beached_image;

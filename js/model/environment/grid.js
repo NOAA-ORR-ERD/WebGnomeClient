@@ -14,7 +14,7 @@ define([
         grid_cache : localforage.createInstance({name: 'Grid Object Data Cache',
                                                     }),
         default_appearance: {
-            on: true,
+            on: false,
             color: 'PINK',
             alpha: 0.3,
         },
@@ -35,6 +35,7 @@ define([
         setupVis: function(attrs) {
             this._linesPrimitive.show = this.get('_appearance').get('on');
         },
+
         resetRequest: function(){
             this.requested = false;
         },

@@ -16,13 +16,12 @@ define([
     'html2canvas',
     'ccapture',
     'model/map/graticule',
-    'views/form/inspect',
     'views/model/layers',
     'views/model/controls',
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, InspectForm, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -87,7 +86,6 @@ define([
                 this.layersListeners();
                 this.layersPanel.render();
                 this.layersPanel.$el.appendTo(this.$el);
-                this.show(); // to trigger flyTo
             }, this), 250);
         },
 
@@ -157,6 +155,11 @@ define([
                 }
             } else {
                 console.error('Tried to add an entity with invalid type: ', lay.type);
+            }
+            // If adding a map layer, fly to it
+            if (lay.id === webgnome.model.get('map').get('id')) {
+                this._flyTo = true;
+                this.show();
             }
         },
 
@@ -686,44 +689,6 @@ define([
             }
         },
 
-        toggleEnvUV: function(e){
-            if (e.currentTarget.id === 'none-uv') {
-                var envs = webgnome.model.get('environment')
-                for(var i = 0; i < envs.length; i++){
-                    let env = envs.models[i]
-                    if(env.get('_appearance')){
-                        env.get('_appearance').set('on',false);
-                    }
-                }
-                envs = this.$('.env-uv input:checked');
-                for(i = 0; i < envs.length; i++) {
-                    if(envs[i].id !== 'none-uv' && envs[i].checked){
-                        envs[i].checked = false;
-                    }
-                }
-                if(!e.currentTarget.checked) {
-                    e.preventDefault();
-                }
-            } else {
-                var env_id = e.currentTarget.id.replace('uv-', '');
-                let env = webgnome.model.get('environment').findWhere({id: env_id});
-                if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-uv input:checked').length === 0) {
-                        this.$('.env-uv #none-uv').prop('checked', true);
-                    }
-                    env.get('_appearance').set('on', false);
-                } else {
-                    this.$('.env-uv #none-uv').prop('checked', false);
-                    if(!this.viewer.scene.primitives.contains(env._vectors)){
-                        env.genVectors(true).then(_.bind(function(vecs){
-                            this.viewer.scene.primitives.add(vecs);
-                            },this));
-                    }
-                    env.get('_appearance').set('on', true);
-                }
-            }
-        },
-
         toggleGrid: function(e){
             if(!this.grids){
                 this.grids = {};
@@ -967,37 +932,6 @@ define([
             this.renderStep({step: this.frame});
         },
 
-        toggleSpill: function(e){
-            if(this.spillToggle){
-                this.ol.map.getViewport().style.cursor = '';
-                this.spillToggle = false;
-                this.spillCoords = [];
-
-                if(this.$('.on').hasClass('fixed')){
-                    this.ol.map.un('click', this.addPointSpill, this);
-                } else {
-                    this.ol.map.removeInteraction(this.draw);
-                }
-
-                this.$('.on').toggleClass('on');
-
-            } else {
-                this.ol.map.getViewport().style.cursor = 'crosshair';
-                this.spillToggle = true;
-                this.$(e.target).toggleClass('on');
-
-                if(this.$(e.target).hasClass('fixed')){
-                    this.ol.map.on('click', this.addPointSpill, this);
-                } else {
-                    this.addLineSpill();
-                }
-            }
-        },
-
-        toggleSpillBlur: function(event){
-            event.target.blur();
-        },
-
         showHelp: function(){
             this.$('.help-button').show();
         },
@@ -1006,163 +940,11 @@ define([
             e.target.blur();
         },
 
-        renderSpills: function(){
-            this.spills = [];
-            if(this.layers){
-                this.layers.spills = this.spills;
-                webgnome.model.get('spills').forEach(_.bind(function(spill){
-                    var release = spill.get('release');
-                    this.spills.push(this.viewer.entities.add({
-                        name: spill.get('name'),
-                        id: spill.get('id'),
-                        position: new Cesium.Cartesian3.fromDegrees(release.get('start_position')[0], release.get('start_position')[1]),
-                        billboard: {
-                            image: '/img/spill-pin.png',
-                            verticalOrigin: Cesium.VerticalOrigin.BOTTOM
-                        },
-                        description: '<table class="table"><tbody><tr><td>Amount</td><td>' + spill.get('amount') + ' ' + spill.get('units') + '</td></tr></tbody></table>'
-                    }));
-                }, this));
-            }
-        },
-
-        resetSpills: function(){
-            // remove all spills from the source
-            for(var spill in this.spills){
-                this.viewer.entities.remove(this.spills[spill]);
-            }
-            this.renderSpills();
-        },
-
-        // addLineSpill: function(e){
-        //     this.draw = new ol.interaction.Draw({
-        //         source: this.SpillIndexSource,
-        //         type: 'LineString'
-        //     });
-        //     this.ol.map.addInteraction(this.draw);
-        //     this.draw.on('drawend', _.bind(function(e){
-        //         var spillCoords = e.feature.getGeometry().getCoordinates();
-        //         for (var i = 0; i < spillCoords.length; i++){
-        //             spillCoords[i] = new ol.proj.transform(spillCoords[i], 'EPSG:3857', 'EPSG:4326');
-        //             spillCoords[i].push('0');
-        //         }
-        //         var spill = new GnomeSpill();
-        //         spill.get('release').set('start_position', spillCoords[0]);
-        //         spill.get('release').set('end_position', spillCoords[spillCoords.length - 1]);
-        //         spill.get('release').set('release_time', webgnome.model.get('start_time'));
-        //         spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-        //         var spillform = new SpillForm({showMap: true}, spill);
-        //         spillform.render();
-        //         spillform.on('save', function(spill){
-        //             webgnome.model.get('spills').add(spill);
-        //             webgnome.model.trigger('sync');
-        //         });
-        //         spillform.on('hidden', spillform.close);
-        //         this.toggleSpill();
-
-        //     }, this));
-        // },
-
-        // addPointSpill: function(e){
-        //     // add a spill to the model.
-        //     var coord = ol.proj.transform(e.coordinate, e.map.getView().getProjection(), 'EPSG:4326');
-        //     var spill = new GnomeSpill();
-        //     // add the dummy z-index thing
-        //     coord.push(0);
-        //     spill.get('release').set('start_position', coord);
-        //     spill.get('release').set('end_position', coord);
-        //     spill.get('release').set('release_time', webgnome.model.get('start_time'));
-        //     spill.get('release').set('end_release_time', webgnome.model.get('start_time'));
-
-        //     var spillform = new SpillForm({showMap: true}, spill);
-        //     spillform.render();
-        //     spillform.on('save', function(spill){
-        //         webgnome.model.get('spills').add(spill);
-        //         webgnome.model.trigger('sync');
-        //     });
-        //     spillform.on('hidden', spillform.close);
-
-        //     this.toggleSpill();
-        // },
-
-        spillHover: function(e){
-            if(!this.spillToggle){
-                var pointer = this.ol.map.forEachFeatureAtPixel(e.pixel, function(){
-                    return true;
-                }, null, function(layer){
-                    if(layer.get('name') === 'spills'){
-                        return layer;
-                    }
-                    return false;
-                });
-                if (pointer) {
-                    this.ol.map.getViewport().style.cursor = 'pointer';
-                } else if(this.ol.map.getViewport().style.cursor === 'pointer') {
-                    this.ol.map.getViewport().style.cursor = '';
-                }
-            }
-        },
-
-        spillClick: function(e){
-            var spill = this.ol.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                return feature.get('spill');
-            }, null, function(layer){
-                if(layer.get('name') === 'spills'){
-                    return layer;
-                }
-                return false;
-            });
-            if(spill){
-                var spillform = new SpillForm({showMap: true}, webgnome.model.get('spills').get(spill));
-                spillform.on('hidden', spillform.close);
-                spillform.on('save', function(spill){
-                    webgnome.model.get('spills').trigger('change');
-                    webgnome.model.trigger('sync');
-                });
-                spillform.render();
-            }
-        },
-/*
-        resetMap: function(){
-            webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                this.viewer.dataSources.remove(this.layers.map);
-                this.layers.map = new Cesium.GeoJsonDataSource();
-                this.viewer.dataSources.add(this.layers.map.load(geojson, {
-                    strokeWidth: 0,
-                    stroke: Cesium.Color.WHITE.withAlpha(0)
-                }));
-            }, this));
-        },
-*/
         blur: function(e, ui){
             ui.handle.blur();
         },
 
-        openInspectModal: function(e) {
-            let env_id = e.currentTarget.id.replace('attr-', '');
-            let env = webgnome.model.get('environment').findWhere({id: env_id});
-            let mod = new InspectForm(null, env);
-            mod.render();
-        },
-
         close: function(){
-            // if (this.modelMode !== 'adios'){
-            //     this.pause();
-            //     if(webgnome.model){
-            //         webgnome.model.off('change', this.contextualize, this);
-            //         webgnome.model.off('sync', this.spillListeners, this);
-            //         webgnome.model.get('spills').off('add change remove', this.resetSpills, this);
-            //     }
-            //     webgnome.cache.off('step:recieved', this.renderStep, this);
-            //     webgnome.cache.off('step:failed', this.pause, this);
-            //     webgnome.cache.off('rewind', this.rewind, this);
-
-            //     Mousetrap.unbind('space');
-            //     Mousetrap.unbind('right');
-            //     Mousetrap.unbind('left');
-            //     this.unbind();
-            //     this.viewer.destroy();
-            // }
             this.pause();
             this.$el.hide();
             // this.remove();
