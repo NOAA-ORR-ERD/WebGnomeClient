@@ -43,7 +43,7 @@ define([
         getMetadata: function() {
             var url = this.urlRoot + this.id + '/metadata';
             $.get(url, null, _.bind(function(metadata){
-                this.metadata = metadata
+                this.metadata = metadata;
             }, this ));
         },
 
@@ -196,7 +196,7 @@ define([
                                         var lenDtl = lenDtype.BYTES_PER_ELEMENT;
                                         this._lineLengths = new lenDtype(lines, 0, num_lengths);
                                         var lineDtype = Float32Array;
-                                        this._lines = new lineDtype(lines, num_lengths*lenDtl)
+                                        this._lines = new lineDtype(lines, num_lengths*lenDtl);
                                         this.grid_cache.setItem(this.id + 'lines', [lines, num_lengths]);
                                         resolve([this._lineLengths, this._lines]);
                                     },this),
@@ -244,7 +244,7 @@ define([
                                     },
                                     allowPicking: false
                                 }));
-                                curOffset = curOffset + lengths[segment]*2
+                                curOffset = curOffset + lengths[segment]*2;
                             }
 
                             // send the batch to the gpu/cesium
@@ -271,8 +271,8 @@ define([
                 var prims = this._linesPrimitive;
                 var appearance = this.get('_appearance');
                 prims.show = appearance.get('on');
-                let changed = appearance.changedAttributes()
-                if (changed && changed['color']){
+                let changed = appearance.changedAttributes();
+                if (changed && changed.color){
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
                 }

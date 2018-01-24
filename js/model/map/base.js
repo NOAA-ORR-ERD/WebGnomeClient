@@ -145,7 +145,7 @@ define([
                         //fill: this.get('_(0.4),
                     });
                     this._mapVis.show = this.get('_appearance').findWhere({id:'map'}).get('on');
-                }, this))
+                }, this));
             }, this ));
         },
 
@@ -154,7 +154,7 @@ define([
             the specific object type*/
             if(options) {
                 if(options.id === 'map') {
-                    var vis = this._mapVis;
+                    let vis = this._mapVis;
                     if (options.changedAttributes()){
                         //vis.fill = Cesium.Color[appearance.get('fill')];
                         //vis.alpha = appearance.get('alpha');
@@ -162,7 +162,7 @@ define([
                         vis.show = options.get('on');
                     }
                 } else if (options.id === 'sa') {
-                    var vis = this._spillableVis;
+                    let vis = this._spillableVis;
                     vis.show = options.get('on');
 /*
                     if (options.changedAttributes()){

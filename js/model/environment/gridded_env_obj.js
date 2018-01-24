@@ -2,11 +2,12 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'cesium',
     'model/environment/env_objs',
     'model/environment/grid',
     'moment',
     'localforage',
-], function(_, $, Backbone, EnvBaseModel, BaseGridObj, moment, localforage){
+], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
         model: {
@@ -139,7 +140,7 @@ define([
             quantity (eg GridTemperature)
             */
             var bbc = this._vectors;
-            this._images = []
+            this._images = [];
             var canvas = document.createElement('canvas');
             canvas.width = 7;
             canvas.height = 7;
@@ -202,7 +203,7 @@ define([
                         for(var existing = 0; existing < existing_length; existing++){
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
                             this._vectors.get(existing).show = true;
-                            this._vectors.get(existing).color = Cesium.Color[this.get('_appearance').get('color')]
+                            this._vectors.get(existing).color = Cesium.Color[this.get('_appearance').get('color')];
                         }
                         var create_length = centers.length / 2;
 
@@ -258,12 +259,12 @@ define([
         update: function(step) {
             // returns interpolated direction and magnitude in time
             if(this.get('_appearance') && this.get('_appearance').get('on') && this._vectors.length > 0){
-                let timestamp = step.get('SpillJsonOutput').time_stamp
+                let timestamp = step.get('SpillJsonOutput').time_stamp;
                 var mag_data = this.mag_data;
                 var dir_data = this.dir_data;
                 this.interpVecsToTime(timestamp, mag_data, dir_data);
                 var billboards = this._vectors._billboards;
-                var gap = this.vec_max/this.n_vecs
+                var gap = this.vec_max/this.n_vecs;
                 for(var uv = mag_data.length; uv--;){
                     billboards[uv].show = true;
                     //if(billboards[uv].rotation !== dir_data[uv]){

@@ -176,14 +176,6 @@ define([
             this.controls.forward.tooltip(this.createTooltipObject("Step Forward"));
         },
 
-        createTooltipObject: function(title) {
-            return {
-                "title": title,
-                "container": "body",
-                "placement": "bottom"
-            };
-        },
-
         pause: function(e){
             if($('.modal:visible').length === 0){
                 this.controls.play.show();
@@ -191,7 +183,7 @@ define([
                 if(e){
                     this.trigger('pause');
                 }
-                this.state = 'pause'
+                this.state = 'pause';
             }
         },
 
@@ -286,14 +278,14 @@ define([
             this.controls.seek.slider('value', ui.value);
 
             if(ui.value <= webgnome.cache.length){
-                this.trigger('loop', {step: ui.value})
+                this.trigger('loop', {step: ui.value});
             } else {
                 this.controls.seek.one('slidestop', _.bind(this.resetSeek, this));
             }
         },
 
         loop: function(e) {
-            if (this.getSliderValue() !== 0 && this.state == 'play'){
+            if (this.getSliderValue() !== 0 && this.state === 'play'){
                 this.trigger('loop', {step: this.getSliderValue()});
             }
         },

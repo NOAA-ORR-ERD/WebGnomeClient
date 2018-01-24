@@ -2,6 +2,7 @@ define([
     'underscore',
     'jquery',
     'backbone',
+    'cesium',
     'model/base',
     'model/release',
     'model/element',
@@ -9,7 +10,7 @@ define([
     'moment',
     'model/appearance',
     'collection/appearances',
-], function(_, $, Backbone, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection){
+], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
@@ -71,8 +72,8 @@ define([
                     setTimeout(_.bind(this.isTimeValid,this),2);
                 }   
             }
-            this._certain = []
-            this._uncertain = []
+            this._certain = [];
+            this._uncertain = [];
         },
 
         setupVis: function(attrs) {

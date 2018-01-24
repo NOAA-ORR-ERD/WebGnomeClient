@@ -60,9 +60,9 @@ define([
         resetToDefault: function() {
             let id = this.id;
             this.clear();
-            this.set(this.default,{silent: true})
+            this.set(this.default,{silent: true});
             this.set({id:id},{silent: true});
-            this.save()
+            this.save();
         }
 
     });

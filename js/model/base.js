@@ -128,10 +128,10 @@ define([
 
         toJSON: function(options){
             var rv = Backbone.Model.prototype.toJSON.call(this, options);
-            if (rv['_appearance']){
-                delete rv['_appearance'];
+            if (rv._appearance){
+                delete rv._appearance;
             }
-            return rv
+            return rv;
         },
     });
 

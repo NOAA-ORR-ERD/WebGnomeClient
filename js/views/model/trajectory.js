@@ -56,7 +56,7 @@ define([
                 this.modelMode = 'adios';
             }
             this.$el.appendTo('body');
-            this.state = 'stopped'
+            this.state = 'stopped';
             this.render();
         },
 
@@ -340,7 +340,7 @@ define([
         goToStep: function(s) {
             if (this.state === 'paused') {
                 this.state = 'next';
-                this.frame = s['step'];
+                this.frame = s.step;
             }
             this.loop();
         },
@@ -453,7 +453,7 @@ define([
                 if(webgnome.cache && webgnome.cache.streaming){
                     webgnome.cache.sendHalt();
                 }
-                this.state = 'stopped'
+                this.state = 'stopped';
             }
         },
 
@@ -477,7 +477,7 @@ define([
 
         updateLayers: function(step){
             for(var i = 0; i < this.layers.length; i++) {
-                this.layers[i].update(step)
+                this.layers[i].update(step);
             }
         },
 
@@ -580,9 +580,9 @@ define([
         },
 
         renderEnvVector: function(step){
-            var envs = webgnome.model.get('environment')
+            var envs = webgnome.model.get('environment');
             for(var i = 0; i < envs.length; i++){
-                let env = envs.models[i]
+                let env = envs.models[i];
                 if(env.get('_appearance') && env.get('_appearance').get('on')){
                     if (env.get('_appearance').get('on') && !this.viewer.scene.primitives.contains(env._vectors)) {
                         env.get('_appearance').set('on', false);
