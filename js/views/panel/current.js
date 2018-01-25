@@ -16,8 +16,10 @@ define([
 
         models: [
             'gnome.movers.current_movers.CatsMover',
+            'gnome.movers.current_movers.ComponentMover',
             'gnome.movers.current_movers.GridCurrentMover',
-            'gnome.movers.py_current_movers.PyCurrentMover'
+            'gnome.movers.py_current_movers.PyCurrentMover',
+            'gnome.movers.current_movers.CurrentCycleMover'
         ],
         
 
@@ -58,7 +60,9 @@ define([
                 return [
                     'gnome.movers.current_movers.CatsMover',
                     'gnome.movers.current_movers.GridCurrentMover',
-                    'gnome.movers.py_current_movers.PyCurrentMover'
+                    'gnome.movers.py_current_movers.PyCurrentMover',
+                    'gnome.movers.current_movers.ComponentMover',
+                    'gnome.movers.current_movers.CurrentCycleMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             var compiled = _.template(CurrentPanelTemplate, {
