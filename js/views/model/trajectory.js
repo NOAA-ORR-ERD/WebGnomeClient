@@ -92,7 +92,6 @@ define([
         layersListeners: function(){
             this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
             this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
-            this.listenTo(this.layersPanel, 'change:_map_layer', this.zoomToMap);
         },
         controlsListeners: function() {
             this.listenTo(this.controls, 'play', this.play);
