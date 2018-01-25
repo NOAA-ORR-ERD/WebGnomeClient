@@ -56,12 +56,12 @@ define([
 
         resetMap: function(e){
             if (this._map_layer && e && e.changed.map.id !== e.previousAttributes().map.id) {
-                let oldMap = e.previousAttributes().map;
+                var oldMap = e.previousAttributes().map;
                 this.layers.remove(this.layers.findWhere({id: oldMap.id}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_sa'}));
                 this.layers.remove(this.layers.findWhere({id: oldMap.id + '_bounds'}));
             }
-            let map = webgnome.model.get('map');
+            var map = webgnome.model.get('map');
             this.layers.add(
                 [{
                     type: 'cesium',
@@ -120,8 +120,9 @@ define([
             this.resetMap();
             var model_spills = webgnome.model.get('spills');
             this._spill_layers=[];
-            for (let i = 0; i < model_spills.length; i++) {
-                let spillLayer = new LayerModel({
+            var spillLayer, spillLocLayer;
+            for (var i = 0; i < model_spills.length; i++) {
+                spillLayer = new LayerModel({
                     type: 'cesium',
                     parentEl: 'primitive',
                     model: model_spills.models[i],
@@ -129,7 +130,7 @@ define([
                     visObj: model_spills.models[i].les,
                     appearance: model_spills.models[i].get('_appearance').findWhere({id:'les'})
                 });
-                let spillLocLayer = new LayerModel({
+                spillLocLayer = new LayerModel({
                     type: 'cesium',
                     parentEl: 'entity',
                     model: model_spills.models[i],
@@ -144,7 +145,7 @@ define([
                 ot.pop();
                 return ot.join('.') === 'gnome.environment.environment_objects';
             });
-            for (let i = 0; i < env_objs.length; i++) {
+            for (i = 0; i < env_objs.length; i++) {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',
@@ -175,7 +176,7 @@ define([
                 this.addDefaultLayers();
             }
             // Create spill layers 
-            let model_spills = webgnome.model.get('spills');
+            var model_spills = webgnome.model.get('spills');
             // Create environment object layers
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
                 var ot = obj.get('obj_type').split('.');
@@ -217,7 +218,7 @@ define([
             this.tc_ice = tc_ice;
 
             // Before rendering HTML, save expand state of previous control groups
-            let show = {panel:false, map:false, spill:false, env:false};
+            var show = {panel:false, map:false, spill:false, env:false};
             if (this.$('.expanded', this.el)[0]) {
                 show.panel = true;
                 if (this.$('#map_display', this.el).hasClass('in')) {
@@ -259,21 +260,22 @@ define([
             $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('on');
             $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('on');
             $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.appearance.get('on');
-            for (let k = 0; k < model_spills.length; k++) {
+            for (var k = 0; k < model_spills.length; k++) {
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('on');
                 $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('on');
             }
-            let grid_checkboxes = $('.grid:input', this.el);
-            for (let k = 0; k < grid_checkboxes.length; k++) {
-                let l = this.layers.findWhere({id: grid_checkboxes[k].classList[0].replace('grid-','')});
+            var grid_checkboxes = $('.grid:input', this.el);
+            var l;
+            for ( k = 0; k < grid_checkboxes.length; k++) {
+                l = this.layers.findWhere({id: grid_checkboxes[k].classList[0].replace('grid-','')});
                 if (l && l.appearance.get('on')) {
                     grid_checkboxes[k].click();
                     l.model.renderLines(3000);
                 }
             }
-            let env_checkboxes = $('.uv:input', this.el);
-            for (let k = 0; k < env_checkboxes.length; k++) {
-                let l = this.layers.findWhere({id: env_checkboxes[k].id.replace('uv-','')});
+            var env_checkboxes = $('.uv:input', this.el);
+            for (k = 0; k < env_checkboxes.length; k++) {
+                l = this.layers.findWhere({id: env_checkboxes[k].id.replace('uv-','')});
                 if (l && l.appearance.get('on')) {
                     env_checkboxes[k].click();
                 }
@@ -285,13 +287,13 @@ define([
             //the corresponding layer should be triggered.
             //TODO: Should read the compiled HTML, not manually as below
             this.trigger('add', this._map_layer);
-            for( let i = 0; i < this._spill_layers.length; i++) {
+            for(var i = 0; i < this._spill_layers.length; i++) {
                 this.trigger('add', this._spill_layers[0]);
             }
         },
 
         toggleImageryLayers: function(e) {
-            let name = e.target.id.replace('imagery-', '');
+            var name = e.target.id.replace('imagery-', '');
             if(this.layers.sat) {
                 this.layers.remove(this.layers.sat);
                 this.layers.sat = undefined;
@@ -335,8 +337,8 @@ define([
         },
 
         toggleMapLayers: function(e) {
-            let mapid = webgnome.model.get('map').get('id');
-            let name = e.target.id.replace('map-', '');
+            var mapid = webgnome.model.get('map').get('id');
+            var name = e.target.id.replace('map-', '');
             if (name === 'modelMap') {
                 if (e.target.checked) {
                     this.layers.findWhere({id: mapid}).appearance.set('on', true);
@@ -368,17 +370,17 @@ define([
         },
 
         toggleSpillLayers: function(e) {
-            let sel = e.target.classList[0];
-            let name = e.target.id.replace(sel + '-', '');
+            var sel = e.target.classList[0];
+            var name = e.target.id.replace(sel + '-', '');
             if (sel === 'vis') {
-                let spillLayer = this.layers.findWhere({id: name});
+                var spillLayer = this.layers.findWhere({id: name});
                 if (!e.currentTarget.checked) { //unchecking a box
                     spillLayer.appearance.set('on', false);
                 } else {
                     spillLayer.appearance.set('on', true);
                 }
             } else if (sel === 'loc') {
-                let spillLocLayer = this.layers.findWhere({id: name + '_loc'});
+                var spillLocLayer = this.layers.findWhere({id: name + '_loc'});
                 if (!e.currentTarget.checked) { //unchecking a box
                     spillLocLayer.appearance.set('on', false);
                 } else {
@@ -389,12 +391,13 @@ define([
         },
 
         toggleGridLayers: function(e) {
+            var grid_id, i;
             if (e.currentTarget.id === 'none-grid') {
-                let grids = this.$('.env-grid input:checked');
-                for(let i = 0; i < grids.length; i++) {
+                var grids = this.$('.env-grid input:checked');
+                for(i = 0; i < grids.length; i++) {
                     if(grids[i].id !== 'none-grid' && grids[i].checked){
                         grids[i].checked = false;
-                        let grid_id = grids[i].classList[0].replace('grid-', '');
+                        grid_id = grids[i].classList[0].replace('grid-', '');
                         this.layers.findWhere({id: grid_id}).appearance.set('on', false);
                     }
                 }
@@ -402,22 +405,23 @@ define([
                     e.preventDefault();
                 }
             } else {
-                let grid_id = e.currentTarget.classList[0].replace('grid-', '');
-                let grid_layer = this.layers.findWhere({id: grid_id});
+                var grid_checkboxes;
+                grid_id = e.currentTarget.classList[0].replace('grid-', '');
+                var grid_layer = this.layers.findWhere({id: grid_id});
                 if (!e.currentTarget.checked) { //unchecking a box
                     if (this.$('.env-grid input:checked').length === 0) {
                         this.$('.env-grid #none-grid').prop('checked', true);
                     }
                     // Because grids can be shared, we must turn off all checkboxes that match this grid
-                    let grid_checkboxes = $(e.currentTarget.classList[0]);
-                    for (let i = 0; i < grid_checkboxes.length; i++) {
+                    grid_checkboxes = $(e.currentTarget.classList[0]);
+                    for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = false;
                     }
                     grid_layer.appearance.set('on', false);
                 } else {
                     this.$('.env-grid #none-grid').prop('checked', false);
-                    let grid_checkboxes = $(e.currentTarget.classList[0]);
-                    for (let i = 0; i < grid_checkboxes.length; i++) {
+                    grid_checkboxes = $(e.currentTarget.classList[0]);
+                    for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = true;
                     }
                     grid_layer.appearance.set('on', true);
@@ -427,12 +431,13 @@ define([
         },
 
         toggleDataLayers: function(e) {
+            var env_id;
             if (e.currentTarget.id === 'none-uv') {
-                let envs = this.$('.env-uv input:checked');
-                for (let i = 0; i < envs.length; i++) {
+                var envs = this.$('.env-uv input:checked');
+                for (var i = 0; i < envs.length; i++) {
                     if (envs[i].id !== 'none-uv' && envs[i].checked) {
                         envs[i].checked = false;
-                        let env_id = envs[i].id.replace('uv-', '');
+                        env_id = envs[i].id.replace('uv-', '');
                         this.layers.findWhere({id: env_id}).appearance.set('on', false);
                         
                     }
@@ -441,8 +446,8 @@ define([
                     e.preventDefault();
                 }
             } else {
-                let env_id = e.currentTarget.id.replace('uv-', '');
-                let env_layer = this.layers.findWhere({id: env_id});
+                env_id = e.currentTarget.id.replace('uv-', '');
+                var env_layer = this.layers.findWhere({id: env_id});
                 if (!e.currentTarget.checked) { //unchecking a box
                     if (this.$('.env-uv input:checked').length === 0) {
                         this.$('.env-uv #none-uv').prop('checked', true);
@@ -457,14 +462,14 @@ define([
         },
 
         openInspectModal: function(e) {
-            let obj_id = e.currentTarget.id.replace('attr-', '');
-            let l = this.layers.findWhere({id: obj_id});
-            let mod = new InspectForm(null, l);
+            var obj_id = e.currentTarget.id.replace('attr-', '');
+            var l = this.layers.findWhere({id: obj_id});
+            var mod = new InspectForm(null, l);
             mod.render();
         },
 
         changeName: function(e) {
-            let l = this.layers.findWhere({id: e.get('id')});
+            var l = this.layers.findWhere({id: e.get('id')});
             if (l) {
                 this.$('#name-' + l.id).text(e.get('name'));
             }

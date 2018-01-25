@@ -320,13 +320,13 @@ define([
             var intDivFunc = this.intDivFunc;
 
             var genLabel = this.DMS ? this.genDMSLabel : this.genDegLabel;
-            var line, label;
+            var line, label, linePos, labelPosition;
             for(var i=0; i < (this.lon_lines + 10); i++) {
                 line = this.linegeo[i].geometry;
                 label = this.labels[i];
-                let linePos = line._positions[0];
-                let lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
-                let labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                linePos = line._positions[0];
+                var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
+                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lon', lineLon) : this.genDegLabel('lon', lineLon));
                 label.css("bottom", 0 + "px");
                 label.css("top", "");
@@ -342,9 +342,9 @@ define([
                 //}
                 line = this.linegeo[j].geometry;
                 label = this.labels[j];
-                let linePos = line._positions[0];
-                let lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
-                let labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
+                linePos = line._positions[0];
+                var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
+                labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
                 label.text(this.DMS ? this.genDMSLabel('lat', lineLat) : this.genDegLabel('lat', lineLat));
                 label.css("bottom", "");
                 label.css("top", (labelPosition.y - label.height()/2) + "px");

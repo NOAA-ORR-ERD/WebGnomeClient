@@ -16,8 +16,8 @@ define([
             this.on('sync', this.rewindModel, this);
             
             if(this.default_appearances) {
-                let apps = [];
-                for (let i = 0; i < this.default_appearances.length; i++) {
+                var apps = [];
+                for (var i = 0; i < this.default_appearances.length; i++) {
                     apps.push(new Appearance(this.default_appearances[i],{default: this.default_appearances[i]}));
                 }
                 this.set('_appearance', new AppearanceCollection(apps, {id:this.id + '_appearances'}));
