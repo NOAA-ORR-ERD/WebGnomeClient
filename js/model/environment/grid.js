@@ -271,7 +271,7 @@ define([
                 var prims = this._linesPrimitive;
                 var appearance = this.get('_appearance');
                 prims.show = appearance.get('on');
-                let changed = appearance.changedAttributes();
+                var changed = appearance.changedAttributes();
                 if (changed && changed.color){
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);

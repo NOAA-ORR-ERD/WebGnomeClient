@@ -92,7 +92,6 @@ define([
         layersListeners: function(){
             this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
             this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
-            this.listenTo(this.layersPanel, 'change:_map_layer', this.zoomToMap);
         },
         controlsListeners: function() {
             this.listenTo(this.controls, 'play', this.play);
@@ -203,7 +202,7 @@ define([
         show: function() {
             this.$el.show();
             if (this._flyTo) {
-                let map_id = webgnome.model.get('map').id;
+                var map_id = webgnome.model.get('map').id;
                 this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
                 this._flyTo = false;
             }
@@ -548,7 +547,7 @@ define([
         },
 
         renderSpill: function(step){
-            let spills = webgnome.model.get('spills').models;
+            var spills = webgnome.model.get('spills').models;
             for (var s = 0; s < spills.length; s++) {
                 spills[s].update(step);
             }
@@ -582,7 +581,7 @@ define([
         renderEnvVector: function(step){
             var envs = webgnome.model.get('environment');
             for(var i = 0; i < envs.length; i++){
-                let env = envs.models[i];
+                var env = envs.models[i];
                 if(env.get('_appearance') && env.get('_appearance').get('on')){
                     if (env.get('_appearance').get('on') && !this.viewer.scene.primitives.contains(env._vectors)) {
                         env.get('_appearance').set('on', false);
@@ -590,33 +589,7 @@ define([
                     }
                     env.update(step);
                 }
-            }/*
-            if(this.checked_env_vec && this.checked_env_vec.length > 0 && this.layers.uv){
-                // hardcode to the first indexed id, because the ui only supports a single current being selected at the moment
-                var id = this.checked_env_vec[0];
-                var env = webgnome.model.get('environment').findWhere({id: id});
-                var mag_data = env.mag_data;
-                var dir_data = env.dir_data;
-                env.interpVecsToTime(step.get('SpillJsonOutput').time_stamp, mag_data, dir_data);
-                if(this.current_arrow[id]){
-                    var billboards=env._vectors._billboards;
-                    for(var uv = mag_data.length; uv--;){
-                        billboards[uv].show = true;
-                        //if(billboards[uv].rotation !== dir_data[uv]){
-                        billboards[uv].rotation = dir_data[uv];
-                        //}
-                        //if(this.layers.uv[id].get(uv).image !== this.uvImage(mag_data[uv], id)){
-                        billboards[uv].image = this.uvImage(mag_data[uv], id);
-                        billboards[uv].mag = mag_data[uv];
-                        billboards[uv].dir = dir_data[uv];
-                        //}
-                    }
-                } else if(this.layers.uv[id]){
-                    for(var h = this.layers.uv[id].length; h--;){
-                        this.layers.uv[id].get(h).show = false;
-                    }
-                }
-            }*/
+            }
         },
 
         uvImage: function(magnitude, id){

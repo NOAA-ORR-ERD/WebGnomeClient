@@ -96,7 +96,7 @@ define([
         },
 
         genSpillable: function() {
-            let polygons = this.get('spillable_area');
+            var polygons = this.get('spillable_area');
             for(var poly in polygons){
                 this._spillableVis.entities.add({
                     polygon: {
@@ -137,7 +137,7 @@ define([
 
         genMap: function() {
             return new Promise(_.bind(function(resolve, reject) {
-                //let color = Cesium.COLOR[this.get('_appearance').findWhere({id:'map'}).get('on')].withAlpha
+                //var color = Cesium.COLOR[this.get('_appearance').findWhere({id:'map'}).get('on')].withAlpha
                 this.getGeoJSON(_.bind(function(geojson) {
                     this._mapVis.load(geojson, {
                         strokeWidth: 0,
@@ -152,9 +152,10 @@ define([
         updateVis: function(options) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
+            var vis;
             if(options) {
                 if(options.id === 'map') {
-                    let vis = this._mapVis;
+                    vis = this._mapVis;
                     if (options.changedAttributes()){
                         //vis.fill = Cesium.Color[appearance.get('fill')];
                         //vis.alpha = appearance.get('alpha');
@@ -162,17 +163,17 @@ define([
                         vis.show = options.get('on');
                     }
                 } else if (options.id === 'sa') {
-                    let vis = this._spillableVis;
+                    vis = this._spillableVis;
                     vis.show = options.get('on');
 /*
                     if (options.changedAttributes()){
-                        for (let i = 0; i < vis.entities.length; i++) {
+                        for (var i = 0; i < vis.entities.length; i++) {
                             vis.entities[i].show = options.get('on');
                         }
                     }
 */
                 } else {
-                    var vis = this._boundsVis;
+                    vis = this._boundsVis;
                     if (options.changedAttributes()){
                         //vis.fill = Cesium.Color[appearance.get('fill')];
                         //vis.alpha = appearance.get('alpha');

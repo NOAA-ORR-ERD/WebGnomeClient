@@ -31,7 +31,7 @@ define([
                 this.appearance_cache.getItem(this.get('id') + '_appearance').then(
                     _.bind(function(attrs) {
                         if (attrs) {
-                            let keys = Object.keys(attrs);
+                            var keys = Object.keys(attrs);
                             for (var i = 0; i < keys.length; i++) {
                                 if(this.has(keys[i]) && options && options.preserve){
                                     delete attrs[keys[i]];
@@ -58,7 +58,7 @@ define([
         },
 
         resetToDefault: function() {
-            let id = this.id;
+            var id = this.id;
             this.clear();
             this.set(this.default,{silent: true});
             this.set({id:id},{silent: true});

@@ -23,11 +23,9 @@ define([
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
         },
-        id: 'controls',
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            this.$el.appendTo('map');
             if(webgnome.hasModel() && this.modelMode !== 'adios'){
                 this.modelListeners();
             }

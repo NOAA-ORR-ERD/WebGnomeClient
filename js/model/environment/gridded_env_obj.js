@@ -259,7 +259,7 @@ define([
         update: function(step) {
             // returns interpolated direction and magnitude in time
             if(this.get('_appearance') && this.get('_appearance').get('on') && this._vectors.length > 0){
-                let timestamp = step.get('SpillJsonOutput').time_stamp;
+                var timestamp = step.get('SpillJsonOutput').time_stamp;
                 var mag_data = this.mag_data;
                 var dir_data = this.dir_data;
                 this.interpVecsToTime(timestamp, mag_data, dir_data);
