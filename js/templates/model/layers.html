@@ -110,7 +110,7 @@
                             <td>None</td>
                         </tfoot>
                         {% } %}
-                        {% if(env_objs.length === 0){ %}
+                        {% if(env_objs.length === 0 && currents.length === 0){ %}
                             No environment data available for visualization
                         {% } %}
                         <tbody>
@@ -125,6 +125,20 @@
                                     {% } %}
                                     <td><button type="button" class="btn btn-sm btn-link env-edit-btn" id="attr-{{ env_objs[i].get('id') }}"><span></span></button></td>
                                     <td class='env-name' id="name-{{ env_objs[i].get('id') }}">{{ env_objs[i].get('name') }}</td>
+                                </tr>
+                                {% } %}
+                            {% } %}
+                            {% if(currents.length !== 0){ %}
+                                {% for ( var i = 0; i < currents.length; i++){ %}
+                                <tr name="{{ currents[i].get('name') }}">
+                                    <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" type="checkbox"></td>
+                                    {% if (currents[i].get('obj_type') === "gnome.movers.current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.current_movers.GridCurrentMover") {%}
+                                        <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" type="checkbox"></td>
+                                    {% } else { %}
+                                        <td></td>
+                                    {% } %}
+                                    <td><button type="button" class="btn btn-sm btn-link curr-edit-btn" id="attr-{{ currents[i].get('id') }}"><span></span></button></td>
+                                    <td class='curr-name' id="name-{{ currents[i].get('id') }}">{{ currents[i].get('name') }}</td>
                                 </tr>
                                 {% } %}
                             {% } %}

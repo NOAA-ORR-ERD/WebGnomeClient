@@ -500,9 +500,7 @@ define([
         drawStep: function(step){
             if(!step){ return; }
             this.renderSpill(step);
-            this.renderEnvVector(step);
-            this.renderCurrent(step);
-            this.renderIce(step);
+            this.renderVisLayers(step);
 
             var time = moment(step.get('SpillJsonOutput').time_stamp.replace('T', ' ')).format('MM/DD/YYYY HH:mm');
 
@@ -578,17 +576,13 @@ define([
             }
         },
 
-        renderEnvVector: function(step){
-            var envs = webgnome.model.get('environment');
-            for(var i = 0; i < envs.length; i++){
-                var env = envs.models[i];
-                if(env.get('_appearance') && env.get('_appearance').get('on')){
-                    if (env.get('_appearance').get('on') && !this.viewer.scene.primitives.contains(env._vectors)) {
-                        env.get('_appearance').set('on', false);
-                        return;
-                    }
-                    env.update(step);
-                }
+        renderVisLayers: function(step){
+            // select only layers prepended with 'uv-' and appearance is on
+            var lays = this.layersPanel.layers.filter(function(l) {
+                return l.id.includes('uv-') && l.appearance.get('on');
+            });
+            for(var i = 0; i < lays.length; i++){
+                    lays[i].model.update(step);
             }
         },
 

@@ -20,6 +20,9 @@ define([
             'click .env-grid input': 'toggleGridLayers',
             'click .env-uv input': 'toggleDataLayers',
             'click .env-edit-btn': 'openInspectModal',
+            'click .curr-grid input': 'toggleGridLayers',
+            'click .curr-uv input': 'toggleDataLayers',
+            'click .curr-edit-btn': 'openInspectModal',
             'click .current-grid input': 'toggleGrid',
             'click .current-uv input': 'toggleUV',
             'click .ice-uv input': 'toggleUV',
@@ -150,7 +153,7 @@ define([
                     type: 'cesium',
                     parentEl: 'primitive',
                     model: env_objs[i],
-                    id: env_objs[i].id,
+                    id: 'uv-' + env_objs[i].id,
                     visObj: env_objs[i]._vectors,
                     appearance: env_objs[i].get('_appearance')
                 });
@@ -159,9 +162,38 @@ define([
                         type: 'cesium',
                         parentEl: 'primitive',
                         model: env_objs[i].get('grid'),
-                        id: env_objs[i].get('grid').get('id'),
+                        id: 'grid-' + env_objs[i].get('grid').get('id'),
                         visObj: env_objs[i].get('grid')._linesPrimitive,
                         appearance: env_objs[i].get('grid').get('_appearance')
+                    });
+                }
+            }
+
+            //legacy grid object layers
+            var currents = webgnome.model.get('movers').filter(function(mover){
+                return [
+                    'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.GridCurrentMover',
+                ].indexOf(mover.get('obj_type')) !== -1;
+            });
+            for (i = 0; i < currents.length; i++) {
+                this.layers.add({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: currents[i],
+                    id: 'uv-' + currents[i].id,
+                    visObj: currents[i]._vectors,
+                    appearance: currents[i].get('_appearance').findWhere({id: 'uv-' + currents[i].id})
+                });
+                if (currents[i].get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                    currents[i].get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
+                    this.layers.add({
+                        type: 'cesium',
+                        parentEl: 'primitive',
+                        model: currents[i],
+                        id: 'grid-' + currents[i].get('id'),
+                        visObj: currents[i]._linesPrimitive,
+                        appearance: currents[i].get('_appearance').findWhere({id: 'grid-' + currents[i].id})
                     });
                 }
             }
@@ -264,18 +296,21 @@ define([
                 $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('on');
                 $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('on');
             }
+            var lay_id;
             var grid_checkboxes = $('.grid:input', this.el);
             var l;
             for ( k = 0; k < grid_checkboxes.length; k++) {
-                l = this.layers.findWhere({id: grid_checkboxes[k].classList[0].replace('grid-','')});
+                lay_id = grid_checkboxes[k].classList[0]
+                l = this.layers.findWhere({id: lay_id});
                 if (l && l.appearance.get('on')) {
                     grid_checkboxes[k].click();
-                    l.model.renderLines(3000);
+                    //l.model.renderLines(3000);
                 }
             }
             var env_checkboxes = $('.uv:input', this.el);
             for (k = 0; k < env_checkboxes.length; k++) {
-                l = this.layers.findWhere({id: env_checkboxes[k].id.replace('uv-','')});
+                lay_id = env_checkboxes[k].id
+                l = this.layers.findWhere({id: lay_id});
                 if (l && l.appearance.get('on')) {
                     env_checkboxes[k].click();
                 }
@@ -393,12 +428,13 @@ define([
         toggleGridLayers: function(e) {
             var grid_id, i;
             if (e.currentTarget.id === 'none-grid') {
-                var grids = this.$('.env-grid input:checked');
+                var grids = this.$('.env-grid,.curr-grid input:checked');
                 for(i = 0; i < grids.length; i++) {
                     if(grids[i].id !== 'none-grid' && grids[i].checked){
                         grids[i].checked = false;
-                        grid_id = grids[i].classList[0].replace('grid-', '');
-                        this.layers.findWhere({id: grid_id}).appearance.set('on', false);
+                        grid_id = grids[i].classList[0];
+                        var lay = this.layers.findWhere({id: grid_id})
+                        lay.appearance.set('on', false);
                     }
                 }
                 if(!e.currentTarget.checked) {
@@ -406,10 +442,10 @@ define([
                 }
             } else {
                 var grid_checkboxes;
-                grid_id = e.currentTarget.classList[0].replace('grid-', '');
+                grid_id = e.currentTarget.classList[0];
                 var grid_layer = this.layers.findWhere({id: grid_id});
                 if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-grid input:checked').length === 0) {
+                    if (this.$('.env-grid,.curr-grid input:checked').length === 0) {
                         this.$('.env-grid #none-grid').prop('checked', true);
                     }
                     // Because grids can be shared, we must turn off all checkboxes that match this grid
@@ -431,14 +467,16 @@ define([
         },
 
         toggleDataLayers: function(e) {
-            var env_id;
+            var envs = this.$('.env-uv,.curr-uv input:checked');
+            var env_id, lay;
+
             if (e.currentTarget.id === 'none-uv') {
-                var envs = this.$('.env-uv input:checked');
                 for (var i = 0; i < envs.length; i++) {
                     if (envs[i].id !== 'none-uv' && envs[i].checked) {
+                        env_id = envs[i].id;
+                        lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
-                        env_id = envs[i].id.replace('uv-', '');
-                        this.layers.findWhere({id: env_id}).appearance.set('on', false);
+                        lay.appearance.set('on', false);
                         
                     }
                 }
@@ -446,17 +484,17 @@ define([
                     e.preventDefault();
                 }
             } else {
-                env_id = e.currentTarget.id.replace('uv-', '');
-                var env_layer = this.layers.findWhere({id: env_id});
+                env_id = e.currentTarget.id;
+                lay = this.layers.findWhere({id: env_id});
                 if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-uv input:checked').length === 0) {
+                    if (this.$('.env-uv,.curr-uv input:checked').length === 0) {
                         this.$('.env-uv #none-uv').prop('checked', true);
                     }
-                    env_layer.appearance.set('on', false);
+                    lay.appearance.set('on', false);
                 } else {
-                    this.$('.env-uv #none-uv').prop('checked', false);
-                    env_layer.appearance.set('on', true);
-                    env_layer.model.genVectors();
+                    this.$('.env-uv, #none-uv').prop('checked', false);
+                    lay.appearance.set('on', true);
+                    lay.model.genVectors();
                 }
             }
         },
