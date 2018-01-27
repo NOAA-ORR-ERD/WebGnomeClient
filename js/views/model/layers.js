@@ -428,7 +428,7 @@ define([
         toggleGridLayers: function(e) {
             var grid_id, i;
             if (e.currentTarget.id === 'none-grid') {
-                var grids = this.$('.env-grid,.curr-grid input:checked');
+                var grids = this.$('.env-grid input:checked,.curr-grid input:checked');
                 for(i = 0; i < grids.length; i++) {
                     if(grids[i].id !== 'none-grid' && grids[i].checked){
                         grids[i].checked = false;
@@ -445,7 +445,7 @@ define([
                 grid_id = e.currentTarget.classList[0];
                 var grid_layer = this.layers.findWhere({id: grid_id});
                 if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-grid,.curr-grid input:checked').length === 0) {
+                    if (this.$('.env-grid input:checked,.curr-grid input:checked').length === 0) {
                         this.$('.env-grid #none-grid').prop('checked', true);
                     }
                     // Because grids can be shared, we must turn off all checkboxes that match this grid
@@ -467,7 +467,7 @@ define([
         },
 
         toggleDataLayers: function(e) {
-            var envs = this.$('.env-uv,.curr-uv input:checked');
+            var envs = this.$('.env-uv input:checked,.curr-uv input:checked');
             var env_id, lay;
 
             if (e.currentTarget.id === 'none-uv') {
@@ -487,7 +487,7 @@ define([
                 env_id = e.currentTarget.id;
                 lay = this.layers.findWhere({id: env_id});
                 if (!e.currentTarget.checked) { //unchecking a box
-                    if (this.$('.env-uv,.curr-uv input:checked').length === 0) {
+                    if (this.$('.env-uv input:checked,.curr-uv input:checked').length === 0) {
                         this.$('.env-uv #none-uv').prop('checked', true);
                     }
                     lay.appearance.set('on', false);
