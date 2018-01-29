@@ -11,7 +11,7 @@ define([
     'views/model/response/index',
     'views/default/adios',
     'views/default/roc',
-    'views/model/trajectory',
+    'views/model/trajectory/index',
     'views/model/fate',
     'views/default/overview',
     'views/default/faq',

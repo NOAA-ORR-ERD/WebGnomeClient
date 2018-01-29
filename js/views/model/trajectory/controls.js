@@ -4,7 +4,7 @@ define([
     'backbone',
     'views/base',
     'module',
-    'text!templates/model/controls.html',
+    'text!templates/model/trajectory/controls.html',
     'moment',
     'mousetrap',
 ], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap) {

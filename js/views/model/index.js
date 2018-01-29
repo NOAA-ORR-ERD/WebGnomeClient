@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'model/cache',
-    'views/model/trajectory',
+    'views/model/trajectory/index',
     'views/model/fate',
     'sweetalert'
 ], function($, _, Backbone, Cache, TrajectoryView, FateView, swal){

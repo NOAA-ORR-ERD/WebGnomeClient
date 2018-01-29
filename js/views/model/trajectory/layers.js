@@ -5,10 +5,10 @@ define([
     'cesium',
     'views/base',
     'module',
-    'text!templates/model/layers.html',
+    'text!templates/model/trajectory/layers.html',
     'moment',
     'views/form/inspect',
-    'views/model/layer',
+    'model/layer',
     'model/appearance',
 ], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, moment, InspectForm, LayerModel, Appearance) {
     "use strict";
