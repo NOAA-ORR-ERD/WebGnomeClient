@@ -363,7 +363,8 @@ define([
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
                     visObj: new Cesium.WebMapServiceImageryProvider({
-                        layers: '1',
+                        layers: '0,1',
+                        tilingScheme: new Cesium.WebMercatorTilingScheme(),
                         url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                     })
                 });
