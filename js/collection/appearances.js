@@ -14,9 +14,6 @@ define([
             Backbone.Collection.prototype.initialize.call(this, attrs, options);
             if(options && options.id) {
                 this.id = options.id;
-                this.set('id', options.id);
-            } else {
-                console.error('Cannot create without id');
             }
             this.listenTo(this, 'change', this.save);
         },

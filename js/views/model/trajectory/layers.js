@@ -41,14 +41,19 @@ define([
                 this.modelListeners();
             }
             this.layers = new Backbone.Collection(null,{model: LayerModel});
+            this._rendered = false;
         },
 
         modelListeners: function(){
-            this.listenTo(webgnome.model.get('movers'), 'add remove', this.render);
-            this.listenTo(webgnome.model.get('environment'), 'add remove change', this.render);
-            //this.listenTo(webgnome.model.get('environment'), 'change:name', this.changeName);
-            //this.listenTo(webgnome.model.get('spills'), 'change:name', this.changeName);
-            this.listenTo(webgnome.model.get('spills'), 'add remove change', this.render);
+            this.listenTo(webgnome.model.get('movers'), 'add', this.addLayer);
+            this.listenTo(webgnome.model.get('movers'), 'remove', this.removeLayer);
+            this.listenTo(webgnome.model.get('movers'), 'change', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'add', this.addLayer);
+            this.listenTo(webgnome.model.get('environment'), 'remove', this.removeLayer);
+            this.listenTo(webgnome.model.get('environment'), 'change', this.render);
+            this.listenTo(webgnome.model.get('spills'), 'add', this.addLayer);
+            this.listenTo(webgnome.model.get('spills'), 'remove', this.removeLayer);
+            this.listenTo(webgnome.model.get('spills'), 'change', this.render);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
         },
@@ -122,26 +127,8 @@ define([
             //Runs on first render to add layers for each existing model component.
             this.resetMap();
             var model_spills = webgnome.model.get('spills');
-            this._spill_layers=[];
-            var spillLayer, spillLocLayer;
             for (var i = 0; i < model_spills.length; i++) {
-                spillLayer = new LayerModel({
-                    type: 'cesium',
-                    parentEl: 'primitive',
-                    model: model_spills.models[i],
-                    id: model_spills.models[i].id,
-                    visObj: model_spills.models[i].les,
-                    appearance: model_spills.models[i].get('_appearance').findWhere({id:'les'})
-                });
-                spillLocLayer = new LayerModel({
-                    type: 'cesium',
-                    parentEl: 'entity',
-                    model: model_spills.models[i],
-                    id: model_spills.models[i].id + '_loc',
-                    visObj: model_spills.models[i]._locVis,
-                    appearance: model_spills.models[i].get('_appearance').findWhere({id:'loc'})
-                });
-                this.layers.add([ spillLayer, spillLocLayer]);
+                this.addLayer(model_spills.models[i]);
             }
             var env_objs = webgnome.model.get('environment').filter(function(obj) {
                 var ot = obj.get('obj_type').split('.');
@@ -149,24 +136,7 @@ define([
                 return ot.join('.') === 'gnome.environment.environment_objects';
             });
             for (i = 0; i < env_objs.length; i++) {
-                this.layers.add({
-                    type: 'cesium',
-                    parentEl: 'primitive',
-                    model: env_objs[i],
-                    id: 'uv-' + env_objs[i].id,
-                    visObj: env_objs[i]._vectors,
-                    appearance: env_objs[i].get('_appearance')
-                });
-                if (env_objs[i].has('grid')) {
-                    this.layers.add({
-                        type: 'cesium',
-                        parentEl: 'primitive',
-                        model: env_objs[i].get('grid'),
-                        id: 'grid-' + env_objs[i].get('grid').get('id'),
-                        visObj: env_objs[i].get('grid')._linesPrimitive,
-                        appearance: env_objs[i].get('grid').get('_appearance')
-                    });
-                }
+                this.addLayer(env_objs[i]);
             }
 
             //legacy grid object layers
@@ -177,33 +147,22 @@ define([
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
             for (i = 0; i < currents.length; i++) {
-                this.layers.add({
-                    type: 'cesium',
-                    parentEl: 'primitive',
-                    model: currents[i],
-                    id: 'uv-' + currents[i].id,
-                    visObj: currents[i]._vectors,
-                    appearance: currents[i].get('_appearance').findWhere({id: 'uv-' + currents[i].id})
-                });
-                if (currents[i].get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
-                    currents[i].get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
-                    this.layers.add({
-                        type: 'cesium',
-                        parentEl: 'primitive',
-                        model: currents[i],
-                        id: 'grid-' + currents[i].get('id'),
-                        visObj: currents[i]._linesPrimitive,
-                        appearance: currents[i].get('_appearance').findWhere({id: 'grid-' + currents[i].id})
-                    });
-                }
+                this.addLayer(currents[i]);
             }
         },
 
-        render: function(){
+        render: function(e){
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
 
             // Create map layers
+/*
+            if (e) {
+                if (!this.layers.findWhere({id:e.get('id')})) {
+                    var l = new LayerModel();
+                }
+            }
+*/
             if(this.layers.length === 0) {
                 this.addDefaultLayers();
             }
@@ -314,6 +273,82 @@ define([
                 if (l && l.appearance.get('on')) {
                     env_checkboxes[k].click();
                 }
+            }
+            this._rendered = true;
+        },
+
+        addLayer: function(e) {
+            if (e.collection === webgnome.model.get('movers')) {
+                this.layers.add({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: e,
+                    id: 'uv-' + e.get('id'),
+                    visObj: e._vectors,
+                    appearance: e.get('_appearance').findWhere({id: 'uv'})
+                });
+                if (e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                    e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
+                    this.layers.add({
+                        type: 'cesium',
+                        parentEl: 'primitive',
+                        model: e,
+                        id: 'grid-' + e.get('id'),
+                        visObj: e._linesPrimitive,
+                        appearance: e.get('_appearance').findWhere({id: 'grid'})
+                    });
+                }
+            }
+            if (e.collection === webgnome.model.get('environment')) {
+                this.layers.add({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: e,
+                    id: 'uv-' + e.get('id'),
+                    visObj: e._vectors,
+                    appearance: e.get('_appearance')
+                });
+                if (e.has('grid')) {
+                    this.layers.add({
+                        type: 'cesium',
+                        parentEl: 'primitive',
+                        model: e.get('grid'),
+                        id: 'grid-' + e.get('grid').get('id'),
+                        visObj: e.get('grid')._linesPrimitive,
+                        appearance: e.get('grid').get('_appearance')
+                    });
+                }
+            }
+            if (e.collection === webgnome.model.get('spills')) {
+                var spillLayer = new LayerModel({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: e,
+                    id: e.get('id'),
+                    visObj: e.les,
+                    appearance: e.get('_appearance').findWhere({id:'les'})
+                });
+                var spillLocLayer = new LayerModel({
+                    type: 'cesium',
+                    parentEl: 'entity',
+                    model: e,
+                    id: e.get('id') + '_loc',
+                    visObj: e._locVis,
+                    appearance: e.get('_appearance').findWhere({id:'loc'})
+                });
+                this.layers.add([ spillLayer, spillLocLayer]);
+            }
+            if(this._rendered) {
+                this.render();
+            }
+        },
+
+        removeLayer: function(e) {
+            var lays;
+            lays = this.layers.where({model: e});
+            this.layers.remove(lays);
+            if(this._rendered) {
+                this.render();
             }
         },
 
@@ -501,7 +536,7 @@ define([
 
         openInspectModal: function(e) {
             var obj_id = e.currentTarget.id.replace('attr-', '');
-            var l = this.layers.findWhere({id: obj_id});
+            var l = this.layers.findWhere({id: 'uv-' + obj_id});
             var mod = new InspectForm(null, l);
             mod.render();
         },

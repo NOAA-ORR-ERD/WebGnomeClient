@@ -14,7 +14,7 @@ define([
             {
                 on: false,
                 color: 'MEDIUMPURPLE',
-                id: 'vectors',
+                id: 'uv',
                 alpha: 1,
                 scale: 1,
             },
@@ -36,8 +36,6 @@ define([
                 //this.getVecs(null);
                 //this.getMetadata(null);
             }
-            this.get('_appearance').findWhere({id:'vectors'}).set({id:'uv-' + this.get('id')});
-            this.get('_appearance').findWhere({id:'grid'}).set({id:'grid-' + this.get('id')});
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
             this._linesPrimitive = new Cesium.PrimitiveCollection();
@@ -46,7 +44,7 @@ define([
 
         setupVis: function(attrs) {
             this.genVecImages();
-            this._linesPrimitive.show = this.get('_appearance').findWhere({id: 'grid-' + this.id}).get('on');
+            this._linesPrimitive.show = this.get('_appearance').findWhere({id: 'grid'}).get('on');
         },
 
         genVecImages: function(maxSpeed, numSteps) {
@@ -112,7 +110,7 @@ define([
             //rebuild currently broken
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._vectors.length < 100) {
-                    var appearance = this.get('_appearance').findWhere({id: 'uv-' + this.get('id')})
+                    var appearance = this.get('_appearance').findWhere({id: 'uv'})
                     var addVecsToLayer = _.bind(function(centers) {
                         if(!this._images){
                             this.genVecImages();
@@ -144,7 +142,7 @@ define([
         },
 
         update: function(step) {
-            var appearance = this.get('_appearance').findWhere({id: 'uv-' + this.id});
+            var appearance = this.get('_appearance').findWhere({id: 'uv'});
             if(step.get('CurrentJsonOutput') && appearance.get('on')){
                 var id = this.get('id');
                 var data = step.get('CurrentJsonOutput')[id];
@@ -166,7 +164,7 @@ define([
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
             if(options) {
-                if(options.id === 'uv-' + this.get('id')) {
+                if(options.id === 'uv') {
                     if (options.changedAttributes()){
                         var bbs = this._vectors._billboards;
                         var appearance = options;
@@ -188,7 +186,7 @@ define([
                     }
                 }
                     }
-                } else if (options.id === 'grid-' + this.get('id')) {
+                } else if (options.id === 'grid') {
                     var prims = this._linesPrimitive;
                     var appearance = options;
                     prims.show = appearance.get('on');
@@ -212,7 +210,7 @@ define([
             return new Promise(_.bind(function(resolve, reject) {
                 if(rebuild || this._linesPrimitive.length === 0) {
                     this.getGrid(_.bind(function(data){
-                        var appearance = this.get('_appearance').findWhere({id:'grid-' + this.get('id')});
+                        var appearance = this.get('_appearance').findWhere({id:'grid'});
                         var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
                             Cesium.Color[appearance.get('color')].withAlpha(appearance.get('alpha'))
                         );
