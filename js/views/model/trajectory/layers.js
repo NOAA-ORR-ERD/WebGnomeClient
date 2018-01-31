@@ -259,7 +259,7 @@ define([
             var grid_checkboxes = $('.grid:input', this.el);
             var l;
             for ( k = 0; k < grid_checkboxes.length; k++) {
-                lay_id = grid_checkboxes[k].classList[0]
+                lay_id = grid_checkboxes[k].classList[0];
                 l = this.layers.findWhere({id: lay_id});
                 if (l && l.appearance.get('on')) {
                     grid_checkboxes[k].click();
@@ -268,7 +268,7 @@ define([
             }
             var env_checkboxes = $('.uv:input', this.el);
             for (k = 0; k < env_checkboxes.length; k++) {
-                lay_id = env_checkboxes[k].id
+                lay_id = env_checkboxes[k].id;
                 l = this.layers.findWhere({id: lay_id});
                 if (l && l.appearance.get('on')) {
                     env_checkboxes[k].click();
@@ -375,7 +375,7 @@ define([
                     id: 'imagery-bing',
                     visObj: new Cesium.BingMapsImageryProvider({
                         layers: '1',
-                        url : 'https://dev.virtualearth.net',
+                        url : '//dev.virtualearth.net',
                         key : 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM',
                         mapStyle : Cesium.BingMapsStyle.AERIAL_WITH_LABELS
                     })
@@ -388,7 +388,7 @@ define([
                     id: 'imagery-osm',
                     visObj: new Cesium.createOpenStreetMapImageryProvider({
                         layers: '1',
-                        url : 'https://a.tile.openstreetmap.org/',
+                        url : '//a.tile.openstreetmap.org/',
                     })
                 });
                 this.layers.add(this.layers.sat);
@@ -398,8 +398,9 @@ define([
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
                     visObj: new Cesium.WebMapServiceImageryProvider({
-                        layers: '1',
-                        url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                        layers: '0,1',
+                        tilingScheme: new Cesium.WebMercatorTilingScheme(),
+                        url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
                     })
                 });
                 this.layers.add(this.layers.sat);
@@ -468,7 +469,7 @@ define([
                     if(grids[i].id !== 'none-grid' && grids[i].checked){
                         grids[i].checked = false;
                         grid_id = grids[i].classList[0];
-                        var lay = this.layers.findWhere({id: grid_id})
+                        var lay = this.layers.findWhere({id: grid_id});
                         lay.appearance.set('on', false);
                     }
                 }
