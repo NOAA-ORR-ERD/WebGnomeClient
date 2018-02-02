@@ -355,6 +355,7 @@ define([
                 this.toggleView('trajectory');
             } else if(window.location.href.indexOf('fate') !== -1) {
                 this.disableMenuItem('run');
+                this.disableMenuItem('rewind');
             } else {
                 this.enableMenuItem('run');
             }

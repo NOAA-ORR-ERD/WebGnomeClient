@@ -298,7 +298,7 @@ define([
                     appearance: e.get('_appearance').findWhere({id: 'grid'})
                 });
             }
-            if (e.collection === webgnome.model.get('environment')) {
+            if (e.collection === webgnome.model.get('environment') && e.get('obj_type').includes('gnome.environment.environment_objects')) {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',
