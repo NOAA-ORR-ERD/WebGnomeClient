@@ -278,7 +278,9 @@ define([
         },
 
         addLayer: function(e) {
-            if (e.collection === webgnome.model.get('movers')) {
+            if (e.collection === webgnome.model.get('movers') &&
+                e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',
@@ -287,17 +289,14 @@ define([
                     visObj: e._vectors,
                     appearance: e.get('_appearance').findWhere({id: 'uv'})
                 });
-                if (e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
-                    e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
-                    this.layers.add({
-                        type: 'cesium',
-                        parentEl: 'primitive',
-                        model: e,
-                        id: 'grid-' + e.get('id'),
-                        visObj: e._linesPrimitive,
-                        appearance: e.get('_appearance').findWhere({id: 'grid'})
-                    });
-                }
+                this.layers.add({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: e,
+                    id: 'grid-' + e.get('id'),
+                    visObj: e._linesPrimitive,
+                    appearance: e.get('_appearance').findWhere({id: 'grid'})
+                });
             }
             if (e.collection === webgnome.model.get('environment')) {
                 this.layers.add({
@@ -359,6 +358,14 @@ define([
             this.trigger('add', this._map_layer);
             for(var i = 0; i < this._spill_layers.length; i++) {
                 this.trigger('add', this._spill_layers[0]);
+            }
+        },
+
+        resetSpills: function() {
+            var spills = webgnome.model.get('spills');
+            for (var i = 0; i < spills.length; i++) {
+                var l = this.layers.findWhere({id:spills.models[i].get('id')});
+                l.model.resetLEs();
             }
         },
 

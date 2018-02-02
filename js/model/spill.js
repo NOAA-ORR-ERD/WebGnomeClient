@@ -93,7 +93,13 @@ define([
                 show: this.get('_appearance').findWhere({id:'loc'}).get('on'),
             });
         },
-        
+
+        resetLEs: function() {
+            this.les.removeAll();
+            this._uncertain = [];
+            this._certain = [];
+        },
+
         calculate: function(){
             this.calculateSI();
             this.calculatePerLEMass();

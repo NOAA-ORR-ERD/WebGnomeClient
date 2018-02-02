@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'model/movers/base',
-    'model/environment/tide'
-], function(_, Backbone, BaseMover, GnomeTide){
+    'model/environment/tide',
+    'cesium'
+], function(_, Backbone, BaseMover, GnomeTide, Cesium){
     'use strict';
     var catsMover = BaseMover.extend({
         urlRoot: '/mover/',
@@ -116,7 +117,7 @@ define([
             //rebuild currently broken
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._vectors.length < 100) {
-                    var appearance = this.get('_appearance').findWhere({id: 'uv'})
+                    var appearance = this.get('_appearance').findWhere({id: 'uv'});
                     var addVecsToLayer = _.bind(function(centers) {
                         if(!this._images){
                             this.genVecImages();
@@ -169,18 +170,19 @@ define([
         updateVis: function(options) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
+            var appearance;
             if(options) {
                 if(options.id === 'uv') {
                     if (options.changedAttributes()){
                         var bbs = this._vectors._billboards;
-                        var appearance = options;
+                        appearance = options;
                         if (appearance.changedAttributes()){
                             var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
-                            if (appearance.changedAttributes().on == true) {
+                            if (appearance.changedAttributes().on === true) {
                                 current_outputter.get('current_movers').add(this);
                                 current_outputter.save();
                             }
-                            if (appearance.changedAttributes().on == false) {
+                            if (appearance.changedAttributes().on === false) {
                                 current_outputter.get('current_movers').remove(this);
                                 current_outputter.save();
                             }
@@ -194,7 +196,7 @@ define([
                     }
                 } else if (options.id === 'grid') {
                     var prims = this._linesPrimitive;
-                    var appearance = options;
+                    appearance = options;
                     prims.show = appearance.get('on');
                     var changed = appearance.changedAttributes();
                     if (changed && changed.color){

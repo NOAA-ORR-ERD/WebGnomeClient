@@ -457,9 +457,13 @@ define([
         },
 
         rewind: function(){
-            if (!_.isUndefined(this.les)) {
-                this.les.removeAll();
-                delete this.les;
+            if (this.state !== 'stopped'){
+                this.stop();
+            }
+            this.frame = 0;
+            clearTimeout(this.rframe);
+            if(this.layersPanel) {
+                this.layersPanel.resetSpills();
             }
         },
 
