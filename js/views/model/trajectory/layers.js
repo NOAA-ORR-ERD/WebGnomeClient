@@ -105,6 +105,9 @@ define([
         },
 
         setupLayersTooltips: function() {
+            this.$('.spill-vis-hdr').tooltip(this.createTooltipObject("Show Oil"));
+            this.$('.spill-loc-hdr').tooltip(this.createTooltipObject("Show Location"));
+            this.$('.spill-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
             this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Grid"));
             this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
             this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
