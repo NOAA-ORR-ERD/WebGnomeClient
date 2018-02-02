@@ -361,6 +361,14 @@ define([
             }
         },
 
+        resetSpills: function() {
+            var spills = webgnome.model.get('spills');
+            for (var i = 0; i < spills.length; i++) {
+                var l = this.layers.findWhere({id:spills.models[i].get('id')});
+                l.model.resetLEs();
+            }
+        },
+
         toggleImageryLayers: function(e) {
             var name = e.target.id.replace('imagery-', '');
             if(this.layers.sat) {
