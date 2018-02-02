@@ -272,6 +272,20 @@ define([
                         this.$('#nws #lon').val(lon);
                     }
                     this.renderSpills();
+                    this.$('#nws input[name="lat"]').tooltip({
+                        trigger: 'focus',
+                        html: true,
+                        width: 200,
+                        placement: 'top',
+                        viewport: 'body'
+                    });
+                    this.$('#nws input[name="lon"]').tooltip({
+                        trigger: 'focus',
+                        html: true,
+                        width: 200,
+                        placement: 'top',
+                        viewport: 'body'
+                    });
                 }
             }
             this.update();
@@ -279,6 +293,10 @@ define([
             this.populateDateTime();
         },
 
+        showParsedCoords: function(coords){
+            this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
+            this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
+        },
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
                 if (!_.isUndefined(coordsArray[i]) && coordsArray[i].trim().indexOf(' ') !== -1){
@@ -300,17 +318,18 @@ define([
                 this.$('#nws #lat').val(coords[1]);
                 this.$('#nws #lon').val(coords[0]);
             } else {
-                var pointcoords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
-                pointcoords = this.coordsParse(_.clone(pointcoords));
-                if (_.isNaN(pointcoords[0])){
-                    pointcoords[0] = 0;
+                coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
+                coords = this.coordsParse(_.clone(coords));
+                if (_.isNaN(coords[0])){
+                    coords[0] = 0;
                 }
-                if (_.isNaN(pointcoords[1])) {
-                    pointcoords[1] = 0;
+                if (_.isNaN(coords[1])) {
+                    coords[1] = 0;
                 }
-                coordinate = new ol.geom.Point(pointcoords);
-                coords = new ol.proj.transform(pointcoords, 'EPSG:4326', 'EPSG:3857');
-                feature = new ol.Feature(new ol.geom.Point(coords));
+                coordinate = new ol.geom.Point(coords);
+                var proj_coords = new ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                feature = new ol.Feature(new ol.geom.Point(proj_coords));
+                this.showParsedCoords(coords);
             }
 
             this.clearError();
@@ -355,9 +374,9 @@ define([
 
         nwsSubmit: function(e) {
             e.preventDefault();
-            var coords = {};
-            coords.lat = parseFloat(this.$('#nws #lat').val());
-            coords.lon = parseFloat(this.$('#nws #lon').val());
+            // var coords = {};
+            // coords.lat = parseFloat(this.$('#nws #lat').val());
+            // coords.lon = parseFloat(this.$('#nws #lon').val());
             this.updateNWSMap(e);
         },
 
