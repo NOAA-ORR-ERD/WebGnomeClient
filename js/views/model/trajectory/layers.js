@@ -278,7 +278,9 @@ define([
         },
 
         addLayer: function(e) {
-            if (e.collection === webgnome.model.get('movers')) {
+            if (e.collection === webgnome.model.get('movers') &&
+                e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
                     parentEl: 'primitive',
@@ -287,17 +289,14 @@ define([
                     visObj: e._vectors,
                     appearance: e.get('_appearance').findWhere({id: 'uv'})
                 });
-                if (e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
-                    e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
-                    this.layers.add({
-                        type: 'cesium',
-                        parentEl: 'primitive',
-                        model: e,
-                        id: 'grid-' + e.get('id'),
-                        visObj: e._linesPrimitive,
-                        appearance: e.get('_appearance').findWhere({id: 'grid'})
-                    });
-                }
+                this.layers.add({
+                    type: 'cesium',
+                    parentEl: 'primitive',
+                    model: e,
+                    id: 'grid-' + e.get('id'),
+                    visObj: e._linesPrimitive,
+                    appearance: e.get('_appearance').findWhere({id: 'grid'})
+                });
             }
             if (e.collection === webgnome.model.get('environment')) {
                 this.layers.add({
