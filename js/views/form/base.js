@@ -9,10 +9,10 @@ define([
 ], function(_, $, Backbone, moment, BaseView, AttributesView, AlertDangerTemplate){
     var formView = BaseView.extend({
         events: {
-            'click input': 'selectContents',
-            'change input': 'update',
-            'change select': 'update',
-            'keyup input': 'update'
+            'click input:(.attributes input)': 'selectContents',
+            'change input:not(.attributes input)': 'update',
+            'change select:not(.attributes select)': 'update',
+            'keyup input:not(.attributes select)': 'update'
         },
 
         initialize: function(options){
@@ -20,8 +20,8 @@ define([
         },
 
         update: function(e){
-            var name = $(e.target).attr('name');
-            var value = $(e.target).val();
+            var name = this.$(e.currentTarget).attr('name');
+            var value = this.$(e.currentTarget).val();
             if(!name){ return; }
             // if the user is inputting a negative numerical value
             // reset it back to the non-neg version.
@@ -80,7 +80,11 @@ define([
                     }
                 }
             } else if(el.is('select')){
-                el.val(val);
+                if(_.isObject(val)){
+                    el.val(val.id);
+                } else {
+                    el.val(val);
+                }
             }
         },
 
