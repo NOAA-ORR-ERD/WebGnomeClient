@@ -127,18 +127,18 @@ define([
             this.controls.stoprecord.hide();
             this.controls.pause.hide();
 
+            this.contextualize();
+
+            this.setupControlTooltips();
+        },
+
+        contextualize: function(){
             var start_time = moment(webgnome.model.get('start_time')).format('MM/DD/YYYY HH:mm');
             this.controls.seek.slider({
                 create: _.bind(function(){
                     this.$('.ui-slider-handle').html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + start_time + '</div></div>');
                 }, this)
             });
-
-            this.setupControlTooltips();
-            this.contextualize();
-        },
-
-        contextualize: function(){
             this.enableUI();
             // set the slider to the correct number of steps
             this.controls.seek.slider('option', 'max', webgnome.model.get('num_time_steps') - 1);
