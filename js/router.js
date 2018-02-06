@@ -187,6 +187,8 @@ define([
             if (!_.isUndefined(webgnome.router.trajView)) {
                 this.trajView.viewer.destroy();
                 this.trajView.stopListening();
+                this.trajView.controls.stopListening();
+                this.trajView.layersPanel.stopListening();
                 this.trajView.remove();
                 this.trajView = undefined;
             }

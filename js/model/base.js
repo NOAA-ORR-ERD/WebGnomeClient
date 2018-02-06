@@ -20,10 +20,13 @@ define([
                 for (var i = 0; i < this.default_appearances.length; i++) {
                     apps.push(new Appearance(this.default_appearances[i],{default: this.default_appearances[i]}));
                 }
-                this.set('_appearance', new AppearanceCollection(apps, {id:this.id + '_appearances'}));
+                this.set('_appearance', new AppearanceCollection(apps, {id:this.id}));
             } else if(this.default_appearance) {
                 this.set('_appearance', new Appearance({id: this.id},{default: this.default_appearance}));
             }
+            this.listenTo(this, 'change:id', _.bind(function(id) {
+                this.get('_appearance').id = this.id;
+            }, this));
         },
 
         rewindModel: function(){

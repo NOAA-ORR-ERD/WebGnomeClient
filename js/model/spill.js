@@ -93,7 +93,13 @@ define([
                 show: this.get('_appearance').findWhere({id:'loc'}).get('on'),
             });
         },
-        
+
+        resetLEs: function() {
+            this.les.removeAll();
+            this._uncertain = [];
+            this._certain = [];
+        },
+
         calculate: function(){
             this.calculateSI();
             this.calculatePerLEMass();
@@ -151,6 +157,9 @@ define([
             this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this.listenTo(this.get('release'), 'change', _.bind(function(){
+                this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0], this.get('release').get('start_position')[1])
+            },this));
         },
 
         releaseChange: function(release) {
@@ -327,84 +336,93 @@ define([
         },
 
         update: function(step) {
-            //This function needs to be adapted to only store the LEs associated with it's spill number.
-            //Currently it displays all particles in SpillJsonOutput. This is incorrect behavior.
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
-            var appearance = this.get('_appearance').findWhere({id:'les'});
+            var sid = webgnome.model.get('spills').indexOf(this);
 
+            var appearance = this.get('_appearance').findWhere({id:'les'});
+            var le_idx = 0;
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
-                    if(!this._uncertain[f]){
-                        // create a new point
-                        this._uncertain.push(
-                            this.les.add({
-                                position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
-                                color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('uncertain_LE_color')].withAlpha(
-                                    uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                                ),
-                                eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                                image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
-                                show: appearance.get('on'),
-                            })
-                        );
-                    } else {
-                        this._uncertain[f].show = appearance.get('on');
-                        this._uncertain[f].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
-
-                        if(uncertain.status[f] === 3){
-                            this._uncertain[f].image = this._les_beached_image;
+                    if (uncertain.spill_num[f] === sid) {
+                        if(!this._uncertain[le_idx]){
+                            // create a new point
+                            this._uncertain.push(
+                                this.les.add({
+                                    position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
+                                    color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('uncertain_LE_color')].withAlpha(
+                                        uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
+                                    ),
+                                    eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                                    image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
+                                    show: appearance.get('on'),
+                                })
+                            );
                         } else {
-                            this._uncertain[f].image = this._les_point_image;
-                        }
+                            this._uncertain[le_idx].show = appearance.get('on');
+                            this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
 
+                            if(uncertain.status[f] === 3){
+                                this._uncertain[le_idx].image = this._les_beached_image;
+                            } else {
+                                this._uncertain[le_idx].image = this._les_point_image;
+                            }
+
+                            // set the opacity of particle if the mass has changed
+                            if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
+                                this._uncertain[le_idx].color = Cesium.Color.RED.withAlpha(
+                                    uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
+                                );
+                            }
+                        }
+                        le_idx++;
+                    }
+                }
+            }
+            le_idx = 0;
+            for(var f = 0; f < certain.length; f++){
+                if (certain.spill_num[f] === sid) {
+                    if(!this._certain[le_idx]){
+                        // create a new point
+                        this._certain.push(this.les.add({
+                            position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
+                            color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('certain_LE_color')].withAlpha(
+                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
+                            ),
+                            eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                            image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
+                                    show: appearance.get('on'),
+                        }));
+                    } else {
+                        // update the point position and graphical representation
+                        this._certain[le_idx].show = appearance.get('on');
+                        this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
+                        if(certain.status[f] === 3){
+                            this._certain[le_idx].image = this._les_beached_image;
+                        } else {
+                            this._certain[le_idx].image = this._les_point_image;
+                        }
                         // set the opacity of particle if the mass has changed
-                        if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
-                            this._uncertain[f].color = Cesium.Color.RED.withAlpha(
-                                uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
+                        if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
+                            this._certain[le_idx].color = Cesium.Color.BLACK.withAlpha(
+                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                             );
                         }
                     }
+                    le_idx++;
                 }
             }
-            for(var f = 0; f < certain.length; f++){
-                if(!this._certain[f]){
-                    // create a new point
-                    this._certain.push(this.les.add({
-                        position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                        color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('certain_LE_color')].withAlpha(
-                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                        ),
-                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                        image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
-                                show: appearance.get('on'),
-                    }));
-                } else {
-                    // update the point position and graphical representation
-                    this._certain[f].show = appearance.get('on');
-                    this._certain[f].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
-                    if(certain.status[f] === 3){
-                        this._certain[f].image = this._les_beached_image;
-                    } else {
-                        this._certain[f].image = this._les_point_image;
-                    }
-                    // set the opacity of particle if the mass has changed
-                    if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
-                        this._certain[f].color = Cesium.Color.BLACK.withAlpha(
-                            certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                        );
-                    }
-                }
-            }
-            if(this._certain.length > certain.length){
+            var c_len = certain.spill_num.filter(function(sn) { return sn === sid}).length
+            if(this._certain.length > c_len){
                 // we have entites that were created for a future step but the model is now viewing a previous step
                 // hide the leftover particles
                 var l;
-                for(l = certain.length; l < this._certain.length; l++){
+                for(l = c_len; l < this._certain.length; l++){
                     this._certain[l].show = false;
                 }
                 if(uncertain) {
-                    for(l = uncertain.length; l < this._uncertain.length; l++){
+                    var u_len = uncertain.spill_num.filter(function(sn) { sn === sid}).length
+                    for(l = u_len; l < this._uncertain.length; l++){
                         this._uncertain[l].show = false;
                     }
                 }

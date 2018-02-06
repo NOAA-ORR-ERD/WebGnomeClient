@@ -12,7 +12,22 @@ define([
         requested: false,
         geo_json: undefined,
         geographical: false,
-
+        defaults: {
+            obj_type: 'gnome.map.GnomeMap',
+            filename: '',
+            map_bounds: [[
+                [-180,-85.06],
+                [-180,85.06],
+                [180,85.06],
+                [180,-85.06],
+            ]],
+            spillable_area: [[
+                [-180,-85.06],
+                [-180,85.06],
+                [180,85.06],
+                [180,-85.06],
+            ]]
+        },
         default_appearances: [
             {
                 on: true,
@@ -36,15 +51,7 @@ define([
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._mapVis = new Cesium.GeoJsonDataSource({show: this.get('_appearance').findWhere({id: 'map'}).get('on')});
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
-            this._boundsVis = new Cesium.Entity({
-                                polygon: {
-                                    hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(this.get('map_bounds'))),
-                                    material: Cesium.Color.WHITE.withAlpha(0),
-                                    outline: true,
-                                    outlineColor: Cesium.Color.BLUE,
-                                    height: 0,
-                                },
-                            });
+            this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
             
         },
@@ -55,7 +62,8 @@ define([
             this._boundsVis.show = this.get('_appearance').findWhere({id: 'bounds'}).get('on');
             this._mapVis.clampToGround = false;
             this.genMap();
-            this.genSpillable();
+            this.genAux('spillable_area');
+            this.genAux('map_bounds');
         },
 
         getExtent: function(){
@@ -95,18 +103,55 @@ define([
             return boundingPolygon;
         },
 
-        genSpillable: function() {
-            var polygons = this.get('spillable_area');
-            for(var poly in polygons){
-                this._spillableVis.entities.add({
-                    polygon: {
-                        hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
-                        material: Cesium.Color.BLUE.withAlpha(0.25),
-                        outline: true,
-                        outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
-                        height: 0,
+        genAux: function(type) {
+            var polygons = this.get(type);
+            if (!_.isEqual(_.flatten(polygons), _.flatten(this.defaults[type]))) {
+                //polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+                var vis;
+                for(var poly in polygons){
+                    if (type === 'spillable_area') {
+                        vis = this._spillableVis;
+                        vis.entities.add({
+                            polygon: {
+                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                material: Cesium.Color.BLUE.withAlpha(0.25),
+                                outline: true,
+                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                                height: 0,
+                            }
+                        });
+                    } else {
+                        vis = this._boundsVis;
+                        vis.entities.add({
+                            polygon: {
+                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                material: Cesium.Color.WHITE.withAlpha(0),
+                                outline: true,
+                                outlineColor: Cesium.Color.BLUE,
+                                height: 0,
+                            }
+                        });
                     }
-                });
+                }
+            }
+        },
+
+        genBounds: function() {
+            var polygons = this.get('');
+            if (!_.isEqual(polygons[0],this.defaults.spillable_area[0])) {
+                //polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+
+                for(var poly in polygons){
+                    this._spillableVis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.BLUE.withAlpha(0.25),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                            height: 0,
+                        }
+                    });
+                }
             }
         },
 
@@ -139,11 +184,13 @@ define([
             return new Promise(_.bind(function(resolve, reject) {
                 //var color = Cesium.COLOR[this.get('_appearance').findWhere({id:'map'}).get('on')].withAlpha
                 this.getGeoJSON(_.bind(function(geojson) {
-                    this._mapVis.load(geojson, {
-                        strokeWidth: 0,
-                        stroke: Cesium.Color.WHITE.withAlpha(0),
-                        //fill: this.get('_(0.4),
-                    });
+                    if (geojson.features.length > 0) {
+                        this._mapVis.load(geojson, {
+                            strokeWidth: 0,
+                            stroke: Cesium.Color.WHITE.withAlpha(0),
+                            //fill: this.get('_(0.4),
+                        });
+                    }
                     this._mapVis.show = this.get('_appearance').findWhere({id:'map'}).get('on');
                 }, this));
             }, this ));
