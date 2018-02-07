@@ -9,8 +9,8 @@
         <label class="col-sm-5 control-label" for="scale_by">Scale by:</label>
         <div class="col-sm-5">
             <select name="scale_by" id="scale_by" class="form-control">
-                <option value="1">Pattern 1</option>
-                <option value="2">Pattern 2</option>
+                <option value="1">Pattern 1: {{ model.filename1.split('/').pop() }}</option>
+                <option value="2">Pattern 2: {{ model.filename2.split('/').pop() }}</option>
             </select>
         </div>
     </div>
