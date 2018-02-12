@@ -158,7 +158,8 @@ define([
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('release'), 'change', _.bind(function(){
-                this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0], this.get('release').get('start_position')[1])
+                this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0],
+                                                                          this.get('release').get('start_position')[1]);
             },this));
         },
 
@@ -412,7 +413,7 @@ define([
                     le_idx++;
                 }
             }
-            var c_len = certain.spill_num.filter(function(sn) { return sn === sid}).length
+            var c_len = certain.spill_num.filter(function(sn) { return sn === sid; }).length;
             if(this._certain.length > c_len){
                 // we have entites that were created for a future step but the model is now viewing a previous step
                 // hide the leftover particles
@@ -421,7 +422,7 @@ define([
                     this._certain[l].show = false;
                 }
                 if(uncertain) {
-                    var u_len = uncertain.spill_num.filter(function(sn) { sn === sid}).length
+                    var u_len = uncertain.spill_num.filter(function(sn) { return sn === sid; }).length;
                     for(l = u_len; l < this._uncertain.length; l++){
                         this._uncertain[l].show = false;
                     }
