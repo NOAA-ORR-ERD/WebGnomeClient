@@ -40,13 +40,13 @@ define([
             this.$('.step2').hide();
         },
 
-        nextStep: function(){
+        nextStep: function(obj_type){
             this.$('.step1').hide();
             this.$('.step2').show();
-            this.setupUpload();
+            this.setupUpload(obj_type);
         },
 
-        setupUpload: function(){
+        setupUpload: function(obj_type){
             this.$('#upload_form').empty();
             if (webgnome.config.can_persist) {
                 this.$('#upload_form').append(_.template(UploadActivateTemplate));
@@ -62,7 +62,7 @@ define([
                 //acceptedFiles: '.nc, .cur',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code>
             });
-            this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('sending', _.bind(this.sending, {obj_type: obj_type}));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
@@ -75,22 +75,20 @@ define([
         },
 
         grid: function(){
-            this.model = new GridCurrentMover();
-            this.nextStep();
+            this.nextStep(GridCurrentMover.prototype.defaults.obj_type);
         },
 
         cats: function(){
-            this.model = new CatsMover();
-            this.nextStep();
+            this.nextStep(CatsMover.prototype.defaults.obj_type);
         },
 
         py_grid: function(){
-            this.model = new PyCurrentMover();
-            this.nextStep();
+            this.nextStep(PyCurrentMover.prototype.defaults.obj_type);
         },
 
-        sending: function(e, xhr, formData){
+        sending: function(e, xhr, formData, obj_type){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('obj_type', this.obj_type);
             formData.append('persist_upload',
                             $('input#persist_upload')[0].checked);
         },
@@ -124,6 +122,22 @@ define([
         
         loaded: function(file, response){
             var json_response = JSON.parse(response);
+            var mover;
+            if (json_response && json_response.obj_type) {
+                if (json_response.obj_type === GridCurrentMover.prototype.defaults.obj_type) {
+                    mover = new GridCurrentMover(json_response, {parse: true});
+                } else if (json_response.obj_type === CatsMover.prototype.defaults.obj_type) {
+                    mover = new CatsMover(json_response, {parse: true});
+                } else if (json_response.obj_type === PyCurrentMover.prototype.defaults.obj_type) {
+                    mover = new PyCurrentMover(json_response, {parse: true});
+                } else {
+                    console.error('Mover type not recognized: ', json_response.obj_type);
+                }
+                this.trigger('save', mover);
+            } else {
+                console.error('No response to file upload');
+            }
+            this.hide();/*
             this.model.set('filename', json_response.filename);
             this.model.set('name', json_response.name);
 
@@ -147,7 +161,7 @@ define([
                     this.error(e.responseText);
                     this.reset(file, true);
                 }, this)
-            });
+            });*/
         },
 
         activateFile: function(filePath) {
