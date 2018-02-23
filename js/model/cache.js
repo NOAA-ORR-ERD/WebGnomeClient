@@ -155,6 +155,7 @@ define([
                 // this is this.socket.connected in socket.io v1.0+
                 if(!this.socket){
                     this.socketConnect();
+                    this.streaming = true;
                 }
                 var step = new AsyncStepModel();
                 step.fetch({

@@ -43,7 +43,7 @@ define([
         state: 'loading',
         frame: 0,
         contracted: false,
-        fps: 30,
+        fps: 15,
         rframe: 0,
 
         initialize: function(options){
@@ -201,6 +201,7 @@ define([
 
         show: function() {
             this.$el.show();
+            this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
                 this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
@@ -295,6 +296,7 @@ define([
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
+            //this.listenTo(webgnome.cache, 'step:done', this.stop);
 
             if(localStorage.getItem('autorun') === 'true'){
                 localStorage.setItem('autorun', '');
@@ -341,9 +343,9 @@ define([
                 this.state = 'next';
                 this.frame = s.step;
             }
-            this.loop();
+            this.run();
         },
-
+        /*
         loop: function(){
             if(this.state === 'playing' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
                this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
@@ -351,16 +353,16 @@ define([
                     // the cache has the step, just render it
                         this.rframe = setTimeout(
                             _.bind(this.renderStep, this),
-                            1000/this.fps,
+                            1000/this.getDefaultFPS(),
                             {step:this.controls.getSliderValue()}
                         );
                 } else  {
-                    this.controls.updateProgress();
+                        ;
                     if(webgnome.cache.isHalted){
                         webgnome.cache.resume();
                     }
                     if (webgnome.cache.length === this.controls.getSliderValue()) {
-                        this.listenTo(webgnome.cache, 'step:received', this.renderStep);
+                        this.listenToOnce(webgnome.cache, 'step:received', this.renderStep);
                         //webgnome.cache.on('step:received', this.renderStep, this);
                     }
                     if (!webgnome.cache.streaming) {
@@ -368,7 +370,7 @@ define([
                     } else {
                         this.rframe = setTimeout(
                             _.bind(this.renderStep, this),
-                            1000/this.fps,
+                            1000/this.getDefaultFPS(),
                             {step:this.controls.getSliderValue()}
                         );
                     }
@@ -378,9 +380,13 @@ define([
                 }
             } else {
                 this.pause();
+                    if (webgnome.cache.length === this.controls.getSliderValue()) {
+                        this.listenToOnce(webgnome.cache, 'step:received', this.renderStep);
+                        //webgnome.cache.on('step:received', this.renderStep, this);
+                    }
             }
         },
-
+*/
         getCaptureOpts: function() {
             var paramObj = {format: 'gif',
                             framerate:6,
@@ -398,6 +404,33 @@ define([
             return paramObj;
         },
 
+        getDefaultFPS: function() {
+            //minimum of 5 and a maximum of 45. pick a framerate that allows a run to play over 10 seconds, bounded by min and max
+            var totFrames = webgnome.model.get('num_time_steps');
+            var rate = Math.round(totFrames / 10);
+            rate = Math.max(5, Math.min(rate, 45));
+            return rate;
+        },
+
+        run: function() {
+            //meant to be called at the desired fps.
+            if (webgnome.cache.length > this.controls.getSliderValue() && webgnome.cache.length !== 0){
+                // the cache has the step, just render it
+                    this.renderStep({step:this.controls.getSliderValue()});
+            } else  {
+                if(webgnome.cache.isHalted){
+                    webgnome.cache.resume();
+                } else if (!webgnome.cache.streaming) {
+                    webgnome.cache.getSteps();
+                } else {
+                    this.renderStep({step:this.controls.getSliderValue() -1});
+                }
+            }
+            if(this.state === 'next' || this.frame === webgnome.model.get('num_time_steps') - 1){
+                this.pause();
+            }
+        },
+
         record: function() {
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
@@ -411,7 +444,7 @@ define([
                 this.capturer.start();
                 this.capturer.skipped = 0;
                 //this.recorder.resume();
-                this.loop();
+                this.rframe = setInterval(_.bind(this.run,this), 1000/this.getDefaultFPS());
             }
         },
 
@@ -427,22 +460,19 @@ define([
             }
         },
 
-        play: function(){
+        play: function(e){
             if($('.modal:visible').length === 0){
-                if (webgnome.cache.length === this.controls.controls.seek.slider('value') || !webgnome.cache.isAsync) {
-                    this.listenTo(webgnome.cache, 'step:received', this.renderStep);
-                    //webgnome.cache.on('step:received', this.renderStep, this);
-                }
                 this.state = 'playing';
-                this.loop();
+                this.rframe = setInterval(_.bind(this.run,this), 1000/this.getDefaultFPS());
             }
         },
 
-        pause: function(){
+        pause: function(e){
             if($('.modal:visible').length === 0){
-                this.stopListening(webgnome.cache, 'step:received', this.renderStep);
+                //this.stopListening(webgnome.cache, 'step:received', this.renderStep);
                 //webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'paused';
+                clearInterval(this.rframe);
             }
         },
 
@@ -457,22 +487,22 @@ define([
         },
 
         rewind: function(){
+            clearInterval(this.rframe);
             if (this.state !== 'stopped'){
                 this.stop();
             }
             this.frame = 0;
-            clearTimeout(this.rframe);
             if(this.layersPanel) {
                 this.layersPanel.resetSpills();
             }
         },
 
         rewindClick: function(e){
+            clearInterval(this.rframe);
             if (this.state !== 'stopped'){
                 this.stop();
             }
             this.frame = 0;
-            clearTimeout(this.rframe);
             setTimeout(_.bind(function(){
                 webgnome.cache.rewind();
             }, this), 20);
@@ -484,14 +514,15 @@ define([
             }
         },
 
-        renderStep: _.debounce(function(source){
+        renderStep: _.throttle(function(source){
             var step;
             if(_.has(source, 'step')){
                 step = webgnome.cache.inline[source.step];
                 this.drawStep(step);
                 //this.drawStep(step);
                 webgnome.cache.at(source.step, _.bind(function(err, step){
-                    if(!err){
+                    if(err){
+                        console.error(err)
                     }
                 }, this));
 
@@ -499,7 +530,7 @@ define([
                 step = source;
                 this.drawStep(step);
             }
-        },16),
+        },16,{trailing: false}),
 
         drawStep: function(step){
             if(!step){ return; }
@@ -519,8 +550,8 @@ define([
             this.$('.tooltip-inner').text(time);
             //this.viewer.scene.render();
 
-            this.renderSlider();
             if(this.is_recording){
+                this.recordScene();
                 if(this.capturer.skipped < this.capture_opts.skip) {
                     this.capturer.skipped++;
                 } else {
@@ -530,19 +561,24 @@ define([
             }
         },
 
-        renderSlider: function() {
+        recordScene: function() {
             var ctrls = $('.seek');
+            var graticule = $('.graticule-label');
             //$('.buttons', ctrls).hide();
             //$('.gnome-help', ctrls).hide();
             var ctx = this.meta_canvas_ctx;
             var cesiumCanvas = this.viewer.canvas;
 
             if(this.is_recording) {
-                html2canvas(ctrls, {
-                    //height:550,
-                    onrendered: function(canvas) {
+                html2canvas(ctrls, {})
+                    .then(function(canvas) {
                         ctx.drawImage(cesiumCanvas,0,0);
                         ctx.drawImage(canvas,65,0);
+                    });
+                html2canvas(graticule, {
+                    onrendered: function(canvas) {
+                        ctx.drawImage(cesiumCanvas,0,0);
+                        ctx.drawImage(canvas,0,0);
                     }
                 });
             }
