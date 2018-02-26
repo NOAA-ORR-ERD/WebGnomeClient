@@ -37,6 +37,13 @@ define([
                 value = parseFloat(value);
             }
 
+            var type = $(e.target).data('type');
+            if(type){
+                if(type === 'array'){
+                    value = value.split(','); 
+                }
+            }
+
             name = name.split(':');
             if(name.length === 1){
                 this.model.set(name[0], value);
