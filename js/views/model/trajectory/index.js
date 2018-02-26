@@ -575,12 +575,6 @@ define([
                         ctx.drawImage(cesiumCanvas,0,0);
                         ctx.drawImage(canvas,65,0);
                     });
-                html2canvas(graticule, {
-                    onrendered: function(canvas) {
-                        ctx.drawImage(cesiumCanvas,0,0);
-                        ctx.drawImage(canvas,0,0);
-                    }
-                });
             }
         },
 
