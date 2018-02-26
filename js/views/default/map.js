@@ -42,7 +42,7 @@ define([
 
         initialize: function(options){
             this.defaults();
-            if (options.trajectory) {
+            if (options && _.has(options, 'trajectory')) {
                     this.trajectory = options.trajectory;
                     this.layers = [
                         new ol.layer.Image({
