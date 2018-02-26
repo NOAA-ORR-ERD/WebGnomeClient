@@ -30,7 +30,7 @@ define([
             });
 
             FormModal.prototype.render.call(this, options);
-        },
+        }
 
     });
     
