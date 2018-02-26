@@ -33,7 +33,8 @@ define([
             'click input': 'selectContents',
             'click .modal-header .gnome-help': 'showHelp',
             'change input:not(.attributes input)': 'update',
-            'change select:not(.attributes select)': 'update'
+            'change select:not(.attributes select)': 'update',
+            'click .pick-coords': 'pickCoords'
         },
 
         initialize: function(options){
