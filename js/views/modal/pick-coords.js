@@ -66,6 +66,7 @@ define([
                 var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(8);
 
                 this.target.val(long + ', ' + lat + ',0');
+                this.target.trigger('change');
                 this.hide();
             }
         },
