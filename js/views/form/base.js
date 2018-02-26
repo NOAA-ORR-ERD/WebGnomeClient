@@ -95,6 +95,8 @@ define([
             } else if(el.is('select')){
                 if(_.isObject(val)){
                     el.val(val.id);
+                } else if(_.isBoolean(val)) {
+                    el.val(val.toString());
                 } else {
                     el.val(val);
                 }
