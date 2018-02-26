@@ -570,11 +570,11 @@ define([
             var cesiumCanvas = this.viewer.canvas;
 
             if(this.is_recording) {
-                html2canvas(ctrls, {})
-                    .then(function(canvas) {
+                html2canvas(ctrls, {
+                    onrendered: function(canvas) {
                         ctx.drawImage(cesiumCanvas,0,0);
                         ctx.drawImage(canvas,65,0);
-                    });
+                    }});
             }
         },
 
