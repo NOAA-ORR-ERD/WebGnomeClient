@@ -36,6 +36,7 @@ define([
         events: {
             'click .view-gnome-mode': 'viewGnomeMode',
             'click .view-weathering': 'viewWeathering',
+            'click .gnome-help': 'renderHelp',
         },
         id: 'map',
         spillToggle: false,
@@ -295,6 +296,7 @@ define([
 
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
+            this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe)}, this));
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
             //this.listenTo(webgnome.cache, 'step:done', this.stop);
 
