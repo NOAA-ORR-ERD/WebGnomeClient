@@ -17,7 +17,13 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-5 control-label" for="Scale">Scale Value:</label>
+        <label class="col-sm-5 control-label" for="Scale">
+            {% if(model.tide){ %}
+                File value to scale to:
+            {% } else { %}
+                M/s to scale to:
+            {%  } %}
+        </label>
         <div class="col-sm-5">
             <input type="text" id="Scale" class="form-control" name="scale_value">
         </div>
@@ -32,5 +38,4 @@
             </div>
         </div>
     </div> 
-  
 </form>
