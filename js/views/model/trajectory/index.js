@@ -5,6 +5,7 @@ define([
     'views/base',
     'module',
     'moment',
+    'toastr',
     'text!templates/model/trajectory/controls.html',
     'views/default/map',
     'cesium',
@@ -21,7 +22,7 @@ define([
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -59,6 +60,10 @@ define([
             this.$el.appendTo('body');
             this.state = 'stopped';
             this.render();
+        },
+
+        toastTips: function() {
+            toastr.info("Right-click + drag to zoom");
         },
 
         render: function(){
@@ -304,6 +309,7 @@ define([
                 localStorage.setItem('autorun', '');
                 this.play();
             }
+            this.toastTips();
 
             var entity = this.viewer.entities.add({
                 label : {

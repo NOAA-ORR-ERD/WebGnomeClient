@@ -32,10 +32,10 @@ define([
             toastr.options.closeButton = true;
             toastr.options.newestOnTop = false;
             toastr.options.positionClass = 'toast-bottom-left';
-            toastr.options.timeOut = 0;
+            toastr.options.timeOut = 10000;
             toastr.options.showDuration = 0;
             toastr.options.hideDuration = 0;
-            toastr.options.extendedTimeOut = 0;
+            toastr.options.extendedTimeOut = 2000;
 
             this.listenTo(webgnome.model, 'sync', this.clearToasts);
         },
