@@ -384,12 +384,15 @@ define([
             this.nws = new NwsWind(coords);
         },
 
-        setupUpload: function(){
+        setupUpload: function(obj_type){
             this.$('#upload_form').empty();
             if (webgnome.config.can_persist) {
                 this.$('#upload_form').append(_.template(UploadActivateTemplate));
             } else {
                 this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+            if (!obj_type) {
+                obj_type = WindMoverModel.prototype.defaults.obj_type;
             }
 
             this.dropzone = new Dropzone('.dropzone', {
@@ -400,7 +403,7 @@ define([
                 //acceptedFiles: '.osm, .wnd, .txt, .dat',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
-            this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('sending', _.bind(this.sending,  {obj_type: obj_type}));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
@@ -412,8 +415,9 @@ define([
             }
         },
 
-        sending: function(e, xhr, formData){
+        sending: function(e, xhr, formData, obj_type){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('obj_type', this.obj_type);
             formData.append('persist_upload',
                             $('input#persist_upload')[0].checked);
         },
@@ -434,17 +438,17 @@ define([
 
         loaded: function(e, response){
             var json_response = JSON.parse(response);
-            this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.name);
-            this.model.save(null, {
-                success: _.bind(function(){
-                    this.trigger('save', this.model);
-                    this.hide();
-                }, this),
-                error: _.bind(function(){
-                    this.error('An error occured while creating this object.');
-                })
-            });
+            var mover;
+            if (json_response && json_response.obj_type) {
+                if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
+                    mover = new WindMoverModel(json_response, {parse: true});
+                    //this.model = json_response['wind'];
+                }
+                this.trigger('save', mover);
+            } else {
+                console.error('No response to file upload');
+            }
+            this.hide();
         },
 
         activateFile: function(filePath) {

@@ -36,6 +36,7 @@ define([
         events: {
             'click .view-gnome-mode': 'viewGnomeMode',
             'click .view-weathering': 'viewWeathering',
+            'click .gnome-help': 'renderHelp',
         },
         id: 'map',
         spillToggle: false,
@@ -295,6 +296,7 @@ define([
 
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
+            this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe)}, this));
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
             //this.listenTo(webgnome.cache, 'step:done', this.stop);
 
@@ -570,17 +572,11 @@ define([
             var cesiumCanvas = this.viewer.canvas;
 
             if(this.is_recording) {
-                html2canvas(ctrls, {})
-                    .then(function(canvas) {
-                        ctx.drawImage(cesiumCanvas,0,0);
-                        ctx.drawImage(canvas,65,0);
-                    });
-                html2canvas(graticule, {
+                html2canvas(ctrls, {
                     onrendered: function(canvas) {
                         ctx.drawImage(cesiumCanvas,0,0);
-                        ctx.drawImage(canvas,0,0);
-                    }
-                });
+                        ctx.drawImage(canvas,65,0);
+                    }});
             }
         },
 

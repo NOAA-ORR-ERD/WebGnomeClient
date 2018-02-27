@@ -32,14 +32,12 @@ define([
         },
 
         new: function(){
-            var windMover = new WindMoverModel();
-            var wind = new WindModel();
-            windMover.set('wind', wind);
-            var windForm = new WindForm(null, {'superModel': windMover, 'model': windMover.get('wind')});
+            var windForm = new WindForm();
             windForm.on('hidden', windForm.close);
-            windForm.on('save', _.bind(function(){
+            windForm.on('save', _.bind(function(windMover){
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
+                webgnome.model.save(null, {validate: false});
             }, this));
             
             windForm.render();
