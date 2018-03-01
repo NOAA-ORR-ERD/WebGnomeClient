@@ -290,7 +290,7 @@ define([
                 this.trigger('loop', {step: this.getSliderValue()});
             }
             if (this.getSliderValue() === webgnome.model.get('num_time_steps') -1) {
-                this.trigger('pause')
+                this.trigger('pause');
             }
         },
 

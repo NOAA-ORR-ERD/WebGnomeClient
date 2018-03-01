@@ -80,10 +80,12 @@ define([
         },
 
         renderTrajectory: function() {
-            this.controls = new ControlsView();
+            this.overlay = $( "<div class='overlay'></div>")
+            this.controls = new ControlsView({el:this.overlay});
             this.controlsListeners();
 
-            this.controls.$el.appendTo(this.$el);
+            this.overlay.append(this.controls.$el);
+            this.$el.append(this.overlay);
             // add a 250ms timeout to the map render to give js time to add the compiled
             // to the dom before trying to draw the map.
             setTimeout(_.bind(function() {
@@ -265,7 +267,8 @@ define([
                 },
             });
             $('.cesium-widget-credits').hide();
-            this.graticule = new Graticule(true, this.viewer.scene, 10, '.cesium-widget');
+            this.graticuleContainer = $('.overlay');
+            this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
             this.viewer.scene.fxaa = false;
@@ -571,17 +574,17 @@ define([
 
         recordScene: function() {
             var ctrls = $('.seek');
-            var graticule = $('.graticule-label');
+            var graticule = this.graticuleContainer;
             //$('.buttons', ctrls).hide();
             //$('.gnome-help', ctrls).hide();
             var ctx = this.meta_canvas_ctx;
             var cesiumCanvas = this.viewer.canvas;
 
             if(this.is_recording) {
-                html2canvas(ctrls, {
+                html2canvas(graticule, {
                     onrendered: function(canvas) {
                         ctx.drawImage(cesiumCanvas,0,0);
-                        ctx.drawImage(canvas,65,0);
+                        ctx.drawImage(canvas,0,0);
                     }});
             }
         },

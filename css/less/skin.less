@@ -137,7 +137,7 @@ img{
     background-color: #e1e1e1;
     position: absolute;
     font: 10pt verdana, sans-serif;
-    
+    z-index: 1;
 }
 
 .swal2-overlay{
@@ -1885,6 +1885,13 @@ nav.navbar{
         }
     }
 
+    .overlay{
+        position:absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
     
     
     .controls{
@@ -1895,7 +1902,7 @@ nav.navbar{
         position: absolute;
         left: 15px;
         right: 15px;
-        z-index: 1;
+        z-index: 2;
         border: 1px solid rgba(255, 255, 255, .85);
         border-top: 0;
 
