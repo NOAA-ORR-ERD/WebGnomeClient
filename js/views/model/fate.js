@@ -919,7 +919,7 @@ define([
 
                 if(top > offset.top && this.$('#budget-table .sticky').length === 0){
                     // a sticky header to the table.
-                    $('<div class="container sticky"><div class="col-md-12"><table class="table">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
+                    $('<div class="container sticky"><div class="col-md-12"><table class="table" style="table-layout: fixed">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
                 } else if(top <= offset.top && this.$('#budget-table .sticky').length > 0) {
                     // remove the sticky header from the table.
                     this.$('.sticky').remove();
