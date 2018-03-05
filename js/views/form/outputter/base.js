@@ -161,6 +161,7 @@ define([
         removeOutputter: function() {
             var model = this.model;
             webgnome.model.get('outputters').remove(model);
+            webgnome.model.save();
         },
 
         turnOff: function() {
