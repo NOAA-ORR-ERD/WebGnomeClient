@@ -1,0 +1,41 @@
+<form class="form-horizontal" role="form">
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="mover_name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="mover_name" class="form-control" name="name">
+        </div>
+    </div> 
+
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="scale">Scale:</label>
+        <div class="col-sm-5">
+            <select name="scale" id="scale" class="form-control">
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="Scale">
+            {% if(model.tide){ %}
+                File value to scale to:
+            {% } else { %}
+                M/s to scale to:
+            {%  } %}
+        </label>
+        <div class="col-sm-5">
+            <input type="text" id="Scale" class="form-control" name="scale_value">
+        </div>
+    </div> 
+
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="scale_refpoint">Scale Reference Point:</label>
+        <div class="col-sm-5">
+            <div class="input-group">
+                <input type="text" data-type="array" id="scale_refpoint" class="form-control" name="scale_refpoint">
+                <div class="input-group-addon"><span class="glyphicon glyphicon-screenshot pick-coords" data-el="#scale_refpoint"></span></div>
+            </div>
+        </div>
+    </div> 
+</form>
