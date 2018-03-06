@@ -1486,10 +1486,6 @@ define([
                 var headerText = obj.children('label').text().replace(/:/g, '');
                 var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,|°/g, '');
 
-                if (headerText.indexOf("Time") > -1) {
-                    valueText = this.convertMomentToDateTimeCSV(valueText);
-                }
-
                 csv += headerText + ',' + valueText + '\r\n';
             }, this));
 
