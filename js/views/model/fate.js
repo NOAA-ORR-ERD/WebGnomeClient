@@ -1468,7 +1468,7 @@ define([
         convertUnixToDateTimeCSV: function(datarow) {
             var datarowcp = datarow.slice();
             var unix = datarow[0] / 1000;
-            var date = moment.unix(unix).toISOString();
+            var date = moment.unix(unix).format(webgnome.config.date_format.moment);
             datarowcp[0] = date;
             return datarowcp;
         },
