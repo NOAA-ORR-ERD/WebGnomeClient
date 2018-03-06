@@ -77,7 +77,7 @@ define([
         },
 
         socketLog: function(event){
-            //this.log(event); #disabled due to excessive DOM updates when API is sending DEBUG messages
+            this.log(event); 
             this.toast(event);
         },
 
@@ -99,7 +99,7 @@ define([
          */
         log: function(message){
             if(_.isString(message)){
-                this.$('.window .logs').append('<li class="misc">' + message + '</li>');
+                this.$('.window .logs').append('<tr><td class="misc">' + message + '</td></tr>');
                 this.count++;
             }
 
@@ -110,16 +110,16 @@ define([
                         source = 'misc';
                     }
                     var ts = message.time + ' ' + message.date;
-                    this.$('.window .logs').append('<li class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></li>');
+                    this.$('.window .logs').append('<tr><td class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></td></tr>');
                 } else {
-                    this.$('.window .logs').append('<li class="misc">' + message.message + '</li>');
+                    this.$('.window .logs').append('<tr><td class="misc">' + message.message + '</td></tr>');
                 }
                 
                 this.count++;
             }
 
             if(this.count > this.limit){
-                this.$('.window .logs li:first').remove();
+                this.$('.window .logs tr:first').remove();
                 this.count--;
             }
 
@@ -139,8 +139,8 @@ define([
         },
 
         evalLogs: function(){
-            var errors = this.$('li.error, li.criti').length;
-            var warnings = this.$('li.warni').length;
+            var errors = this.$('td.error, td.criti').length;
+            var warnings = this.$('td.warni').length;
 
             if(errors > 0){
                 this.$el.addClass('error');

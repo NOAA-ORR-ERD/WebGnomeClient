@@ -1895,7 +1895,6 @@ nav.navbar{
     
     
     .controls{
-        .make-row();
         background: rgba(255, 255, 255, .75);
         border-radius: 0 0 4px 4px;
         height: 60px;
@@ -2008,7 +2007,7 @@ nav.navbar{
             padding-bottom: 34px;
             padding-left: 60px;
             padding-right: 60px;
-            width: 78%;
+            width: 70%;
             display: inline-block;
 
             .ui-widget-content{
@@ -2039,8 +2038,10 @@ nav.navbar{
         .gnome-help{
             font-size: 25px;
             line-height: 25px;
-            top: 7px;
+            top: 14px;
+            right: 20px;
             color: #696969;
+            position: absolute;
         }
     }
 
@@ -2682,8 +2683,9 @@ nav.navbar{
             font-size: 11px;
             font-family: "PT Mono";
             margin-bottom: 0;
+            width: 100%;
 
-            li{
+            td{
                 padding: 2px 4px;
                 border-bottom: 1px solid #F1F1F1;
                 display: none;
@@ -2723,14 +2725,14 @@ nav.navbar{
         }
         &.error {
             .logs{
-                li.error {
+                td.error {
                     display: block !important;
                 }
             }
         }
         &.warni {
             .logs {
-                li.warni{
+                td.warni{
                     display: block !important;
                 }
             }
@@ -3895,6 +3897,10 @@ nav.navbar{
     -webkit-animation-delay: -0.8s;
     animation-delay: -0.8s;
   }
+}
+
+.pick-coords{
+    cursor: pointer;
 }
 
 @-webkit-keyframes stretchdelay {
