@@ -202,6 +202,14 @@ define([
         spillsChange: function(child){
             this.childChange('spills', child);
             this.toggleWeatherers(child);
+            if(this.get('uncertain')) {
+                this.set('uncertain', false);
+                this.save(null, {
+                    success: _.bind(function(){
+                        this.set('uncertain', true);
+                        this.save();
+                    }, this)})
+            }
         },
 
         adiosSpillTimeFix: function() {
