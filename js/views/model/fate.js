@@ -152,7 +152,6 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             if(!webgnome.hasModel()){
                 webgnome.router.navigate('', true);
             } else if(webgnome.model.validWeathering()){
@@ -341,7 +340,6 @@ define([
                 // add a listener to handle that pending step.
                 while(this.frame < webgnome.cache.length){
                     webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
-                    this.frame++;
                 }
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
                 if(webgnome.cache.streaming && webgnome.cache.isHalted){
@@ -349,8 +347,10 @@ define([
                 }
             } else {
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
-                if(!webgnome.cache.streaming) {
-                    setTimeout(_.bind(webgnome.cache.getSteps, webgnome.cache), 2000);
+                //this.listenTo(webgnome.cache, 'step:received', _.bind(this.loadStep, this));
+                if(!webgnome.cache.streaming && !webgnome.cache.preparing) {
+                    webgnome.cache.getSteps();
+                    //setTimeout(_.bind(webgnome.cache.getSteps, webgnome.cache), 2000);
                 }
             }
             if(localStorage.getItem('autorun') === 'true'){
@@ -365,13 +365,14 @@ define([
             if(step.get('step_num') === webgnome.cache.length - 1){
                 this.renderGraphs();
             }
+            this.frame++;
         },
 
         reset: function(){
-            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
+            //this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             this.dataset = undefined;
             this.frame = 0;
-            this.load();
+            setTimeout(_.bind(this.load, this), 3000);
         },
 
         render: function(){
@@ -493,7 +494,7 @@ define([
                 this.$('.run-risk').hide();
             }
             
-            this.load();
+            setTimeout(_.bind(this.load,this), 3000);
         },
 
         checkForCleanup: function(){
@@ -1595,9 +1596,6 @@ define([
                     delete this.dataset;
                     this.frame = 0;
                     this.load();
-                    if(!webgnome.cache.isAsync){
-                        webgnome.cache.sendStepAck(step);
-                    }
                 }
             } else {
                 swal({
