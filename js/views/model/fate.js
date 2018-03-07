@@ -1469,7 +1469,7 @@ define([
         convertUnixToDateTimeCSV: function(datarow) {
             var datarowcp = datarow.slice();
             var unix = datarow[0] / 1000;
-            var date = moment.unix(unix).toISOString();
+            var date = moment.unix(unix).format(webgnome.config.date_format.moment);
             datarowcp[0] = date;
             return datarowcp;
         },
@@ -1486,10 +1486,6 @@ define([
                 var obj = this.$(el);
                 var headerText = obj.children('label').text().replace(/:/g, '');
                 var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,|°/g, '');
-
-                if (headerText.indexOf("Time") > -1) {
-                    valueText = this.convertMomentToDateTimeCSV(valueText);
-                }
 
                 csv += headerText + ',' + valueText + '\r\n';
             }, this));
