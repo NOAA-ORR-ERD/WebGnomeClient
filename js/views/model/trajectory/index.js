@@ -431,7 +431,7 @@ define([
             } else  {
                 if(webgnome.cache.isHalted){
                     webgnome.cache.resume();
-                } else if (!webgnome.cache.streaming) {
+                } else if (!webgnome.cache.streaming && !webgnome.cache.preparing) {
                     webgnome.cache.getSteps();
                 } else {
                     this.renderStep({step:this.controls.getSliderValue() -1});
