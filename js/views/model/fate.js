@@ -572,6 +572,8 @@ define([
                 this.renderTableOilBudget(this.dataset);
             } else if(active === '#evaporation') {
                 this.renderGraphEvaporation(this.dataset);
+            } else if(active === '#floating') {
+                this.renderGraphFloating(this.dataset);
             } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
             } else if (active === '#dissolution') {
@@ -974,6 +976,26 @@ define([
                 dataset[0].fillArea = null;
             } else {
                 this.$('#evaporation .timeline .chart').text('Weatherer Turned Off');
+            }
+        },
+
+        renderGraphFloating: function(dataset){
+            dataset = this.pluckDataset(dataset, ['floating', 'secondtime']);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphFloating)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphFloating = $.plot('#floating .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphFloating.setData(dataset);
+                    this.graphFloating.setupGrid();
+                    this.graphFloating.draw();
+                }
+                dataset[0].fillArea = null;
+            } else {
+                this.$('#floating .timeline .chart').text('Weatherer Turned Off');
             }
         },
 
