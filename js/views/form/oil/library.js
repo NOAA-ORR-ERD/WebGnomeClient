@@ -116,7 +116,7 @@ define([
 
         sticky: function(e){
             if(this.$el.scrollTop() > 104){
-                this.$('.oilContainer').addClass('sticky')
+                this.$('.oilContainer').addClass('sticky');
                 this.$('.oilContainer .form-horizontal').css('top', this.$el.scrollTop() - 104 + 'px');
             } else {
                 this.$('.oilContainer').removeClass('sticky');
