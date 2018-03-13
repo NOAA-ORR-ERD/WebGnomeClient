@@ -39,6 +39,7 @@ define([
         },
 
         initialize: function(options, elementModel){
+            $(this.$el).on('scroll', _.bind(this.sticky, this));
             this.module = module;
             this.oilTable = new OilTable(elementModel);
             this.model = elementModel;
@@ -111,6 +112,16 @@ define([
         rendered: function(e){
             this.$('.tab-pane').removeClass('active');
             this.$(e.target.hash).addClass('active');
+        },
+
+        sticky: function(e){
+            if(this.$el.scrollTop() > 104){
+                this.$('.oilContainer').addClass('sticky')
+                this.$('.oilContainer .form-horizontal').css('top', this.$el.scrollTop() - 104 + 'px');
+            } else {
+                this.$('.oilContainer').removeClass('sticky');
+            }
+
         },
 
         triggerTableResize: function(){
