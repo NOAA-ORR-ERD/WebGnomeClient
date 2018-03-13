@@ -208,7 +208,7 @@ define([
                     success: _.bind(function(){
                         this.set('uncertain', true);
                         this.save();
-                    }, this)})
+                    }, this)});
             }
         },
 
