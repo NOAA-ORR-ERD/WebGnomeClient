@@ -17,7 +17,8 @@ define([
         },
         default_appearance: {
             on: false,
-            color: 'MEDIUMPURPLE',
+            ctrl_name: 'Data Appearance',
+            color: '#9370DB', //MEDIUMPURPLE
             alpha: 1,
             scale: 1,
         },
@@ -200,10 +201,11 @@ define([
                             this.genVecImages();
                         }
                         var existing_length = this._vectors.length;
+                        var appearance = this.get('_appearance')
                         for(var existing = 0; existing < existing_length; existing++){
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
                             this._vectors.get(existing).show = true;
-                            this._vectors.get(existing).color = Cesium.Color[this.get('_appearance').get('color')];
+                            this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
                         }
                         var create_length = centers.length / 2;
 
@@ -212,7 +214,7 @@ define([
                                 show: true,
                                 position: Cesium.Cartesian3.fromDegrees(centers[c*2], centers[c*2+1]),
                                 image: this._images[0],
-                                color: Cesium.Color[this.get('_appearance').get('color')],
+                                color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
                                 scale: this.get('_appearance').get('scale')
                             });
                         }
@@ -245,10 +247,14 @@ define([
             if(options) {
                 var bbs = this._vectors._billboards;
                 var appearance = this.get('_appearance');
-                if (appearance.changedAttributes()){
+                var changedAttrs, newColor;
+                changedAttrs = appearance.changedAttributes()
+                if (changedAttrs){
                     for(var i = 0; i < bbs.length; i++) {
-                        bbs[i].color = Cesium.Color[appearance.get('color')];
-                        bbs[i].alpha = appearance.get('alpha');
+                        if(changedAttrs.color || changedAttrs.alpha) {
+                            newColor = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
+                            bbs[i].color = newColor;
+                        }
                         bbs[i].scale = appearance.get('scale');
                         bbs[i].show = appearance.get('on');
                     }

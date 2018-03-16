@@ -15,6 +15,7 @@ define([
                                                     }),
         default_appearance: {
             on: false,
+            ctrl_name: 'Grid Appearance',
             color: 'PINK',
             alpha: 0.3,
         },
@@ -219,7 +220,7 @@ define([
                     this.getLines().then(_.bind(function(data){
                         var appearance = this.get('_appearance');
                         var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                            Cesium.Color[appearance.get('color')].withAlpha(appearance.get('alpha'))
+                            Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
                         );
                         var numLengths = data[0].length;
                         var lengths = data[0];

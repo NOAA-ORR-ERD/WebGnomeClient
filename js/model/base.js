@@ -9,16 +9,23 @@ define([
 
         default_appearance: {
             on:true,
+            ctrl_name: 'Object Appearance',
         },
 
         initialize: function(attrs, options){
             Backbone.Model.prototype.initialize.call(this, attrs, options);
             this.on('sync', this.rewindModel, this);
-            
+
             if(this.default_appearances) {
                 var apps = [];
                 for (var i = 0; i < this.default_appearances.length; i++) {
-                    apps.push(new Appearance(this.default_appearances[i],{default: this.default_appearances[i]}));
+                    options = {default: this.default_appearances[i]}
+                    if(this.id) {
+                        options.id = this.id + '_' + this.default_appearances[i].id;
+                    } else {
+                        options.id = this.default_appearances[i].id;
+                    }
+                    apps.push(new Appearance(this.default_appearances[i], options));
                 }
                 this.set('_appearance', new AppearanceCollection(apps, {id:this.id}));
             } else if(this.default_appearance) {

@@ -310,7 +310,7 @@ define([
                     visObj: e._vectors,
                     appearance: e.get('_appearance')
                 });
-                if (e.has('grid')) {
+                if (e.has('grid') && !this.layers.findWhere({id:e.get('grid').get('id')})) {
                     this.layers.add({
                         type: 'cesium',
                         parentEl: 'primitive',
@@ -349,6 +349,13 @@ define([
             var lays;
             lays = this.layers.where({model: e});
             this.layers.remove(lays);
+            //All layers whose id field contain the id of the model also get removed.
+            lays = this.layers.filter(function(lay) {return lay.appearance.get('id').indexOf(e.get('id')) != -1});
+            this.layers.remove(lays);
+            if (e.has('grid')) {
+                lays = this.layers.where({model:e.get('grid')});
+                this.layers.remove(lays)
+            }
             if(this._rendered) {
                 this.render();
             }

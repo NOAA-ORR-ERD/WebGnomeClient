@@ -8,7 +8,8 @@ define([
         },
         default_appearance: {
             on: false,
-            color: 'BLUE',
+            ctrl_name: 'Vector Appearance',
+            color: '#0000FF', //BLUE,
             alpha: 0.7,
             scale: 1,
         },

@@ -17,8 +17,8 @@ define([
         default_appearances: [
             {
                 on: true,
-                certain_LE_color: 'BLACK',
-                uncertain_LE_color: 'RED',
+                certain_LE_color: '#000000', // BLACK
+                uncertain_LE_color: '#FF0000', // RED
                 alpha: 1,
                 scale: 1,
                 id: 'les'
@@ -351,7 +351,7 @@ define([
                             this._uncertain.push(
                                 this.les.add({
                                     position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
-                                    color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('uncertain_LE_color')].withAlpha(
+                                    color: Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color')).withAlpha(
                                         uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                                     ),
                                     eyeOffset : new Cesium.Cartesian3(0,0,-2),
@@ -387,7 +387,7 @@ define([
                         // create a new point
                         this._certain.push(this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                            color: Cesium.Color[this.get('_appearance').findWhere({id:'les'}).get('certain_LE_color')].withAlpha(
+                            color: Cesium.Color.fromCssColorString(appearance.get('certain_LE_color')).withAlpha(
                                 certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                             ),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),

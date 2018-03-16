@@ -303,6 +303,11 @@ define([
             ui.handle.blur();
         },
 
+        show: function(e, ui) {
+            BaseView.prototype.show.call(this, e, ui);
+            this.contextualize()
+        },
+
         updateProgress: _.throttle(function(){
             this.controls.progress.addClass('progress-bar-stripes active');
             var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);

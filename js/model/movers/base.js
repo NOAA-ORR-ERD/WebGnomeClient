@@ -22,6 +22,7 @@ define([
         [
             {
                 on: false,
+                ctrl_name: 'Vector Appearance',
                 color: 'MEDIUMPURPLE',
                 id: 'uv',
                 alpha: 1,
@@ -29,6 +30,7 @@ define([
             },
             {
                 on: false,
+                ctrl_name: 'Grid Appearance',
                 color: 'PINK',
                 id: 'grid',
                 alpha: 0.3,
@@ -135,7 +137,7 @@ define([
             var ctx = canvas.getContext('2d');
             ctx.beginPath();
             ctx.arc(1, 1, 0.5, 0, 2 * Math.PI);
-            ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
+            ctx.strokeStyle = 'rgba(255,255,255,1)';
             ctx.stroke();
             this._images[0] = bbc.add({
                 image: canvas,
@@ -192,7 +194,7 @@ define([
                         for(var existing = 0; existing < existing_length; existing++){
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0], centers[existing][1]);
                             this._vectors.get(existing).show = appearance.get('on');
-                            this._vectors.get(existing).color = Cesium.Color[appearance.get('color')];
+                            this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
                         }
                         var create_length = centers.length;
 
@@ -201,7 +203,7 @@ define([
                                 show: appearance.get('on'),
                                 position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
                                 image: this._images[0],
-                                color: Cesium.Color[appearance.get('color')],
+                                color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
                                 scale: appearance.get('scale')
                             });
                         }
@@ -252,13 +254,17 @@ define([
                                 current_outputter.get('current_movers').remove(this);
                                 current_outputter.save();
                             }
+                            var changedAttrs, newColor;
+                            changedAttrs = appearance.changedAttributes()
                             for(var i = 0; i < bbs.length; i++) {
-                                bbs[i].color = Cesium.Color[appearance.get('color')];
-                                bbs[i].alpha = appearance.get('alpha');
+                                if(changedAttrs.color || changedAttrs.alpha) {
+                                    newColor = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
+                                    bbs[i].color = newColor;
+                                }
                                 bbs[i].scale = appearance.get('scale');
                                 bbs[i].show = appearance.get('on');
-                    }
-                }
+                            }
+                        }
                     }
                 } else if (options.id === 'grid') {
                     var prims = this._linesPrimitive;

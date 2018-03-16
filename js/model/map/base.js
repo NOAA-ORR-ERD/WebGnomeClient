@@ -31,17 +31,20 @@ define([
         default_appearances: [
             {
                 on: true,
+                ctrl_name: 'Map Appearance',
                 id: 'map',
-                color: 'YELLOW',
+                color: '#FFFF00', //YELLOW
                 alpha: 1,
             },
             {
                 on: false,
+                ctrl_name: 'Spillable Area Appearance',
                 id: 'sa',
                 alpha: 1,
             },
             {
                 on: false,
+                ctrl_name: 'Map Bounds Appearance',
                 id: 'bounds',
             }
         ],
