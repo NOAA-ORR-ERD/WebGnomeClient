@@ -6,7 +6,7 @@ define([
     'views/modal/form',
     'text!templates/form/obj_inspect.html',
     'views/form/appearance'
-], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceView){
+], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm){
     'use strict';
     var inspectForm = FormModal.extend({
         /*
@@ -39,13 +39,13 @@ define([
                     var formLabel = $('<label></label>', {class:"form-label", 'for':appearances[i].get('id')})
                     formLabel.text(appearances[i].get('ctrl_name'));
                     html.append(formLabel);
-                    html.append(new AppearanceView(appearances[i]).$el);
+                    html.append(new AppearanceForm(appearances[i]).$el);
                 }
             } else {
                 var formLabel = $('<label></label>', {class:"form-label", 'for':this.layer.appearance.get('id')})
                 formLabel.text(this.layer.appearance.get('ctrl_name'));
                 html.append(formLabel);
-                html.append(new AppearanceView(this.layer.appearance).$el);
+                html.append(new AppearanceForm(this.layer.appearance).$el);
             }
             if(this.layer.model.has('grid')) {
                 var grid = this.layer.model.get('grid');
@@ -53,7 +53,7 @@ define([
                 var formLabel = $('<label></label>', {class:"form-label", 'for': appearance.get('id')})
                 formLabel.text(appearance.get('ctrl_name'));
                 html.append(formLabel);
-                html.append(new AppearanceView(appearance).$el);
+                html.append(new AppearanceForm(appearance).$el);
             }
 
             
