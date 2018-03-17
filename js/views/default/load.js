@@ -20,7 +20,8 @@ define([
         initialize: function(options){
             if(_.isUndefined(options)){ options = {}; }
             _.defaults(options, {
-                simple: false
+                simple: false,
+                page: true
             });
             this.render(options);
         },
@@ -28,11 +29,11 @@ define([
         render: function(options){
             var template;
             if (options.simple) {
-                template = _.template(LoadTemplate);
+                template = _.template(LoadTemplate, options);
             } else if (webgnome.config.can_persist) {
-                template = _.template(UploadActivateTemplate);
+                template = _.template(UploadActivateTemplate, options);
             } else {
-                template = _.template(UploadTemplate);
+                template = _.template(UploadTemplate, options);
             }
             this.$el.html(template);
 
