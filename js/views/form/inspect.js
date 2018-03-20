@@ -14,7 +14,9 @@ define([
         */
         className: 'modal form-modal inspect-form',
         title: 'Object Properties',
-        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        buttons: //'<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' + 
+                 '<button type="button" class="back">Reset to Default</button>'+
+                 '<button type="button" class="save">Save</button>',
         
         events: function() {
             return _.defaults({
@@ -40,12 +42,14 @@ define([
                     formLabel.text(appearances[i].get('ctrl_name'));
                     html.append(formLabel);
                     html.append(new AppearanceForm(appearances[i]).$el);
+                    appearanceModelsUsed.push(appearances[i]);
                 }
             } else {
                 var formLabel = $('<label></label>', {class:"form-label", 'for':this.layer.appearance.get('id')})
                 formLabel.text(this.layer.appearance.get('ctrl_name'));
                 html.append(formLabel);
                 html.append(new AppearanceForm(this.layer.appearance).$el);
+                appearanceModelsUsed.push(this.layer.appearance);
             }
             if(this.layer.model.has('grid')) {
                 var grid = this.layer.model.get('grid');
@@ -54,32 +58,32 @@ define([
                 formLabel.text(appearance.get('ctrl_name'));
                 html.append(formLabel);
                 html.append(new AppearanceForm(appearance).$el);
+                appearanceModelsUsed.push(appearance);
             }
-
-            
+            this.appearanceModelsUsed = appearanceModelsUsed;
             this.body = html
 
             FormModal.prototype.render.call(this, options);
             
         },
 
-
-
         update: function(e) {
-
-            var name = this.$('#name').val();
-            if (name !== this.layer.model.get('name')) {
-                this.layer.model.set('name', name);
-                this.layer.model.save();
-            }
-
+            webgnome.model.get('_appearance').trigger('change', this.layer.model);
         },
 
-        save: function() {
-            
-        }
+        back: function() {
+            //Resets all appearances to the default for the object.
+            for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
+                var appearance = this.appearanceModelsUsed[i];
+                var id = appearance.get('id');
+                appearance.set(appearance.default);
+                appearance.set('id', id);
+            }
+            webgnome.model.get('_appearance').trigger('change', this.layer.model);
+            this.close();
+        },
 
-
+        
     });
     
     return inspectForm;

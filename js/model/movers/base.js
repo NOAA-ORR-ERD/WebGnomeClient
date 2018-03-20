@@ -23,7 +23,7 @@ define([
             {
                 on: false,
                 ctrl_name: 'Vector Appearance',
-                color: 'MEDIUMPURPLE',
+                color: '#9370DB', //MEDIUMPURPLE
                 id: 'uv',
                 alpha: 1,
                 scale: 1,
@@ -31,7 +31,7 @@ define([
             {
                 on: false,
                 ctrl_name: 'Grid Appearance',
-                color: 'PINK',
+                color: '#FFC0CB', //PINK
                 id: 'grid',
                 alpha: 0.3,
             }
@@ -271,7 +271,7 @@ define([
                     appearance = options;
                     prims.show = appearance.get('on');
                     var changed = appearance.changedAttributes();
-                    if (changed && changed.color){
+                    if (changed && (changed.color || changed.alpha)){
                         this._linesPrimitive.removeAll();
                         this.renderLines(3000, true);
                     }
@@ -308,7 +308,7 @@ define([
             }
             var appearance = this.get('_appearance').findWhere({id:'grid'});
             var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                Cesium.Color[appearance.get('color')].withAlpha(appearance.get('alpha'))
+                Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
             );
 
             var batch_limit = Math.ceil(data.length / batch);
@@ -340,7 +340,7 @@ define([
                     geometryInstances: geo,
                     appearance: new Cesium.PerInstanceColorAppearance({
                         flat: true,
-                        translucent: false
+                        translucent: true
                     })
                 }));
             }

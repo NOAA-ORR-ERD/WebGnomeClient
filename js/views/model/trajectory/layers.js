@@ -17,6 +17,7 @@ define([
             'change .imagery_layers input': 'toggleImageryLayers',
             'change .map_layers input': 'toggleMapLayers',
             'change .spills input': 'toggleSpillLayers',
+            'click .spill-edit-btn': 'openInspectModal',
             'click .env-grid input': 'toggleGridLayers',
             'click .env-uv input': 'toggleDataLayers',
             'click .env-edit-btn': 'openInspectModal',
@@ -56,6 +57,7 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'change', this.render);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
+            this.listenTo(webgnome.model.get('_appearance'), 'change', this.render);
         },
 
         addMapListener: function(){
@@ -555,6 +557,9 @@ define([
         openInspectModal: function(e) {
             var obj_id = e.currentTarget.id.replace('attr-', '');
             var l = this.layers.findWhere({id: 'uv-' + obj_id});
+            if (!l) {
+                l = this.layers.findWhere({id: obj_id});
+            }
             var mod = new InspectForm(null, l);
             mod.render();
         },

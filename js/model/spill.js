@@ -17,14 +17,15 @@ define([
         default_appearances: [
             {
                 on: true,
+                ctrl_name: 'LE Appearance',
                 certain_LE_color: '#000000', // BLACK
                 uncertain_LE_color: '#FF0000', // RED
-                alpha: 1,
                 scale: 1,
                 id: 'les'
             },
             {
                 on: true,
+                ctrl_name: 'Pin Appearance',
                 id: 'loc'
             }
         ],
@@ -343,6 +344,9 @@ define([
 
             var appearance = this.get('_appearance').findWhere({id:'les'});
             var le_idx = 0;
+            var certain_LE_color, uncertain_LE_color;
+            certain_LE_color = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
+            uncertain_LE_color = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
                     if (uncertain.spill_num[f] === sid) {
@@ -351,7 +355,7 @@ define([
                             this._uncertain.push(
                                 this.les.add({
                                     position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
-                                    color: Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color')).withAlpha(
+                                    color: uncertain_LE_color.withAlpha(
                                         uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                                     ),
                                     eyeOffset : new Cesium.Cartesian3(0,0,-2),
@@ -371,7 +375,7 @@ define([
 
                             // set the opacity of particle if the mass has changed
                             if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
-                                this._uncertain[le_idx].color = Cesium.Color.RED.withAlpha(
+                                this._uncertain[le_idx].color = uncertain_LE_color.withAlpha(
                                     uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
                                 );
                             }
@@ -387,7 +391,7 @@ define([
                         // create a new point
                         this._certain.push(this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                            color: Cesium.Color.fromCssColorString(appearance.get('certain_LE_color')).withAlpha(
+                            color: certain_LE_color.withAlpha(
                                 certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                             ),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
@@ -405,7 +409,7 @@ define([
                         }
                         // set the opacity of particle if the mass has changed
                         if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
-                            this._certain[le_idx].color = Cesium.Color.BLACK.withAlpha(
+                            this._certain[le_idx].color = certain_LE_color.withAlpha(
                                 certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
                             );
                         }
@@ -437,11 +441,26 @@ define([
                 if(options.id === 'les') {
                     var bbs = this.les._billboards;
                     var appearance = this.get('_appearance').findWhere({id:'les'});
-                    if (appearance.changedAttributes()){
-                        for(var i = 0; i < bbs.length; i++) {
-                            //bbs[i].color = Cesium.Color[appearance.get('color')];
-                            //bbs[i].alpha = appearance.get('alpha');
-                            //bbs[i].scale = appearance.get('scale');
+                    var changedAttrs, newColor, i;
+                    changedAttrs = appearance.changedAttributes();
+                    if (changedAttrs){
+                        if(changedAttrs.certain_LE_color) {
+                            newColor = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
+                            for (i = 0; i < this._certain.length; i++) {
+                                this._certain[i].color.blue = newColor.blue;
+                                this._certain[i].color.red = newColor.red;
+                                this._certain[i].color.green = newColor.green;
+                            }                        }
+                        if(changedAttrs.uncertain_LE_color) {
+                            newColor = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
+                            for (i = 0; i < this._uncertain.length; i++) {
+                                this._uncertain[i].color.blue = newColor.blue;
+                                this._uncertain[i].color.red = newColor.red;
+                                this._uncertain[i].color.green = newColor.green;
+                            }
+                        }
+                        for(i = 0; i < bbs.length; i++) {
+                            bbs[i].scale = appearance.get('scale');
                             bbs[i].show = appearance.get('on');
                         }
                     }

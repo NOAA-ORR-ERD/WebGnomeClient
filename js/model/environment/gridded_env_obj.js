@@ -248,7 +248,7 @@ define([
                 var bbs = this._vectors._billboards;
                 var appearance = this.get('_appearance');
                 var changedAttrs, newColor;
-                changedAttrs = appearance.changedAttributes()
+                changedAttrs = appearance.changedAttributes();
                 if (changedAttrs){
                     for(var i = 0; i < bbs.length; i++) {
                         if(changedAttrs.color || changedAttrs.alpha) {

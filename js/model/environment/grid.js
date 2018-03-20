@@ -16,7 +16,7 @@ define([
         default_appearance: {
             on: false,
             ctrl_name: 'Grid Appearance',
-            color: 'PINK',
+            color: '#FFC0CB', //PINK
             alpha: 0.3,
         },
 
@@ -253,7 +253,7 @@ define([
                                 geometryInstances: geo,
                                 appearance: new Cesium.PerInstanceColorAppearance({
                                     flat: true,
-                                    translucent: false
+                                    translucent: true
                                 })
                             }));
                         }
@@ -273,7 +273,7 @@ define([
                 var appearance = this.get('_appearance');
                 prims.show = appearance.get('on');
                 var changed = appearance.changedAttributes();
-                if (changed && changed.color){
+                if (changed && (changed.color || changed.alpha)){
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
                 }
