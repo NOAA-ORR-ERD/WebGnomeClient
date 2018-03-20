@@ -478,7 +478,7 @@ define([
         },
 
         update: function(compass){
-            var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
+            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '');
 
             if (active === 'constant') {
                 var speed = this.form[active].speed.val();

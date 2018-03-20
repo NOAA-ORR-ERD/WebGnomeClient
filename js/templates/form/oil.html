@@ -21,12 +21,12 @@
 <!-- 			<label for="viscosity" class="col-sm-3 control-label">Viscosity (38 &deg;C):<br><span>(cSt)</span></label>
 			<div class="col-sm-3"><div class="sliders slider-all slider-viscosity"></div></div> -->
 		</div>
-
+		<div class="clearfix">
+			<!-- <sup style="float:left"><div class="swatch" style="background-color: #FDED90"></div>Generic Oils</sup> -->
+			<sup class="resultsLength">Number of results: {{ results }}</sup>
+		</div>
 	</form>
-	<div class="clearfix">
-		<!-- <sup style="float:left"><div class="swatch" style="background-color: #FDED90"></div>Generic Oils</sup> -->
-		<sup class="resultsLength">Number of results: {{ results }}</sup>
-	</div>
+
 	<div class="panel panel-default oilTable">
 		{{ oilTable }}
 	</div>
