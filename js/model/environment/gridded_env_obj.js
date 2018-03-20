@@ -201,7 +201,7 @@ define([
                             this.genVecImages();
                         }
                         var existing_length = this._vectors.length;
-                        var appearance = this.get('_appearance')
+                        var appearance = this.get('_appearance');
                         for(var existing = 0; existing < existing_length; existing++){
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
                             this._vectors.get(existing).show = true;

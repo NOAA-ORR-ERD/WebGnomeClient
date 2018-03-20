@@ -2,10 +2,11 @@ define([
     'backbone',
     'underscore',
     'jquery',
+    'cesium',
     'views/modal/base',
     'views/default/map',
     'views/default/cesium'
-], function(Backbone, _, $, BaseModal, MapView, CesiumView){
+], function(Backbone, _, $, Cesium, BaseModal, MapView, CesiumView){
     var pickCoordsView = BaseModal.extend({
         title: 'Click to select map coordinates',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
@@ -30,6 +31,7 @@ define([
 
         render: function(options){
             BaseModal.prototype.render.call(this, options);
+            var handler;
             if(this.type === 'cesium'){
                 this.map = new CesiumView();
                 this.$('.modal-body').append(this.map.$el);
@@ -38,7 +40,7 @@ define([
                 handler.setInputAction(_.bind(this.drop, this), Cesium.ScreenSpaceEventType.LEFT_DOWN);
                 handler.setInputAction(_.bind(this.lift, this), Cesium.ScreenSpaceEventType.LEFT_UP);
 
-                if(this.model.get('obj_type').indexOf('mover') != -1){
+                if(this.model.get('obj_type').indexOf('mover') !== -1){
                     this.renderGrid(this.map);
                 }
             }

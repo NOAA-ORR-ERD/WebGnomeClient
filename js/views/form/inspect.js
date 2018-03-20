@@ -28,24 +28,25 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.layer = layer;
-            this.title = 'Edit '+ layer.model.get('name') +' (' + layer.model.get('obj_type').split('.').pop() + ') Appearance'
+            this.title = 'Edit '+ layer.model.get('name') +' (' + layer.model.get('obj_type').split('.').pop() + ') Appearance';
         },
 
         render: function(options){
+            var formLabel;
             var appearanceModelsUsed = [];
             var originalAttrs = [];
             var html = $('<form></form>',{ 'class': 'form-horizontal obj-inspect', 'role': 'form'});
             if(this.layer.model.get('_appearance').models) { //collection of appearances
                 var appearances = this.layer.model.get('_appearance').models;
                 for(var i = 0; i < appearances.length; i++) {
-                    var formLabel = $('<label></label>', {class:"form-label", 'for':appearances[i].get('id')})
+                    formLabel = $('<label></label>', {class:"form-label", 'for':appearances[i].get('id')});
                     formLabel.text(appearances[i].get('ctrl_name'));
                     html.append(formLabel);
                     html.append(new AppearanceForm(appearances[i]).$el);
                     appearanceModelsUsed.push(appearances[i]);
                 }
             } else {
-                var formLabel = $('<label></label>', {class:"form-label", 'for':this.layer.appearance.get('id')})
+                formLabel = $('<label></label>', {class:"form-label", 'for':this.layer.appearance.get('id')});
                 formLabel.text(this.layer.appearance.get('ctrl_name'));
                 html.append(formLabel);
                 html.append(new AppearanceForm(this.layer.appearance).$el);
@@ -54,14 +55,14 @@ define([
             if(this.layer.model.has('grid')) {
                 var grid = this.layer.model.get('grid');
                 var appearance = grid.get('_appearance');
-                var formLabel = $('<label></label>', {class:"form-label", 'for': appearance.get('id')})
+                formLabel = $('<label></label>', {class:"form-label", 'for': appearance.get('id')});
                 formLabel.text(appearance.get('ctrl_name'));
                 html.append(formLabel);
                 html.append(new AppearanceForm(appearance).$el);
                 appearanceModelsUsed.push(appearance);
             }
             this.appearanceModelsUsed = appearanceModelsUsed;
-            this.body = html
+            this.body = html;
 
             FormModal.prototype.render.call(this, options);
             

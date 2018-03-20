@@ -19,9 +19,6 @@ define([
             } else {
                 this.default = {};
             }
-            if(options && options.parent) {
-                this.parent = options.parent
-            }
             // if specified, it will fetch previously saved from cache. 
             if(options.cache) {
                 this.fetch();

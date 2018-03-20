@@ -255,7 +255,7 @@ define([
                                 current_outputter.save();
                             }
                             var changedAttrs, newColor;
-                            changedAttrs = appearance.changedAttributes()
+                            changedAttrs = appearance.changedAttributes();
                             for(var i = 0; i < bbs.length; i++) {
                                 if(changedAttrs.color || changedAttrs.alpha) {
                                     newColor = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));

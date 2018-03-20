@@ -80,7 +80,7 @@ define([
         },
 
         renderTrajectory: function() {
-            this.overlay = $( "<div class='overlay'></div>")
+            this.overlay = $( "<div class='overlay'></div>");
             this.controls = new ControlsView({el:this.overlay});
             this.controlsListeners();
 
@@ -304,7 +304,7 @@ define([
 
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
-            this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe)}, this));
+            this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe);}, this));
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
             //this.listenTo(webgnome.cache, 'step:done', this.stop);
 
@@ -533,7 +533,7 @@ define([
                 //this.drawStep(step);
                 webgnome.cache.at(source.step, _.bind(function(err, step){
                     if(err){
-                        console.error(err)
+                        console.error(err);
                     }
                 }, this));
 

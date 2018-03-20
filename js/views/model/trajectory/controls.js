@@ -305,7 +305,7 @@ define([
 
         show: function(e, ui) {
             BaseView.prototype.show.call(this, e, ui);
-            this.contextualize()
+            this.contextualize();
         },
 
         updateProgress: _.throttle(function(){

@@ -352,11 +352,11 @@ define([
             lays = this.layers.where({model: e});
             this.layers.remove(lays);
             //All layers whose id field contain the id of the model also get removed.
-            lays = this.layers.filter(function(lay) {return lay.appearance.get('id').indexOf(e.get('id')) != -1});
+            lays = this.layers.filter(function(lay) {return lay.appearance.get('id').indexOf(e.get('id')) !== -1;});
             this.layers.remove(lays);
             if (e.has('grid')) {
                 lays = this.layers.where({model:e.get('grid')});
-                this.layers.remove(lays)
+                this.layers.remove(lays);
             }
             if(this._rendered) {
                 this.render();

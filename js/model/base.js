@@ -19,7 +19,7 @@ define([
             if(this.default_appearances) {
                 var apps = [];
                 for (var i = 0; i < this.default_appearances.length; i++) {
-                    options = {default: this.default_appearances[i]}
+                    options = {default: this.default_appearances[i]};
                     if(this.id) {
                         options.id = this.id + '_' + this.default_appearances[i].id;
                     } else {
