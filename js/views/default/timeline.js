@@ -59,9 +59,11 @@ define([
             });
 
             webgnome.model.get('weatherers').forEach(function(weatherer){
-                if(weatherer.get('obj_type').indexOf('cleanup') !== -1){
-                    var start = parseInt(moment(weatherer.get('active_start')).format('x'), 10);
-                    var end = parseInt(moment(weatherer.get('active_stop')).format('x'), 10);
+                var start;
+                var end;
+                if(weatherer.get('obj_type').indexOf('cleanup') !== -1){ //ADIOS removal options
+                    start = parseInt(moment(weatherer.get('active_start')).format('x'), 10);
+                    end = parseInt(moment(weatherer.get('active_stop')).format('x'), 10);
                     if (start < model_start) {
                         baseline.data[0] = [start - offset, 0];
                     }
@@ -75,6 +77,25 @@ define([
                         end: end,
                         fillColor: '#ffd970'
                     });
+                } else if (weatherer.get('obj_type').indexOf('roc') !== -1){
+                    
+                    var timeseries = weatherer.get('timeseries');
+                    start = parseInt(moment(timeseries[0][0]).format('x'), 10);
+                    end = parseInt(moment(timeseries[timeseries.length-1][1]).format('x'), 10);
+                    if (start < model_start) {
+                        baseline.data[0] = [start - offset, 0];
+                    }
+                    if (end > model_end) {
+                        baseline.data[1] = [end + offset, 0];
+                    }
+                                  
+                    timelinedata.push({
+                        label: weatherer.get('name'),
+                        start: start,
+                        end: end,
+                        fillColor: '#ffd970'
+                    });
+                    
                 }
             });
 
