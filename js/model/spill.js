@@ -10,22 +10,29 @@ define([
     'moment',
     'model/appearance',
     'collection/appearances',
-], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection){
+    'd3',
+    'json!model/defaultSpillAppearances.json'
+], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection, d3, DefaultSpillAppearances){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
         default_appearances: [
             {
                 on: true,
-                ctrl_name: 'LE Appearance',
-                certain_LE_color: '#000000', // BLACK
-                uncertain_LE_color: '#FF0000', // RED
                 scale: 1,
-                id: 'les'
+                id: 'les',
+                data: 'Mass',
+                datavis: DefaultSpillAppearances['Mass'],
+                ctrl_names: {title:'LE Appearance',
+                             on: 'Show',
+                             scale: 'Scale',
+                            },
             },
             {
                 on: true,
-                ctrl_name: 'Pin Appearance',
+                ctrl_names: {title:'Pin Appearance',
+                             on: 'Show',
+                            },
                 id: 'loc'
             }
         ],
@@ -49,6 +56,9 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
+            this.les = new Cesium.BillboardCollection({
+                blendOption: Cesium.BlendOption.TRANSLUCENT,
+            });
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
             if(webgnome.hasModel() && webgnome.model.getElementType()){
                 this.set('element_type', webgnome.model.getElementType());
@@ -78,9 +88,8 @@ define([
         },
 
         setupVis: function(attrs) {
-            this.les = new Cesium.BillboardCollection({
-                blendOption: Cesium.BlendOption.TRANSLUCENT,
-            });
+            var viscfg = this.get('_appearance').get('datavis');
+            this.setColorScales();
             this.genLEImages();
             this._locVis = new Cesium.Entity({
                 name: this.get('name'),
@@ -337,6 +346,46 @@ define([
             this._les_beached_image = this.les.add({image: canvas, show: false}).image;
         },
 
+        setColorScales: function() {
+            /*
+            Call this function to reconfigure the scales used to convert a data value into a color to be applied
+            */
+            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis');
+            var numScaleType = config.number_scale_config['type'];
+            if (numScaleType === 'linear') {
+                this._numScale = d3.scaleLinear()
+                                   .domain(config.number_scale_config.domain);
+            } else if (numScaleType === 'log') {
+                this._numScale = d3.scaleLog()
+                                   .domain(config.number_scale_config.domain);
+            }
+            var colorScaleType = config.color_scale_config['type'];
+            var nColors = config.nColors;
+            config.colors = d3['scheme' + config._chosenScheme][nColors];
+            var colrange = config.colors.length === 1 ? config.colors.push(config.colors[0]) : config.colors;
+            
+            if (colorScaleType === 'threshold') {
+                this._colorScale = d3.scaleThreshold()
+                                   .domain(config.color_scale_config.domain)
+                                   .range(config.colors)
+            } else if (colorScaleType === 'linear') {
+                this._colorScale = d3.scaleLinear()
+                                   .domain(0,1)
+                                   .range(config.colors)
+            }
+        },
+
+        colorLEs: function(){
+            /*
+            Uses the appearance's datavis object to determine how to colorize all the LEs
+            */
+            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis');
+            var i;
+            for (i = 0; i < this._certain.length; i++) {
+                
+            }
+        },
+
         update: function(step) {
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
@@ -344,40 +393,29 @@ define([
 
             var appearance = this.get('_appearance').findWhere({id:'les'});
             var le_idx = 0;
-            var certain_LE_color, uncertain_LE_color;
-            certain_LE_color = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
-            uncertain_LE_color = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
+            var newLE;
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
                     if (uncertain.spill_num[f] === sid) {
                         if(!this._uncertain[le_idx]){
                             // create a new point
-                            this._uncertain.push(
-                                this.les.add({
-                                    position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
-                                    color: uncertain_LE_color.withAlpha(
-                                        uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                                    ),
-                                    eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                                    image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
-                                    show: appearance.get('on'),
-                                })
-                            );
+                            newLE = this.les.add({
+                                position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
+                                eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                                image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
+                                show: appearance.get('on'),
+                            });
+                            newLE.mass = uncertain.mass[f];
+                            this._uncertain.push(newLE);
                         } else {
                             this._uncertain[le_idx].show = appearance.get('on');
                             this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
+                            this._uncertain[le_idx].mass = uncertain.mass[f];
 
                             if(uncertain.status[f] === 3){
                                 this._uncertain[le_idx].image = this._les_beached_image;
                             } else {
                                 this._uncertain[le_idx].image = this._les_point_image;
-                            }
-
-                            // set the opacity of particle if the mass has changed
-                            if(uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass){
-                                this._uncertain[le_idx].color = uncertain_LE_color.withAlpha(
-                                    uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                                );
                             }
                         }
                         le_idx++;
@@ -389,29 +427,23 @@ define([
                 if (certain.spill_num[f] === sid) {
                     if(!this._certain[le_idx]){
                         // create a new point
-                        this._certain.push(this.les.add({
+                        newLE = this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                            color: certain_LE_color.withAlpha(
-                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            ),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
                                     show: appearance.get('on'),
-                        }));
+                        });
+                        newLE.mass = certain.mass[f];
+                        this._certain.push(newLE);
                     } else {
                         // update the point position and graphical representation
                         this._certain[le_idx].show = appearance.get('on');
                         this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
+                        this._certain[le_idx].mass = certain.mass[f];
                         if(certain.status[f] === 3){
                             this._certain[le_idx].image = this._les_beached_image;
                         } else {
                             this._certain[le_idx].image = this._les_point_image;
-                        }
-                        // set the opacity of particle if the mass has changed
-                        if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
-                            this._certain[le_idx].color = certain_LE_color.withAlpha(
-                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            );
                         }
                     }
                     le_idx++;
@@ -444,20 +476,8 @@ define([
                     var changedAttrs, newColor, i;
                     changedAttrs = appearance.changedAttributes();
                     if (changedAttrs){
-                        if(changedAttrs.certain_LE_color) {
-                            newColor = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
-                            for (i = 0; i < this._certain.length; i++) {
-                                this._certain[i].color.blue = newColor.blue;
-                                this._certain[i].color.red = newColor.red;
-                                this._certain[i].color.green = newColor.green;
-                            }                        }
-                        if(changedAttrs.uncertain_LE_color) {
-                            newColor = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
-                            for (i = 0; i < this._uncertain.length; i++) {
-                                this._uncertain[i].color.blue = newColor.blue;
-                                this._uncertain[i].color.red = newColor.red;
-                                this._uncertain[i].color.green = newColor.green;
-                            }
+                        if(changedAttrs.data) {
+                            appearance.set('datavis', DefaultSpillAppearances[changedAttrs.data]);
                         }
                         for(i = 0; i < bbs.length; i++) {
                             bbs[i].scale = appearance.get('scale');

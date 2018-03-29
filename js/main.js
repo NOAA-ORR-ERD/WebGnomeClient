@@ -58,7 +58,8 @@ require.config({
         ccapture: 'lib/ccapture.js/src/CCapture',
         whammy: 'lib/whammy/whammy',
         gif: 'lib/ccapture.js/src/gif',
-        gifworker: 'lib/ccapture.js/src/gif.worker'
+        gifworker: 'lib/ccapture.js/src/gif.worker',
+        'd3': "lib/d3/d3"
     },
     shim: {
         jquery: {
@@ -129,7 +130,7 @@ require.config({
         ccapture: {
            deps: ['gifworker', 'gif'],
            exports: 'ccapture'
-        }
+        },
     }
 });
 

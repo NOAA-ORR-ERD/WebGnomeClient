@@ -17,10 +17,15 @@ define([
         },
         default_appearance: {
             on: false,
-            ctrl_name: 'Data Appearance',
             color: '#9370DB', //MEDIUMPURPLE
             alpha: 1,
             scale: 1,
+            ctrl_names: {title: 'Data Appearance',
+                         on: 'Show',
+                         color: 'Arrow Color',
+                         alpha: 'Alpha',
+                         scale: 'Scale'
+                        },
         },
 
         initialize: function(attrs, options) {

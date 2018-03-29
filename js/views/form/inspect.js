@@ -5,8 +5,9 @@ define([
     'module',
     'views/modal/form',
     'text!templates/form/obj_inspect.html',
-    'views/form/appearance'
-], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm){
+    'views/form/appearance',
+    'views/form/spillAppearance'
+], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm, SpillAppearanceForm){
     'use strict';
     var inspectForm = FormModal.extend({
         /*
@@ -29,43 +30,39 @@ define([
             FormModal.prototype.initialize.call(this, options);
             this.layer = layer;
             this.title = 'Edit '+ layer.model.get('name') +' (' + layer.model.get('obj_type').split('.').pop() + ') Appearance';
+            this.appearanceModelsUsed = [];
         },
 
-        render: function(options){
-            var formLabel;
-            var appearanceModelsUsed = [];
-            var originalAttrs = [];
+        render: function(options) {
+            var formType;
             var html = $('<form></form>',{ 'class': 'form-horizontal obj-inspect', 'role': 'form'});
-            if(this.layer.model.get('_appearance').models) { //collection of appearances
-                var appearances = this.layer.model.get('_appearance').models;
-                for(var i = 0; i < appearances.length; i++) {
-                    formLabel = $('<label></label>', {class:"form-label", 'for':appearances[i].get('id')});
-                    formLabel.text(appearances[i].get('ctrl_name'));
-                    html.append(formLabel);
-                    html.append(new AppearanceForm(appearances[i]).$el);
-                    appearanceModelsUsed.push(appearances[i]);
-                }
+            if (this.layer.model.get('obj_type').includes('spill')){
+                formType = SpillAppearanceForm;
             } else {
-                formLabel = $('<label></label>', {class:"form-label", 'for':this.layer.appearance.get('id')});
-                formLabel.text(this.layer.appearance.get('ctrl_name'));
-                html.append(formLabel);
-                html.append(new AppearanceForm(this.layer.appearance).$el);
-                appearanceModelsUsed.push(this.layer.appearance);
+                formType = AppearanceForm;
+            }
+            if(this.layer.model.get('_appearance').models) {
+                this.layer.model.get('_appearance').models.forEach(
+                    function(a) {
+                        this.appearanceModelsUsed.push(a)
+                    }, this
+                );
+            } else {
+                this.appearanceModelsUsed.push(this.layer.appearance);
             }
             if(this.layer.model.has('grid')) {
-                var grid = this.layer.model.get('grid');
-                var appearance = grid.get('_appearance');
-                formLabel = $('<label></label>', {class:"form-label", 'for': appearance.get('id')});
-                formLabel.text(appearance.get('ctrl_name'));
-                html.append(formLabel);
-                html.append(new AppearanceForm(appearance).$el);
-                appearanceModelsUsed.push(appearance);
+                this.appearanceModelsUsed.push(this.layer.model.get('grid').get('_appearance'));
             }
-            this.appearanceModelsUsed = appearanceModelsUsed;
+            this.appearanceModelsUsed.forEach(
+                function(a) {
+                    var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
+                                    .text(a.get('ctrl_names').title);
+                    html.append(formLabel);
+                    html.append(new formType(a).$el);
+                }
+            );
             this.body = html;
-
             FormModal.prototype.render.call(this, options);
-            
         },
 
         update: function(e) {

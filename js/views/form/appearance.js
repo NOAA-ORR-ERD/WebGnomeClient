@@ -5,7 +5,8 @@ define([
     'views/form/base',
     'module',
     'model/appearance',
-], function ($, _, Backbone, BaseForm, module, Appearance) {
+    'd3'
+], function ($, _, Backbone, BaseForm, module, Appearance, DDD) {
     "use strict";
     var appearanceForm = BaseForm.extend({
 
@@ -17,6 +18,16 @@ define([
             this.model = model;
             this.addListeners();
             this.render();
+            var scheme = DDD.schemeBrBG[11];
+            var canvas = this.el.appendChild(document.createElement('canvas'));
+            var c = canvas.getContext('2d');
+            var height, colormap = scheme;
+            c.canvas.height = 40
+            c.canvas.width = 648;
+            for (var j = 0; j < scheme.length; j++) {
+                c.fillStyle = colormap[j];      // start ind at index 0
+                c.fillRect(j*10, 0, 10, 40);
+            }
         },
 
         addListeners: function() {
@@ -24,18 +35,19 @@ define([
         },
 
         render() {
-            var html = $('<form></form>',{ 'class': 'form-horizontal appearance-edit', 'role': 'form', id: this.model.get('id')});
-            var attrNames = _.keys(this.model.attributes);
+            var html = $('<form></form>',{ 'class': 'form-horizontal appearance-edit', 'role': 'form', 'id': this.model.get('id')});
+            var attrNames = _.keys(this.model.get('ctrl_names'));
+            var ctrlNames = _.values(this.model.get('ctrl_names'));
             var attrValues = _.values(this.model.attributes);
             for(var i = 0; i < attrNames.length; i++) {
                 var row = $('<div></div>', {class: 'form-row'});
-                row.append(this.genControlByName(attrNames[i], attrValues[i]));
+                row.append(this.genControlByName(ctrlNames[i], attrNames[i], this.model.get(attrNames[i])));
                 html.append(row);
             }
             this.$el.html(html);
         },
 
-        genControlByName: function(attrName, attrValue) {
+        genControlByName: function(ctrlName, attrName, attrValue) {
             /*
             This function uses the name of a particular appearance attribute to determine the appropriate control to add.
             It searches for a key descriptor in the name and uses that to determine the control.
@@ -62,7 +74,7 @@ define([
 
             var html = $('<div></div>', {class: 'form-group'});
             var label = $('<label></label>', {class: "col-sm-3 control-label", 'for': attrName});
-            label.text(attrName.replace('_',' '));
+            label.text(ctrlName.replace('_',' '));
             html.append(label);
             html.append(ctrl);
             return html;

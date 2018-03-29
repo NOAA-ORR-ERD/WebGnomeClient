@@ -22,18 +22,27 @@ define([
         [
             {
                 on: false,
-                ctrl_name: 'Vector Appearance',
                 color: '#9370DB', //MEDIUMPURPLE
                 id: 'uv',
                 alpha: 1,
                 scale: 1,
+                ctrl_names: {title: 'Data Appearance',
+                             on: 'Show',
+                             color: 'Arrow Color',
+                             alpha: 'Alpha',
+                             scale: 'Scale'
+                            },
             },
             {
                 on: false,
-                ctrl_name: 'Grid Appearance',
                 color: '#FFC0CB', //PINK
                 id: 'grid',
                 alpha: 0.3,
+                ctrl_names: {title: 'Grid Appearance',
+                             on: 'Show',
+                             color: 'Line Color',
+                             alpha: 'Alpha',
+                            },
             }
         ],
         vec_max: 3.0,

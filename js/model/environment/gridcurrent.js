@@ -12,6 +12,12 @@ define([
             color: '#9370DB', //MEDIUMPURPLE,
             alpha: 0.7,
             scale: 1,
+            ctrl_names: {title: 'Data Appearance',
+                         on: 'Show',
+                         color: 'Arrow Color',
+                         alpha: 'Alpha',
+                         scale: 'Scale'
+                        },
         },
         vec_max: 3.0,
         n_vecs: 30,

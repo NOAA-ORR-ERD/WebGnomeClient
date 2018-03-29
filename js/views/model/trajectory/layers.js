@@ -516,7 +516,7 @@ define([
                         grid_checkboxes[i].checked = true;
                     }
                     grid_layer.appearance.set('on', true);
-                    grid_layer.model.renderLines(3000);
+                    grid_layer.model.renderLines(3000, false);
                 }
             }
         },
