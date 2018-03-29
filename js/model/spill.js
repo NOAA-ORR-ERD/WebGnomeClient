@@ -19,6 +19,13 @@ define([
         default_appearances: [
             {
                 on: true,
+                ctrl_names: {title:'Pin Appearance',
+                             on: 'Show',
+                            },
+                id: 'loc'
+            },
+            {
+                on: true,
                 scale: 1,
                 id: 'les',
                 data: 'Mass',
@@ -27,13 +34,6 @@ define([
                              on: 'Show',
                              scale: 'Scale',
                             },
-            },
-            {
-                on: true,
-                ctrl_names: {title:'Pin Appearance',
-                             on: 'Show',
-                            },
-                id: 'loc'
             }
         ],
 
@@ -59,6 +59,7 @@ define([
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
+            this._locVis = new Cesium.Entity();
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
             if(webgnome.hasModel() && webgnome.model.getElementType()){
                 this.set('element_type', webgnome.model.getElementType());
@@ -91,7 +92,7 @@ define([
             var viscfg = this.get('_appearance').get('datavis');
             this.setColorScales();
             this.genLEImages();
-            this._locVis = new Cesium.Entity({
+            this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),
                 id: this.get('id') + '_loc',
                 position: new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0], this.get('release').get('start_position')[1]),
@@ -101,7 +102,7 @@ define([
                 },
                 description: '<table class="table"><tbody><tr><td>Amount</td><td>' + this.get('amount') + ' ' + this.get('units') + '</td></tr></tbody></table>',
                 show: this.get('_appearance').findWhere({id:'loc'}).get('on'),
-            });
+            }));
         },
 
         resetLEs: function() {
@@ -361,7 +362,7 @@ define([
             }
             var colorScaleType = config.color_scale_config['type'];
             var nColors = config.nColors;
-            config.colors = d3['scheme' + config._chosenScheme][nColors];
+            //config.colors = d3['scheme' + config._chosenScheme][nColors];
             var colrange = config.colors.length === 1 ? config.colors.push(config.colors[0]) : config.colors;
             
             if (colorScaleType === 'threshold') {
@@ -380,9 +381,51 @@ define([
             Uses the appearance's datavis object to determine how to colorize all the LEs
             */
             var config = this.get('_appearance').findWhere({id:'les'}).get('datavis');
-            var i;
-            for (i = 0; i < this._certain.length; i++) {
-                
+            var genColorwithAlpha = function(colorStr, alpha) {
+                return alpha ? 
+                    Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
+                    Cesium.Color.fromCssColorString(colorStr);
+            };
+            var alphaScale;
+            alphaScale = d3.scaleLinear();
+            if (config.alphaType === 'mass') {
+                alphaScale.domain([0, this._per_le_mass]);
+            } else {
+                alphaScale.domain([2000, 0]);
+            }
+            var value, color, alpha, i, datatype;
+            datatype = config.title.toLowerCase()
+            if(config._chosenColorMapType === "Alpha") {
+                for (i = 0; i < this._certain.length; i++) {
+                    value = this._certain[i][datatype];
+                    color = config.colors[0];
+                    alpha = alphaScale(value);
+                    this._certain[i].color = genColorwithAlpha(color, alpha);
+                }
+                for (i = 0; i < this._uncertain.length; i++) {
+                    value = this._uncertain[i][datatype];
+                    color = config.uncertain_colors[0];
+                    alpha = alphaScale(value);
+                    this._uncertain[i].color = genColorwithAlpha(color, alpha);
+                } 
+            } else if(config._chosenColorMapType === "Diverging") {
+                for (i = 0; i < this._certain.length; i++) {
+                    value = this._certain[i][datatype];
+                    color = this._colorScale(this._numScale(value));
+                    if (config.useAlpha) {
+                        alpha = alphaScale(this._certain[i][config.alphaType]);
+                    }
+                    this._certain[i].color = genColorwithAlpha(color, alpha);
+                }
+            } else if (config._chosenColorMapType === "Sequential") {
+                for (i = 0; i < this._certain.length; i++) {
+                    value = this._certain[i][config.title.toLowerCase()];
+                    color = this._colorScale(this._numScale(value));
+                    if (config.useAlpha) {
+                        alpha = alphaScale(this._certain[i][config.alphaType]);
+                    }
+                    this._certain[i].color = genColorwithAlpha(color, alpha);
+                }
             }
         },
 
@@ -406,6 +449,9 @@ define([
                                 show: appearance.get('on'),
                             });
                             newLE.mass = uncertain.mass[f];
+                            newLE.depth = uncertain.depth ? uncertain.depth[f] : undefined;
+                            newLE.viscosity = uncertain.viscosity ? uncertain.viscosity[f]: undefined;
+                            newLE.age = uncertain.age ? uncertain.age[f]: undefined;
                             this._uncertain.push(newLE);
                         } else {
                             this._uncertain[le_idx].show = appearance.get('on');
@@ -464,6 +510,7 @@ define([
                     }
                 }
             }
+            this.colorLEs();
         },
 
         updateVis: function(options) {

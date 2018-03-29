@@ -22,16 +22,6 @@ define([
             this.model = model;
             this.addListeners();
             this.render();
-            var scheme = DDD.schemeBrBG[11];
-            var canvas = this.el.appendChild(document.createElement('canvas'));
-            var c = canvas.getContext('2d');
-            var height, colormap = scheme;
-            c.canvas.height = 40
-            c.canvas.width = 648;
-            for (var j = 0; j < scheme.length; j++) {
-                c.fillStyle = colormap[j];      // start ind at index 0
-                c.fillRect(j*10, 0, 10, 40);
-            }
         },
 
         addListeners: function() {
@@ -48,18 +38,16 @@ define([
                 html.append(row);
             }
             if (this.model.get('data')){
+                html.append(this.genDataPicker());
                 row = $('<div></div>', {class: 'form-row'});
-                row.append(this.genDataPicker());
-                html.append(row);
-                row = $('<div></div>', {class: 'form-row'});
-                row.append(this.genDataControls(this.model.get('datavis')));
-                html.append(row);
+                this.genDataControls(this.model.get('datavis')).forEach(function(r) { html.append(r);})
             }
             this.$el.html(html);
         },
 
         genDataPicker: function() {
-            var html = $('<div></div>', {class: 'form-group'});
+            var row = $('<div></div>', {class: 'form-row'});
+            var group = $('<div></div>', {class: 'form-group'});
             var ctrl = $('<div></div>', {class: 'col-sm-3'});
             var config;
             if (this.model.get('datavis')){
@@ -81,22 +69,22 @@ define([
             opts.forEach(function(v){this.append(v)}, datatype_dropdown);
             var label = $('<label></label>', {class: "col-sm-3 control-label", 'for': 'data'}).text("Data source");
             ctrl.append(datatype_dropdown);
-            html.append(label);
-            html.append(ctrl);
-            return html;
+            group.append(label);
+            group.append(ctrl);
+            row.append(group);
+            return row;
         },
 
         genDataControls: function(config) {
-            if (config.title === 'Mass') {
-                return this.genMassControls(config)
-            }
-        },
-
-        genMassControls: function(config) {
-            var html = $('<form></form>', {class: 'form-row datavis-config'});
+            var rows = [];
+            var row = $('<div></div>', {class: 'form-row'});
+            rows.push(row);
+            var group = $('<div></div>', {class: 'form-group datavis-config'});
+            row.append(group);
+            group.append($('<label></label>', {class: 'control-label col-sm-3'}).text('Colormap Type'));
             config.colorMapType.forEach(
                 function(t, i) {
-                    var btn = $('<label></label>', {class: 'radio-inline col-sm-3'})
+                    var btn = $('<label></label>', {class: 'radio-inline col-sm-2'})
                                 .append($('<input></input>', {type: 'radio', name: '_chosenColorMapType', value: t}))
                                 .append(t);
                     if(!config._chosenColorMapType) {
@@ -105,15 +93,57 @@ define([
                     if (config._chosenColorMapType === t) {
                         btn.click();
                     }
-                    html.append(btn)
+                    group.append(btn)
                 }
             );
-            return html
+            var useAlphaCheckbox = $('<label></label>', {class: 'checkbox-inline col-sm-3'})
+                                    .append($('<input></input>', {type: 'checkbox', name: 'useAlpha', checked: config.useAlpha}))
+                                    .append("Fade by Mass");
+            group.append(useAlphaCheckbox);
+            var useAlphaCheckbox = $("input", useAlphaCheckbox);
+            if (config._chosenColorMapType === 'Alpha') {
+                useAlphaCheckbox.prop('disabled', true);
+            }
+            if (config.title === 'Mass') {
+                rows.push(this.genMassControls(config, rows));
+            }
+            return rows;
+        },
+
+        genMassControls: function(config, rows) {
+            if (config._chosenColorMapType === 'Alpha') {
+                var certrow = $('<div></div>', {class: 'form-row'});
+                var group = $('<div></div>', {class: 'form-group datavis-config'});
+                certrow.append(group);
+                group.append($('<label></label>', {class: 'control-label col-sm-3', for:"colors"}).text('LE Color'));
+                var ctrl = $('<div></div>', {class:'col-sm-3'});
+                //Only one color is available to pick. The number scale maximum is set to max LE mass
+                ctrl.append($('<input>', {type: "color", class: "form-control", name: "colors", value: config.colors[0]}));
+                group.append(ctrl);
+                rows.push(certrow);
+
+                var uncertrow = certrow.clone();
+                $('input[name="colors"]', uncertrow).attr({'name': 'uncertain_colors','value': config.uncertain_colors[0]});
+                $('label[for="colors"]', uncertrow).attr('for', 'uncertain_colors').text('Uncertain LE Color');
+                rows.push(uncertrow);
+            }
         },
 
         updateCfg: function(e) {
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
+            if($(e.target).attr('type') === 'number'){
+                value = parseFloat(value);
+            }
+
+            if($(e.target).attr('type') === 'checkbox'){
+                value = e.currentTarget.checked;
+            }
+
+            if (name.includes('colors') && typeof value === 'string') { // special case for colors
+                value = [value];
+            }
+
             name = name.split(':');
             var curobj = this.model.get('datavis');
             for (var i = 0; i < name.length-1; i++) {
@@ -125,6 +155,7 @@ define([
         update: function(e){
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
+
             if(!name){ return; }
             // if the user is inputting a negative numerical value
             // reset it back to the non-neg version.
