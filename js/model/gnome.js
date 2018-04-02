@@ -175,7 +175,7 @@ define([
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('sync save', this.moversTimeComplianceWarning, this);
+            this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
             this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
