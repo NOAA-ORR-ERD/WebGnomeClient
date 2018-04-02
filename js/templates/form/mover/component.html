@@ -25,6 +25,7 @@
         <label class="col-sm-5 control-label" for="wind">Wind:</label>
         <div class="col-sm-5">
             <select name="wind" id="wind" class="form-control">
+                <option value="null">No Wind Selected</option>
                 {% for(var wind of winds) { %}
                     <option value="{{ wind.get('id') }}">{{ wind.get('name') }}</option>
                 {% } %}
