@@ -58,7 +58,7 @@ define([
                 });
                 BaseSpillForm.prototype.render.call(this, options);
 
-                var durationObj = moment.duration((parseInt(duration.days, 10) * 24) + parseInt(duration.hours, 10), 'h');
+                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
 
                 var rate;
                 if ((this.$('#rate-units').val()).indexOf('hr') === -1){

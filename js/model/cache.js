@@ -112,6 +112,7 @@ define([
             if(!this.streaming && !this.isDead){
                 this.sendStepAck({step:-1});
                 this.streaming = true;
+                this.preparing = false;
             }
         },
 
@@ -156,13 +157,15 @@ define([
                 if(!this.socket){
                     this.socketConnect();
                 }
+                this.preparing = true;
                 var step = new AsyncStepModel();
                 step.fetch({
                     success: _.bind(function(step){
                         console.log('getSteps success!');
                     }, this),
                     error: _.bind(function(){
-                        console.log('getSteps success!');
+                        console.error('getSteps error!');
+                        this.preparing = false;
                     }, this)
                 });
             }
@@ -197,6 +200,7 @@ define([
         },
 
         killed: function(msg) {
+            this.trigger('step:failed');
             this.endStream(null);
             if(msg){
                 console.error('Model run killed.');

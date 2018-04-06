@@ -15,7 +15,8 @@ define([
                                                     }),
         default_appearance: {
             on: false,
-            color: 'PINK',
+            ctrl_name: 'Grid Appearance',
+            color: '#FFC0CB', //PINK
             alpha: 0.3,
         },
 
@@ -219,7 +220,7 @@ define([
                     this.getLines().then(_.bind(function(data){
                         var appearance = this.get('_appearance');
                         var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                            Cesium.Color[appearance.get('color')].withAlpha(appearance.get('alpha'))
+                            Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
                         );
                         var numLengths = data[0].length;
                         var lengths = data[0];
@@ -252,7 +253,7 @@ define([
                                 geometryInstances: geo,
                                 appearance: new Cesium.PerInstanceColorAppearance({
                                     flat: true,
-                                    translucent: false
+                                    translucent: true
                                 })
                             }));
                         }
@@ -272,7 +273,7 @@ define([
                 var appearance = this.get('_appearance');
                 prims.show = appearance.get('on');
                 var changed = appearance.changedAttributes();
-                if (changed && changed.color){
+                if (changed && (changed.color || changed.alpha)){
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
                 }

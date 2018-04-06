@@ -44,6 +44,7 @@ define([
             this.listenTo(webgnome.cache, 'rewind', this.rewind);
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
+            this.listenTo(webgnome.cache, 'step:done', this.stop);
         },
 
         render: function(){
@@ -272,7 +273,9 @@ define([
         },
 
         seek: function(e, ui){
-            this.pause();
+            if (this.state === 'play') {
+                this.pause(e);
+            }
             this.controls.seek.slider('value', ui.value);
 
             if(ui.value <= webgnome.cache.length){
@@ -286,6 +289,9 @@ define([
             if (this.getSliderValue() !== 0 && this.state === 'play'){
                 this.trigger('loop', {step: this.getSliderValue()});
             }
+            if (this.getSliderValue() === webgnome.model.get('num_time_steps') -1) {
+                this.trigger('pause');
+            }
         },
 
         resetSeek: function(){
@@ -295,6 +301,11 @@ define([
 
         blur: function(e, ui){
             ui.handle.blur();
+        },
+
+        show: function(e, ui) {
+            BaseView.prototype.show.call(this, e, ui);
+            this.contextualize();
         },
 
         updateProgress: _.throttle(function(){

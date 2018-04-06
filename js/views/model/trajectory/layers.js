@@ -17,6 +17,7 @@ define([
             'change .imagery_layers input': 'toggleImageryLayers',
             'change .map_layers input': 'toggleMapLayers',
             'change .spills input': 'toggleSpillLayers',
+            'click .spill-edit-btn': 'openInspectModal',
             'click .env-grid input': 'toggleGridLayers',
             'click .env-uv input': 'toggleDataLayers',
             'click .env-edit-btn': 'openInspectModal',
@@ -56,6 +57,7 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'change', this.render);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
+            this.listenTo(webgnome.model.get('_appearance'), 'change', this.render);
         },
 
         addMapListener: function(){
@@ -310,7 +312,7 @@ define([
                     visObj: e._vectors,
                     appearance: e.get('_appearance')
                 });
-                if (e.has('grid')) {
+                if (e.has('grid') && !this.layers.findWhere({id:e.get('grid').get('id')})) {
                     this.layers.add({
                         type: 'cesium',
                         parentEl: 'primitive',
@@ -349,6 +351,13 @@ define([
             var lays;
             lays = this.layers.where({model: e});
             this.layers.remove(lays);
+            //All layers whose id field contain the id of the model also get removed.
+            lays = this.layers.filter(function(lay) {return lay.appearance.get('id').indexOf(e.get('id')) !== -1;});
+            this.layers.remove(lays);
+            if (e.has('grid')) {
+                lays = this.layers.where({model:e.get('grid')});
+                this.layers.remove(lays);
+            }
             if(this._rendered) {
                 this.render();
             }
@@ -548,6 +557,9 @@ define([
         openInspectModal: function(e) {
             var obj_id = e.currentTarget.id.replace('attr-', '');
             var l = this.layers.findWhere({id: 'uv-' + obj_id});
+            if (!l) {
+                l = this.layers.findWhere({id: obj_id});
+            }
             var mod = new InspectForm(null, l);
             mod.render();
         },

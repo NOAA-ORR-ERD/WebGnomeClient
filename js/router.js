@@ -47,7 +47,7 @@ define([
 
         execute: function(callback, args){
             for(var view in this.views){
-                $('.tooltip').remove();
+                $('.tooltip').not('.slider-tip').remove();
                 this.views[view].close();
             }
             this.views = [];

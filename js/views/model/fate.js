@@ -152,7 +152,6 @@ define([
         initialize: function(options){
             this.module = module;
             BaseView.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             if(!webgnome.hasModel()){
                 webgnome.router.navigate('', true);
             } else if(webgnome.model.validWeathering()){
@@ -341,7 +340,6 @@ define([
                 // add a listener to handle that pending step.
                 while(this.frame < webgnome.cache.length){
                     webgnome.cache.at(this.frame, _.bind(this.loadStep, this));
-                    this.frame++;
                 }
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
                 if(webgnome.cache.streaming && webgnome.cache.isHalted){
@@ -349,8 +347,10 @@ define([
                 }
             } else {
                 this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
-                if(!webgnome.cache.streaming) {
-                    setTimeout(_.bind(webgnome.cache.getSteps, webgnome.cache), 2000);
+                //this.listenTo(webgnome.cache, 'step:received', _.bind(this.loadStep, this));
+                if(!webgnome.cache.streaming && !webgnome.cache.preparing) {
+                    webgnome.cache.getSteps();
+                    //setTimeout(_.bind(webgnome.cache.getSteps, webgnome.cache), 2000);
                 }
             }
             if(localStorage.getItem('autorun') === 'true'){
@@ -365,13 +365,14 @@ define([
             if(step.get('step_num') === webgnome.cache.length - 1){
                 this.renderGraphs();
             }
+            this.frame++;
         },
 
         reset: function(){
-            this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
+            //this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             this.dataset = undefined;
             this.frame = 0;
-            this.load();
+            setTimeout(_.bind(this.load, this), 3000);
         },
 
         render: function(){
@@ -493,7 +494,7 @@ define([
                 this.$('.run-risk').hide();
             }
             
-            this.load();
+            setTimeout(_.bind(this.load,this), 3000);
         },
 
         checkForCleanup: function(){
@@ -571,6 +572,8 @@ define([
                 this.renderTableOilBudget(this.dataset);
             } else if(active === '#evaporation') {
                 this.renderGraphEvaporation(this.dataset);
+            } else if(active === '#floating') {
+                this.renderGraphFloating(this.dataset);
             } else if(active === '#dispersion') {
                 this.renderGraphDispersion(this.dataset);
             } else if (active === '#dissolution') {
@@ -919,7 +922,7 @@ define([
 
                 if(top > offset.top && this.$('#budget-table .sticky').length === 0){
                     // a sticky header to the table.
-                    $('<div class="container sticky"><div class="col-md-12"><table class="table">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
+                    $('<div class="container sticky"><div class="col-md-12"><table class="table" style="table-layout: fixed">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
                 } else if(top <= offset.top && this.$('#budget-table .sticky').length > 0) {
                     // remove the sticky header from the table.
                     this.$('.sticky').remove();
@@ -973,6 +976,26 @@ define([
                 dataset[0].fillArea = null;
             } else {
                 this.$('#evaporation .timeline .chart').text('Weatherer Turned Off');
+            }
+        },
+
+        renderGraphFloating: function(dataset){
+            dataset = this.pluckDataset(dataset, ['floating', 'secondtime']);
+
+            if (dataset.length === 2) {
+                dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
+                if(_.isUndefined(this.graphFloating)){
+                    var options = $.extend(true, {}, this.defaultChartOptions);
+                    options.colors = this.generateColorArray(dataset);
+                    this.graphFloating = $.plot('#floating .timeline .chart .canvas', dataset, options);
+                } else {
+                    this.graphFloating.setData(dataset);
+                    this.graphFloating.setupGrid();
+                    this.graphFloating.draw();
+                }
+                dataset[0].fillArea = null;
+            } else {
+                this.$('#floating .timeline .chart').text('Weatherer Turned Off');
             }
         },
 
@@ -1468,7 +1491,7 @@ define([
         convertUnixToDateTimeCSV: function(datarow) {
             var datarowcp = datarow.slice();
             var unix = datarow[0] / 1000;
-            var date = moment.unix(unix).toISOString();
+            var date = moment.unix(unix).format(webgnome.config.date_format.moment);
             datarowcp[0] = date;
             return datarowcp;
         },
@@ -1485,10 +1508,6 @@ define([
                 var obj = this.$(el);
                 var headerText = obj.children('label').text().replace(/:/g, '');
                 var valueText = obj.clone().children(':not(span)').remove().end().text().replace(/,|°/g, '');
-
-                if (headerText.indexOf("Time") > -1) {
-                    valueText = this.convertMomentToDateTimeCSV(valueText);
-                }
 
                 csv += headerText + ',' + valueText + '\r\n';
             }, this));
@@ -1595,9 +1614,6 @@ define([
                     delete this.dataset;
                     this.frame = 0;
                     this.load();
-                    if(!webgnome.cache.isAsync){
-                        webgnome.cache.sendStepAck(step);
-                    }
                 }
             } else {
                 swal({

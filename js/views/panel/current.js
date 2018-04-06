@@ -8,9 +8,12 @@ define([
     'views/panel/base',
     'views/form/mover/create',
     'views/form/mover/edit',
+    'views/form/mover/cats',
+    'views/form/mover/grid',
+    'views/form/mover/component',
     'text!templates/panel/current.html',
     'views/modal/form'
-], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, EditMoverForm, CurrentPanelTemplate, FormModal){
+], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, EditMoverForm, CatsMoverForm, GridCurrentMoverForm, ComponentMoverForm, CurrentPanelTemplate, FormModal){
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -21,7 +24,12 @@ define([
             'gnome.movers.py_current_movers.PyCurrentMover',
             'gnome.movers.current_movers.CurrentCycleMover'
         ],
-        
+
+        forms: {
+            'gnome.movers.current_movers.CatsMover': CatsMoverForm,
+            'gnome.movers.current_movers.GridCurrentMover': GridCurrentMoverForm,
+            'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
+        },
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
@@ -33,11 +41,24 @@ define([
             var form = new CreateMoverForm();
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
-                webgnome.model.get('movers').add(mover);
-                if (mover.attributes.obj_type === 'gnome.movers.py_current_movers.PyCurrentMover') {
-                    webgnome.model.get('environment').add(mover.get('current'));
-                }
-                webgnome.model.save(null, {validate: false});
+                mover.save(null, {
+                    success: _.bind(function(){
+                        webgnome.model.get('movers').add(mover);
+                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                            webgnome.model.get('environment').add(mover.get('current'));
+                        }
+                        webgnome.model.save(null, {validate: false}).then(_.bind(function(){
+                            if(mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover'){
+                                var form = new CatsMoverForm(null, mover);
+                                form.on('save', function(){
+                                    form.on('hidden', form.close);
+                                });
+                                form.on('wizardclose', form.close);
+                                form.render();    
+                            }
+                        }, this));
+                    }, this)
+                })
             }, this));
             form.render();
         },
@@ -47,7 +68,8 @@ define([
             var id = this.getID(e);
 
             var currentMover = webgnome.model.get('movers').get(id);
-            var currentForm = new EditMoverForm(null, currentMover);
+            var form = this.getForm(currentMover.get('obj_type'));
+            var currentForm = new form(null, currentMover);
             currentForm.on('save', function(){
                 currentForm.on('hidden', currentForm.close);
             });
@@ -71,6 +93,7 @@ define([
             this.$el.html(compiled);
 
             if(currents.length > 0){
+                this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
                 this.current_layers = new ol.Collection([
                     new ol.layer.Tile({
@@ -140,6 +163,10 @@ define([
                     this.current_extents.push(extentSum);
                 }
             }
+        },
+
+        getForm: function(obj_type){
+            return _.has(this.forms, obj_type) ? this.forms[obj_type] : EditMoverForm;
         },
 
         delete: function(e){

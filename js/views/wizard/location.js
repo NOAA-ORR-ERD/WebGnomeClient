@@ -55,7 +55,7 @@ define([
         },
 
         load_location: function() {
-            webgnome.model.set('uncertain', true);
+            webgnome.model.set('uncertain', false);
             webgnome.model.save(null, {validate: false});
 
             // clear any previously loaded steps

@@ -32,7 +32,7 @@ define([
         render: function(){
             var compiled = _.template(IndexTemplate);
             $('body').append(this.$el.append(compiled));
-            this.load = new LoadView({simple: true, el: this.$('.load')});
+            this.load = new LoadView({simple: true, page: false, el: this.$('.load')});
         },
 
         setup: function(e) {
