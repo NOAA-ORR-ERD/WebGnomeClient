@@ -222,7 +222,7 @@ define([
             } else {
                 if (this.model.get('timeseries').length === 1) {
                     var time_step = webgnome.model.get('time_step');
-                    var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
+                    var active_stop = moment(this.model.get('active_start')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
                     this.model.set('active_stop', active_stop);
                 }
                 FormModal.prototype.save.call(this);
