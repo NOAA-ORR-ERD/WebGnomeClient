@@ -2,12 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/form/appearance',
+    'views/form/visualization/appearance',
     'module',
-    'model/appearance',
+    'model/visualization/appearance',
+    'views/form/visualization/colormap',
     'd3',
-    'json!model/defaultSpillAppearances.json'
-], function ($, _, Backbone, BaseAppearanceForm, module, Appearance, DDD, defaultSA) {
+    'json!model/visualization/defaultSpillAppearances.json',
+    'text!templates/form/visualization/spillAppearance.html'
+], function ($, _, Backbone, BaseAppearanceForm, module, Appearance, ColormapForm, DDD, defaultSA, SpillAppearanceTemplate) {
     "use strict";
     var spillAppearanceForm = BaseAppearanceForm.extend({
 
@@ -18,8 +20,9 @@ define([
         },
 
 
-        initialize: function(model) {
+        initialize: function(model, spill) {
             this.model = model;
+            this.spill = spill;
             this.addListeners();
             this.render();
         },
@@ -28,21 +31,20 @@ define([
             
         },
 
-        render() {
-            var html = $('<form></form>',{ 'class': 'form-horizontal appearance-edit', 'role': 'form', 'id': this.model.get('id')});
-            var attrNames = _.keys(this.model.get('ctrl_names'));
-            var ctrlNames = _.values(this.model.get('ctrl_names'));
-            for(var i = 0; i < attrNames.length; i++) {
-                var row = $('<div></div>', {class: 'form-row'});
-                row.append(this.genControlByName(ctrlNames[i], attrNames[i], this.model.get(attrNames[i])));
-                html.append(row);
-            }
+        render: function() {
+            BaseAppearanceForm.prototype.render.call(this);
             if (this.model.get('data')){
-                html.append(this.genDataPicker());
-                row = $('<div></div>', {class: 'form-row'});
-                this.genDataControls(this.model.get('datavis')).forEach(function(r) { html.append(r);})
+                var config = this.model.get('datavis_configs')[this.model.get('data')];
+                this.$el.append(_.template(SpillAppearanceTemplate, 
+                    {
+                    titles: _.keys(this.model.get('datavis_configs')),
+                    colorMapTypes: _.keys(config.colorMaps),
+                    config: config
+                    }
+                ));
+                var colormapForm = new ColormapForm(config, this.model);
+                colormapForm.$el.appendTo(this.$el);
             }
-            this.$el.html(html);
         },
 
         genDataPicker: function() {
@@ -127,6 +129,33 @@ define([
                 $('label[for="colors"]', uncertrow).attr('for', 'uncertain_colors').text('Uncertain LE Color');
                 rows.push(uncertrow);
             }
+            if (config._chosenColorMapType === 'Diverging') {
+                var certrow = $('<div></div>', {class: 'form-row'});
+                var group = $('<div></div>', {class: 'form-group datavis-config'});
+                certrow.append(group);
+                group.append($('<label></label>', {class: 'control-label col-sm-3', for:"colors"}).text('LE Color'));
+                var ctrl = $('<div></div>', {class:'col-sm-8'});
+                //Only one color is available to pick. The number scale maximum is set to max LE mass
+                var picker = $('<div></div>');
+                picker.slider({
+                    //range: true,
+                    values: [0, this.spill._per_le_mass/3, 2*this.spill._per_le_mass/3, this.spill._per_le_mass],
+                    min: 0,
+                    max: this.spill._per_le_mass,
+                    step: this.spill._per_le_mass / 255,
+                    classes: {"ui-slider": "ui-icon-caret-1-n"},
+                    create: _.bind(function(){
+                        $('.ui-slider-handle', this).each(_.bind(function(idx, elem) {
+                            $(elem).html('<div class="tooltip bottom slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">' + this.slider('values')[idx] + '</div></div>');
+                        }, this));
+                        
+                    }, picker)
+                    
+                });
+                ctrl.append(picker);
+                group.append(ctrl);
+                rows.push(certrow);
+            }
         },
 
         updateCfg: function(e) {
@@ -140,16 +169,17 @@ define([
                 value = e.currentTarget.checked;
             }
 
-            if (name.includes('colors') && typeof value === 'string') { // special case for colors
+            if (name.includes('colors') && typeof value === 'string') { // special case for colors; turns a single string into a list
                 value = [value];
             }
 
             name = name.split(':');
-            var curobj = this.model.get('datavis');
+            var curobj = this.model.get('datavis_configs');
             for (var i = 0; i < name.length-1; i++) {
-                curobj = curobj[name]
+                curobj = curobj[name[i]];
             }
             curobj[name[i]] = value;
+            this.model.trigger('change', this.model);
         },
 
         update: function(e){

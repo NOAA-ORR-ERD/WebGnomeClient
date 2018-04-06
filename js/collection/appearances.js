@@ -3,7 +3,7 @@ define([
     'jquery',
     'backbone',
     'localforage',
-    'model/appearance',
+    'model/visualization/appearance',
 ], function(_, $, Backbone, localforage, Appearance){
     'use strict';
     var appearanceCollection = Backbone.Collection.extend({

@@ -7,7 +7,7 @@ define([
     'moment',
     'cesium',
     'localforage',
-    'model/appearance',
+    'model/visualization/appearance',
 ], function(_, $, Backbone, BaseModel, ol, moment, Cesium, localforage, Appearance){
     'use strict';
     var baseMover = BaseModel.extend({

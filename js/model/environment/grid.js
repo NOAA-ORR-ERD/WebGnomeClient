@@ -5,7 +5,7 @@ define([
     'model/base',
     'moment',
     'localforage',
-    'model/appearance',
+    'model/visualization/appearance',
     'cesium'
 ], function(_, $, Backbone, BaseModel, moment, localforage, Appearance, Cesium){
     'use strict';

@@ -1,0 +1,27 @@
+<div class="form-row">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="data">Data Source</label>
+        <div class="col-sm-3 appearance-edit">
+            <select class="form-control form-control-sm" name="data">
+            {% for (var i = 0; i < titles.length; i++) { %}
+                <option name="data" {{titles[i] === config.title ? "selected=true" : ""}}>{{titles[i]}}</option>
+            {% } %}
+            </select>
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group datavis-config">
+        <label class="col-sm-3 control-label">Colormap Type</label>
+        {% for (var i = 0; i < colorMapTypes.length; i++) { %}
+            <label class="radio-inline col-sm-2">
+                <input type="radio" name="{{config.title}}:_chosenColorMapType" value="{{colorMapTypes[i]}}" {{colorMapTypes[i] === config._chosenColorMapType ? 'checked="true"' : false}}>
+                {{colorMapTypes[i]}}
+            </label>
+        {% } %}
+        <label class="checkbox-inline col-sm-3">
+            <input type="checkbox", name="{{config.title}}:useAlpha" checked="{{config.useAlpha || config._chosenColorMapType === 'Alpha'}}" disabled="{{config._chosenColorMapType === 'Alpha'}}">
+            Fade by Mass
+        </label>
+    </div>
+</div>

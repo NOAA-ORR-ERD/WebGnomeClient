@@ -1,8 +1,0 @@
-<form class="form-horizontal obj-inspect" role="form">
-    {% for(var i = 0; i < appearances.length; i++) { %}
-        <label class="form-label" for="{{appearances[i].get('id')}}">
-            {{appearances[i].get('ctrl_names').title}}
-        </label>
-        {{ appearanceForms[i].$el.html() }}
-    {% } %}
-</form>

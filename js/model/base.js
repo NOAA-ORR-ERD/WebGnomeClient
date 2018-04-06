@@ -1,7 +1,7 @@
 define([
     'underscore',
     'backbone',
-    'model/appearance',
+    'model/visualization/appearance',
     'collection/appearances',
 ], function(_, Backbone, Appearance, AppearanceCollection){
     'use strict';

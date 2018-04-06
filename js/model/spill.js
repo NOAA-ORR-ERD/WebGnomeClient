@@ -8,10 +8,10 @@ define([
     'model/element',
     'nucos',
     'moment',
-    'model/appearance',
+    'model/visualization/appearance',
     'collection/appearances',
     'd3',
-    'json!model/defaultSpillAppearances.json'
+    'text!model/visualization/defaultSpillAppearances.json'
 ], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection, d3, DefaultSpillAppearances){
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -29,7 +29,7 @@ define([
                 scale: 1,
                 id: 'les',
                 data: 'Mass',
-                datavis: DefaultSpillAppearances['Mass'],
+                datavis_configs: JSON.parse(DefaultSpillAppearances),
                 ctrl_names: {title:'LE Appearance',
                              on: 'Show',
                              scale: 'Scale',
@@ -90,6 +90,7 @@ define([
 
         setupVis: function(attrs) {
             var viscfg = this.get('_appearance').get('datavis');
+            this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
             this._locVis.merge(new Cesium.Entity({
@@ -347,32 +348,56 @@ define([
             this._les_beached_image = this.les.add({image: canvas, show: false}).image;
         },
 
+        initializeDataVis: function() {
+            // Contextualizing the default appearance for the properties of this spill
+            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
+            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
+            var max, min, stops;
+            if (configName === 'Mass') {
+                stops = [0,this._per_le_mass/3, 2* this._per_le_mass/3, this._per_le_mass];
+                max = this._per_le_mass;
+                min = 0;
+            } else if (configName === 'Age') {
+                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                min = 0;
+                stops = [0, max/3, 2*max/3, max];
+            }
+            if ('Alpha' in config.colorMaps) {
+                config.colorMaps['Alpha'].number_scale_config.domain = [min,max];
+            }
+            if ('Diverging' in config.colorMaps) {
+                config.colorMaps['Diverging'].number_scale_config.domain = [min, max/2, max];
+            }
+            if ('Sequential' in config.colorMaps) {
+                config.colorMaps['Sequential'].number_scale_config.domain = stops;
+            }
+        },
+
         setColorScales: function() {
             /*
             Call this function to reconfigure the scales used to convert a data value into a color to be applied
             */
-            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis');
-            var numScaleType = config.number_scale_config['type'];
-            if (numScaleType === 'linear') {
+            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
+            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
+            var numConfig = config.colorMaps[config._chosenColorMapType].number_scale_config;
+            if (numConfig.type === 'linear') {
                 this._numScale = d3.scaleLinear()
-                                   .domain(config.number_scale_config.domain);
-            } else if (numScaleType === 'log') {
+                                   .domain(numConfig.domain)
+                                   .range(numConfig.range);
+            } else if (numConfig.type === 'log') {
                 this._numScale = d3.scaleLog()
-                                   .domain(config.number_scale_config.domain);
+                                   .domain(numConfig.domain)
+                                   .range(numConfig.range);
             }
-            var colorScaleType = config.color_scale_config['type'];
-            var nColors = config.nColors;
-            //config.colors = d3['scheme' + config._chosenScheme][nColors];
-            var colrange = config.colors.length === 1 ? config.colors.push(config.colors[0]) : config.colors;
-            
-            if (colorScaleType === 'threshold') {
+            var colorConfig = config.colorMaps[config._chosenColorMapType].color_scale_config;
+            if (colorConfig.type === 'threshold') {
                 this._colorScale = d3.scaleThreshold()
-                                   .domain(config.color_scale_config.domain)
-                                   .range(config.colors)
-            } else if (colorScaleType === 'linear') {
+                                   .domain(colorConfig.domain)
+                                   .range(colorConfig.range);
+            } else if (colorConfig.type === 'linear') {
                 this._colorScale = d3.scaleLinear()
-                                   .domain(0,1)
-                                   .range(config.colors)
+                                   .domain(colorConfig.domain)
+                                   .range(colorConfig.range);
             }
         },
 
@@ -380,7 +405,8 @@ define([
             /*
             Uses the appearance's datavis object to determine how to colorize all the LEs
             */
-            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis');
+            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
+            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
             var genColorwithAlpha = function(colorStr, alpha) {
                 return alpha ? 
                     Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
@@ -394,38 +420,14 @@ define([
                 alphaScale.domain([2000, 0]);
             }
             var value, color, alpha, i, datatype;
-            datatype = config.title.toLowerCase()
-            if(config._chosenColorMapType === "Alpha") {
-                for (i = 0; i < this._certain.length; i++) {
-                    value = this._certain[i][datatype];
-                    color = config.colors[0];
-                    alpha = alphaScale(value);
-                    this._certain[i].color = genColorwithAlpha(color, alpha);
+            datatype = config.title.toLowerCase();
+            for (i = 0; i < this._certain.length; i++) {
+                value = this._certain[i][datatype];
+                color = this._colorScale(this._numScale(value));
+                if (config.useAlpha) {
+                    alpha = alphaScale(this._certain[i][config.alphaType]);
                 }
-                for (i = 0; i < this._uncertain.length; i++) {
-                    value = this._uncertain[i][datatype];
-                    color = config.uncertain_colors[0];
-                    alpha = alphaScale(value);
-                    this._uncertain[i].color = genColorwithAlpha(color, alpha);
-                } 
-            } else if(config._chosenColorMapType === "Diverging") {
-                for (i = 0; i < this._certain.length; i++) {
-                    value = this._certain[i][datatype];
-                    color = this._colorScale(this._numScale(value));
-                    if (config.useAlpha) {
-                        alpha = alphaScale(this._certain[i][config.alphaType]);
-                    }
-                    this._certain[i].color = genColorwithAlpha(color, alpha);
-                }
-            } else if (config._chosenColorMapType === "Sequential") {
-                for (i = 0; i < this._certain.length; i++) {
-                    value = this._certain[i][config.title.toLowerCase()];
-                    color = this._colorScale(this._numScale(value));
-                    if (config.useAlpha) {
-                        alpha = alphaScale(this._certain[i][config.alphaType]);
-                    }
-                    this._certain[i].color = genColorwithAlpha(color, alpha);
-                }
+                this._certain[i].color = genColorwithAlpha(color, alpha);
             }
         },
 
@@ -523,14 +525,12 @@ define([
                     var changedAttrs, newColor, i;
                     changedAttrs = appearance.changedAttributes();
                     if (changedAttrs){
-                        if(changedAttrs.data) {
-                            appearance.set('datavis', DefaultSpillAppearances[changedAttrs.data]);
-                        }
                         for(i = 0; i < bbs.length; i++) {
                             bbs[i].scale = appearance.get('scale');
                             bbs[i].show = appearance.get('on');
                         }
                     }
+                    this.setColorScales();
                 } else {
                     var visObj = this._locVis;
                     if (options.changedAttributes()){

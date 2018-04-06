@@ -7,9 +7,9 @@ define([
     'module',
     'text!templates/model/trajectory/layers.html',
     'moment',
-    'views/form/inspect',
+    'views/form/visualization/inspect',
     'model/layer',
-    'model/appearance',
+    'model/visualization/appearance',
 ], function ($, _, Backbone, Cesium, BaseView, module, LayersTemplate, moment, InspectForm, LayerModel, Appearance) {
     "use strict";
     var layersView = BaseView.extend({

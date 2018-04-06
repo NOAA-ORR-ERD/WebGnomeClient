@@ -59,7 +59,7 @@ require.config({
         whammy: 'lib/whammy/whammy',
         gif: 'lib/ccapture.js/src/gif',
         gifworker: 'lib/ccapture.js/src/gif.worker',
-        'd3': "lib/d3/d3"
+        'd3': "lib/d3/d3",
     },
     shim: {
         jquery: {

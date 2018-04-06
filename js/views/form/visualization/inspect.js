@@ -4,9 +4,9 @@ define([
     'backbone',
     'module',
     'views/modal/form',
-    'text!templates/form/obj_inspect.html',
-    'views/form/appearance',
-    'views/form/spillAppearance'
+    'text!templates/form/visualization/inspect.html',
+    'views/form/visualization/appearance',
+    'views/form/visualization/spillAppearance'
 ], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm, SpillAppearanceForm){
     'use strict';
     var inspectForm = FormModal.extend({
@@ -58,14 +58,16 @@ define([
                     var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
                                     .text(a.get('ctrl_names').title);
                     html.append(formLabel);
-                    html.append(new formType(a).$el);
-                }
+                    var app = new formType(a, this.layer.model)
+                    html.append(app.$el);
+                }, this
             );
             this.body = html;
             FormModal.prototype.render.call(this, options);
         },
 
         update: function(e) {
+            //this trigger is to let the layers panel know that it needs to re-render!
             webgnome.model.get('_appearance').trigger('change', this.layer.model);
         },
 
