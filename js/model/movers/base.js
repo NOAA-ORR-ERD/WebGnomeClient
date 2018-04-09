@@ -452,7 +452,7 @@ define([
             // - Time range data points are expected to be in ascending order
             //   from left to right.  We don't deal with zero or negative
             //   time ranges.
-            var [model_start, model_stop] = this.modelActiveTimeRange();
+            var [model_start, model_stop] = webgnome.model.activeTimeRange();
             var suspect_ranges = this.invalidActiveTimeRanges();
             var invalid_ranges = [];
 
@@ -505,11 +505,6 @@ define([
             }
         },
 
-        modelActiveTimeRange: function() {
-            return [this.parseTimeAttr(webgnome.model.get('start_time')),
-                    this.parseTimeAttr(webgnome.model.getEndTime())];
-        },
-
         parseTimeAttr: function(timeAttr) {
             // timeAttr is a string value representing a date/time or a
             // positive or negative infinite value.
@@ -534,26 +529,33 @@ define([
                 v_offset = u_offset + this.num_times * this.num_vecs,
                 pdiv2 = Math.PI/2,
                 data = this.vec_data;
-            if(time_axis[idx] <= timestamp) {
+
+            if (time_axis[idx] <= timestamp) {
                 //after or equal to data end so return data end
                 for (n = this.num_vecs;n >= 0; n--) {
                     dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                     mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                 }
+
                 return;
-            } else if ( time_axis[0] >= timestamp) {
+            }
+            else if ( time_axis[0] >= timestamp) {
                 //before or equal to data start so return data start
                 u_offset = 0;
                 v_offset = this.num_vecs * this.num_times;
+
                 for (n = this.num_vecs;n >= 0;n--) {
                     dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                     mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                 }
+
                 return;
             }
+
             for (idx;idx >=0; idx--) {
                 u_offset = idx * this.num_vecs;
                 v_offset = u_offset + this.num_times * this.num_vecs;
+
                 if (time_axis[idx] < timestamp) {
                     var t0 = time_axis[idx],
                         t1 = time_axis[idx+1],
@@ -561,20 +563,27 @@ define([
                         u1 = (idx+1) * this.num_vecs,
                         v0 = v_offset,
                         v1 = u1 + this.num_times * this.num_vecs;
+
                     var alpha = (timestamp - t0) / (t1 - t0);
+
                     for (n = this.num_vecs; n >= 0; n--) {
                         //mag_out has interpolated dx, this._temp has interpolated dy
                         mag_out[n] = data[u0 + n] + (data[u1 + n] - data[u0 + n]) * alpha;
+
                         this._temp[n] = data[v0 + n] + (data[v1 + n] - data[v0 + n]) * alpha;
+
                         dir_out[n] = Math.atan2(this._temp[n], mag_out[n]) - pdiv2;
                         mag_out[n] = Math.sqrt(mag_out[n] * mag_out[n] + this._temp[n] * this._temp[n]);
                     }
+
                     return;
-                } else if (time_axis[idx] === timestamp) {
+                }
+                else if (time_axis[idx] === timestamp) {
                     for (n = this.num_vecs;n >= 0; n--) {
                         dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                         mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                     }
+
                     return;
                 }
             }
