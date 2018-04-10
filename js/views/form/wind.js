@@ -387,7 +387,7 @@ define([
         setupUpload: function(obj_type){
             this.$('#upload_form').empty();
             if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+                this.$('#upload_form').append(_.template(UploadActivateTemplate, {page: false}));
             } else {
                 this.$('#upload_form').append(_.template(UploadTemplate));
             }

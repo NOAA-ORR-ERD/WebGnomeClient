@@ -12,10 +12,6 @@ define([
         title: 'Edit Current Attributes ',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
-        events: function() {
-            return _.defaults({}, FormModal.prototype.events);
-        },
-        
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);

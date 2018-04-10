@@ -41,11 +41,24 @@ define([
             var form = new CreateMoverForm();
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
-                webgnome.model.get('movers').add(mover);
-                if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
-                    webgnome.model.get('environment').add(mover.get('current'));
-                }
-                webgnome.model.save(null, {validate: false});
+                mover.save(null, {
+                    success: _.bind(function(){
+                        webgnome.model.get('movers').add(mover);
+                        if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                            webgnome.model.get('environment').add(mover.get('current'));
+                        }
+                        webgnome.model.save(null, {validate: false}).then(_.bind(function(){
+                            if(mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover'){
+                                var form = new CatsMoverForm(null, mover);
+                                form.on('save', function(){
+                                    form.on('hidden', form.close);
+                                });
+                                form.on('wizardclose', form.close);
+                                form.render();    
+                            }
+                        }, this));
+                    }, this)
+                })
             }, this));
             form.render();
         },

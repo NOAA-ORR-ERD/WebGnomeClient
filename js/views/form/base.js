@@ -44,6 +44,16 @@ define([
                 }
             }
 
+            if(value === 'null'){
+                value = null;
+            }
+
+            if(value.match(/[\d\w]{8}-([\d\w]{4}-){3}[\d\w]{12}/).length > 0){
+                if(_.has(webgnome.obj_ref, value)){
+                    value = webgnome.obj_ref[value];
+                }
+            } 
+
             name = name.split(':');
             if(name.length === 1){
                 this.model.set(name[0], value);
