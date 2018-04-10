@@ -46,7 +46,7 @@ define([
                     return secs * 1000;  // milliseconds
                 });
 
-                timeStep = webgnome.model.get('time_step') * 1000;
+                var timeStep = webgnome.model.get('time_step') * 1000;
 
                 end = Math.max(end, start + timeStep);
 
