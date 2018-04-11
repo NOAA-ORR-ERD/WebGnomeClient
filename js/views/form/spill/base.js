@@ -501,24 +501,26 @@ define([
             } else {
                 this.model.get('release').set('end_position', endPosition);
             }
-            if(start.toString().indexOf(' ') !== -1){
-                this.showParsedCoords('start');
-            } else {
-                this.hideParseCoords('start');
-            }
+            this.showParsedCoords('start');
+            this.showParsedCoords('end');
+            // if(start.toString().indexOf(' ') !== -1){
+                // this.showParsedCoords('start');
+            // } else {
+                // this.hideParseCoords('start');
+            // }
 
-            if(end.toString().indexOf(' ') !== -1){
-                this.showParsedCoords('end');
-            } else {
-                this.hideParseCoords('end');
-            }
+            // if(end.toString().indexOf(' ') !== -1){
+                // this.showParsedCoords('end');
+            // } else {
+                // this.hideParseCoords('end');
+            // }
 
         },
 
         showParsedCoords: function(position){
             var coords = this.model.get('release').get(position + '_position');
-            this.$('.' + position + '-lat-parse').text('Parsed as: ' + coords[1].toPrecision(4));
-            this.$('.' + position + '-lon-parse').text('Parsed as: ' + coords[0].toPrecision(4));
+            this.$('.' + position + '-lat-parse').text('(' + coords[1].toFixed(4) + ')');
+            this.$('.' + position + '-lon-parse').text('(' + coords[0].toFixed(4) + ')');
         },
 
         hideParseCoords: function(position){

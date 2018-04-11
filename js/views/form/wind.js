@@ -272,6 +272,20 @@ define([
                         this.$('#nws #lon').val(lon);
                     }
                     this.renderSpills();
+                    this.$('#nws input[name="lat"]').tooltip({
+                        trigger: 'focus',
+                        html: true,
+                        width: 200,
+                        placement: 'top',
+                        viewport: 'body'
+                    });
+                    this.$('#nws input[name="lon"]').tooltip({
+                        trigger: 'focus',
+                        html: true,
+                        width: 200,
+                        placement: 'top',
+                        viewport: 'body'
+                    });
                 }
             }
             this.update();
@@ -279,6 +293,10 @@ define([
             this.populateDateTime();
         },
 
+        showParsedCoords: function(coords){
+            this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
+            this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
+        },
         coordsParse: function(coordsArray){
             for (var i = 0; i < coordsArray.length; i++){
                 if (!_.isUndefined(coordsArray[i]) && coordsArray[i].trim().indexOf(' ') !== -1){
@@ -300,17 +318,18 @@ define([
                 this.$('#nws #lat').val(coords[1]);
                 this.$('#nws #lon').val(coords[0]);
             } else {
-                var pointcoords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
-                pointcoords = this.coordsParse(_.clone(pointcoords));
-                if (_.isNaN(pointcoords[0])){
-                    pointcoords[0] = 0;
+                coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
+                coords = this.coordsParse(_.clone(coords));
+                if (_.isNaN(coords[0])){
+                    coords[0] = 0;
                 }
-                if (_.isNaN(pointcoords[1])) {
-                    pointcoords[1] = 0;
+                if (_.isNaN(coords[1])) {
+                    coords[1] = 0;
                 }
-                coordinate = new ol.geom.Point(pointcoords);
-                coords = new ol.proj.transform(pointcoords, 'EPSG:4326', 'EPSG:3857');
-                feature = new ol.Feature(new ol.geom.Point(coords));
+                coordinate = new ol.geom.Point(coords);
+                var proj_coords = new ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+                feature = new ol.Feature(new ol.geom.Point(proj_coords));
+                this.showParsedCoords(coords);
             }
 
             this.clearError();
@@ -355,9 +374,9 @@ define([
 
         nwsSubmit: function(e) {
             e.preventDefault();
-            var coords = {};
-            coords.lat = parseFloat(this.$('#nws #lat').val());
-            coords.lon = parseFloat(this.$('#nws #lon').val());
+            // var coords = {};
+            // coords.lat = parseFloat(this.$('#nws #lat').val());
+            // coords.lon = parseFloat(this.$('#nws #lon').val());
             this.updateNWSMap(e);
         },
 
@@ -365,12 +384,15 @@ define([
             this.nws = new NwsWind(coords);
         },
 
-        setupUpload: function(){
+        setupUpload: function(obj_type){
             this.$('#upload_form').empty();
             if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+                this.$('#upload_form').append(_.template(UploadActivateTemplate, {page: false}));
             } else {
                 this.$('#upload_form').append(_.template(UploadTemplate));
+            }
+            if (!obj_type) {
+                obj_type = WindMoverModel.prototype.defaults.obj_type;
             }
 
             this.dropzone = new Dropzone('.dropzone', {
@@ -381,7 +403,7 @@ define([
                 //acceptedFiles: '.osm, .wnd, .txt, .dat',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
-            this.dropzone.on('sending', _.bind(this.sending, this));
+            this.dropzone.on('sending', _.bind(this.sending,  {obj_type: obj_type}));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
             this.dropzone.on('error', _.bind(this.reset, this));
             this.dropzone.on('success', _.bind(this.loaded, this));
@@ -393,8 +415,9 @@ define([
             }
         },
 
-        sending: function(e, xhr, formData){
+        sending: function(e, xhr, formData, obj_type){
             formData.append('session', localStorage.getItem('session'));
+            formData.append('obj_type', this.obj_type);
             formData.append('persist_upload',
                             $('input#persist_upload')[0].checked);
         },
@@ -415,17 +438,17 @@ define([
 
         loaded: function(e, response){
             var json_response = JSON.parse(response);
-            this.model.set('filename', json_response.filename);
-            this.model.set('name', json_response.name);
-            this.model.save(null, {
-                success: _.bind(function(){
-                    this.trigger('save', this.model);
-                    this.hide();
-                }, this),
-                error: _.bind(function(){
-                    this.error('An error occured while creating this object.');
-                })
-            });
+            var mover;
+            if (json_response && json_response.obj_type) {
+                if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
+                    mover = new WindMoverModel(json_response, {parse: true});
+                    //this.model = json_response['wind'];
+                }
+                this.trigger('save', mover);
+            } else {
+                console.error('No response to file upload');
+            }
+            this.hide();
         },
 
         activateFile: function(filePath) {
@@ -455,7 +478,7 @@ define([
         },
 
         update: function(compass){
-            var active = this.$('.nav-tabs:last .active a').attr('href').replace('#', '');
+            var active = this.$('.nav-tabs.wind .active a').attr('href').replace('#', '');
 
             if (active === 'constant') {
                 var speed = this.form[active].speed.val();

@@ -47,6 +47,7 @@ define([
 
             if (_.isUndefined(model)) {
                 model = new this.models[obj_type]();
+
                 model.save(null, {
                     success: function() {
                         webgnome.model.get('outputters').add(model, {'merge': true});
@@ -160,6 +161,7 @@ define([
         removeOutputter: function() {
             var model = this.model;
             webgnome.model.get('outputters').remove(model);
+            webgnome.model.save();
         },
 
         turnOff: function() {

@@ -2,15 +2,73 @@ define([
     'underscore',
     'jquery',
     'model/base',
-    'ol'
-], function(_, $, BaseModel, ol){
+    'ol',
+    'cesium',
+    'collection/appearances',
+], function(_, $, BaseModel, ol, Cesium, AppearanceCollection){
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
         requested: false,
         geo_json: undefined,
         geographical: false,
-        
+        defaults: {
+            obj_type: 'gnome.map.GnomeMap',
+            filename: '',
+            map_bounds: [[
+                [-180,-85.06],
+                [-180,85.06],
+                [180,85.06],
+                [180,-85.06],
+            ]],
+            spillable_area: [[
+                [-180,-85.06],
+                [-180,85.06],
+                [180,85.06],
+                [180,-85.06],
+            ]]
+        },
+        default_appearances: [
+            {
+                on: true,
+                ctrl_name: 'Map Appearance',
+                id: 'map',
+                color: '#FFFF00', //YELLOW
+                alpha: 1,
+            },
+            {
+                on: false,
+                ctrl_name: 'Spillable Area Appearance',
+                id: 'sa',
+                alpha: 1,
+            },
+            {
+                on: false,
+                ctrl_name: 'Map Bounds Appearance',
+                id: 'bounds',
+            }
+        ],
+
+        initialize: function(options) {
+            BaseModel.prototype.initialize.call(this, options);
+            this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+            this._mapVis = new Cesium.GeoJsonDataSource({show: this.get('_appearance').findWhere({id: 'map'}).get('on')});
+            this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
+            this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
+            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            
+        },
+
+        setupVis: function(attrs) {
+            this._mapVis.show = this.get('_appearance').findWhere({id: 'map'}).get('on');
+            this._spillableVis.show = this.get('_appearance').findWhere({id: 'sa'}).get('on');
+            this._boundsVis.show = this.get('_appearance').findWhere({id: 'bounds'}).get('on');
+            this._mapVis.clampToGround = false;
+            this.genMap();
+            this.genAux('spillable_area');
+            this.genAux('map_bounds');
+        },
+
         getExtent: function(){
             var extent;
             if (!_.isUndefined(this.get('spillable_area')) && this.get('spillable_area').length >= 1){
@@ -48,6 +106,58 @@ define([
             return boundingPolygon;
         },
 
+        genAux: function(type) {
+            var polygons = this.get(type);
+            if (!_.isEqual(_.flatten(polygons), _.flatten(this.defaults[type]))) {
+                //polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+                var vis;
+                for(var poly in polygons){
+                    if (type === 'spillable_area') {
+                        vis = this._spillableVis;
+                        vis.entities.add({
+                            polygon: {
+                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                material: Cesium.Color.BLUE.withAlpha(0.25),
+                                outline: true,
+                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                                height: 0,
+                            }
+                        });
+                    } else {
+                        vis = this._boundsVis;
+                        vis.entities.add({
+                            polygon: {
+                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                material: Cesium.Color.WHITE.withAlpha(0),
+                                outline: true,
+                                outlineColor: Cesium.Color.BLUE,
+                                height: 0,
+                            }
+                        });
+                    }
+                }
+            }
+        },
+
+        genBounds: function() {
+            var polygons = this.get('');
+            if (!_.isEqual(polygons[0],this.defaults.spillable_area[0])) {
+                //polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+
+                for(var poly in polygons){
+                    this._spillableVis.entities.add({
+                        polygon: {
+                            hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                            material: Cesium.Color.BLUE.withAlpha(0.25),
+                            outline: true,
+                            outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                            height: 0,
+                        }
+                    });
+                }
+            }
+        },
+
         resetRequest: function(){
             this.requested = false;
             delete this.geo_json;
@@ -71,7 +181,58 @@ define([
                 _.delay(_.bind(this.getGeoJSON, this), 500, callback);
             }
             return null;
-        }
+        },
+
+        genMap: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                //var color = Cesium.COLOR[this.get('_appearance').findWhere({id:'map'}).get('on')].withAlpha
+                this.getGeoJSON(_.bind(function(geojson) {
+                    if (geojson.features.length > 0) {
+                        this._mapVis.load(geojson, {
+                            strokeWidth: 0,
+                            stroke: Cesium.Color.WHITE.withAlpha(0),
+                            //fill: this.get('_(0.4),
+                        });
+                    }
+                    this._mapVis.show = this.get('_appearance').findWhere({id:'map'}).get('on');
+                }, this));
+            }, this ));
+        },
+
+        updateVis: function(options) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            var vis;
+            if(options) {
+                if(options.id === 'map') {
+                    vis = this._mapVis;
+                    if (options.changedAttributes()){
+                        //vis.fill = Cesium.Color[appearance.get('fill')];
+                        //vis.alpha = appearance.get('alpha');
+                        //vis.scale = appearance.get('scale');
+                        vis.show = options.get('on');
+                    }
+                } else if (options.id === 'sa') {
+                    vis = this._spillableVis;
+                    vis.show = options.get('on');
+/*
+                    if (options.changedAttributes()){
+                        for (var i = 0; i < vis.entities.length; i++) {
+                            vis.entities[i].show = options.get('on');
+                        }
+                    }
+*/
+                } else {
+                    vis = this._boundsVis;
+                    if (options.changedAttributes()){
+                        //vis.fill = Cesium.Color[appearance.get('fill')];
+                        //vis.alpha = appearance.get('alpha');
+                        //vis.scale = appearance.get('scale');
+                        vis.show = options.get('on');
+                    }
+                }
+            }
+        },
     });
 
     return baseMap;

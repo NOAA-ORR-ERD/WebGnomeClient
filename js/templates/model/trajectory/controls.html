@@ -1,0 +1,38 @@
+<div class="controls">
+    <div class="buttons">
+        <div class="btn-group" data-html2canvas-ignore="true">
+            <button type="button" class="btn record"><span></span></button>
+            <button type="button" class="btn stoprecord"><span></span></button>
+            <button type="button" class="btn recordcontrols dropdown-toggle" data-toggle="dropdown" data-trigger="hover" aria-haspopup="true" aria-expanded="false">
+            <span></span>
+            </button>
+            <div class="recordmenu dropdown-menu">
+                <form>
+                    <h5>Select Format</h5>
+                    <input type="radio" name="format" value="gif" checked> GIF<br>
+                    <input type="radio" name="format" value="webm"> WebM<br>
+                    <input type="radio" name="format" value="mp4"> MP4
+                    <h5>Settings</h5>
+                    FPS <input type="number" name="framerate" min="1" max="15" value="6"><br>
+                    Skip # <input type="number" name="skip" min="0" max="8" value="0"><br>
+                    Seek Bar <input type="checkbox" name="addseek" checked> <br>
+                    Name: <input type='text' name='name' value='webgnome_run'>
+                    
+                </form>
+            </div>
+        </div>
+        <div class="btn-group" data-html2canvas-ignore="true">
+            <button type="button" class="btn rewind"><span></span></button>
+            <button type="button" class="btn back"><span></span></button>
+            <button type="button" class="btn stop"><span></span></button>
+            <button type="button" class="btn play"><span></span></button>
+            <button type="button" class="btn pause"><span></span></button>
+            <button type="button" class="btn next"><span></span></button>
+        </div>
+        <div class="seek"><div></div><div class="progress"><div class="progress-bar" role="progressbar"></div></div></div>
+        <div class="gnome-help" data-html2canvas-ignore="true" title="Get Help on Map View"></div>
+    </div>
+
+</div>
+
+

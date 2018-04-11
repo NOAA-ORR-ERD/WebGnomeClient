@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'moment',
     'nucos',
     'sweetalert',
@@ -11,7 +12,7 @@ define([
     'text!templates/form/beached/input-static.html',
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+], function($, _, Backbone, module, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
@@ -35,6 +36,7 @@ define([
         },
 
         initialize: function(options, model){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             if (_.isUndefined(model)) {
                 this.model = new BeachedModel();
@@ -222,7 +224,9 @@ define([
             } else {
                 if (this.model.get('timeseries').length === 1) {
                     var time_step = webgnome.model.get('time_step');
-                    var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
+                    var timeseries = this.model.get('timeseries');
+                    var active_stop = timeseries[0][0];
+                    //var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
                     this.model.set('active_stop', active_stop);
                 }
                 FormModal.prototype.save.call(this);

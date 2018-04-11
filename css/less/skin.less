@@ -32,7 +32,7 @@ body{
     font-family: 'Droid Sans';
     background: #2c2c2e;
     padding-top: 50px;
-
+    min-width: 1170px;
     &.logger-open{
         padding-bottom: 200px;
     }
@@ -137,7 +137,7 @@ img{
     background-color: #e1e1e1;
     position: absolute;
     font: 10pt verdana, sans-serif;
-    
+    z-index: 1;
 }
 
 .swal2-overlay{
@@ -405,12 +405,99 @@ img{
     }
 }
 
+.obj-inspect {
+    .form-label {
+        background-color: #dfdfdf;
+    }
+}
+
 .panel-primary, .panel{
     .date span i{
         .glyphicon;
         .glyphicon-calendar;
     }
+    .env_objs{
+        tbody > tr > td {
+            padding: 6px;
+        }
+        thead > tr > th{
+            padding: 6px;
+        }
+    }
+
+    .env-uv-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-move;
+        }
+        width: 1%;
+    }
+    .env-grid-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-th;
+        }
+        width: 1%;
+    }
+    .env-edit-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-wrench
+        }
+        width: 1%;
+    }
+
+    .env-edit-btn, .curr-edit-btn{
+        span{
+            .glyphicon;
+            .glyphicon-option-horizontal;
+            padding: 1px;
+        }
+        padding: 1px;
+    }
+    
+    .spills{
+        tbody > tr > td {
+            padding: 6px;
+        }
+        thead > tr > th{
+            padding: 6px;
+        }
+    }
+
+    .spill-vis-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-oil;
+        }
+        width: 1%;
+    }
+    .spill-loc-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-pushpin;
+        }
+        width: 1%;
+    }
+    .spill-edit-hdr{
+        span{
+            .glyphicon;
+            .glyphicon-wrench
+        }
+        width: 1%;
+    }
+
+    .spill-edit-btn{
+        span{
+            .glyphicon;
+            .glyphicon-option-horizontal;
+            padding: 1px;
+        }
+        padding: 1px;
+    }
 }
+
+
 
 .panel-secondary {
   background: #88b5dd;
@@ -542,6 +629,7 @@ img{
 nav.navbar{
     border-radius: 0;
     margin-bottom: 0;
+    max-height: 51px;
 
     a{
         white-space: nowrap;
@@ -1803,17 +1891,23 @@ nav.navbar{
         }
     }
 
+    .overlay{
+        position:absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
     
     
     .controls{
-        .make-row();
         background: rgba(255, 255, 255, .75);
         border-radius: 0 0 4px 4px;
         height: 60px;
         position: absolute;
         left: 15px;
         right: 15px;
-        z-index: 1;
+        z-index: 2;
         border: 1px solid rgba(255, 255, 255, .85);
         border-top: 0;
 
@@ -1846,6 +1940,12 @@ nav.navbar{
         .recordmenu {
             width: 200px;
             padding: 10px;
+        }
+        .recordcontrols{
+            span {
+                .glyphicon;
+                .glyphicon-chevron-down;
+            }
         }
 
         .record{
@@ -1913,7 +2013,7 @@ nav.navbar{
             padding-bottom: 34px;
             padding-left: 60px;
             padding-right: 60px;
-            width: 78%;
+            width: 70%;
             display: inline-block;
 
             .ui-widget-content{
@@ -1944,8 +2044,10 @@ nav.navbar{
         .gnome-help{
             font-size: 25px;
             line-height: 25px;
-            top: 7px;
+            top: 14px;
+            right: 20px;
             color: #696969;
+            position: absolute;
         }
     }
 
@@ -1966,8 +2068,6 @@ nav.navbar{
             background: rgba(255, 255, 255, .75);
             .panel-body{
                 background: none;
-                max-height: 200px;
-                overflow-x: scroll;
 
                 form:last-of-type{
                     margin-bottom: 0;
@@ -2404,6 +2504,7 @@ nav.navbar{
 }
 
 .page.load{
+    padding-top: 40px;
     .dropzone{
         margin-top: 40px;
     }
@@ -2589,8 +2690,9 @@ nav.navbar{
             font-size: 11px;
             font-family: "PT Mono";
             margin-bottom: 0;
+            width: 100%;
 
-            li{
+            td{
                 padding: 2px 4px;
                 border-bottom: 1px solid #F1F1F1;
                 display: none;
@@ -2630,19 +2732,25 @@ nav.navbar{
         }
         &.error {
             .logs{
-                li.error {
+                td.error {
                     display: block !important;
                 }
             }
         }
         &.warni {
             .logs {
-                li.warni{
+                td.warni{
                     display: block !important;
                 }
             }
         }
 
+    }
+}
+
+.upload-folder{
+    .breadcrumb{
+        margin-top: 20px;
     }
 }
 
@@ -3145,6 +3253,9 @@ nav.navbar{
             &.grid .icon{
                 background-image: url(/img/surface-current.png);
             }
+            &.py_grid .icon{
+                background-image: url(/img/surface-current.png);
+            }
             &.gridwind .icon{
                 background-image: url(/img/wind.png);
             }
@@ -3527,6 +3638,19 @@ nav.navbar{
 
 .oilContainer {
 
+    &.sticky{
+        padding-top: 140px;
+
+        .oil-form{
+            position:absolute;
+            padding-top: 15px;
+            top: 0px;
+            right: 15px;
+            left: 15px;
+            background: white;
+        }
+    }
+
     form{
         margin-bottom: 30px;
     }
@@ -3799,6 +3923,10 @@ nav.navbar{
     -webkit-animation-delay: -0.8s;
     animation-delay: -0.8s;
   }
+}
+
+.pick-coords{
+    cursor: pointer;
 }
 
 @-webkit-keyframes stretchdelay {

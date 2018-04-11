@@ -11,7 +11,7 @@ define([
     'views/model/response/index',
     'views/default/adios',
     'views/default/roc',
-    'views/model/trajectory',
+    'views/model/trajectory/index',
     'views/model/fate',
     'views/default/overview',
     'views/default/faq',
@@ -47,7 +47,7 @@ define([
 
         execute: function(callback, args){
             for(var view in this.views){
-                $('.tooltip').remove();
+                $('.tooltip').not('.slider-tip').remove();
                 this.views[view].close();
             }
             this.views = [];
@@ -122,7 +122,7 @@ define([
                 if(_.isUndefined(this.trajView)){
                     this.trajView = new TrajectoryView();
                 } else {
-                    this.trajView.$el.show();
+                    this.trajView.show();
                 }
                 this.views.push(this.trajView);
                 localStorage.setItem('view', 'trajectory');
@@ -187,6 +187,8 @@ define([
             if (!_.isUndefined(webgnome.router.trajView)) {
                 this.trajView.viewer.destroy();
                 this.trajView.stopListening();
+                this.trajView.controls.stopListening();
+                this.trajView.layersPanel.stopListening();
                 this.trajView.remove();
                 this.trajView = undefined;
             }

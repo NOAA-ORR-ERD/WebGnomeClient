@@ -34,22 +34,22 @@
 		<div class="col-sm-3">
 			<input type="number" min="0" step="10" id="spill-amount" class="form-control" value="{{ amount }}">
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-4">
 			<select class="form-control" id="units">
 				{% if (showSubstance){ %}
-					<option value="m^3">
-						cu. m.
+					<option value="m³">
+						cubic meters
 					</option>
 					<option value="gal">
-						gal
+						gallons
 					</option>
 					<option value="bbl">
-						bbl
+						barrels
 					</option>
 					<option value="ton">
 						tons
 					</option>
-					<option value="metric ton">
+					<option value="mt">
 						metric tons
 					</option>
 					<option value="kg">
@@ -59,7 +59,7 @@
 					<option value="ton">
 						tons
 					</option>
-					<option value="metric ton">
+					<option value="mt">
 						metric tons
 					</option>
 					<option value="kg">
@@ -74,42 +74,42 @@
 		<div class="col-sm-3">
 			<input type="number" min="0" id="spill-rate" class="form-control">
 		</div>
-		<div class="col-sm-3">
+		<div class="col-sm-4">
 			<select class="form-control" id="rate-units">
 				{% if (showSubstance){ %}
 					<option value="bbl/hr">
-						bbl/hr
+						barrels/hr
 					</option>
 					<option value="bbl/day">
-						bbl/day
+						barrels/day
 					</option>
 					<option value="gal/hr">
-						gal/hr
+						gallons/hr
 					</option>
 						<!--<option value="gal/min">
 						gal/min
 					</option> -->
-					<option value="m^3/hr">
-						cu. m./hr
+					<option value="m³/hr">
+						cubic meters/hr
 					</option>
 					<option value="ton/hr">
 						tons/hr
 					</option>
-					<option value="metric ton/hr">
+					<option value="mt/hr">
 						metric tons/hr
 					</option>
 					<option value="kg/hr">
-						kg/hr
+						kilograms/hr
 					</option>
 				{% } else { %}
 					<option value="ton/hr">
 						tons/hr
 					</option>
-					<option value="metric ton/hr">
+					<option value="mt/hr">
 						metric tons/hr
 					</option>
 					<option value="kg/hr">
-						kg/hr
+						kilograms/hr
 					</option>
 				{% } %}
 			</select>

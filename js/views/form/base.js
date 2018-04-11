@@ -5,14 +5,16 @@ define([
     'moment',
     'views/base',
     'views/attributes/attributes',
-    'text!templates/default/alert-danger.html'
-], function(_, $, Backbone, moment, BaseView, AttributesView, AlertDangerTemplate){
+    'text!templates/default/alert-danger.html',
+    'views/modal/pick-coords'
+], function(_, $, Backbone, moment, BaseView, AttributesView, AlertDangerTemplate, PickCoordsView){
     var formView = BaseView.extend({
         events: {
-            'click input': 'selectContents',
-            'change input': 'update',
-            'change select': 'update',
-            'keyup input': 'update'
+            'click input:(.attributes input)': 'selectContents',
+            'change input:not(.attributes input)': 'update',
+            'change select:not(.attributes select)': 'update',
+            'keyup input:not(.attributes select)': 'update',
+            'click .pick-coords': 'pickCoords'
         },
 
         initialize: function(options){
@@ -20,8 +22,8 @@ define([
         },
 
         update: function(e){
-            var name = $(e.target).attr('name');
-            var value = $(e.target).val();
+            var name = this.$(e.currentTarget).attr('name');
+            var value = this.$(e.currentTarget).val();
             if(!name){ return; }
             // if the user is inputting a negative numerical value
             // reset it back to the non-neg version.
@@ -34,6 +36,23 @@ define([
             if($(e.target).attr('type') === 'number'){
                 value = parseFloat(value);
             }
+
+            var type = $(e.target).data('type');
+            if(type){
+                if(type === 'array'){
+                    value = value.split(','); 
+                }
+            }
+
+            if(value === 'null'){
+                value = null;
+            }
+
+            if(value.match(/[\d\w]{8}-([\d\w]{4}-){3}[\d\w]{12}/).length > 0){
+                if(_.has(webgnome.obj_ref, value)){
+                    value = webgnome.obj_ref[value];
+                }
+            } 
 
             name = name.split(':');
             if(name.length === 1){
@@ -68,6 +87,17 @@ define([
             }
         },
 
+        pickCoords: function(e){
+            var modal = new PickCoordsView({
+                target: this.$($(e.currentTarget).data('el')),
+                type: 'cesium',
+                model: _.has(this, 'model') ? this.model : null
+            });
+            modal.on('hidden', _.bind(this.show, this));
+            this.hide();
+            modal.render();
+        },
+
         setInputVal: function(el, val){
             if(el.is('input[type="text"]') && _.isString(val) && val.match(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d$/) !== null){
                 el.val(moment(val).format(webgnome.config.date_format.moment));
@@ -80,7 +110,13 @@ define([
                     }
                 }
             } else if(el.is('select')){
-                el.val(val);
+                if(_.isObject(val)){
+                    el.val(val.id);
+                } else if(_.isBoolean(val)) {
+                    el.val(val.toString());
+                } else {
+                    el.val(val);
+                }
             }
         },
 

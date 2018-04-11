@@ -169,13 +169,14 @@ define([
             this.get('environment').on('add remove sort', this.configureWindRelations, this);
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
+            this.get('movers').on('add', this.manageTides, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('sync save', this.moversTimeComplianceWarning, this);
+            this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
             this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
@@ -202,6 +203,14 @@ define([
         spillsChange: function(child){
             this.childChange('spills', child);
             this.toggleWeatherers(child);
+            if(this.get('uncertain')) {
+                this.set('uncertain', false);
+                this.save(null, {
+                    success: _.bind(function(){
+                        this.set('uncertain', true);
+                        this.save();
+                    }, this)});
+            }
         },
 
         adiosSpillTimeFix: function() {
@@ -213,6 +222,24 @@ define([
             }
         },
 
+        setupTides: function(){
+            var movers = this.get('movers');
+            var tides = [];
+            movers.each(function(mover){
+                if(!_.isUndefined(mover.get('tide'))){
+                    tides.push(mover.get('tide'));
+                }
+            });
+            this.get('environment').add(tides);
+        },
+
+        manageTides: function(model){
+            if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
+                if(!_.isUndefined(model.get('tide'))){
+                    this.get('environment').add(model.get('tide'));
+                }
+            }
+        },
         
         spillsTimeComplianceCheck: function(model) {
                     
@@ -756,6 +783,19 @@ define([
                 }
             }
             return false;
+        },
+
+        getWinds: function(){
+            var env = this.get('environment');
+            return _.flatten(
+                env.where({'obj_type': 'gnome.environment.wind.Wind'}),
+                env.where({'obj_type': 'gnome.environment.environment_objects.GridWind'})
+            );
+        },
+
+        getTides: function(){
+            var environment = this.get('environment');
+            return environment.where({'obj_type': 'gnome.environment.tide.Tide'});
         }
     });
     

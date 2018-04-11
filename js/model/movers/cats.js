@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'model/movers/base',
-    'model/environment/tide'
-], function(_, Backbone, BaseMover, GnomeTide){
+    'model/environment/tide',
+    'cesium'
+], function(_, Backbone, BaseMover, GnomeTide, Cesium){
     'use strict';
     var catsMover = BaseMover.extend({
         urlRoot: '/mover/',
@@ -14,10 +15,6 @@ define([
 
         model: {
             tide: GnomeTide
-        },
-
-        validate: function(attrs, options){
-            //TODO: Consult with Caitlin about the values that need to be calculated "on the fly" i.e. unscaled val at ref point
         },
 
         toTree: function() {
