@@ -342,28 +342,22 @@ define([
             return tree;
         },
 
-        genLEImages: function() {            
-            var gnome = new Image();
-
-            gnome.onload = _.bind(function() {
-                var canvas = document.createElement('canvas');
-                canvas.height = 27;
-                canvas.width = 14;
-
-                var context2d = canvas.getContext('2d');
-                context2d.drawImage(gnome, 0, 0);
-
-                this._les_point_image = this.les.add({image: canvas,
-                                                      show: false}).image;
-            }, this);
-
-            gnome.src = 'img/lagrangian_gnome.png';
-
+        genLEImages: function() {
             var canvas = document.createElement('canvas');
+            canvas.width = 4;
+            canvas.height = 4;
+            var context2D = canvas.getContext('2d');
+            context2D.beginPath();
+            context2D.arc(2, 2, 2, 0, Cesium.Math.TWO_PI, true);
+            context2D.closePath();
+            context2D.fillStyle = 'rgb(255, 255, 255)';
+            context2D.fill();
+            this._les_point_image = this.les.add({image: canvas, show: false}).image;
+
+            canvas = document.createElement('canvas');
             canvas.width = 10;
             canvas.height = 10;
-
-            var context2D = canvas.getContext('2d');
+            context2D = canvas.getContext('2d');
             context2D.moveTo(0, 0);
             context2D.lineTo(8, 8);
             context2D.moveTo(8, 7);
@@ -447,9 +441,9 @@ define([
                         // create a new point
                         this._certain.push(this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                            // color: certain_LE_color.withAlpha(
-                            //     certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            // ),
+                            color: certain_LE_color.withAlpha(
+                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
+                            ),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
                                     show: appearance.get('on'),
@@ -469,10 +463,10 @@ define([
                         }
 
                         // set the opacity of particle if the mass has changed
-                        if (certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass) {
-                            // this._certain[le_idx].color = certain_LE_color.withAlpha(
-                            //     certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            // );
+                        if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
+                            this._certain[le_idx].color = certain_LE_color.withAlpha(
+                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
+                            );
                         }
                     }
 
