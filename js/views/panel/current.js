@@ -58,7 +58,7 @@ define([
                             }
                         }, this));
                     }, this)
-                })
+                });
             }, this));
             form.render();
         },
