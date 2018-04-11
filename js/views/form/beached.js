@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'moment',
     'nucos',
     'sweetalert',
@@ -11,7 +12,7 @@ define([
     'text!templates/form/beached/input-static.html',
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+], function($, _, Backbone, module, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
@@ -35,6 +36,7 @@ define([
         },
 
         initialize: function(options, model){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             if (_.isUndefined(model)) {
                 this.model = new BeachedModel();
