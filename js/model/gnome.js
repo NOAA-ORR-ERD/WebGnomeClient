@@ -226,7 +226,7 @@ define([
             var movers = this.get('movers');
             var tides = [];
             movers.each(function(mover){
-                if(!_.isNull(mover.get('tide'))){
+                if(!_.isUndefined(mover.get('tide'))){
                     tides.push(mover.get('tide'));
                 }
             });
@@ -235,7 +235,7 @@ define([
 
         manageTides: function(model){
             if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
-                if(!_.isNull(model.get('tide'))){
+                if(!_.isUndefined(model.get('tide'))){
                     this.get('environment').add(model.get('tide'));
                 }
             }
