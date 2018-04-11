@@ -8,20 +8,11 @@
             {% } %}
             </select>
         </div>
-    </div>
-</div>
-<div class="form-row">
-    <div class="form-group datavis-config">
-        <label class="col-sm-3 control-label">Colormap Type</label>
-        {% for (var i = 0; i < colorMapTypes.length; i++) { %}
-            <label class="radio-inline col-sm-2">
-                <input type="radio" name="{{config.title}}:_chosenColorMapType" value="{{colorMapTypes[i]}}" {{colorMapTypes[i] === config._chosenColorMapType ? 'checked="true"' : false}}>
-                {{colorMapTypes[i]}}
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox", name="{{config.title}}:useAlpha" {{config.useAlpha || config._chosenColorMapType === 'Alpha' ? 'checked=true' : ''}} disabled="{{config._chosenColorMapType === 'Alpha'}}">
+                Fade by Mass
             </label>
-        {% } %}
-        <label class="checkbox-inline col-sm-3">
-            <input type="checkbox", name="{{config.title}}:useAlpha" checked="{{config.useAlpha || config._chosenColorMapType === 'Alpha'}}" disabled="{{config._chosenColorMapType === 'Alpha'}}">
-            Fade by Mass
-        </label>
+        </div>
     </div>
 </div>

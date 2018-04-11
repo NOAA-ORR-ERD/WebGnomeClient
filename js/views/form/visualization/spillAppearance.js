@@ -160,6 +160,10 @@ define([
 
         updateCfg: function(e) {
             var name = this.$(e.currentTarget).attr('name');
+            if (!name) {
+                this.model.trigger('change', this.model);
+                return;
+            }
             var value = this.$(e.currentTarget).val();
             if($(e.target).attr('type') === 'number'){
                 value = parseFloat(value);
@@ -167,10 +171,6 @@ define([
 
             if($(e.target).attr('type') === 'checkbox'){
                 value = e.currentTarget.checked;
-            }
-
-            if (name.includes('colors') && typeof value === 'string') { // special case for colors; turns a single string into a list
-                value = [value];
             }
 
             name = name.split(':');

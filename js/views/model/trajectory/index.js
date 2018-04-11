@@ -330,7 +330,7 @@ define([
             this.viewer.scene.pickTranslucentDepth = true;
             this.handler.setInputAction(_.bind(function(movement) {
                 var pickedObject = this.viewer.scene.pick(movement.position);
-                if (pickedObject) {
+                if (pickedObject && pickedObject.id) {
                     console.log(pickedObject, pickedObject.id);
                     var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
                     entity.position = pickedObject.primitive.position;

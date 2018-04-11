@@ -1,4 +1,13 @@
 <div class="form-row">
+    <div class="form-group datavis-config">
+        <label class="col-sm-3 control-label">Interpolate</label>
+        <label class="checkbox-inline col-sm-3">
+            <input type="checkbox" class='interpolate-checkbox' name="{{config.title}}:interpolate" {{config.interpolate ? 'checked=true' : ''}}>
+            Interpolate
+        </label>
+    </div>
+</div>
+<div class="form-row">
     <div class="form-group">
         <div class="col-sm-8 col-sm-offset-2 datavis-config colormap">
             <div id="colormap-slider" class="{{type}}">
