@@ -106,10 +106,7 @@ define([
                         geometry: geom[p]
                     })]
                 });
-                if(source.getFeaturesAtCoordinate(start).length > 0){
-                    error = false;
-                }
-                if(source.getFeaturesAtCoordinate(end).length > 0){
+                if(source.getFeaturesAtCoordinate(start).length > 0 && source.getFeaturesAtCoordinate(end).length > 0){
                     error = false;
                 }
             }
