@@ -113,8 +113,14 @@ define([
                     fc = 'rgba(214, 160, 255, 0.5)';
                 }
 
+                var mover_name = mover.get('name');
+
+                if (mover.extrapolated() === true) {
+                    mover_name += ' (extrapolated)';
+                }
+
                 timelinedata.push({
-                    label: mover.get('name'),
+                    label: mover_name,
                     start: start,
                     end: end,
                     fillColor: fc

@@ -399,27 +399,57 @@ define([
         },
 
         isTimeValid: function() {
+            // Ok, here is what 'valid', 'invalid', and 'semivalid' mean
+            // according to Amy.
+            //
+            //     valid: Within the intersection of the model and the mover's
+            //            time range there exists timeseries data sufficient to
+            //            perform the mover's calculations.  This can include
+            //            extrapolated timeseries data if it is so configured.
+            //
+            //   invalid: Within the intersection of the model and the mover's
+            //            time range there exists one or more sub-ranges where
+            //            timeseries data does not exist, and one of these
+            //            subranges encompasses the model start time.  Thus,
+            //            the model will not even be able to begin processing
+            //            steps.
+            //
+            // semivalid: Within the intersection of the model and the mover's
+            //            time range there exists one or more sub-ranges where
+            //            timeseries data does not exist, but these subranges
+            //            start after the model start time.  Thus, the model
+            //            will be able to run for a time before encountering
+            //            a failure.
             var msg = '';
             this.set('time_compliance', 'valid');
             this.set('time_compliance_msg',
                      "Wind data covers the Model's active range");
+            
+            var invalidModelTimes = this.invalidModelTimeRanges();
 
-            if (this.invalidActiveTimeRanges().length > 0) {
-                // Basically, if the wind data doesn't cover all of the movers
-                // active range, then it is not in complete compliance in
-                // regards to time ranges, but we're not going to give up and
-                // call it bad yet.
-                msg = "Wind data does not cover the Mover's active range";
-                this.set('time_compliance', 'semivalid');
-                this.set('time_compliance_msg', msg);
-            }
-
-            if (this.invalidModelTimeRanges().length > 0) {
+            if (invalidModelTimes.length > 0) {
                 // Okay, we have invalid time ranges within our model time
-                // It's bad...
-                msg = "Wind data does not cover the Model's active range";
-                this.set('time_compliance', 'invalid');
-                this.set('time_compliance_msg', msg);
+                // But do any of them encompass the model start?
+                var [modelStart, modelStop] = webgnome.model.activeTimeRange();
+
+                var crossesModelStart = invalidModelTimes.map(function(item) {
+                    return  modelStart >= item[0] && modelStart <= item[1];
+                }).reduce(function(prev, elem) {
+                    return prev || elem;  // is any element true?
+                });
+
+                if (crossesModelStart) {
+                    msg = ("Wind data does not cover the Model's start time. " +
+                           "The model will not start.");
+                    this.set('time_compliance', 'invalid');
+                    this.set('time_compliance_msg', msg);
+                }
+                else {
+                    msg = ("Wind data does not cover the Mover's active range. " +
+                           "The model will start, but eventually fail.");
+                    this.set('time_compliance', 'semivalid');
+                    this.set('time_compliance_msg', msg);
+                }
             }
 
             return msg;
@@ -429,19 +459,19 @@ define([
             // Return the mover's active time ranges that are not covered
             // by the data in our timeseries.
             // - our timeseries is considered to be a contiguous range of time
-            var invalid_ranges = [];
-            var [active_start, active_stop] = this.activeTimeRange();
-            var [data_start, data_stop] = this.dataActiveTimeRange();
+            var invalidRanges = [];
+            var [activeStart, activeStop] = this.activeTimeRange();
+            var [dataStart, dataStop] = this.dataActiveTimeRange();
 
-            if (active_start < data_start) {
-                invalid_ranges.push([active_start, data_start]);
+            if (activeStart < dataStart) {
+                invalidRanges.push([activeStart, dataStart]);
             }
 
-            if (active_stop > data_stop) {
-                invalid_ranges.push([data_stop, active_stop]);
+            if (activeStop > dataStop) {
+                invalidRanges.push([dataStop, activeStop]);
             }
 
-            return invalid_ranges;
+            return invalidRanges;
         },
 
         invalidModelTimeRanges: function() {
@@ -452,23 +482,23 @@ define([
             // - Time range data points are expected to be in ascending order
             //   from left to right.  We don't deal with zero or negative
             //   time ranges.
-            var [model_start, model_stop] = webgnome.model.activeTimeRange();
-            var suspect_ranges = this.invalidActiveTimeRanges();
-            var invalid_ranges = [];
+            var [modelStart, modelStop] = webgnome.model.activeTimeRange();
+            var suspectRanges = this.invalidActiveTimeRanges();
+            var invalidRanges = [];
 
             // For each range, find its intersection with the model time range.
-            suspect_ranges.forEach(function(timeRange) {
+            suspectRanges.forEach(function(timeRange) {
                 if (timeRange[0] >= timeRange[1]) {return;}
 
-                timeRange[0] = _.max([timeRange[0], model_start]);
-                timeRange[1] = _.min([timeRange[1], model_stop]);
+                timeRange[0] = _.max([timeRange[0], modelStart]);
+                timeRange[1] = _.min([timeRange[1], modelStop]);
 
                 if (timeRange[0] < timeRange[1]) {
-                  invalid_ranges.push(timeRange);
+                  invalidRanges.push(timeRange);
                 }
             }, this);
-            
-            return invalid_ranges;
+
+            return invalidRanges;
         },
 
         activeTimeRange: function() {
@@ -516,6 +546,17 @@ define([
             }
             else {
                 return moment(timeAttr.replace('T',' ')).unix();
+            }
+        },
+
+        extrapolated: function() {
+            // We should probably organize the object hierarchy a bit better
+            // than this, but for now the base class handles all cases.
+            if (this.attributes.hasOwnProperty('wind')) {
+                return this.get('wind').get('extrapolation_is_allowed');
+            }
+            else {
+                return this.get('extrapolate');
             }
         },
 
