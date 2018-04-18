@@ -17,9 +17,10 @@ define([
         requesting_centers: false,
         requested_grid: false,
         requested_centers: false,
-        data_cache : localforage.createInstance({name: 'Environment Object Data Cache',
-                                                    }),
-        default_appearances: 
+
+        data_cache : localforage.createInstance({name: 'Environment Object Data Cache'}),
+
+        default_appearances:
         [
             {
                 on: false,
@@ -52,7 +53,7 @@ define([
             this.on('change', this.resetRequest, this);
 
             if (!this.isNew()) {
-                if(webgnome.hasModel()) {
+                if (webgnome.hasModel()) {
                     this.isTimeValid();
                 }
                 else {
@@ -93,8 +94,9 @@ define([
                         if (this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] ||
                             this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1]) {
 
-                            // if the last set of coords are not the same as the first set
-                            // copy the first set to the end of the array.
+                            // if the last set of coords are not the same as
+                            // the first set copy the first set to the end
+                            // of the array.
                             this.grid[cell].push(this.grid[cell][0]);
                             this.grid[cell].push(this.grid[cell][1]);
                         }
@@ -113,7 +115,7 @@ define([
             }
         },
 
-        getCenters: function(callback){
+        getCenters: function(callback) {
             var url = this.urlRoot + this.id + '/centers';
 
             if (!this.requesting_centers && !this.requested_centers) {
@@ -142,10 +144,10 @@ define([
         },
 
         genVecImages: function(maxSpeed, numSteps) {
-            /* Generates a list of images of various vector lengths. Should be overridden
-            on a per-model basis, or not implemented if the data represented is not a vector
-            quantity (eg GridTemperature)
-            */
+            // Generates a list of images of various vector lengths.
+            // Should be overridden on a per-model basis, or not implemented
+            // if the data represented is not a vector quantity
+            // (eg GridTemperature)
             if (!maxSpeed) {maxSpeed = this.vec_max;}
             if (!numSteps) {numSteps = this.n_vecs;}
 
@@ -173,8 +175,9 @@ define([
             var center = width / 2;
             var i = 1;
 
-            for (var a = maxSpeed/numSteps; a < maxSpeed; a += maxSpeed/numSteps) {
-                var s_a = Math.round(a*10) / 10;
+            var speedStep = maxSpeed / numSteps;
+            for (var a = speedStep; a < maxSpeed; a += speedStep) {
+                var s_a = Math.round(a * 10) / 10;
 
                 canvas = document.createElement('canvas');
                 canvas.width = width;
@@ -210,10 +213,11 @@ define([
         },
 
         genVectors: function(rebuild) {
-            /* Generates a Cesium object that can be added to an existing Cesium.Scene in order
-            to produce a representation of this data. Instances of this class hold on to this
-            graphics object, and control updates for it*/
-            //rebuild currently broken
+            // Generates a Cesium object that can be added to an existing
+            // Cesium.Scene in order to produce a representation of this data.
+            // Instances of this class hold on to this graphics object, and
+            // control updates for it.
+            // rebuild currently broken
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._vectors.length < 100) {
                     var appearance = this.get('_appearance').findWhere({id: 'uv'});
@@ -274,8 +278,8 @@ define([
         },
 
         updateVis: function(options) {
-            /* Updates the appearance of this model's graphics object. Implementation varies depending on
-            the specific object type*/
+            // Updates the appearance of this model's graphics object.
+            // Implementation varies depending on the specific object type.
             var appearance;
 
             if (options) {
@@ -327,7 +331,8 @@ define([
         },
 
         validate: function(attrs, options) {
-            //TODO: Consult with Caitlin about the values that need to be calculated "on the fly" i.e. unscaled val at ref point
+            // TODO: Consult with Caitlin about the values that need to be
+            //       calculated "on the fly" i.e. unscaled val at ref point
         },
 
         renderLines: function(batch, rebuild) {
@@ -424,7 +429,7 @@ define([
             this.set('time_compliance', 'valid');
             this.set('time_compliance_msg',
                      "Wind data covers the Model's active range");
-            
+
             var invalidModelTimes = this.invalidModelTimeRanges();
 
             if (invalidModelTimes.length > 0) {
@@ -561,14 +566,15 @@ define([
         },
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {
-            timestamp = moment(timestamp.replace('T',' ')).unix();
+            timestamp = this.parseTimeAttr(timestamp);
+
             var n = 0;
             var time_axis = this.time_axis,
                 idx = time_axis.length - 1,
                 rv = {},
                 u_offset = idx * this.num_vecs,
                 v_offset = u_offset + this.num_times * this.num_vecs,
-                pdiv2 = Math.PI/2,
+                pdiv2 = Math.PI / 2,
                 data = this.vec_data;
 
             if (time_axis[idx] <= timestamp) {
@@ -585,7 +591,7 @@ define([
                 u_offset = 0;
                 v_offset = this.num_vecs * this.num_times;
 
-                for (n = this.num_vecs;n >= 0;n--) {
+                for (n = this.num_vecs;n >= 0; n--) {
                     dir_out[n] = Math.atan2(data[v_offset + n], data[u_offset + n]) - pdiv2;
                     mag_out[n] = Math.sqrt(data[u_offset + n] * data[u_offset + n] + data[v_offset + n] * data[v_offset + n]);
                 }
@@ -593,22 +599,23 @@ define([
                 return;
             }
 
-            for (idx;idx >=0; idx--) {
+            for (idx; idx >= 0; idx--) {
                 u_offset = idx * this.num_vecs;
                 v_offset = u_offset + this.num_times * this.num_vecs;
 
                 if (time_axis[idx] < timestamp) {
                     var t0 = time_axis[idx],
-                        t1 = time_axis[idx+1],
+                        t1 = time_axis[idx + 1],
                         u0 = u_offset,
-                        u1 = (idx+1) * this.num_vecs,
+                        u1 = (idx + 1) * this.num_vecs,
                         v0 = v_offset,
                         v1 = u1 + this.num_times * this.num_vecs;
 
                     var alpha = (timestamp - t0) / (t1 - t0);
 
                     for (n = this.num_vecs; n >= 0; n--) {
-                        //mag_out has interpolated dx, this._temp has interpolated dy
+                        // mag_out has interpolated dx.
+                        // this._temp has interpolated dy.
                         mag_out[n] = data[u0 + n] + (data[u1 + n] - data[u0 + n]) * alpha;
 
                         this._temp[n] = data[v0 + n] + (data[v1 + n] - data[v0 + n]) * alpha;
