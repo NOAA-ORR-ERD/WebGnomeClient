@@ -7,13 +7,12 @@ define([
     'views/default/map',
     'views/panel/base',
     'views/form/mover/create',
-    'views/form/mover/edit',
-    'views/form/mover/cats',
     'views/form/mover/grid',
+    'views/form/mover/cats',
     'views/form/mover/component',
     'text!templates/panel/current.html',
     'views/modal/form'
-], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, EditMoverForm, CatsMoverForm, GridCurrentMoverForm, ComponentMoverForm, CurrentPanelTemplate, FormModal){
+], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm, CurrentPanelTemplate, FormModal){
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -27,7 +26,6 @@ define([
 
         forms: {
             'gnome.movers.current_movers.CatsMover': CatsMoverForm,
-            'gnome.movers.current_movers.GridCurrentMover': GridCurrentMoverForm,
             'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
         },
 
@@ -190,7 +188,7 @@ define([
         },
 
         getForm: function(obj_type) {
-            return _.has(this.forms, obj_type) ? this.forms[obj_type] : EditMoverForm;
+            return _.has(this.forms, obj_type) ? this.forms[obj_type] : GridMoverForm;
         },
 
         delete: function(e) {
