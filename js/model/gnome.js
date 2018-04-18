@@ -1,6 +1,6 @@
 define([
-    'underscore',
     'jquery',
+    'underscore',
     'backbone',
     'moment',
     'sweetalert',
@@ -16,14 +16,14 @@ define([
     'model/environment/waves',
     'model/environment/gridcurrent',
     'model/environment/gridwind',
-    'model/movers/wind',
     'model/movers/random',
+    'model/movers/wind',
+    'model/movers/py_wind',
     'model/movers/cats',
-    'model/movers/ice',
     'model/movers/grid_current',
     'model/movers/py_current',
-    'model/movers/py_wind',
     'model/movers/current_cycle',
+    'model/movers/ice',
     'model/movers/component',
     'model/outputters/trajectory',
     'model/outputters/spill',
@@ -36,15 +36,15 @@ define([
     'model/outputters/shape',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
-    'model/weatherers/emulsification',
-    'model/weatherers/burn',
-    'model/weatherers/skim',
     'model/weatherers/natural_dispersion',
-    'model/weatherers/manual_beaching',
+    'model/weatherers/emulsification',
+    'model/weatherers/dissolution',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/langmuir',
     'model/weatherers/weathering_data',
-    'model/weatherers/dissolution',
+    'model/weatherers/burn',
+    'model/weatherers/skim',
+    'model/weatherers/manual_beaching',
     'model/weatherers/roc_skim',
     'model/weatherers/roc_burn',
     'model/weatherers/roc_disperse',
@@ -52,15 +52,22 @@ define([
     'model/risk/risk',
     'collection/movers',
     'collection/spills'
-], function(_, $, Backbone, moment, swal,
-    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
-    GridWindModel, WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, PyWindMover, CurrentCycleMover, ComponentMover,
-    TrajectoryOutputter, SpillOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
-    KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
+], function($, _, Backbone, moment, swal,
+    BaseModel, Cache,
+    MapModel, ParamMapModel, MapBnaModel, SpillModel,
+    TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
+    RandomMover, WindMover, PyWindMover,
+    CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
+    IceMover, ComponentMover,
+    TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
+    CurrentOutputter, IceOutputter, IceImageOutputter,
+    NetCDFOutputter, KMZOutputter, ShapeOutputter,
+    EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
+    EmulsificationWeatherer, DissolutionWeatherer,
+    FayGravityViscous, Langmuir, WeatheringData,
+    BurnWeatherer, SkimWeatherer, BeachingWeatherer,
     RocSkimResponse, RocBurnResponse, RocDisperseResponse,
-    UserPrefs, RiskModel,
-    MoversCollection, SpillsCollection){
+    UserPrefs, RiskModel, MoversCollection, SpillsCollection) {
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -303,13 +310,19 @@ define([
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
-                            cancelButtonText: 'Extrapolate Mover'
+                            cancelButtonText: 'Extrapolate Data'
                         }).then(_.bind(function(fit){
                             if (fit) {
                                 this.fitToInterval(model.get('real_data_start'));
                                 model.set('time_compliance','valid');
                             } else {
-                                model.set('extrapolate', true);
+                                if (model.attributes.hasOwnProperty('wind')) {
+                                    model.get('wind').attributes
+                                         .extrapolation_is_allowed = true;
+                                }
+                                else {
+                                    model.set('extrapolate', true);
+                                }
                                 model.set('time_compliance','valid');
                             }
                         }, this));
@@ -463,6 +476,27 @@ define([
                 hours = 0;
             }
             return {days: days, hours: hours};
+        },
+
+        activeTimeRange: function() {
+            var start = this.parseTimeAttr(this.get('start_time'));
+            var end = start + this.get('duration');
+
+            return [start, end];
+        },
+
+        parseTimeAttr: function(timeAttr) {
+            // timeAttr is a string value representing a date/time or a
+            // positive or negative infinite value.
+            if (timeAttr === 'inf') {
+                return Number.POSITIVE_INFINITY;
+            }
+            else if (timeAttr === '-inf') {
+                return Number.NEGATIVE_INFINITY;
+            }
+            else {
+                return moment(timeAttr.replace('T',' ')).unix();
+            }
         },
 
         getEndTime: function() {
