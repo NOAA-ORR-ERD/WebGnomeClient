@@ -33,52 +33,67 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model, 'change:duration chage:start_time', this.rerender);
-            this.listenTo(webgnome.model.get('movers'), 'add change remove', this.rerender);
+
+            this.listenTo(webgnome.model,
+                          'change:duration chage:start_time',
+                          this.rerender);
+            this.listenTo(webgnome.model.get('movers'),
+                          'add change remove',
+                          this.rerender);
         },
 
         new: function(){
             var form = new CreateMoverForm();
+
             form.on('hidden', form.close);
             form.on('save', _.bind(function(mover){
                 mover.save(null, {
                     success: _.bind(function(){
                         webgnome.model.get('movers').add(mover);
+
                         if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                             webgnome.model.get('environment').add(mover.get('current'));
                         }
-                        webgnome.model.save(null, {validate: false}).then(_.bind(function(){
-                            if(mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover'){
+
+                        webgnome.model.save(null, {validate: false}).then(_.bind(function() {
+                            if (mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
                                 var form = new CatsMoverForm(null, mover);
-                                form.on('save', function(){
+
+                                form.on('save', function() {
                                     form.on('hidden', form.close);
                                 });
+
                                 form.on('wizardclose', form.close);
+
                                 form.render();    
                             }
                         }, this));
                     }, this)
                 });
             }, this));
+
             form.render();
         },
         
-        edit: function(e){
+        edit: function(e) {
             e.stopPropagation();
             var id = this.getID(e);
 
             var currentMover = webgnome.model.get('movers').get(id);
             var form = this.getForm(currentMover.get('obj_type'));
             var currentForm = new form(null, currentMover);
-            currentForm.on('save', function(){
+
+            currentForm.on('save', function() {
                 currentForm.on('hidden', currentForm.close);
             });
+
             currentForm.on('wizardclose', currentForm.close);
+
             currentForm.render();
         },
 
-        render: function(){
-            var currents = webgnome.model.get('movers').filter(function(mover){
+        render: function() {
+            var currents = webgnome.model.get('movers').filter(function(mover) {
                 return [
                     'gnome.movers.current_movers.CatsMover',
                     'gnome.movers.current_movers.GridCurrentMover',
@@ -87,14 +102,17 @@ define([
                     'gnome.movers.current_movers.CurrentCycleMover'
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
+
             var compiled = _.template(CurrentPanelTemplate, {
                 currents: currents
             });
+
             this.$el.html(compiled);
 
-            if(currents.length > 0){
+            if (currents.length > 0) {
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
+
                 this.current_layers = new ol.Collection([
                     new ol.layer.Tile({
                         source: new ol.source.TileWMS({
@@ -114,36 +132,42 @@ define([
                         doubleClickZoom: false
                     }),
                 });
+
                 this.currentMap.render();
                 this.current_extents = [];
-                for(var c = 0; c < currents.length; c++){
+
+                for (var c = 0; c < currents.length; c++) {
                     // currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
                 }
 
-                this.currentMap.map.on('postcompose', _.bind(function(){
-                    if(webgnome.model.get('map')){
-                        if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                            var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(), ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
+                this.currentMap.map.on('postcompose', _.bind(function() {
+                    if (webgnome.model.get('map')) {
+                        if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap') {
+                            var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(),
+                                                                  ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
                             this.currentMap.map.getView().fit(extent, this.currentMap.map.getSize());
-                        } else {
+                        }
+                        else {
                             this.currentMap.map.getView().setZoom(3);
                         }
                     }
                 }, this));
-
-            } else {
+            }
+            else {
                 this.current_extents = [];
                 this.$('.panel-body').hide();
             }
+
             BasePanel.prototype.render.call(this);
         },
 
-        addCurrentToPanel: function(geojson){
-            if(geojson){
+        addCurrentToPanel: function(geojson) {
+            if (geojson) {
                 var gridSource = new ol.source.Vector({
-                    features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
+                    features: (new ol.format.GeoJSON()).readFeatures(geojson,
+                                                                     {featureProjection: 'EPSG:3857'}),
                 });
-                var extentSum = gridSource.getExtent().reduce(function(prev, cur){ return prev + cur;});
+                var extentSum = gridSource.getExtent().reduce(function(prev, cur) {return prev + cur;});
 
                 var gridLayer = new ol.layer.Image({
                     name: 'modelcurrent',
@@ -158,21 +182,23 @@ define([
                     })
                 });
 
-                if(!_.contains(this.current_extents, extentSum)){
+                if (!_.contains(this.current_extents, extentSum)) {
                     this.current_layers.push(gridLayer);
                     this.current_extents.push(extentSum);
                 }
             }
         },
 
-        getForm: function(obj_type){
+        getForm: function(obj_type) {
             return _.has(this.forms, obj_type) ? this.forms[obj_type] : EditMoverForm;
         },
 
-        delete: function(e){
+        delete: function(e) {
             e.stopPropagation();
+
             var id = this.getID(e);
             var spill = webgnome.model.get('movers').get(id);
+
             swal({
                 title: 'Delete "' + spill.get('name') + '"',
                 text: 'Are you sure you want to delete this current?',
@@ -180,19 +206,23 @@ define([
                 confirmButtonText: 'Delete',
                 confirmButtonColor: '#d9534f',
                 showCancelButton: true
-            }).then(_.bind(function(isConfirmed){
-                if(isConfirmed){
+            }).then(_.bind(function(isConfirmed) {
+                if (isConfirmed) {
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
+
                     if (mov.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         var env_id = mov.get('current').id;
+
                         for (var i = 0; i < envs.length; i++) {
-                            if (envs.models [i].id === env_id){
+                            if (envs.models [i].id === env_id) {
                                 envs.remove(env_id);
                             }
                         }
                     }
+
                     webgnome.model.get('movers').remove(id);
+
                     webgnome.model.save(null, {
                         validate: false
                     });
@@ -200,13 +230,15 @@ define([
             }, this));
         },
 
-        close: function(){
-            if(this.currentMap){
+        close: function() {
+            if (this.currentMap) {
                 this.currentMap.close();
             }
+
             BasePanel.prototype.close.call(this);
         }
 
     });
+
     return currentPanel;
 });

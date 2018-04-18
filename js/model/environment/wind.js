@@ -34,6 +34,92 @@ define([
             this.on('change:timeseries', this.convertTimeSeries, this);
         },
 
+        convertTimeSeries: function() {
+            if (this.get('timeseries').length > 1) {
+                _.each(this.get('timeseries'), function(el, i, ts) {
+                    var timeString = el[0].replace(/[+-]\d\d:\d\d/, '');
+                    el[0] = moment(timeString).format("YYYY-MM-DDTHH:mm:ss");
+                });
+            }
+            this.sortTimeseries();
+        },
+
+        sortTimeseries: function(){
+            var ts = _.sortBy(this.get('timeseries'), function(entry){
+                return moment(entry[0]).unix();
+            });
+            this.set('timeseries', ts);
+        },
+
+        addTimeseriesRow: function(index, newIndex, opts) {
+            var prevEntry = this.get('timeseries')[index];
+            var boundingIndex = newIndex;
+
+            var newInterval = this.determineTimeInterval(index, boundingIndex, opts.interval);
+
+            var newDate = moment(prevEntry[0]).add(newInterval, 'm').format("YYYY-MM-DDTHH:mm:ss");
+
+            var newEntry = [newDate, prevEntry[1]];
+            this.get('timeseries').splice(index, 0, newEntry);
+            this.sortTimeseries();
+        },
+
+        determineTimeInterval: function(index, boundingIndex, boundingInterval) {
+            var ts = this.get('timeseries');
+            var tsLength = ts.length;
+            var prevEntry = moment(ts[index][0]);
+            var timeInterval;
+
+            if (boundingIndex >= tsLength || boundingIndex < 0) {
+                if (tsLength >= 2) {
+                    var pairIndex;
+                    if (boundingIndex >= tsLength) {
+                        pairIndex = index - 1;
+                    } else {
+                        pairIndex = index + 1;
+                    }
+                    timeInterval = Math.abs(prevEntry.diff(ts[pairIndex][0], 'minutes'));
+                } else {
+                    timeInterval = boundingInterval * 60;
+                }
+            } else {
+                var boundingEntry = moment(ts[boundingIndex][0]);
+                timeInterval = Math.abs(prevEntry.diff(boundingEntry, 'minutes') / 2);
+            }
+
+            if (boundingIndex - index < 0) {
+                timeInterval *= -1;
+            }
+
+            return timeInterval;
+        },
+
+        isTimeRangeValid: function() {
+            // The time range for our wind is valid if:
+            // - All movers that are using us have an active range within
+            //   the time range of our timeseries
+            //   -- OR --
+            // - Extrapolation is configured for our wind.  In this case,
+            //   the active range of the movers doesn't matter.
+            var msg = '';
+
+            var on = this.get('on');
+            var extrapolate = this.get('extrapolation_is_allowed');
+
+            var model_start = webgnome.model.get('start_time');
+            var model_stop = webgnome.model.getEndTime();
+
+            this.set('time_compliance', 'valid');
+
+            if (extrapolate) {
+                // we are fine.  time range is effectively (-inf, +inf)
+                return msg;
+            }
+            else {
+                
+            }
+        },
+
         checkWindSpeed: function() {
             var timeseries = this.get('timeseries');
             for (var i = 0; i < timeseries.length; i++) {
@@ -50,16 +136,6 @@ define([
 
             var ranger = nucos.rayleighDist().rangeFinder(speed, uncertainty);
             return (ranger.low.toFixed(1) + ' - ' + ranger.high.toFixed(1));
-        },
-
-        convertTimeSeries: function() {
-            if (this.get('timeseries').length > 1) {
-                _.each(this.get('timeseries'), function(el, i, ts) {
-                    var timeString = el[0].replace(/[+-]\d\d:\d\d/, '');
-                    el[0] = moment(timeString).format("YYYY-MM-DDTHH:mm:ss");
-                });
-            }
-            this.sortTimeseries();
         },
 
         validate: function(attrs, options){
@@ -132,56 +208,6 @@ define([
                 }
             });
             return invalidEntries;
-        },
-
-        sortTimeseries: function(){
-            var ts = _.sortBy(this.get('timeseries'), function(entry){
-                return moment(entry[0]).unix();
-            });
-            this.set('timeseries', ts);
-        },
-
-        determineTimeInterval: function(index, boundingIndex, boundingInterval) {
-            var ts = this.get('timeseries');
-            var tsLength = ts.length;
-            var prevEntry = moment(ts[index][0]);
-            var timeInterval;
-
-            if (boundingIndex >= tsLength || boundingIndex < 0) {
-                if (tsLength >= 2) {
-                    var pairIndex;
-                    if (boundingIndex >= tsLength) {
-                        pairIndex = index - 1;
-                    } else {
-                        pairIndex = index + 1;
-                    }
-                    timeInterval = Math.abs(prevEntry.diff(ts[pairIndex][0], 'minutes'));
-                } else {
-                    timeInterval = boundingInterval * 60;
-                }
-            } else {
-                var boundingEntry = moment(ts[boundingIndex][0]);
-                timeInterval = Math.abs(prevEntry.diff(boundingEntry, 'minutes') / 2);
-            }
-
-            if (boundingIndex - index < 0) {
-                timeInterval *= -1;
-            }
-
-            return timeInterval;
-        },
-
-        addTimeseriesRow: function(index, newIndex, opts) {
-            var prevEntry = this.get('timeseries')[index];
-            var boundingIndex = newIndex;
-
-            var newInterval = this.determineTimeInterval(index, boundingIndex, opts.interval);
-
-            var newDate = moment(prevEntry[0]).add(newInterval, 'm').format("YYYY-MM-DDTHH:mm:ss");
-
-            var newEntry = [newDate, prevEntry[1]];
-            this.get('timeseries').splice(index, 0, newEntry);
-            this.sortTimeseries();
         },
 
         toTree: function(){
