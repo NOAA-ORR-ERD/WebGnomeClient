@@ -514,16 +514,15 @@ define([
         dataActiveTimeRange: function() {
             if (this.attributes.hasOwnProperty('wind')) {
                 var wind = this.get('wind');
+                var timeRange = wind.timeseriesTimes();
 
-                if (wind.attributes.extrapolation_is_allowed) {
+                if (wind.attributes.extrapolation_is_allowed ||
+                        timeRange.length === 1) {
+                    // we are either a constant wind or extrapolation
+                    // is set true;
                     return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
                 }
                 else {
-                    // return the min and max time values in our timeseries
-                    var timeRange = wind.attributes.timeseries.map(function(dateVal) {
-                        return this.parseTimeAttr(dateVal[0]);
-                    }, this);
-
                     return [_.min(timeRange), _.max(timeRange)];
                 }
             }
