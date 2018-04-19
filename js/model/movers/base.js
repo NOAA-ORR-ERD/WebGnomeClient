@@ -428,7 +428,7 @@ define([
             var msg = '';
             this.set('time_compliance', 'valid');
             this.set('time_compliance_msg',
-                     "Wind data covers the Model's active range");
+                     "Mover data covers the entire model duration.");
 
             var invalidModelTimes = this.invalidModelTimeRanges();
 
@@ -444,14 +444,14 @@ define([
                 });
 
                 if (crossesModelStart) {
-                    msg = ("Wind data does not cover the Model's start time. " +
+                    msg = ("Mover data does not include the model's start time. " +
                            "The model will not start.");
                     this.set('time_compliance', 'invalid');
                     this.set('time_compliance_msg', msg);
                 }
                 else {
-                    msg = ("Wind data does not cover the Mover's active range. " +
-                           "The model will start, but eventually fail.");
+                    msg = ("Mover data does not cover the entire model duration. " +
+                           "The model will start but eventually fail.");
                     this.set('time_compliance', 'semivalid');
                     this.set('time_compliance_msg', msg);
                 }
