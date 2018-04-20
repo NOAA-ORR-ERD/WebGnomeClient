@@ -1,8 +1,9 @@
 define([
     'underscore',
     'backbone',
-    'model/map/base'
-], function(_, Backbone, BaseMap){
+    'model/map/base',
+    'model/visualization/map_appearance'
+], function(_, Backbone, BaseMap, MapAppearance){
     'use strict';
     var gnomeMap = BaseMap.extend({
         defaults: {
@@ -19,7 +20,8 @@ define([
                 [-180,85.06],
                 [180,85.06],
                 [180,-85.06],
-            ]]
+            ]],
+            _appearance: new MapAppearance()
         },
 
         initialize: function(options){

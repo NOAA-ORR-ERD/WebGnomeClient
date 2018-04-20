@@ -7,7 +7,8 @@ define([
     'model/environment/grid',
     'moment',
     'localforage',
-], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage){
+    'model/visualization/vector_appearance'
+], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
         model: {
@@ -15,17 +16,10 @@ define([
             grid: BaseGridObj,
             variables: Backbone.Model
         },
-        default_appearance: {
-            on: false,
-            color: '#9370DB', //MEDIUMPURPLE
-            alpha: 1,
-            scale: 1,
-            ctrl_names: {title: 'Data Appearance',
-                         on: 'Show',
-                         color: 'Arrow Color',
-                         alpha: 'Alpha',
-                         scale: 'Scale'
-                        },
+        defaults: function() {
+            return {
+                _appearance: new VectorAppearance()
+            };
         },
 
         initialize: function(attrs, options) {

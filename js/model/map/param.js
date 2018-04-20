@@ -1,13 +1,15 @@
 define([
-    'model/map/base'
-], function(BaseMap){
+    'model/map/base',
+    'model/visualization/map_appearance'
+], function(BaseMap, MapAppearance){
     var paramMapModel = BaseMap.extend({
         defaults: {
             obj_type: 'gnome.map.ParamMap',
             distance: '2',
             units: 'nm',
             bearing: '0',
-            center: [0, 0, 0]
+            center: [0, 0, 0],
+            _appearance: new MapAppearance()
         },
 
 

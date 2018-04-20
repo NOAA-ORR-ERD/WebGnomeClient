@@ -57,7 +57,6 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'change', this.render);
             this.listenTo(webgnome.model, 'change:map', this.addMapListener);
             this.listenTo(webgnome.model, 'change:map', this.resetMap);
-            this.listenTo(webgnome.model.get('_appearance'), 'change', this.render);
         },
 
         addMapListener: function(){
@@ -79,7 +78,7 @@ define([
                     model: map,
                     id: map.id,
                     visObj: map._mapVis,
-                    appearance: map.get('_appearance').findWhere({'id': 'map'})
+                    appearance: map.get('_appearance')
                 },
                 {
                     type: 'cesium',
@@ -87,15 +86,15 @@ define([
                     model: map,
                     id: map.id + '_sa',
                     visObj: map._spillableVis,
-                    appearance: map.get('_appearance').findWhere({'id': 'sa'})
+                    appearance: map.get('_appearance')
                 },
                 {
                     type: 'cesium',
-                    parentEl: 'entity',
+                    parentEl: 'dataSource',
                     model: map,
                     id: map.id + '_bounds',
                     visObj: map._boundsVis,
-                    appearance: map.get('_appearance').findWhere({'id': 'bounds'})
+                    appearance: map.get('_appearance')
                 }]
             );
             this._map_layer = this.layers.findWhere({id: map.id});
@@ -253,12 +252,12 @@ define([
             }
 
             this.setupLayersTooltips();
-            $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('on');
-            $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('on');
-            $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.appearance.get('on');
+            $('#map-modelMap', this.el)[0].checked = this._map_layer.appearance.get('map_on');
+            $('#map-spillableArea', this.el)[0].checked = this._sa_layer.appearance.get('sa_on');
+            $('#map-mapBounds', this.el)[0].checked = this._bounds_layer.appearance.get('bounds_on');
             for (var k = 0; k < model_spills.length; k++) {
-                $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('on');
-                $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('on');
+                $('#vis-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id}).appearance.get('les_on');
+                $('#loc-' + model_spills.models[k].id, this.el)[0].checked = this.layers.findWhere({id: model_spills.models[k].id + '_loc'}).appearance.get('pin_on');
             }
             var lay_id;
             var grid_checkboxes = $('.grid:input', this.el);
@@ -266,7 +265,7 @@ define([
             for ( k = 0; k < grid_checkboxes.length; k++) {
                 lay_id = grid_checkboxes[k].classList[0];
                 l = this.layers.findWhere({id: lay_id});
-                if (l && l.appearance.get('on')) {
+                if (l && (l.appearance.get('on') || l.appearance.get('grid_on'))) {
                     grid_checkboxes[k].click();
                     //l.model.renderLines(3000);
                 }
@@ -275,7 +274,7 @@ define([
             for (k = 0; k < env_checkboxes.length; k++) {
                 lay_id = env_checkboxes[k].id;
                 l = this.layers.findWhere({id: lay_id});
-                if (l && l.appearance.get('on')) {
+                if (l && (l.appearance.get('on') || l.appearance.get('vec_on'))) {
                     env_checkboxes[k].click();
                 }
             }
@@ -292,7 +291,7 @@ define([
                     model: e,
                     id: 'uv-' + e.get('id'),
                     visObj: e._vectors,
-                    appearance: e.get('_appearance').findWhere({id: 'uv'})
+                    appearance: e.get('_appearance')
                 });
                 this.layers.add({
                     type: 'cesium',
@@ -300,7 +299,7 @@ define([
                     model: e,
                     id: 'grid-' + e.get('id'),
                     visObj: e._linesPrimitive,
-                    appearance: e.get('_appearance').findWhere({id: 'grid'})
+                    appearance: e.get('_appearance')
                 });
             }
             if (e.collection === webgnome.model.get('environment') && e.get('obj_type').includes('gnome.environment.environment_objects')) {
@@ -330,7 +329,7 @@ define([
                     model: e,
                     id: e.get('id'),
                     visObj: e.les,
-                    appearance: e.get('_appearance').findWhere({id:'les'})
+                    appearance: e.get('_appearance')
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
@@ -338,7 +337,7 @@ define([
                     model: e,
                     id: e.get('id') + '_loc',
                     visObj: e._locVis,
-                    appearance: e.get('_appearance').findWhere({id:'loc'})
+                    appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);
             }
@@ -428,26 +427,9 @@ define([
 
         toggleMapLayers: function(e) {
             var mapid = webgnome.model.get('map').get('id');
-            var name = e.target.id.replace('map-', '');
-            if (name === 'modelMap') {
-                if (e.target.checked) {
-                    this.layers.findWhere({id: mapid}).appearance.set('on', true);
-                } else {
-                    this.layers.findWhere({id: mapid}).appearance.set('on', false);
-                }
-            } else if (name === 'spillableArea') {
-                if (e.target.checked) {
-                    this.layers.findWhere({id: mapid + '_sa'}).appearance.set('on', true);
-                } else {
-                    this.layers.findWhere({id: mapid + '_sa'}).appearance.set('on', false);
-                }
-            } else if ( name === 'mapBounds') {
-                if (e.target.checked) {
-                    this.layers.findWhere({id: mapid + '_bounds'}).appearance.set('on', true);
-                } else {
-                    this.layers.findWhere({id: mapid + '_bounds'}).appearance.set('on', false);
-                }
-            } else if ( name === 'graticule') {
+            var layer = this.layers.findWhere({id:mapid});
+            var name = e.currentTarget.name;
+            if (name === 'graticule') {
                 // Dirty hack because graticule doesn't fit into this framework nicely (yet)
                 if (e.target.checked) {
                     webgnome.router.trajView.graticule.activate();
@@ -455,33 +437,25 @@ define([
                     webgnome.router.trajView.graticule.deactivate();
                 }
             } else {
-                console.error('invalid control selected');
+                layer.appearance.set(name, e.currentTarget.checked);
             }
         },
 
         toggleSpillLayers: function(e) {
-            var sel = e.target.classList[0];
-            var name = e.target.id.replace(sel + '-', '');
-            if (sel === 'vis') {
-                var spillLayer = this.layers.findWhere({id: name});
-                if (!e.currentTarget.checked) { //unchecking a box
-                    spillLayer.appearance.set('on', false);
-                } else {
-                    spillLayer.appearance.set('on', true);
-                }
-            } else if (sel === 'loc') {
-                var spillLocLayer = this.layers.findWhere({id: name + '_loc'});
-                if (!e.currentTarget.checked) { //unchecking a box
-                    spillLocLayer.appearance.set('on', false);
-                } else {
-                    spillLocLayer.appearance.set('on', true);
-                }
+            var id = e.target.id.split('-')[1];
+            var name = e.currentTarget.name;
+            var layer = this.layers.findWhere({id: id});
+            if (!e.currentTarget.checked) { //unchecking a box
+                layer.appearance.set(name, false);
+            } else {
+                layer.appearance.set(name, true);
             }
-            
         },
 
         toggleGridLayers: function(e) {
             var grid_id, i;
+            var name = e.currentTarget.name;
+            if (!name) { console.error('No name on input element');} else { console.log(name);}
             if (e.currentTarget.id === 'none-grid') {
                 var grids = this.$('.env-grid input:checked,.curr-grid input:checked');
                 for(i = 0; i < grids.length; i++) {
@@ -489,7 +463,7 @@ define([
                         grids[i].checked = false;
                         grid_id = grids[i].classList[0];
                         var lay = this.layers.findWhere({id: grid_id});
-                        lay.appearance.set('on', false);
+                        lay.appearance.set(grids[i].name, false);
                     }
                 }
                 if(!e.currentTarget.checked) {
@@ -508,14 +482,14 @@ define([
                     for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = false;
                     }
-                    grid_layer.appearance.set('on', false);
+                    grid_layer.appearance.set(name, false);
                 } else {
                     this.$('.env-grid #none-grid').prop('checked', false);
                     grid_checkboxes = $(e.currentTarget.classList[0]);
                     for (i = 0; i < grid_checkboxes.length; i++) {
                         grid_checkboxes[i].checked = true;
                     }
-                    grid_layer.appearance.set('on', true);
+                    grid_layer.appearance.set(name, true);
                     grid_layer.model.renderLines(3000, false);
                 }
             }
@@ -523,6 +497,8 @@ define([
 
         toggleDataLayers: function(e) {
             var envs = this.$('.env-uv input:checked,.curr-uv input:checked');
+            var name = e.currentTarget.name;
+            if (!name) { console.error('No name on input element');} else { console.log(name);}
             var env_id, lay;
 
             if (e.currentTarget.id === 'none-uv') {
@@ -531,7 +507,7 @@ define([
                         env_id = envs[i].id;
                         lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
-                        lay.appearance.set('on', false);
+                        lay.appearance.set(envs.name, false);
                         
                     }
                 }
@@ -545,10 +521,10 @@ define([
                     if (this.$('.env-uv input:checked,.curr-uv input:checked').length === 0) {
                         this.$('.env-uv #none-uv').prop('checked', true);
                     }
-                    lay.appearance.set('on', false);
+                    lay.appearance.set(name, false);
                 } else {
                     this.$('.env-uv, #none-uv').prop('checked', false);
-                    lay.appearance.set('on', true);
+                    lay.appearance.set(name, true);
                     lay.model.genVectors();
                 }
             }

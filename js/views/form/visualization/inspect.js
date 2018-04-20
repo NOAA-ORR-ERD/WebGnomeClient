@@ -6,7 +6,7 @@ define([
     'views/modal/form',
     'text!templates/form/visualization/inspect.html',
     'views/form/visualization/appearance',
-    'views/form/visualization/spillAppearance'
+    'views/form/visualization/spill_appearance'
 ], function($, _, Backbone, module, FormModal, FormTemplate, AppearanceForm, SpillAppearanceForm){
     'use strict';
     var inspectForm = FormModal.extend({
@@ -68,7 +68,7 @@ define([
 
         update: function(e) {
             //this trigger is to let the layers panel know that it needs to re-render!
-            webgnome.model.get('_appearance').trigger('change', this.layer.model);
+            //webgnome.model.get('_appearance').trigger('change', this.layer.model);
         },
 
         back: function() {
@@ -76,10 +76,9 @@ define([
             for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
                 var appearance = this.appearanceModelsUsed[i];
                 var id = appearance.get('id');
-                appearance.set(appearance.default);
+                appearance.set(appearance.defaults);
                 appearance.set('id', id);
             }
-            webgnome.model.get('_appearance').trigger('change', this.layer.model);
             this.close();
         },
 

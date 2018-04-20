@@ -19,7 +19,7 @@
     "jquery-file-upload": "9.10.1",
     "respond": "1.4.2",
     "compass-rose-ui": "1.1.*",
-    "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip",
+    "chosen": "1.8.5",
     "fuse": "~1.1.7",
     "flot": "0.8.3",
     "flotdirection": "https://github.com/NOAA-ORR-ERD/jquery-flot-direction.git",
@@ -42,6 +42,7 @@
     "toastr": "^2.1.2",
     "raphael": "~2.1.4",
     "ccapture.js": "https://github.com/NOAA-ORR-ERD/ccapture.js/archive/1.0.6.2.zip",
-    "d3": "5.0.0"
+    "d3": "5.0.0",
+    "tinycolor": "1.*.*"
   }
 }

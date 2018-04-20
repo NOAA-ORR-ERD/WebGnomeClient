@@ -7,16 +7,16 @@ define([
     'model/visualization/appearance',
     'views/form/visualization/colormap',
     'd3',
-    'json!model/visualization/defaultSpillAppearances.json',
-    'text!templates/form/visualization/spillAppearance.html'
-], function ($, _, Backbone, BaseAppearanceForm, module, Appearance, ColormapForm, DDD, defaultSA, SpillAppearanceTemplate) {
+    'text!templates/form/visualization/spill_appearance.html'
+], function ($, _, Backbone, BaseAppearanceForm, module, Appearance, ColormapForm, DDD, SpillAppearanceTemplate) {
     "use strict";
     var spillAppearanceForm = BaseAppearanceForm.extend({
 
         events: {
             'change .appearance-edit input': 'update',
-            'change .appearance-edit select': 'update',
-            'change .datavis-config input': 'updateCfg'
+            'change .datavis-config input': 'update',
+            'change .datavis-config select': 'update',
+            //'change .datavis-config input': 'updateCfg'
         },
 
 
@@ -34,15 +34,14 @@ define([
         render: function() {
             BaseAppearanceForm.prototype.render.call(this);
             if (this.model.get('data')){
-                var config = this.model.get('datavis_configs')[this.model.get('data')];
                 this.$el.append(_.template(SpillAppearanceTemplate, 
                     {
-                    titles: _.keys(this.model.get('datavis_configs')),
-                    colorMapTypes: _.keys(config.colorMaps),
-                    config: config
+                    titles: this.model.get('_available_data'),
+                    model: this.model,
+                    colormap: this.model.get('colormap')
                     }
                 ));
-                var colormapForm = new ColormapForm(config, this.model);
+                var colormapForm = new ColormapForm(this.model.get('colormap'), this.model);
                 colormapForm.$el.appendTo(this.$el);
             }
         },

@@ -11,31 +11,11 @@ define([
     'model/visualization/appearance',
     'collection/appearances',
     'd3',
-    'text!model/visualization/defaultSpillAppearances.json'
-], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection, d3, DefaultSpillAppearances){
+    'model/visualization/spill_appearance'
+], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection, d3, SpillAppearance){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
-        default_appearances: [
-            {
-                on: true,
-                ctrl_names: {title:'Pin Appearance',
-                             on: 'Show',
-                            },
-                id: 'loc'
-            },
-            {
-                on: true,
-                scale: 1,
-                id: 'les',
-                data: 'Mass',
-                datavis_configs: JSON.parse(DefaultSpillAppearances),
-                ctrl_names: {title:'LE Appearance',
-                             on: 'Show',
-                             scale: 'Scale',
-                            },
-            }
-        ],
 
         defaults: function(){
             return {
@@ -45,7 +25,8 @@ define([
                 'element_type': this.getElementType(),
                 'name': 'Spill',
                 'amount': 100,
-                'units': 'bbl' //old code setting to kg for non-weathering substance is commented below
+                'units': 'bbl',
+                '_appearance': new SpillAppearance()
             };
         },
 
@@ -89,7 +70,6 @@ define([
         },
 
         setupVis: function(attrs) {
-            var viscfg = this.get('_appearance').get('datavis');
             this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
@@ -102,7 +82,7 @@ define([
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM
                 },
                 description: '<table class="table"><tbody><tr><td>Amount</td><td>' + this.get('amount') + ' ' + this.get('units') + '</td></tr></tbody></table>',
-                show: this.get('_appearance').findWhere({id:'loc'}).get('on'),
+                show: this.get('_appearance').get('pin_on'),
             }));
         },
 
@@ -350,26 +330,20 @@ define([
 
         initializeDataVis: function() {
             // Contextualizing the default appearance for the properties of this spill
-            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
-            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
+            var data = this.get('_appearance').get('data');
+            var config = this.get('_appearance').get('colormap');
             var max, min, stops;
-            if (configName === 'Mass') {
-                stops = [0,this._per_le_mass/3, 2* this._per_le_mass/3, this._per_le_mass];
+            if (data === 'Mass') {
                 max = this._per_le_mass;
                 min = 0;
-            } else if (configName === 'Age') {
+            } else if (data === 'Age') {
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
-                stops = [0, max/3, 2*max/3, max];
             }
-            if ('Alpha' in config.colorMaps) {
-                config.colorMaps['Alpha'].number_scale_config.domain = [min,max];
-            }
-            if ('Diverging' in config.colorMaps) {
-                config.colorMaps['Diverging'].number_scale_config.domain = [min, max/2, max];
-            }
-            if ('Sequential' in config.colorMaps) {
-                config.colorMaps['Sequential'].number_scale_config.domain = stops;
+            var domain = config.get('numberScaleDomain');
+            var defaultDomain = config.defaults.numberScaleDomain;
+            if (_.isEqual(domain, defaultDomain)) {
+                config.set('numberScaleDomain', [min, (max-min)/2, max]);
             }
         },
 
@@ -377,36 +351,27 @@ define([
             /*
             Call this function to reconfigure the scales used to convert a data value into a color to be applied
             */
-            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
-            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
-            var numConfig = config.colorMaps[config._chosenColorMapType].number_scale_config;
-            if (numConfig.type === 'linear') {
-                this._numScale = d3.scaleLinear()
-                                   .domain(numConfig.domain)
-                                   .range(numConfig.range);
-            } else if (numConfig.type === 'log') {
-                this._numScale = d3.scaleLog()
-                                   .domain(numConfig.domain)
-                                   .range(numConfig.range);
+            var colormap = this.get('_appearance').get('colormap');
+            if (colormap.get('numberScaleType') === 'linear') {
+                this._numScale = d3.scaleLinear();
+            } else if (colormap.get('numberScaleType') === 'log') {
+                this._numScale = d3.scaleLog();
             }
-            var colorConfig = config.colorMaps[config._chosenColorMapType].color_scale_config;
-            if (colorConfig.type === 'threshold') {
-                this._colorScale = d3.scaleThreshold()
-                                   .domain(colorConfig.domain)
-                                   .range(colorConfig.range);
-            } else if (colorConfig.type === 'linear') {
-                this._colorScale = d3.scaleLinear()
-                                   .domain(colorConfig.domain)
-                                   .range(colorConfig.range);
+            this._numScale.domain(colormap.get('numberScaleDomain')).range(colormap.get('numberScaleRange'));
+
+            if (colormap.get('colorScaleType') === 'threshold') {
+                this._colorScale = d3.scaleThreshold();
+            } else if (colormap.get('colorScaleType') === 'linear') {
+                this._colorScale = d3.scaleLinear();
             }
+            this._colorScale.domain(colormap.get('colorScaleDomain')).range(colormap.get('colorScaleRange'));
         },
 
         colorLEs: function(){
             /*
             Uses the appearance's datavis object to determine how to colorize all the LEs
             */
-            var configName = this.get('_appearance').findWhere({id:'les'}).get('data');
-            var config = this.get('_appearance').findWhere({id:'les'}).get('datavis_configs')[configName];
+            var colormap = this.get('_appearance').get('colormap');
             var genColorwithAlpha = function(colorStr, alpha) {
                 return alpha ? 
                     Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
@@ -414,18 +379,18 @@ define([
             };
             var alphaScale;
             alphaScale = d3.scaleLinear();
-            if (config.alphaType === 'mass') {
+            if (colormap.get('alphaType') === 'mass') {
                 alphaScale.domain([0, this._per_le_mass]);
             } else {
                 alphaScale.domain([2000, 0]);
             }
             var value, color, alpha, i, datatype;
-            datatype = config.title.toLowerCase();
+            datatype = colormap.get('datum').toLowerCase();
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
                 color = this._colorScale(this._numScale(value));
-                if (config.useAlpha) {
-                    alpha = alphaScale(this._certain[i][config.alphaType]);
+                if (colormap.get('useAlpha')) {
+                    alpha = alphaScale(this._certain[i][colormap.get('alphaType')]);
                 }
                 this._certain[i].color = genColorwithAlpha(color, alpha);
             }
@@ -436,7 +401,7 @@ define([
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
             var sid = webgnome.model.get('spills').indexOf(this);
 
-            var appearance = this.get('_appearance').findWhere({id:'les'});
+            var appearance = this.get('_appearance');
             var le_idx = 0;
             var newLE;
             if(uncertain) {
@@ -448,7 +413,7 @@ define([
                                 position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
                                 image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
-                                show: appearance.get('on'),
+                                show: appearance.get('les_on'),
                             });
                             newLE.mass = uncertain.mass[f];
                             newLE.depth = uncertain.depth ? uncertain.depth[f] : undefined;
@@ -456,7 +421,7 @@ define([
                             newLE.age = uncertain.age ? uncertain.age[f]: undefined;
                             this._uncertain.push(newLE);
                         } else {
-                            this._uncertain[le_idx].show = appearance.get('on');
+                            this._uncertain[le_idx].show = appearance.get('les_on');
                             this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
                             this._uncertain[le_idx].mass = uncertain.mass[f];
 
@@ -479,13 +444,13 @@ define([
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
-                                    show: appearance.get('on'),
+                                    show: appearance.get('les_on'),
                         });
                         newLE.mass = certain.mass[f];
                         this._certain.push(newLE);
                     } else {
                         // update the point position and graphical representation
-                        this._certain[le_idx].show = appearance.get('on');
+                        this._certain[le_idx].show = appearance.get('les_on');
                         this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
                         this._certain[le_idx].mass = certain.mass[f];
                         if(certain.status[f] === 3){
@@ -515,27 +480,23 @@ define([
             this.colorLEs();
         },
 
-        updateVis: function(options) {
+        updateVis: function(appearance) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
-            if(options) {
-                if(options.id === 'les') {
-                    var bbs = this.les._billboards;
-                    var appearance = this.get('_appearance').findWhere({id:'les'});
-                    var changedAttrs, newColor, i;
-                    changedAttrs = appearance.changedAttributes();
-                    if (changedAttrs){
-                        for(i = 0; i < bbs.length; i++) {
-                            bbs[i].scale = appearance.get('scale');
-                            bbs[i].show = appearance.get('on');
-                        }
+            if(appearance) {
+                var bbs = this.les._billboards;
+                var changedAttrs, newColor, i;
+                changedAttrs = appearance.changedAttributes();
+                if (changedAttrs){
+                    for(i = 0; i < bbs.length; i++) {
+                        bbs[i].scale = appearance.get('scale');
+                        bbs[i].show = appearance.get('les_on');
                     }
-                    this.setColorScales();
-                } else {
-                    var visObj = this._locVis;
-                    if (options.changedAttributes()){
-                        visObj.show = options.get('on');
-                    }
+                }
+                this.setColorScales();
+                this.colorLEs();
+                if ('pin_on' in changedAttrs){
+                    this._locVis.show = appearance.get('pin_on');
                 }
             }
         },

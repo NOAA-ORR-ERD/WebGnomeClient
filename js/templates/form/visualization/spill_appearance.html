@@ -4,13 +4,13 @@
         <div class="col-sm-3 appearance-edit">
             <select class="form-control form-control-sm" name="data">
             {% for (var i = 0; i < titles.length; i++) { %}
-                <option name="data" {{titles[i] === config.title ? "selected=true" : ""}}>{{titles[i]}}</option>
+                <option name="data" {{titles[i] === model.get('title') ? "selected=true" : ""}}>{{titles[i]}}</option>
             {% } %}
             </select>
         </div>
         <div class="col-sm-3 appearance-edit">
             <label class="checkbox-inline">
-                <input type="checkbox", name="{{config.title}}:useAlpha" {{config.useAlpha || config._chosenColorMapType === 'Alpha' ? 'checked=true' : ''}} disabled="{{config._chosenColorMapType === 'Alpha'}}">
+                <input type="checkbox", name="colormap:useAlpha" {{colormap.get('useAlpha') ? 'checked=true' : ''}}>
                 Fade by Mass
             </label>
         </div>

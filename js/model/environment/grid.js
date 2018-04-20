@@ -5,23 +5,18 @@ define([
     'model/base',
     'moment',
     'localforage',
-    'model/visualization/appearance',
+    'model/visualization/grid_appearance',
     'cesium'
-], function(_, $, Backbone, BaseModel, moment, localforage, Appearance, Cesium){
+], function(_, $, Backbone, BaseModel, moment, localforage, GridAppearance, Cesium){
     'use strict';
     var baseGridObj = BaseModel.extend({
         urlRoot: '/grid/',
         grid_cache : localforage.createInstance({name: 'Grid Object Data Cache',
                                                     }),
-        default_appearance: {
-            on: false,
-            color: '#FFC0CB', //PINK
-            alpha: 0.3,
-            ctrl_names: {title: 'Grid Appearance',
-                         on: 'Show',
-                         color: 'Line Color',
-                         alpha: 'Alpha',
-                        },
+        defaults: function() {
+            return {
+                _appearance: new GridAppearance()
+            };
         },
 
         initialize: function(attrs, options) {
