@@ -724,7 +724,10 @@ define([
                 var entry = this.model.get('timeseries')[index];
                 var speed = this.$('.input-speed').val();
                 var direction = this.$('.input-direction').val();
-                var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
+
+                var date = moment(this.$('.input-time').val(),
+                                  'YYYY/MM/DD HH:mm').format('YYYY-MM-DDTHH:mm:00');
+
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                     direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
                 }
@@ -758,7 +761,10 @@ define([
                 var entry = this.model.get('timeseries')[index];
                 var speed = this.$('.input-speed').val();
                 var direction = this.$('.input-direction').val();
-                var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
+
+                var date = moment(this.$('.input-time').val(),
+                                  'YYYY/MM/DD HH:mm').format('YYYY-MM-DDTHH:mm:00');
+ 
                 if(direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null){
                     direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
                 }
