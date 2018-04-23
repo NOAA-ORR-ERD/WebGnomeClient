@@ -302,22 +302,8 @@ define([
         activeTimeRange: function() {
             var release = this.get('release');
 
-            return [this.parseTimeAttr(release.get('release_time')),
-                    this.parseTimeAttr(release.get('end_release_time'))];
-        },
-
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
-            }
+            return [webgnome.timeStringToSeconds(release.get('release_time')),
+                    webgnome.timeStringToSeconds(release.get('end_release_time'))];
         },
 
         toTree: function() {

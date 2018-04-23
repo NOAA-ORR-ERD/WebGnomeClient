@@ -507,8 +507,8 @@ define([
         },
 
         activeTimeRange: function() {
-            return [this.parseTimeAttr(this.get('active_start')),
-                    this.parseTimeAttr(this.get('active_stop'))];
+            return [webgnome.timeStringToSeconds(this.get('active_start')),
+                    webgnome.timeStringToSeconds(this.get('active_stop'))];
         },
 
         dataActiveTimeRange: function() {
@@ -534,22 +534,8 @@ define([
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a mover's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                return [this.parseTimeAttr(this.get('real_data_start')),
-                        this.parseTimeAttr(this.get('real_data_stop'))];
-            }
-        },
-
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
+                return [webgnome.timeStringToSeconds(this.get('real_data_start')),
+                        webgnome.timeStringToSeconds(this.get('real_data_stop'))];
             }
         },
 
@@ -565,7 +551,7 @@ define([
         },
 
         interpVecsToTime: function(timestamp, mag_out, dir_out) {
-            timestamp = this.parseTimeAttr(timestamp);
+            timestamp = webgnome.timeStringToSeconds(timestamp);
 
             var n = 0;
             var time_axis = this.time_axis,

@@ -479,24 +479,10 @@ define([
         },
 
         activeTimeRange: function() {
-            var start = this.parseTimeAttr(this.get('start_time'));
+            var start = webgnome.timeStringToSeconds(this.get('start_time'));
             var end = start + this.get('duration');
 
             return [start, end];
-        },
-
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
-            }
         },
 
         getEndTime: function() {
