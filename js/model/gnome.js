@@ -498,11 +498,14 @@ define([
             var durationObj = this.formatDuration();
             var day_human = moment.duration(durationObj.days, 'days').humanize();
             var hour_human = moment.duration(durationObj.hours, 'hours').humanize();
+
             if (durationObj.days && durationObj.hours) {
                 str += day_human + " and " + hour_human;
-            } else if (durationObj.days) {
+            }
+            else if (durationObj.days) {
                 str += day_human;
-            } else if (durationObj.hours) {
+            }
+            else if (durationObj.hours) {
                 str += hour_human;
             }
 
