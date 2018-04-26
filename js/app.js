@@ -438,7 +438,19 @@ define([
         },
 
         getConfig: function(){
-            return  JSON.parse(config);
+            var config_obj = JSON.parse(config);
+            // if there isn't a domain provided just use the
+            // one the client was served on.
+            var domain = location.href.split(':');
+            domain.pop();
+            domain = domain.join(':') + ':';
+            if(config_obj.api.match(/^\d*$/)){
+                config_obj.api = domain + config_obj.api;
+            }
+            if(config_obj.oil_api.match(/^\d*$/)){
+                config_obj.oil_api = domain + config_obj.oil_api;
+            }
+            return config_obj;
         },
         
         validModel: function(){
