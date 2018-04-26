@@ -138,7 +138,7 @@ define([
                 return Number.NEGATIVE_INFINITY;
             }
             else {
-                return moment(timeAttr.replace('T',' ')).unix();
+                return moment(timeAttr, moment.ISO_8601).unix();
             }
         },
 

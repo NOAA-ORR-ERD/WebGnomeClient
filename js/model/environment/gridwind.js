@@ -10,7 +10,6 @@ define([
                 obj_type: 'gnome.environment.environment_objects.GridWind'
             };
         },
-
         vec_max: 30.0,
         n_vecs: 60,
 
