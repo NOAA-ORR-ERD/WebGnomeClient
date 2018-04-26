@@ -445,6 +445,7 @@ define([
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
                                 image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
                                 show: appearance.get('les_on'),
+                                color: Cesium.Color.RED
                             });
                             if (additional_data) {
                                 newLE[additional_data] = uncertain[additional_data][f];
