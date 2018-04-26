@@ -43,7 +43,7 @@ define([
 			if(!_.isUndefined(attrs.timeseries)){
 				var msg;
 				_.each(attrs.timeseries, function(el, ind, arr){
-					if (el[1][0] < 0){
+					if (el[1] < 0){
 						msg = 'Amount spilled must be greater than or equal to 0';
 					}
 					var beachedStartTime = moment(el[0]).unix();

@@ -49,7 +49,7 @@ define([
         setupUpload: function(obj_type){
             this.$('#upload_form').empty();
             if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate));
+                this.$('#upload_form').append(_.template(UploadActivateTemplate, {page: false}));
             } else {
                 this.$('#upload_form').append(_.template(UploadTemplate));
             }
@@ -59,6 +59,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
+                maxFilesize: 2048, // 2GB
                 //acceptedFiles: '.nc, .cur',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code>
             });

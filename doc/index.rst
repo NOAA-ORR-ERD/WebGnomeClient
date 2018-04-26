@@ -14,6 +14,7 @@ WebGNOME User Manual
    basics
    fate
    transport
+   response
    location_files
    goods
    uncertainty

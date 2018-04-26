@@ -11,23 +11,10 @@ define([
         render: function(options){
             this.body = _.template(FormTemplate, {
                 model: this.model.toJSON(),
-                winds: this.getWinds()
+                winds: webgnome.model.getWinds()
             });
 
             FormModal.prototype.render.call(this, options);
-        },
-
-        update: function(options){
-            FormModal.prototype.update.call(this, options);
-            this.model.set('wind', webgnome.model.get('environment').get(this.model.get('wind')));
-        },
-
-        getWinds: function(){
-            var env = webgnome.model.get('environment');
-            return _.flatten(
-                env.where({'obj_type': 'gnome.environment.wind.Wind'}),
-                env.where({'obj_type': 'gnome.environment.environment_objects.GridWind'})
-            );
         }
     });
 

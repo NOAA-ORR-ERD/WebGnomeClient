@@ -4,16 +4,18 @@ define([
     'backbone',
     'moment',
     'sweetalert',
+    'text!templates/panel/roc-response.html',
     'views/panel/base',
     'views/form/response/type',
-    'text!templates/panel/roc-response.html',
     'views/form/response/roc_disperse',
     'views/form/response/roc_burn',
     'views/form/response/roc_skim',
     'flot',
     'flottime',
     'flotgantt',
-], function($, _, Backbone, moment, swal, BasePanel, ResponseTypeForm, ResponsePanelTemplate, ResponseDisperseView, ResponseBurnView, ResponseSkimView){
+], function($, _, Backbone, moment, swal,
+            ResponsePanelTemplate, BasePanel, ResponseTypeForm,
+            ResponseDisperseView,ResponseBurnView, ResponseSkimView) {
     var responsePanel = BasePanel.extend({
         className: 'col-md-3 response panel-view roc',
 
@@ -24,61 +26,80 @@ define([
             'gnome.weatherers.roc.Skim'
         ],
 
-        initialize: function(options){
+        initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
+
             this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.rerender);
             this.listenTo(webgnome.model, 'change:start_time change:duration', this.rerender);
         },
 
-        new: function(){
+        new: function() {
             var typeForm = new ResponseTypeForm({className: 'modal form-modal responsetype-form roc'});
+
             typeForm.render();
             typeForm.on('hidden', typeForm.close);
         },
 
-        render: function(){
+        render: function() {
             var weatherers = webgnome.model.get('weatherers').models;
             this.filter(weatherers);
 
             var compiled = _.template(ResponsePanelTemplate, {
                 responses: this.responses
             });
+
             this.$el.html(compiled);
 
-            if (this.responses.length > 0){
+            if (this.responses.length > 0) {
                 this.$('.panel').addClass('complete');
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show();
                 this.$('.panel-body').css('padding-top','0px');
                 // this.graphReponses(this.responses);
-            } else {
+            }
+            else {
                 this.$('.panel').removeClass('complete');
                 this.$('.panel-body').hide().html('');
                 this.$el.removeClass('col-md-6').addClass('col-md-3');
             }
         },
 
-        filter: function(weatherers){
+        filter: function(weatherers) {
             var filteredNames = ["Disperse", "Skim", "Burn"];
             this.responses = [];
-            for (var i = 0; i < weatherers.length; i++){
-                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'){
+
+            for (var i = 0; i < weatherers.length; i++) {
+                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 &&
+                        weatherers[i].get('name') !== '_natural') {
                     this.responses.push(weatherers[i]);
                 }
             }
         },
 
-        graphReponses: function(responses){
+        graphReponses: function(responses) {
             var yticks = [];
             var dataset = [];
+
             var colors = {
                 'gnome.weatherers.roc.Burn': '#CB4B4B',
                 'gnome.weatherers.roc.Disperse': '#AFD8F8',
                 'gnome.weatherers.roc.Skim': '#EDC240'
             };
+
             var t = responses.length;
-            for (var i in responses){
+
+            for (var i in responses) {
                 var responseObjType = responses[i].get('obj_type').split(".");
+                
+                // FIXME: This ternary operator form is **terrible**.
+                //        It does way too many discreet things in a single
+                //        statement, making it overly complex (i.e. how can
+                //        one tell at a glance whether everything is working
+                //        properly?)
+                //        And it extends to over 220 columns.  How can you see
+                //        at a glance even the full extent of what these
+                //        statements are doing?  I understand this is
+                //        Javascript, but c'mon now, we can do better.
                 var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
                 var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
 

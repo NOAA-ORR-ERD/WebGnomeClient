@@ -2,18 +2,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/base',
     'moment',
+    'views/base',
     'flot',
     'flottime',
     'flotextents',
     'flotnavigate',
-], function($, _, Backbone, BaseView, moment){
+], function($, _, Backbone, moment, BaseView) {
     var timelineView = BaseView.extend({
         className: 'timeline',
 
-        initialize: function(options){
+        initialize: function(options) {
             BaseView.prototype.initialize.call(this, options);
+
             this.listenTo(webgnome.model.get('spills'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('weatherers'), 'change add remove', this.render);
             this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
@@ -21,35 +22,48 @@ define([
             this.listenTo(webgnome.model, 'change:start_time change:duration', this.render);
         },
 
-        render: _.debounce(function(){
-            var model_start = parseInt(moment(webgnome.model.get('start_time')).format('x'), 10);
-            var model_end = parseInt(model_start + (webgnome.model.get('duration') * 1000), 10);
-            var offset = (webgnome.model.get('duration') / 12) * 1000;
-            var baseline = {label: "empty", data: [[model_start - offset, 0],[model_end + offset, 0]]};
+        render: _.debounce(function() {
+            var [model_start, model_end] = webgnome.model.activeTimeRange().map(function(secs) {
+                return secs * 1000;  // milliseconds
+            });
 
-            var timelinedata = [
-                {label: 'Model', start: model_start, end: model_end, fillColor: '#9A9EAB'},
-            ];
+            var offset = (webgnome.model.get('duration') / 12) * 1000;
+
+            var baseline = {label: "empty",
+                            data: [[model_start - offset, 0],
+                                   [model_end + offset, 0]]
+                            };
+
+            var timelinedata = [{label: 'Model',
+                                 start: model_start,
+                                 end: model_end,
+                                 fillColor: '#9A9EAB'},
+                                ];
 
             // spills
-            webgnome.model.get('spills').forEach(function(spill){
-                var start = parseInt(moment(spill.get('release').get('release_time')).format('x'), 10);
-                var end = Math.max(
-                    parseInt(moment(spill.get('release').get('end_release_time')).format('x'), 10),
-                    parseInt(start + (webgnome.model.get('time_step') * 1000), 10)
-                );
-                
+            webgnome.model.get('spills').forEach(function(spill) {
+                var [start, end] = spill.activeTimeRange().map(function(secs) {
+                    return secs * 1000;  // milliseconds
+                });
+
+                var timeStep = webgnome.model.get('time_step') * 1000;
+
+                end = Math.max(end, start + timeStep);
+
                 if (start < model_start) {
                     baseline.data[0] = [start - offset, 0];
                 }
+
                 if (end > model_end) {
-                baseline.data[1] = [end + offset, 0];
+                    baseline.data[1] = [end + offset, 0];
                 }
 
                 var fc = '#f9563e';
+
                 if (spill.get('on') !== true) {
                     fc = '#fc9585';
                 }
+
                 timelinedata.push({
                     label: spill.get('name'),
                     start: start,
@@ -58,17 +72,23 @@ define([
                 });
             });
 
-            webgnome.model.get('weatherers').forEach(function(weatherer){
-                if(weatherer.get('obj_type').indexOf('cleanup') !== -1){
-                    var start = parseInt(moment(weatherer.get('active_start')).format('x'), 10);
-                    var end = parseInt(moment(weatherer.get('active_stop')).format('x'), 10);
+            webgnome.model.get('weatherers').forEach(function(weatherer) {
+                // right now we are only concerned with putting the cleanup
+                // option weatherers on the timeline.
+                if ((weatherer.get('obj_type').indexOf('cleanup') !== -1) ||
+                        (weatherer.get('obj_type').indexOf('roc') !== -1)) {
+                    var [start, end] = weatherer.dataActiveTimeRange().map(function(secs) {
+                        return secs * 1000;  // milliseconds
+                    });
+
                     if (start < model_start) {
                         baseline.data[0] = [start - offset, 0];
                     }
+
                     if (end > model_end) {
                         baseline.data[1] = [end + offset, 0];
                     }
-                                  
+
                     timelinedata.push({
                         label: weatherer.get('name'),
                         start: start,
@@ -78,61 +98,44 @@ define([
                 }
             });
 
-            
-            webgnome.model.get('movers').forEach(function(mover){
-                
-                var start;
-                var end;
-                
-                if ((mover.get('real_data_start')) === (mover.get('real_data_stop'))) {
-                    //Differing opinions on what should be shown in this case -- I'm going with actual data
-                    //start = -Infinity;
-                    //end = Infinity;
-                    start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                    end = parseInt(start + offset/20, 10);
-                } else {
-                    
-                    if(mover.get('real_data_start') === "-inf"){
-                       start = -Infinity;
-                    } else {
-                        start = parseInt(moment(mover.get('real_data_start')).format('x'), 10);
-                    }
+            webgnome.model.get('movers').forEach(function(mover) {
+                var [start, end] = mover.dataActiveTimeRange().map(function(secs) {
+                    return secs * 1000;  // milliseconds
+                });
 
-                    if(mover.get('real_data_stop') === 'inf'){
-                        end = Infinity;
-                    } else {
-                        end = Math.max(
-                            parseInt(moment(mover.get('real_data_stop')).format('x'), 10),
-                            parseInt(start + offset/20, 10)
-                        );
-                    }
-                
+                if (start === end) {
+                    end += offset / 20;  // give ourselves something to see.
                 }
-                 
-                
-                var name = mover.get('name');
-                                    
-                var fc = '#D6A0FF';
+
+                var fc = 'rgba(214, 160, 255, 1.0)';
+
                 if (mover.get('on') !== true) {
                     fc = 'rgba(214, 160, 255, 0.5)';
                 }
-                
+
+                var mover_name = mover.get('name');
+
+                if (mover.extrapolated() === true) {
+                    mover_name += ' (extrapolated)';
+                }
+
                 timelinedata.push({
-                    label: name,
+                    label: mover_name,
                     start: start,
                     end: end,
                     fillColor: fc
                 });
             });
 
-
             // dynamically set the height of the timeline div
             var height = (timelinedata.length * 20) + 40;
             this.$el.css('height', height + 'px');
 
-            var timeline = {extents: { show: true }, data: [], extentdata: timelinedata};
+            var timeline = {extents: { show: true },
+                            data: [],
+                            extentdata: timelinedata};
 
-            this.timeline = $.plot(this.$el, [baseline,timeline], {
+            this.timeline = $.plot(this.$el, [baseline, timeline], {
                 legend: {
                     show: false
                 },

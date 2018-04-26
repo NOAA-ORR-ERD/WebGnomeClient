@@ -27,6 +27,7 @@ define([
     var responseTypeForm = FormModal.extend({
         title: 'Select Response Type',
         className: 'modal form-modal responsetype-form',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function(){
             return _.defaults({
@@ -38,12 +39,15 @@ define([
                 'click .roc-skim': 'roc_skim'
             }, FormModal.prototype.events);
         },
-
-        render: function(options){
+        
+        initialize: function(options){
             this.module = module;
+            FormModal.prototype.initialize.call(this, options);
             this.body = _.template(FormTemplate);
-            this.buttons = null;
-            FormModal.prototype.render.call(this, options);
+        },
+
+        render: function(){          
+            FormModal.prototype.render.call(this);
         },
 
         adios_burn: function(){

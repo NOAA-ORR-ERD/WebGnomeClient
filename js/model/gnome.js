@@ -1,6 +1,6 @@
 define([
-    'underscore',
     'jquery',
+    'underscore',
     'backbone',
     'moment',
     'sweetalert',
@@ -16,14 +16,14 @@ define([
     'model/environment/waves',
     'model/environment/gridcurrent',
     'model/environment/gridwind',
-    'model/movers/wind',
     'model/movers/random',
+    'model/movers/wind',
+    'model/movers/py_wind',
     'model/movers/cats',
-    'model/movers/ice',
     'model/movers/grid_current',
     'model/movers/py_current',
-    'model/movers/py_wind',
     'model/movers/current_cycle',
+    'model/movers/ice',
     'model/movers/component',
     'model/outputters/trajectory',
     'model/outputters/spill',
@@ -36,15 +36,15 @@ define([
     'model/outputters/shape',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
-    'model/weatherers/emulsification',
-    'model/weatherers/burn',
-    'model/weatherers/skim',
     'model/weatherers/natural_dispersion',
-    'model/weatherers/manual_beaching',
+    'model/weatherers/emulsification',
+    'model/weatherers/dissolution',
     'model/weatherers/fay_gravity_viscous',
     'model/weatherers/langmuir',
     'model/weatherers/weathering_data',
-    'model/weatherers/dissolution',
+    'model/weatherers/burn',
+    'model/weatherers/skim',
+    'model/weatherers/manual_beaching',
     'model/weatherers/roc_skim',
     'model/weatherers/roc_burn',
     'model/weatherers/roc_disperse',
@@ -52,15 +52,22 @@ define([
     'model/risk/risk',
     'collection/movers',
     'collection/spills'
-], function(_, $, Backbone, moment, swal,
-    BaseModel, Cache, MapModel, ParamMapModel, MapBnaModel, SpillModel, TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel,
-    GridWindModel, WindMover, RandomMover, CatsMover, IceMover, GridCurrentMover, PyCurrentMover, PyWindMover, CurrentCycleMover, ComponentMover,
-    TrajectoryOutputter, SpillOutputter, WeatheringOutputter, CurrentOutputter, IceOutputter, IceImageOutputter, NetCDFOutputter,
-    KMZOutputter, ShapeOutputter, EvaporationWeatherer, DispersionWeatherer, EmulsificationWeatherer, BurnWeatherer, SkimWeatherer,
-    NaturalDispersionWeatherer, BeachingWeatherer, FayGravityViscous, Langmuir, WeatheringData, DissolutionWeatherer,
+], function($, _, Backbone, moment, swal,
+    BaseModel, Cache,
+    MapModel, ParamMapModel, MapBnaModel, SpillModel,
+    TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
+    RandomMover, WindMover, PyWindMover,
+    CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
+    IceMover, ComponentMover,
+    TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
+    CurrentOutputter, IceOutputter, IceImageOutputter,
+    NetCDFOutputter, KMZOutputter, ShapeOutputter,
+    EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
+    EmulsificationWeatherer, DissolutionWeatherer,
+    FayGravityViscous, Langmuir, WeatheringData,
+    BurnWeatherer, SkimWeatherer, BeachingWeatherer,
     RocSkimResponse, RocBurnResponse, RocDisperseResponse,
-    UserPrefs, RiskModel,
-    MoversCollection, SpillsCollection){
+    UserPrefs, RiskModel, MoversCollection, SpillsCollection) {
     'use strict';
     var gnomeModel = BaseModel.extend({
         url: '/model',
@@ -169,13 +176,14 @@ define([
             this.get('environment').on('add remove sort', this.configureWindRelations, this);
             this.get('environment').on('add remove sort', this.configureWaterRelations, this);
             this.get('movers').on('change add remove', this.moversChange, this);
+            this.get('movers').on('add', this.manageTides, this);
             this.get('spills').on('change add remove', this.spillsChange, this);
             this.get('spills').on('sync', this.spillsTimeComplianceWarning, this);
             this.on('change:start_time', this.spillsTimeComplianceCheck, this);
             this.on('change:start_time', this.adiosSpillTimeFix, this);
             this.get('weatherers').on('change add remove', this.weatherersChange, this);
             this.get('outputters').on('change add remove', this.outputtersChange, this);
-            this.get('movers').on('sync save', this.moversTimeComplianceWarning, this);
+            this.get('movers').on('sync add save', this.moversTimeComplianceWarning, this);
             this.on('change:start_time', this.moversTimeComplianceCheck, this);
             this.on('change:map', this.validateSpills, this);
             this.on('change:map', this.addMapListeners, this);
@@ -221,6 +229,24 @@ define([
             }
         },
 
+        setupTides: function(){
+            var movers = this.get('movers');
+            var tides = [];
+            movers.each(function(mover){
+                if(!_.isUndefined(mover.get('tide'))){
+                    tides.push(mover.get('tide'));
+                }
+            });
+            this.get('environment').add(tides);
+        },
+
+        manageTides: function(model){
+            if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
+                if(!_.isUndefined(model.get('tide'))){
+                    this.get('environment').add(model.get('tide'));
+                }
+            }
+        },
         
         spillsTimeComplianceCheck: function(model) {
                     
@@ -284,13 +310,19 @@ define([
                             type: 'warning',
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
-                            cancelButtonText: 'Extrapolate Mover'
+                            cancelButtonText: 'Extrapolate Data'
                         }).then(_.bind(function(fit){
                             if (fit) {
                                 this.fitToInterval(model.get('real_data_start'));
                                 model.set('time_compliance','valid');
                             } else {
-                                model.set('extrapolate', true);
+                                if (model.attributes.hasOwnProperty('wind')) {
+                                    model.get('wind').attributes
+                                         .extrapolation_is_allowed = true;
+                                }
+                                else {
+                                    model.set('extrapolate', true);
+                                }
                                 model.set('time_compliance','valid');
                             }
                         }, this));
@@ -446,6 +478,13 @@ define([
             return {days: days, hours: hours};
         },
 
+        activeTimeRange: function() {
+            var start = webgnome.timeStringToSeconds(this.get('start_time'));
+            var end = start + this.get('duration');
+
+            return [start, end];
+        },
+
         getEndTime: function() {
             var durationObj = this.formatDuration();
             var timeInHours = durationObj.days * 24 + durationObj.hours;
@@ -459,11 +498,14 @@ define([
             var durationObj = this.formatDuration();
             var day_human = moment.duration(durationObj.days, 'days').humanize();
             var hour_human = moment.duration(durationObj.hours, 'hours').humanize();
+
             if (durationObj.days && durationObj.hours) {
                 str += day_human + " and " + hour_human;
-            } else if (durationObj.days) {
+            }
+            else if (durationObj.days) {
                 str += day_human;
-            } else if (durationObj.hours) {
+            }
+            else if (durationObj.hours) {
                 str += hour_human;
             }
 
@@ -764,6 +806,19 @@ define([
                 }
             }
             return false;
+        },
+
+        getWinds: function(){
+            var env = this.get('environment');
+            return _.flatten(
+                env.where({'obj_type': 'gnome.environment.wind.Wind'}),
+                env.where({'obj_type': 'gnome.environment.environment_objects.GridWind'})
+            );
+        },
+
+        getTides: function(){
+            var environment = this.get('environment');
+            return environment.where({'obj_type': 'gnome.environment.tide.Tide'});
         }
     });
     

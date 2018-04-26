@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'module',
     'moment',
     'nucos',
     'sweetalert',
@@ -11,7 +12,7 @@ define([
     'text!templates/form/beached/input-static.html',
     'text!templates/form/beached/input-edit.html',
     'jqueryDatetimepicker'
-], function($, _, Backbone, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
+], function($, _, Backbone, module, moment, nucos, swal, FormModal, BeachedModel, BeachedTemplate, StaticRowTemplate, EditRowTemplate){
     'use strict';
     var beachedForm = FormModal.extend({
         className: 'modal form-modal model-form beached-form',
@@ -35,6 +36,7 @@ define([
         },
 
         initialize: function(options, model){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
             if (_.isUndefined(model)) {
                 this.model = new BeachedModel();
@@ -155,6 +157,11 @@ define([
                 });
                 this.$(row).addClass('edit');
                 this.$(row).html(template);
+                this.$(row).find('.input-time').datetimepicker({
+                    format: webgnome.config.date_format.datetimepicker,
+                    allowTimes: webgnome.config.date_format.half_hour_times,
+                    step: webgnome.config.date_format.time_step
+                });
             }
         },
 
@@ -165,14 +172,17 @@ define([
             var index = this.$(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             var amount = this.$('.input-amount').val();
-            var date = entry[0];
+            //var date = entry[0];
+            var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
             entry = [date, amount];
-            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
-                if (el[0] === entry[0]){
-                    array[index] = entry;
-                    this.timeseries = array;
-                }
-            }, this));
+			var tsCopy = _.clone(this.model.get('timeseries'));
+			_.each(tsCopy, _.bind(function(el, i, array){
+				if (index === i){
+					array[i] = entry;
+				}
+			}, this));
+
+			this.model.set('timeseries', tsCopy);
             this.$(row).removeClass('edit');
             this.renderTimeseries();
         },
@@ -222,7 +232,9 @@ define([
             } else {
                 if (this.model.get('timeseries').length === 1) {
                     var time_step = webgnome.model.get('time_step');
-                    var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
+                    var timeseries = this.model.get('timeseries');
+                    var active_stop = timeseries[0][0];
+                    //var active_stop = moment(this.model.get('active_stop')).add(time_step, 's').format('YYYY-MM-DDTHH:00:00');
                     this.model.set('active_stop', active_stop);
                 }
                 FormModal.prototype.save.call(this);

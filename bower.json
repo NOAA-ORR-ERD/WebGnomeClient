@@ -15,7 +15,7 @@
     "bootstrap": "3.*.*",
     "datetimepicker": "2.*.*",
     "openlayers": "git://github.com/NOAA-ORR-ERD/ol3.git#3.15.1",
-    "cesium": "https://github.com/AnalyticalGraphicsInc/cesium/releases/download/1.36/Cesium-1.36.zip",
+    "cesium": "https://github.com/AnalyticalGraphicsInc/cesium/releases/download/1.43/Cesium-1.43.zip",
     "jquery-file-upload": "9.10.1",
     "respond": "1.4.2",
     "compass-rose-ui": "1.1.*",

@@ -123,6 +123,7 @@ define([
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(function(model, response, options){
+                    model.setupTides();
                     var map = model.get('map');
                     var spills = model.get('spills').models;
 
