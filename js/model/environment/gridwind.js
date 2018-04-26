@@ -1,11 +1,12 @@
 define([
     'model/environment/gridded_env_obj',
-], function(GridEnvObj){
+], function(GridEnvObj) {
     'use strict';
     var gridWindModel = GridEnvObj.extend({
         defaults: {
             obj_type: 'gnome.environment.environment_objects.GridWind'
         },
+
         default_appearance: {
             on: false,
             ctrl_name: 'Vector Appearance',
@@ -13,6 +14,7 @@ define([
             alpha: 0.7,
             scale: 1,
         },
+
         vec_max: 30.0,
         n_vecs: 60,
 
