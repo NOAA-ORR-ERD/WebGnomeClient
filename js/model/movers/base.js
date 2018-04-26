@@ -420,25 +420,6 @@ define([
             return msg;
         },
 
-        invalidActiveTimeRanges: function() {
-            // Return the mover's active time ranges that are not covered
-            // by the data in our timeseries.
-            // - our timeseries is considered to be a contiguous range of time
-            var invalidRanges = [];
-            var [activeStart, activeStop] = this.activeTimeRange();
-            var [dataStart, dataStop] = this.dataActiveTimeRange();
-
-            if (activeStart < dataStart) {
-                invalidRanges.push([activeStart, dataStart]);
-            }
-
-            if (activeStop > dataStop) {
-                invalidRanges.push([dataStop, activeStop]);
-            }
-
-            return invalidRanges;
-        },
-
         invalidModelTimeRanges: function() {
             // List the invalid active time ranges that overlap our Model
             // time range.
@@ -466,18 +447,38 @@ define([
             return invalidRanges;
         },
 
+        invalidActiveTimeRanges: function() {
+            // Return the mover's active time ranges that are not covered
+            // by the data in our timeseries.
+            // - our timeseries is considered to be a contiguous range of time
+            var invalidRanges = [];
+            var [activeStart, activeStop] = this.activeTimeRange();
+            var [dataStart, dataStop] = this.dataActiveTimeRange();
+
+            if (activeStart < dataStart) {
+                invalidRanges.push([activeStart, dataStart]);
+            }
+
+            if (activeStop > dataStop) {
+                invalidRanges.push([dataStop, activeStop]);
+            }
+
+            return invalidRanges;
+        },
+
         activeTimeRange: function() {
             return [webgnome.timeStringToSeconds(this.get('active_start')),
                     webgnome.timeStringToSeconds(this.get('active_stop'))];
         },
 
-        dataActiveTimeRange: function() {
+        dataActiveTimeRange: function(ignore_extrapolation = false) {
             if (this.attributes.hasOwnProperty('wind')) {
                 var wind = this.get('wind');
                 var timeRange = wind.timeseriesTimes();
+                var extrapolate = (wind.attributes.extrapolation_is_allowed &&
+                                   ignore_extrapolation === false);
 
-                if (wind.attributes.extrapolation_is_allowed ||
-                        timeRange.length === 1) {
+                if (extrapolate || timeRange.length === 1) {
                     // we are either a constant wind or extrapolation
                     // is set true;
                     return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
