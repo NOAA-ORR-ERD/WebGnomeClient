@@ -147,7 +147,8 @@ module.exports = function(grunt){
                     "Blob": true,
                     "navigator": true,
                     "URL": true,
-                    "MouseEvent": true
+                    "MouseEvent": true,
+                    "location": true,
                 }
             },
             all: src

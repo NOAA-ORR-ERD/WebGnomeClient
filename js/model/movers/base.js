@@ -319,6 +319,7 @@ define([
             if (!primitiveContainer) {
                 primitiveContainer = new Cesium.PrimitiveCollection();
             }
+            var appearance = this.get('_appearance');
             var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
                 Cesium.Color.fromCssColorString(appearance.get('grid_color')).withAlpha(appearance.get('grid_alpha'))
             );

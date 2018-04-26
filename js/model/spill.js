@@ -539,7 +539,6 @@ define([
             this.colorLEs();
         },
 
-<<<<<<< HEAD
         updateVis: function(appearance) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
