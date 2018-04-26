@@ -1,7 +1,8 @@
 define([
-    'jquery',
     'underscore',
+    'jquery',
     'backbone',
+    'model/base',
     'ol',
     'moment',
     'cesium',

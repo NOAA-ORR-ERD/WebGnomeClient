@@ -1,20 +1,17 @@
 define([
-    'jquery',
     'underscore',
+    'jquery',
     'backbone',
     'cesium',
-    'moment',
-    'nucos',
     'model/base',
     'model/release',
     'model/element',
     'nucos',
     'moment',
     'model/visualization/appearance',
-    'collection/appearances',
     'd3',
     'model/visualization/spill_appearance'
-], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, AppearanceCollection, d3, SpillAppearance){
+], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, d3, SpillAppearance){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',

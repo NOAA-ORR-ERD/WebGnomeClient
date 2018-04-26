@@ -272,7 +272,7 @@ define([
             var newVal = parseFloat(e.currentTarget.value);
             if (this.model.setStop(i, newVal)) {
                 this.picker.slider('values', this.model.get('numberScaleDomain').map(this.model.numScale));
-                $('.tooltip-inner', this.numberStops[i]).text(parseFloat(e.currentTarget.value).toPrecision(4));
+                $('.top > .tooltip-inner', this.numberStops[i]).text(parseFloat(e.currentTarget.value).toPrecision(4));
                 $(e.currentTarget).remove();
                 this.updateBackground();
             } else {
@@ -282,9 +282,9 @@ define([
         },
 
         updateNumberTooltip: function(e, ui) {
-            var ttc = $('.tooltip-inner', $(ui.handle));
-            if ($('input', ttc).length > 0) {
-                $('input', ttc).remove();
+            var ttc = $('.top > .tooltip-inner', $(ui.handle));
+            if ($('input[type="number"]', ttc).length > 0) {
+                $('input[type="number"]', ttc).remove();
             }
             ttc.text(Number(this.model.numScale.invert(ui.value)).toPrecision(4));
         },
