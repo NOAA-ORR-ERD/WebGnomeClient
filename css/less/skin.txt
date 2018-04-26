@@ -32,7 +32,7 @@ body{
     font-family: 'Droid Sans';
     background: #2c2c2e;
     padding-top: 50px;
-    min-width: 1170px;
+
     &.logger-open{
         padding-bottom: 200px;
     }
@@ -129,15 +129,6 @@ img{
     .app-state{
         display: none !important;
     }
-}
-
-.graticule-label{
-    border: 1px solid gray;
-    border-radius: 2px;
-    background-color: #e1e1e1;
-    position: absolute;
-    font: 10pt verdana, sans-serif;
-    z-index: 1;
 }
 
 .swal2-overlay{
@@ -405,103 +396,16 @@ img{
     }
 }
 
-.obj-inspect {
-    .form-label {
-        background-color: #dfdfdf;
-    }
-}
-
 .panel-primary, .panel{
     .date span i{
         .glyphicon;
         .glyphicon-calendar;
     }
-    .env_objs{
-        tbody > tr > td {
-            padding: 6px;
-        }
-        thead > tr > th{
-            padding: 6px;
-        }
-    }
-
-    .env-uv-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-move;
-        }
-        width: 1%;
-    }
-    .env-grid-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-th;
-        }
-        width: 1%;
-    }
-    .env-edit-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-wrench
-        }
-        width: 1%;
-    }
-
-    .env-edit-btn, .curr-edit-btn{
-        span{
-            .glyphicon;
-            .glyphicon-option-horizontal;
-            padding: 1px;
-        }
-        padding: 1px;
-    }
-    
-    .spills{
-        tbody > tr > td {
-            padding: 6px;
-        }
-        thead > tr > th{
-            padding: 6px;
-        }
-    }
-
-    .spill-vis-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-oil;
-        }
-        width: 1%;
-    }
-    .spill-loc-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-pushpin;
-        }
-        width: 1%;
-    }
-    .spill-edit-hdr{
-        span{
-            .glyphicon;
-            .glyphicon-wrench
-        }
-        width: 1%;
-    }
-
-    .spill-edit-btn{
-        span{
-            .glyphicon;
-            .glyphicon-option-horizontal;
-            padding: 1px;
-        }
-        padding: 1px;
-    }
 }
 
-
-
 .panel-secondary {
-  background: #88b5dd;
-  margin-left: 0px;
+  background: #3240b7;
+  margin-left: 10px;
     .panel-heading{
         a{
             color: white;
@@ -629,7 +533,6 @@ img{
 nav.navbar{
     border-radius: 0;
     margin-bottom: 0;
-    max-height: 51px;
 
     a{
         white-space: nowrap;
@@ -798,7 +701,7 @@ nav.navbar{
             background: rgba(0, 0, 0, 0.09);
             border-radius: 4px;
             border: 1px solid #afafaf;
-            width: 209px;
+            width: 158px;
             position: relative;
             color: #979797;
             box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
@@ -822,6 +725,7 @@ nav.navbar{
                 &.response{
                     .glyphicon;
                     .glyphicon-dashboard;
+                    display: none;
                 }
 
                 &.trajectory, &.fate, &.config, &.response{
@@ -1049,7 +953,7 @@ nav.navbar{
                 &.missing{
                     background: #D27B7B;
                     &:before{
-                        content: "\e014";
+                        content: "\002b";
                     }
                 }
                 &.optional{
@@ -1057,27 +961,6 @@ nav.navbar{
                     &:before{
                         content: "\e031";
                     }
-
-                }
-            }
-
-            .add{
-                &:before{
-                    content: "\002b";
-                }                    
-                font-size: 50px;
-                position: absolute;
-                right: 20px;
-                top: 0;
-                bottom: 0;
-                color: #adadad;
-
-                &.small{
-                    font-size: 25px;
-                    top: 5px;
-                    right: 15px;
-                    font-weight: bold;
-                    height: 35px;
                 }
             }
 
@@ -1816,72 +1699,6 @@ nav.navbar{
         }
     }
 }
-
-.datavis-config{
-    &.colormap {
-        height: 100px;
-    }
-    .chosen-single > span{
-        background-color: white;
-        padding: 0px 3px;
-        display: inline;
-    }
-
-    .ui-slider {
-        height: 30px;
-        top:33%;
-        pointer-events: none;
-        z-index: 1;
-    }
-    .tooltip {
-        opacity: 1;
-        &.bottom {
-            margin-top: 9px;
-            transform: translate(-50%, 50%);
-        }
-        &.top {
-            transform: translate(-50%, -100%);
-        }
-    
-    }
-    .ui-slider-handle {
-        top: 0px;
-        margin-left: 0px;
-        height: 100%;
-
-        &.movable {
-            pointer-events:all;
-        }
-    }
-    .tooltip-inner{
-        width: 5em;
-        input {
-            background-color: black;
-            border: none;
-            &[type="number"] {
-                width: 100%;
-                text-align: center;
-                -moz-appearance:textfield;
-                pointer-events: none;
-            }
-
-            &[type="color"]{
-                pointer-events: all;
-                width:100%;
-            }
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-    }
-    .ui-slider-handle {
-        width: 1px;
-        margin-left: 0px;
-    }
-}
-
 .trajectory-view{
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAY1BMVEXn5+f5+fn////y8vL09PT8/Pzk5OTg4ODx8fH39/f7+/vp6enf39/i4uLr6+vd3d3+/v74+Pjv7+/w8PDj4+P29vbz8/Pl5eXc3Nzs7Ozt7e3h4eH6+vrm5ub19fXe3t7u7u47SnheAAAAkklEQVR42q3Paw7CIBBF4eFCKaXQGegD7UPd/yqtxDTxvxv4cg6RgtKmgbat1WiM6+D7EGngQYBkQ05jmBIgmft5IajCJd7uAkBW3kqIMwDqdyhnPMwRi4E/HWmGzZ7OKoA6nS4HqwCMTA/9cZ7HdDkTtVt1SFXn2+MXN8tvz5hce/UYwn6wjbxW51V7OgD/+noDa2gLye9Jpd0AAAAASUVORK5CYII=');
     overflow: hidden;
@@ -1957,23 +1774,17 @@ nav.navbar{
         }
     }
 
-    .overlay{
-        position:absolute;
-        left: 0px;
-        right: 0px;
-        top: 0px;
-        bottom: 0px;
-    }
     
     
     .controls{
+        .make-row();
         background: rgba(255, 255, 255, .75);
         border-radius: 0 0 4px 4px;
         height: 60px;
         position: absolute;
-        left: 15px;
-        right: 15px;
-        z-index: 2;
+        left: 65px;
+        right: 65px;
+        z-index: 1;
         border: 1px solid rgba(255, 255, 255, .85);
         border-top: 0;
 
@@ -1987,12 +1798,11 @@ nav.navbar{
         }
 
         > .buttons{
-            .make-sm-column(12);
-            .make-md-column(12);
-            .make-lg-column(12);
-            padding-top: 10px;
+            .make-sm-column(3);
+            .make-md-column(3);
+            .make-lg-column(2);
+            padding-top: 13px;
             padding-bottom: 13px;
-            min-width: 270px;
             btn-group {
                 margin-right: 5px;
             }
@@ -2006,12 +1816,6 @@ nav.navbar{
         .recordmenu {
             width: 200px;
             padding: 10px;
-        }
-        .recordcontrols{
-            span {
-                .glyphicon;
-                .glyphicon-chevron-down;
-            }
         }
 
         .record{
@@ -2050,12 +1854,6 @@ nav.navbar{
                 .glyphicon-pause;    
             }
         }
-        .stop{
-            span{
-                .glyphicon;
-                .glyphicon-stop;
-            }
-        }
         .rewind{
             span{
                 .glyphicon;
@@ -2075,12 +1873,13 @@ nav.navbar{
             }
         }
         .seek{
+            .make-sm-column(7);
+            .make-md-column(7);
+            .make-lg-column(8);
             padding-top: 13px;
             padding-bottom: 34px;
             padding-left: 60px;
             padding-right: 60px;
-            width: 70%;
-            display: inline-block;
 
             .ui-widget-content{
                 border: 0;
@@ -2109,11 +1908,8 @@ nav.navbar{
 
         .gnome-help{
             font-size: 25px;
-            line-height: 25px;
-            top: 14px;
-            right: 20px;
+            line-height: 43px;
             color: #696969;
-            position: absolute;
         }
     }
 
@@ -2134,6 +1930,8 @@ nav.navbar{
             background: rgba(255, 255, 255, .75);
             .panel-body{
                 background: none;
+                max-height: 200px;
+                overflow-x: scroll;
 
                 form:last-of-type{
                     margin-bottom: 0;
@@ -2313,8 +2111,6 @@ nav.navbar{
 
     .timeline{
         height: 200px;
-        margin-left: 50px;
-        margin-right: 30px;
     }
 }
 
@@ -2570,7 +2366,6 @@ nav.navbar{
 }
 
 .page.load{
-    padding-top: 40px;
     .dropzone{
         margin-top: 40px;
     }
@@ -2756,9 +2551,8 @@ nav.navbar{
             font-size: 11px;
             font-family: "PT Mono";
             margin-bottom: 0;
-            width: 100%;
 
-            td{
+            li{
                 padding: 2px 4px;
                 border-bottom: 1px solid #F1F1F1;
                 display: none;
@@ -2798,25 +2592,19 @@ nav.navbar{
         }
         &.error {
             .logs{
-                td.error {
+                li.error {
                     display: block !important;
                 }
             }
         }
         &.warni {
             .logs {
-                td.warni{
+                li.warni{
                     display: block !important;
                 }
             }
         }
 
-    }
-}
-
-.upload-folder{
-    .breadcrumb{
-        margin-top: 20px;
     }
 }
 
@@ -3138,7 +2926,7 @@ nav.navbar{
         }
     }
 
-    &.wind-form, &.current-form, &.griddedwind-form, &.beached-form, &.upload-form {
+    &.wind-form, &.beached-form{
         .constant-compass, .variable-compass{
             height: 200px;
             cursor: pointer;
@@ -3178,7 +2966,7 @@ nav.navbar{
             th{
                 line-height: 34px;
             }
-            span.edit, span.add-row, span.open-file, span.open-folder {
+            span.edit, span.add-row {
                 margin-right: 10px;
             }
             .ok, .undo {
@@ -3319,9 +3107,6 @@ nav.navbar{
             &.grid .icon{
                 background-image: url(/img/surface-current.png);
             }
-            &.py_grid .icon{
-                background-image: url(/img/surface-current.png);
-            }
             &.gridwind .icon{
                 background-image: url(/img/wind.png);
             }
@@ -3362,17 +3147,6 @@ nav.navbar{
         .col-md-6:nth-child(2){
             display: none;
         }
-
-        &.roc{
-            .col-md-6:first-child{
-                display: none;
-            }
-            .col-md-6:nth-child(2){
-                width: 100%;
-                display: block;
-
-            }
-        }
     }
     
 
@@ -3382,14 +3156,6 @@ nav.navbar{
                 display: none;
             }
             .null-substance {
-                display: none;
-            }
-        }
-        &.roc{
-            .position{
-                display:none;
-            }
-            .reset{
                 display: none;
             }
         }
@@ -3704,19 +3470,6 @@ nav.navbar{
 
 .oilContainer {
 
-    &.sticky{
-        padding-top: 140px;
-
-        .oil-form{
-            position:absolute;
-            padding-top: 15px;
-            top: 0px;
-            right: 15px;
-            left: 15px;
-            background: white;
-        }
-    }
-
     form{
         margin-bottom: 30px;
     }
@@ -3989,10 +3742,6 @@ nav.navbar{
     -webkit-animation-delay: -0.8s;
     animation-delay: -0.8s;
   }
-}
-
-.pick-coords{
-    cursor: pointer;
 }
 
 @-webkit-keyframes stretchdelay {

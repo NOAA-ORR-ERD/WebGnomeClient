@@ -99,7 +99,8 @@ define([
             });
 
             webgnome.model.get('movers').forEach(function(mover) {
-                var [start, end] = mover.dataActiveTimeRange().map(function(secs) {
+                var [start, end] = mover.dataActiveTimeRange({ignore_extrapolation: true})
+                .map(function(secs) {
                     return secs * 1000;  // milliseconds
                 });
 

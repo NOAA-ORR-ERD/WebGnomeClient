@@ -1,15 +1,14 @@
 define([
-    'jquery',
     'underscore',
+    'jquery',
     'backbone',
+    'model/base',
     'ol',
     'moment',
     'cesium',
     'localforage',
-    'model/base',
-    'model/appearance',
-], function($, _, Backbone, ol, moment, Cesium, localforage,
-            BaseModel, Appearance) {
+    'model/visualization/mover_appearance',
+], function(_, $, Backbone, BaseModel, ol, moment, Cesium, localforage, MoverAppearance){
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -17,28 +16,13 @@ define([
         requesting_centers: false,
         requested_grid: false,
         requested_centers: false,
-
-        data_cache : localforage.createInstance({name: 'Environment Object Data Cache'}),
-
-        default_appearances:
-        [
-            {
-                on: false,
-                ctrl_name: 'Vector Appearance',
-                color: '#9370DB', //MEDIUMPURPLE
-                id: 'uv',
-                alpha: 1,
-                scale: 1,
-            },
-            {
-                on: false,
-                ctrl_name: 'Grid Appearance',
-                color: '#FFC0CB', //PINK
-                id: 'grid',
-                alpha: 0.3,
-            }
-        ],
-
+        data_cache : localforage.createInstance({name: 'Environment Object Data Cache',
+                                                    }),
+        defaults: function() {
+            return {
+                _appearance: new MoverAppearance()
+            };
+        },
         vec_max: 3.0,
         n_vecs: 30,
 
@@ -61,16 +45,14 @@ define([
                 }
             }
 
-            this._vectors = new Cesium.BillboardCollection({
-                blendOption: Cesium.BlendOption.TRANSLUCENT
-            });
-
-            this._linesPrimitive = new Cesium.PrimitiveCollection();
-
-            this.get('_appearance').fetch().then(_.bind(function() {
-                this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-                this.setupVis();
-            }, this));
+            if (this.get('_appearance')) {
+                this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
+                this._linesPrimitive = new Cesium.PrimitiveCollection();
+                this.get('_appearance').fetch().then(_.bind(function(){
+                    this.listenTo(this.get('_appearance'), 'change', this.updateVis);
+                    this.setupVis();
+                }, this));
+            }
         },
 
         resetRequest: function() {
@@ -140,7 +122,7 @@ define([
 
         setupVis: function(attrs) {
             this.genVecImages();
-            this._linesPrimitive.show = this.get('_appearance').findWhere({id: 'grid'}).get('on');
+            this._linesPrimitive.show = this.get('_appearance').get('grid_on');
         },
 
         genVecImages: function(maxSpeed, numSteps) {
@@ -220,7 +202,7 @@ define([
             // rebuild currently broken
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._vectors.length < 100) {
-                    var appearance = this.get('_appearance').findWhere({id: 'uv'});
+                    var appearance = this.get('_appearance');
                     var addVecsToLayer = _.bind(function(centers) {
                         if (!this._images) {
                             this.genVecImages();
@@ -229,8 +211,8 @@ define([
                         var existing_length = this._vectors.length;
                         for (var existing = 0; existing < existing_length; existing++) {
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0], centers[existing][1]);
-                            this._vectors.get(existing).show = appearance.get('on');
-                            this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
+                            this._vectors.get(existing).show = appearance.get('vec_on');
+                            this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                         }
 
                         var create_length = centers.length;
@@ -240,8 +222,8 @@ define([
                                 show: appearance.get('on'),
                                 position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
                                 image: this._images[0],
-                                color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
-                                scale: appearance.get('scale')
+                                color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha')),
+                                scale: appearance.get('vec_scale')
                             });
                         }
 
@@ -257,9 +239,8 @@ define([
         },
 
         update: function(step) {
-            var appearance = this.get('_appearance').findWhere({id: 'uv'});
-
-            if (step.get('CurrentJsonOutput') && appearance.get('on')) {
+            var appearance = this.get('_appearance');
+            if(step.get('CurrentJsonOutput') && appearance.get('vec_on')){
                 var id = this.get('id');
                 var data = step.get('CurrentJsonOutput')[id];
                 var billboards = this._vectors._billboards;
@@ -277,55 +258,35 @@ define([
             }
         },
 
-        updateVis: function(options) {
-            // Updates the appearance of this model's graphics object.
-            // Implementation varies depending on the specific object type.
-            var appearance;
-
-            if (options) {
-                if (options.id === 'uv') {
-                    if (options.changedAttributes()) {
-                        var bbs = this._vectors._billboards;
-
-                        appearance = options;
-                        if (appearance.changedAttributes()) {
-                            var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
-
-                            if (appearance.changedAttributes().on === true) {
-                                current_outputter.get('current_movers').add(this);
-                                current_outputter.save();
-                            }
-
-                            if (appearance.changedAttributes().on === false) {
-                                current_outputter.get('current_movers').remove(this);
-                                current_outputter.save();
-                            }
-
-                            var changedAttrs, newColor;
-                            changedAttrs = appearance.changedAttributes();
-
-                            for (var i = 0; i < bbs.length; i++) {
-                                if (changedAttrs.color || changedAttrs.alpha) {
-                                    newColor = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
-                                    bbs[i].color = newColor;
-                                }
-
-                                bbs[i].scale = appearance.get('scale');
-                                bbs[i].show = appearance.get('on');
-                            }
-                        }
-                    }
+        updateVis: function(appearance) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            if(appearance && appearance.changedAttributes()) {
+                var changed = appearance.changedAttributes();
+                var bbs = this._vectors._billboards;
+                var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
+                if (changed.vec_on === true) {
+                    current_outputter.get('current_movers').add(this);
+                    current_outputter.save();
                 }
-                else if (options.id === 'grid') {
-                    var prims = this._linesPrimitive;
-                    appearance = options;
-                    prims.show = appearance.get('on');
-                    var changed = appearance.changedAttributes();
-
-                    if (changed && (changed.color || changed.alpha)) {
-                        this._linesPrimitive.removeAll();
-                        this.renderLines(3000, true);
+                if (changed.vec_on === false) {
+                    current_outputter.get('current_movers').remove(this);
+                    current_outputter.save();
+                }
+                var newColor;
+                for(var i = 0; i < bbs.length; i++) {
+                    if(changed.vec_color || changed.vec_alpha) {
+                        newColor = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
+                        bbs[i].color = newColor;
                     }
+                    bbs[i].scale = appearance.get('vec_scale');
+                    bbs[i].show = appearance.get('vec_on');
+                }
+                if (changed.grid_color || changed.grid_alpha){
+                    var prims = this._linesPrimitive;
+                    prims.show = appearance.get('grid_on');
+                    this._linesPrimitive.removeAll();
+                    this.renderLines(3000, true);
                 }
             }
         },
@@ -359,10 +320,9 @@ define([
             if (!primitiveContainer) {
                 primitiveContainer = new Cesium.PrimitiveCollection();
             }
-
-            var appearance = this.get('_appearance').findWhere({id:'grid'});
+            var appearance = this.get('_appearance');
             var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
+                Cesium.Color.fromCssColorString(appearance.get('grid_color')).withAlpha(appearance.get('grid_alpha'))
             );
 
             var batch_limit = Math.ceil(data.length / batch);
@@ -460,25 +420,6 @@ define([
             return msg;
         },
 
-        invalidActiveTimeRanges: function() {
-            // Return the mover's active time ranges that are not covered
-            // by the data in our timeseries.
-            // - our timeseries is considered to be a contiguous range of time
-            var invalidRanges = [];
-            var [activeStart, activeStop] = this.activeTimeRange();
-            var [dataStart, dataStop] = this.dataActiveTimeRange();
-
-            if (activeStart < dataStart) {
-                invalidRanges.push([activeStart, dataStart]);
-            }
-
-            if (activeStop > dataStop) {
-                invalidRanges.push([dataStop, activeStop]);
-            }
-
-            return invalidRanges;
-        },
-
         invalidModelTimeRanges: function() {
             // List the invalid active time ranges that overlap our Model
             // time range.
@@ -506,18 +447,38 @@ define([
             return invalidRanges;
         },
 
+        invalidActiveTimeRanges: function() {
+            // Return the mover's active time ranges that are not covered
+            // by the data in our timeseries.
+            // - our timeseries is considered to be a contiguous range of time
+            var invalidRanges = [];
+            var [activeStart, activeStop] = this.activeTimeRange();
+            var [dataStart, dataStop] = this.dataActiveTimeRange();
+
+            if (activeStart < dataStart) {
+                invalidRanges.push([activeStart, dataStart]);
+            }
+
+            if (activeStop > dataStop) {
+                invalidRanges.push([dataStop, activeStop]);
+            }
+
+            return invalidRanges;
+        },
+
         activeTimeRange: function() {
             return [webgnome.timeStringToSeconds(this.get('active_start')),
                     webgnome.timeStringToSeconds(this.get('active_stop'))];
         },
 
-        dataActiveTimeRange: function() {
+        dataActiveTimeRange: function(ignore_extrapolation = false) {
             if (this.attributes.hasOwnProperty('wind')) {
                 var wind = this.get('wind');
                 var timeRange = wind.timeseriesTimes();
+                var extrapolate = (wind.attributes.extrapolation_is_allowed &&
+                                   ignore_extrapolation === false);
 
-                if (wind.attributes.extrapolation_is_allowed ||
-                        timeRange.length === 1) {
+                if (extrapolate || timeRange.length === 1) {
                     // we are either a constant wind or extrapolation
                     // is set true;
                     return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];

@@ -3,14 +3,17 @@ define([
     'backbone',
     'model/movers/base',
     'model/environment/tide',
-    'cesium'
-], function(_, Backbone, BaseMover, GnomeTide, Cesium){
+    'cesium',
+    'model/visualization/mover_appearance'
+], function(_, Backbone, BaseMover, GnomeTide, Cesium, MoverAppearance){
     'use strict';
     var catsMover = BaseMover.extend({
         urlRoot: '/mover/',
-
-        defaults: {
-            obj_type: 'gnome.movers.current_movers.CatsMover'
+        defaults: function() { 
+            return {
+                _appearance: new MoverAppearance(),
+                obj_type: 'gnome.movers.current_movers.CatsMover'
+            };
         },
 
         model: {

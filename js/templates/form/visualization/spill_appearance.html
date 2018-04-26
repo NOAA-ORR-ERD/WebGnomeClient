@@ -1,0 +1,18 @@
+<div class="form-row">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="data">Data Source</label>
+        <div class="col-sm-3 appearance-edit">
+            <select class="form-control form-control-sm" name="data">
+            {% for (var i = 0; i < titles.length; i++) { %}
+                <option name="data" {{titles[i] === model.get('data') ? "selected=true" : ""}}>{{titles[i]}}</option>
+            {% } %}
+            </select>
+        </div>
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox", name="colormap:useAlpha" {{colormap.get('useAlpha') ? 'checked=true' : ''}}>
+                Fade by Mass
+            </label>
+        </div>
+    </div>
+</div>

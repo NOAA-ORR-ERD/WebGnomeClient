@@ -24,7 +24,7 @@ module.exports = function(grunt){
                     include: ['requireLib', 'boot'],
                     name: 'main',
                     out: 'dist/build/build.js',
-                    optimize: 'uglify2'
+                    optimize: 'none'
                 }
             }
         },
@@ -155,7 +155,8 @@ module.exports = function(grunt){
                     "Blob": true,
                     "navigator": true,
                     "URL": true,
-                    "MouseEvent": true
+                    "MouseEvent": true,
+                    "location": true,
                 }
             },
             all: src

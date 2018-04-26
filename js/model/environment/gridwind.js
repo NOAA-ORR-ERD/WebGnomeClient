@@ -1,17 +1,14 @@
 define([
     'model/environment/gridded_env_obj',
-], function(GridEnvObj){
+    'model/visualization/vector_appearance'
+], function(GridEnvObj, VectorAppearance){
     'use strict';
     var gridWindModel = GridEnvObj.extend({
-        defaults: {
-            obj_type: 'gnome.environment.environment_objects.GridWind'
-        },
-        default_appearance: {
-            on: false,
-            ctrl_name: 'Vector Appearance',
-            color: '#0000FF', //BLUE,
-            alpha: 0.7,
-            scale: 1,
+        defaults: function() {
+            return {
+                _appearance: new VectorAppearance({color: '#0000FF'}),
+                obj_type: 'gnome.environment.environment_objects.GridWind'
+            };
         },
         vec_max: 30.0,
         n_vecs: 60,

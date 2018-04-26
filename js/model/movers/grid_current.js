@@ -1,12 +1,16 @@
 define([
     'underscore',
     'model/movers/base',
-    'cesium'
-], function(_,BaseMover, Cesium){
+    'cesium',
+    'model/visualization/mover_appearance'
+], function(_,BaseMover, Cesium, MoverAppearance){
     var gridCurrentMover = BaseMover.extend({
         urlRoot: '/mover/',
-        defaults: {
-            obj_type: 'gnome.movers.current_movers.GridCurrentMover'
+        defaults: function() { 
+            return {
+                _appearance: new MoverAppearance(),
+                obj_type: 'gnome.movers.current_movers.GridCurrentMover'
+            };
         },
 
         
