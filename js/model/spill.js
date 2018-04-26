@@ -70,6 +70,7 @@ define([
         },
 
         setupVis: function(attrs) {
+            this.listenTo(this.get('_appearance'), 'change:data', this.initializeDataVis);
             this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
@@ -331,20 +332,25 @@ define([
         initializeDataVis: function() {
             // Contextualizing the default appearance for the properties of this spill
             var data = this.get('_appearance').get('data');
-            var config = this.get('_appearance').get('colormap');
+            var colormap = this.get('_appearance').get('colormap');
             var max, min, stops;
-            if (data === 'Mass') {
-                max = this._per_le_mass;
-                min = 0;
-            } else if (data === 'Age') {
+            if (data === 'Age') {
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
+            } else if (data === 'Viscosity') {
+                min = 0.0000001;
+                max = 250000;
+                colormap.set('numberScaleType', 'log');
+            } else if (data === 'Depth') {
+                min = 0;
+                max = 100;
+                colormap.set('numberScaleType', 'linear');
+            } else {
+                max = this._per_le_mass;
+                min = 0;
+                colormap.set('numberScaleType', 'linear');
             }
-            var domain = config.get('numberScaleDomain');
-            var defaultDomain = config.defaults.numberScaleDomain;
-            if (_.isEqual(domain, defaultDomain)) {
-                config.set('numberScaleDomain', [min, (max-min)/2, max]);
-            }
+            colormap.setDomain(min, max, colormap.get('numberScaleRange'));
         },
 
         setColorScales: function() {
@@ -385,7 +391,7 @@ define([
                 alphaScale.domain([2000, 0]);
             }
             var value, color, alpha, i, datatype;
-            datatype = colormap.get('datum').toLowerCase();
+            datatype = this.get('_appearance').get('data').toLowerCase();
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
                 color = this._colorScale(this._numScale(value));
@@ -403,7 +409,8 @@ define([
 
             var appearance = this.get('_appearance');
             var le_idx = 0;
-            var newLE;
+            var newLE, additional_data;
+            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase();
             if(uncertain) {
                 for(f = 0; f < uncertain.length; f++){
                     if (uncertain.spill_num[f] === sid) {
@@ -415,15 +422,18 @@ define([
                                 image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
                                 show: appearance.get('les_on'),
                             });
+                            if (additional_data) {
+                                newLE[additional_data] = uncertain[additional_data][f];
+                            }
                             newLE.mass = uncertain.mass[f];
-                            newLE.depth = uncertain.depth ? uncertain.depth[f] : undefined;
-                            newLE.viscosity = uncertain.viscosity ? uncertain.viscosity[f]: undefined;
-                            newLE.age = uncertain.age ? uncertain.age[f]: undefined;
                             this._uncertain.push(newLE);
                         } else {
                             this._uncertain[le_idx].show = appearance.get('les_on');
                             this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
                             this._uncertain[le_idx].mass = uncertain.mass[f];
+                            if (additional_data) {
+                                this._uncertain[le_idx][additional_data] = uncertain[additional_data][f];
+                            }
 
                             if(uncertain.status[f] === 3){
                                 this._uncertain[le_idx].image = this._les_beached_image;
@@ -447,12 +457,18 @@ define([
                                     show: appearance.get('les_on'),
                         });
                         newLE.mass = certain.mass[f];
+                        if (additional_data) {
+                            newLE[additional_data] = certain[additional_data][f];
+                        }
                         this._certain.push(newLE);
                     } else {
                         // update the point position and graphical representation
                         this._certain[le_idx].show = appearance.get('les_on');
                         this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
                         this._certain[le_idx].mass = certain.mass[f];
+                        if (additional_data) {
+                            this._certain[le_idx][additional_data] = certain[additional_data][f];
+                        }
                         if(certain.status[f] === 3){
                             this._certain[le_idx].image = this._les_beached_image;
                         } else {
@@ -492,11 +508,11 @@ define([
                         bbs[i].scale = appearance.get('scale');
                         bbs[i].show = appearance.get('les_on');
                     }
-                }
-                this.setColorScales();
-                this.colorLEs();
-                if ('pin_on' in changedAttrs){
-                    this._locVis.show = appearance.get('pin_on');
+                    this.setColorScales();
+                    this.colorLEs();
+                    if ('pin_on' in changedAttrs){
+                        this._locVis.show = appearance.get('pin_on');
+                    }
                 }
             }
         },

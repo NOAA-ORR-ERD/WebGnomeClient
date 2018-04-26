@@ -227,29 +227,28 @@ define([
         updateVis: function(appearance) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
-            var appearance, changed;
             if(appearance && appearance.changedAttributes()) {
                 var changed = appearance.changedAttributes();
                 var bbs = this._vectors._billboards;
                 var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
-                if (changed['vec_on'] === true) {
+                if (changed.vec_on === true) {
                     current_outputter.get('current_movers').add(this);
                     current_outputter.save();
                 } 
-                if (changed['vec_on'] === false) {
+                if (changed.vec_on === false) {
                     current_outputter.get('current_movers').remove(this);
                     current_outputter.save();
                 }
                 var newColor;
                 for(var i = 0; i < bbs.length; i++) {
-                    if(changed['vec_color'] || changed['vec_alpha']) {
+                    if(changed.vec_color || changed.vec_alpha) {
                         newColor = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                         bbs[i].color = newColor;
                     }
                     bbs[i].scale = appearance.get('vec_scale');
                     bbs[i].show = appearance.get('vec_on');
                 }
-                if (changed['grid_color'] || changed['grid_alpha']){
+                if (changed.grid_color || changed.grid_alpha){
                     var prims = this._linesPrimitive;
                     prims.show = appearance.get('grid_on');
                     this._linesPrimitive.removeAll();

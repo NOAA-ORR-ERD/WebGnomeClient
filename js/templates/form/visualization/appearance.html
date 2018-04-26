@@ -7,7 +7,7 @@
             <label class="col-sm-3 control-label" for="{{attrNames[i]}}">{{ctrlNames[i]}}</label>
             {% if (attrNames[i].includes('on')) { %}
             <div class="col-sm-1">
-                <input type="checkbox" checked="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}">
+                <input type="checkbox" {{model.get(attrNames[i]) ? 'checked': ''}} name="{{attrNames[i]}}">
             </div>
             {% } else if (attrNames[i].includes('color')) { %}
             <div class="col-sm-3">

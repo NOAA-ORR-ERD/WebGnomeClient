@@ -44,7 +44,7 @@ define([
             if(this.layer.model.get('_appearance').models) {
                 this.layer.model.get('_appearance').models.forEach(
                     function(a) {
-                        this.appearanceModelsUsed.push(a)
+                        this.appearanceModelsUsed.push(a);
                     }, this
                 );
             } else {
@@ -58,7 +58,7 @@ define([
                     var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
                                     .text(a.get('ctrl_names').title);
                     html.append(formLabel);
-                    var app = new formType(a, this.layer.model)
+                    var app = new formType(a, this.layer.model);
                     html.append(app.$el);
                 }, this
             );

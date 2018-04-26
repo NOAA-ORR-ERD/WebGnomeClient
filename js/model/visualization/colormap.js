@@ -8,7 +8,6 @@ define([
     'use strict';
     var colormapModel = Backbone.Model.extend({
         defaults: {
-            "datum": "Mass",
             "alphaType": "mass",
             "useAlpha": true,
             "interpolate": false,
@@ -21,7 +20,7 @@ define([
             "colorScaleDomain": [0.5],
             "colorScaleRange": ['#000000','#000000'],
             "_customScheme": ['#000000','#000000'],
-            "_allSchemes": ['Custom','Greys', 'Category10', 'Reds', 'Purples', 'YlOrBr','YlGnBu', 'PuBuGn', 'RdGy','BrBG','PRGn','PuOr','PiYG','RdYlBu','RdYlGn','Spectral']
+            "_allSchemes": ['Custom','Greys', 'Category10', 'Dark2', 'Paired', 'Set1', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool', 'CubehelixDefault', 'Reds', 'Purples', 'YlOrBr','YlGnBu', 'PuBuGn', 'RdGy','BrBG','PRGn','PuOr','PiYG','RdYlBu','RdYlGn','Spectral']
         },
 
         initialize: function(attrs, options) {
@@ -29,6 +28,21 @@ define([
             this.listenTo(this, 'change:colorScaleRange', this._saveCustomScheme);
             this.listenTo(this, 'change:interpolate', this._changeInterpolation);
             this.listenTo(this, 'change:scheme', this._applyScheme);
+            this.listenTo(this, 'change', this.initScales);
+            this.initScales();
+        },
+
+        initScales: function() {
+            var domain = this.get('numberScaleDomain');
+            if (this.get('numberScaleType') === 'linear') {
+                this.numScale = d3.scaleLinear()
+                    .domain([domain[0], domain[domain.length-1]])
+                    .range([0,1]);
+            } else {
+                this.numScale = d3.scaleLog()
+                    .domain([domain[0], domain[domain.length-1]])
+                    .range([0,1]);
+            }
         },
 
         syncRanges: function(silent) {
@@ -75,19 +89,94 @@ define([
             }
         },
 
-        _saveCustomScheme: function() {
-            if (this.get('scheme') === 'Custom') { 
-                this.set('_customScheme', _.clone(this.get('colorScaleRange')));
+        setStop: function(index, value) {
+            //sets the numberScaleDomain value at index to the value specified.
+            //returns true if successful, returns false and does not change the value otherwise
+            //triggers a change event
+            var domain = this.get('numberScaleDomain');
+            var curr = domain[index],
+                next = domain[index + 1] - 0.01,
+                prev = domain[index - 1] + 0.01;
+            
+            if (value === curr || value > next || value < prev) {
+                return false;
+            } else {
+                domain[index] = value;
+                this.trigger('change');
+                return true;
             }
         },
 
-        _getd3Scheme: function(name) {
-            if ('interpolate' + name in d3) {
-                return d3['interpolate'+name];
-            } else if ('scheme' + name in d3){
-                return d3['interpolate' + name];
+        setDomain: function(min, max, stops) {
+            // This changes the overall scale, using the stops provided to determine where to put new domain values
+            // stops is a list of values between 0 and 1
+            var domain = this.get('numberScaleDomain');
+            if (domain[0] === min && domain[domain.length-1] === max) {
+                return;
+            }
+            domain[0] = min;
+            domain[domain.length-1] = max;
+            this.initScales();
+            var newDomain = [min];
+            if (stops) {
+                for(var i = 1; i < stops.length-1; i++) {
+                    var newVal = this.numScale.invert(stops[i]);
+                    newDomain.push(newVal);
+                }
+                newDomain.push(max);
             } else {
-                return name;
+                newDomain.push(max);
+            }
+            this.set('numberScaleDomain', newDomain);
+            this.syncRanges();
+        },
+
+        _hardResetStops: function(nStops, interpolate) {
+            // This function does a hard edit of the scale, setting it up for the specified number of stops.
+            // It does not preserve the previous values, instead spacing them equally.
+            var nsd = this.get('numberScaleDomain');
+            var nsdStops = [],
+                nsrStops = [],
+                csdStops = [],
+                csrStops = [];
+            var max = nsd[nsd.length-1],
+                min = nsd[0];
+            var silent = {silent: true};
+            this.set('interpolate', interpolate, silent);
+            for (var i = 0; i < nStops; i++) {
+                nsrStops.push(i * 1/(nStops - 1));
+                nsdStops.push(min + nsrStops[i] * (max-min));
+                if (interpolate) {
+                    csdStops.push(nsrStops[i]);
+                } else {
+                    if (i !== 0 && i !== nStops-1) {
+                        csdStops.push(nsrStops[i]);
+                    }
+                }
+                csrStops.push('#FFFFFF');
+            }
+            if (interpolate) {
+                this.set('colorScaleType', 'linear', silent);
+            } else {
+                this.set('colorScaleType', 'threshold', silent);
+                csrStops.pop();
+            }
+            this.set({
+                    'numberScaleDomain': nsdStops,
+                    'numberScaleRange': nsrStops,
+                    'colorScaleDomain': csdStops,
+                    'colorScaleRange': csrStops
+                },
+                silent
+            );
+
+            this._applyScheme();
+            this.trigger('change');
+        },
+
+        _saveCustomScheme: function() {
+            if (this.get('scheme') === 'Custom') { 
+                this.set('_customScheme', _.clone(this.get('colorScaleRange')));
             }
         },
 
@@ -96,7 +185,7 @@ define([
                 nsr = this.get('numberScaleRange'),
                 csd = this.get('colorScaleDomain'),
                 csr = this.get('colorScaleRange');
-            if(e.changedAttributes() && e.changedAttributes()['interpolate']) {
+            if(e && e.changedAttributes() && e.changedAttributes().interpolate) {
                 this.set('colorScaleType', 'linear');
                 this.removeStop(nsd.length-2, true);
             } else {
@@ -107,53 +196,64 @@ define([
             this.trigger('change');
         },
 
+        _getd3interpolator: function(name) {
+            if ('interpolate' + name in d3) {
+                return d3['interpolate'+name];
+            } else {
+                return name;
+            }
+        },
+
         _applyScheme: function(e, scheme) {
             var newScheme;
             if (e) {
-                newScheme = this._getd3Scheme(e.changedAttributes().scheme);
+                scheme = e.changedAttributes().scheme;
             } else {
-                newScheme = scheme ? scheme : this.get('scheme');
-                newScheme = this._getd3Scheme(newScheme);
+                scheme = scheme ? scheme : this.get('scheme');
             }
+            newScheme = this._getd3interpolator(scheme);
             if (_.isUndefined(newScheme)) { return; }
             var i;
             var range = this.get('colorScaleRange');
             var colors;
-            if (newScheme === 'Custom') {
-                var colors = this.get('_customScheme');
-                for (i = 0; i < range.length; i++) {
-                    range[i] = colors[i] ? colors[i] : '#FFFFFF';
+            if (newScheme === scheme) {
+                if (scheme === 'Custom') {
+                    colors = this.get('_customScheme');
+                    for (i = 0; i < range.length; i++) {
+                        range[i] = colors[i] ? colors[i] : '#FFFFFF';
+                    }
+                } else {
+                    //categorical schemes. These have strict requirements for length and interpolation
+                    if(this.get('interpolate')) {
+                        this._changeInterpolation();
+                    }
+                    newScheme = d3['scheme' + scheme];
+                    var maxLen = newScheme.length;
+                    if (range.length > maxLen) {
+                        this._hardResetStops(maxLen+1, false);
+                        return;
+                    } else if (this.get('interpolate')) {
+                        this._hardResetStops(range.length+1, false);
+                        return;
+                    } else {
+                        for (i = 0; i < range.length; i++) {
+                            range[i] = newScheme[i];
+                        }
+                    }
                 }
             } else {
                 if (!this.get('interpolate')) {
                     var stops = [];
-                    for (var i = 0; i < range.length; i++) {
+                    for (i = 0; i < range.length; i++) {
                         stops.push(i * 1/(range.length - 1));
                     }
-                    colors = stops.map(function(s) {return tinycolor(newScheme(s)).toHexString();})
+                    colors = stops.map(function(s) {return tinycolor(newScheme(s)).toHexString();});
                 } else {
-                    colors = this.get('colorScaleDomain').map(function(s) {return tinycolor(newScheme(s)).toHexString();})
+                    colors = this.get('colorScaleDomain').map(function(s) {return tinycolor(newScheme(s)).toHexString();});
                 }
                 for (i = 0; i < range.length; i++) {
                     range[i] = colors[i];
                 }
-/*
-                if (range.length > newScheme.length) {
-                    colors = _.clone(newScheme[newScheme.length]);
-                    for (i = 0; i < range.length - newScheme.length; i++) {
-                        colors.push('#FFFFFF');
-                    }
-                } else if (range.length < 3) {
-                    colors = _.clone(newScheme[3]);
-                    range[0] = colors[0];
-                    range[1] = colors[2];
-                } else {
-                    colors = _.clone(newScheme[range.length]);
-                    for (i = 0; i < range.length; i++) {
-                        range[i] = colors[i];
-                    }
-                }
-*/
             }
             this.trigger('change:colorScaleRange');
         }
