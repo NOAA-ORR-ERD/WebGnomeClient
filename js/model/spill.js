@@ -405,7 +405,7 @@ define([
             */
             var colormap = this.get('_appearance').get('colormap');
             var genColorwithAlpha = function(colorStr, alpha) {
-                return _.isUndefined(alpha) ?
+                return !_.isUndefined(alpha) ?
                     Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
                     Cesium.Color.fromCssColorString(colorStr);
             };
