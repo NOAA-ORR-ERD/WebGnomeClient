@@ -161,6 +161,7 @@ define([
                 this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0],
                                                                           this.get('release').get('start_position')[1]);
             },this));
+            this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
         },
 
         releaseChange: function(release) {
@@ -375,6 +376,7 @@ define([
                 colormap.set('numberScaleType', 'linear');
             }
             colormap.setDomain(min, max, colormap.get('numberScaleRange'));
+            this.setColorScales();
         },
 
         setColorScales: function() {
