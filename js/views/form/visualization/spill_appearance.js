@@ -25,26 +25,32 @@ define([
             this.model = model;
             this.spill = spill;
             this.addListeners();
+            this.model.setUnitConversionFunction(undefined, this.model.get('units'));
             this.render();
         },
 
         addListeners: function() {
-            
+            this.listenTo(this.model, 'change:data', this.rerender);
         },
 
         render: function() {
             BaseAppearanceForm.prototype.render.call(this);
-            if (this.model.get('data')){
-                this.$el.append(_.template(SpillAppearanceTemplate, 
-                    {
-                    titles: this.model.get('_available_data'),
-                    model: this.model,
-                    colormap: this.model.get('colormap')
-                    }
-                ));
-                var colormapForm = new ColormapForm(this.model.get('colormap'), this.model);
-                colormapForm.$el.appendTo(this.$el);
-            }
+            this.$el.append(_.template(SpillAppearanceTemplate, 
+                {
+                titles: this.model.get('_available_data'),
+                model: this.model,
+                colormap: this.model.get('colormap')
+                }
+            ));
+            this.colormapForm = new ColormapForm(this.model.get('colormap'), this.model);
+            this.colormapForm.$el.appendTo(this.$el);
+        },
+
+        rerender: function() {
+            this.colormapForm.remove();
+            delete this.colormapForm;
+            this.$el.html('');
+            this.render();
         },
 
         updateCfg: function(e) {

@@ -21,9 +21,9 @@ define([
             //'change .tooltip input[type="number"]': 'updateScales',
             'pointerup .tooltip-inner': 'pu',
             'pointerdown .tooltip-inner': 'pd',
-            'change .tooltip input[type="number"]': 'updateValue',
-            'click .add': 'add',
-            'click .remove': 'remove',
+            'focusout .tooltip input[type="number"]': 'updateValue',
+            'click .add': 'addStop',
+            'click .remove': 'removeStop',
             'chosen:showing_dropdown #scheme-picker': 'applySchemeBackgrounds',
             'change #scheme-picker': 'applySchemeBackgrounds'
         },
@@ -35,6 +35,7 @@ define([
             this.listenTo(this.model, 'changedInterpolation', this.rerender);
             this.listenTo(this.model, 'change:colorScaleRange', this.rerender);
             this.listenTo(this.model, 'change:numberScaleDomain', this.rerender);
+            this.listenTo(this.model, 'change:units', this.rerender);
         },
 
         pd: function(e) {
@@ -139,7 +140,8 @@ define([
             valueToolTip = $('<div></div>',{class: "tooltip top slider-tip"});
             arrow = $('<div></div>',{class: "tooltip-arrow"});
             inner = $('<div></div>',{class: "tooltip-inner"});
-            inner.text(Number(value).toPrecision(4));
+            var dispValue = this._toDisplayString(value)
+            inner.text(dispValue);
             valueToolTip.append(arrow);
             valueToolTip.append(inner);
             inner.append(valueBox);
@@ -165,7 +167,7 @@ define([
             var ttc, i;
             for (i = 0; i < this.numberStops.length; i++) {
                 ttc = $('input', this.numberStops[i]);
-                ttc.prop('value', this.model.get('numberScaleDomain')[i]);
+                ttc.prop('value', this._toDisplayString(this.model.get('numberScaleDomain')[i]));
             }
             for (i = 0; i < this.colorStops.length; i++) {
                 ttc = $('input', this.colorStops[i]);
@@ -269,15 +271,15 @@ define([
                     break;
                 }
             }
-            var newVal = parseFloat(e.currentTarget.value);
+            var newVal = this.model.fromInputConversionFunc(parseFloat(e.currentTarget.value));
             if (this.model.setStop(i, newVal)) {
                 this.picker.slider('values', this.model.get('numberScaleDomain').map(this.model.numScale));
-                $('.top > .tooltip-inner', this.numberStops[i]).text(parseFloat(e.currentTarget.value).toPrecision(4));
                 $(e.currentTarget).remove();
+                $('.tooltip-inner', this.numberStops[i]).text(this._toDisplayString(newVal));
                 this.updateBackground();
             } else {
-                $(e.currentTarget).focus();
-                $(e.currentTarget).prop('value', this.model.get('numberScaleDomain')[i]);
+                $(e.currentTarget).remove();
+                $('.tooltip-inner', this.numberStops[i]).text(this._toDisplayString(this.model.get('numberScaleDomain')[i]));
             }
         },
 
@@ -286,7 +288,7 @@ define([
             if ($('input[type="number"]', ttc).length > 0) {
                 $('input[type="number"]', ttc).remove();
             }
-            ttc.text(Number(this.model.numScale.invert(ui.value)).toPrecision(4));
+            ttc.text(this._toDisplayString(this.model.numScale.invert(ui.value)));
         },
 
         updateColorScale: function(e) {
@@ -300,12 +302,12 @@ define([
             this.model.set('colorScaleRange', stops);
             this.updateBackground();
         },
-        add: function(e) {
+        addStop: function(e) {
             this.model.addStop(this.model.get('numberScaleDomain').length - 1);
             this.rerender();
         },
 
-        remove: function(e) {
+        removeStop: function(e) {
             this.model.removeStop(this.model.get('numberScaleDomain').length - 2);
             this.rerender();
         },
@@ -314,6 +316,14 @@ define([
             this.$el.html('');
             this.render();
         },
+
+        _toDisplayString(value) {
+            return Number(this.model.toDisplayConversionFunc(value)).toPrecision(4);
+        },
+
+        _fromInput(value) {
+            return Number(this.model.fromInputConversionFunc(parseFloat(value))).toPrecision(4)
+        }
 
     });
     return colormapForm;

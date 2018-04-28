@@ -11,6 +11,7 @@ define([
             "alphaType": "mass",
             "useAlpha": true,
             "interpolate": false,
+            "units": "",
             "scheme": "Custom",
             "endsConfigurable": "none",
             "numberScaleType": "linear",
@@ -59,6 +60,12 @@ define([
                     this.set('colorScaleDomain', stops.slice(1, stops.length-1), {silent:silent});
                 }
             }
+        },
+
+        setUnitConversionFunction(toDisplay, fromInput) {
+            // sets the translation function used when displaying data on the colormap, and receiving data from input fields
+            this.toDisplayConversionFunc = toDisplay;
+            this.fromInputConversionFunc = fromInput;
         },
 
         addStop: function(index, single) {

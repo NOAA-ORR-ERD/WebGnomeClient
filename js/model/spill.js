@@ -51,6 +51,8 @@ define([
             this.on('change:element_type', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
 
+            this.listenTo(this, 'change', this.initializeDataVis);
+
             this.addListeners();
 
             this.calculate();
@@ -162,6 +164,7 @@ define([
                                                                           this.get('release').get('start_position')[1]);
             },this));
             this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
+            this.listenTo(this.get('release'), 'change', this.initializeDataVis);
         },
 
         releaseChange: function(release) {
