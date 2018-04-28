@@ -97,7 +97,7 @@ module.exports = function(grunt){
             },
             build: {
                 src: 'dist/build/build.html',
-                dest: 'dist/build/build.html'
+                dest: 'dist/build/index.html'
             }
         },
         less: {
