@@ -223,7 +223,7 @@ define([
                                 position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
                                 image: this._images[0],
                                 color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha')),
-                                scale: appearance.get('vec_scale')
+                                scale: appearance.get('scale')
                             });
                         }
 
@@ -245,12 +245,14 @@ define([
                 var data = step.get('CurrentJsonOutput')[id];
                 var billboards = this._vectors._billboards;
                 var gap = this.vec_max / this.n_vecs;
-
+                var img_idx;
                 if (data) {
                     for (var uv = data.direction.length; uv--;) {
+                        img_idx = Math.round(Math.abs(data.magnitude[uv]) / gap)
+                        img_idx = data.magnitude[uv] < (gap/2) && data.magnitude[uv] > 0 ? 1 : 0;
                         billboards[uv].rotation = data.direction[uv];
                         billboards[uv].mag = data.magnitude[uv];
-                        billboards[uv].image = this._images[Math.round(Math.abs(data.magnitude[uv]) / gap)];
+                        billboards[uv].image = this._images[img_idx];
                         billboards[uv].mag = data.magnitude[uv];
                         billboards[uv].dir = data.direction[uv];
                     }
@@ -279,7 +281,7 @@ define([
                         newColor = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                         bbs[i].color = newColor;
                     }
-                    bbs[i].scale = appearance.get('vec_scale');
+                    bbs[i].scale = appearance.get('scale');
                     bbs[i].show = appearance.get('vec_on');
                 }
                 if (changed.grid_color || changed.grid_alpha){

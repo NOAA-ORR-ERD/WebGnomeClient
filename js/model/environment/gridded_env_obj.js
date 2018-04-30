@@ -342,11 +342,14 @@ define([
 
                 var billboards = this._vectors._billboards;
                 var gap = this.vec_max/this.n_vecs;
+                var img_idx;
 
                 for (var uv = mag_data.length; uv--;) {
+                    img_idx = Math.round(Math.abs(mag_data[uv]) / gap)
+                    img_idx = mag_data[uv] < (gap/2) && mag_data[uv] > 0 ? 1 : 0;
                     billboards[uv].show = true;
                     billboards[uv].rotation = dir_data[uv];
-                    billboards[uv].image = this._images[Math.round(Math.abs(mag_data[uv]) / gap)];
+                    billboards[uv].image = this._images[img_idx];
                     billboards[uv].mag = mag_data[uv];
                     billboards[uv].dir = dir_data[uv];
                 }
