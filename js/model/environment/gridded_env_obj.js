@@ -184,21 +184,24 @@ define([
         },
 
         genVecImages: function(maxSpeed, numSteps) {
-            /* Generates a list of images of various vector lengths. Should be overridden
-            on a per-model basis, or not implemented if the data represented is not a vector
-            quantity (eg GridTemperature)
-            */
+            // Generates a list of images of various vector lengths.
+            // Should be overridden on a per-model basis, or not implemented
+            // if the data represented is not a vector quantity
+            // (eg GridTemperature)
+            if (!maxSpeed) {maxSpeed = this.vec_max;}
+            if (!numSteps) {numSteps = this.n_vecs;}
+            // v == 0
             var bbc = this._vectors;
             this._images = [];
-
             var canvas = document.createElement('canvas');
+
             canvas.width = 7;
             canvas.height = 7;
 
             var ctx = canvas.getContext('2d');
             ctx.beginPath();
             ctx.arc(1, 1, 0.5, 0, 2 * Math.PI);
-            ctx.strokeStyle = 'rgba(204, 0, 204, 1)';
+            ctx.strokeStyle = 'rgba(255,255,255,1)';
             ctx.stroke();
 
             this._images[0] = bbc.add({
@@ -212,7 +215,10 @@ define([
             var center = width / 2;
             var i = 1;
 
-            for (var a = maxSpeed / numSteps; a < maxSpeed; a += maxSpeed / numSteps) {
+            // 0 < v < v_max
+            var speedStep = maxSpeed / numSteps;
+            var len, rad, arr_left, arr_right;
+            for (var a = speedStep; a < maxSpeed; a += speedStep) {
                 var s_a = Math.round(a * 10) / 10;
 
                 canvas = document.createElement('canvas');
@@ -221,29 +227,66 @@ define([
 
                 ctx = canvas.getContext('2d');
 
-                var len = Math.abs(canvas.height / Math.log(canvas.height));
-                var rad = Math.PI / 2;
+                len = Math.abs(canvas.height / Math.log(canvas.height));
+                rad = Math.PI / 2;
 
-                var arr_left = [(center + len * Math.cos(rad - angle)),
-                                (0      + len * Math.sin(rad - angle))];
-                var arr_right =[(center + len * Math.cos(rad + angle)),
-                                (0      + len * Math.sin(rad + angle))];
+                arr_left = [(center + len * Math.cos(rad - angle)),
+                                (0 + len * Math.sin(rad - angle))];
+                arr_right =[(center + len * Math.cos(rad + angle)),
+                                (0 + len * Math.sin(rad + angle))];
 
-                ctx.moveTo(center, canvas.height/2);
+                ctx.moveTo(center, canvas.height / 2);
                 ctx.lineTo(center, 0);
                 ctx.lineTo(arr_right[0], arr_right[1]);
+
                 ctx.moveTo(arr_left[0], arr_left[1]);
                 ctx.lineTo(center, 0);
+
                 ctx.strokeStyle = 'rgba(255,255,255,1)';
                 ctx.stroke();
 
-                this._images.push( bbc.add({
+                this._images.push(bbc.add({
                     image: canvas,
                     show: false,
                 }).image);
 
                 i++;
             }
+            // v >= v_max
+            canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = i * 8 + 8;
+            ctx = canvas.getContext('2d');
+            len = Math.abs(canvas.height / Math.log(canvas.height));
+            rad = Math.PI / 2;
+
+            arr_left = [(center + len * Math.cos(rad - angle)),
+                            (0 + len * Math.sin(rad - angle))];
+            arr_right =[(center + len * Math.cos(rad + angle)),
+                            (0 + len * Math.sin(rad + angle))];
+
+            ctx.moveTo(center, canvas.height / 2);
+            ctx.lineTo(center, 0);
+            ctx.lineTo(arr_right[0], arr_right[1]);
+
+            ctx.moveTo(arr_left[0], arr_left[1]);
+            ctx.lineTo(center, 0);
+
+            arr_left[1] = arr_left[1] + canvas.height/20;
+            arr_right[1] = arr_right[1] + canvas.height/20;
+            ctx.moveTo(center,canvas.height/20);
+            ctx.lineTo(arr_left[0], arr_left[1]);
+            ctx.moveTo(center,canvas.height/20);
+            ctx.lineTo(arr_right[0], arr_right[1]);
+
+            ctx.strokeStyle = 'rgba(255,255,255,1)';
+            ctx.stroke();
+
+            this._images.push(bbc.add({
+                image: canvas,
+                show: false,
+            }).image);
+            
         },
 
         genVectors: function(rebuild) {
@@ -329,6 +372,19 @@ define([
             }
         },
 
+        getImageIdx: function(data) {
+                var gap = this.vec_max / this.n_vecs;
+                var mag = Math.abs(data);
+                if (mag > 0 && mag < gap/2) {
+                    return 1;
+                } else if (mag >= this.vec_max) {
+                    return this.n_vecs -1;
+                } else {
+                    return Math.round(mag / gap);
+                }
+            
+        },
+
         update: function(step) {
             // returns interpolated direction and magnitude in time
             if (this.get('_appearance') &&
@@ -341,15 +397,11 @@ define([
                 this.interpVecsToTime(timestamp, mag_data, dir_data);
 
                 var billboards = this._vectors._billboards;
-                var gap = this.vec_max/this.n_vecs;
-                var img_idx;
 
                 for (var uv = mag_data.length; uv--;) {
-                    img_idx = Math.round(Math.abs(mag_data[uv]) / gap)
-                    img_idx = mag_data[uv] < (gap/2) && mag_data[uv] > 0 ? 1 : 0;
                     billboards[uv].show = true;
                     billboards[uv].rotation = dir_data[uv];
-                    billboards[uv].image = this._images[img_idx];
+                    billboards[uv].image = this._images[this.getImageIdx(mag_data[uv])];
                     billboards[uv].mag = mag_data[uv];
                     billboards[uv].dir = dir_data[uv];
                 }

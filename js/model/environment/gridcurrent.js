@@ -11,8 +11,8 @@ define([
             };
         },
 
-        vec_max: 3.0,
-        n_vecs: 30,
+        vec_max: 4.0,
+        n_vecs: 40,
         
         initialize: function(attrs, options) {
             GridEnvObj.prototype.initialize.call(this, attrs, options);

@@ -624,7 +624,7 @@ define([
         renderVisLayers: function(step){
             // select only layers prepended with 'uv-' and appearance is on
             var lays = this.layersPanel.layers.filter(function(l) {
-                return l.id.includes('uv-') && l.appearance.get('vec_on');
+                return l.id.includes('uv-') && (l.appearance.get('vec_on') || l.appearance.get('on'));
             });
             for(var i = 0; i < lays.length; i++){
                     lays[i].model.update(step);
