@@ -7,21 +7,23 @@ define([
 ], function(_, $, Backbone, d3, tinycolor){
     'use strict';
     var colormapModel = Backbone.Model.extend({
-        defaults: {
-            "alphaType": "mass",
-            "useAlpha": true,
-            "interpolate": false,
-            "units": "",
-            "scheme": "Custom",
-            "endsConfigurable": "none",
-            "numberScaleType": "linear",
-            "numberScaleDomain": [0,50,100],
-            "numberScaleRange": [0,0.5,1],
-            "colorScaleType": "threshold",
-            "colorScaleDomain": [0.5],
-            "colorScaleRange": ['#000000','#000000'],
-            "_customScheme": ['#000000','#000000'],
-            "_allSchemes": ['Custom','Greys', 'Category10', 'Dark2', 'Paired', 'Set1', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool', 'CubehelixDefault', 'Reds', 'Purples', 'YlOrBr','YlGnBu', 'PuBuGn', 'RdGy','BrBG','PRGn','PuOr','PiYG','RdYlBu','RdYlGn','Spectral']
+        defaults: function() {
+            return {
+                "alphaType": "mass",
+                "useAlpha": true,
+                "interpolate": false,
+                "units": "",
+                "scheme": "Custom",
+                "endsConfigurable": "none",
+                "numberScaleType": "linear",
+                "numberScaleDomain": [0,50,100],
+                "numberScaleRange": [0,0.5,1],
+                "colorScaleType": "threshold",
+                "colorScaleDomain": [0.5],
+                "colorScaleRange": ['#000000','#000000'],
+                "_customScheme": ['#000000','#000000'],
+                "_allSchemes": ['Custom','Greys', 'Category10', 'Dark2', 'Paired', 'Set1', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool', 'CubehelixDefault', 'Reds', 'Purples', 'YlOrBr','YlGnBu', 'PuBuGn', 'RdGy','BrBG','PRGn','PuOr','PiYG','RdYlBu','RdYlGn','Spectral']
+            }
         },
 
         initialize: function(attrs, options) {
@@ -96,6 +98,11 @@ define([
             }
         },
 
+        setValue(name, index, value) {
+            this.get(name)[index] = value;
+            this.trigger('change:'+name, {name: this.get(name)});
+        },
+
         setStop: function(index, value) {
             //sets the numberScaleDomain value at index to the value specified.
             //returns true if successful, returns false and does not change the value otherwise
@@ -109,7 +116,7 @@ define([
                 return false;
             } else {
                 domain[index] = value;
-                this.trigger('change');
+                this.trigger('change:numberScaleDomain', {'numberScaleDomain':domain});
                 return true;
             }
         },

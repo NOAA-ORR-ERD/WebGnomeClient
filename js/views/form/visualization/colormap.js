@@ -33,8 +33,6 @@ define([
             this.appearanceModel = appearanceModel;
             this.render();
             this.listenTo(this.model, 'changedInterpolation', this.rerender);
-            this.listenTo(this.model, 'change:colorScaleRange', this.rerender);
-            this.listenTo(this.model, 'change:numberScaleDomain', this.rerender);
             this.listenTo(this.model, 'change:units', this.rerender);
         },
 
@@ -103,7 +101,7 @@ define([
             if (curr > next || curr < prev || !ui.handle) {
                 return false;
             }
-            this.model.get('numberScaleDomain')[ui.handleIndex] = this.model.numScale.invert(curr);
+            this.model.setValue('numberScaleDomain', ui.handleIndex, this.model.numScale.invert(curr));
             this.updateNumberTooltip(e, ui);
             this.updateBackground();
             return true;
@@ -219,7 +217,6 @@ define([
                 this.colorStops[i].css('left', ((100 - curbounds) / 2   + curbounds) + '%');
             }
             this.picker.css('background', bgString);
-            this.appearanceModel.trigger('change', this.appearanceModel);
         },
 
         applySchemeBackgrounds: function(e, selected) {

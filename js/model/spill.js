@@ -158,6 +158,7 @@ define([
         addListeners: function() {
             this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
+            this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('release'), 'change', _.bind(function() {
                 this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0],
@@ -424,6 +425,9 @@ define([
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
                 color = this._colorScale(this._numScale(value));
+                if (_.isUndefined(color)) {
+                    color = '#FF0000';
+                }
                 if (colormap.get('useAlpha')) {
                     alpha = alphaScale(this._certain[i][colormap.get('alphaType')]);
                 }
