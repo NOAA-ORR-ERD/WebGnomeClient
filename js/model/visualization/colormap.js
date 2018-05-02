@@ -23,7 +23,7 @@ define([
                 "colorScaleRange": ['#000000','#000000'],
                 "_customScheme": ['#000000','#000000'],
                 "_allSchemes": ['Custom','Greys', 'Category10', 'Dark2', 'Paired', 'Set1', 'Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool', 'CubehelixDefault', 'Reds', 'Purples', 'YlOrBr','YlGnBu', 'PuBuGn', 'RdGy','BrBG','PRGn','PuOr','PiYG','RdYlBu','RdYlGn','Spectral']
-            }
+            };
         },
 
         initialize: function(attrs, options) {

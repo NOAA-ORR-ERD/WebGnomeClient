@@ -287,9 +287,9 @@ define([
                 if (mag > 0 && mag < gap/2) {
                     return 1;
                 } else if (mag >= this.vec_max) {
-                    return this.n_vecs
+                    return this.n_vecs;
                 } else {
-                    return Math.round(mag / gap)
+                    return Math.round(mag / gap);
                 }
             
         },
@@ -343,7 +343,7 @@ define([
                     var prims = this._linesPrimitive._primitives;
                     this._linesPrimitive.show = appearance.get('grid_on');
                     for (var k = 0; k < prims.length; k++) {
-                        prims[k].show = this._linesPrimitive.show
+                        prims[k].show = this._linesPrimitive.show;
                     }
                 }
             }

@@ -100,7 +100,7 @@ define([
         layersListeners: function(){
             this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
             this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
-            this.listenTo(this.layersPanel, 'requestRender', _.bind(function() {this.trigger('requestRender');}, this))
+            this.listenTo(this.layersPanel, 'requestRender', _.bind(function() {this.trigger('requestRender');}, this));
         },
         controlsListeners: function() {
             this.listenTo(this.controls, 'play', this.play);
@@ -272,7 +272,7 @@ define([
                     },
                 },
             });
-            this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender()}, this));
+            this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();
             this.graticuleContainer = $('.overlay');
             this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
@@ -359,7 +359,7 @@ define([
                                 entity.label.text = new Cesium.CallbackProperty(
                                     _.bind(function(){
                                         var dir = Number(this.dir ? this.dir : 0),
-                                            mag = Number(this.mag ? this.mag : 0),
+                                            mag = Number(this.mag ? this.mag : 0);
                                         dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-dir)).toFixed(2);
                                         return 'Mag: ' + ('   ' + mag.toFixed(2)).slice(-7) + ' m/s' +
                                             '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
@@ -401,7 +401,7 @@ define([
                 }
                 this.trigger('requestRender');
                 setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
-            }, this)
+            }, this);
             this.singleClickHandler.setInputAction(singleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         },
 

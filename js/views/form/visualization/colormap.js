@@ -138,7 +138,7 @@ define([
             valueToolTip = $('<div></div>',{class: "tooltip top slider-tip"});
             arrow = $('<div></div>',{class: "tooltip-arrow"});
             inner = $('<div></div>',{class: "tooltip-inner"});
-            var dispValue = this._toDisplayString(value)
+            var dispValue = this._toDisplayString(value);
             inner.text(dispValue);
             valueToolTip.append(arrow);
             valueToolTip.append(inner);
@@ -319,7 +319,7 @@ define([
         },
 
         _fromInput(value) {
-            return Number(this.model.fromInputConversionFunc(parseFloat(value))).toPrecision(4)
+            return Number(this.model.fromInputConversionFunc(parseFloat(value))).toPrecision(4);
         }
 
     });

@@ -62,12 +62,12 @@ define([
             if (data === 'Mass') {
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this})
+                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
                     return c.Convert(value, newUnits, spill.get('element_type').get('standard_density'), 'kg/m^3', 'kg');
                 }, this);
                 toDisplay = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this})
+                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
                     return c.Convert(value, 'kg', spill.get('element_type').get('standard_density'), 'kg/m^3', newUnits);
                 }, this);
             } else if (data === 'Age') {
