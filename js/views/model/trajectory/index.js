@@ -100,6 +100,7 @@ define([
         layersListeners: function(){
             this.listenTo(this.layersPanel.layers, 'add', this.addLayer);
             this.listenTo(this.layersPanel.layers, 'remove', this.removeLayer);
+            this.listenTo(this.layersPanel, 'requestRender', _.bind(function() {this.trigger('requestRender');}, this))
         },
         controlsListeners: function() {
             this.listenTo(this.controls, 'play', this.play);
@@ -168,6 +169,7 @@ define([
                 this._flyTo = true;
                 this.show();
             }
+            this.trigger('requestRender');
         },
 
         removeLayer: function(lay) {
@@ -205,6 +207,7 @@ define([
             } else {
                 console.error('Tried to remove an entity with invalid type: ', lay.type);
             }
+            this.trigger('requestRender');
         },
 
         show: function() {
@@ -238,6 +241,7 @@ define([
 
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
+                selectionIndicator: false,
                 baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
@@ -260,18 +264,22 @@ define([
                    canAnimate: false,
                   shouldAnimate: false
                 })),
+                requestRenderMode : true,
+                maximumRenderTimeChange : Infinity,
                 contextOptions: {
                     webgl:{
                         preserveDrawingBuffer:true,
                     },
                 },
             });
+            this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender()}, this));
             $('.cesium-widget-credits').hide();
             this.graticuleContainer = $('.overlay');
             this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
             this.viewer.scene.fxaa = false;
+            this.viewer.scene.pickTranslucentDepth = true;
             this.load();
 /*
             this.renderSpills();
@@ -313,40 +321,88 @@ define([
                 this.play();
             }
             this.toastTips();
+            this.addCesiumHandlers();
+        },
 
-            var entity = this.viewer.entities.add({
-                label : {
-                    show : false,
-                    showBackground : true,
-                    font : '14px monospace',
-                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
-                    verticalOrigin : Cesium.VerticalOrigin.TOP,
-                    pixelOffset : new Cesium.Cartesian2(15, 0),
-                    eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                }
-            });
+        addCesiumHandlers: function() {
+            this._openCesiumObjectTooltips = {};
+            var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
+                var newEntity = this.viewer.entities.add({
+                    show: true,
+                    position: Cesium.Cartesian3.fromDegrees(0,0),
+                    label : {
+                        show : false,
+                        showBackground : true,
+                        font : '14px monospace',
+                        horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                        verticalOrigin : Cesium.VerticalOrigin.TOP,
+                        pixelOffset : new Cesium.Cartesian2(horizOffset, vertOffset),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                    }
+                });
+                this._openCesiumObjectTooltips[pickedObject.id] = newEntity;
+                return newEntity;
+            }, this);
 
-            this.handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
-            this.viewer.scene.pickTranslucentDepth = true;
-            this.handler.setInputAction(_.bind(function(movement) {
+            this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            var singleClickHandlerFunction = _.bind(function(movement) {
                 var pickedObject = this.viewer.scene.pick(movement.position);
-                if (pickedObject && pickedObject.id) {
-                    console.log(pickedObject, pickedObject.id);
-                    var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-pickedObject.primitive.dir)).toFixed(2);
-                    entity.position = pickedObject.primitive.position;
-                    entity.pickedObject = pickedObject;
-                    entity.label.show = true;
-                    entity.label.text = new Cesium.CallbackProperty(_.bind(function(){
-                                                                        var dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-entity.pickedObject.primitive.dir)).toFixed(2);
-                                                                        return 'Mag: ' + ('   ' + entity.pickedObject.primitive.mag.toFixed(2)).slice(-7) + 'm/s' +
-                                                                            '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
-                                                                    }, entity), false);
-
+                if (pickedObject) {
+                    var entity;
+                    if (!_.isUndefined(pickedObject.id) && (typeof pickedObject.id === 'string' || pickedObject.id instanceof String)) {
+                        if (!(pickedObject.id in this._openCesiumObjectTooltips)) {
+                            if (pickedObject.id.startsWith('vector')) {
+                                entity = addNewCesiumObjectTooltip(pickedObject, 15, 0);
+                                entity.position = pickedObject.primitive.position.clone();
+                                entity.pickedObject = pickedObject;
+                                entity.label.show = true;
+                                entity.label.text = new Cesium.CallbackProperty(
+                                    _.bind(function(){
+                                        var dir = Number(this.dir ? this.dir : 0),
+                                            mag = Number(this.mag ? this.mag : 0),
+                                        dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-dir)).toFixed(2);
+                                        return 'Mag: ' + ('   ' + mag.toFixed(2)).slice(-7) + ' m/s' +
+                                            '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                                    }, entity.pickedObject.primitive),
+                                    true
+                                );
+                            } else if (pickedObject.id.startsWith('LE')) {
+                                entity = addNewCesiumObjectTooltip(pickedObject, 2, 0);
+                                entity.pickedObject = pickedObject;
+                                entity.position = new Cesium.CallbackProperty(
+                                    _.bind(function() {
+                                        return this.position.clone();
+                                    }, entity.pickedObject.primitive),
+                                    true
+                                );
+                                entity.label.show = true;
+                                entity.label.text = new Cesium.CallbackProperty(
+                                    _.bind(function(primitive){
+                                        var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4),
+                                            loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
+                                            //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : 0),
+                                        var lon = this.graticule.genDMSLabel('lon', loc.longitude);
+                                        var lat = this.graticule.genDMSLabel('lat', loc.latitude);
+                                        return 'Mass: ' + ('   ' + mass).slice(-7) + ' kg' +
+                                            '\nLon: ' + ('   ' + lon)+
+                                            '\nLat: ' + ('   ' + lat);
+                                    }, this, entity.pickedObject.primitive),
+                                    true
+                                );
+                            }
+                        }
+                    }
                 } else {
-                    entity.label.show = false;
+                    var tts = _.values(this._openCesiumObjectTooltips);
+                    for (var i = 0; i < tts.length; i++) {
+                        this.viewer.entities.remove(tts[i]);
+                    }
+                    this._openCesiumObjectTooltips = {};
                 }
-
-            }, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this)
+            this.singleClickHandler.setInputAction(singleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         },
 
         goToStep: function(s) {
@@ -559,7 +615,7 @@ define([
                 this.controls.pause();
             }
             this.$('.tooltip-inner').text(time);
-            //this.viewer.scene.render();
+            this.viewer.scene.requestRender();
 
             if(this.is_recording){
                 this.recordScene();

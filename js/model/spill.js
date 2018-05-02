@@ -456,6 +456,7 @@ define([
                                 show: appearance.get('les_on'),
                                 color: Cesium.Color.RED
                             });
+                            newLE.id = 'ULE' + le_idx;
                             if (additional_data) {
                                 newLE[additional_data] = uncertain[additional_data][f];
                             }
@@ -493,6 +494,7 @@ define([
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
                                     show: appearance.get('les_on'),
                         });
+                        newLE.id = 'LE' + le_idx;
                         newLE.mass = certain.mass[f];
                         if (additional_data) {
                             newLE[additional_data] = certain[additional_data][f];

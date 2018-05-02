@@ -308,18 +308,20 @@ define([
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
                             this._vectors.get(existing).show = true;
                             this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
+                            this._vectors.get(existing).id = 'vector'+existing;
                         }
 
                         var create_length = centers.length / 2;
-
+                        var bb;
                         for (var c = existing; c < create_length; c++) {
-                            this._vectors.add({
+                            bb = this._vectors.add({
                                 show: true,
                                 position: Cesium.Cartesian3.fromDegrees(centers[c * 2], centers[c * 2 + 1]),
                                 image: this._images[0],
                                 color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
                                 scale: this.get('_appearance').get('scale')
                             });
+                            bb.id = 'vector'+c;
                         }
 
                         resolve(this._vectors);

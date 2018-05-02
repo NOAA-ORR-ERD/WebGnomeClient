@@ -46,7 +46,10 @@ define([
             }
 
             if (this.get('_appearance')) {
-                this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
+                this._vectors = new Cesium.BillboardCollection({
+                    blendOption: Cesium.BlendOption.TRANSLUCENT,
+                    id: 'uv-'+this.get('id'),
+                });
                 this._linesPrimitive = new Cesium.PrimitiveCollection();
                 this.get('_appearance').fetch().then(_.bind(function(){
                     this.listenTo(this.get('_appearance'), 'change', this.updateVis);
@@ -251,18 +254,20 @@ define([
                             this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0], centers[existing][1]);
                             this._vectors.get(existing).show = appearance.get('vec_on');
                             this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
+                            this._vectors.get(existing).id = 'vector'+existing;
                         }
 
                         var create_length = centers.length;
-
+                        var bb;
                         for (var c = existing; c < create_length; c++) {
-                            this._vectors.add({
+                            bb = this._vectors.add({
                                 show: appearance.get('on'),
                                 position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
                                 image: this._images[0],
                                 color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha')),
                                 scale: appearance.get('scale')
                             });
+                            bb.id = 'vector'+c;
                         }
 
                         resolve(this._vectors);
@@ -298,7 +303,6 @@ define([
                 if (data) {
                     for (var uv = data.direction.length; uv--;) {
                         billboards[uv].rotation = data.direction[uv];
-                        billboards[uv].mag = data.magnitude[uv];
                         billboards[uv].image = this._images[this.getImageIdx(data.magnitude[uv])];
                         billboards[uv].mag = data.magnitude[uv];
                         billboards[uv].dir = data.direction[uv];
@@ -331,11 +335,16 @@ define([
                     bbs[i].scale = appearance.get('scale');
                     bbs[i].show = appearance.get('vec_on');
                 }
-                if (changed.grid_color || changed.grid_alpha){
-                    var prims = this._linesPrimitive;
-                    prims.show = appearance.get('grid_on');
+                if (!_.isUndefined(changed.grid_color) || 
+                    !_.isUndefined(changed.grid_alpha)){
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
+                } else if (!_.isUndefined(changed.grid_on)) {
+                    var prims = this._linesPrimitive._primitives;
+                    this._linesPrimitive.show = appearance.get('grid_on');
+                    for (var k = 0; k < prims.length; k++) {
+                        prims[k].show = this._linesPrimitive.show
+                    }
                 }
             }
         },

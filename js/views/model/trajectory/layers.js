@@ -423,6 +423,7 @@ define([
                 });
                 this.layers.add(this.layers.sat);
             }
+            this.trigger('requestRender');
         },
 
         toggleMapLayers: function(e) {
@@ -439,6 +440,7 @@ define([
             } else {
                 layer.appearance.set(name, e.currentTarget.checked);
             }
+            this.trigger('requestRender');
         },
 
         toggleSpillLayers: function(e) {
@@ -450,6 +452,7 @@ define([
             } else {
                 layer.appearance.set(name, true);
             }
+            this.trigger('requestRender');
         },
 
         toggleGridLayers: function(e) {
@@ -493,6 +496,7 @@ define([
                     grid_layer.model.renderLines(3000, false);
                 }
             }
+            this.trigger('requestRender');
         },
 
         toggleDataLayers: function(e) {
@@ -528,6 +532,7 @@ define([
                     lay.model.genVectors();
                 }
             }
+            this.trigger('requestRender');
         },
 
         openInspectModal: function(e) {
