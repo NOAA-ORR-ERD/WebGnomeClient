@@ -4,9 +4,8 @@ define([
     'backbone',
     'model/base',
     'moment',
-    'localforage',
-    'model/appearance',
-], function(_, $, Backbone, BaseModel, moment, localforage, Appearance){
+    'localforage'
+], function(_, $, Backbone, BaseModel, moment, localforage){
     'use strict';
     var baseEnvObj = BaseModel.extend({
         urlRoot: '/environment/',

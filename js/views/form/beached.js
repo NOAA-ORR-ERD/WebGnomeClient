@@ -157,6 +157,11 @@ define([
                 });
                 this.$(row).addClass('edit');
                 this.$(row).html(template);
+                this.$(row).find('.input-time').datetimepicker({
+                    format: webgnome.config.date_format.datetimepicker,
+                    allowTimes: webgnome.config.date_format.half_hour_times,
+                    step: webgnome.config.date_format.time_step
+                });
             }
         },
 
@@ -167,14 +172,17 @@ define([
             var index = this.$(row).data('tsindex');
             var entry = this.model.get('timeseries')[index];
             var amount = this.$('.input-amount').val();
-            var date = entry[0];
+            //var date = entry[0];
+            var date = moment(this.$('.input-time').val()).format('YYYY-MM-DDTHH:mm:00');
             entry = [date, amount];
-            _.each(this.model.get('timeseries'), _.bind(function(el, index, array){
-                if (el[0] === entry[0]){
-                    array[index] = entry;
-                    this.timeseries = array;
-                }
-            }, this));
+			var tsCopy = _.clone(this.model.get('timeseries'));
+			_.each(tsCopy, _.bind(function(el, i, array){
+				if (index === i){
+					array[i] = entry;
+				}
+			}, this));
+
+			this.model.set('timeseries', tsCopy);
             this.$(row).removeClass('edit');
             this.renderTimeseries();
         },

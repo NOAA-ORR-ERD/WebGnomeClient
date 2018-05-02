@@ -124,6 +124,24 @@ define([
             });
         },
 
+        timeStringToSeconds: function(timeAttr) {
+            // We would like to be consistent in how we represent time in
+            // our model, and all other objects that implement a notion of
+            // time.  So this is a method for parsing a string containing a
+            // date/time value in UTF, and converting it to a numeric value
+            // in seconds.  This should be  accessible to all objects through
+            // webgnome.timeStringToSeconds()
+            if (timeAttr === 'inf') {
+                return Number.POSITIVE_INFINITY;
+            }
+            else if (timeAttr === '-inf') {
+                return Number.NEGATIVE_INFINITY;
+            }
+            else {
+                return moment(timeAttr, moment.ISO_8601).unix();
+            }
+        },
+
         generateHalfHourTimesArray: function() {
             var times = [];
 
@@ -420,7 +438,19 @@ define([
         },
 
         getConfig: function(){
-            return  JSON.parse(config);
+            var config_obj = JSON.parse(config);
+            // if there isn't a domain provided just use the
+            // one the client was served on.
+            var domain = location.href.split(':');
+            domain.pop();
+            domain = domain.join(':') + ':';
+            if(config_obj.api.match(/^\d*$/)){
+                config_obj.api = domain + config_obj.api;
+            }
+            if(config_obj.oil_api.match(/^\d*$/)){
+                config_obj.oil_api = domain + config_obj.oil_api;
+            }
+            return config_obj;
         },
         
         validModel: function(){

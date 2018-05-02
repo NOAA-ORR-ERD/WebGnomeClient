@@ -1,0 +1,158 @@
+{
+    "Mass": {
+        "title": "Mass",
+        "_chosenColorMapType": "Alpha",
+        "_chosenScheme": "BrBG",
+        "alphaType": "mass",
+        "useAlpha": true,
+        "interpolate": false,
+        "endsConfigurable": "none",
+        "colorMaps": {
+            "Alpha": {
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 100],
+                                       "range": [0, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "linear",
+                                      "domain": [0, 1],
+                                      "range":["#000000","#000000"]
+                                      }
+            },
+            "Diverging": {
+                "availableSchemes": ["BrBG", "PRGn", "RdBu"],
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 50, 100],
+                                       "range": [0, 0.5, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.5],
+                                      "range":["#000000","#0000FF"]
+                                      }
+            }
+        }
+    },
+    "Depth": {
+        "title": "Depth",
+        "_chosenColorMapType": "Alpha",
+        "_chosenScheme": "BrBG",
+        "alphaType": "mass",
+        "useAlpha": false,
+        "interpolate": false,
+        "endsConfigurable": "min",
+        "colorMaps": {
+            "Alpha": {
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 100],
+                                       "range": [0, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "linear",
+                                      "domain": [0, 1],
+                                      "range":["#000000","#000000"]
+                                      }
+            },
+            "Diverging": {
+                "availableSchemes": ["BrBG", "PRGn", "RdBu"],
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 50, 100],
+                                       "range": [0, 0.5, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.5],
+                                      "range":["#000000","#0000FF"]
+                                      }
+            },
+            "Sequential": {
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 33, 66, 100],
+                                       "range": [0, 0.33, 0.66, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.33,0.66],
+                                      "range":["#0000FF","#770077","#FF0000"]
+                                      }
+            }
+        }
+    },
+    "Viscosity": {
+        "title": "Viscosity",
+        "_chosenColorMapType": "Diverging",
+        "_chosenScheme": "BrBG",
+        "alphaType": "mass",
+        "useAlpha": false,
+        "interpolate": false,
+        "endsConfigurable": "None",
+        "colorMaps": {
+            "Diverging": {
+                "availableSchemes": ["BrBG", "PRGn", "RdBu"],
+                "number_scale_config": {
+                                       "type": "log",
+                                       "domain": [0, 250, 250000],
+                                       "range": [0, 0.5, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.5],
+                                      "range":["#000000","#0000FF"]
+                                      }
+            },
+            "Sequential": {
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 33, 66, 100],
+                                       "range": [0, 0.33, 0.66, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.33,0.66],
+                                      "range":["#0000FF","#770077","#FF0000"]
+                                      }
+            }
+        }
+    },
+    "Age": {
+        "title": "Age",
+        "_chosenColorMapType": "Diverging",
+        "_chosenScheme": "BrBG",
+        "alphaType": "mass",
+        "useAlpha": false,
+        "interpolate": false,
+        "endsConfigurable": "all",
+        "colorMaps": {
+            "Diverging": {
+                "availableSchemes": ["BrBG", "PRGn", "RdBu"],
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 50, 100],
+                                       "range": [0, 0.5, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.5],
+                                      "range":["#000000","#0000FF"]
+                                      }
+            },
+            "Sequential": {
+                "number_scale_config": {
+                                       "type": "linear",
+                                       "domain": [0, 25, 50, 75, 100],
+                                       "range": [0, 0.25, 0.5, 0.75, 1]
+                                       },
+                "color_scale_config": {
+                                      "type": "threshold",
+                                      "domain": [0.25,0.5,0.75],
+                                      "range":["#0000FF","#770077","#770077","#FF0000"]
+                                      }
+            }
+        }
+    }
+}

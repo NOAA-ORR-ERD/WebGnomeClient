@@ -13,13 +13,13 @@ define([
             FormModal.prototype.initialize.call(this, options);
         },
 
-        render: function(){
+        render: function() {
             var createFileTemplate = _.template(CreateFileTemplate);
             this.body = _.template(createFileTemplate({'file': this.fileModel}));
             FormModal.prototype.render.call(this);
         },
 
-        save: function(){
+        save: function() {
             var fileName = this.$('#name')[0].value;
             this.fileModel.set('name', fileName);
             FormModal.prototype.save.call(this);

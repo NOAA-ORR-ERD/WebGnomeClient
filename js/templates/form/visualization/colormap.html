@@ -1,0 +1,33 @@
+<div class="form-row">
+    <div class="form-group datavis-config">
+        <label class="col-sm-3 control-label" for="interpolate">Interpolate</label>
+        <input type="checkbox" name="colormap:interpolate" {{model.get('interpolate') ? 'checked=true' : ''}}>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group datavis-config">
+        <label class="col-sm-3 control-label" for="interpolate">Color Scheme</label>
+        <div class="col-sm-8 datavis-config">
+            <select class="chosen-select" id="scheme-picker">
+            {% for (var i = 0; i < model.get('_allSchemes').length; i++) { %}
+                <option value='{{model.get('_allSchemes')[i]}}' {{model.get('scheme') === model.get('_allSchemes')[i] ? "selected=true" : ""}}>{{model.get('_allSchemes')[i]}}</option>
+            {% } %}
+            </select>
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group datavis-config">
+        <label class="col-sm-3 control-label" for="interpolate">Add/remove</label>
+        <input type="button" class="add", value="+">
+        <input type="button" class="remove", value="-">
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-1 datavis-config colormap">
+            <div id="colormap-slider">
+            </div>
+        </div>
+    </div>
+</div>
