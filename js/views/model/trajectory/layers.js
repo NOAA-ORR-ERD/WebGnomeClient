@@ -493,7 +493,7 @@ define([
                         grid_checkboxes[i].checked = true;
                     }
                     grid_layer.appearance.set(name, true);
-                    grid_layer.model.renderLines(3000, false);
+                    grid_layer.model.renderLines(3000, false).then(_.bind(function() {this.trigger('requestRender');}, this));
                 }
             }
             this.trigger('requestRender');
@@ -529,7 +529,7 @@ define([
                 } else {
                     this.$('.env-uv, #none-uv').prop('checked', false);
                     lay.appearance.set(name, true);
-                    lay.model.genVectors();
+                    lay.model.genVectors().then(_.bind(function() {this.trigger('requestRender');}, this));;
                 }
             }
             this.trigger('requestRender');
