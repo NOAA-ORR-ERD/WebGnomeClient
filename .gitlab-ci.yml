@@ -1,20 +1,30 @@
-before_script: 
-  - yum update -y
-  - rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
-  # - yum install -y node npm
-  - npm install -g grunt-cli
-  - npm install
+test: 
+    script:
+        - yum update -y
+        - rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
+        # - yum install -y node npm
+        - npm install -g grunt-cli
+        - npm install
+        - grunt install
+        - cp config-example.json config.json
+        - grunt build
+    tags:
+        - test
 
-master: 
-  script:
-    - grunt install
-    - cp config-example.json config.json
-    - grunt build
-  only: 
-    - master
-
+master:
+    script:
+        - docker build -f dockerfile . -t gnome.orr.noaa.gov:5002/webgnomeclient
+        - docker push gnome.orr.noaa.gov:5002/webgnomeclient
+    tags:
+        - docker
+    only:
+        - master
 develop:
-  script:
-    - grunt install
-    - cp config-example.json config.json
-    - grunt build
+    script:
+        - docker build -f dockerfile . -t gnome.orr.noaa.gov:5002/webgnomeclient:develop
+        - docker push gnome.orr.noaa.gov:5002/webgnomeclient:develop
+    tags:
+        - docker
+    only:
+        - develop
+
