@@ -13,16 +13,16 @@ test:
 
 master:
     script:
-        - docker build -f dockerfile . -t gnome.orr.noaa.gov:5002/webgnomeclient
-        - docker push gnome.orr.noaa.gov:5002/webgnomeclient
+        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient
+        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
     tags:
         - docker
     only:
         - master
 develop:
     script:
-        - docker build -f dockerfile . -t gnome.orr.noaa.gov:5002/webgnomeclient:develop
-        - docker push gnome.orr.noaa.gov:5002/webgnomeclient:develop
+        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:develop
+        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
     tags:
         - docker
     only:
