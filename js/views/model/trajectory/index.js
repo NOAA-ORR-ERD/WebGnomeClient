@@ -272,6 +272,7 @@ define([
                     },
                 },
             });
+            this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();
             this.graticuleContainer = $('.overlay');
@@ -344,6 +345,16 @@ define([
                 return newEntity;
             }, this);
 
+            this.doubleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            var doubleClickHandlerFunction = _.bind(function(movement) {
+                var tts = _.values(this._openCesiumObjectTooltips);
+                for (var i = 0; i < tts.length; i++) {
+                    this.viewer.entities.remove(tts[i]);
+                }
+                this._openCesiumObjectTooltips = {};
+            }, this);
+            this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
             this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var singleClickHandlerFunction = _.bind(function(movement) {
                 var pickedObject = this.viewer.scene.pick(movement.position);
@@ -410,7 +421,9 @@ define([
                 this.state = 'next';
                 this.frame = s.step;
             }
-            this.run();
+            if (this._canRun) {
+                this.run();
+            }
         },
         /*
         loop: function(){
@@ -481,14 +494,16 @@ define([
 
         run: function() {
             //meant to be called at the desired fps.
-            if (webgnome.cache.length > this.controls.getSliderValue() && webgnome.cache.length !== 0){
+            if (this.controls.getSliderValue() < webgnome.cache.length && webgnome.cache.length !== 0){
                 // the cache has the step, just render it
                     this.renderStep({step:this.controls.getSliderValue()});
-            } else  {
+            }  else  {
                 if(webgnome.cache.isHalted){
                     webgnome.cache.resume();
+                    this._canRun = true;
                 } else if (!webgnome.cache.streaming && !webgnome.cache.preparing) {
                     webgnome.cache.getSteps();
+                    this._canRun = true;
                 } else {
                     this.renderStep({step:this.controls.getSliderValue() -1});
                 }
@@ -511,7 +526,7 @@ define([
                 this.capturer.start();
                 this.capturer.skipped = 0;
                 //this.recorder.resume();
-                this.rframe = setInterval(_.bind(this.run,this), 1000/this.getDefaultFPS());
+                this.rframe = setInterval(_.throttle(_.bind(this.run,this), 1000/this.getDefaultFPS()), 1000/this.getDefaultFPS());
             }
         },
 
@@ -530,7 +545,7 @@ define([
         play: function(e){
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
-                this.rframe = setInterval(_.bind(this.run,this), 1000/this.getDefaultFPS());
+                this.rframe = setInterval(_.bind(function(){if(this._canRun){this._canRun = false; this.run();}},this), 1000/this.getDefaultFPS());
             }
         },
 

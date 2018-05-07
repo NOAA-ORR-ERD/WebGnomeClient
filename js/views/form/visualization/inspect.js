@@ -69,6 +69,7 @@ define([
         update: function(e) {
             //this trigger is to let the layers panel know that it needs to re-render!
             //webgnome.model.get('_appearance').trigger('change', this.layer.model);
+            this.trigger('rerender');
         },
 
         back: function() {

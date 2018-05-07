@@ -543,6 +543,8 @@ define([
             }
             var mod = new InspectForm(null, l);
             mod.render();
+            this.listenTo(mod, 'rerender', this.render);
+            this.listenTo(mod, 'rerender', _.bind(function() {this.trigger('requestRender');}, this));
         },
 
         changeName: function(e) {

@@ -44,7 +44,7 @@ define([
             this.listenTo(webgnome.cache, 'rewind', this.rewind);
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
             this.listenTo(webgnome.cache, 'step:failed', this.stop);
-            this.listenTo(webgnome.cache, 'step:done', this.stop);
+            //this.listenTo(webgnome.cache, 'step:done', this.stop);
         },
 
         render: function(){
@@ -290,7 +290,7 @@ define([
                 this.trigger('loop', {step: this.getSliderValue()});
             }
             if (this.getSliderValue() === webgnome.model.get('num_time_steps') -1) {
-                this.trigger('pause');
+                this.pause(e);
             }
         },
 

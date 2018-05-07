@@ -401,7 +401,7 @@ define([
                 var billboards = this._vectors._billboards;
 
                 for (var uv = mag_data.length; uv--;) {
-                    billboards[uv].show = true;
+                    //billboards[uv].show = true;
                     billboards[uv].rotation = dir_data[uv];
                     billboards[uv].image = this._images[this.getImageIdx(mag_data[uv])];
                     billboards[uv].mag = mag_data[uv];
