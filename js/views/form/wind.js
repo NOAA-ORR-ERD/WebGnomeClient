@@ -807,9 +807,13 @@ define([
             if (this.$('.input-speed').length === 0){
                 e.preventDefault();
                 e.stopPropagation();
+                var model_start_time = webgnome.model.get('start_time');
                 var index = $(e.target.parentElement.parentElement).data('tsindex');
                 this.model.get('timeseries').splice(index, 1);
                 this.model.trigger('change', this.model);
+                if(this.model.get('timeseries').length === 0){
+                    this.model.set('timeseries', [[model_start_time, [0, 0]]]);
+                }
                 this.renderTimeseries();
             }
         },
