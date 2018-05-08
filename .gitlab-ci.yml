@@ -28,3 +28,12 @@ develop:
     only:
         - develop
 
+production:
+    script:
+        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:production
+        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
+    tags:
+        - docker
+    only:
+        - production
+
