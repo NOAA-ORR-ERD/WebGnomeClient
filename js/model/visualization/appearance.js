@@ -11,6 +11,14 @@ define([
         appearance_cache : localforage.createInstance({name: 'Appearance Data Cache',
                                                     }),
 
+        defaults: {
+            on: false,
+            ctrl_names: {title:'Object Appearance',
+                         on: 'Show'},
+            _type: 'appearance',
+            id: 'default'
+        },
+
         initialize: function(attrs, options) {
             Backbone.Model.prototype.initialize.call(this, attrs, options);
             if(options && options.default) {
@@ -20,7 +28,7 @@ define([
                 this.default = {};
             }
             // if specified, it will fetch previously saved from cache. 
-            if(options.cache) {
+            if(options && options.cache) {
                 this.fetch();
             }
             this.listenTo(this, 'change', this.save);

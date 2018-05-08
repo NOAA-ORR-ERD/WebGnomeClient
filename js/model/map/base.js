@@ -4,8 +4,8 @@ define([
     'model/base',
     'ol',
     'cesium',
-    'collection/appearances',
-], function(_, $, BaseModel, ol, Cesium, AppearanceCollection){
+    'model/visualization/map_appearance'
+], function(_, $, BaseModel, ol, Cesium, MapAppearance){
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
@@ -26,33 +26,14 @@ define([
                 [-180,85.06],
                 [180,85.06],
                 [180,-85.06],
-            ]]
+            ]],
+            _appearance: new MapAppearance()
         },
-        default_appearances: [
-            {
-                on: true,
-                ctrl_name: 'Map Appearance',
-                id: 'map',
-                color: '#FFFF00', //YELLOW
-                alpha: 1,
-            },
-            {
-                on: false,
-                ctrl_name: 'Spillable Area Appearance',
-                id: 'sa',
-                alpha: 1,
-            },
-            {
-                on: false,
-                ctrl_name: 'Map Bounds Appearance',
-                id: 'bounds',
-            }
-        ],
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this._mapVis = new Cesium.GeoJsonDataSource({show: this.get('_appearance').findWhere({id: 'map'}).get('on')});
+            this._mapVis = new Cesium.GeoJsonDataSource({show: this.get('_appearance').get('map_on')});
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
@@ -60,9 +41,9 @@ define([
         },
 
         setupVis: function(attrs) {
-            this._mapVis.show = this.get('_appearance').findWhere({id: 'map'}).get('on');
-            this._spillableVis.show = this.get('_appearance').findWhere({id: 'sa'}).get('on');
-            this._boundsVis.show = this.get('_appearance').findWhere({id: 'bounds'}).get('on');
+            this._mapVis.show = this.get('_appearance').get('map_on');
+            this._spillableVis.show = this.get('_appearance').get('sa_on');
+            this._boundsVis.show = this.get('_appearance').get('bounds_on');
             this._mapVis.clampToGround = false;
             this.genMap();
             this.genAux('spillable_area');
@@ -108,6 +89,9 @@ define([
 
         genAux: function(type) {
             var polygons = this.get(type);
+            if  (polygons[0].length === 2) {
+                polygons = [polygons];
+            }
             if (!_.isEqual(_.flatten(polygons), _.flatten(this.defaults[type]))) {
                 //polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
                 var vis;
@@ -185,7 +169,6 @@ define([
 
         genMap: function() {
             return new Promise(_.bind(function(resolve, reject) {
-                //var color = Cesium.COLOR[this.get('_appearance').findWhere({id:'map'}).get('on')].withAlpha
                 this.getGeoJSON(_.bind(function(geojson) {
                     if (geojson.features.length > 0) {
                         this._mapVis.load(geojson, {
@@ -194,42 +177,24 @@ define([
                             //fill: this.get('_(0.4),
                         });
                     }
-                    this._mapVis.show = this.get('_appearance').findWhere({id:'map'}).get('on');
+                    this._mapVis.show = this.get('_appearance').get('map_on');
                 }, this));
             }, this ));
         },
 
-        updateVis: function(options) {
+        updateVis: function(appearance) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
-            var vis;
-            if(options) {
-                if(options.id === 'map') {
-                    vis = this._mapVis;
-                    if (options.changedAttributes()){
-                        //vis.fill = Cesium.Color[appearance.get('fill')];
-                        //vis.alpha = appearance.get('alpha');
-                        //vis.scale = appearance.get('scale');
-                        vis.show = options.get('on');
-                    }
-                } else if (options.id === 'sa') {
-                    vis = this._spillableVis;
-                    vis.show = options.get('on');
-/*
-                    if (options.changedAttributes()){
-                        for (var i = 0; i < vis.entities.length; i++) {
-                            vis.entities[i].show = options.get('on');
-                        }
-                    }
-*/
-                } else {
-                    vis = this._boundsVis;
-                    if (options.changedAttributes()){
-                        //vis.fill = Cesium.Color[appearance.get('fill')];
-                        //vis.alpha = appearance.get('alpha');
-                        //vis.scale = appearance.get('scale');
-                        vis.show = options.get('on');
-                    }
+            if(appearance) {
+                var changed = appearance.changedAttributes();
+                if('map_on' in changed || 'map_color' in changed) {
+                    this._mapVis.show = appearance.get('map_on');
+                }
+                if ('sa_on' in changed) {
+                    this._spillableVis.show = appearance.get('sa_on');
+                }
+                if ('bounds_on' in changed){
+                    this._boundsVis.show = appearance.get('bounds_on');
                 }
             }
         },

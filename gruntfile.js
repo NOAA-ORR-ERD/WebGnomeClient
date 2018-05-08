@@ -24,7 +24,7 @@ module.exports = function(grunt){
                     include: ['requireLib', 'boot'],
                     name: 'main',
                     out: 'dist/build/build.js',
-                    optimize: 'uglify2'
+                    optimize: 'none'
                 }
             }
         },
@@ -49,6 +49,14 @@ module.exports = function(grunt){
                     port: 8080,
                     hostname: '*',
                     keepalive: true
+                }
+            },
+            build: {
+                options:{
+                    port: 8080,
+                    hostname: '*',
+                    keepalive: true,
+                    base: 'dist/build/'
                 }
             }
         },
@@ -89,7 +97,7 @@ module.exports = function(grunt){
             },
             build: {
                 src: 'dist/build/build.html',
-                dest: 'dist/build/build.html'
+                dest: 'dist/build/index.html'
             }
         },
         less: {
@@ -147,7 +155,8 @@ module.exports = function(grunt){
                     "Blob": true,
                     "navigator": true,
                     "URL": true,
-                    "MouseEvent": true
+                    "MouseEvent": true,
+                    "location": true,
                 }
             },
             all: src
@@ -204,6 +213,7 @@ module.exports = function(grunt){
     grunt.registerTask('build:lite', ['less:compile']);
     grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'vulcanize:build', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
+    grunt.registerTask('serve:build', ['connect:build']);
     grunt.registerTask('docs', ['jsdoc:docs']);
     grunt.registerTask('lint', ['jshint:all']);
     grunt.registerTask('test', ['jshint:all', 'webdriver:all']);

@@ -1,16 +1,11 @@
 define([
     'underscore',
     'backbone',
-    'model/appearance',
+    'model/visualization/appearance',
     'collection/appearances',
 ], function(_, Backbone, Appearance, AppearanceCollection){
     'use strict';
     var baseModel = Backbone.Model.extend({
-
-        default_appearance: {
-            on:true,
-            ctrl_name: 'Object Appearance',
-        },
 
         initialize: function(attrs, options){
             Backbone.Model.prototype.initialize.call(this, attrs, options);
@@ -31,9 +26,14 @@ define([
             } else if(this.default_appearance) {
                 this.set('_appearance', new Appearance({id: this.id},{default: this.default_appearance}));
             }
-            this.listenTo(this, 'change:id', _.bind(function(id) {
-                this.get('_appearance').id = this.id;
-            }, this));
+            if(this.get('_appearance')) {
+                if (this.get('id')) {
+                    this.get('_appearance').set('id', this.get('id'), {silent:true});
+                }
+                this.listenTo(this, 'change:id', _.bind(function(id) {
+                    this.get('_appearance').id = this.id;
+                }, this));
+            }
         },
 
         rewindModel: function(){

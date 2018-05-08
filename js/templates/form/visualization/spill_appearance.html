@@ -1,0 +1,45 @@
+<div class="form-row">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="data">Data Source</label>
+        <div class="col-sm-3 appearance-edit">
+            <select class="form-control form-control-sm" name="data">
+            {% for (var i = 0; i < titles.length; i++) { %}
+                <option name="data" {{titles[i] === model.get('data') ? "selected=true" : ""}}>{{titles[i]}}</option>
+            {% } %}
+            </select>
+        </div>
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox", name="colormap:useAlpha" {{colormap.get('useAlpha') ? 'checked=true' : ''}}>
+                Fade by Mass
+            </label>
+        </div>
+    </div>
+</div>
+<div class="form-row">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="data">Units</label>
+        <div class="col-sm-3 appearance-edit">
+            <select class="form-control form-control-sm" name="units">
+                {% if (model.get('data') === 'Mass') { %}
+                    <option value="m³" {{'m³' === model.get('units') ? "selected" : ""}}>cubic meters</option>
+                    <option value="gal" {{'gal' === model.get('units') ? "selected" : ""}}>gallons</option>
+                    <option value="bbl" {{'bbl' === model.get('units') ? "selected" : ""}}>barrels</option>
+                    <option value="ton" {{'ton' === model.get('units') ? "selected" : ""}}>tons</option>
+                    <option value="mt" {{'mt' === model.get('units') ? "selected" : ""}}>metric tons</option>
+                    <option value="kg" {{'kg' === model.get('units') ? "selected" : ""}}>kilograms</option>
+                {% } else if (model.get('data') === 'Age') { %}
+                    <option value='hr' {{'hr' === model.get('units') ? "selected" : ""}}>hours</option>
+                    <option value='sec' {{'sec' === model.get('units') ? "selected" : ""}}>seconds</option>
+                    <option value='min' {{'min' === model.get('units') ? "selected" : ""}}>minutes</option>
+                    <option value='days' {{'days' === model.get('units') ? "selected" : ""}}>days</option>
+                {% } else if (model.get('data') === 'Viscosity') { %}
+                    <option value='cSt' {{'cst' === model.get('units') ? "selected" : ""}}>centistokes</option>
+                {% } else if (model.get('data') === 'Depth') { %}
+                    <option value='m' {{'m' === model.get('units') ? "selected" : ""}}>meters</option>
+                    <option value='ft' {{'ft' === model.get('units') ? "selected" : ""}}>feet</option>
+                {% } %}
+            </select>
+        </div>
+    </div>
+</div>

@@ -1,37 +1,20 @@
 define([
-    'jquery',
     'underscore',
+    'jquery',
     'backbone',
     'cesium',
-    'moment',
-    'nucos',
     'model/base',
     'model/release',
     'model/element',
-    'model/appearance',
-    'collection/appearances',
-], function($, _, Backbone, Cesium, moment, nucos,
-            BaseModel, GnomeRelease, GnomeElement, Appearance,
-            AppearanceCollection) {
+    'nucos',
+    'moment',
+    'model/visualization/appearance',
+    'd3',
+    'model/visualization/spill_appearance'
+], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, d3, SpillAppearance){
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
-
-        default_appearances: [
-            {
-                on: true,
-                ctrl_name: 'LE Appearance',
-                certain_LE_color: '#000000', // BLACK
-                uncertain_LE_color: '#FF0000', // RED
-                scale: 1,
-                id: 'les'
-            },
-            {
-                on: true,
-                ctrl_name: 'Pin Appearance',
-                id: 'loc'
-            }
-        ],
 
         defaults: function() {
             return {
@@ -41,7 +24,8 @@ define([
                 'element_type': this.getElementType(),
                 'name': 'Spill',
                 'amount': 100,
-                'units': 'bbl' //old code setting to kg for non-weathering substance is commented below
+                'units': 'bbl',
+                '_appearance': new SpillAppearance()
             };
         },
 
@@ -52,6 +36,10 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
+            this.les = new Cesium.BillboardCollection({
+                blendOption: Cesium.BlendOption.TRANSLUCENT,
+            });
+            this._locVis = new Cesium.Entity();
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
 
@@ -63,6 +51,8 @@ define([
             this.on('change:element_type', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
 
+            this.listenTo(this, 'change', this.initializeDataVis);
+
             this.addListeners();
 
             this.calculate();
@@ -73,7 +63,7 @@ define([
                 }
                 else {
                     setTimeout(_.bind(this.isTimeValid, this), 2);
-                }   
+                }
             }
 
             this._certain = [];
@@ -81,13 +71,13 @@ define([
         },
 
         setupVis: function(attrs) {
-            this.les = new Cesium.BillboardCollection({
-                blendOption: Cesium.BlendOption.TRANSLUCENT,
-            });
+            this.listenTo(this.get('_appearance'), 'change:data', this.initializeDataVis);
+            this.initializeDataVis();
+            this.setColorScales();
 
             this.genLEImages();
+            this._locVis.merge(new Cesium.Entity({
 
-            this._locVis = new Cesium.Entity({
                 name: this.get('name'),
                 id: this.get('id') + '_loc',
                 position: new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0], this.get('release').get('start_position')[1]),
@@ -96,8 +86,8 @@ define([
                     verticalOrigin: Cesium.VerticalOrigin.BOTTOM
                 },
                 description: '<table class="table"><tbody><tr><td>Amount</td><td>' + this.get('amount') + ' ' + this.get('units') + '</td></tr></tbody></table>',
-                show: this.get('_appearance').findWhere({id:'loc'}).get('on'),
-            });
+                show: this.get('_appearance').get('pin_on'),
+            }));
         },
 
         resetLEs: function() {
@@ -168,11 +158,14 @@ define([
         addListeners: function() {
             this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
+            this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('release'), 'change', _.bind(function() {
                 this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0],
                                                                           this.get('release').get('start_position')[1]);
             },this));
+            this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
+            this.listenTo(this.get('release'), 'change', this.initializeDataVis);
         },
 
         releaseChange: function(release) {
@@ -302,22 +295,8 @@ define([
         activeTimeRange: function() {
             var release = this.get('release');
 
-            return [this.parseTimeAttr(release.get('release_time')),
-                    this.parseTimeAttr(release.get('end_release_time'))];
-        },
-
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
-            }
+            return [webgnome.timeStringToSeconds(release.get('release_time')),
+                    webgnome.timeStringToSeconds(release.get('end_release_time'))];
         },
 
         toTree: function() {
@@ -379,53 +358,123 @@ define([
                                                     show: false}).image;
         },
 
+        initializeDataVis: function() {
+            // Contextualizing the default appearance for the properties of this spill
+            var data = this.get('_appearance').get('data');
+            var colormap = this.get('_appearance').get('colormap');
+            var max, min, stops;
+            if (data === 'Age') {
+                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                min = 0;
+            } else if (data === 'Viscosity') {
+                min = 0.0000001;
+                max = 250000;
+                colormap.set('numberScaleType', 'log');
+            } else if (data === 'Depth') {
+                min = 0;
+                max = 100;
+                colormap.set('numberScaleType', 'linear');
+            } else {
+                max = this._per_le_mass;
+                min = 0;
+                colormap.set('numberScaleType', 'linear');
+            }
+            colormap.setDomain(min, max, colormap.get('numberScaleRange'));
+            this.setColorScales();
+        },
+
+        setColorScales: function() {
+            /*
+            Call this function to reconfigure the scales used to convert a data value into a color to be applied
+            */
+            var colormap = this.get('_appearance').get('colormap');
+            if (colormap.get('numberScaleType') === 'linear') {
+                this._numScale = d3.scaleLinear();
+            } else if (colormap.get('numberScaleType') === 'log') {
+                this._numScale = d3.scaleLog();
+            }
+            this._numScale.domain(colormap.get('numberScaleDomain')).range(colormap.get('numberScaleRange'));
+
+            if (colormap.get('colorScaleType') === 'threshold') {
+                this._colorScale = d3.scaleThreshold();
+            } else if (colormap.get('colorScaleType') === 'linear') {
+                this._colorScale = d3.scaleLinear();
+            }
+            this._colorScale.domain(colormap.get('colorScaleDomain')).range(colormap.get('colorScaleRange'));
+        },
+
+        colorLEs: function(){
+            /*
+            Uses the appearance's datavis object to determine how to colorize all the LEs
+            */
+            var colormap = this.get('_appearance').get('colormap');
+            var genColorwithAlpha = function(colorStr, alpha) {
+                return !_.isUndefined(alpha) ?
+                    Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
+                    Cesium.Color.fromCssColorString(colorStr);
+            };
+            var alphaScale;
+            alphaScale = d3.scaleLinear();
+            if (colormap.get('alphaType') === 'mass') {
+                alphaScale.domain([0, this._per_le_mass]);
+            } else {
+                alphaScale.domain([2000, 0]);
+            }
+            var value, color, alpha, i, datatype;
+            datatype = this.get('_appearance').get('data').toLowerCase();
+            for (i = 0; i < this._certain.length; i++) {
+                value = this._certain[i][datatype];
+                color = this._colorScale(this._numScale(value));
+                if (_.isUndefined(color)) {
+                    color = '#FF0000';
+                }
+                if (colormap.get('useAlpha')) {
+                    alpha = alphaScale(this._certain[i][colormap.get('alphaType')]);
+                }
+                this._certain[i].color = genColorwithAlpha(color, alpha);
+            }
+        },
+
         update: function(step) {
             var certain = step.get('SpillJsonOutput').certain[0];
             var uncertain = step.get('SpillJsonOutput').uncertain[0];
             var sid = webgnome.model.get('spills').indexOf(this);
 
-            var appearance = this.get('_appearance').findWhere({id:'les'});
+            var appearance = this.get('_appearance');
             var le_idx = 0;
-            var certain_LE_color, uncertain_LE_color;
-
-            certain_LE_color = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
-            uncertain_LE_color = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
-
-            if (uncertain) {
-                for (f = 0; f < uncertain.length; f++) {
+            var newLE, additional_data;
+            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase();
+            if(uncertain) {
+                for(f = 0; f < uncertain.length; f++){
                     if (uncertain.spill_num[f] === sid) {
                         if (!this._uncertain[le_idx]) {
                             // create a new point
-                            this._uncertain.push(
-                                this.les.add({
-                                    position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f],
-                                                                            uncertain.latitude[f]),
-                                    color: uncertain_LE_color.withAlpha(
-                                        uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                                    ),
-                                    eyeOffset : new Cesium.Cartesian3(0, 0, -2),
-                                    image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
-                                    show: appearance.get('on'),
-                                })
-                            );
-                        }
-                        else {
-                            this._uncertain[le_idx].show = appearance.get('on');
-                            this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f],
-                                                                                             uncertain.latitude[f]);
+                            newLE = this.les.add({
+                                position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
+                                eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                                image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
+                                show: appearance.get('les_on'),
+                                color: Cesium.Color.RED
+                            });
+                            newLE.id = 'ULE' + le_idx;
+                            if (additional_data) {
+                                newLE[additional_data] = uncertain[additional_data][f];
+                            }
+                            newLE.mass = uncertain.mass[f];
+                            this._uncertain.push(newLE);
+                        } else {
+                            this._uncertain[le_idx].show = appearance.get('les_on');
+                            this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
+                            this._uncertain[le_idx].mass = uncertain.mass[f];
+                            if (additional_data) {
+                                this._uncertain[le_idx][additional_data] = uncertain[additional_data][f];
+                            }
 
                             if (uncertain.status[f] === 3) {
                                 this._uncertain[le_idx].image = this._les_beached_image;
                             }
                             else {
                                 this._uncertain[le_idx].image = this._les_point_image;
-                            }
-
-                            // set the opacity of particle if the mass has changed
-                            if (uncertain.mass[f] !== webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass) {
-                                this._uncertain[le_idx].color = uncertain_LE_color.withAlpha(
-                                    uncertain.mass[f] / webgnome.model.get('spills').at(uncertain.spill_num[f])._per_le_mass
-                                );
                             }
                         }
 
@@ -439,34 +488,32 @@ define([
                 if (certain.spill_num[f] === sid) {
                     if (!this._certain[le_idx]) {
                         // create a new point
-                        this._certain.push(this.les.add({
+                        newLE = this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
-                            color: certain_LE_color.withAlpha(
-                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            ),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
-                                    show: appearance.get('on'),
-                        }));
-                    }
-                    else {
+                                    show: appearance.get('les_on'),
+                        });
+                        newLE.id = 'LE' + le_idx;
+                        newLE.mass = certain.mass[f];
+                        if (additional_data) {
+                            newLE[additional_data] = certain[additional_data][f];
+                        }
+                        this._certain.push(newLE);
+                    } else {
                         // update the point position and graphical representation
-                        this._certain[le_idx].show = appearance.get('on');
-                        this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f],
-                                                                                       certain.latitude[f]);
+                        this._certain[le_idx].show = appearance.get('les_on');
+                        this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
+                        this._certain[le_idx].mass = certain.mass[f];
+                        if (additional_data) {
+                            this._certain[le_idx][additional_data] = certain[additional_data][f];
+                        }
+                        if(certain.status[f] === 3){
 
-                        if (certain.status[f] === 3) {
                             this._certain[le_idx].image = this._les_beached_image;
                         }
                         else {
                             this._certain[le_idx].image = this._les_point_image;
-                        }
-
-                        // set the opacity of particle if the mass has changed
-                        if(certain.mass[f] !== webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass){
-                            this._certain[le_idx].color = certain_LE_color.withAlpha(
-                                certain.mass[f] / webgnome.model.get('spills').at(certain.spill_num[f])._per_le_mass
-                            );
                         }
                     }
 
@@ -498,50 +545,26 @@ define([
                     }
                 }
             }
+            this.colorLEs();
         },
 
-        updateVis: function(options) {
-            // Updates the appearance of this model's graphics object.
-            // Implementation varies depending on the specific object type.
-            if (options) {
-                if (options.id === 'les') {
-                    var bbs = this.les._billboards;
-                    var appearance = this.get('_appearance').findWhere({id:'les'});
-                    var changedAttrs, newColor, i;
-
-                    changedAttrs = appearance.changedAttributes();
-                    if (changedAttrs) {
-                        if (changedAttrs.certain_LE_color) {
-                            newColor = Cesium.Color.fromCssColorString(appearance.get('certain_LE_color'));
-
-                            for (i = 0; i < this._certain.length; i++) {
-                                this._certain[i].color.blue = newColor.blue;
-                                this._certain[i].color.red = newColor.red;
-                                this._certain[i].color.green = newColor.green;
-                            }
-                        }
-
-                        if (changedAttrs.uncertain_LE_color) {
-                            newColor = Cesium.Color.fromCssColorString(appearance.get('uncertain_LE_color'));
-
-                            for (i = 0; i < this._uncertain.length; i++) {
-                                this._uncertain[i].color.blue = newColor.blue;
-                                this._uncertain[i].color.red = newColor.red;
-                                this._uncertain[i].color.green = newColor.green;
-                            }
-                        }
-
-                        for(i = 0; i < bbs.length; i++) {
-                            bbs[i].scale = appearance.get('scale');
-                            bbs[i].show = appearance.get('on');
-                        }
+        updateVis: function(appearance) {
+            /* Updates the appearance of this model's graphics object. Implementation varies depending on
+            the specific object type*/
+            if(appearance) {
+                var bbs = this.les._billboards;
+                var changedAttrs, newColor, i;
+                changedAttrs = appearance.changedAttributes();
+                if (changedAttrs){
+                    for(i = 0; i < bbs.length; i++) {
+                        bbs[i].scale = appearance.get('scale');
+                        bbs[i].show = appearance.get('les_on');
                     }
-                }
-                else {
-                    var visObj = this._locVis;
+                    this.setColorScales();
+                    this.colorLEs();
+                    if ('pin_on' in changedAttrs){
+                        this._locVis.show = appearance.get('pin_on');
 
-                    if (options.changedAttributes()) {
-                        visObj.show = options.get('on');
                     }
                 }
             }

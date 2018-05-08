@@ -79,8 +79,8 @@ define([
         },
 
         activeTimeRange: function() {
-            return [this.parseTimeAttr(this.get('active_start')),
-                    this.parseTimeAttr(this.get('active_stop'))];
+            return [webgnome.timeStringToSeconds(this.get('active_start')),
+                    webgnome.timeStringToSeconds(this.get('active_stop'))];
         },
 
         dataActiveTimeRange: function() {
@@ -93,7 +93,7 @@ define([
                 else {
                     // return the min and max time values in our timeseries
                     var timeRange = wind.attributes.timeseries.map(function(dateVal) {
-                        return this.parseTimeAttr(dateVal[0]);
+                        return webgnome.timeStringToSeconds(dateVal[0]);
                     }, this);
 
                     return [_.min(timeRange), _.max(timeRange)];
@@ -108,7 +108,7 @@ define([
                 var timeseries = this.get('timeseries');
 
                 var flatTimes = [].concat.apply([], timeseries).map(function(dateVal) {
-                    return this.parseTimeAttr(dateVal);
+                    return webgnome.timeStringToSeconds(dateVal);
                 }, this);
 
                 return [_.min(flatTimes), _.max(flatTimes)];
@@ -122,24 +122,11 @@ define([
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a weatherer's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                return [this.parseTimeAttr(this.get('real_data_start')),
-                        this.parseTimeAttr(this.get('real_data_stop'))];
+                return [webgnome.timeStringToSeconds(this.get('real_data_start')),
+                        webgnome.timeStringToSeconds(this.get('real_data_stop'))];
             }
         },
 
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
-            }
-        },
 	});
 
 	return baseWeathererModel;

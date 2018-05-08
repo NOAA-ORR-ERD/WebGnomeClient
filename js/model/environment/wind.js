@@ -37,22 +37,8 @@ define([
 
         timeseriesTimes: function() {
             return this.attributes.timeseries.map(function(dateVal) {
-                return this.parseTimeAttr(dateVal[0]);
+                return webgnome.timeStringToSeconds(dateVal[0]);
             }, this);
-        },
-
-        parseTimeAttr: function(timeAttr) {
-            // timeAttr is a string value representing a date/time or a
-            // positive or negative infinite value.
-            if (timeAttr === 'inf') {
-                return Number.POSITIVE_INFINITY;
-            }
-            else if (timeAttr === '-inf') {
-                return Number.NEGATIVE_INFINITY;
-            }
-            else {
-                return moment(timeAttr.replace('T',' ')).unix();
-            }
         },
 
         convertTimeSeries: function() {

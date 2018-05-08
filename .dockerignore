@@ -1,0 +1,4 @@
+config.json
+.git
+node_modules
+js/lib

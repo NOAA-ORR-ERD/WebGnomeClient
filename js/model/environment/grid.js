@@ -5,19 +5,18 @@ define([
     'model/base',
     'moment',
     'localforage',
-    'model/appearance',
+    'model/visualization/grid_appearance',
     'cesium'
-], function(_, $, Backbone, BaseModel, moment, localforage, Appearance, Cesium){
+], function(_, $, Backbone, BaseModel, moment, localforage, GridAppearance, Cesium){
     'use strict';
     var baseGridObj = BaseModel.extend({
         urlRoot: '/grid/',
         grid_cache : localforage.createInstance({name: 'Grid Object Data Cache',
                                                     }),
-        default_appearance: {
-            on: false,
-            ctrl_name: 'Grid Appearance',
-            color: '#FFC0CB', //PINK
-            alpha: 0.3,
+        defaults: function() {
+            return {
+                _appearance: new GridAppearance()
+            };
         },
 
         initialize: function(attrs, options) {
@@ -218,6 +217,9 @@ define([
             return new Promise(_.bind(function(resolve, reject) {
                 if(rebuild || this._linesPrimitive.length === 0) {
                     this.getLines().then(_.bind(function(data){
+                        if (rebuild) {
+                            this._linesPrimitive.removeAll();
+                        }
                         var appearance = this.get('_appearance');
                         var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
                             Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
@@ -274,7 +276,6 @@ define([
                 prims.show = appearance.get('on');
                 var changed = appearance.changedAttributes();
                 if (changed && (changed.color || changed.alpha)){
-                    this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
                 }
             }

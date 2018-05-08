@@ -21,7 +21,9 @@
                     <div class="col-sm-4">
                         <span class="trash delete" title="Remove {{ griddedwind[i].get('name') }}"></span>
                         <span class="edit" title="Edit {{ griddedwind[i].get('name') }}"></span>
-                        <span class="time_check {{ griddedwind[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                        <span class="time_check {{ griddedwind[i].get('time_compliance') }}"
+                              title="{{ griddedwind[i].get('time_compliance_msg') }}">
+                        </span>
                     </div>
                 </div>
             {% } %}

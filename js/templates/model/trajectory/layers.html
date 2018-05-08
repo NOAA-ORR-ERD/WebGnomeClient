@@ -33,17 +33,17 @@
             <div class="panel-body">
                 <form role="form" class="form-horizontal checkboxes map_layers">
                     <div class="checkbox">
-                        <label for="map-modelMap"><input type="checkbox" id="map-modelMap">Coastlines</label>
+                        <label for="map-modelMap"><input type="checkbox" name='map_on' id="map-modelMap">Coastlines</label>
                     </div>
 
                     <div class="checkbox">
-                        <label for="map-spillableArea"><input type="checkbox" id="map-spillableArea">Spillable Area</label>
+                        <label for="map-spillableArea"><input type="checkbox" name='sa_on' id="map-spillableArea">Spillable Area</label>
                     </div>
                     <div class="checkbox">
-                        <label for="map-mapBounds"><input type="checkbox" id="map-mapBounds">Map Bounds</label>
+                        <label for="map-mapBounds"><input type="checkbox" name='bounds_on' id="map-mapBounds">Map Bounds</label>
                     </div>
                     <div class="checkbox">
-                        <label for="map-graticule"><input type="checkbox" checked="checked" id="map-graticule">Graticule</label>
+                        <label for="map-graticule"><input type="checkbox" name='graticule' checked="checked" id="map-graticule">Graticule</label>
                     </div>
                 </form>
             </div>
@@ -73,8 +73,8 @@
                             {% if(model_spills.length !== 0){ %}
                                 {% for (var i = 0; i < model_spills.length; i++){ %}
                                 <tr name="{{ model_spills.models[i].get('name') }}">
-                                    <td class="spill-vis"><input class="vis" id="vis-{{ model_spills.models[i].get('id') }}" type="checkbox"></td>
-                                    <td class="spill-loc"><input class="loc" id="loc-{{ model_spills.models[i].get('id') }}" type="checkbox"></td>
+                                    <td class="spill-vis"><input id="vis-{{ model_spills.models[i].get('id') }}" name="les_on" type="checkbox"></td>
+                                    <td class="spill-loc"><input id="loc-{{ model_spills.models[i].get('id') }}" name="pin_on" type="checkbox"></td>
                                     <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{ model_spills.models[i].get('id') }}"><span></span></button></td>
                                     <td class='spill-name' id="name-{{ model_spills.models[i].get('id') }}">{{ model_spills.models[i].get('name') }}</td>
                                 </tr>
@@ -117,9 +117,9 @@
                             {% if(env_objs.length !== 0){ %}
                                 {% for (var i = 0; i < env_objs.length; i++){ %}
                                 <tr name="{{ env_objs[i].get('name') }}">
-                                    <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" type="checkbox"></td>
+                                    <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" name="on" type="checkbox"></td>
                                     {% if (env_objs[i].has('grid')) { %}
-                                        <td class="env-grid"><input class="grid-{{ env_objs[i].get('grid').get('id') }} grid" type="checkbox"></td>
+                                        <td class="env-grid"><input class="grid-{{ env_objs[i].get('grid').get('id') }} grid" name="on" type="checkbox"></td>
                                     {% } else { %}
                                         <td></td>
                                     {% } %}
@@ -131,9 +131,9 @@
                             {% if(currents.length !== 0){ %}
                                 {% for ( var i = 0; i < currents.length; i++){ %}
                                 <tr name="{{ currents[i].get('name') }}">
-                                    <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" type="checkbox"></td>
+                                    <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" name="vec_on" type="checkbox"></td>
                                     {% if (currents[i].get('obj_type') === "gnome.movers.current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.current_movers.GridCurrentMover") {%}
-                                        <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" type="checkbox"></td>
+                                        <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" name="grid_on" type="checkbox"></td>
                                     {% } else { %}
                                         <td></td>
                                     {% } %}
