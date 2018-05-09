@@ -9,6 +9,8 @@ RUN cp /webgnomeclient/config-example.json /config/config.json
 RUN ln -s /config/config.json /webgnomeclient/config.json
 RUN cd /webgnomeclient && npm install && npm install -g grunt 
 RUN cd /webgnomeclient && grunt install 
+RUN cd /webgnomeclient && pip install -r requirements.txt
+RUN cd /webgnomeclient/doc/ && sphinx-build -b html ./ ../dist/build/doc
 
 VOLUME /config
 EXPOSE 8080
