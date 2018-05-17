@@ -76,11 +76,11 @@ define([
         },
 
         grid: function(){
-            this.nextStep(GridCurrentMover.prototype.defaults.obj_type);
+            this.nextStep(GridCurrentMover.prototype.defaults().obj_type);
         },
 
         cats: function(){
-            this.nextStep(CatsMover.prototype.defaults.obj_type);
+            this.nextStep(CatsMover.prototype.defaults().obj_type);
         },
 
         py_grid: function(){
@@ -125,9 +125,9 @@ define([
             var json_response = JSON.parse(response);
             var mover;
             if (json_response && json_response.obj_type) {
-                if (json_response.obj_type === GridCurrentMover.prototype.defaults.obj_type) {
+                if (json_response.obj_type === GridCurrentMover.prototype.defaults().obj_type) {
                     mover = new GridCurrentMover(json_response, {parse: true});
-                } else if (json_response.obj_type === CatsMover.prototype.defaults.obj_type) {
+                } else if (json_response.obj_type === CatsMover.prototype.defaults().obj_type) {
                     mover = new CatsMover(json_response, {parse: true});
                 } else if (json_response.obj_type === PyCurrentMover.prototype.defaults.obj_type) {
                     mover = new PyCurrentMover(json_response, {parse: true});
