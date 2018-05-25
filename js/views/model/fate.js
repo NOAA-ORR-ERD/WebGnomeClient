@@ -204,7 +204,7 @@ define([
                     this.$('.substance').addClass('missing');
                 }
 
-                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.environment.Water'}).length === 0){
+                if(webgnome.model.get('environment').where({obj_type: 'gnome.environment.water.Water'}).length === 0){
                     this.$('.water').addClass('missing');
                 }
 
@@ -248,7 +248,7 @@ define([
         },
 
         renderWaterForm: function() {
-            var waterModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var waterModel = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
             var waterForm = new WaterForm(null, waterModel);
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
@@ -1695,7 +1695,7 @@ define([
             var units = webgnome.model.get('spills').at(0).get('units');
             var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var converter = new nucos.OilQuantityConverter();
-            var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
             var waterDensity = water.getDensity();
 
             for(var set in this.dataset){

@@ -11,7 +11,7 @@ define([
         className: 'col-md-3 water object panel-view',
 
         models: [
-            'gnome.environment.environment.Water'
+            'gnome.environment.water.Water'
         ],
 
         initialize: function(options){
@@ -20,7 +20,7 @@ define([
         },
 
         render: function(){
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             var compiled;
             if (!_.isUndefined(water)){
                 compiled = _.template(WaterPanelTemplate, {
@@ -47,7 +47,7 @@ define([
         },
 
         new: function(){
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             if(_.isUndefined(water) || water.length === 0){
                 water = new WaterModel();
             }

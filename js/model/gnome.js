@@ -92,7 +92,7 @@ define([
             environment: {
                 'gnome.environment.wind.Wind': WindModel,
                 'gnome.environment.tide.Tide': TideModel,
-                'gnome.environment.environment.Water': WaterModel,
+                'gnome.environment.water.Water': WaterModel,
                 'gnome.environment.waves.Waves': WavesModel,
                 'gnome.environment.environment_objects.GridCurrent': GridCurrentModel,
                 'gnome.environment.environment_objects.GridWind': GridWindModel,
@@ -364,7 +364,7 @@ define([
             var hasSubstance = false;
             var spills = this.get('spills');
 
-            if (this.getElementType() && this.getElementType().get('substance') !== null && this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'})) {
+            if (this.getElementType() && this.getElementType().get('substance') !== null && this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'})) {
                 hasSubstance = true;
             }
 
@@ -580,7 +580,7 @@ define([
                     return model.get('on');
                 });
 
-                var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+                var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
                 var element_type = this.getElementType();
                 var wind = this.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
 
@@ -621,7 +621,7 @@ define([
             // remove any environment other than wind and water
             var environment = this.get('environment');
             var winds = environment.where({obj_type: 'gnome.environment.wind.Wind'});
-            var water = environment.where({obj_type: 'gnome.environment.environment.Water'});
+            var water = environment.where({obj_type: 'gnome.environment.water.Water'});
             var waves = environment.where({obj_type: 'gnome.environment.waves.Waves'});
             environment.reset(winds);
             environment.add(water);
@@ -682,10 +682,10 @@ define([
         },
 
         configureWaterRelations: function(child){
-            if(child.get('obj_type') !== 'gnome.environment.environment.Water'){ return; }
+            if(child.get('obj_type') !== 'gnome.environment.water.Water'){ return; }
 
             var environment = this.get('environment');
-            var water = this.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             var wind = this.getDefaultWind();
             var evaporation = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'});
             var natural_dispersion = this.get('weatherers').findWhere({obj_type: 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
@@ -716,7 +716,7 @@ define([
         updateWaves: function(cb){
             var environment = this.get('environment');
             var wind = this.getDefaultWind();
-            var water = environment.findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = environment.findWhere({obj_type: 'gnome.environment.water.Water'});
 
             if(wind && water){
 

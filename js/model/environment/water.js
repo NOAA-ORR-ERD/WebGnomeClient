@@ -8,7 +8,7 @@ define([
     var waterModel = BaseModel.extend({
         urlRoot: '/environment/',
         defaults: {
-            obj_type: 'gnome.environment.environment.Water',
+            obj_type: 'gnome.environment.water.Water',
             temperature: null,
             salinity: 32,
             sediment: 5,

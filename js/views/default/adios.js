@@ -58,7 +58,7 @@ define([
             var durationStr = webgnome.model.durationString("Model will run for ");
             var spills = webgnome.model.get('spills').models;
             var wind = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
             var beached_units = (!_.isUndefined(beached)) ? beached.get('units') : false;
             var beached_ts = (!_.isUndefined(beached)) ? beached.displayTimeseries() : false;
@@ -169,7 +169,7 @@ define([
         },
 
         clickWater: function(){
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             if(!water){
                 water = new Water();
             }

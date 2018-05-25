@@ -29,7 +29,7 @@ define([
             // fate view should only be selected/active if there's
             // a weatherable substance and water added to the model
             var spillLength = webgnome.model.get('spills').length;
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.environment.Water'});
+            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
             var sub = spillLength > 0 ? webgnome.model.get('spills').at(0).get('element_type').get('substance') : null;
 
             if(!water || !sub){

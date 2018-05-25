@@ -185,7 +185,7 @@ define([
                                         webgnome.model.get('weatherers').add(weathererModel);
                                     }
                                 }
-                                var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.environment.Water'});
+                                var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
                                 var wind = model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
 
                                 webgnome.model.toggleWeatherers();
