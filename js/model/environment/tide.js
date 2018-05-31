@@ -7,7 +7,7 @@ define([
     var tideModel = BaseModel.extend({
         urlRoot: '/environment/',
         defaults: {
-        	obj_type: 'gnome.environment.Tide'
+        	obj_type: 'gnome.environment.tide.Tide'
         },
 
         toTree: function(){
