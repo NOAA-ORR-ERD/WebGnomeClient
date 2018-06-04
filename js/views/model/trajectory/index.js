@@ -59,6 +59,8 @@ define([
             }
             this.$el.appendTo('body');
             this.state = 'stopped';
+            this._canRun = true;
+            this._runattempt = 0;
             this.render();
         },
 
@@ -545,7 +547,19 @@ define([
         play: function(e){
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
-                this.rframe = setInterval(_.bind(function(){if(this._canRun){this._canRun = false; this.run();}},this), 1000/this.getDefaultFPS());
+                this._canRun = true;    
+                this.rframe = setInterval(_.bind(
+                    function(){
+                        if(this._canRun || this._runattempt > 5){
+                            this._canRun = false;
+                            this._runattempt=0;
+                            this.run();}
+                        else {
+                            this._runattempt++;
+                        }
+                    }
+                    ,this
+                ), 1000/this.getDefaultFPS());
             }
         },
 
