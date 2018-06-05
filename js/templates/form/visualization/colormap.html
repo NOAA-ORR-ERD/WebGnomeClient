@@ -1,7 +1,7 @@
 <div class="form-row">
     <div class="form-group datavis-config">
         <label class="col-sm-3 control-label" for="interpolate">Interpolate</label>
-        <input type="checkbox" name="colormap:interpolate" {{model.get('interpolate') ? 'checked=true' : ''}}>
+        <input type="checkbox" name="colormap:interpolate" {{model.get('interpolate') ? 'checked=true' : ''}} {{model.get('numberScaleDomain').length === 2 ? 'disabled' : ''}}>
     </div>
 </div>
 <div class="form-row">
@@ -20,7 +20,7 @@
     <div class="form-group datavis-config">
         <label class="col-sm-3 control-label" for="interpolate">Add/remove</label>
         <input type="button" class="add", value="+">
-        <input type="button" class="remove", value="-">
+        <input type="button" class="remove", value="-" {{model.get('numberScaleDomain').length === 2 ? 'disabled' : ''}}>
     </div>
 </div>
 <div class="form-row">
