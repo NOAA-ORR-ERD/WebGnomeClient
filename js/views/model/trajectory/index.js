@@ -557,8 +557,7 @@ define([
                         else {
                             this._runattempt++;
                         }
-                    }
-                    ,this
+                    },this
                 ), 1000/this.getDefaultFPS());
             }
         },
