@@ -372,7 +372,7 @@ define([
             //this.listenTo(webgnome.cache, 'step:received', this.buildDataset);
             this.dataset = undefined;
             this.frame = 0;
-            setTimeout(_.bind(this.load, this), 3000);
+            setTimeout(_.bind(this.load, this), 1000);
         },
 
         render: function(){
