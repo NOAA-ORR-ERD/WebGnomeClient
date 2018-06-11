@@ -52,8 +52,10 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios' ||
-                webgnome.model.get('mode') === 'roc'){
+            if(webgnome.model.get('mode') === 'adios' ||
+               webgnome.model.get('mode') === 'roc' ||
+               (window.location.href.indexOf('trajectory') === -1 &&
+                window.location.href.indexOf('model') === -1)){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger) && window.location.hash !== ''){

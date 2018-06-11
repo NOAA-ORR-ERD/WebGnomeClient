@@ -60,7 +60,8 @@ require.config({
         gif: 'lib/ccapture.js/src/gif',
         gifworker: 'lib/ccapture.js/src/gif.worker',
         'd3': "lib/d3/d3",
-        tinycolor: "lib/tinycolor/tinycolor"
+        tinycolor: "lib/tinycolor/tinycolor",
+        cytoscape: "lib/cytoscape/dist/cytoscape"
     },
     shim: {
         jquery: {

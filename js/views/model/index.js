@@ -2,17 +2,25 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'views/base',
+    'model/base',
+    'module',
     'model/cache',
     'views/model/trajectory/index',
     'views/model/fate',
-    'sweetalert'
-], function($, _, Backbone, Cache, TrajectoryView, FateView, swal){
+    'sweetalert',
+    'cytoscape'
+], function($, _, Backbone, BaseView, BaseModel, module, Cache, TrajectoryView, FateView, swal, cytoscape){
     'use strict';
-    var modelView = Backbone.View.extend({
-        className: 'page model',
+    var modelView = BaseView.extend({
+        className: 'model-view',
         switch: true,
+        id:'model',
+        contracted: false,
 
-        initialize: function(){
+        initialize: function(options){
+            this.module = module;
+            BaseView.prototype.initialize.call(this, options);
             this.contextualize();
             this.render();
             $(window).on('resize', _.bind(function(){
@@ -21,56 +29,121 @@ define([
         },
 
         events: {
-            'click .view-toggle .toggle': 'switchView',
-            'click .view-toggle label': 'switchView'
         },
 
         contextualize: function(){
-            // fate view should only be selected/active if there's
-            // a weatherable substance and water added to the model
-            var spillLength = webgnome.model.get('spills').length;
-            var water = webgnome.model.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
-            var sub = spillLength > 0 ? webgnome.model.get('spills').at(0).get('element_type').get('substance') : null;
-
-            if(!water || !sub){
-                localStorage.setItem('view', 'trajectory');
-                this.switch = false;
-            }
         },
 
         render: function(){
             // this.$el.append(IndexTemplate);
             $('body').append(this.$el);
-            var view = localStorage.getItem('view');
+            this.cy = cytoscape({
+              container: $('#model'), // container to render in
 
-            if(_.isNull(view)){
-                view = 'fate';
-            }
-            
-            if(!this.switch){
-                this.$('.view-toggle').css('visibility', 'hidden');
-            }
-            this.$('.switch').addClass(view);
-            localStorage.setItem('view', view);
+              elements: this.getElementList(),
 
-            if (view === 'fate') {
-                this.renderFate();
+              style: [ // the stylesheet for the graph
+                {
+                  selector: 'node',
+                  style: {
+                    'background-color': '#666',
+                    'label': 'data(name)'
+                  }
+                },
+
+                {
+                  selector: 'edge',
+                  style: {
+                    'width': 3,
+                    'line-color': '#ccc',
+                    'target-arrow-color': '#ccc',
+                    'target-arrow-shape': 'triangle'
+                  }
+                }
+              ],
+
+              layout: {
+                name: 'grid',
+                rows: 1
+              }
+            });
+        },
+
+        getElementList: function() {
+            if(_.isUndefined(webgnome.model)){
+                console.error('no model');
+                return;
+            }
+            var elems = [];
+            this._getElementList(webgnome.model, elems);
+            return elems;
+        },
+
+        _getElementList: function(model, elemList, attrName, parentID) {
+            if(model instanceof BaseModel){
+                for (var k = 0; k < elemList.length; k++) {
+                    if (elemList[k].data.id === model.get('id')) {
+                        //model was already added some other time, so only create a new edge
+                        edge = {
+                            data: {
+                                id: parentID + '>' + elemList[k].data.id,
+                                source: parentID,
+                                target: elemList[k].data.id
+                            }
+                        }
+                        elemList.push(edge);
+                        return elemList[k].data.id;
+                    }
+                }
+                var keys = model.keys();
+                var thisObj = {}
+                elemList.push(thisObj);
+                thisObj['_model'] = model;
+                thisObj['group'] = 'nodes';
+                thisObj['data'] = {};
+
+                var edge;
+                for(var i = 0; i < keys.length; i++) {
+                    if(!keys[i].startsWith('_')) {
+                        thisObj['data'][keys[i]] = this._getElementList(model.get(keys[i]), elemList, keys[i], model.get('id'));
+                    }
+                }
+                if (parentID) {
+                    edge = {
+                        data: {
+                            id: parentID + '>' + thisObj['data']['id'],
+                            source: parentID,
+                            target: thisObj['data']['id']
+                        }
+                    }
+                    elemList.push(edge);
+                }
+                return model.get('id');
+            } else if (model instanceof Backbone.Collection) {
+                var thisColl = {}
+                elemList.push(thisColl);
+                thisColl['_model'] = model;
+                thisColl['group'] = 'nodes';
+                thisColl['data'] = {};
+                thisColl['data']['id'] = parentID + '.' + attrName;
+                thisColl['data']['name'] = thisColl['data']['id'];
+                var elem_id, edge, rv = [];
+                for(var i = 0; i < model.length; i++) {
+                    elem_id = this._getElementList(model.models[i], elemList, i, thisColl['data']['id']);
+                    rv.push(elem_id);
+                }
+                edge = {
+                    data: {
+                        id: parentID + '>' + thisColl['data']['id'],
+                        source: parentID,
+                        target: thisColl['data']['id']
+                    }
+                }
+                elemList.push(edge);
+                return rv;
             } else {
-                this.renderTrajectory();
-                this.updateHeight();
+                return model
             }
-        },
-
-        renderTrajectory: function(){
-            // this.TreeView = new TreeView();
-            this.TrajectoryView = new TrajectoryView();
-            // this.TreeView.on('toggle', this.TrajectoryView.toggle, this.TrajectoryView);
-            this.$el.append(this.TrajectoryView.$el);
-        },
-
-        renderFate: function(){
-            this.FateView = new FateView();
-            this.$el.append(this.FateView.$el);
         },
 
         switchView: function(){

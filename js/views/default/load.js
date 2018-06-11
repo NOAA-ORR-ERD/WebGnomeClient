@@ -119,6 +119,19 @@ define([
             return invalidOutputters;
         },
 
+        removeInvalidOutputters: function(model){
+            //Removes outputters that should not be in model save files (NetCDFOutput, etc)
+            var outputters = model.get('outputters');
+            var invalidTypes = webgnome.model.nonStandardOutputters;
+            var isInvalid;
+            for (var i = 0; i < outputters.models.length; i++) {
+                isInvalid = $.inArray(outputters.models[i].get('obj_type'), invalidTypes);
+                if(isInvalid !== -1) {
+                    outputters.remove(outputters.models[i].get('id'));
+                }
+            }
+        },
+
         loaded: function(){
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
@@ -160,6 +173,7 @@ define([
                     }
 
                     var msg = '';
+                    this.removeInvalidOutputters(model);
 
                     if (neededModels.length > 0 || invalidSpills.length > 0){
                         if (neededModels.length > 0){
