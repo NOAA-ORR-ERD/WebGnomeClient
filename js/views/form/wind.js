@@ -57,6 +57,7 @@ define([
                 'click .undo': 'cancelTimeseriesEntry',
                 'click .variable': 'unbindBaseMouseTrap',
                 'click .nav-tabs li:not(.variable)': 'rebindBaseMouseTrap',
+                'click #extrapolation-allowed': 'setExtrapolation',
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
                 'keyup #nws #lat': 'nwsSubmit',
@@ -158,10 +159,12 @@ define([
 
         render: function(options) {
             this.body = _.template(WindFormTemplate, {
-                constant_datetime: moment(this.model.get('timeseries')[0][0]).format(webgnome.config.date_format.moment),
+                constant_datetime: moment(this.model.get('timeseries')[0][0])
+                                   .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
-                name: this.model.get('name')
+                name: this.model.get('name'),
+                extrapolation_is_allowed: this.model.get('extrapolation_is_allowed')
             });
 
             FormModal.prototype.render.call(this, options);
@@ -1031,6 +1034,11 @@ define([
                     $('.wind-form #variable .sticky').css('top', top + 'px');
                 }
             }
+        },
+
+        setExtrapolation: function(e) {
+            var selected = $(e.target).is(':checked');
+            this.model.set('extrapolation_is_allowed', selected);
         },
 
         save: function() {
