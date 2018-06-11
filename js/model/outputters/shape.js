@@ -10,7 +10,6 @@ define([
         defaults: function() {
             return _.defaults({
                 'obj_type': 'gnome.outputters.shape.ShapeOutput',
-                'name': 'Model.shp',
                 'filename': 'Model.shp',
                 'output_timestep': 3600,
                 'zip_output': false

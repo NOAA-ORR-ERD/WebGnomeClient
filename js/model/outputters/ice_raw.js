@@ -17,7 +17,6 @@ define([
         defaults: function(){
             return {
                 'obj_type': 'gnome.outputters.json.IceJsonOutput',
-                'name': 'Outputter',
                 'output_last_step': 'true',
                 'output_zero_step': 'true',
                 'ice_movers': new Backbone.Collection(),

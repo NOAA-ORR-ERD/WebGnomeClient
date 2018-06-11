@@ -17,7 +17,6 @@ define([
         defaults: function(){
             return {
                 obj_type: 'gnome.outputters.json.CurrentJsonOutput',
-                name: 'Outputter',
                 output_last_step: 'true',
                 output_zero_step: 'true',
                 current_movers : new Backbone.Collection(),
