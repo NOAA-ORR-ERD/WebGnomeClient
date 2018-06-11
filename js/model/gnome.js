@@ -329,7 +329,7 @@ define([
                                     wind.save();
                                 }
                                 else if (model.attributes.hasOwnProperty('current')) {
-                                    var current = model.get('current')
+                                    var current = model.get('current');
                                     current.set('extrapolation_is_allowed', true);
                                     current.save();
                                 }
@@ -341,7 +341,7 @@ define([
                             }
                         }, this));
                     }
-                }, this))
+                }, this));
             }
         },
 
