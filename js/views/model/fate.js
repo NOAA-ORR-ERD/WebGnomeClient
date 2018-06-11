@@ -880,6 +880,8 @@ define([
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
                                 row_html +='<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + to_unit + ')</th>';
+                            } else if (display.other === 'percent') {
+                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (%)</th>';
                             } else {
                                 row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + display.other + ')</th>';
                             }

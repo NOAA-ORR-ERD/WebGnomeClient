@@ -2,17 +2,18 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+    'module',
 	'views/modal/form',
 	'views/default/map',
     'text!templates/form/spill/map.html',
     'text!templates/form/spill/map/controls.html',
     'ol'
-], function($, _, Backbone, FormModal, SpillMapView, MapViewTemplate, MapControlsTemplate, ol) {
+], function($, _, Backbone, module, FormModal, SpillMapView, MapViewTemplate, MapControlsTemplate, ol) {
     'use strict';
     var mapSpillView = FormModal.extend({
 
         mapShown: false,
-        title: 'Place Spill',
+        title: 'Spill Location',
         className: 'modal form-modal map-modal-form',
         size: 'lg',
 
@@ -26,6 +27,7 @@ define([
         },
 
         initialize: function(options, release) {
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
 
             if (!_.isUndefined(options.model)) {
