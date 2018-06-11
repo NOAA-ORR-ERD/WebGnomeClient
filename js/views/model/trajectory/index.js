@@ -169,7 +169,9 @@ define([
             // If adding a map layer, fly to it
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
-                this.show();
+                var map_id = webgnome.model.get('map').id;
+                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._flyTo = false;
             }
             this.trigger('requestRender');
         },
