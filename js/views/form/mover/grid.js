@@ -17,11 +17,24 @@ define([
         },
 
         render: function(options) {
+            var extrapolation_allowed = false;
+
+            var current = this.model.get('current');
+            if (current) {
+                extrapolation_allowed = current.get('extrapolation_is_allowed');
+            }
+            else {
+                // The C++ based GridCurrentMover does not have a composed
+                // GridCurrent object, so we need to make this exceptional
+                // case.
+                extrapolation_allowed = this.model.get('extrapolate');
+            }
+
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: this.model.get('scale_value'),
-                extrapolation_is_allowed: this.model.get('current').get('extrapolation_is_allowed')
+                extrapolation_is_allowed: extrapolation_allowed
             });
 
             FormModal.prototype.render.call(this, options);
@@ -29,7 +42,18 @@ define([
 
         setExtrapolation: function(e) {
             var selected = $(e.target).is(':checked');
-            this.model.get('current').set('extrapolation_is_allowed', selected);
+
+            var current = this.model.get('current');
+            if (current) {
+                current.set('extrapolation_is_allowed', selected);
+            }
+            else {
+                // The C++ based GridCurrentMover does not have a composed
+                // GridCurrent object, so we need to make this exceptional
+                // case.
+                this.model.set('extrapolate', selected);
+            }
+
         },
     });
 
