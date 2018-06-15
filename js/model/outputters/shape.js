@@ -12,7 +12,8 @@ define([
                 'obj_type': 'gnome.outputters.shape.ShapeOutput',
                 'filename': 'Model.shp',
                 'output_timestep': 3600,
-                'zip_output': false
+                'zip_output': false,
+                'name': 'ShapeOutput'
             }, FileOutputterModel.prototype.defaults);
         },
 

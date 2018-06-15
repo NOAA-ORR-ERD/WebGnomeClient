@@ -12,7 +12,8 @@ define([
             'output_last_step': 'true',
             'output_zero_step': 'true',
             'netcdf_filename': 'Model.nc',
-            'on': false
+            'on': false,
+            'name': 'Renderer'
         },
 
         toTree: function(){

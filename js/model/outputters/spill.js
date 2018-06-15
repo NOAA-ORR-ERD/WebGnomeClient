@@ -12,7 +12,8 @@ define([
             'output_timestep': null,
             'output_last_step': 'true',
             'output_zero_step': 'true',
-            '_additional_data': []
+            '_additional_data': [],
+            'name': 'SpillJsonOutput'
         },
 
         initialize: function(attrs, options) {

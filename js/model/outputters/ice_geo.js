@@ -16,7 +16,8 @@ define([
 
         defaults: function(){
             return {
-                obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput',
+                obj_type: 'gnome.outputters.geo_json.IceGeoJsonOutput',,
+                name: 'IceGeoJsonOutput'
                 output_last_step: 'true',
                 output_zero_step: 'true',
                 ice_movers : new Backbone.Collection(),

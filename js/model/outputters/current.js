@@ -20,7 +20,8 @@ define([
                 output_last_step: 'true',
                 output_zero_step: 'true',
                 current_movers : new Backbone.Collection(),
-                on: true
+                on: true,
+                name: 'CurrentJsonOutput'
             };
         },
 
