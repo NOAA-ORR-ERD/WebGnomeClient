@@ -589,8 +589,11 @@ define([
                 this.stop();
             }
             this.frame = 0;
-            if(this.layersPanel) {
+            if (this.layersPanel) {
                 this.layersPanel.resetSpills();
+            }
+            if (this.viewer) {
+                this.viewer.scene.requestRender();
             }
         },
 
