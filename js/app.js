@@ -142,6 +142,22 @@ define([
             }
         },
 
+        secondsToTimeString: function(seconds) {
+            // We would like to be consistent in how we represent time in
+            // our model, and all other objects that implement a notion of
+            // time.  So this is a method for formating a unix timestamp
+            // (seconds since the epoch) into an ISO 8601 time string.
+            if (seconds === Number.POSITIVE_INFINITY) {
+                return 'inf';
+            }
+            else if (seconds === Number.NEGATIVE_INFINITY) {
+                return '-inf';
+            }
+            else {
+                return moment.unix(seconds).toISOString();
+            }
+        },
+
         generateHalfHourTimesArray: function() {
             var times = [];
 
