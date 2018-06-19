@@ -173,8 +173,9 @@ define([
 
         addListeners: function(){
             this.get('environment').on('change add remove', this.environmentChange, this);
-            this.get('environment').on('add remove sort', this.configureWindRelations, this);
-            this.get('environment').on('add remove sort', this.configureWaterRelations, this);
+            this.get('environment').on('add remove sort', this.configureMetaEnvironmentObjects, this);
+            //this.get('environment').on('add remove sort', this.configureWindRelations, this);
+            //this.get('environment').on('add remove sort', this.configureWaterRelations, this);
 //            this.listenTo(this.get('environment'), 'remove', this.removeEnvObject)
             this.get('movers').on('change add remove', this.moversChange, this);
             this.get('movers').on('add', this.manageTides, this);
@@ -339,7 +340,7 @@ define([
         
         weatherersChange: function(child){
             this.childChange('weatherers', child);
-            this.toggleWeatherers(child);
+            //this.toggleWeatherers(child);
 
             if(child.get('obj_type').indexOf('cleanup') !== -1){
                 child.cascadeEfficiencies(child.get('efficiency'));
@@ -582,7 +583,7 @@ define([
 
                 var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
                 var element_type = this.getElementType();
-                var wind = this.get('environment').findWhere({obj_type: 'gnome.environment.wind.Wind'});
+                var wind = this.getDefaultWind();
 
                 if (on_weatherers.length > 0 &&
                     element_type && element_type.get('substance') &&
@@ -654,6 +655,49 @@ define([
             return null;
         },
 
+        configureMetaEnvironmentObjects: function(child) {
+            // Goes through the enironments objects collection and attaches references or removes objects as necessary
+            var env_objs = this.get('environment');
+            var winds, waters, waves
+            if (env_objs) {
+                winds = env_objs.filter(
+                    function(obj) {
+                        return obj.get('obj_type').toLowerCase().includes('wind')
+                    }
+                )
+                waters = env_objs.filter(
+                    function(obj) {
+                        return obj.get('obj_type').toLowerCase().includes('water')
+                    }
+                )
+                waves = env_objs.filter(
+                    function(obj) {
+                        return obj.get('obj_type').toLowerCase().includes('waves')
+                    }
+                )
+                if (waves.length == 0 && winds.length > 0 && waters.length > 0) {
+                    var w = new WavesModel({'wind': winds[0], 'water': waters[0]});
+                    this.get('environment').add(w);
+                    waves.push(w);
+                }
+                if (waves.length > 0) {
+                    var waves_weatherers = this.get('weatherers').filter(
+                        function(obj) {
+                            return obj.keys().indexOf('waves') !== -1;
+                        }
+                    );
+                    if (winds.length == 0 || waters.length == 0) {
+                        //the waves object is no longer valid, so it needs to be removed from all weatherers and environment objects collection
+                        _.map(waves_weatherers, function(w){ w.set('waves', null);})
+                        this.get('environment').remove(waves[0]);
+                    } else {
+                        _.map(waves_weatherers, function(w){ if (w.get('waves') !== waves[0]) {w.set('waves', waves[0]);}})
+                    }
+                }
+            }
+            console.trace()
+        },
+
         configureWindRelations: function(child){
             if(!child.get('obj_type').toLowerCase().includes('wind')){ return; }
 
@@ -709,8 +753,9 @@ define([
                     langmuir.set('wind', wind);
                 }
             }
+            this.updateWaves();
 
-            this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
+            //this.updateWaves(_.bind(function(){this.save(null, {validate: false});}, this));
         },
 
         updateWaves: function(cb){
