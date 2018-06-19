@@ -153,6 +153,17 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed) {
                 if (isConfirmed) {
+                    var mov = webgnome.model.get('movers').get(id);
+                    var envs = webgnome.model.get('environment');
+                    if (mov.get('obj_type') === 'gnome.movers.py_wind_movers.PyWindMover') {
+                        var env_id = mov.get('wind').get('id');
+
+                        for (var i = 0; i < envs.length; i++) {
+                            if (envs.models [i].get('id') === env_id) {
+                                envs.remove(env_id);
+                            }
+                        }
+                    }
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.save(null, {
                         validate: false
