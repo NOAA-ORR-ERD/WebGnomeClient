@@ -35,18 +35,49 @@ define([
             this.load = new LoadView({simple: true, page: false, el: this.$('.load')});
         },
 
-        setup: function(e) {
+        setup: function(e){ 
             e.preventDefault();
+            if (webgnome.hasModel()){
+                swal({
+                    title: 'Previous model setup found',
+                    text:'Click OK to continue setting up a new model or Cancel to pick up where you left off. ',
+                    type: 'warning',
+                    showCancelButton: true,
+                    reverseButtons: true
+                }).then(_.bind(function(isConfirm){
+                    if(isConfirm){                                       
+                        webgnome.model = new GnomeModel({
+                            mode: 'gnome',
+                            name: 'Model',
+                        });
 
-            if(webgnome.hasModel()){
-                webgnome.model.set('mode', 'gnome');
-                webgnome.model.save({'name': 'Model'});
+                        webgnome.router.navigate('config', true);
+                    } else {
+                        webgnome.model.save(null, {
+                            validate: false, 
+                        });
+                        webgnome.router.navigate('config', true);
+                    };
+                }, this));        
             } else {
-                webgnome.router._cleanup();
-            }
-
-            webgnome.router.navigate('config', true);
+                webgnome.router.navigate('config', true);
+            };
+            
+            
         },
+        
+        // setup: function(e) {
+            // e.preventDefault();
+
+            // if(webgnome.hasModel()){
+                // webgnome.model.set('mode', 'gnome');
+                // webgnome.model.save({'name': 'Model'});
+            // } else {
+                // webgnome.router._cleanup();
+            // }
+
+            // webgnome.router.navigate('config', true);
+        // },
 
         location: function(e){
             e.preventDefault();

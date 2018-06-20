@@ -62,6 +62,7 @@ define([
                 this.logger.close();
                 this.logger = undefined;
             }
+            ga('send', 'pageview', location.hash);
         },
 
         index: function(){
