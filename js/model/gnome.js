@@ -320,27 +320,12 @@ define([
                         }).then(_.bind(function(fit) {
                             if (fit) {
                                 this.fitToInterval(model.dataActiveTimeRange()[0]);
-                                model.set('time_compliance','valid');
                             }
                             else {
-                                //if (model.attributes.hasOwnProperty('wind')) {
-                                //    var wind = model.get('wind');
-                                //    wind.set('extrapolation_is_allowed', true);
-                                //    wind.save();
-                                // }
-                                //else if (model.attributes.hasOwnProperty('current')) {
-                                //    var current = model.get('current');
-                                //    current.set('extrapolation_is_allowed', true);
-                                //    current.save();
-                                //}
-                                //else {
-                                //    model.set('extrapolate', true);
-                                //}
-
                                 model.setExtrapolation(true);
-
-                                model.set('time_compliance','valid');
                             }
+
+                            model.set('time_compliance','valid');
                         }, this));
                     }
                 }, this));
