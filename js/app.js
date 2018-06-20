@@ -154,7 +154,7 @@ define([
                 return '-inf';
             }
             else {
-                return moment.unix(seconds).toISOString();
+                return moment.unix(seconds).toISOString(true);  // keepOffset
             }
         },
 
