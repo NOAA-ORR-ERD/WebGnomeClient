@@ -539,8 +539,10 @@ define([
                 this.pause();
                 this.is_recording = false;
                 this.capturer.stop();
+                document.body.style.cursor = 'wait';
                 this.capturer.save(_.bind(function(blob){
                     this.controls.trigger('recording_saved');
+                    document.body.style.cursor = 'default';
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
                 }, this));
             }
