@@ -29,18 +29,20 @@
                 {% } %}
             </div>
             <div class="col-sm-{{ size }}">
-                <label id="manual" for="emulsion">Emulsion Constant:</label>
+
+                <label id="manual" for="emulsion">Emulsification Onset After:
+                <a class="btn btn-link btn-xs reload-oil">Reset</a>
+                </label>
+
                 <div class="row">
                     <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0"></div>
-                    <div class="col-md-4">
+                    <div class="col-md-7">
                         <select class="form-control manual input-sm" id="units-bullwinkle">
-                            <option value="time">hours</option>
-                            <option value="percent">%</option>
+                            <option value="time">hours elapsed</option>
+                            <option value="percent">% evaporated</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <a class="btn btn-link btn-xs reload-oil">Reset</a>
-                    </div>
+
                 </div>
             </div>
             <div class="col-md-12 reset">
