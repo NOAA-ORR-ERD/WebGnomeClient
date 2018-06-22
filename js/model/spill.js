@@ -452,7 +452,7 @@ define([
                             newLE = this.les.add({
                                 position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                                image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
+                                image: uncertain.status === 2 ? this._les_point_image : this._les_beached_image,
                                 show: appearance.get('les_on'),
                                 color: Cesium.Color.RED
                             });
@@ -491,7 +491,7 @@ define([
                         newLE = this.les.add({
                             position: Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]),
                             eyeOffset : new Cesium.Cartesian3(0,0,-2),
-                            image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
+                            image: certain.status[f] === 2 ? this._les_point_image : this._les_beached_image,
                                     show: appearance.get('les_on'),
                         });
                         newLE.id = 'LE' + le_idx;

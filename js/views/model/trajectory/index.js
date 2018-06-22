@@ -506,6 +506,10 @@ define([
                     webgnome.cache.resume();
                     this._canRun = true;
                 } else if (!webgnome.cache.streaming && !webgnome.cache.preparing) {
+                    if (webgnome.cache.isDead) {
+                        this.pause();
+                        return;
+                    }
                     webgnome.cache.getSteps();
                     this._canRun = true;
                 } else {
