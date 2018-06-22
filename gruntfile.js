@@ -157,6 +157,7 @@ module.exports = function(grunt){
                     "URL": true,
                     "MouseEvent": true,
                     "location": true,
+                    "ga": true
                 }
             },
             all: src

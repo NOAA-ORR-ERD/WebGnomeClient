@@ -43,19 +43,19 @@ define([
                 source: this.source
             });
 
-            var traj = true;
-            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
-                traj = false;
-            }
+            // var traj = true;
+            // if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                // traj = false;
+            // }
 
             var id = 'spill-form-map-' + this.model.cid;
             this.spillMapView = new SpillMapView({
-                trajectory: traj,
+                trajectory: true,
                 id: id,
                 zoom: 2,
                 center: [-128.6, 42.7],
                 layers: [
-                    this.layer
+                    this.layer 
                 ]
             });
         },
@@ -330,7 +330,8 @@ define([
                 }
 
                 var draw = new ol.interaction.Draw({
-                    type: featureType
+                    type: featureType,
+                    maxPoints: 2
                 });
                 this.spillMapView.map.addInteraction(draw);
                 this.drawInteraction = draw;

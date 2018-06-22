@@ -45,20 +45,12 @@ define([
             if (options && _.has(options, 'trajectory')) {
                     this.trajectory = options.trajectory;
                     this.layers = [
-                        new ol.layer.Image({
-                            name: 'noaanavcharts',
-                            source: new ol.source.ImageWMS({
-                                url: 'http://seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
-                                params: {'LAYERS': '1'}
-                            }),
-                            opacity: 0.5,
-                            visible: true
-                        }),
                         new ol.layer.Tile({
                             name: 'usgs',
                             source: new ol.source.TileWMS({
                                 url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
+                                params: {'LAYERS': '0', 'TILED': true},
+                                wrapX: false
                             }),
                             visible: false,
                             type: 'base'
@@ -208,7 +200,7 @@ define([
                         })
                     });
                     if(this.map){
-                        this.map.getLayers().insertAt(1, this.shorelineLayer);
+                        this.map.getLayers().insertAt(2, this.shorelineLayer);
                         //this.map.addLayer(this.shorelineLayer);
                         this.setMapOrientation();
                     }
@@ -217,9 +209,10 @@ define([
             
             this.addLayers();
             this.map.getLayers().forEach(function(layer){
-                if (layer.get('type') !== 'base') {
-                    layer.setVisible(true);
-                }
+                layer.setVisible(true);
+                // if (layer.get('type') !== 'base') {
+                    // layer.setVisible(true);
+                // }
             });
         },
 
