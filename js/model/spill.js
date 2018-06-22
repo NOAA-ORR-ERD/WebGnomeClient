@@ -3,15 +3,17 @@ define([
     'jquery',
     'backbone',
     'cesium',
+    'moment',
+    'd3',
+    'nucos',
     'model/base',
     'model/release',
     'model/element',
-    'nucos',
-    'moment',
     'model/visualization/appearance',
-    'd3',
     'model/visualization/spill_appearance'
-], function(_, $, Backbone, Cesium, BaseModel, GnomeRelease, GnomeElement, nucos, moment, Appearance, d3, SpillAppearance){
+], function(_, $, Backbone, Cesium, moment, d3, nucos,
+            BaseModel, GnomeRelease, GnomeElement,
+            Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
         urlRoot: '/spill/',
@@ -36,9 +38,11 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
+
             this.les = new Cesium.BillboardCollection({
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
+
             this._locVis = new Cesium.Entity();
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
@@ -71,13 +75,14 @@ define([
         },
 
         setupVis: function(attrs) {
-            this.listenTo(this.get('_appearance'), 'change:data', this.initializeDataVis);
+            this.listenTo(this.get('_appearance'), 'change:data',
+                          this.initializeDataVis);
+
             this.initializeDataVis();
             this.setColorScales();
-
             this.genLEImages();
-            this._locVis.merge(new Cesium.Entity({
 
+            this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),
                 id: this.get('id') + '_loc',
                 position: new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0], this.get('release').get('start_position')[1]),
@@ -112,7 +117,10 @@ define([
 
         calculateSI: function() {
             var oilConverter = new nucos.OilQuantityConverter();
-            this._amount_si = oilConverter.Convert(this.get('amount'), this.get('units'), this.get('element_type').get('standard_density'), 'kg/m^3', 'kg');
+            this._amount_si = oilConverter.Convert(this.get('amount'),
+                                                   this.get('units'),
+                                                   this.get('element_type').get('standard_density'),
+                                                   'kg/m^3', 'kg');
         },
 
         parseDuration: function() {
@@ -126,12 +134,14 @@ define([
 
             if (!_.isUndefined(duration)) {
                 hours = moment.duration(duration).asHours();
+
                 if (hours >= 24) {
                     days = parseInt(moment.duration(duration).asDays(), 10);
                 }
 
                 hours = hours - (days * 24);
             }
+
             return {'days': days, 'hours': hours};
         },
 
@@ -325,17 +335,20 @@ define([
             var canvas = document.createElement('canvas');
             canvas.width = 4;
             canvas.height = 4;
+
             var context2D = canvas.getContext('2d');
             context2D.beginPath();
             context2D.arc(2, 2, 2, 0, Cesium.Math.TWO_PI, true);
             context2D.closePath();
             context2D.fillStyle = 'rgb(255, 255, 255)';
             context2D.fill();
+
             this._les_point_image = this.les.add({image: canvas, show: false}).image;
 
             canvas = document.createElement('canvas');
             canvas.width = 10;
             canvas.height = 10;
+
             context2D = canvas.getContext('2d');
             context2D.moveTo(0, 0);
             context2D.lineTo(8, 8);
@@ -359,78 +372,98 @@ define([
         },
 
         initializeDataVis: function() {
-            // Contextualizing the default appearance for the properties of this spill
+            // Contextualizing the default appearance for the properties
+            // of this spill
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
             var max, min, stops;
+
             if (data === 'Age') {
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
-            } else if (data === 'Viscosity') {
+            }
+            else if (data === 'Viscosity') {
                 min = 0.0000001;
                 max = 250000;
                 colormap.set('numberScaleType', 'log');
-            } else if (data === 'Depth') {
+            }
+            else if (data === 'Depth') {
                 min = 0;
                 max = 100;
                 colormap.set('numberScaleType', 'linear');
-            } else {
+            }
+            else {
                 max = this._per_le_mass;
                 min = 0;
                 colormap.set('numberScaleType', 'linear');
             }
+
             colormap.setDomain(min, max, colormap.get('numberScaleRange'));
             this.setColorScales();
         },
 
         setColorScales: function() {
-            /*
-            Call this function to reconfigure the scales used to convert a data value into a color to be applied
-            */
+            // Call this function to reconfigure the scales used to convert
+            // a data value into a color to be applied
             var colormap = this.get('_appearance').get('colormap');
+
             if (colormap.get('numberScaleType') === 'linear') {
                 this._numScale = d3.scaleLinear();
-            } else if (colormap.get('numberScaleType') === 'log') {
+            }
+            else if (colormap.get('numberScaleType') === 'log') {
                 this._numScale = d3.scaleLog();
             }
-            this._numScale.domain(colormap.get('numberScaleDomain')).range(colormap.get('numberScaleRange'));
+
+            this._numScale.domain(colormap.get('numberScaleDomain'))
+                .range(colormap.get('numberScaleRange'));
 
             if (colormap.get('colorScaleType') === 'threshold') {
                 this._colorScale = d3.scaleThreshold();
-            } else if (colormap.get('colorScaleType') === 'linear') {
+            }
+            else if (colormap.get('colorScaleType') === 'linear') {
                 this._colorScale = d3.scaleLinear();
             }
-            this._colorScale.domain(colormap.get('colorScaleDomain')).range(colormap.get('colorScaleRange'));
+
+            this._colorScale.domain(colormap.get('colorScaleDomain'))
+                .range(colormap.get('colorScaleRange'));
         },
 
-        colorLEs: function(){
-            /*
-            Uses the appearance's datavis object to determine how to colorize all the LEs
-            */
+        colorLEs: function() {
+            // Uses the appearance's datavis object to determine how to
+            // colorize all the LEs
             var colormap = this.get('_appearance').get('colormap');
+
             var genColorwithAlpha = function(colorStr, alpha) {
                 return !_.isUndefined(alpha) ?
                     Cesium.Color.fromCssColorString(colorStr).withAlpha(alpha) :
                     Cesium.Color.fromCssColorString(colorStr);
             };
+
             var alphaScale;
             alphaScale = d3.scaleLinear();
+
             if (colormap.get('alphaType') === 'mass') {
                 alphaScale.domain([0, this._per_le_mass]);
-            } else {
+            }
+            else {
                 alphaScale.domain([2000, 0]);
             }
+
             var value, color, alpha, i, datatype;
             datatype = this.get('_appearance').get('data').toLowerCase();
+
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
                 color = this._colorScale(this._numScale(value));
+
                 if (_.isUndefined(color)) {
                     color = '#FF0000';
                 }
+
                 if (colormap.get('useAlpha')) {
                     alpha = alphaScale(this._certain[i][colormap.get('alphaType')]);
                 }
+
                 this._certain[i].color = genColorwithAlpha(color, alpha);
             }
         },
@@ -443,29 +476,39 @@ define([
             var appearance = this.get('_appearance');
             var le_idx = 0;
             var newLE, additional_data;
+
+            // is it really necessary to use a ternary operator
+            // on such long complex expressions?
             additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase();
-            if(uncertain) {
-                for(f = 0; f < uncertain.length; f++){
+
+            if (uncertain) {
+                for (f = 0; f < uncertain.length; f++) {
                     if (uncertain.spill_num[f] === sid) {
                         if (!this._uncertain[le_idx]) {
                             // create a new point
                             newLE = this.les.add({
-                                position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]),
+                                position: Cesium.Cartesian3.fromDegrees(uncertain.longitude[f],
+                                                                        uncertain.latitude[f]),
                                 eyeOffset : new Cesium.Cartesian3(0,0,-2),
                                 image: uncertain.status === 2 ? this.les_point_image : this.les_beached_image,
                                 show: appearance.get('les_on'),
                                 color: Cesium.Color.RED
                             });
+
                             newLE.id = 'ULE' + le_idx;
+
                             if (additional_data) {
                                 newLE[additional_data] = uncertain[additional_data][f];
                             }
+
                             newLE.mass = uncertain.mass[f];
                             this._uncertain.push(newLE);
-                        } else {
+                        }
+                        else {
                             this._uncertain[le_idx].show = appearance.get('les_on');
                             this._uncertain[le_idx].position = Cesium.Cartesian3.fromDegrees(uncertain.longitude[f], uncertain.latitude[f]);
                             this._uncertain[le_idx].mass = uncertain.mass[f];
+
                             if (additional_data) {
                                 this._uncertain[le_idx][additional_data] = uncertain[additional_data][f];
                             }
@@ -484,6 +527,7 @@ define([
             }
 
             le_idx = 0;
+
             for (var f = 0; f < certain.length; f++) {
                 if (certain.spill_num[f] === sid) {
                     if (!this._certain[le_idx]) {
@@ -494,22 +538,28 @@ define([
                             image: certain.status[f] === 2 ? this.les_point_image : this.les_beached_image,
                                     show: appearance.get('les_on'),
                         });
+
                         newLE.id = 'LE' + le_idx;
                         newLE.mass = certain.mass[f];
+
                         if (additional_data) {
                             newLE[additional_data] = certain[additional_data][f];
                         }
+
                         this._certain.push(newLE);
-                    } else {
+                    }
+                    else {
                         // update the point position and graphical representation
                         this._certain[le_idx].show = appearance.get('les_on');
-                        this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f], certain.latitude[f]);
+                        this._certain[le_idx].position = Cesium.Cartesian3.fromDegrees(certain.longitude[f],
+                                                                                       certain.latitude[f]);
                         this._certain[le_idx].mass = certain.mass[f];
+
                         if (additional_data) {
                             this._certain[le_idx][additional_data] = certain[additional_data][f];
                         }
-                        if(certain.status[f] === 3){
 
+                        if (certain.status[f] === 3) {
                             this._certain[le_idx].image = this._les_beached_image;
                         }
                         else {
@@ -545,26 +595,29 @@ define([
                     }
                 }
             }
+
             this.colorLEs();
         },
 
         updateVis: function(appearance) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on
             the specific object type*/
-            if(appearance) {
+            if (appearance) {
                 var bbs = this.les._billboards;
-                var changedAttrs, newColor, i;
-                changedAttrs = appearance.changedAttributes();
-                if (changedAttrs){
-                    for(i = 0; i < bbs.length; i++) {
+                var newColor, i;
+
+                var changedAttrs = appearance.changedAttributes();
+                if (changedAttrs) {
+                    for (i = 0; i < bbs.length; i++) {
                         bbs[i].scale = appearance.get('scale');
                         bbs[i].show = appearance.get('les_on');
                     }
+
                     this.setColorScales();
                     this.colorLEs();
-                    if ('pin_on' in changedAttrs){
-                        this._locVis.show = appearance.get('pin_on');
 
+                    if ('pin_on' in changedAttrs) {
+                        this._locVis.show = appearance.get('pin_on');
                     }
                 }
             }
