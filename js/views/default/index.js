@@ -38,7 +38,6 @@ define([
 
         setup: function(e){ 
             e.preventDefault();
-            webgnome.router.navigate('config', true);
             if (webgnome.hasModel()){
                 swal({
                     title: 'Previous model setup found',
@@ -52,17 +51,16 @@ define([
                             mode: 'gnome',
                             name: 'Model',
                         });
-
-                        //webgnome.router.navigate('config', true);
+                        webgnome.router.navigate('config', true);
                     } else {
                         webgnome.model.save(null, {
                             validate: false, 
                         });
-                        //webgnome.router.navigate('config', true);
+                        webgnome.router.navigate('config', true);
                     }
                 }, this));        
-            // } else {
-                // webgnome.router.navigate('config', true);
+            } else {
+                webgnome.router.navigate('config', true);
             }
             
             
