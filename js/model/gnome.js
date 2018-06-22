@@ -317,26 +317,21 @@ define([
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'
-                        }).then(_.bind(function(fit){
+                        }).then(_.bind(function(fit) {
                             if (fit) {
-                                this.fitToInterval(model.get('real_data_start'));
-                                model.set('time_compliance','valid');
-                            } else {
-                                if (model.attributes.hasOwnProperty('wind')) {
-                                    model.get('wind').attributes
-                                         .extrapolation_is_allowed = true;
-                                }
-                                else {
-                                    model.set('extrapolate', true);
-                                }
-                                model.set('time_compliance','valid');
+                                this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
+                            else {
+                                model.setExtrapolation(true);
+                            }
+
+                            model.set('time_compliance','valid');
                         }, this));
                     }
                 }, this));
             }
         },
-        
+
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
@@ -459,7 +454,7 @@ define([
         },
 
         fitToInterval: function(start_time) {
-            this.set('start_time', start_time);
+            this.set('start_time', webgnome.secondsToTimeString(start_time));
             this.save();
         },
 
@@ -545,34 +540,54 @@ define([
             attrs.push({title: 'Time Step: ' + timeStepTime, key: 'Time Step',
                          obj_type: this.get('time_step'), action: 'edit', object: this});
 
-            if(map){
-                attrs.push({title: 'Map:', children: map.toTree(), expanded: true, obj_type: map.get('obj_type'), action: 'new'});
+            if (map) {
+                attrs.push({title: 'Map:',
+                            children: map.toTree(),
+                            expanded: true,
+                            obj_type: map.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(movers){
-                attrs.push({title: 'Movers:', children: movers.toTree(), expanded: true, obj_type: movers.get('obj_type'), action: 'new'});
+            if (movers) {
+                attrs.push({title: 'Movers:',
+                            children: movers.toTree(),
+                            expanded: true,
+                            obj_type: movers.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(environment){
-                attrs.push({title: 'Environment:', children: environment.toTree(), expanded: true, obj_type: environment.get('obj_type'), action: 'new'});
+            if (environment) {
+                attrs.push({title: 'Environment:',
+                            children: environment.toTree(),
+                            expanded: true,
+                            obj_type: environment.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(weatherers){
-                attrs.push({title: 'Weatherers:', children: weatherers.toTree(), expanded: true, obj_type: weatherers.get('obj_type'), action: 'new'});
+            if (weatherers) {
+                attrs.push({title: 'Weatherers:',
+                            children: weatherers.toTree(),
+                            expanded: true,
+                            obj_type: weatherers.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(spills){
-                attrs.push({title: 'Spills:', children: spills.toTree(), expanded: true, obj_type: spills.get('obj_type'), action: 'new'});
+            if (spills) {
+                attrs.push({title: 'Spills:',
+                            children: spills.toTree(),
+                            expanded: true,
+                            obj_type: spills.get('obj_type'),
+                            action: 'new'});
             }
 
             return attrs;
         },
 
-        isValidAdios: function(){
+        isValidAdios: function() {
             return false;
         },
 
-        validWeathering: function(){
+        validWeathering: function() {
             // if (this.get('weathering')){
                 // global flag is turned on for the model to be weathering
                 // make sure there is at least one weatherer turned on.

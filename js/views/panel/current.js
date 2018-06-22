@@ -4,15 +4,18 @@ define([
     'backbone',
     'sweetalert',
     'ol',
+    'text!templates/panel/current.html',
     'views/default/map',
     'views/panel/base',
     'views/form/mover/create',
     'views/form/mover/grid',
     'views/form/mover/cats',
     'views/form/mover/component',
-    'text!templates/panel/current.html',
     'views/modal/form'
-], function($, _, Backbone, swal, ol, OlMapView, BasePanel, CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm, CurrentPanelTemplate, FormModal){
+], function($, _, Backbone, swal, ol,
+            CurrentPanelTemplate, OlMapView, BasePanel,
+            CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm,
+            FormModal) {
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -29,7 +32,7 @@ define([
             'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
         },
 
-        initialize: function(options){
+        initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
 
             this.listenTo(webgnome.model,
@@ -40,13 +43,13 @@ define([
                           this.rerender);
         },
 
-        new: function(){
+        new: function() {
             var form = new CreateMoverForm();
 
             form.on('hidden', form.close);
-            form.on('save', _.bind(function(mover){
+            form.on('save', _.bind(function(mover) {
                 mover.save(null, {
-                    success: _.bind(function(){
+                    success: _.bind(function() {
                         webgnome.model.get('movers').add(mover);
 
                         if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
@@ -72,7 +75,7 @@ define([
 
             form.render();
         },
-        
+
         edit: function(e) {
             e.stopPropagation();
             var id = this.getID(e);

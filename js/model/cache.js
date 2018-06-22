@@ -201,7 +201,7 @@ define([
 
         killed: function(msg) {
             this.trigger('step:failed');
-            this.endStream(null);
+            this.endStream(msg);
             if(msg){
                 console.error('Model run killed.');
             } else {

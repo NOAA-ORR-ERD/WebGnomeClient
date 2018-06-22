@@ -2,17 +2,18 @@ define([
 	'jquery',
 	'underscore',
 	'backbone',
+    'module',
 	'views/modal/form',
 	'views/default/map',
     'text!templates/form/spill/map.html',
     'text!templates/form/spill/map/controls.html',
     'ol'
-], function($, _, Backbone, FormModal, SpillMapView, MapViewTemplate, MapControlsTemplate, ol) {
+], function($, _, Backbone, module, FormModal, SpillMapView, MapViewTemplate, MapControlsTemplate, ol) {
     'use strict';
     var mapSpillView = FormModal.extend({
 
         mapShown: false,
-        title: 'Place Spill',
+        title: 'Spill Location',
         className: 'modal form-modal map-modal-form',
         size: 'lg',
 
@@ -26,6 +27,7 @@ define([
         },
 
         initialize: function(options, release) {
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
 
             if (!_.isUndefined(options.model)) {
@@ -41,19 +43,19 @@ define([
                 source: this.source
             });
 
-            var traj = true;
-            if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
-                traj = false;
-            }
+            // var traj = true;
+            // if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                // traj = false;
+            // }
 
             var id = 'spill-form-map-' + this.model.cid;
             this.spillMapView = new SpillMapView({
-                trajectory: traj,
+                trajectory: true,
                 id: id,
                 zoom: 2,
                 center: [-128.6, 42.7],
                 layers: [
-                    this.layer
+                    this.layer 
                 ]
             });
         },
@@ -328,7 +330,8 @@ define([
                 }
 
                 var draw = new ol.interaction.Draw({
-                    type: featureType
+                    type: featureType,
+                    maxPoints: 2
                 });
                 this.spillMapView.map.addInteraction(draw);
                 this.drawInteraction = draw;

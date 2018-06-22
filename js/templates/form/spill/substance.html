@@ -1,15 +1,15 @@
 <div class="panel panel-default complete">
     <div class="panel-heading">
         <a class="btn btn-primary oil-select btn-xs pull-right">Change Oil</a>                 
-        <a class="btn btn-link btn-xs oil-info pull-right">More Info.</a>
+        
         <div class="panel-title">Substance/Oil</div>
     </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-{{ size }}">
                 <label>Name:</label> 
-                {{ name }}
-            </div>
+                <a class="oil-info">{{ name }}</a>
+            </div>           
             <div class="col-sm-{{ size }}">
                 <label>API:</label>
                 {{ api }}
@@ -29,18 +29,20 @@
                 {% } %}
             </div>
             <div class="col-sm-{{ size }}">
-                <label id="manual" for="emulsion">Emulsion Constant:</label>
+
+                <label id="manual" for="emulsion">Emulsification Onset After:
+                <a class="btn btn-link btn-xs reload-oil">Reset</a>
+                </label>
+
                 <div class="row">
                     <div class="col-md-4"><input type="number" id="emulsion" class="manual form-control input-sm" min="0"></div>
-                    <div class="col-md-4">
+                    <div class="col-md-7">
                         <select class="form-control manual input-sm" id="units-bullwinkle">
-                            <option value="time">hours</option>
-                            <option value="percent">%</option>
+                            <option value="time">hours elapsed</option>
+                            <option value="percent">% evaporated</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
-                        <a class="btn btn-link btn-xs reload-oil">Reset</a>
-                    </div>
+
                 </div>
             </div>
             <div class="col-md-12 reset">

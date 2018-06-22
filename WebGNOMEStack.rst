@@ -72,11 +72,13 @@ PyGNOME
 WebGNOME API
 Oil Library API
 
-ONce you have the two APIs running, you need the client:
+Once you have the two APIs running, you need the client:
 
 The client is a Javascript app, deployed via node.js. It can be installed according to the directions in its README:
 
 WebGNOME Client
+---------------
+
 
 
 
