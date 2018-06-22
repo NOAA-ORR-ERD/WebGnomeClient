@@ -6,8 +6,9 @@ define([
     'views/modal/base',
     'text!templates/default/footer/disclaimer.html',
     'text!templates/default/footer/privacy.html',
+    'text!templates/default/footer/survey.html',
     'text!templates/default/footer/troubleshooting.html'
-], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate, PrivacyTemplate, TroubleShootingTemplate){
+], function($, _, Backbone, FooterTemplate, BaseModal, DisclaimerTemplate, PrivacyTemplate, SurveyTemplate, TroubleShootingTemplate){
     'use strict';
     var footerView = Backbone.View.extend({
         className: 'footer',
@@ -17,6 +18,7 @@ define([
         events: {
             'click .disclaimer': 'disclaimer',
             'click .privacy': 'privacy',
+            'click .survey': 'survey',
             'click .help': 'helpPopup'
         },
 
@@ -48,6 +50,16 @@ define([
             var modal = new BaseModal({
                 title: 'Privacy Policy',
                 body: PrivacyTemplate,
+                buttons: this.modalButtons
+            });
+            modal.render();
+        },
+        
+        survey: function(e){
+            e.preventDefault();
+            var modal = new BaseModal({
+                title: 'Website Satisfaction Survey',
+                body: SurveyTemplate,
                 buttons: this.modalButtons
             });
             modal.render();

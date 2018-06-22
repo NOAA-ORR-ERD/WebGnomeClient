@@ -32,6 +32,7 @@ define([
                 'contextmenu #spill-form-map': 'update',
                 'keyup .geo-info': 'manualMapInput',
                 'keyup .input-sm': 'emulsionUpdate',
+                'change .input-sm': 'emulsionUpdate',
                 'click .delete': 'deleteSpill',
                 'show.bs.modal': 'renderSubstanceInfo',
                 'show.bs.model': 'renderPositionInfo',

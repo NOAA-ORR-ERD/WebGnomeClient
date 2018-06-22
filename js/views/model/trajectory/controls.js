@@ -273,9 +273,7 @@ define([
         },
 
         seek: function(e, ui){
-            if (this.state === 'play') {
-                this.pause(e);
-            }
+            this.pause(e);
             this.controls.seek.slider('value', ui.value);
 
             if(ui.value <= webgnome.cache.length){

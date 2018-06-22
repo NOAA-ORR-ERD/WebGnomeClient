@@ -37,10 +37,12 @@ define([
         },
 
         pd: function(e) {
+            //pointermousedown
             this._pdPosition = {x: e.clientX, y:e.clientY};
         },
 
         pu: function(e) {
+            //pointermouseup
             var dx = e.clientX - this._pdPosition.x,
                 dy = e.clientY - this._pdPosition.y;
             if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
