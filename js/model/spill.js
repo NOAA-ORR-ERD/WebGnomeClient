@@ -278,12 +278,10 @@ define([
 
         isTimeValid: function() {
             var [model_start, model_stop] = webgnome.model.activeTimeRange();
-
-            var spill_start = this.get('release').get('release_time');
+            var [spill_start, spill_stop] = this.activeTimeRange();
             var msg = "";
 
             if ((spill_start > model_start) & (spill_start < model_stop)) {
-                msg = "The spill starts after the model start time";
                 this.set('time_compliance', 'semivalid');
             }
             else if (spill_start < model_start) {
@@ -299,7 +297,6 @@ define([
             }
 
             return msg;
-
         },
 
         activeTimeRange: function() {
