@@ -130,7 +130,7 @@ define([
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.spreading.Langmuir': Langmuir,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
-                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
+                //'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
                 'gnome.weatherers.roc.Skim': RocSkimResponse,
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
                 'gnome.weatherers.roc.Disperse': RocDisperseResponse
@@ -156,7 +156,7 @@ define([
                     new EmulsificationWeatherer({on: false}),
                     new FayGravityViscous({on: false}),
                     new Langmuir({on: false}),
-                    new DissolutionWeatherer({on: false})
+                    //new DissolutionWeatherer({on: false})
                 ]),
                 movers: new MoversCollection(),
                 environment: new Backbone.Collection(),
