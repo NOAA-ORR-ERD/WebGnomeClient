@@ -22,28 +22,29 @@ define([
         },
 
         new: function(){
-            if (webgnome.model.get('map').get('name') === 'GnomeMap') {
-                var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
-                if (_.isUndefined(beached) || beached.length === 0){
-                    beached = new BeachedModel();
+            var beached = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.manual_beaching.Beaching'});
+            if (_.isUndefined(beached) || beached.length === 0){
+                beached = new BeachedModel();
+            }
+            var beachedForm = new BeachedForm({}, beached);
+            beachedForm.on('hidden', beachedForm.close);
+            beachedForm.on('save', _.bind(function(){
+                if(beached.get('timeseries').length === 0){
+                    webgnome.model.get('weatherers').remove(beached);
+                } else {
+                    webgnome.model.get('weatherers').add(beached, {merge: true});
                 }
-                var beachedForm = new BeachedForm({}, beached);
-                beachedForm.on('hidden', beachedForm.close);
-                beachedForm.on('save', _.bind(function(){
-                    if(beached.get('timeseries').length === 0){
-                        webgnome.model.get('weatherers').remove(beached);
-                    } else {
-                        webgnome.model.get('weatherers').add(beached, {merge: true});
-                    }
-                    webgnome.model.save(null, {validate: false});
-                }, this));
+                webgnome.model.save(null, {validate: false});
+            }, this));
+            if (webgnome.model.get('map').get('name') === 'GnomeMap') {
                 beachedForm.render();
             } else {
                 swal({
                     title: "A shoreline is defined for the model",
-                    text: "Observed beaching is used to enter in beaching information when a shoreline map has not been defined for the model. If a shoreline has been defined, the model will compute the beached oil. You can remove the map if you want to manually set observed beaching.",
-                    type: "error"
+                    text: "This form is intended for entering in shoreline oil stranding information when a shoreline map has not been defined for the model. If a shoreline has been defined, the model will compute the beached oil.",
+                    type: "warning"
                 });
+                beachedForm.render();
             }
         },
 

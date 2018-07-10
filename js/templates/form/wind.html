@@ -75,11 +75,11 @@
     </div>
     <div class="tab-pane" id="variable">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-9">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-4">
-                            <label for="incrementer" class="control-label">Inc. (hrs):</label>
+                        <div class="col-sm-5">
+                            <label for="incrementer" class="control-label pull-right">Increment (hrs):</label>
                         </div>
                         <div class="col-sm-4">
                             <input id="incrementCount" type="number" value="6" class="form-control">
@@ -87,16 +87,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <a class="btn btn-danger pull-right clear-winds">
                     Clear All
                 </a>
             </div>
-            <div class="col-sm-12">
+            <div class="col-sm-9">
                 <div class="form-horizontal">
                     <div class="form-group">
-                        <div class="col-sm-2">
-                            <label for="units" class="control-label">Units:</label>
+                        <div class="col-sm-5">
+                            <label for="units" class="control-label pull-right">Units:</label>
                         </div>
                         <div class="col-sm-4">
                             <select name="units" class="form-control" id="units">
@@ -109,6 +109,30 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-sm-9">
+                <div class="form-horizontal">
+                    <div class="form-group">
+
+                        <div class="col-sm-5">
+                            <label class="control-label pull-right" for="extrapolation-allowed">Extrapolate the Data:</label>
+                        </div>
+
+                        <div class="col-sm-4">
+                            <label>
+                            {% if (extrapolation_is_allowed) { %}
+                                <input type="checkbox" name="extrapolation-allowed" value="1" id="extrapolation-allowed" checked="checked">
+                            {% } else { %}
+                                <input type="checkbox" name="extrapolation-allowed" value="1" id="extrapolation-allowed">
+                            {% } %}
+                            </label>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
             <div class="col-sm-12 table-wrapper">
                 <table class="table table-condensed table-hover">
                     <thead>

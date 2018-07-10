@@ -30,7 +30,7 @@ define([
 
         initialize: function(options){
             if (webgnome.config.can_persist) {
-                this.body = _.template(UploadActivateTemplate);
+                this.body = _.template(UploadActivateTemplate, {page: false});
             } else {
                 this.body = _.template(UploadTemplate);
             }

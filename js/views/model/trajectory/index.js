@@ -59,6 +59,8 @@ define([
             }
             this.$el.appendTo('body');
             this.state = 'stopped';
+            this._canRun = true;
+            this._runattempt = 0;
             this.render();
         },
 
@@ -167,7 +169,9 @@ define([
             // If adding a map layer, fly to it
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
-                this.show();
+                var map_id = webgnome.model.get('map').id;
+                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._flyTo = false;
             }
             this.trigger('requestRender');
         },
@@ -313,8 +317,8 @@ define([
 
         load: function(){
             this.listenTo(webgnome.cache, 'step:buffered', this.updateProgress);
-            this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe);}, this));
-            this.listenTo(webgnome.cache, 'step:failed', this.stop);
+            //this.listenTo(webgnome.cache, 'step:failed', _.bind(function() {clearInterval(this.rframe);}, this));
+            //this.listenTo(webgnome.cache, 'step:failed', this.stop);
             //this.listenTo(webgnome.cache, 'step:done', this.stop);
 
             if(localStorage.getItem('autorun') === 'true'){
@@ -502,6 +506,10 @@ define([
                     webgnome.cache.resume();
                     this._canRun = true;
                 } else if (!webgnome.cache.streaming && !webgnome.cache.preparing) {
+                    if (webgnome.cache.isDead) {
+                        this.pause();
+                        return;
+                    }
                     webgnome.cache.getSteps();
                     this._canRun = true;
                 } else {
@@ -535,8 +543,10 @@ define([
                 this.pause();
                 this.is_recording = false;
                 this.capturer.stop();
+                document.body.style.cursor = 'wait';
                 this.capturer.save(_.bind(function(blob){
                     this.controls.trigger('recording_saved');
+                    document.body.style.cursor = 'default';
                     webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
                 }, this));
             }
@@ -545,7 +555,18 @@ define([
         play: function(e){
             if($('.modal:visible').length === 0){
                 this.state = 'playing';
-                this.rframe = setInterval(_.bind(function(){if(this._canRun){this._canRun = false; this.run();}},this), 1000/this.getDefaultFPS());
+                this._canRun = true;    
+                this.rframe = setInterval(_.bind(
+                    function(){
+                        if(this._canRun || this._runattempt > 5){
+                            this._canRun = false;
+                            this._runattempt=0;
+                            this.run();}
+                        else {
+                            this._runattempt++;
+                        }
+                    },this
+                ), 1000/this.getDefaultFPS());
             }
         },
 
@@ -574,8 +595,11 @@ define([
                 this.stop();
             }
             this.frame = 0;
-            if(this.layersPanel) {
+            if (this.layersPanel) {
                 this.layersPanel.resetSpills();
+            }
+            if (this.viewer) {
+                this.viewer.scene.requestRender();
             }
         },
 

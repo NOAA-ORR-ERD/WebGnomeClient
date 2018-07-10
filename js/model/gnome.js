@@ -235,38 +235,40 @@ define([
             }
         },
 
-        setupTides: function(){
+        setupTides: function() {
             var movers = this.get('movers');
             var tides = [];
-            movers.each(function(mover){
-                if(!_.isUndefined(mover.get('tide'))){
+
+            movers.each(function(mover) {
+                if (!_.isUndefined(mover.get('tide'))) {
                     tides.push(mover.get('tide'));
                 }
             });
+
             this.get('environment').add(tides);
         },
 
-        manageTides: function(model){
+        manageTides: function(model) {
             if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
-                if(!_.isUndefined(model.get('tide'))){
+                if (!_.isUndefined(model.get('tide'))) {
                     this.get('environment').add(model.get('tide'));
                 }
             }
         },
-        
+
         spillsTimeComplianceCheck: function(model) {
-                    
             model.get('spills').forEach(function(spill) {
                 var name = spill.get('name');
                 var msg = spill.isTimeValid();
-                //add this info to logger? the check just changes time_compliance attribute
+                // Add this info to logger?
+                // The check just changes time_compliance attribute
             });
         },
-        
+
         spillsTimeComplianceWarning: function(model) {
-            
             var msg = model.isTimeValid();
-            if ( msg !== '') {
+
+            if (msg !== '') {
                 swal({
                     title: msg,
                     text: "Would you like to change the model start time to match the spill's start time?",
@@ -274,7 +276,7 @@ define([
                     showCancelButton: true,
                     confirmButtonText: "Yes",
                     cancelButtonText: "No"
-                }).then(_.bind(function(correct){
+                }).then(_.bind(function(correct) {
                     if (correct) {
                         var spillStart = model.get('release').get('release_time');
                         this.set('start_time', spillStart);
@@ -291,7 +293,7 @@ define([
                 //add this info to logger? the check just changes time_compliance attribute
             });
         },
-        
+
         moversTimeComplianceWarning: function(model) {
             // model.save(null, {
             // validate: false,
@@ -317,26 +319,21 @@ define([
                             showCancelButton: true,
                             confirmButtonText: 'Change Model Start',
                             cancelButtonText: 'Extrapolate Data'
-                        }).then(_.bind(function(fit){
+                        }).then(_.bind(function(fit) {
                             if (fit) {
-                                this.fitToInterval(model.get('real_data_start'));
-                                model.set('time_compliance','valid');
-                            } else {
-                                if (model.attributes.hasOwnProperty('wind')) {
-                                    model.get('wind').attributes
-                                         .extrapolation_is_allowed = true;
-                                }
-                                else {
-                                    model.set('extrapolate', true);
-                                }
-                                model.set('time_compliance','valid');
+                                this.fitToInterval(model.dataActiveTimeRange()[0]);
                             }
+                            else {
+                                model.setExtrapolation(true);
+                            }
+
+                            model.set('time_compliance','valid');
                         }, this));
                     }
                 }, this));
             }
         },
-        
+
         weatherersChange: function(child){
             this.childChange('weatherers', child);
             this.toggleWeatherers(child);
@@ -459,7 +456,7 @@ define([
         },
 
         fitToInterval: function(start_time) {
-            this.set('start_time', start_time);
+            this.set('start_time', webgnome.secondsToTimeString(start_time));
             this.save();
         },
 
@@ -545,34 +542,54 @@ define([
             attrs.push({title: 'Time Step: ' + timeStepTime, key: 'Time Step',
                          obj_type: this.get('time_step'), action: 'edit', object: this});
 
-            if(map){
-                attrs.push({title: 'Map:', children: map.toTree(), expanded: true, obj_type: map.get('obj_type'), action: 'new'});
+            if (map) {
+                attrs.push({title: 'Map:',
+                            children: map.toTree(),
+                            expanded: true,
+                            obj_type: map.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(movers){
-                attrs.push({title: 'Movers:', children: movers.toTree(), expanded: true, obj_type: movers.get('obj_type'), action: 'new'});
+            if (movers) {
+                attrs.push({title: 'Movers:',
+                            children: movers.toTree(),
+                            expanded: true,
+                            obj_type: movers.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(environment){
-                attrs.push({title: 'Environment:', children: environment.toTree(), expanded: true, obj_type: environment.get('obj_type'), action: 'new'});
+            if (environment) {
+                attrs.push({title: 'Environment:',
+                            children: environment.toTree(),
+                            expanded: true,
+                            obj_type: environment.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(weatherers){
-                attrs.push({title: 'Weatherers:', children: weatherers.toTree(), expanded: true, obj_type: weatherers.get('obj_type'), action: 'new'});
+            if (weatherers) {
+                attrs.push({title: 'Weatherers:',
+                            children: weatherers.toTree(),
+                            expanded: true,
+                            obj_type: weatherers.get('obj_type'),
+                            action: 'new'});
             }
 
-            if(spills){
-                attrs.push({title: 'Spills:', children: spills.toTree(), expanded: true, obj_type: spills.get('obj_type'), action: 'new'});
+            if (spills) {
+                attrs.push({title: 'Spills:',
+                            children: spills.toTree(),
+                            expanded: true,
+                            obj_type: spills.get('obj_type'),
+                            action: 'new'});
             }
 
             return attrs;
         },
 
-        isValidAdios: function(){
+        isValidAdios: function() {
             return false;
         },
 
-        validWeathering: function(){
+        validWeathering: function() {
             // if (this.get('weathering')){
                 // global flag is turned on for the model to be weathering
                 // make sure there is at least one weatherer turned on.
