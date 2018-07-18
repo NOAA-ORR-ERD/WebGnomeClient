@@ -202,7 +202,7 @@ define([
         killed: function(msg) {
             this.trigger('step:failed');
             this.endStream(msg);
-            if(this.length == 0) {
+            if(this.length === 0) {
                 this.isDead = true;
             }
             if(msg){
