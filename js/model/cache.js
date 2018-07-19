@@ -90,6 +90,7 @@ define([
                 this.socket.on('complete', _.bind(this.endStream, this));
                 this.socket.on('timeout', _.bind(this.timedOut, this));
                 this.socket.on('killed', _.bind(this.killed, this));
+                this.socket.on('runtimeError', _.bind(this.runtimeError, this))
             }
         },
         stepStarted: function(event){
@@ -199,16 +200,28 @@ define([
             this.socket.disconnect();
         },
 
+        runtimeError: function(msg) {
+            this.trigger('step:failed');
+            if(this.length >= 0) {
+                this.isDead = true;
+            }
+            this.streaming = false;
+            this.isHalted = false;
+            this.socket.disconnect();
+            if(msg){
+                console.error(msg);
+            } else {
+                console.error('Model runtime error')
+            }
+        },
+
         killed: function(msg) {
             this.trigger('step:failed');
             this.endStream(msg);
-            if(this.length === 0) {
-                this.isDead = true;
-            }
             if(msg){
-                console.error('Model run killed.');
-            } else {
                 console.error(msg);
+            } else {
+                console.error('Model run killed.');
             }
         }
     });
