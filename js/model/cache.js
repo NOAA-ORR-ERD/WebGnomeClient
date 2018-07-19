@@ -90,7 +90,7 @@ define([
                 this.socket.on('complete', _.bind(this.endStream, this));
                 this.socket.on('timeout', _.bind(this.timedOut, this));
                 this.socket.on('killed', _.bind(this.killed, this));
-                this.socket.on('runtimeError', _.bind(this.runtimeError, this))
+                this.socket.on('runtimeError', _.bind(this.runtimeError, this));
             }
         },
         stepStarted: function(event){
@@ -211,7 +211,7 @@ define([
             if(msg){
                 console.error(msg);
             } else {
-                console.error('Model runtime error')
+                console.error('Model runtime error');
             }
         },
 
