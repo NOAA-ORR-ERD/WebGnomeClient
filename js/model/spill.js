@@ -96,7 +96,9 @@ define([
         },
 
         resetLEs: function() {
-            this.les.removeAll();
+            if (!_.isUndefined(this.les.textureAtlas)){
+                this.les.removeAll();
+            }
             this._uncertain = [];
             this._certain = [];
         },
@@ -340,7 +342,7 @@ define([
             context2D.fillStyle = 'rgb(255, 255, 255)';
             context2D.fill();
 
-            this._les_point_image = this.les.add({image: canvas, show: false}).image;
+            this._les_point_image = this.les.add({image: canvas, show: false})._image;
 
             canvas = document.createElement('canvas');
             canvas.width = 10;
@@ -364,8 +366,7 @@ define([
             context2D.strokeStyle = 'rgb(255, 255, 255)';
             context2D.stroke();
 
-            this._les_beached_image = this.les.add({image: canvas,
-                                                    show: false}).image;
+            this._les_beached_image = this.les.add({image: canvas, show: false})._image;
         },
 
         initializeDataVis: function() {
