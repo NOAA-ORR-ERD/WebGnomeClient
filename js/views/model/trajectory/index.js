@@ -657,17 +657,30 @@ define([
             this.viewer.scene.requestRender();
 
             if(this.is_recording){
-                this.recordScene();
                 if(this.capturer.skipped < this.capture_opts.skip) {
                     this.capturer.skipped++;
                 } else {
-                    this.capturer.capture(this.meta_canvas);
-                    this.capturer.skipped = 0;
+                    var ctrls = $('.seek');
+                    var graticule = this.graticuleContainer;
+                    //$('.buttons', ctrls).hide();
+                    //$('.gnome-help', ctrls).hide();
+                    var ctx = this.meta_canvas_ctx;
+                    var cesiumCanvas = this.viewer.canvas;
+
+                    if(this.is_recording) {
+                        html2canvas(graticule, {
+                            onrendered: _.bind(function(canvas) {
+                                ctx.drawImage(cesiumCanvas,0,0);
+                                ctx.drawImage(canvas,0,0);
+                                this.capturer.capture(this.meta_canvas);
+                                this.capturer.skipped = 0;
+                            }, this)});
+                    }
                 }
             }
         },
 
-        recordScene: function() {
+        /*recordScene: function() {
             var ctrls = $('.seek');
             var graticule = this.graticuleContainer;
             //$('.buttons', ctrls).hide();
@@ -682,7 +695,7 @@ define([
                         ctx.drawImage(canvas,0,0);
                     }});
             }
-        },
+        },*/
 
         renderSpill: function(step){
             var spills = webgnome.model.get('spills').models;
