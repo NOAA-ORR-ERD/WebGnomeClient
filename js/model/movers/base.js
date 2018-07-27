@@ -530,31 +530,37 @@ define([
         },
 
         dataActiveTimeRange: function(ignore_extrapolation = false) {
-            if (this.attributes.hasOwnProperty('wind')) {
-                var wind = this.get('wind');
-                var timeRange = wind.timeseriesTimes();
-                var extrapolate = (wind.attributes.extrapolation_is_allowed &&
-                                   ignore_extrapolation === false);
+            var envObj;
 
-                if (extrapolate || timeRange.length === 1) {
-                    // we are either a constant wind or extrapolation
-                    // is set true;
-                    return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
-                }
-                else {
-                    return [_.min(timeRange), _.max(timeRange)];
-                }
+            if (this.attributes.hasOwnProperty('wind')) {
+                envObj = this.get('wind');
+            }
+            else if (this.attributes.hasOwnProperty('current')) {
+                envObj = this.get('current');
             }
             else {
-                // if we don't have any wind data, then we will assume that
-                // we are dealing with a non-wind mover that probably has
-                // a real_data_start/stop attribute pair.
+                // If we don't have any wind or current data, then we will
+                // assume that we are dealing with a non-environment mover
+                // that probably has a data_start/stop attribute pair.
                 //
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a mover's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                return [webgnome.timeStringToSeconds(this.get('real_data_start')),
-                        webgnome.timeStringToSeconds(this.get('real_data_stop'))];
+                return [webgnome.timeStringToSeconds(this.get('data_start')),
+                        webgnome.timeStringToSeconds(this.get('data_stop'))];
+            }
+
+            var timeRange = envObj.timeseriesTimes();
+            var extrapolate = (envObj.attributes.extrapolation_is_allowed &&
+                               ignore_extrapolation === false);
+
+            if (extrapolate || timeRange.length === 1) {
+                // we are either a constant timeseries object,
+                // or extrapolation is set true;
+                return [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
+            }
+            else {
+                return [_.min(timeRange), _.max(timeRange)];
             }
         },
 

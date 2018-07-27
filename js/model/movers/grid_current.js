@@ -3,7 +3,7 @@ define([
     'model/movers/base',
     'cesium',
     'model/visualization/mover_appearance'
-], function(_,BaseMover, Cesium, MoverAppearance){
+], function(_,BaseMover, Cesium, MoverAppearance) {
     var gridCurrentMover = BaseMover.extend({
         urlRoot: '/mover/',
         defaults: function() { 
@@ -13,7 +13,9 @@ define([
             };
         },
 
-        
+        setExtrapolation: function(trueFalse) {
+            this.set('extrapolate', trueFalse);
+        }
     });
 
     return gridCurrentMover;

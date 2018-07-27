@@ -36,7 +36,7 @@ define([
     'moment-round',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate,
-            RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, 
+            RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm,
             WindForm, ElementModel, WindmoverModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
@@ -461,7 +461,7 @@ define([
                 templateObj.spill_rate = (spill.get('amount') / hours).toFixed(2) + ' ' + spill.get('units') + '/hour';
                 templateObj.rate_exposed = true;
             }
-            
+
             compiled = _.template(FateTemplate, templateObj);
 
             this.$el.html(compiled);
@@ -493,8 +493,8 @@ define([
             if (cleanup === 0) {
                 this.$('.run-risk').hide();
             }
-            
-            setTimeout(_.bind(this.load,this), 3000);
+
+            setTimeout(_.bind(this.load,this), 1000);
         },
 
         checkForCleanup: function(){
@@ -662,7 +662,7 @@ define([
                 'secondtime',
                 'systems'
             ]);
-            
+
             var data = this.getPieData(pos, dataset, this.$('#budget-graph .panel-primary').data('dataset'));
             if(data.length > 0){
                 var con_width = this.$('.breakdown').width() - (15 * (data.length - 2));
@@ -689,7 +689,7 @@ define([
             if(this.$('#budget-graph:visible .timeline .chart').length !== 1){
                 return;
             }
-            
+
             var i, j;
             dataset = this.pruneDataset(dataset, [
                 'avg_density',
@@ -780,7 +780,7 @@ define([
                     } else {
                         y = p1[1] + (p2[1] - p1[1]) * (pos.x - p1[0]) / (p2[0] - p1[0]);
                     }
-                    
+
                     d.push({label: this.formatLabel(series.name), data: y, name: series.name});
                 }
             }
@@ -815,9 +815,9 @@ define([
             var spill = webgnome.model.get('spills').at(0);
             var substance = spill.get('element_type').get('substance');
             var substance_density;
-            
+
             substance_density = spill.get('element_type').get('standard_density');
-            
+
             var from_unit = spill.get('units');
             var to_unit = display.released;
             var total_released = this.calcAmountReleased(webgnome.model.get('spills'), webgnome.model);
@@ -880,6 +880,8 @@ define([
                         if (row === 0) {
                             if (dataset[set].name === 'amount_released' || display.other === 'same') {
                                 row_html +='<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + to_unit + ')</th>';
+                            } else if (display.other === 'percent') {
+                                row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (%)</th>';
                             } else {
                                 row_html += '<th style="background: ' + color + ';">' + dataset[set].label + '<br> (' + display.other + ')</th>';
                             }
@@ -1088,7 +1090,7 @@ define([
                         dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
                     }
                 }
-                
+
                 if(_.isUndefined(this.graphEmulsification)){
                     delete options.yaxis;
                     options.yaxes = [{}, { position: 'right'}];
@@ -1215,7 +1217,7 @@ define([
             this.$('#ics209 .yaxisLabel').text(icsUnits);
             if(_.isUndefined(this.graphICS)){
                 this.$('#ics209 .timeline .chart .canvas').on('plotselected', _.bind(this.ICSPlotSelect, this));
-                
+
                 // prevent the user from accidentally or purposfully unselecting
                 // the time range.
                 this.$('#ics209 .timeline .chart .canvas').on('plotunselected', _.bind(function(e, ranges){
@@ -1233,7 +1235,7 @@ define([
                 options.tooltip = false;
                 options.needle = false;
                 options.legend = false;
-                
+
                 this.graphICS = $.plot('#ics209 .timeline .chart .canvas', dataset, options);
 
                 var compiled = '';
@@ -1444,7 +1446,7 @@ define([
             if (mass_units.indexOf(to_units) > -1) {
                 amount_type = 'Mass Spilled';
             }
-            
+
             var compiled = _.template(ICSTemplate, {
                 amount_type: amount_type,
                 report: report,
@@ -1518,13 +1520,13 @@ define([
         exportCSV: function() {
             var tabName, dataset, csv, header, dataUnits;
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
-            
+
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
                 tabName = this.$(parentTabName + ' .tab-pane.active').attr('id');
             } else {
                 tabName = parentTabName.substring(1);
             }
-            
+
             var filename = webgnome.model.get('name') + '_' + tabName;
             var datasetName = this.tabToLabelMap[tabName];
             if (!_.isUndefined(datasetName)) {
@@ -1555,7 +1557,7 @@ define([
             }
 
             var metaData = this.modelInfoCSV();
-            
+
             csv = encodeURI('data:text/csv;charset=utf-8,' + metaData + '\r\n' + csv);
 
             this.downloadContent(csv, filename + '.csv');
@@ -1801,7 +1803,7 @@ define([
             } else {
                 units = $('#weatherers .tab-pane:visible .secondYaxisLabel').text();
             }
-            
+
             return num + ' ' + units;
         },
 
@@ -1858,7 +1860,7 @@ define([
                 var release_duration = release_end - release_start;
                 var release_per_second = amount / release_duration;
 
-                // find the percentage of the release time that fits in the model 
+                // find the percentage of the release time that fits in the model
                 var release_run_time;
                 if (model_end > release_end){
                     release_run_time = release_duration;
@@ -1887,7 +1889,7 @@ define([
         getActiveElement: function(e) {
             var parentTabName = this.$('.nav-tabs li.active a').attr('href');
             var element, name;
-            
+
             if (!_.isUndefined(this.$(parentTabName + ' .tab-pane.active').attr('id'))) {
                 element = this.$(parentTabName + ' .tab-pane.active .timeline');
                 name = this.$(parentTabName + ' .tab-pane.active').attr('id');

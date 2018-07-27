@@ -17,12 +17,15 @@ define([
         },
 
         initialize: function(options) {
-            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
+            if (_.has(window, 'webgnome') &&
+                    _.has(webgnome, 'model') &&
+                    !_.isNull(webgnome.model)) {
                 this.setStartTime();
                 this.setOutputterName(options);
 
                 webgnome.model.on('change:name', this.setOutputterName, this);
             }
+
             BaseModel.prototype.initialize.call(this, options);
         },
 
@@ -38,6 +41,7 @@ define([
                     name = this.get('name');
                 } else {
                     name = options['name'];
+
                 }
             }
 
@@ -57,10 +61,12 @@ define([
             if (time_step_secs % 3600 === 0) {
                 timeInfo.amount = time_step_secs / 3600;
                 timeInfo.unit = 'hr';
-            } else if (time_step_secs % 60 === 0) {
+            }
+            else if (time_step_secs % 60 === 0) {
                 timeInfo.amount = time_step_secs / 60;
                 timeInfo.unit = 'min';
-            } else {
+            }
+            else {
                 timeInfo.amount = time_step_secs;
                 timeInfo.unit = 's';
             }
@@ -73,12 +79,13 @@ define([
                 return 'Output timestep must be greater than zero!';
             }
 
-            if (moment(attrs.output_start_time).isBefore(webgnome.model.get('start_time'))) {
+            if (moment(attrs.output_start_time)
+                    .isBefore(webgnome.model.get('start_time'))) {
                 return 'Output start time cannot be before model start time!';
             }
         },
 
-        toTree: function(){
+        toTree: function() {
             return '';
         }
     });

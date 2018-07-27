@@ -56,9 +56,9 @@ define([
             }
             // only compile the template if the map isn't drawn yet
             // or if there is a redraw request because of the map object changing
-            
+
             var model_spills = webgnome.model.get('spills');
-          
+
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
@@ -243,7 +243,7 @@ define([
         },
 
         rewind: function(e){
-            if(webgnome.cache.length === 0) {
+            if(webgnome.cache.length === 0 && !webgnome.cache.isDead) {
                 e = false;
             }
             this.stop(e);
@@ -273,9 +273,7 @@ define([
         },
 
         seek: function(e, ui){
-            if (this.state === 'play') {
-                this.pause(e);
-            }
+            this.pause(e);
             this.controls.seek.slider('value', ui.value);
 
             if(ui.value <= webgnome.cache.length){
@@ -313,7 +311,7 @@ define([
             var percent = Math.round(((webgnome.cache.length) / (webgnome.model.get('num_time_steps') - 1)) * 100);
             this.controls.progress.css('width', percent + '%');
         }, 20),
-        
+
         getSliderValue: function() {
             return this.controls.seek.slider('value');
         }
