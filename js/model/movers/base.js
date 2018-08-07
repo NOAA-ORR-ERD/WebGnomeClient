@@ -541,7 +541,7 @@ define([
             else {
                 // If we don't have any wind or current data, then we will
                 // assume that we are dealing with a non-environment mover
-                // that probably has a real_data_start/stop attribute pair.
+                // that probably has a data_start/stop attribute pair.
                 //
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a mover's data matches its active time
