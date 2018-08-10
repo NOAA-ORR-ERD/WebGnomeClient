@@ -18,7 +18,7 @@ define([
         },
 
         model: {
-            wind: WindModel
+            wind: Backbone.Model
         },
 
         toTree: function(){

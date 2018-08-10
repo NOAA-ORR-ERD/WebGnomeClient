@@ -23,7 +23,7 @@ define([
                 'on': true,
                 'obj_type': 'gnome.spill.spill.Spill',
                 'release': new GnomeRelease(),
-                'element_type': this.getElementType(),
+                'element_type': new GnomeElement(),
                 'name': 'Spill',
                 'amount': 100,
                 'units': 'bbl',

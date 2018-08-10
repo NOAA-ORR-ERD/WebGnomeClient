@@ -536,10 +536,10 @@ define([
         dataActiveTimeRange: function(ignore_extrapolation = false) {
             var envObj;
 
-            if (this.attributes.hasOwnProperty('wind')) {
+            if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
                 envObj = this.get('wind');
             }
-            else if (this.attributes.hasOwnProperty('current')) {
+            else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
                 envObj = this.get('current');
             }
             else {

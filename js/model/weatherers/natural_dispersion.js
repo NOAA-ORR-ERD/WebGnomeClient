@@ -7,7 +7,13 @@ define([
     var naturalDispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.NaturalDispersion',
-            'name': 'Natural Dispersion'
+            'waves': null,
+            'water': null
+        },
+
+        model: {
+            waves: Backbone.Model,
+            water: Backbone.Model
         },
 
         toTree: function(){

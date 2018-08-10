@@ -14,7 +14,7 @@ define([
         model: {
             time: Backbone.Model,
             grid: BaseGridObj,
-            variables: Backbone.Model
+            variables: Backbone.Collection
         },
         defaults: function() {
             return {

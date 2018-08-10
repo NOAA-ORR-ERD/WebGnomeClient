@@ -48,7 +48,7 @@
     "cytoscape": "3.2.*",
     "cytoscape-cose-bilkent": "4.0.0",
     "klayjs": "0.4.1",
-    "cytoscape-klay": "3.1.1"
+    "cytoscape-klay": "3.1.1",
     "federated-analytics": "https://gitlab.orr.noaa.gov/erd/federated-analytics.git"
   }
 }

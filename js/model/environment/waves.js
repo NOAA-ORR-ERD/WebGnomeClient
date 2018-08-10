@@ -11,12 +11,13 @@ define([
         urlRoot: '/environment',
         defaults: {
             obj_type: 'gnome.environment.waves.Waves',
-            name: 'Waves'
+            wind: null,
+            water: null,
         },
 
         model: {
-            wind: WindModel,
-            water: WaterModel
+            wind: Backbone.Model,
+            water: Backbone.Model
         }
     });
 

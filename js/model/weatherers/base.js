@@ -38,35 +38,31 @@ define([
         },
 
         addListeners: function(model) {
-            this.listenTo(
-                model.default_env_refs, 'change',
-                _.bind(function(w){
-                    var keys = _.keys(w.changedAttributes())
-                    for (var i = 0; i < keys.length; i++) {
-                        if (!_.isUndefined(this.get(keys[i]))) {
-                            this.set(keys[i], w.changedAttributes()[keys[i]]);
+            if (this.get('id')){
+                this.listenTo(
+                    model.default_env_refs, 'change',
+                    _.bind(function(w){
+                        var keys = _.keys(w.changed);
+                        for (var i = 0; i < keys.length; i++) {
+                            if (!_.isUndefined(this.get(keys[i]))) {
+                                var attrs = {};
+                                attrs[keys[i]] = w.changed[keys[i]];
+                                this.save(attrs);
+                            }
                         }
+                    }, this)
+                );
+                this.listenTo(model.default_env_refs, 'weatheringOff', _.bind(function(){
+                    if (this.get('on')) {
+                        this.save({'on': false});
                     }
-                }, this)
-            );
-/*
-            this.listenTo(
-                model.default_env_refs, 'new_water',
-                _.bind(function(w){
-                    if (!_.isUndefined(this.get('water'))) {
-                        this.set('water', w);
+                }, this));
+                this.listenTo(model.default_env_refs, 'weatheringOn', _.bind(function(){
+                    if (!this.get('on')) {
+                        this.save({'on': true});
                     }
-                }, this)
-            );
-            this.listenTo(
-                model.default_env_refs, 'new_waves',
-                _.bind(function(w){
-                    if (!_.isUndefined(this.get('waves'))) {
-                        this.set('waves', w);
-                    }
-                }, this)
-            );
-*/
+                }, this));
+            }
         },
 
         cascadeEfficiencies: function(eff) {

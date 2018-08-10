@@ -27,6 +27,7 @@ define([
             this.listenTo(model.get('spills'), 'change', this.checkSubstance);
             this.listenTo(model.get('spills'), 'add remove change', this.checkSubstance);
             this.listenTo(this, 'new_wind new_water', this.manageWaves);
+            this.listenTo(this, 'change', this.weatheringValid);
         },
 
         fetchHandler: function(model) {
@@ -74,7 +75,7 @@ define([
                 this.set('waves', null);
                 this.trigger('new_waves', null);
             } else if (this.get('wind') && this.get('water') && this.get('waves') === null) {
-                var waves = new WavesModel
+                var waves = new WavesModel();
                 waves.set('wind', this.get('wind'));
                 waves.set('water', this.get('water'));
                 waves.save(null, {
@@ -98,13 +99,25 @@ define([
 
         checkSubstance: function() {
             var hasSubstance = false;
-            var spills = this.get('spills');
+            var spills = webgnome.model.get('spills');
             if (spills.length > 0) {
-                if (spills.at(0).get('release').get('element_type').get('substance') !== null) {
+                var element_type = spills.at(0).get('element_type');
+                if (element_type && element_type.get('substance') !== null) {
                     hasSubstance = true;
                 }
             }
             this.set('hasSubstance', hasSubstance);
+        },
+
+        weatheringValid: function() {
+            if (this.get('hasSubstance') &&
+                !_.isUndefined(this.get('waves')) &&
+                !_.isUndefined(this.get('water')) &&
+                !_.isUndefined(this.get('wind'))) {
+                this.trigger('weatheringOn');
+            } else {
+                this.trigger('weatheringOff');
+            }
         }
 
     });
