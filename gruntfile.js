@@ -187,7 +187,7 @@ module.exports = function(grunt){
         vulcanize:{
             build: {
                 options: {
-                    inlineScripts: true,
+                    inlineScripts: false,
                     inlineCss: true
                 },
                 files:{

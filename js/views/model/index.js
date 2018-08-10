@@ -221,6 +221,8 @@ define([
         },
 
         _getElementList: function(model, elemList, attrName, parentID, parentName) {
+
+            var edge, i;
             if(model instanceof BaseModel && model.get('obj_type', false)){
                 for (var k = 0; k < elemList.length; k++) {
                     if (elemList[k].data.id === model.get('id')) {
@@ -248,8 +250,7 @@ define([
                 thisObj.group = 'nodes';
                 thisObj.data = {};
 
-                var edge;
-                for(var i = 0; i < keys.length; i++) {
+                for(i = 0; i < keys.length; i++) {
                     if(!keys[i].startsWith('_')) {
                         thisObj.data[keys[i]] = this._getElementList(model.get(keys[i]), elemList, keys[i], model.get('id'), model.get('name'));
                     }
@@ -286,8 +287,8 @@ define([
                 thisColl.data = {};
                 thisColl.data.id = parentName + '.' + attrName;
                 thisColl.data.name = thisColl.data.id;
-                var elem_id, edge, rv = [];
-                for(var i = 0; i < model.length; i++) {
+                var elem_id, rv = [];
+                for(i = 0; i < model.length; i++) {
                     elem_id = this._getElementList(model.models[i], elemList, i, thisColl.data.id, model.get('name'));
                     rv.push(elem_id);
                 }
@@ -301,7 +302,7 @@ define([
                 elemList.push(edge);
                 return rv;
             } else {
-                return model
+                return model;
             }
         },
 
