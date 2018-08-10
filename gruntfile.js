@@ -69,6 +69,7 @@ module.exports = function(grunt){
                     'img/*',
                     'css/images/*',
                     'resource/*',
+                    'js/lib/federated-analytics/federated-analytics.js'
                 ],
                 dest: 'dist/build/'
             },
@@ -93,10 +94,10 @@ module.exports = function(grunt){
         },
         inline: {
             options: {
-                tag: '',
+                tag: '__inline',
             },
             build: {
-                src: 'dist/build/build.html',
+                src: 'build-template.html',
                 dest: 'dist/build/index.html'
             }
         },
@@ -184,17 +185,6 @@ module.exports = function(grunt){
                 configFile: './wdio.conf.js'
             }
         },
-        vulcanize:{
-            build: {
-                options: {
-                    inlineScripts: false,
-                    inlineCss: true
-                },
-                files:{
-                    'dist/build/build.html': 'build-template.html'
-                }
-            }
-        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -212,7 +202,7 @@ module.exports = function(grunt){
     grunt.registerTask('install', ['bower:install']);
     grunt.registerTask('develop', ['install', 'less:compile', 'connect:start', 'watch:css']);
     grunt.registerTask('build:lite', ['less:compile']);
-    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'vulcanize:build', 'inline:build']);
+    grunt.registerTask('build', ['jshint:all', 'less:build', 'requirejs:build', 'copy:build', 'copy:cesium', 'copy:ccapture', 'inline:build']);
     grunt.registerTask('serve', ['connect:keepalive']);
     grunt.registerTask('serve:build', ['connect:build']);
     grunt.registerTask('docs', ['jsdoc:docs']);

@@ -3,11 +3,8 @@
     <head>
         <title>WebGNOME</title>
         <meta charset="UTF-8">
-        <script src="js/lib/webcomponentsjs/webcomponents-lite.js"></script>
-        <link rel="stylesheet" type="text/css" href="dist/build/style.css">
-        <link rel="import" href="js/lib/google-chart/google-chart.html">
+        <link rel="stylesheet" type="text/css" href="dist/build/style.css?__inline">
         <script>CESIUM_BASE_URL = './js/lib/cesium/Build/Cesium'</script>
-        <script src="dist/build/build.js"></script>
         <script id="_fed_an_ua_tag" type="text/javascript" src="js/lib/federated-analytics/federated-analytics.js?agency=DOC&subagency=NOAA&pua=UA-50520236-16"></script>
         <script>
             ga('create', 'UA-50520236-16', 'auto');
@@ -15,7 +12,8 @@
             ga('set', 'checkStorageTask', null); // Disable cookie storage checking.
             ga('set', 'historyImportTask', null); // Disable history checking (requires reading from cookies).
             ga('send', 'pageview', location.hash);
-        </script> 
+        </script>
+        <script src="dist/build/build.js?__inline"></script>
     </head>
     <body>
         <noscript>
