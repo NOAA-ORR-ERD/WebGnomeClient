@@ -101,11 +101,11 @@ define([
                 
                 webgnome.cache = new Cache(null);
                 var gnomeModel = new GnomeModel();
+                window.webgnome.model = gnomeModel;
                 gnomeModel.fetch({
                     success: function(model){
                         webgnome.user_prefs = new UserPrefs();
                         if(model.id){
-                            window.webgnome.model = model;
                             webgnome.model.changed = {};
                             webgnome.model.addMapListeners();
                             webgnome.cache.rewind(true);

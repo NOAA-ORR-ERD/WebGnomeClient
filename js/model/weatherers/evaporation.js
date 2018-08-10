@@ -10,12 +10,14 @@ define([
         urlRoot: '/weatherer/',
 
         model: {
-            water: WaterModel,
-            wind: WindModel
+            'wind': Backbone.Model,
+            'water': Backbone.Model
         },
 
         defaults: {
-            'obj_type': 'gnome.weatherers.Evaporation'
+            'obj_type': 'gnome.weatherers.Evaporation',
+            'wind': null,
+            'water': null
         },
 
         toTree: function(){

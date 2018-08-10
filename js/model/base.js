@@ -91,6 +91,7 @@ define([
                     }
                 }
             }
+            this.trigger('fetched', this);
             return response;
         },
 

@@ -486,7 +486,11 @@ define([
             // - Time range data points are expected to be in ascending order
             //   from left to right.  We don't deal with zero or negative
             //   time ranges.
+            if (_.isUndefined(webgnome.model)) {
+                return [];
+            }
             var [modelStart, modelStop] = webgnome.model.activeTimeRange();
+
             var suspectRanges = this.invalidActiveTimeRanges();
             var invalidRanges = [];
 

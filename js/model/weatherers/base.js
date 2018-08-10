@@ -30,29 +30,44 @@ define([
                 else {
                     start_time = moment();
                 }
-
-                if (_.isUndefined(this.get('active_start'))) {
-                    this.set('active_start', start_time.format('YYYY-MM-DDTHH:00:00'));
-                }
-
-                var end_time = '';
-
-                if (_.has(window, 'webgnome') &&
-                        _.has(webgnome, 'model') &&
-                        !_.isNull(webgnome.model)) {
-                    end_time = start_time.add(webgnome.model.get('duration'), 's');
-                }
-                else {
-                    end_time = start_time.add(1, 'day');
-                }
-
-                if (_.isUndefined(this.get('active_stop'))) {
-                    this.set('active_stop', end_time.format('YYYY-MM-DDTHH:00:00'));
-                }
             }
-
             BaseModel.prototype.initialize.call(this);
-		},
+            if (!_.isUndefined(webgnome.model)) {
+                this.addListeners(webgnome.model);
+            }
+        },
+
+        addListeners: function(model) {
+            this.listenTo(
+                model.default_env_refs, 'change',
+                _.bind(function(w){
+                    var keys = _.keys(w.changedAttributes())
+                    for (var i = 0; i < keys.length; i++) {
+                        if (!_.isUndefined(this.get(keys[i]))) {
+                            this.set(keys[i], w.changedAttributes()[keys[i]]);
+                        }
+                    }
+                }, this)
+            );
+/*
+            this.listenTo(
+                model.default_env_refs, 'new_water',
+                _.bind(function(w){
+                    if (!_.isUndefined(this.get('water'))) {
+                        this.set('water', w);
+                    }
+                }, this)
+            );
+            this.listenTo(
+                model.default_env_refs, 'new_waves',
+                _.bind(function(w){
+                    if (!_.isUndefined(this.get('waves'))) {
+                        this.set('waves', w);
+                    }
+                }, this)
+            );
+*/
+        },
 
         cascadeEfficiencies: function(eff) {
             var weathererType = this.get('obj_type');
