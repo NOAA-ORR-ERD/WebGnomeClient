@@ -37,10 +37,10 @@ define([
             if (_.isUndefined(options)) {
                 name = model.get('name').replace(/ /g, "_") + '.' + ext;
             } else {
-                if(_.isUndefined(options['name'])){
+                if(_.isUndefined(options.name)){
                     name = this.get('name');
                 } else {
-                    name = options['name'];
+                    name = options.name;
 
                 }
             }

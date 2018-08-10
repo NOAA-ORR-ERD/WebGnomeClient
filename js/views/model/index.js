@@ -196,7 +196,7 @@ define([
                 thoroughness: 7 // How much effort should be spent to produce a nice layout..
             },
   priority: function( edge ){ return null; }, // Edges with a non-nil value are skipped when geedy edge cycle breaking is enabled
-            }
+            };
 
             var opts;
             if (name === 'cbo') {
@@ -204,7 +204,7 @@ define([
             } else if (name === 'breadthfirst'){
                 opts = breadthfirst;
             } else if (name === 'klay') {
-                opts = klay
+                opts = klay;
             }
             var layout = this.cy.layout(opts);
             layout.run();
@@ -235,28 +235,28 @@ define([
                                     source: parentID,
                                     target: elemList[k].data.id
                                 }
-                            }
+                            };
                             elemList.push(edge);
                             return elemList[k].data.id;
                         }
                     }
                 }
                 var keys = model.keys();
-                var thisObj = {}
+                var thisObj = {};
                 elemList.push(thisObj);
-                thisObj['_model'] = model;
-                thisObj['group'] = 'nodes';
-                thisObj['data'] = {};
+                thisObj.model = model;
+                thisObj.group = 'nodes';
+                thisObj.data = {};
 
                 var edge;
                 for(var i = 0; i < keys.length; i++) {
                     if(!keys[i].startsWith('_')) {
-                        thisObj['data'][keys[i]] = this._getElementList(model.get(keys[i]), elemList, keys[i], model.get('id'), model.get('name'));
+                        thisObj.data[keys[i]] = this._getElementList(model.get(keys[i]), elemList, keys[i], model.get('id'), model.get('name'));
                     }
                 }
                 if (parentID) {
                     if (parentID.indexOf('.') !== -1) {
-                        thisObj['data']['parent'] = parentID;
+                        thisObj.data.parent = parentID;
                         /*edge = {
                             data: {
                                 id: parentName + '>' + thisObj['data']['id'],
@@ -269,35 +269,35 @@ define([
                         edge = {
                             
                             data: {
-                                id: parentName + '>' + thisObj['data']['id'],
+                                id: parentName + '>' + thisObj.data.id,
                                 source: parentID,
-                                target: thisObj['data']['id']
+                                target: thisObj.data.id
                             }
-                        }
+                        };
                         elemList.push(edge);
                     }
                 }
                 return model.get('id');
             } else if (model instanceof Backbone.Collection) {
-                var thisColl = {}
+                var thisColl = {};
                 elemList.push(thisColl);
-                thisColl['_model'] = model;
-                thisColl['group'] = 'nodes';
-                thisColl['data'] = {};
-                thisColl['data']['id'] = parentName + '.' + attrName;
-                thisColl['data']['name'] = thisColl['data']['id'];
+                thisColl._model = model;
+                thisColl.group = 'nodes';
+                thisColl.data = {};
+                thisColl.data.id = parentName + '.' + attrName;
+                thisColl.data.name = thisColl.data.id;
                 var elem_id, edge, rv = [];
                 for(var i = 0; i < model.length; i++) {
-                    elem_id = this._getElementList(model.models[i], elemList, i, thisColl['data']['id'], model.get('name'));
+                    elem_id = this._getElementList(model.models[i], elemList, i, thisColl.data.id, model.get('name'));
                     rv.push(elem_id);
                 }
                 edge = {
                     data: {
-                        id: parentName + '>' + thisColl['data']['id'],
+                        id: parentName + '>' + thisColl.data.id,
                         source: parentID,
-                        target: thisColl['data']['id']
+                        target: thisColl.data.id
                     }
-                }
+                };
                 elemList.push(edge);
                 return rv;
             } else {

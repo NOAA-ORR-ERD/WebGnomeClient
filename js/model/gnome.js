@@ -645,7 +645,7 @@ define([
             // or null if there is nothing that matches
             var env_objs = this.get('environment');
             if (env_objs) {
-                return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('wind');})
+                return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('wind');});
             }
             return null;
         },
@@ -653,7 +653,7 @@ define([
         getDefaultWater: function() {
             var env_objs = this.get('environment');
             if (env_objs) {
-                return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('water');})
+                return env_objs.find(function(mod){return mod.get('obj_type').toLowerCase().includes('water');});
             }
         },
 

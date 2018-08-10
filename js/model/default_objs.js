@@ -31,10 +31,10 @@ define([
         },
 
         fetchHandler: function(model) {
-            var env_objs = model.get('environment')
-            var waves = env_objs.findWhere({'obj_type': 'gnome.environment.waves.Waves'})
+            var env_objs = model.get('environment');
+            var waves = env_objs.findWhere({'obj_type': 'gnome.environment.waves.Waves'});
             if (waves) {
-                this.manageWaves(waves)
+                this.manageWaves(waves);
             } else {
                 env_objs.map(_.bind(this.addObj,this));
             }
@@ -57,12 +57,12 @@ define([
         },
 
         removeObj: function(mod) {
-            if (mod == this.get('wind')){
+            if (mod === this.get('wind')){
                 this.set('wind', null);
                 this.set('windSpecified', false);
                 this.trigger('new_wind', null);
             }
-            if (mod == this.get('water')){
+            if (mod === this.get('water')){
                 this.set('water', null);
                 this.set('waterSpecified', false);
                 this.trigger('new_water', null);
@@ -71,7 +71,7 @@ define([
 
         manageWaves: function(mod) {
             if (mod === null && this.get('waves') !== null) {
-                webgnome.model.get('environment').remove(this.get('waves'))
+                webgnome.model.get('environment').remove(this.get('waves'));
                 this.set('waves', null);
                 this.trigger('new_waves', null);
             } else if (this.get('wind') && this.get('water') && this.get('waves') === null) {
