@@ -1,9 +1,13 @@
 WebgnomeAPI [![build status](https://srccontrol.orr.noaa.gov/gnome/webgnomeapi/badges/master/build.svg)](https://srccontrol.orr.noaa.gov/gnome/webgnomeapi/commits/master)
 ============
 
-WebgnomeAPI requires a running redis server on the same system. Depending on your operating system the process to install and run redis varies and will not be covered in this piece of documentation. 
+WebgnomeAPI requires a running redis server on the same system. Depending on your operating system the process to install and run redis varies and will not be covered in this piece of documentation, but once redis is installed, yu can usually run it with:
+
+``$ redis-server``
+
 For Windows there are binaries availabe on GitHub here:
 https://github.com/MSOpenTech/redis/releases
+
 
 ### Installation
 `conda create -n webgnomeapi python=2`
@@ -51,4 +55,4 @@ __OilLibraryAPI__
 5. `python setup.py develop`
 
 ### Running
-`pserve --reload config.example` (localhost:9898)
+`pserve --reload config_example` (localhost:9898)
