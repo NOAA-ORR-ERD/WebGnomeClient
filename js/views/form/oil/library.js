@@ -269,7 +269,7 @@ define([
                     this.model.save(null, {
                         success: _.bind(function(){
                             this.hide();
-                            //this.trigger('save');
+                            this.trigger('save');
                         }, this),
                         error: _.bind(function(){
                             swal({
