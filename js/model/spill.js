@@ -23,7 +23,7 @@ define([
                 'on': true,
                 'obj_type': 'gnome.spill.spill.Spill',
                 'release': new GnomeRelease(),
-                'element_type': this.getElementType(),
+                'element_type': new GnomeElement(),
                 'name': 'Spill',
                 'amount': 100,
                 'units': 'bbl',
@@ -96,7 +96,9 @@ define([
         },
 
         resetLEs: function() {
-            this.les.removeAll();
+            if (!_.isUndefined(this.les.textureAtlas)){
+                this.les.removeAll();
+            }
             this._uncertain = [];
             this._certain = [];
         },
@@ -364,8 +366,7 @@ define([
             context2D.strokeStyle = 'rgb(255, 255, 255)';
             context2D.stroke();
 
-            this._les_beached_image = this.les.add({image: canvas,
-                                                    show: false}).image;
+            this._les_beached_image = this.les.add({image: canvas, show: false}).image;
         },
 
         initializeDataVis: function() {

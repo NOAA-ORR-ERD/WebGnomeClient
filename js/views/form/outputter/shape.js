@@ -7,7 +7,14 @@ define([
 ], function($, _, Backbone, module, OutputModal){
     'use strict';
     var shapeFileOutputForm = OutputModal.extend({
-        title: 'Shapefile Output'
+        title: 'Shapefile Output',
+
+        save: function(options) {
+            if (webgnome.model.get('uncertain') === true) {
+                this.model.set('zip_output', true);
+            }
+            OutputModal.prototype.save.call(this, options);
+        }
     });
 
     return shapeFileOutputForm;

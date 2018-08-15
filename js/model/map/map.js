@@ -9,12 +9,12 @@ define([
         defaults: {
             obj_type: 'gnome.map.GnomeMap',
             filename: '',
-            map_bounds: [[
+            map_bounds: [
                 [-180,-85.06],
                 [-180,85.06],
                 [180,85.06],
                 [180,-85.06],
-            ]],
+            ],
             spillable_area: [[
                 [-180,-85.06],
                 [-180,85.06],

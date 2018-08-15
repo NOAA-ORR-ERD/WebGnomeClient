@@ -7,6 +7,11 @@ define([
     var fayGravityViscous = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.FayGravityViscous',
+            'water': null
+        },
+
+        model: {
+            water: Backbone.Model
         },
 
         toTree: function(){

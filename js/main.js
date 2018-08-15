@@ -60,7 +60,11 @@ require.config({
         gif: 'lib/ccapture.js/src/gif',
         gifworker: 'lib/ccapture.js/src/gif.worker',
         'd3': "lib/d3/d3",
-        tinycolor: "lib/tinycolor/tinycolor"
+        tinycolor: "lib/tinycolor/tinycolor",
+        cytoscape: "lib/cytoscape/dist/cytoscape",
+        cosebilkent: "lib/cytoscape-cose-bilkent/cytoscape-cose-bilkent",
+        cytoscapeklay: "lib/cytoscape-klay/cytoscape-klay",
+        klayjs: "lib/klayjs/klay",
     },
     shim: {
         jquery: {
@@ -132,6 +136,16 @@ require.config({
            deps: ['gifworker', 'gif'],
            exports: 'ccapture'
         },
+        klayjs: {
+            exports: 'klay',
+            init: function() {
+                this.klay = this.$klay;
+            }
+        },
+        cytoscapeklay: {
+            deps: ['klayjs'],
+            exports: 'cytoscapeklay'
+        }
     }
 });
 

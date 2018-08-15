@@ -9,12 +9,14 @@ define([
     var dispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
-            'name': 'Dispersion',
-            'efficiency': 0.20
+            'efficiency': 0.20,
+            'waves': null,
+            'water': null
         },
 
         model: {
-            waves: WavesModel
+            waves: Backbone.Model,
+            water: Backbone.Model
         },
 
         validate: function(attrs, options){

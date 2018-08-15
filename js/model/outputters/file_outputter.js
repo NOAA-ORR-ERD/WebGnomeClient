@@ -12,7 +12,8 @@ define([
             'output_last_step': true,
             'output_zero_step': true,
             'on': false,
-            'output_timestep': 900
+            'output_timestep': 900,
+            'name': 'FileOutputter'
         },
 
         initialize: function(options) {
@@ -35,13 +36,12 @@ define([
 
             if (_.isUndefined(options)) {
                 name = model.get('name').replace(/ /g, "_") + '.' + ext;
-            }
-            else {
-                if (_.isUndefined(options.name)) {
+            } else {
+                if(_.isUndefined(options.name)){
                     name = this.get('name');
-                }
-                else {
+                } else {
                     name = options.name;
+
                 }
             }
 

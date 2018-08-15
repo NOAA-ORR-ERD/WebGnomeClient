@@ -10,12 +10,14 @@ define([
         urlRoot: '/weatherer/',
 
         model: {
-            water: WaterModel,
-            wind: WindModel
+            water: Backbone.Model,
+            wind: Backbone.Model
         },
 
         defaults: {
             'obj_type': 'gnome.weatherers.Langmuir',
+            'water': null,
+            'wind': null
         },
 
         toTree: function(){
