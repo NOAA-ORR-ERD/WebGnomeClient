@@ -122,8 +122,8 @@ define([
                 // TODO: FIXME: This is a really brittle way to determine
                 //       whether a weatherer's data matches its active time
                 //       range.  Bugs are just waiting to happen.
-                return [webgnome.timeStringToSeconds(this.get('real_data_start')),
-                        webgnome.timeStringToSeconds(this.get('real_data_stop'))];
+                return [webgnome.timeStringToSeconds(this.get('data_start')),
+                        webgnome.timeStringToSeconds(this.get('data_stop'))];
             }
         },
 

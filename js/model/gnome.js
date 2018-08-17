@@ -235,38 +235,40 @@ define([
             }
         },
 
-        setupTides: function(){
+        setupTides: function() {
             var movers = this.get('movers');
             var tides = [];
-            movers.each(function(mover){
-                if(!_.isUndefined(mover.get('tide'))){
+
+            movers.each(function(mover) {
+                if (!_.isUndefined(mover.get('tide'))) {
                     tides.push(mover.get('tide'));
                 }
             });
+
             this.get('environment').add(tides);
         },
 
-        manageTides: function(model){
+        manageTides: function(model) {
             if (model.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
-                if(!_.isUndefined(model.get('tide'))){
+                if (!_.isUndefined(model.get('tide'))) {
                     this.get('environment').add(model.get('tide'));
                 }
             }
         },
-        
+
         spillsTimeComplianceCheck: function(model) {
-                    
             model.get('spills').forEach(function(spill) {
                 var name = spill.get('name');
                 var msg = spill.isTimeValid();
-                //add this info to logger? the check just changes time_compliance attribute
+                // Add this info to logger?
+                // The check just changes time_compliance attribute
             });
         },
-        
+
         spillsTimeComplianceWarning: function(model) {
-            
             var msg = model.isTimeValid();
-            if ( msg !== '') {
+
+            if (msg !== '') {
                 swal({
                     title: msg,
                     text: "Would you like to change the model start time to match the spill's start time?",
@@ -274,7 +276,7 @@ define([
                     showCancelButton: true,
                     confirmButtonText: "Yes",
                     cancelButtonText: "No"
-                }).then(_.bind(function(correct){
+                }).then(_.bind(function(correct) {
                     if (correct) {
                         var spillStart = model.get('release').get('release_time');
                         this.set('start_time', spillStart);
@@ -291,7 +293,7 @@ define([
                 //add this info to logger? the check just changes time_compliance attribute
             });
         },
-        
+
         moversTimeComplianceWarning: function(model) {
             // model.save(null, {
             // validate: false,
