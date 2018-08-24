@@ -82,6 +82,7 @@ define([
                     validate: false,
                     success: _.bind(function(mod){
                         webgnome.model.get('environment').add(mod);
+                        webgnome.model.save()
                         this.set('waves', mod);
                     }, this)
                 });
@@ -93,6 +94,9 @@ define([
                 }
                 if(!this.get('wind')) {
                     this.set('water', mod.get('water'));
+                }
+                if (!webgnome.model.get('environment').contains(mod)) {
+                    webgnome.model.get('environment').add(mod);
                 }
             }
         },

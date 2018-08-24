@@ -1066,7 +1066,9 @@ define([
 
         close: function(){
             this.pause();
-            this.controls.pause();
+            if (this.controls) {
+                this.controls.pause();
+            }
             this.$el.hide();
             // this.remove();
         }
