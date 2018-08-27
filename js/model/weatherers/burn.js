@@ -8,17 +8,18 @@ define([
     var burnWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.Burn',
-            'name': 'Burn',
             'area': 0,
             'thickness': 0,
             'area_units': 'm^2',
             'thickness_units': 'cm',
             'wind': null,
+            'water': null,
             'efficiency': 0.20
         },
 
         model: {
-            wind: Backbone.Model
+            wind: Backbone.Model,
+            water: Backbone.Model
         },
 
         toTree: function(){

@@ -29,7 +29,7 @@ define([
             }
 
             this.body = _.template(FormTemplate,{
-                name: this.model.get('name'),
+                name: "ADIOS Disperse",
                 time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
                 percentSprayed: !_.isUndefined(fractSprayed) ? fractSprayed * 100 : '',
                 duration: duration

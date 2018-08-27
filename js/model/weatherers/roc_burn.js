@@ -28,7 +28,7 @@ define([
         },
 
         models: {
-            units: Backbone.Model
+            units: Backbone.Model,
         },
 
         initialize: function(options){
