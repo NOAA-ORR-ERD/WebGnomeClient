@@ -153,7 +153,7 @@ define([
                 ]),
                 weatherers: new Backbone.Collection([
                     new EvaporationWeatherer({on: false}),
-                    new NaturalDispersionWeatherer({name: '_natural', on: false}),
+                    new NaturalDispersionWeatherer({on: false}),
                     new EmulsificationWeatherer({on: false}),
                     new FayGravityViscous({on: false}),
                     new Langmuir({on: false}),
