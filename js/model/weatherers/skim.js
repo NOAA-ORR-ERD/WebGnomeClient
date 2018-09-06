@@ -10,7 +10,12 @@ define([
             'name': 'Skimmer',
             'efficiency': 0.20,
             'amount': 0,
-            'units': 'bbl'
+            'units': 'bbl',
+            'water': null
+        },
+
+        model: {
+            'water': Backbone.Model
         },
 
         toTree: function(){

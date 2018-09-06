@@ -14,11 +14,13 @@ define([
             'area_units': 'm^2',
             'thickness_units': 'cm',
             'wind': null,
+            'water': null,
             'efficiency': 0.20
         },
 
         model: {
-            wind: Backbone.Model
+            wind: Backbone.Model,
+            water: Backbone.Model
         },
 
         toTree: function(){

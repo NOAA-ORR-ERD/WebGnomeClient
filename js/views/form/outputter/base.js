@@ -47,16 +47,19 @@ define([
 
             if (_.isUndefined(model)) {
                 model = new this.models[obj_type]();
+                model.setOutputterName();
+                model.setStartTime();
 
                 model.save(null, {
                     success: function() {
                         webgnome.model.get('outputters').add(model, {'merge': true});
                     }
                 });
+            } else {
+                model.setOutputterName();
+                model.setStartTime();
             }
 
-            model.setOutputterName();
-            model.setStartTime();
 
             return model;
         },
