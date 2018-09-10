@@ -6,7 +6,7 @@ test:
         - grunt build
     tags:
         - test
-        - node
+        - nodejs
 
 master:
     script:
@@ -14,6 +14,7 @@ master:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
     tags:
         - docker
+        - build
     only:
         - master
 develop:
@@ -22,6 +23,7 @@ develop:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
     tags:
         - docker
+        - build
     only:
         - develop
 
@@ -31,6 +33,7 @@ production:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
     tags:
         - docker
+        - build
     only:
         - production
 
