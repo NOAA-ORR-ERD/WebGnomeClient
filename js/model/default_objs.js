@@ -83,7 +83,7 @@ define([
                     validate: false,
                     success: _.bind(function(mod){
                         webgnome.model.get('environment').add(mod);
-                        webgnome.model.save()
+                        webgnome.model.save();
                         this.set('waves', mod);
                     }, this)
                 });
@@ -124,7 +124,7 @@ define([
             if (this.get('wind') != null && _.isNull(weatherer.get('wind'))) {
                 weatherer.set('wind', this.get('wind'));
             }
-            weatherer.save()
+            weatherer.save();
         },
 
         weatheringValid: function() {
