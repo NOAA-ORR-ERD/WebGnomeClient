@@ -202,7 +202,6 @@ define([
                                 var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
                                 var wind = model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
 
-                                webgnome.model.toggleWeatherers();
                                 webgnome.model.save(null, {validate: false});
                                 webgnome.router._cleanup();
                                 webgnome.router.navigate('config', true);
@@ -210,7 +209,6 @@ define([
                             }
                         });
                     } else {
-                        webgnome.model.toggleWeatherers();
                         webgnome.router._cleanup();
                         webgnome.router.navigate('config', true);
                     }
