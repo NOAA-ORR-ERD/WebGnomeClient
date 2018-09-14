@@ -131,7 +131,7 @@ define([
                 'gnome.weatherers.spreading.FayGravityViscous': FayGravityViscous,
                 'gnome.weatherers.spreading.Langmuir': Langmuir,
                 'gnome.weatherers.weathering_data.WeatheringData': WeatheringData,
-                //'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
+                'gnome.weatherers.dissolution.Dissolution': DissolutionWeatherer,
                 'gnome.weatherers.roc.Skim': RocSkimResponse,
                 'gnome.weatherers.roc.Burn': RocBurnResponse,
                 'gnome.weatherers.roc.Disperse': RocDisperseResponse
