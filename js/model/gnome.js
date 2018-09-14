@@ -221,7 +221,6 @@ define([
 
         spillsChange: function(child){
             this.childChange('spills', child);
-            this.toggleWeatherers(child);
             if(this.get('uncertain')) {
                 this.set('uncertain', false);
                 this.save(null, {
@@ -340,27 +339,8 @@ define([
             }
         },
 
-        weatherersChange: function(child){
-
-        },
-
         outputtersChange: function(child){
             this.childChange('outputters', child);
-        },
-
-        configureWeatherers: function() {
-
-        },
-
-        toggleWeatherers: function(spillChild) {
-            var hasSubstance = this.configureWeatherers();
-            var weatherers = this.get('weatherers');
-
-            for (var i = 0; i < weatherers.models.length; i++) {
-                if (weatherers.at(i).get('on') !== hasSubstance) {
-                    weatherers.at(i).set('on', hasSubstance).save();
-                }
-            }
         },
 
         validateSpills: function() {
