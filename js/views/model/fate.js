@@ -1067,10 +1067,14 @@ define([
             dataset = this.pluckDataset(JSON.parse(JSON.stringify(dataset)), ['water_content', 'secondtime', 'floating']);
             var units = webgnome.model.get('spills').at(0).get('units');
             var options = $.extend(true, {}, this.defaultChartOptions);
-
+            
+            var flt_id;
+            var wc_id;
+            
             if (dataset.length === 3) {
                 for (var i = 0; i < dataset.length; i++) {
                     if (dataset[i].name === 'floating') {
+                        flt_id = i;
                         if (['kg', 'ton', 'metric ton'].indexOf(units) > -1) {
                             dataset[i] = this.convertDataset(dataset[i], 'bbl', true);
                             this.$('.secondYaxisLabel').text('bbl');
@@ -1079,6 +1083,7 @@ define([
                         dataset[i].label = 'Surface Volume including Emulsion';
                     }
                     if (dataset[i].name === 'water_content') {
+                        wc_id = i;
                         dataset[i].label = 'Water Content of Emulsion';
                     }
                     dataset[i].needle = {
@@ -1090,17 +1095,30 @@ define([
                         dataset[i].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
                     }
                 }
-
-                if(_.isUndefined(this.graphEmulsification)){
-                    delete options.yaxis;
-                    options.yaxes = [{}, { position: 'right'}];
-                    this.graphEmulsificaiton = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
-                } else {
-                    this.graphEmulsification.setData(dataset);
-                    this.graphEmulsification.setupGrid();
-                    this.graphEmulsification.draw();
+                
+                
+                var total_wc = 0;
+                for (i=0; i < dataset[flt_id].data.length; i++) {
+                    total_wc = total_wc + dataset[wc_id].data[i][1];
+                    dataset[flt_id].data[i][1] = dataset[flt_id].data[i][1] + dataset[flt_id].data[i][1]*dataset[wc_id].data[i][1]/100;
+                    dataset[flt_id].data[i][3] = dataset[flt_id].data[i][3] + dataset[flt_id].data[i][3]*dataset[wc_id].data[i][3]/100;
+                    dataset[flt_id].data[i][4] = dataset[flt_id].data[i][4] + dataset[flt_id].data[i][4]*dataset[wc_id].data[i][4]/100;
                 }
-                dataset[0].fillArea = null;
+                
+                if (total_wc === 0) {
+                    this.$('#emulsification .timeline .chart').text('Emulsification not predicted.');
+                } else {
+                    if(_.isUndefined(this.graphEmulsification)){
+                        delete options.yaxis;
+                        options.yaxes = [{}, { position: 'right'}];
+                        this.graphEmulsification = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
+                    } else {
+                        this.graphEmulsification.setData(dataset);
+                        this.graphEmulsification.setupGrid();
+                        this.graphEmulsification.draw();
+                    }
+                    dataset[0].fillArea = null;
+                }
             } else {
                 this.$('#emulsification .timeline .chart').text('Dataset incomplete for graph display');
             }
@@ -1160,7 +1178,7 @@ define([
         convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var density = (!_.isNull(substance)) ? substance.get('standard_density') : webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
             var data;
