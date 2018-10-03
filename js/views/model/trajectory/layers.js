@@ -446,7 +446,7 @@ define([
         },
 
         toggleSpillLayers: function(e) {
-            var id = e.target.id.split('-')[1];
+            var id = e.target.id.split('-').slice(1).join('-');
             var name = e.currentTarget.name;
             var layer = this.layers.findWhere({id: id});
             if (!e.currentTarget.checked) { //unchecking a box

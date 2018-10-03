@@ -255,21 +255,19 @@ define([
         },
 
         prev: function(){
-            if($('.modal').length === 0){
-                this.pause();
-                this.controls.seek.slider('value', this.controls.seek.slider('value') - 1);
-                this.trigger('loop', {step: this.controls.seek.slider('value')});
-            }
+            this.pause();
+            this.controls.seek.slider('value', this.controls.seek.slider('value') - 1);
+            this.trigger('loop', {step: this.controls.seek.slider('value')});
         },
 
         next: function(){
-            if($('.modal').length === 0){
-                this.pause();
-                if(this.controls.seek.slider('value') <= webgnome.cache.length){
-                    this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
-                }
-                this.trigger('loop', {step: this.controls.seek.slider('value')});
+            //if($('.modal').length === 0){
+            this.pause();
+            if(this.controls.seek.slider('value') <= webgnome.cache.length){
+                this.controls.seek.slider('value', this.controls.seek.slider('value') + 1);
             }
+            this.trigger('loop', {step: this.controls.seek.slider('value')});
+            //}
         },
 
         seek: function(e, ui){
