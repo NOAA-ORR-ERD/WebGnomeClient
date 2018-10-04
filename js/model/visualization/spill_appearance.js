@@ -62,15 +62,14 @@ define([
             }
             var toDisplay, fromInput;
             var data = this.get('data');
+            var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
             if (data === 'Mass') {
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
                     return c.Convert(value, newUnits, spill.get('element_type').get('standard_density'), 'kg/m^3', 'kg');
                 }, this);
                 toDisplay = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
                     return c.Convert(value, 'kg', spill.get('element_type').get('standard_density'), 'kg/m^3', newUnits);
                 }, this);
             } else if (data === 'Age') {
@@ -93,6 +92,16 @@ define([
                 }, this);
                 toDisplay = _.bind(function(value) {
                     return nucos.Converters.length.Convert('m', newUnits, value);
+                }, this);
+            } else if (data ==='Surface Concentration') {
+                //Convert to and from percentages
+                fromInput = _.bind(function(value) {
+                    //percentage->surf_conc
+                    return value/100 * spill.estimateMaxConcentration();
+                }, this);
+                toDisplay = _.bind(function(value) {
+                    //surf_conc->percentage
+                    return Number(value / spill.estimateMaxConcentration() * 100).toPrecision(3) + " %";
                 }, this);
             } else {
                 fromInput = function(value) {return value;};

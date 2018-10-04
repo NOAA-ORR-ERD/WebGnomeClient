@@ -117,6 +117,19 @@ define([
             }
         },
 
+        estimateMaxConcentration: function() {
+            var time_step = webgnome.model.get('time_step');
+            var diff_coef = 10;
+            var diff_mover = webgnome.model.get('movers').findWhere({'obj_type': 'gnome.movers.random_movers.RandomMover'});
+            if (diff_mover) {
+                diff_coef = diff_mover.get('diffusion_coef') / 100;
+            }
+            var max_random_walk = Math.sqrt((6*diff_coef)*time_step);
+            var area = Math.PI * max_random_walk * max_random_walk;
+            var est_avg_conc = this._amount_si/area;
+            return est_avg_conc;
+        },
+
         calculateSI: function() {
             var oilConverter = new nucos.OilQuantityConverter();
             this._amount_si = oilConverter.Convert(this.get('amount'),
@@ -377,12 +390,12 @@ define([
             var max, min, stops;
 
             if (data === 'Age') {
-                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
+                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
             }
             else if (data === 'Surface Concentration') {
                 min = 0.0001;
-                max = 0.7;
+                max = this.estimateMaxConcentration();
                 colormap.set('numberScaleType', 'log');
             }
             else if (data === 'Viscosity') {
@@ -396,8 +409,8 @@ define([
                 colormap.set('numberScaleType', 'linear');
             }
             else {
-                max = this._per_le_mass;
                 min = 0;
+                max = this._per_le_mass;
                 colormap.set('numberScaleType', 'linear');
             }
 
