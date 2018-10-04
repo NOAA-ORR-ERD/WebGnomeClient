@@ -122,11 +122,21 @@ define([
             var diff_coef = 10;
             var diff_mover = webgnome.model.get('movers').findWhere({'obj_type': 'gnome.movers.random_movers.RandomMover'});
             if (diff_mover) {
-                diff_coef = diff_mover.get('diffusion_coef') / 100;
+                diff_coef = diff_mover.get('diffusion_coef') / 10000;
             }
             var max_random_walk = Math.sqrt((6*diff_coef)*time_step);
             var area = Math.PI * max_random_walk * max_random_walk;
-            var est_avg_conc = this._amount_si/area;
+            
+            var release_duration = this.get('release').getDuration();
+            var amt = 0;
+            if (release_duration === 0) {
+                amt = this._amount_si;
+            } else {
+                numTS = Math.ceil(release_duration / time_step);
+                amt = this._amount_si / numTS;
+            }
+
+            var est_avg_conc = amt/area;
             return est_avg_conc;
         },
 
