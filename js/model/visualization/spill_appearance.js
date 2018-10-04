@@ -96,12 +96,13 @@ define([
             } else if (data ==='Surface Concentration') {
                 //Convert to and from percentages
                 fromInput = _.bind(function(value) {
-                    //percentage->surf_conc
-                    return value/100 * spill.estimateMaxConcentration();
+                    //surf_conc
+                    return value
                 }, this);
                 toDisplay = _.bind(function(value) {
                     //surf_conc->percentage
-                    return Number(value / spill.estimateMaxConcentration() * 100).toPrecision(3) + " %";
+                    var percent = Number(value / spill.estimateMaxConcentration() * 100).toPrecision(3);
+                    return percent + "%\n" + Number(value).toPrecision(3);
                 }, this);
             } else {
                 fromInput = function(value) {return value;};

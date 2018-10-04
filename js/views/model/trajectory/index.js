@@ -376,8 +376,8 @@ define([
                                         var dir = Number(this.dir ? this.dir : 0),
                                             mag = Number(this.mag ? this.mag : 0);
                                         dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-dir)).toFixed(2);
-                                        return 'Mag: ' + ('   ' + mag.toFixed(2)).slice(-7) + ' m/s' +
-                                            '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                                        return 'Mag: ' + ('\t' + mag.toFixed(2)).slice(-7) + ' m/s' +
+                                            '\nDir: ' + ('\t' + dir).slice(-7) + '\u00B0';
                                     }, entity.pickedObject.primitive),
                                     true
                                 );
@@ -393,14 +393,20 @@ define([
                                 entity.label.show = true;
                                 entity.label.text = new Cesium.CallbackProperty(
                                     _.bind(function(primitive){
-                                        var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4),
-                                            loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
+                                        var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4);
+                                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
+                                        var surf_conc = Number(primitive.surface_concentration ? primitive.surface_concentration : 0).toPrecision(3);
                                             //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : 0),
                                         var lon = this.graticule.genDMSLabel('lon', loc.longitude);
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
-                                        return 'Mass: ' + ('   ' + mass).slice(-7) + ' kg' +
-                                            '\nLon: ' + ('   ' + lon)+
-                                            '\nLat: ' + ('   ' + lat);
+                                        var ttstr = 'Mass: ' + ('\t' + mass).slice(-7) + ' kg';
+                                        if (surf_conc !== 0) {
+                                            ttstr = ttstr + '\nS_Conc: \t' + surf_conc + ' kg/m^2';
+                                        }
+                                        ttstr = ttstr +
+                                            '\nLon: ' + ('\t' + lon) +
+                                            '\nLat: ' + ('\t' + lat);
+                                        return ttstr;
                                     }, this, entity.pickedObject.primitive),
                                     true
                                 );
