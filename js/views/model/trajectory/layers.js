@@ -113,6 +113,7 @@ define([
             this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
             this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
             //this.$('.env-edit-btn').tooltip(this.createTooltipObject("Edit"));
+            this.$('.spill-row').hover(_.bind(this.highlightLEs, this), _.bind(this.unhighlightLEs, this));
         },
 
         createTooltipObject: function(title) {
@@ -554,6 +555,24 @@ define([
             if (l) {
                 this.$('#name-' + l.id).text(e.get('name'));
             }
+        },
+
+        highlightLEs: function(e) {
+            var id = $('.spill-name', e.currentTarget)[0].id.split('-').slice(1).join('-')
+            var sp = webgnome.model.get('spills').findWhere({'id': id});
+            var curscale = sp.get('_appearance').get('scale');
+            sp.get('_appearance').set('scale', curscale * 1.3);
+            sp._locVis.billboard.scale = 1.3
+            this.trigger('requestRender');
+        },
+
+        unhighlightLEs: function(e) {
+            var id = $('.spill-name', e.currentTarget)[0].id.split('-').slice(1).join('-')
+            var sp = webgnome.model.get('spills').findWhere({'id': id});
+            var curscale = sp.get('_appearance').get('scale');
+            sp.get('_appearance').set('scale', curscale / 1.3);
+            sp._locVis.billboard.scale = 1.0
+            this.trigger('requestRender');
         },
 
         close: function(){
