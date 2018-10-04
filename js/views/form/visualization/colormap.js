@@ -317,7 +317,12 @@ define([
         },
 
         _toDisplayString(value) {
-            return Number(this.model.toDisplayConversionFunc(value)).toPrecision(4);
+            var dispValue = this.model.toDisplayConversionFunc(value)
+            if (typeof(dispValue) === 'string') {
+                return dispValue
+            } else {
+                return Number(dispValue).toPrecision(4);
+            }
         },
 
         _fromInput(value) {
