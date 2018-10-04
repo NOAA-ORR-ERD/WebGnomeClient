@@ -154,7 +154,7 @@ define([
             	parentObj[key] = parentObj[key].toFixed(1);
             }
             else if (key === 'weathering') {
-            	parentObj[key] = parentObj[key].toFixed(1);
+            	parentObj[key] = parentObj[key].toFixed(2);
             }
             else if (key === 'kg_m_3') {
             	parentObj[key] = parentObj[key].toFixed(2);

@@ -20,13 +20,14 @@ define([
                          les_on: 'Show Oil',
                          scale: 'Scale',
                         },
-            _available_data: ['Mass','Age','Viscosity','Depth']
+            _available_data: ['Mass', 'Surface Concentration', 'Age', 'Viscosity', 'Depth']
             };
         },
 
         initialize: function(model) {
             BaseAppearance.prototype.initialize.call(this, model);
             this.listenTo(this.get('colormap'), 'change', this.save);
+            this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);
@@ -38,6 +39,8 @@ define([
             var newUnits;
             if (data === 'Mass') {
                 newUnits = 'kg';
+            } else if (data === 'Surface Concentration') {
+                newUnits = '';
             } else if (data === 'Age') {
                 newUnits = 'hrs';
             } else if (data === 'Viscosity') {
@@ -101,7 +104,7 @@ define([
 
         updateSpillJsonOutputter: function(dtype) {
             var output = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'});
-            if(dtype !== 'Viscosity') {
+            if(dtype !== 'Viscosity' || dtype !== 'Surface Concentration') {
                 this.get('colormap').set('numberScaleType', 'linear');
             }
             output._updateRequestedDataTypes(dtype);

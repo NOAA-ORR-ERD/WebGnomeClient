@@ -101,6 +101,7 @@ define([
         setValue(name, index, value) {
             this.get(name)[index] = value;
             this.trigger('change:'+name, {name: this.get(name)});
+            this.trigger('change', {name: this.get(name)});
         },
 
         setStop: function(index, value) {

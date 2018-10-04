@@ -380,6 +380,11 @@ define([
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
             }
+            else if (data === 'Surface Concentration') {
+                min = 0.0001;
+                max = 0.7;
+                colormap.set('numberScaleType', 'log');
+            }
             else if (data === 'Viscosity') {
                 min = 0.0000001;
                 max = 250000;
@@ -448,7 +453,7 @@ define([
             }
 
             var value, color, alpha, i, datatype;
-            datatype = this.get('_appearance').get('data').toLowerCase();
+            datatype = this.get('_appearance').get('data').toLowerCase().replace(/ /g, '_');
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
@@ -477,7 +482,7 @@ define([
 
             // is it really necessary to use a ternary operator
             // on such long complex expressions?
-            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase();
+            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
 
             if (uncertain) {
                 for (f = 0; f < uncertain.length; f++) {
