@@ -132,7 +132,7 @@ define([
             if (release_duration === 0) {
                 amt = this._amount_si;
             } else {
-                numTS = Math.ceil(release_duration / time_step);
+                var numTS = Math.ceil(release_duration / time_step);
                 amt = this._amount_si / numTS;
             }
 

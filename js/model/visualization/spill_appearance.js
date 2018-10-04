@@ -40,7 +40,7 @@ define([
             if (data === 'Mass') {
                 newUnits = 'kg';
             } else if (data === 'Surface Concentration') {
-                newUnits = '';
+                newUnits = 'kg/m^2';
             } else if (data === 'Age') {
                 newUnits = 'hrs';
             } else if (data === 'Viscosity') {
