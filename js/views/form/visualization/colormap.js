@@ -11,11 +11,10 @@ define([
     "use strict";
 
     /*
-    The purpose of this view is to manage and configure a mapping between a number scale and a color map.
-    
+    The purpose of this view is to manage and configure a mapping
+    between a number scale and a color map.
     */
     var colormapForm = BaseForm.extend({
-
         events: {
             'change .tooltip input[type="color"]': 'updateColorScale',
             //'change .tooltip input[type="number"]': 'updateScales',
@@ -45,14 +44,21 @@ define([
             //pointermouseup
             var dx = e.clientX - this._pdPosition.x,
                 dy = e.clientY - this._pdPosition.y;
+
             if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
                 return;
-            } else if ($('input', $(e.currentTarget)).length > 0) {
+            }
+            else if ($('input', $(e.currentTarget)).length > 0) {
                 $('input', $(e.currentTarget)).focus();
-            } else {
-                var valueBox = $('<input>',{type:'number', class: 'numberScaleDomain', step: 0.001});
+            }
+            else {
+                var valueBox = $('<input>', {type:'number',
+                                             class: 'numberScaleDomain',
+                                             step: 0.001});
+
                 valueBox.prop('value', parseFloat(e.currentTarget.innerText));
                 valueBox.attr('value', parseFloat(e.currentTarget.innerText));
+
                 $(e.currentTarget).text('').append(valueBox);
                 valueBox.focus();
             }
@@ -62,14 +68,15 @@ define([
             this.$el.append(_.template(ColormapTemplate, {
                 model: this.model
             }));
+
             this.picker = $('#colormap-slider', this.$el);
             this.genSlider();
             this.updateBackground();
+
             this.schemePicker = $('#scheme-picker', this.$el)
             .on('chosen:ready', _.bind(this.applySchemeBackgrounds, this))
-            .chosen({
-                disable_search: true,
-                width: "100%"
+            .chosen({disable_search: true,
+                     width: "100%"
             });
         },
 
@@ -77,9 +84,11 @@ define([
             var numberRange = _.clone(this.model.get('numberScaleRange'));
             var min = 0;
             var max = 1;
-            if(this.picker.slider('instance')) {
+
+            if (this.picker.slider('instance')) {
                 this.picker.slider('destroy');
             }
+
             this.picker.slider({
                 //range: true,
                 values: this.model.get('numberScaleDomain').map(this.model.numScale),
@@ -103,9 +112,12 @@ define([
             if (curr > next || curr < prev || !ui.handle) {
                 return false;
             }
-            this.model.setValue('numberScaleDomain', ui.handleIndex, this.model.numScale.invert(curr));
+
+            this.model.setValue('numberScaleDomain', ui.handleIndex,
+                                this.model.numScale.invert(curr));
             this.updateNumberTooltip(e, ui);
             this.updateBackground();
+
             return true;
         },
 
@@ -117,19 +129,25 @@ define([
             //$(handles[handles.length-1]).addClass('slider-last');
             var i;
 
-            if (this.model.get('interpolate')) { // each handle must have a number and color tooltip
+            if (this.model.get('interpolate')) {
+                // each handle must have a number and color tooltip
                 for (i = 0; i < handles.length; i++) {
                     this.numberStops.push(this.createNumberTip(this.model.get('numberScaleDomain')[i], $(handles[i])));
                     this.colorStops.push(this.createColorTip(this.model.get('colorScaleRange')[i], $(handles[i])));
                 }
-            } else { // each handle must have a number tooltip, but the color tooltips are on the slider between the handles
+            }
+            else {
+                // each handle must have a number tooltip,
+                // but the color tooltips are on the slider between the handles
                 for (i = 0; i < handles.length; i++) {
                     this.numberStops.push(this.createNumberTip(this.model.get('numberScaleDomain')[i], $(handles[i])));
                 }
+
                 for (i = 0; i < handles.length -1; i++) {
                     this.colorStops.push(this.createColorTip(this.model.get('colorScaleRange')[i], this.picker));
                 }
             }
+
             for (i = 1; i < handles.length-1; i++) {
                 $(handles[i]).addClass('movable');
             }
@@ -138,41 +156,56 @@ define([
         createNumberTip: function(value, parentElem) {
             var valueToolTip, arrow, inner, valueBox;
             valueToolTip = $('<div></div>',{class: "tooltip top slider-tip"});
+
             arrow = $('<div></div>',{class: "tooltip-arrow"});
             inner = $('<div></div>',{class: "tooltip-inner"});
+
             var dispValue = this._toDisplayString(value);
+
             inner.text(dispValue);
             valueToolTip.append(arrow);
             valueToolTip.append(inner);
             inner.append(valueBox);
+
             parentElem.append(valueToolTip);
+
             return valueToolTip;
         },
 
         createColorTip: function(color, parentElem) {
             var colorToolTip, arrow, inner, colorBox;
             colorToolTip = $('<div></div>',{class: "tooltip bottom slider-tip"});
+
             arrow = $('<div></div>',{class: "tooltip-arrow"});
             inner = $('<div></div>',{class: "tooltip-inner"});
-            colorBox = $('<input>',{type: 'color', class: 'colorScaleRange', value: color});
+
+            colorBox = $('<input>',{type: 'color', class: 'colorScaleRange',
+                                    value: color});
+
             colorToolTip.append(arrow);
             colorToolTip.append(inner);
             inner.append(colorBox);
+
             parentElem.append(colorToolTip);
+
             return colorToolTip;
         },
 
         updateAllTooltips: function(e) {
-            //reinitializes all the tooltips on the slider from the scale objects they represent
+            // reinitializes all the tooltips on the slider
+            // from the scale objects they represent
             var ttc, i;
+
             for (i = 0; i < this.numberStops.length; i++) {
                 ttc = $('input', this.numberStops[i]);
                 ttc.prop('value', this._toDisplayString(this.model.get('numberScaleDomain')[i]));
             }
+
             for (i = 0; i < this.colorStops.length; i++) {
                 ttc = $('input', this.colorStops[i]);
                 ttc.prop('value', this.model.get('colorScaleRange')[i]);
             }
+
             this.updateBackground();
         },
 
@@ -181,21 +214,27 @@ define([
             //domain is an array of numbers on a linear number scale
             var backgroundString = 'linear-gradient(to right, ';
             var i, boundary;
+
             if (interpolate)  {
                 for (i = 0; i < colors.length - 1; i++) {
                     boundary = (domain[i] - domain[0]) / (domain[domain.length-1] - domain[0]) * 100;
                     backgroundString += `${colors[i]} ${boundary}%, `;
                 }
+
                 backgroundString += `${colors[i]} 100%)`;
-            } else {
+            }
+            else {
                 var curbounds = 0;
+
                 for (i = 0; i < colors.length - 1; i++) {
                     boundary = (domain[i+1] - domain[0]) / (domain[domain.length-1] - domain[0]) * 100;
                     backgroundString += `${colors[i]} ${curbounds}%, ${colors[i]} ${boundary}%, `;
                     curbounds = boundary;
                 }
+
                 backgroundString += `${colors[i]} ${curbounds}%, ${colors[i]} 100%)`;
             }
+
             return backgroundString;
         },
 
@@ -205,55 +244,75 @@ define([
             var i, boundary;
             var numberDomain = this.picker.slider('values');
             var colorRange = this.model.get('colorScaleRange');
-            var bgString = this._genBackgroundString(numberDomain, colorRange, this.model.get('interpolate'));
+            var bgString = this._genBackgroundString(numberDomain, colorRange,
+                                                     this.model.get('interpolate'));
+
             if (colorRange.length === 1) {
                 this.colorStops[0].css('left', '50%');
             }
+
             if (!this.model.get('interpolate')) {
                 var curbounds = 0;
+
                 for (i = 0; i < colorRange.length - 1; i++) {
                     boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                     this.colorStops[i].css('left', ((boundary - curbounds) / 2 + curbounds) + '%');
                     curbounds = boundary;
                 }
+
                 this.colorStops[i].css('left', ((100 - curbounds) / 2   + curbounds) + '%');
             }
+
             this.picker.css('background', bgString);
         },
 
         applySchemeBackgrounds: function(e, selected) {
             var genBGString = _.bind(function(name) {
                 var colors, range, interpolate;
+
                 if ('interpolate'+name in d3) {
                     var d3scheme = d3['interpolate'+name];
                     range = _.range(0,1.1,0.1);
                     colors = range.map(d3scheme);
                     interpolate = true;
-                } else if ('scheme' + name in d3) {
+                }
+                else if ('scheme' + name in d3) {
                     colors = d3['scheme'+name];
                     range = _.range(0,colors.length+1, 1);
                     interpolate = false;
-                } else {
+                }
+                else {
                     colors = this.model.get('_customScheme');
                     range = this.model.get('numberScaleRange');
                     interpolate = this.model.get('interpolate');
                 }
-                var bgString = this._genBackgroundString(range, colors, interpolate);
+
+                var bgString = this._genBackgroundString(range, colors,
+                                                         interpolate);
+
                 return bgString;
             }, this);
+
             var options = $('li', $('.chosen-results', this.$el));
+
             if (e.type !== 'change') {
                 for (var i = 0; i < options.length; i++) {
                     var name = $(options[i]).text();
                     $(options[i]).css('background', genBGString(name));
                 }
-                $('.chosen-single', this.$el).css('background', genBGString(this.model.get('scheme')));
-            } else {
+
+                $('.chosen-single', this.$el).css('background',
+                                                  genBGString(this.model.get('scheme')));
+            }
+            else {
                 if (selected) {
-                    $('.chosen-single', this.$el).css('background', genBGString(selected.selected));
+                    $('.chosen-single', this.$el).css('background',
+                                                      genBGString(selected.selected));
                     this.model.set('scheme', selected.selected);
-                } else {
-                    $('.chosen-single', this.$el).css('background', genBGString(this.model.get('scheme')));
+                }
+                else {
+                    $('.chosen-single', this.$el).css('background',
+                                                      genBGString(this.model.get('scheme')));
                 }
             }
         },
@@ -261,6 +320,7 @@ define([
         focusInput: function(e) {
             e.currentTarget.disabled = false;
             e.currentTarget.focus();
+
             console.log(e);
         },
 
@@ -270,37 +330,55 @@ define([
                     break;
                 }
             }
-            var newVal = this.model.fromInputConversionFunc(parseFloat(e.currentTarget.value));
+
+            var newVal = (this.model
+                          .fromInputConversionFunc(parseFloat(e.currentTarget.value)));
+
             if (this.model.setStop(i, newVal)) {
-                this.picker.slider('values', this.model.get('numberScaleDomain').map(this.model.numScale));
+                this.picker.slider('values',
+                                   this.model.get('numberScaleDomain')
+                                   .map(this.model.numScale));
+
                 $(e.currentTarget).remove();
-                $('.tooltip-inner', this.numberStops[i]).text(this._toDisplayString(newVal));
+                $('.tooltip-inner',
+                  this.numberStops[i]).text(this._toDisplayString(newVal));
+
                 this.updateBackground();
-            } else {
+            }
+            else {
                 $(e.currentTarget).remove();
-                $('.tooltip-inner', this.numberStops[i]).text(this._toDisplayString(this.model.get('numberScaleDomain')[i]));
+                $('.tooltip-inner',
+                  this.numberStops[i])
+                  .text(this._toDisplayString(this.model.get('numberScaleDomain')[i]));
             }
         },
 
         updateNumberTooltip: function(e, ui) {
             var ttc = $('.top > .tooltip-inner', $(ui.handle));
+
             if ($('input[type="number"]', ttc).length > 0) {
                 $('input[type="number"]', ttc).remove();
             }
-            ttc.text(this._toDisplayString(this.model.numScale.invert(ui.value)));
+
+            ttc.text(this._toDisplayString(this.model
+                                           .numScale.invert(ui.value)));
         },
 
         updateColorScale: function(e) {
             var stops = _.clone(this.model.get('colorScaleRange'));
+
             for (var i = 0; i < this.colorStops.length; i++) {
                 if ($('input', this.colorStops[i])[0] === e.currentTarget) {
                     stops[i] = e.currentTarget.value; 
                 }
             }
+
             this.model.set('scheme', 'Custom', {silent:true});
             this.model.set('colorScaleRange', stops);
+
             this.updateBackground();
         },
+
         addStop: function(e) {
             this.model.addStop(this.model.get('numberScaleDomain').length - 1);
             this.rerender();
@@ -317,18 +395,23 @@ define([
         },
 
         _toDisplayString(value) {
-            var dispValue = this.model.toDisplayConversionFunc(value)
+            var dispValue = this.model.toDisplayConversionFunc(value);
+
             if (typeof(dispValue) === 'string') {
-                return dispValue
-            } else {
+                return dispValue;
+            }
+            else {
                 return Number(dispValue).toPrecision(4);
             }
         },
 
         _fromInput(value) {
-            return Number(this.model.fromInputConversionFunc(parseFloat(value))).toPrecision(4);
+            return Number(this.model
+                          .fromInputConversionFunc(parseFloat(value)))
+                          .toPrecision(4);
         }
 
     });
+
     return colormapForm;
 });
