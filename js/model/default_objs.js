@@ -26,6 +26,7 @@ define([
             this.listenTo(model.get('environment'), 'remove', this.removeObj);
             this.listenTo(model.get('spills'), 'change', this.checkSubstance);
             this.listenTo(model.get('spills'), 'add remove change', this.checkSubstance);
+            this.listenTo(model.get('weatherers'), 'add', this.attachNewWeatherer);
             this.listenTo(this, 'new_wind new_water', this.manageWaves);
             this.listenTo(this, 'change', this.weatheringValid);
         },
@@ -82,6 +83,7 @@ define([
                     validate: false,
                     success: _.bind(function(mod){
                         webgnome.model.get('environment').add(mod);
+                        webgnome.model.save();
                         this.set('waves', mod);
                     }, this)
                 });
@@ -93,6 +95,9 @@ define([
                 }
                 if(!this.get('wind')) {
                     this.set('water', mod.get('water'));
+                }
+                if (!webgnome.model.get('environment').contains(mod)) {
+                    webgnome.model.get('environment').add(mod);
                 }
             }
         },
@@ -107,6 +112,19 @@ define([
                 }
             }
             this.set('hasSubstance', hasSubstance);
+        },
+
+        attachNewWeatherer: function(weatherer) {
+            if (this.get('waves') != null && _.isNull(weatherer.get('waves'))) {
+                weatherer.set('waves', this.get('waves'));
+            }
+            if (this.get('water') != null && _.isNull(weatherer.get('water'))) {
+                weatherer.set('water', this.get('water'));
+            }
+            if (this.get('wind') != null && _.isNull(weatherer.get('wind'))) {
+                weatherer.set('wind', this.get('wind'));
+            }
+            weatherer.save();
         },
 
         weatheringValid: function() {

@@ -1,15 +1,12 @@
-test: 
+test:
     script:
-        - yum update -y
-        - rpm -ivh https://kojipkgs.fedoraproject.org//packages/http-parser/2.7.1/3.el7/x86_64/http-parser-2.7.1-3.el7.x86_64.rpm && yum -y install nodejs
-        # - yum install -y node npm
-        - npm install -g grunt-cli
         - npm install
         - grunt install
         - cp config-example.json config.json
         - grunt build
     tags:
         - test
+        - nodejs
 
 master:
     script:
@@ -17,6 +14,7 @@ master:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
     tags:
         - docker
+        - build
     only:
         - master
 develop:
@@ -25,6 +23,7 @@ develop:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
     tags:
         - docker
+        - build
     only:
         - develop
 
@@ -34,6 +33,7 @@ production:
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
     tags:
         - docker
+        - build
     only:
         - production
 

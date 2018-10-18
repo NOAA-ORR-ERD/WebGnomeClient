@@ -61,7 +61,7 @@ define([
             var filteredNames = ["ChemicalDispersion", "Skimmer", "Burn"];
             this.responses = [];
             for (var i = 0; i < weatherers.length; i++){
-                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 && weatherers[i].get('name') !== '_natural'  && !weatherers[i].get('name').startsWith("ROC")){
+                if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1  && !weatherers[i].get('name').startsWith("ROC")){
                     this.responses.push(weatherers[i]);
                 }
             }

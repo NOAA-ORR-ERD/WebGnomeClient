@@ -28,6 +28,8 @@
                     <option value="ton" {{'ton' === model.get('units') ? "selected" : ""}}>tons</option>
                     <option value="mt" {{'mt' === model.get('units') ? "selected" : ""}}>metric tons</option>
                     <option value="kg" {{'kg' === model.get('units') ? "selected" : ""}}>kilograms</option>
+                {% } else if (model.get('data') === 'Surface Concentration') { %}
+                    <option value="kg/m^2" {{'%' === model.get('units') ? "selected" : ""}}>kg/m^2</option>
                 {% } else if (model.get('data') === 'Age') { %}
                     <option value='hr' {{'hr' === model.get('units') ? "selected" : ""}}>hours</option>
                     <option value='sec' {{'sec' === model.get('units') ? "selected" : ""}}>seconds</option>

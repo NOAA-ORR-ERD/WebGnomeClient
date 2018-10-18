@@ -70,8 +70,7 @@ define([
 
             for (var i = 0; i < weatherers.length; i++) {
                 if (filteredNames.indexOf(weatherers[i].parseObjType()) !== -1 &&
-                        weatherers[i].get('name') !== '_natural' &&
-                        weatherers[i].get('name').startsWith("ROC")) {
+                        !weatherers[i].get('name').startsWith("Burn")) {
                     this.responses.push(weatherers[i]);
                 }
             }

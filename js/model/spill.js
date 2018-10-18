@@ -117,6 +117,29 @@ define([
             }
         },
 
+        estimateMaxConcentration: function() {
+            var time_step = webgnome.model.get('time_step');
+            var diff_coef = 10;
+            var diff_mover = webgnome.model.get('movers').findWhere({'obj_type': 'gnome.movers.random_movers.RandomMover'});
+            if (diff_mover) {
+                diff_coef = diff_mover.get('diffusion_coef') / 10000;
+            }
+            var max_random_walk = Math.sqrt((6*diff_coef)*time_step);
+            var area = Math.PI * max_random_walk * max_random_walk;
+            
+            var release_duration = this.get('release').getDuration();
+            var amt = 0;
+            if (release_duration === 0) {
+                amt = this._amount_si;
+            } else {
+                var numTS = Math.ceil(release_duration / time_step);
+                amt = this._amount_si / numTS;
+            }
+
+            var est_avg_conc = amt/area;
+            return est_avg_conc;
+        },
+
         calculateSI: function() {
             var oilConverter = new nucos.OilQuantityConverter();
             this._amount_si = oilConverter.Convert(this.get('amount'),
@@ -377,8 +400,13 @@ define([
             var max, min, stops;
 
             if (data === 'Age') {
-                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
                 min = 0;
+                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+            }
+            else if (data === 'Surface Concentration') {
+                min = 0.0001;
+                max = this.estimateMaxConcentration();
+                colormap.set('numberScaleType', 'log');
             }
             else if (data === 'Viscosity') {
                 min = 0.0000001;
@@ -391,8 +419,8 @@ define([
                 colormap.set('numberScaleType', 'linear');
             }
             else {
-                max = this._per_le_mass;
                 min = 0;
+                max = this._per_le_mass;
                 colormap.set('numberScaleType', 'linear');
             }
 
@@ -448,7 +476,7 @@ define([
             }
 
             var value, color, alpha, i, datatype;
-            datatype = this.get('_appearance').get('data').toLowerCase();
+            datatype = this.get('_appearance').get('data').toLowerCase().replace(/ /g, '_');
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
@@ -477,7 +505,7 @@ define([
 
             // is it really necessary to use a ternary operator
             // on such long complex expressions?
-            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase();
+            additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
 
             if (uncertain) {
                 for (f = 0; f < uncertain.length; f++) {

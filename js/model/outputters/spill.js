@@ -13,6 +13,7 @@ define([
             'output_last_step': 'true',
             'output_zero_step': 'true',
             '_additional_data': [],
+            'surface_conc': null,
             'name': 'SpillJsonOutput'
         },
 
@@ -31,10 +32,15 @@ define([
         _updateRequestedDataTypes: function(dtype) {
             var spills = webgnome.model.get('spills');
             var _req_data = [];
+            this.set('surface_conc', null);
             for (var i = 0; i < spills.length; i++) {
                 var datum = spills.at(i).get('_appearance').get('data').toLowerCase();
                 if (datum !== 'mass') {
+                    datum = datum.replace(/ /g,"_");
                     _req_data.push(datum);
+                } 
+                if (datum === 'surface_concentration') {
+                    this.set('surface_conc', 'kde');
                 }
             }
             _req_data = _req_data.length > 0 ? _.uniq(_req_data) : _req_data;
