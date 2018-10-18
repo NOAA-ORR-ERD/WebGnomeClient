@@ -65,7 +65,7 @@ Local system
 
 Running it all on one machine for local access (your own laptop for instance).
 
-PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. We recommend that you use the conda package management system to satisfy the dependencies. YOu probably want to set up a conda environment in which to run the system. Follow the instructions with each component, and install in this order, running the unit tests for each one:
+PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. We recommend that you use the conda package management system to satisfy the dependencies. You probably want to set up a conda environment in which to run the system. Follow the instructions with each component, and install in this order, running the unit tests for each one:
 
 OilLibrary
 PyGNOME
@@ -78,7 +78,6 @@ The client is a Javascript app, deployed via node.js. It can be installed accord
 
 WebGNOME Client
 ---------------
-
 
 
 
