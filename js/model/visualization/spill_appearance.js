@@ -48,7 +48,7 @@ define([
                 newUnits = 'kg';
             }
             else if (data === 'Surface Concentration') {
-                newUnits = 'kg/m^2';
+                newUnits = 'g/m^2';
             }
             else if (data === 'Age') {
                 newUnits = 'hrs';
@@ -109,12 +109,12 @@ define([
             else if (data ==='Viscosity') {
                 fromInput = _.bind(function(value) {
                     return (nucos.Converters.kinematicviscosity
-                            .Convert(newUnits, 'cSt', value));
+                            .Convert(newUnits, 'm^2/s', value));
                 }, this);
 
                 toDisplay = _.bind(function(value) {
                     return (nucos.Converters.kinematicviscosity
-                            .Convert('cSt', newUnits, value));
+                            .Convert('m^2/s', newUnits, value));
                 }, this);
             }
             else if (data ==='Depth') {
@@ -129,13 +129,24 @@ define([
             else if (data ==='Surface Concentration') {
                 //Convert to and from percentages
                 fromInput = _.bind(function(value) {
-                    //surf_conc
-                    return value;
+                    //return nucos.Converters.length.Convert(newUnits, 'kg/m^2', value);
+                    // Nucos doesn't support these units, so do manually
+                    if (newUnits === 'kg/m^2'){
+                        return value
+                    } else {
+                        return value / 1000
+                    }
                 }, this);
 
                 toDisplay = _.bind(function(value) {
                     //surf_conc->percentage
-                    var percent = (Number(value / spill.estimateMaxConcentration() * 100)
+                    //value = nucos.Converters.length.Convert('kg/m^2', newUnits, value);
+                    var maxconc = spill.estimateMaxConcentration();
+                    if (newUnits !== 'kg/m^2'){
+                        value = value * 1000
+                        maxconc = maxconc * 1000
+                    }
+                    var percent = (Number(value / maxconc * 100)
                                    .toPrecision(3));
                     return percent + "%\n" + Number(value).toPrecision(3);
                 }, this);
