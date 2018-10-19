@@ -3,10 +3,18 @@ The WebGNOME Stack
 ##################
 
 
-The WebGNOME stack is a complete system for running a Web-based client-server oil spill fate and transport model. The different components of the stack
+The WebGNOME stack is a complete system for running a Web-based client-server oil spill fate and transport model. It consists of a number of components that all work together, and they all need to be installed and configured properly in order to work together. All the server-side components are written in Python, and the client is written in Javascript
 
+All componments are available on the NOAA-ORR-ERD organiztion on gitHub:
 
-It consists of a number of components that all work together, and they all need to be installed and configured to work together. All the server-side components are written in Python, and the client is written in Javascript
+https://github.com/NOAA-ORR-ERD
+
+Or perhaps you are working with the source from elsewhere )(like inside NOAA). In which case, you want to use everything from the same source if you can, to make sure versions match.
+
+You will need to download the source (or clone the repo) for all components to the machine you want to run it on.
+
+The entire stack is developed, tested, and should run on Windows, OS-X and linux Systems.
+
 
 Server Side
 ===========
@@ -18,8 +26,7 @@ pyGNOME
 
 This is the model itself, the computational code for fate and transport modeling. It can be run with python scripts on its own, or used behind the WebGNOME system.
 
-
-https://github.com/NOAA-ORR-ERD/PyGnome
+It is available on gitHub here: https://github.com/NOAA-ORR-ERD/PyGnome.
 
 
 OilLibrary
@@ -33,7 +40,7 @@ https://github.com/NOAA-ORR-ERD/OilLibrary
 WebGNOME API
 ------------
 
-The WebGNOME API is a python (Pyramid) package that provides an http / JSON web service to control and run the pyGNOME model. It provides the connection between the computational code and client side code running in a browser.
+The WebGNOME API is a python (Pyramid) package that provides an http / JSON web service to control and run the pyGNOME model. It provides the connection between the computational code on teh server and the client side code running in a browser.
 
 https://github.com/NOAA-ORR-ERD/WebGnomeAPI
 
@@ -49,10 +56,17 @@ https://github.com/NOAA-ORR-ERD/OilLibraryAPI
 WebGNOME Client
 ---------------
 
-The WEbGNOME client is a Javascript application, that runs in the browser and provides a user interface to the GNOME system.
+The WebGNOME client is a Javascript application, that runs in the browser and provides a user interface to the GNOME system. It is served with node.js
 
 
 https://github.com/NOAA-ORR-ERD/WebGnomeClient
+
+redis
+-----
+
+Redis is an open source (BSD licensed), in-memory data structure store, used as a data store for session data by the WebGNOMEAPI And OilLibraryAPI. It is not maintined or distributed by NOAA, but you must have a Redis server running in order run the WebGNOME stack:
+
+https://redis.io/
 
 
 Installation / Deployment
@@ -60,12 +74,91 @@ Installation / Deployment
 
 You have a number of options to deploy the system. All five components need to be installed and run, but you can run the WebGNOME API, OilLibraryAPI, and WebGNOME Client all on one machine, or on separate machines (or multiple instance in a cloud service).
 
-Local system
-------------
+Local System
+============
 
 Running it all on one machine for local access (your own laptop for instance).
 
-PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. We recommend that you use the conda package management system to satisfy the dependencies. YOu probably want to set up a conda environment in which to run the system. Follow the instructions with each component, and install in this order, running the unit tests for each one:
+
+Dependencies
+------------
+
+PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. AMy of the dependencies are available through the pip package manager, but some need to be complied for your system. You are free to satisfy the dependencies in whatever way works for you, but we use conda to manage it in our development and deployment work, and that is the best supported option.
+
+Dependencies with conda
+------------------------
+
+We recommend that you use the `conda <https://conda.io/docs/>`_ package management system to satisfy the dependencies. You probably want to set up a conda environment in which to run the system.
+
+Each component has a conda_requirements file that specifies the packages needed for that component. In addition, the webgnomeclient source code (probably where you are reading this) has requirements files for the entire stack. Setting up an environment for the entire stack:
+
+1) Install `miniconda <https://conda.io/miniconda.html>`_ or the `Anaconda <https://www.anaconda.com/distribution/>`_ distribution. Any 64 bit version will do, but WebGNOME is built with Python 2.7, so if you dont need Python 3 for other projects, it's a bit easier to use the Py2.7 conda. (Note, you can install an environment with any supported version of python with any miniconda version)
+
+The rest of these steps assume a version of conda is installed, and you have access to a command line. The steps should be the same on all platforms except where noted.
+
+2) update conda:
+
+It's a good idea to start off with an updated version of conda itself::
+
+  conda update conda
+
+3) Setting up anaconda.org channels
+...................................
+
+To get all the packages required, you need to access additional sources, in this case:
+
+conda-forge: A community supported collection of packages
+
+NOAA-ORR-ERD: A NOAA supported source of packages not available in defaults or conda-forge
+
+To make it easy for your install to find conda-forge and NOAA packages, they should be added to your conda configuration:
+
+First add the NOAA-ORR-ERD channel::
+
+    conda config --add channels NOAA-ORR-ERD
+
+And then add the conda-forge channel::
+
+    conda config --add channels conda-forge
+
+When you add a channel to conda, it puts it at the top of the list.
+So now when you install a package, conda will first look in conda-forge,
+then NOAA-ORR-ERD, and then in the default channel.
+This order should work well for WebGNOME.
+
+Be sure to add the channels in the order we specify.  You can see what channels you have with::
+
+    conda config --get channels
+
+It should return something like this::
+
+    --add channels 'defaults'   # lowest priority
+    --add channels 'NOAA-ORR-ERD'
+    --add channels 'conda-forge'   # highest priority
+
+In that order -- the order is important
+
+4) Create an environment for webGNOME::
+
+    conda create -n webgnome --file webgnome_requirements.txt
+
+5) Activate that environment::
+
+    conda activate webgnome
+
+6) Install the pip requirements: Some of WebGNOME's requirements are not (yet) available as conda packages. You can use pip to install these::
+
+    pip install -r pip_requirements.txt
+
+(make sure that you are in the activated environment before you do that)
+
+
+This should have set up a complete conda environment that can run all the pieces of the WebGNOME Stack. Do make sure that you have activated the environment before running any of the components.
+
+Installing Everything
+=====================
+
+You need to install and test each component in the correct order. These are the very basics -- if you run into an issue, refer to the instructions with each component (you can skip the requirements step).
 
 OilLibrary
 PyGNOME
@@ -74,21 +167,133 @@ Oil Library API
 
 Once you have the two APIs running, you need the client:
 
-The client is a Javascript app, deployed via node.js. It can be installed according to the directions in its README:
+The client is a Javascript app, deployed via node.js. It can be installed according to the directions in its README.
+
+**NOTE:** if you are going to doing development on any of the components, or updating to newer code via git, then you should install in "develop" mode::
+
+    python setup.py develop
+
+rather than::
+
+    python setup.py install
+
+"develop" puts a link into python pointing back the source of the package -- so as you change it, it "takes" right away. "install" copies everything into the Python system, so you need to re-install if anything changes.
+
+OilLibrary
+----------
+
+Once you have the source or repo (and the dependencies), installing the oil_libary is pretty straightforward::
+
+    python setup.py install
+
+or
+
+    python setup.py develop
+
+You can then run the tests with::
+
+    pytest --pyargs oil_library
+
+They should all pass.
+
+
+py_gnome
+--------
+
+Once you have the source or repo (and the dependencies), installing the py_gnome is almost straightforward::
+
+    cd py_gnome
+
+For Windows and Linux::
+
+    python setup.py install
+
+or
+
+    python setup.py develop
+
+For OS-X -- there are some linking issues with conda on OS-X, so you need antoher script::
+
+    ./build_anaconda install
+
+or::
+
+    ./build_anaconda install
+
+This requires building a bunch of C++ code, so it takes a while.
+
+You can then run the tests with::
+
+    cd tests/unit_tests/
+    pytest
+
+If they all pass, you can run the full set with::
+
+    pytest --runslow
+
+oillibraryapi
+-------------
+
+Once you have the source, you need to install it, and test it::
+
+    python setup.py install
+
+or::
+
+    python setup.py develop
+
+Then you can test it with::
+
+    pytest
+
 
 WebGNOME Client
 ---------------
+
+As we move along, this will start to feel familiar...
+
+    python setup.py install
+
+or::
+
+    python setup.py develop
+
+In order to run (or test) the API, you need to be running Redis. In another terminal window::
+
+    conda activate webgnome
+    redis-server
+
+Then you can test it with::
+
+    python setup.py test
+
+
+webgnomeclient
+--------------
+
+The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem. node itself should have been installed from the conda requirements.
+
+To install and "build" the requirements and code:
+
+TODO!!
+
+
+
+
 
 
 
 
 Linux Server
-------------
+============
+
+If you want to run it all on the same Linux server, the above instructions should suffice. But in a production environment, you may want to set up a more robust and flexible system.
 
 
 Docker Images
 -------------
 
+TBD
 
 
 

@@ -149,7 +149,7 @@
             							</tr>
             						{% for (var i = 0; i < data.kvis.length; i++){ %}
             							{% var centiStokes = parseFloat(data.kvis[i].m_2_s * 1000000).toFixed(2); %}
-            							{% var viscosityWeather = (data.kvis[i].weathering * 100).toFixed(3); %}
+            							{% var viscosityWeather = (data.kvis[i].weathering * 100).toFixed(1); %}
             							<tr>
             								<td>{{ centiStokes }}</td>
             								<td>{{ data.kvis[i].ref_temp_f }} <b>(</b> {{ data.kvis[i].ref_temp_c }} <b>)</b> </td>
@@ -186,7 +186,7 @@
                                         </tr>
                                     {% for (var i = 0; i < data.densities.length; i++){ %}
                                         {% var density_g_cm_3 = (data.densities[i].kg_m_3 / 1000).toFixed(3); %}
-                                        {% var densityWeather = (data.densities[i].weathering * 100).toFixed(3); %}
+                                        {% var densityWeather = (data.densities[i].weathering * 100).toFixed(1); %}
                                         <tr>
                                             <td>{{ density_g_cm_3 }}</td>
                                             <td>{{ data.densities[i].ref_temp_f }} <b>(</b> {{ data.densities[i].ref_temp_c }} <b>)</b> </td>
