@@ -101,7 +101,7 @@ define([
             series: {
                 lines: {
                     show: true,
-                    lineWidth: 1
+                    lineWidth: 2
                 },
                 shadowSize: 0
             },
