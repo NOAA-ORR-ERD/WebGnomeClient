@@ -109,12 +109,12 @@ define([
             else if (data ==='Viscosity') {
                 fromInput = _.bind(function(value) {
                     return (nucos.Converters.kinematicviscosity
-                            .Convert(newUnits, 'cSt', value));
+                            .Convert(newUnits, 'm^2/s', value));
                 }, this);
 
                 toDisplay = _.bind(function(value) {
                     return (nucos.Converters.kinematicviscosity
-                            .Convert('cSt', newUnits, value));
+                            .Convert('m^2/s', newUnits, value));
                 }, this);
             }
             else if (data ==='Depth') {
