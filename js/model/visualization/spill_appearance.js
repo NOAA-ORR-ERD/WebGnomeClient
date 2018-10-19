@@ -48,7 +48,7 @@ define([
                 newUnits = 'kg';
             }
             else if (data === 'Surface Concentration') {
-                newUnits = 'kg/m^2';
+                newUnits = 'g/m^2';
             }
             else if (data === 'Age') {
                 newUnits = 'hrs';
@@ -130,11 +130,12 @@ define([
                 //Convert to and from percentages
                 fromInput = _.bind(function(value) {
                     //surf_conc
-                    return value;
+                    return nucos.Converters.length.Convert(newUnits, 'kg/m^2', value);
                 }, this);
 
                 toDisplay = _.bind(function(value) {
                     //surf_conc->percentage
+                    value = nucos.Converters.length.Convert('kg/m^2', newUnits, value);
                     var percent = (Number(value / spill.estimateMaxConcentration() * 100)
                                    .toPrecision(3));
                     return percent + "%\n" + Number(value).toPrecision(3);
