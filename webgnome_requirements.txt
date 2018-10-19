@@ -72,7 +72,7 @@ docutils
 htmlmin
 jsmin
 gevent==1.2.2
-
+redis
 
 
 

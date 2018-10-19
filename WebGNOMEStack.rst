@@ -83,14 +83,14 @@ Running it all on one machine for local access (your own laptop for instance).
 Dependencies
 ------------
 
-PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. AMy of the dependencies are avbaiable through teh pipi package manager, but some need to be complied for yuor system. You are free to satisfy teh dependencies in whatever way works for you, but we use conda to manage it in our development and deployment work, and that is the best supported option.
+PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. AMy of the dependencies are available through the pip package manager, but some need to be complied for your system. You are free to satisfy the dependencies in whatever way works for you, but we use conda to manage it in our development and deployment work, and that is the best supported option.
 
 Dependencies with conda
 ------------------------
 
 We recommend that you use the `conda <https://conda.io/docs/>`_ package management system to satisfy the dependencies. You probably want to set up a conda environment in which to run the system.
 
-Each component has a conda_requirements file that specifies the packages needed for that component. In addition, the webgnomeclient source code (probably where you are reading this) has requirements files for the entire stack. Setting up an environemnt for the entire stack:
+Each component has a conda_requirements file that specifies the packages needed for that component. In addition, the webgnomeclient source code (probably where you are reading this) has requirements files for the entire stack. Setting up an environment for the entire stack:
 
 1) Install `miniconda <https://conda.io/miniconda.html>`_ or the `Anaconda <https://www.anaconda.com/distribution/>`_ distribution. Any 64 bit version will do, but WebGNOME is built with Python 2.7, so if you dont need Python 3 for other projects, it's a bit easier to use the Py2.7 conda. (Note, you can install an environment with any supported version of python with any miniconda version)
 
@@ -249,6 +249,38 @@ Then you can test it with::
 
 WebGNOME Client
 ---------------
+
+As we move along, this will start to feel familiar...
+
+    python setup.py install
+
+or::
+
+    python setup.py develop
+
+In order to run (or test) the API, you need to be running Redis. In another terminal window::
+
+    conda activate webgnome
+    redis-server
+
+Then you can test it with::
+
+    python setup.py test
+
+
+webgnomeclient
+--------------
+
+The client is getting to new ground -- it is a javascript app, deployed with the node ecosystem. node itself should have been installed from the conda requirements.
+
+To install and "build" the requirements and code:
+
+TODO!!
+
+
+
+
+
 
 
 
