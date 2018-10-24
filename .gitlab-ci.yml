@@ -19,7 +19,7 @@ master:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
     tags:
-        - docker
+        - shell
         - build
     only:
         - master
@@ -29,7 +29,7 @@ develop:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:develop
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
     tags:
-        - docker
+        - shell
         - build
     only:
         - develop
@@ -40,7 +40,7 @@ production:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:production
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
     tags:
-        - docker
+        - shell
         - build
     only:
         - production
