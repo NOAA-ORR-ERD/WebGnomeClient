@@ -132,9 +132,9 @@ define([
                     //return nucos.Converters.length.Convert(newUnits, 'kg/m^2', value);
                     // Nucos doesn't support these units, so do manually
                     if (newUnits === 'kg/m^2'){
-                        return value
+                        return value;
                     } else {
-                        return value / 1000
+                        return value / 1000;
                     }
                 }, this);
 
@@ -143,8 +143,8 @@ define([
                     //value = nucos.Converters.length.Convert('kg/m^2', newUnits, value);
                     var maxconc = spill.estimateMaxConcentration();
                     if (newUnits !== 'kg/m^2'){
-                        value = value * 1000
-                        maxconc = maxconc * 1000
+                        value = value * 1000;
+                        maxconc = maxconc * 1000;
                     }
                     var percent = (Number(value / maxconc * 100)
                                    .toPrecision(3));

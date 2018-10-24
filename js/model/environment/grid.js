@@ -214,7 +214,7 @@ define([
         //End-to-end performance improvement, but perhaps responsiveness regression?
         renderLines: function(batch, rebuild) {
             return new Promise(_.bind(function(resolve, reject) {
-                var start = performance.now()
+                var start = performance.now();
                 if(rebuild || this._linesPrimitive.length === 0) {
                     this.getLines().then(_.bind(function(data){
                         if (rebuild) {
@@ -226,7 +226,7 @@ define([
                         );
                         var numLengths = data[0].length;
                         var lengths = data[0];
-                        var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n})) * 2);
+                        var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n;})) * 2);
                         var scratchN = new Cesium.Cartesian3(0,0,0);
                         var posx = new Float64Array(data[1].length * 3 / 2);
                         var lines = data[1];
@@ -235,7 +235,7 @@ define([
                             Cesium.Cartesian3.pack(scratchN, posx, (k*3/2));
                         }
                         var cur_idx = 0;
-                        var vert_idx = 0
+                        var vert_idx = 0;
                         for (var i = 0; i < numLengths; i++) {
                             var l = lengths[i];
                             for (var j = 0; j < l; j++) {
@@ -250,7 +250,7 @@ define([
                             }
                             idxs[cur_idx] = vert_idx;
                             cur_idx++;
-                            vert_idx = vert_idx + l
+                            vert_idx = vert_idx + l;
                         }
                         //var lines = Cesium.Cartesian3.packArray(Cesium.Cartesian3.fromDegreesArray(data[1]))
                         var geo = new Cesium.Geometry({
@@ -281,7 +281,7 @@ define([
                             asynchronous : false,
                             id: 'foo'
                         }));
-                        var elapsed = performance.now() - start
+                        var elapsed = performance.now() - start;
                         console.log(elapsed);
                         resolve(this._linesPrimitive);
                     }, this)).catch(reject);
