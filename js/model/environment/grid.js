@@ -214,7 +214,7 @@ define([
         //End-to-end performance improvement, but perhaps responsiveness regression?
         renderLines: function(batch, rebuild) {
             return new Promise(_.bind(function(resolve, reject) {
-                var start = performance.now();
+                //var start = performance.now();
                 if(rebuild || this._linesPrimitive.length === 0) {
                     this.getLines().then(_.bind(function(data){
                         if (rebuild) {
@@ -281,8 +281,8 @@ define([
                             asynchronous : false,
                             id: 'foo'
                         }));
-                        var elapsed = performance.now() - start;
-                        console.log(elapsed);
+                        //var elapsed = performance.now() - start;
+                        //console.log(elapsed);
                         resolve(this._linesPrimitive);
                     }, this)).catch(reject);
                 } else {
