@@ -505,7 +505,7 @@ define([
         toggleDataLayers: function(e) {
             var envs = this.$('.env-uv input:checked,.curr-uv input:checked');
             var name = e.currentTarget.name;
-            if (!name) { console.error('No name on input element');} else { console.log(name);}
+            if (!name && e.currentTarget.id !== 'none-uv') { console.error('No name on input element');} else { console.log(name);}
             var env_id, lay;
 
             if (e.currentTarget.id === 'none-uv') {
@@ -514,7 +514,7 @@ define([
                         env_id = envs[i].id;
                         lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
-                        lay.appearance.set(envs.name, false);
+                        lay.appearance.set(envs[i].name, false);
                         
                     }
                 }
