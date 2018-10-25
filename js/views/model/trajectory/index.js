@@ -245,7 +245,8 @@ define([
 
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
-                selectionIndicator: false,
+                selectionIndicator : false,
+                infoBox : false,
                 baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
