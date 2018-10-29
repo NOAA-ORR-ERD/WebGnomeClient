@@ -69,20 +69,20 @@ define([
                                 width: 1
                             })
                         })
-                    ]
+                    ];
                     if (geojson.features.length > 1) {
                         //lakes style
                         styles.push(
                         new ol.style.Style({
                             fill: new ol.style.Fill({
-                                color: [0, 195, 0, 1]
+                                color: [228, 195, 140, 0.6]
                             }),
                             stroke: new ol.style.Stroke({
-                                color: [0, 195, 0, 0.75],
+                                color: [228, 195, 140, 0.75],
                                 width: 1
                             })
                         })
-                        )
+                        );
                     }
                     var lakelayer = new ol.layer.Image({
                         name: 'lakes',

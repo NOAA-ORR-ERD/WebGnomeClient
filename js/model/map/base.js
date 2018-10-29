@@ -177,11 +177,12 @@ define([
                 this._lake_entities.removeAll();
                 this.getGeoJSON(_.bind(function(geojson) {
                     if (geojson.features.length > 0) {
-                        land_polys = geojson.features[0].geometry.coordinates;
-                        lake_polys = geojson.features[1].geometry.coordinates;
+                        var land_polys = geojson.features[0].geometry.coordinates;
+                        var lake_polys = geojson.features[1].geometry.coordinates;
                         var newEnt;
-                        for (var i = 0; i < land_polys.length; i++) {
-                            var poly = land_polys[i];
+                        var i, poly;
+                        for (i = 0; i < land_polys.length; i++) {
+                            poly = land_polys[i];
                             newEnt = new Cesium.Entity({
                                 name: 'land_poly_' + i,
                                 polygon: new Cesium.PolygonGraphics({
@@ -192,8 +193,8 @@ define([
                             this._land_entities.add(newEnt);
                             this._mapVis.entities.add(newEnt);
                         }
-                        for (var i = 0; i < lake_polys.length; i++) {
-                            var poly = lake_polys[i];
+                        for (i = 0; i < lake_polys.length; i++) {
+                            poly = lake_polys[i];
                             newEnt = new Cesium.Entity({
                                 name: 'lake_poly_' + i,
                                 polygon: new Cesium.PolygonGraphics({
