@@ -331,6 +331,7 @@ define([
         },
 
         addCesiumHandlers: function() {
+
             this._openCesiumObjectTooltips = {};
             var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
                 var newEntity = this.viewer.entities.add({
@@ -350,6 +351,7 @@ define([
                 return newEntity;
             }, this);
 
+            //Clears open tooltips
             this.doubleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var doubleClickHandlerFunction = _.bind(function(movement) {
                 var tts = _.values(this._openCesiumObjectTooltips);
@@ -359,6 +361,27 @@ define([
                 this._openCesiumObjectTooltips = {};
             }, this);
             this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+            this.middleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            var middleClickHandlerFunction = _.bind(function(click) {
+                var pickedPoint = this.viewer.scene.camera.pickEllipsoid(click.position, this.viewer.scene.globe.ellipsoid);
+                if (pickedPoint) {
+                    var entity;
+                    var cartographic = Cesium.Cartographic.fromCartesian(pickedPoint);
+                    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+                    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+                    entity = addNewCesiumObjectTooltip({id:cartographic.toString()}, 15, 0);
+                    entity.position = pickedPoint;
+
+                    entity.label.show = true;
+                    entity.label.text =
+                        'Lon: ' + ('   ' + longitudeString).slice(-7) + '\u00B0' +
+                        '\nLat: ' + ('   ' + latitudeString).slice(-7) + '\u00B0';
+                }
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.middleClickHandler.setInputAction(middleClickHandlerFunction, Cesium.ScreenSpaceEventType.MIDDLE_CLICK);
 
             this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var singleClickHandlerFunction = _.bind(function(movement) {

@@ -418,10 +418,11 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
-                    visObj: new Cesium.WebMapServiceImageryProvider({
-                        layers: '0,1',
+                    visObj: new Cesium.ArcGisMapServerImageryProvider({
+                        layers: '3',
                         tilingScheme: new Cesium.WebMercatorTilingScheme(),
-                        url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                        url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                        //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                     })
                 });
                 this.layers.add(this.layers.sat);

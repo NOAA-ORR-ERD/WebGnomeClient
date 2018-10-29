@@ -33,7 +33,11 @@ define([
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this._mapVis = new Cesium.GeoJsonDataSource({show: this.get('_appearance').get('map_on')});
+            this._mapVis = new Cesium.CustomDataSource({show: this.get('_appearance').get('map_on')});
+            this._land_entities = new Cesium.EntityCollection(this._mapVis);
+            this._lake_entities = new Cesium.EntityCollection(this._mapVis);
+            this._mapVis.entities.add(this._land_entities);
+            this._mapVis.entities.add(this._lake_entities);
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
@@ -169,13 +173,39 @@ define([
 
         genMap: function() {
             return new Promise(_.bind(function(resolve, reject) {
+                this._land_entities.removeAll();
+                this._lake_entities.removeAll();
                 this.getGeoJSON(_.bind(function(geojson) {
                     if (geojson.features.length > 0) {
-                        this._mapVis.load(geojson, {
-                            strokeWidth: 0,
-                            stroke: Cesium.Color.WHITE.withAlpha(0),
-                            //fill: this.get('_(0.4),
-                        });
+                        var land_polys = geojson.features[0].geometry.coordinates;
+                        var lake_polys = geojson.features[1].geometry.coordinates;
+                        var newEnt;
+                        var i, poly;
+                        for (i = 0; i < land_polys.length; i++) {
+                            poly = land_polys[i];
+                            newEnt = new Cesium.Entity({
+                                name: 'land_poly_' + i,
+                                polygon: new Cesium.PolygonGraphics({
+                                    hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                                    material: Cesium.Color.KHAKI.withAlpha(0.6)
+                                })
+                            });
+                            this._land_entities.add(newEnt);
+                            this._mapVis.entities.add(newEnt);
+                        }
+                        for (i = 0; i < lake_polys.length; i++) {
+                            poly = lake_polys[i];
+                            newEnt = new Cesium.Entity({
+                                name: 'lake_poly_' + i,
+                                polygon: new Cesium.PolygonGraphics({
+                                    hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                                    material: Cesium.Color.BLUE,
+                                    height: 5
+                                })
+                            });
+                            this._lake_entities.add(newEnt);
+                            this._mapVis.entities.add(newEnt);
+                        }
                     }
                     this._mapVis.show = this.get('_appearance').get('map_on');
                 }, this));
