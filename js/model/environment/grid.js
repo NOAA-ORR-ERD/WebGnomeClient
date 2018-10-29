@@ -209,12 +209,94 @@ define([
                 },this)).catch(reject);
             },this));
         },
-        
+
+        //New implementation that uses a single geometry instance instead of many.
+        //End-to-end performance improvement, but perhaps responsiveness regression?
         renderLines: function(batch, rebuild) {
+            return new Promise(_.bind(function(resolve, reject) {
+                //var start = performance.now();
+                if(rebuild || this._linesPrimitive.length === 0) {
+                    this.getLines().then(_.bind(function(data){
+                        if (rebuild) {
+                            this._linesPrimitive.removeAll();
+                        }
+                        var appearance = this.get('_appearance');
+                        var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
+                            Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'))
+                        );
+                        var numLengths = data[0].length;
+                        var lengths = data[0];
+                        var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n;})) * 2);
+                        var scratchN = new Cesium.Cartesian3(0,0,0);
+                        var posx = new Float64Array(data[1].length * 3 / 2);
+                        var lines = data[1];
+                        for (var k = 0; k < lines.length; k+=2) {
+                            Cesium.Cartesian3.fromDegrees(lines[k], lines[k+1], 0, Cesium.Ellipsoid.WGS84, scratchN);
+                            Cesium.Cartesian3.pack(scratchN, posx, (k*3/2));
+                        }
+                        var cur_idx = 0;
+                        var vert_idx = 0;
+                        for (var i = 0; i < numLengths; i++) {
+                            var l = lengths[i];
+                            for (var j = 0; j < l; j++) {
+                                if (j !== 0 ){
+                                    idxs[cur_idx] = vert_idx + j;
+                                    idxs[cur_idx+1] = vert_idx + j;
+                                    cur_idx = cur_idx + 2;
+                                } else {
+                                    idxs[cur_idx] = vert_idx;
+                                    cur_idx++;
+                                }
+                            }
+                            idxs[cur_idx] = vert_idx;
+                            cur_idx++;
+                            vert_idx = vert_idx + l;
+                        }
+                        //var lines = Cesium.Cartesian3.packArray(Cesium.Cartesian3.fromDegreesArray(data[1]))
+                        var geo = new Cesium.Geometry({
+                            attributes : {
+                                position : new Cesium.GeometryAttribute({
+                                    componentDatatype : Cesium.ComponentDatatype.DOUBLE,
+                                    componentsPerAttribute : 3,
+                                    values : posx
+                                })
+                            },
+                            indices : idxs,
+                            primitiveType : Cesium.PrimitiveType.LINES,
+                            boundingSphere : Cesium.BoundingSphere.fromVertices(posx)
+                        });
+                        var geoInst = new Cesium.GeometryInstance({
+                            geometry: geo,
+                            attributes: {
+                                color: colorAttr
+                            },
+                            allowPicking: false
+                        });
+                        this._linesPrimitive.add(new Cesium.Primitive({
+                            geometryInstances: geoInst,
+                            appearance: new Cesium.PerInstanceColorAppearance({
+                                flat: true,
+                                translucent: true
+                            }),
+                            asynchronous : false,
+                            id: 'foo'
+                        }));
+                        //var elapsed = performance.now() - start;
+                        //console.log(elapsed);
+                        resolve(this._linesPrimitive);
+                    }, this)).catch(reject);
+                } else {
+                    resolve(this._linesPrimitive);
+                }
+            }, this));
+        },
+
+/*         renderLines: function(batch, rebuild) {
             if (!batch) {
                 batch = 3000;
             }
             return new Promise(_.bind(function(resolve, reject) {
+                var start = performance.now()
                 if(rebuild || this._linesPrimitive.length === 0) {
                     this.getLines().then(_.bind(function(data){
                         if (rebuild) {
@@ -260,12 +342,14 @@ define([
                             }));
                         }
                         resolve(this._linesPrimitive);
+                        var elapsed = performance.now() - start
+                        console.log(elapsed);
                     }, this)).catch(reject);
                 } else {
                     resolve(this._linesPrimitive);
                 }
             }, this));
-        },
+        }, */
 
         updateVis: function(options) {
             /* Updates the appearance of this model's graphics object. Implementation varies depending on

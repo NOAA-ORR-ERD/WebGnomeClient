@@ -177,6 +177,7 @@ define([
             form.on('hidden', form.close);
             form.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
+                webgnome.model.save(null, {validate: false});
             }, this));
             form.render();
         },
@@ -197,6 +198,7 @@ define([
             windForm.on('save', _.bind(function(){
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
+                webgnome.model.save(null, {validate: false});
             }, this));
             windForm.render();
         },

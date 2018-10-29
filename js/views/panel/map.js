@@ -58,19 +58,45 @@ define([
                         features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
                     });
 
+                    //land style
+                    var styles = [
+                        new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
+                            })
+                        })
+                    ];
+                    if (geojson.features.length > 1) {
+                        //lakes style
+                        styles.push(
+                        new ol.style.Style({
+                            fill: new ol.style.Fill({
+                                color: [228, 195, 140, 0.6]
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: [228, 195, 140, 0.75],
+                                width: 1
+                            })
+                        })
+                        );
+                    }
+                    var lakelayer = new ol.layer.Image({
+                        name: 'lakes',
+                        source: new ol.source.ImageVector({
+                            source: shorelineSource,
+                            style: styles
+                        }),
+                    });
+
                     var shorelineLayer = new ol.layer.Image({
                         name: 'modelmap',
                         source: new ol.source.ImageVector({
                             source: shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
+                            style: styles
                         }),
                     });
                     this.locationMap = new OlMapView({
@@ -79,9 +105,9 @@ define([
                         layers: [
                             new ol.layer.Tile({
                                 source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            }),
+                                    url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
+                                    params: {'LAYERS': '0', 'TILED': true}
+                                }),
                                 visible: webgnome.model.get('map').geographical
                             }),
                             shorelineLayer

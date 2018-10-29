@@ -10,12 +10,14 @@ define([
     var WavesModel = BaseModel.extend({
         urlRoot: '/environment',
         defaults: {
-            obj_type: 'gnome.environment.waves.Waves'
+            obj_type: 'gnome.environment.waves.Waves',
+            wind: null,
+            water: null,
         },
 
         model: {
-            wind: WindModel,
-            water: WaterModel
+            wind: Backbone.Model,
+            water: Backbone.Model
         }
     });
 

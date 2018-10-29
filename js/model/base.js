@@ -91,6 +91,7 @@ define([
                     }
                 }
             }
+            this.trigger('fetched', this);
             return response;
         },
 
@@ -126,7 +127,7 @@ define([
         },
 
         // child change shouldn't be mapped directly to an event
-        // rather it should be manually envoked through a maped event
+        // rather it should be manually evoked through a mapped event
         // see gnome model for example.
         childChange: function(attr, child){
             if(!_.isObject(this.changed[attr])){

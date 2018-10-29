@@ -8,11 +8,15 @@ define([
 	var beachingWeatherer = BaseModel.extend({
 		defaults: {
 			'obj_type': 'gnome.weatherers.manual_beaching.Beaching',
-			'name': 'Beaching',
 			'units': 'bbl',
 			'timeseries': [],
-			'active_start': '2014-07-07T12:00:00'
+			'active_start': '2014-07-07T12:00:00',
+            'water': null
 		},
+
+        model: {
+            'water': Backbone.Model
+        },
 
 		initialize: function(){
 			BaseModel.prototype.initialize.call(this);

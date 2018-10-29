@@ -10,9 +10,9 @@ define([
         defaults: function() {
             return _.defaults({
                 'obj_type': 'gnome.outputters.netcdf.NetCDFOutput',
-                'name': 'gnome_output.nc',
                 'netcdf_filename': 'gnome_output.nc',
-                'output_timestep': 3600
+                'output_timestep': 3600,
+                'name': 'NetCDFOutput'
             }, FileOutputterModel.prototype.defaults);
         },
 

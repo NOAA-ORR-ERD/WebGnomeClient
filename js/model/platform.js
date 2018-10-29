@@ -8,7 +8,7 @@ define([
         defaults: function(){
             return {
                 type: '',
-                json_: 'webapi'
+                obj_type: 'gnome.weatherers.roc.Platform'
             };
         },
 

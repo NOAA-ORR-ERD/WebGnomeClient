@@ -53,12 +53,16 @@ define([
         },
         
         kToC: function(k){
-        	// Kelvin to Celcius
-        	return (k - 273.15).toFixed(1);
+        	// Kelvin to Celsius
+        	if (k === parseInt(k, 10)) {
+        	    return (k - 273).toFixed(1);
+            } else {
+        	    return (k - 273.15).toFixed(1);
+            }
         },
 
         cToF: function(c){
-        	// Celcius to Farenheit
+        	// Celsius to Farenheit
             return ((c * 9.0 / 5.0) + 32.0).toFixed(1);
         },
 
@@ -154,7 +158,7 @@ define([
             	parentObj[key] = parentObj[key].toFixed(1);
             }
             else if (key === 'weathering') {
-            	parentObj[key] = parentObj[key].toFixed(1);
+            	parentObj[key] = parentObj[key].toFixed(2);
             }
             else if (key === 'kg_m_3') {
             	parentObj[key] = parentObj[key].toFixed(2);

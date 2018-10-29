@@ -9,10 +9,10 @@ define([
 
         defaults: {
             'obj_type': 'gnome.outputters.weathering.WeatheringOutput',
-            'name': 'Outputter',
             'output_timestep': null,
             'output_last_step': 'true',
             'output_zero_step': 'true',
+            'name': 'WeatheringOutput'
         },
 
         toTree: function(){

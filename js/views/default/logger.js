@@ -28,7 +28,7 @@ define([
         },
 
         setupToasts: function(){
-            toastr.options.preventDuplicates = true;
+            toastr.options.preventDuplicates = false;
             toastr.options.closeButton = true;
             toastr.options.newestOnTop = false;
             toastr.options.positionClass = 'toast-bottom-left';

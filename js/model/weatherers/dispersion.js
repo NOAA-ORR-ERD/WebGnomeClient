@@ -10,11 +10,12 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',
-            'efficiency': 0.20
+            'efficiency': 0.20,
+            'waves': null,
         },
 
         model: {
-            waves: WavesModel
+            waves: Backbone.Model,
         },
 
         validate: function(attrs, options){

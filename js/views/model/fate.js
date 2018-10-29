@@ -1160,7 +1160,7 @@ define([
         convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
             var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var density = (!_.isNull(substance)) ? substance.get('standard_density') : webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
             var data;

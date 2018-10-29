@@ -1,5 +1,4 @@
 //A model that stores appearance settings for various objects.
-
 define([
         'underscore',
         'nucos',
@@ -7,6 +6,7 @@ define([
         'model/visualization/colormap'
 ], function(_, nucos, BaseAppearance, ColorMap){
     'use strict';
+
     var SpillAppearanceModel = BaseAppearance.extend({
         defaults: function() { return {
             pin_on: true,
@@ -19,99 +19,166 @@ define([
                          pin_on: 'Show Pin',
                          les_on: 'Show Oil',
                          scale: 'Scale',
-                        },
-            _available_data: ['Mass','Age','Viscosity','Depth']
+                         },
+            _available_data: ['Mass',
+                              'Surface Concentration',
+                              'Age',
+                              'Viscosity',
+                              'Depth']
             };
         },
 
         initialize: function(model) {
             BaseAppearance.prototype.initialize.call(this, model);
+
             this.listenTo(this.get('colormap'), 'change', this.save);
+            this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);
+
             this.setUnitConversionFunction(undefined, this.get('units'));
         },
 
         setDefaultUnits: function(e) {
             var data = e.changedAttributes().data;
             var newUnits;
+
             if (data === 'Mass') {
                 newUnits = 'kg';
-            } else if (data === 'Age') {
+            }
+            else if (data === 'Surface Concentration') {
+                newUnits = 'g/m^2';
+            }
+            else if (data === 'Age') {
                 newUnits = 'hrs';
-            } else if (data === 'Viscosity') {
+            }
+            else if (data === 'Viscosity') {
                 newUnits = 'cSt';
-            } else if (data === 'Depth') {
+            }
+            else if (data === 'Depth') {
                 newUnits = 'm';
-            } else {
+            }
+            else {
                 return;
             }
+
             this.set('units', newUnits);
         },
 
         setUnitConversionFunction: function(e, newUnits) {
-            // sets the translation function used when displaying data on the colormap, and receiving data from input fields
+            // sets the translation function used when displaying data
+            // on the colormap, and receiving data from input fields
             if (e) {
                 if (e.changedAttributes().units) {
                     newUnits = e.changedAttributes().units;
                 }  
             }
+
             var toDisplay, fromInput;
             var data = this.get('data');
+            var spill = (webgnome.model.get('spills')
+                         .findWhere({'_appearance': this}));
+
             if (data === 'Mass') {
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
-                    return c.Convert(value, newUnits, spill.get('element_type').get('standard_density'), 'kg/m^3', 'kg');
+
+                    return c.Convert(value, newUnits,
+                                     spill.get('element_type').get('standard_density'),
+                                     'kg/m^3', 'kg');
                 }, this);
+
                 toDisplay = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
-                    var spill = webgnome.model.get('spills').findWhere({'_appearance': this});
-                    return c.Convert(value, 'kg', spill.get('element_type').get('standard_density'), 'kg/m^3', newUnits);
+
+                    return c.Convert(value, 'kg',
+                                     spill.get('element_type').get('standard_density'),
+                                     'kg/m^3', newUnits);
                 }, this);
-            } else if (data === 'Age') {
+            }
+            else if (data === 'Age') {
                 fromInput = _.bind(function(value) {
                     return nucos.Converters.time.Convert(newUnits, 'sec', value);
                 }, this);
+
                 toDisplay = _.bind(function(value) {
                     return nucos.Converters.time.Convert('sec', newUnits, value);
                 }, this);
-            } else if (data ==='Viscosity') {
+            }
+            else if (data ==='Viscosity') {
                 fromInput = _.bind(function(value) {
-                    return nucos.Converters.kinematicviscosity.Convert(newUnits, 'cSt', value);
+                    return (nucos.Converters.kinematicviscosity
+                            .Convert(newUnits, 'm^2/s', value));
                 }, this);
+
                 toDisplay = _.bind(function(value) {
-                    return nucos.Converters.kinematicviscosity.Convert('cSt', newUnits, value);
+                    return (nucos.Converters.kinematicviscosity
+                            .Convert('m^2/s', newUnits, value));
                 }, this);
-            } else if (data ==='Depth') {
+            }
+            else if (data ==='Depth') {
                 fromInput = _.bind(function(value) {
                     return nucos.Converters.length.Convert(newUnits, 'm', value);
                 }, this);
+
                 toDisplay = _.bind(function(value) {
                     return nucos.Converters.length.Convert('m', newUnits, value);
                 }, this);
-            } else {
+            }
+            else if (data ==='Surface Concentration') {
+                //Convert to and from percentages
+                fromInput = _.bind(function(value) {
+                    //return nucos.Converters.length.Convert(newUnits, 'kg/m^2', value);
+                    // Nucos doesn't support these units, so do manually
+                    if (newUnits === 'kg/m^2'){
+                        return value;
+                    } else {
+                        return value / 1000;
+                    }
+                }, this);
+
+                toDisplay = _.bind(function(value) {
+                    //surf_conc->percentage
+                    //value = nucos.Converters.length.Convert('kg/m^2', newUnits, value);
+                    var maxconc = spill.estimateMaxConcentration();
+                    if (newUnits !== 'kg/m^2'){
+                        value = value * 1000;
+                        maxconc = maxconc * 1000;
+                    }
+                    var percent = (Number(value / maxconc * 100)
+                                   .toPrecision(3));
+                    return percent + "%\n" + Number(value).toPrecision(3);
+                }, this);
+            }
+            else {
                 fromInput = function(value) {return value;};
                 toDisplay = function(value) {return value;};
             }
-            this.get('colormap').setUnitConversionFunction(toDisplay, fromInput);
+
+            this.get('colormap').setUnitConversionFunction(toDisplay,
+                                                           fromInput);
             this.get('colormap').set('units', newUnits);
         },
 
         updateSpillJsonOutputter: function(dtype) {
-            var output = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'});
-            if(dtype !== 'Viscosity') {
+            var output = (webgnome.model.get('outputters')
+                          .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
+
+            if (dtype !== 'Viscosity' || dtype !== 'Surface Concentration') {
                 this.get('colormap').set('numberScaleType', 'linear');
             }
+
             output._updateRequestedDataTypes(dtype);
         },
 
         save: function(attrs, options) {
-            if(this.get('id')) {
+            if (this.get('id')) {
                 var json = this.toJSON();
                 json.colormap = this.get('colormap').toJSON();
-                this.appearance_cache.setItem(this.get('id') + '_appearance', json);
+
+                this.appearance_cache.setItem(this.get('id') + '_appearance',
+                                              json);
             }
         },
 
@@ -121,17 +188,20 @@ define([
                     _.bind(function(attrs) {
                         if (attrs && attrs.colormap) {
                             this.get('colormap').set(attrs.colormap);
+
                             attrs.colormap = this.get('colormap');
                             this.set(attrs);
+
                             resolve(attrs);
-                        } else {
+                        }
+                        else {
                             resolve(attrs);
                         }
                     }, this)
                 );
             }, this));
         }
-
     });
+
     return SpillAppearanceModel;
 });

@@ -486,7 +486,11 @@ define([
             // - Time range data points are expected to be in ascending order
             //   from left to right.  We don't deal with zero or negative
             //   time ranges.
+            if (_.isUndefined(webgnome.model)) {
+                return [];
+            }
             var [modelStart, modelStop] = webgnome.model.activeTimeRange();
+
             var suspectRanges = this.invalidActiveTimeRanges();
             var invalidRanges = [];
 
@@ -532,10 +536,10 @@ define([
         dataActiveTimeRange: function(ignore_extrapolation = false) {
             var envObj;
 
-            if (this.attributes.hasOwnProperty('wind')) {
+            if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
                 envObj = this.get('wind');
             }
-            else if (this.attributes.hasOwnProperty('current')) {
+            else if (this.attributes.hasOwnProperty('current') && this.get('current')) {
                 envObj = this.get('current');
             }
             else {

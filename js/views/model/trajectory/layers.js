@@ -113,6 +113,7 @@ define([
             this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
             this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
             //this.$('.env-edit-btn').tooltip(this.createTooltipObject("Edit"));
+            this.$('.spill-row').hover(_.bind(this.highlightLEs, this), _.bind(this.unhighlightLEs, this));
         },
 
         createTooltipObject: function(title) {
@@ -417,10 +418,11 @@ define([
                     type:'cesium',
                     parentEl:'imageryLayer',
                     id: 'imagery-noaanav',
-                    visObj: new Cesium.WebMapServiceImageryProvider({
-                        layers: '0,1',
+                    visObj: new Cesium.ArcGisMapServerImageryProvider({
+                        layers: '3',
                         tilingScheme: new Cesium.WebMercatorTilingScheme(),
-                        url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/MapServer/WMSServer',
+                        url: 'https://seamlessrnc.nauticalcharts.noaa.gov/arcgis/rest/services/RNC/NOAA_RNC/MapServer'
+                        //url: '//seamlessrnc.nauticalcharts.noaa.gov/arcgis/services/RNC/NOAA_RNC/ImageServer/WMSServer',
                     })
                 });
                 this.layers.add(this.layers.sat);
@@ -446,7 +448,7 @@ define([
         },
 
         toggleSpillLayers: function(e) {
-            var id = e.target.id.split('-')[1];
+            var id = e.target.id.split('-').slice(1).join('-');
             var name = e.currentTarget.name;
             var layer = this.layers.findWhere({id: id});
             if (!e.currentTarget.checked) { //unchecking a box
@@ -504,7 +506,7 @@ define([
         toggleDataLayers: function(e) {
             var envs = this.$('.env-uv input:checked,.curr-uv input:checked');
             var name = e.currentTarget.name;
-            if (!name) { console.error('No name on input element');} else { console.log(name);}
+            if (!name && e.currentTarget.id !== 'none-uv') { console.error('No name on input element');} else { console.log(name);}
             var env_id, lay;
 
             if (e.currentTarget.id === 'none-uv') {
@@ -513,7 +515,7 @@ define([
                         env_id = envs[i].id;
                         lay = this.layers.findWhere({id: env_id});
                         envs[i].checked = false;
-                        lay.appearance.set(envs.name, false);
+                        lay.appearance.set(envs[i].name, false);
                         
                     }
                 }
@@ -554,6 +556,24 @@ define([
             if (l) {
                 this.$('#name-' + l.id).text(e.get('name'));
             }
+        },
+
+        highlightLEs: function(e) {
+            var id = $('.spill-name', e.currentTarget)[0].id.split('-').slice(1).join('-');
+            var sp = webgnome.model.get('spills').findWhere({'id': id});
+            var curscale = sp.get('_appearance').get('scale');
+            sp.get('_appearance').set('scale', curscale * 1.3);
+            sp._locVis.billboard.scale = 1.3;
+            this.trigger('requestRender');
+        },
+
+        unhighlightLEs: function(e) {
+            var id = $('.spill-name', e.currentTarget)[0].id.split('-').slice(1).join('-');
+            var sp = webgnome.model.get('spills').findWhere({'id': id});
+            var curscale = sp.get('_appearance').get('scale');
+            sp.get('_appearance').set('scale', curscale / 1.3);
+            sp._locVis.billboard.scale = 1.0;
+            this.trigger('requestRender');
         },
 
         close: function(){
