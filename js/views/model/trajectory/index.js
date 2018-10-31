@@ -625,6 +625,8 @@ define([
                 this.stop();
             }
             this.frame = 0;
+            var time = moment(webgnome.model.get('start_time').replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            this.$('.tooltip-inner').text(time);
             if (this.layersPanel) {
                 this.layersPanel.resetSpills();
             }
