@@ -255,6 +255,7 @@ define([
                             this._vectors.get(existing).show = appearance.get('vec_on');
                             this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                             this._vectors.get(existing).id = 'vector'+existing;
+                            this._vectors.get(existing).image = this._images[this.getImageIdx(0)];
                         }
 
                         var create_length = centers.length;
