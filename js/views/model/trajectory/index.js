@@ -170,7 +170,10 @@ define([
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this.viewer.camera.flyTo({
+                    destination: Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())),
+                    duration: 0.25
+                });
                 this._flyTo = false;
             }
             this.trigger('requestRender');
@@ -219,7 +222,10 @@ define([
             this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this.viewer.camera.flyTo({
+                    destination: Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())),
+                    duration: 0.25
+                });
                 this._flyTo = false;
             }
         },

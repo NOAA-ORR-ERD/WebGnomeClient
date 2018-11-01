@@ -74,7 +74,7 @@ define([
             this.layers.add(
                 [{
                     type: 'cesium',
-                    parentEl: 'dataSource',
+                    parentEl: 'primitive',
                     model: map,
                     id: map.id,
                     visObj: map._mapVis,
