@@ -214,13 +214,13 @@ define([
                                 blending: custombs
                             },
                         });
-                        var newEnt;
+                        var newGeo;
                         var i, poly;
                         var lake_geos = [];
                         var land_geos = [];
                         for (i = 0; i < land_polys.length; i++) {
                             poly = land_polys[i];
-                            newGeo = new Cesium.GeometryInstance({
+                                newGeo = new Cesium.GeometryInstance({
                                 geometry: new Cesium.PolygonGeometry({
                                     polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
                                     height: -2
