@@ -2,13 +2,14 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'model/base',
     'ol',
     'moment',
     'cesium',
     'localforage',
+    'model/base',
     'model/visualization/mover_appearance',
-], function(_, $, Backbone, BaseModel, ol, moment, Cesium, localforage, MoverAppearance){
+], function(_, $, Backbone, ol, moment, Cesium, localforage,
+            BaseModel, MoverAppearance) {
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
@@ -17,12 +18,13 @@ define([
         requested_grid: false,
         requested_centers: false,
         data_cache : localforage.createInstance({name: 'Environment Object Data Cache',
-                                                    }),
+                                                 }),
         defaults: function() {
             return {
                 _appearance: new MoverAppearance()
             };
         },
+
         vec_max: 4.0,
         n_vecs: 40,
 
@@ -50,8 +52,10 @@ define([
                     blendOption: Cesium.BlendOption.TRANSLUCENT,
                     id: 'uv-'+this.get('id'),
                 });
+
                 this._linesPrimitive = new Cesium.PrimitiveCollection();
-                this.get('_appearance').fetch().then(_.bind(function(){
+
+                this.get('_appearance').fetch().then(_.bind(function() {
                     this.listenTo(this.get('_appearance'), 'change', this.updateVis);
                     this.setupVis();
                 }, this));
@@ -77,7 +81,8 @@ define([
                     // make it a closed shape if it isn't.
                     for (var cell = 0; cell < this.grid.length; cell++) {
                         if (this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] ||
-                            this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1]) {
+                            this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1])
+                        {
 
                             // if the last set of coords are not the same as
                             // the first set copy the first set to the end
@@ -135,6 +140,7 @@ define([
             // (eg GridTemperature)
             if (!maxSpeed) {maxSpeed = this.vec_max;}
             if (!numSteps) {numSteps = this.n_vecs;}
+
             // v == 0
             var bbc = this._vectors;
             this._images = [];
@@ -163,6 +169,7 @@ define([
             // 0 < v < v_max
             var speedStep = maxSpeed / numSteps;
             var len, rad, arr_left, arr_right;
+
             for (var a = speedStep; a < maxSpeed; a += speedStep) {
                 var s_a = Math.round(a * 10) / 10;
 
@@ -176,9 +183,9 @@ define([
                 rad = Math.PI / 2;
 
                 arr_left = [(center + len * Math.cos(rad - angle)),
-                                (0 + len * Math.sin(rad - angle))];
+                            (0      + len * Math.sin(rad - angle))];
                 arr_right =[(center + len * Math.cos(rad + angle)),
-                                (0 + len * Math.sin(rad + angle))];
+                            (0      + len * Math.sin(rad + angle))];
 
                 ctx.moveTo(center, canvas.height / 2);
                 ctx.lineTo(center, 0);
@@ -197,18 +204,20 @@ define([
 
                 i++;
             }
+
             // v >= v_max
             canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = i * 8 + 8;
+
             ctx = canvas.getContext('2d');
             len = Math.abs(canvas.height / Math.log(canvas.height));
             rad = Math.PI / 2;
 
             arr_left = [(center + len * Math.cos(rad - angle)),
-                            (0 + len * Math.sin(rad - angle))];
+                        (0      + len * Math.sin(rad - angle))];
             arr_right =[(center + len * Math.cos(rad + angle)),
-                            (0 + len * Math.sin(rad + angle))];
+                        (0      + len * Math.sin(rad + angle))];
 
             ctx.moveTo(center, canvas.height / 2);
             ctx.lineTo(center, 0);
@@ -220,6 +229,7 @@ define([
 
             arr_left[1] = arr_left[1] + canvas.height/20;
             arr_right[1] = arr_right[1] + canvas.height/20;
+
             ctx.moveTo(center,canvas.height/20);
             ctx.lineTo(arr_left[0], arr_left[1]);
             ctx.moveTo(center,canvas.height/20);
@@ -251,7 +261,8 @@ define([
 
                         var existing_length = this._vectors.length;
                         for (var existing = 0; existing < existing_length; existing++) {
-                            this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0], centers[existing][1]);
+                            this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing][0],
+                                                                                                 centers[existing][1]);
                             this._vectors.get(existing).show = appearance.get('vec_on');
                             this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                             this._vectors.get(existing).id = 'vector'+existing;
@@ -259,10 +270,12 @@ define([
 
                         var create_length = centers.length;
                         var bb;
+
                         for (var c = existing; c < create_length; c++) {
                             bb = this._vectors.add({
                                 show: appearance.get('on'),
-                                position: Cesium.Cartesian3.fromDegrees(centers[c][0], centers[c][1]),
+                                position: Cesium.Cartesian3.fromDegrees(centers[c][0],
+                                                                        centers[c][1]),
                                 image: this._images[0],
                                 color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha')),
                                 scale: appearance.get('scale')
@@ -284,22 +297,26 @@ define([
         getImageIdx: function(data) {
                 var gap = this.vec_max / this.n_vecs;
                 var mag = Math.abs(data);
-                if (mag > 0 && mag < gap/2) {
+
+                if (mag > 0 && mag < gap / 2) {
                     return 1;
-                } else if (mag >= this.vec_max) {
+                }
+                else if (mag >= this.vec_max) {
                     return this.n_vecs;
-                } else {
+                }
+                else {
                     return Math.round(mag / gap);
                 }
-            
         },
 
         update: function(step) {
             var appearance = this.get('_appearance');
-            if(step.get('CurrentJsonOutput') && appearance.get('vec_on')){
+
+            if (step.get('CurrentJsonOutput') && appearance.get('vec_on')) {
                 var id = this.get('id');
                 var data = step.get('CurrentJsonOutput')[id];
                 var billboards = this._vectors._billboards;
+
                 if (data) {
                     for (var uv = data.direction.length; uv--;) {
                         billboards[uv].rotation = data.direction[uv];
@@ -312,36 +329,44 @@ define([
         },
 
         updateVis: function(appearance) {
-            /* Updates the appearance of this model's graphics object. Implementation varies depending on
-            the specific object type*/
-            if(appearance && appearance.changedAttributes()) {
+            // Updates the appearance of this model's graphics object.
+            // Implementation varies depending on the specific object type
+            if (appearance && appearance.changedAttributes()) {
                 var changed = appearance.changedAttributes();
                 var bbs = this._vectors._billboards;
                 var current_outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.CurrentJsonOutput'});
+
                 if (changed.vec_on === true) {
                     current_outputter.get('current_movers').add(this);
                     current_outputter.save();
                 }
+
                 if (changed.vec_on === false) {
                     current_outputter.get('current_movers').remove(this);
                     current_outputter.save();
                 }
+
                 var newColor;
-                for(var i = 0; i < bbs.length; i++) {
-                    if(changed.vec_color || changed.vec_alpha) {
+
+                for (var i = 0; i < bbs.length; i++) {
+                    if (changed.vec_color || changed.vec_alpha) {
                         newColor = Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'));
                         bbs[i].color = newColor;
                     }
+
                     bbs[i].scale = appearance.get('scale');
                     bbs[i].show = appearance.get('vec_on');
                 }
+
                 if (!_.isUndefined(changed.grid_color) || 
-                    !_.isUndefined(changed.grid_alpha)){
+                        !_.isUndefined(changed.grid_alpha)) {
                     this._linesPrimitive.removeAll();
                     this.renderLines(3000, true);
-                } else if (!_.isUndefined(changed.grid_on)) {
+                }
+                else if (!_.isUndefined(changed.grid_on)) {
                     var prims = this._linesPrimitive._primitives;
                     this._linesPrimitive.show = appearance.get('grid_on');
+
                     for (var k = 0; k < prims.length; k++) {
                         prims[k].show = this._linesPrimitive.show;
                     }
@@ -378,9 +403,12 @@ define([
             if (!primitiveContainer) {
                 primitiveContainer = new Cesium.PrimitiveCollection();
             }
+
             var appearance = this.get('_appearance');
-            var colorAttr = Cesium.ColorGeometryInstanceAttribute.fromColor(
-                Cesium.Color.fromCssColorString(appearance.get('grid_color')).withAlpha(appearance.get('grid_alpha'))
+            var colorAttr = (Cesium.ColorGeometryInstanceAttribute
+                             .fromColor(Cesium.Color
+                                        .fromCssColorString(appearance.get('grid_color'))
+                                        .withAlpha(appearance.get('grid_alpha')))
             );
 
             var batch_limit = Math.ceil(data.length / batch);
@@ -489,6 +517,7 @@ define([
             if (_.isUndefined(webgnome.model)) {
                 return [];
             }
+
             var [modelStart, modelStop] = webgnome.model.activeTimeRange();
 
             var suspectRanges = this.invalidActiveTimeRanges();
@@ -529,8 +558,9 @@ define([
         },
 
         activeTimeRange: function() {
-            return [webgnome.timeStringToSeconds(this.get('active_start')),
-                    webgnome.timeStringToSeconds(this.get('active_stop'))];
+            return this.get('active_range').map(function(time) {
+                return webgnome.timeStringToSeconds(time);
+            });
         },
 
         dataActiveTimeRange: function(ignore_extrapolation = false) {
@@ -600,7 +630,7 @@ define([
 
                 return;
             }
-            else if ( time_axis[0] >= timestamp) {
+            else if (time_axis[0] >= timestamp) {
                 //before or equal to data start so return data start
                 u_offset = 0;
                 v_offset = this.num_vecs * this.num_times;

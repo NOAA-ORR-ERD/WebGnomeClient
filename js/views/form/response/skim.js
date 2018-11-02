@@ -3,19 +3,20 @@ define([
     'underscore',
     'backbone',
     'module',
+    'moment',
     'views/form/response/adios_base',
     'text!templates/form/response/skim.html',
     'model/weatherers/skim',
-    'moment',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
-], function($, _, Backbone, module, ResponseFormModal, FormTemplate, SkimModel, moment){
+], function($, _, Backbone, module, moment,
+            ResponseFormModal, FormTemplate, SkimModel) {
     'use strict';
     var skimForm = ResponseFormModal.extend({
         title: 'ADIOS Skim Response',
         className: 'modal response form-modal skim-form',
 
-        events: function(){
+        events: function() {
             return _.defaults({
                 'change #recovery-rate': 'convertToAmount',
                 'change #recovery-amount': 'convertToRate',
@@ -26,31 +27,34 @@ define([
             }, ResponseFormModal.prototype.events());
         },
 
-        initialize: function(options, skimModel){
+        initialize: function(options, skimModel) {
             this.module = module;
             ResponseFormModal.prototype.initialize.call(this, options, skimModel);
             this.model = skimModel;
         },
 
-        updateRateAmount: function(){
+        updateRateAmount: function() {
             this.convertToAmount();
         },
 
-        render: function(options){
-            var duration = this.parseDuration(this.model.get('active_start'), this.model.get('active_stop'));
+        render: function(options) {
+            var [startTime, stopTime] = this.model.get('active_range');
+            var modelStartTime = webgnome.model.get('start_time');
+            var formTime = (startTime === '-inf') ? modelStartTime : startTime;
 
-            if (this.model.isNew()) {
-                duration = '';
-            }
+            var duration = this.model.isNew() ? '' : this.parseDuration(startTime, stopTime);
+
 
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
-                time: this.model.get('active_start') !== '-inf' ? moment(this.model.get('active_start')).format('YYYY/M/D H:mm') : moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm'),
+                time: moment(formTime).format('YYYY/M/D H:mm'),
                 duration: duration,
                 amount: this.model.get('amount'),
                 units: this.model.get('units')
             });
+
             ResponseFormModal.prototype.render.call(this, options);
+
             this.convertToRate();
             this.$('.slider').slider('value', this.model.get('efficiency') * 100);
             this.setUnitSelects();
@@ -90,14 +94,18 @@ define([
 
         update: function(){
             ResponseFormModal.prototype.update.call(this);
+
             var duration = parseFloat(this.$('#duration').val());
-            var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
+
+            var activeStart = this.startTime.format('YYYY-MM-DDTHH:mm:ss');
+            var activeEnd   = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
+
             var recoveryRate = this.$('#recovery-rate').val();
             var rateUnits = this.$('#rate-units').val();
             var recoveryAmount = this.$('#recovery-amount').val();
             var amountUnits = this.$('#amount-units').val();
 
-            this.model.set('active_stop', endTime);
+            this.model.set('active_range', [activeStart, activeEnd]);
             this.model.set('amount', recoveryAmount);
             this.model.set('units', amountUnits);
         }
