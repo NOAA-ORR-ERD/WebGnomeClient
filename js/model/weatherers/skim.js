@@ -8,6 +8,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.Skimmer',
             'name': 'Skimmer',
+            'active_range': ['-inf', 'inf'],
             'efficiency': 0.20,
             'amount': 0,
             'units': 'bbl',

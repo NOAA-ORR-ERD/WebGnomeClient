@@ -62,37 +62,43 @@ define([
             this.update();
         },
 
-        setUnitSelects: function(){
+        setUnitSelects: function() {
             var units = this.model.get('units');
 
             this.$('#rate-units').val(units + '/hr');
             this.$('#amount-units').val(units);
         },
 
-        convertToAmount: function(){
+        convertToAmount: function() {
             var recoveryRate = parseFloat(this.$('#recovery-rate').val());
             var recoveryRateUnits = this.$('#rate-units').val();
             var amountUnits = recoveryRateUnits.substr(0, recoveryRateUnits.indexOf('/'));
             var duration = parseFloat(this.$('#duration').val());
-            if (_.isNumber(recoveryRate) && _.isNumber(duration)){
+
+            if (_.isNumber(recoveryRate) && _.isNumber(duration)
+                    && !(isNaN(recoveryRate) || isNaN(duration))) {
                 var amountRecovered = parseFloat(recoveryRate) * parseFloat(duration);
+
                 this.$('#recovery-amount').val(amountRecovered);
                 this.$('#amount-units').val(amountUnits);
             }
         },
 
-        convertToRate: function(){
+        convertToRate: function() {
             var amount = parseFloat(this.$('#recovery-amount').val());
             var duration = parseFloat(this.$('#duration').val());
             var amountUnits = this.$('#amount-units').val() + '/hr';
-            if (_.isNumber(amount) && _.isNumber(duration)){
+
+            if (_.isNumber(amount) && _.isNumber(duration)
+                    && !(isNaN(amount) || isNaN(duration))) {
                 var recoveryRate = amount / duration;
+
                 this.$('#recovery-rate').val(recoveryRate);
                 this.$('#rate-units').val(amountUnits);
             }
         },
 
-        update: function(){
+        update: function() {
             ResponseFormModal.prototype.update.call(this);
 
             var duration = parseFloat(this.$('#duration').val());
