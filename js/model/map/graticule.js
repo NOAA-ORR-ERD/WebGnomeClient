@@ -295,7 +295,7 @@ define([
                             geometryInstances: this.linegeo,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
-                                translucent: true
+                                translucent: false
                             })
                         });
             this.scene.primitives.add(this.lines);

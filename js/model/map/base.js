@@ -33,11 +33,10 @@ define([
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this._mapVis = new Cesium.CustomDataSource({show: this.get('_appearance').get('map_on')});
-            this._land_entities = new Cesium.EntityCollection(this._mapVis);
-            this._lake_entities = new Cesium.EntityCollection(this._mapVis);
-            this._mapVis.entities.add(this._land_entities);
-            this._mapVis.entities.add(this._lake_entities);
+            this._mapVis = new Cesium.PrimitiveCollection({
+                show: this.get('_appearance').get('map_on'),
+                id: this.get('id') + '_mapVis'
+            });
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
@@ -173,39 +172,92 @@ define([
 
         genMap: function() {
             return new Promise(_.bind(function(resolve, reject) {
-                this._land_entities.removeAll();
-                this._lake_entities.removeAll();
+                this._mapVis.removeAll();
+                this._land_primitive = new Cesium.Primitive();
+                this._lake_primitive = new Cesium.Primitive();
                 this.getGeoJSON(_.bind(function(geojson) {
                     if (geojson.features.length > 0) {
                         var land_polys = geojson.features[0].geometry.coordinates;
                         var lake_polys = geojson.features[1].geometry.coordinates;
-                        var newEnt;
+
+                        var transbs = {
+                            enabled : true,
+                            equationRgb : Cesium.BlendEquation.ADD,
+                            equationAlpha : Cesium.BlendEquation.ADD,
+                            functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
+                            functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
+                            functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
+                            functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
+                        };
+                        var custombs = {
+                            enabled : true,
+                            equationRgb : Cesium.BlendEquation.MAX,
+                            equationAlpha : Cesium.BlendEquation.MIN,
+                            functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
+                            functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
+                            functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
+                            functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
+                        };
+                        var land_appearance = new Cesium.PerInstanceColorAppearance({
+                            flat: true,
+                            translucent: true,
+                            renderState: {
+                                depthMask: true,
+                                blending: transbs
+                            },
+                        });
+                        var lake_appearance = new Cesium.PerInstanceColorAppearance({
+                            flat: true,
+                            translucent: false,
+                            renderState: {
+                                depthMask: true,
+                                blending: custombs
+                            },
+                        });
+                        var newGeo;
                         var i, poly;
+                        var lake_geos = [];
+                        var land_geos = [];
                         for (i = 0; i < land_polys.length; i++) {
                             poly = land_polys[i];
-                            newEnt = new Cesium.Entity({
-                                name: 'land_poly_' + i,
-                                polygon: new Cesium.PolygonGraphics({
-                                    hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                                    material: Cesium.Color.KHAKI.withAlpha(0.6)
-                                })
+                                newGeo = new Cesium.GeometryInstance({
+                                geometry: new Cesium.PolygonGeometry({
+                                    polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                                    height: -2
+                                }),
+                                attributes : {
+                                    color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
+                                }
                             });
-                            this._land_entities.add(newEnt);
-                            this._mapVis.entities.add(newEnt);
+                            land_geos.push(newGeo);
                         }
                         for (i = 0; i < lake_polys.length; i++) {
                             poly = lake_polys[i];
-                            newEnt = new Cesium.Entity({
-                                name: 'lake_poly_' + i,
-                                polygon: new Cesium.PolygonGraphics({
-                                    hierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                                    material: Cesium.Color.BLUE,
-                                    height: 5
-                                })
+                            newGeo = new Cesium.GeometryInstance({
+                                geometry: new Cesium.PolygonGeometry({
+                                    polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                                    height: -1
+                                }),
+                                attributes : {
+                                    color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))
+                                }
                             });
-                            this._lake_entities.add(newEnt);
-                            this._mapVis.entities.add(newEnt);
+                            lake_geos.push(newGeo);
                         }
+                        this._land_primitive = this._mapVis.add(
+                            new Cesium.Primitive({
+                                geometryInstances: land_geos,
+                                appearance: land_appearance,
+                                asynchronous: false
+                            })
+                        );
+                        this._lake_primitive = this._mapVis.add(
+                            new Cesium.Primitive({
+                                geometryInstances: lake_geos,
+                                appearance: lake_appearance,
+                                asynchronous: false
+                            })
+                        );
                     }
                     this._mapVis.show = this.get('_appearance').get('map_on');
                 }, this));
