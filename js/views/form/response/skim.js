@@ -75,8 +75,8 @@ define([
             var amountUnits = recoveryRateUnits.substr(0, recoveryRateUnits.indexOf('/'));
             var duration = parseFloat(this.$('#duration').val());
 
-            if (_.isNumber(recoveryRate) && _.isNumber(duration)
-                    && !(isNaN(recoveryRate) || isNaN(duration))) {
+            if (_.isNumber(recoveryRate) && _.isNumber(duration) &&
+                    !(isNaN(recoveryRate) || isNaN(duration))) {
                 var amountRecovered = parseFloat(recoveryRate) * parseFloat(duration);
 
                 this.$('#recovery-amount').val(amountRecovered);
@@ -89,8 +89,8 @@ define([
             var duration = parseFloat(this.$('#duration').val());
             var amountUnits = this.$('#amount-units').val() + '/hr';
 
-            if (_.isNumber(amount) && _.isNumber(duration)
-                    && !(isNaN(amount) || isNaN(duration))) {
+            if (_.isNumber(amount) && _.isNumber(duration) &&
+                    !(isNaN(amount) || isNaN(duration))) {
                 var recoveryRate = amount / duration;
 
                 this.$('#recovery-rate').val(recoveryRate);
