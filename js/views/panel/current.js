@@ -2,20 +2,21 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'cesium',
     'sweetalert',
-    'ol',
     'text!templates/panel/current.html',
-    'views/default/map',
+    'views/default/cesium',
     'views/panel/base',
     'views/form/mover/create',
     'views/form/mover/grid',
     'views/form/mover/cats',
     'views/form/mover/component',
+    'views/modal/base',
     'views/modal/form'
-], function($, _, Backbone, swal, ol,
-            CurrentPanelTemplate, OlMapView, BasePanel,
+], function($, _, Backbone, Cesium, swal,
+            CurrentPanelTemplate, CesiumView, BasePanel,
             CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm,
-            FormModal) {
+            BaseModal, FormModal) {
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -31,10 +32,17 @@ define([
             'gnome.movers.current_movers.CatsMover': CatsMoverForm,
             'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
         },
+        events: {
+            'click #mini-currentmap': 'openMapModal',
+            'click .single': 'changeDisplayedCurrent',
+            'webkitfullscreenchange #mini-currentmap': 'resetCamera'
+        },
 
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
-
+            //_.extend({}, BasePanel.prototype.events, this.events);
+            _.extend(this.events, BasePanel.prototype.events);
+            this.currentPrims = {};
             this.listenTo(webgnome.model,
                           'change:duration chage:start_time',
                           this.rerender);
@@ -93,6 +101,54 @@ define([
             currentForm.render();
         },
 
+        openMapModal: function(e) {
+            if(!_.isUndefined(this.currentMap)){
+                this.currentMap.el.webkitRequestFullScreen();
+            }
+        },
+
+        resetCamera: function(e) {
+            //timeout so transition to/from fullscreen can complete before recentering camera
+            setTimeout(_.bind(function(){this._focusOnCurrent(this.displayedCurrent);}, this), 100);
+        },
+
+        _focusOnCurrent: function(cur) {
+            if (_.isUndefined(this.currentMap)) {
+                return;
+            } else {
+                cur.getBoundingRectangle().then(_.bind(function(rect) {
+                    this.currentMap.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0
+                    });
+                    this.currentMap.viewer.scene.requestRender();
+                }, this));
+            }
+        },
+
+        changeDisplayedCurrent: function(e) {
+            if (_.isUndefined(this._loadPrimitivesPromise)) {
+                //too early to call this function, there's no currents loaded to change to!
+                return;
+            } else {
+                this._loadPrimitivesPromise.then(_.bind(function(){
+                    this.currentPrims[this.displayedCurrent.get('id')].show = false;
+                    var curId = e.currentTarget.getAttribute('data-id');
+                    var cur = webgnome.model.get('movers').findWhere({'id': curId});
+                    if (cur) {
+                        this.displayedCurrent = cur;
+                        var prim = this.currentPrims[cur.get('id')];
+                        if (_.isUndefined(prim)){
+                            console.error('Primitive for current '+ cur.get('name') + ' not found');
+                            return;
+                        }
+                        prim.show = true;
+                        this.resetCamera();
+                    }
+                },this));
+            }
+        },
+
         render: function() {
             var currents = webgnome.model.get('movers').filter(function(mover) {
                 return [
@@ -112,47 +168,26 @@ define([
 
             if (currents.length > 0) {
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
-                this.$('.panel-body').show();
-
-                this.current_layers = new ol.Collection([
-                    new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            })
-                    })
-                ]);
-
-                this.currentMap = new OlMapView({
-                    el: this.$('#mini-currentmap'),
-                    controls: [],
-                    layers: this.current_layers,
-                    interactions: ol.interaction.defaults({
-                        mouseWheelZoom: false,
-                        dragPan: false,
-                        doubleClickZoom: false
-                    }),
+                this.$('.panel-body').show({
+                    duration: 10,
+                    done: _.bind(function(){
+                        if (!this.currentMap){
+                            this.currentMap = CesiumView.getView('currents_panel');
+                            this.currentMap.render();
+                            this.displayedCurrent = currents[0];
+                            var p, cur_id;
+                            this._loadPrimitives([currents[0]]).then(_.bind(function() {
+                                //on first load, always display first current
+                                this.currentPrims[currents[0].get('id')].show = true;
+                                this.resetCamera(currents[0]);
+                                this._loadPrimitives(currents.slice(1));
+                            },this));
+                        }
+                        this.$('#mini-currentmap').append(this.currentMap.$el);
+                        this.resetCamera(currents[0]);
+                        this.trigger('render');
+                    }, this)
                 });
-
-                this.currentMap.render();
-                this.current_extents = [];
-
-                for (var c = 0; c < currents.length; c++) {
-                    // currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
-                }
-
-                this.currentMap.map.on('postcompose', _.bind(function() {
-                    if (webgnome.model.get('map')) {
-                        if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap') {
-                            var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(),
-                                                                  ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                            this.currentMap.map.getView().fit(extent, this.currentMap.map.getSize());
-                        }
-                        else {
-                            this.currentMap.map.getView().setZoom(3);
-                        }
-                    }
-                }, this));
             }
             else {
                 this.current_extents = [];
@@ -162,32 +197,52 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
-        addCurrentToPanel: function(geojson) {
-            if (geojson) {
-                var gridSource = new ol.source.Vector({
-                    features: (new ol.format.GeoJSON()).readFeatures(geojson,
-                                                                     {featureProjection: 'EPSG:3857'}),
-                });
-                var extentSum = gridSource.getExtent().reduce(function(prev, cur) {return prev + cur;});
-
-                var gridLayer = new ol.layer.Image({
-                    name: 'modelcurrent',
-                    source: new ol.source.ImageVector({
-                        source: gridSource,
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: [171, 37, 184, 0.75],
-                                width: 1
-                            })
-                        })
-                    })
-                });
-
-                if (!_.contains(this.current_extents, extentSum)) {
-                    this.current_layers.push(gridLayer);
-                    this.current_extents.push(extentSum);
-                }
+        _loadPrimitives: function(currents) {
+            //This promise populates this.currentPrims with any existing primitives in
+            //this panel's CesiumView, and if not found, creates new Primitives and adds them
+            //to both the CesiumView and this.currentPrims.
+            //This function exists to initialize this panel's state in the case where it is
+            //using a cached CesiumView
+            var promises = [];
+            var ctxt;
+            for (var c = 0; c < currents.length; c++) {
+                //To future me: I am so sorry for this. 
+                ctxt = {panel: this,
+                        curs: currents,
+                        cidx: c,
+                        _: _
+                        };
+                promises.push(new Promise(_.bind(function(resolve, reject){
+                    var scenePrims = this.panel.currentMap.viewer.scene.primitives;
+                    var cur_id, cur;
+                    cur = this.curs[this.cidx];
+                    cur_id = cur.get('id');
+                    for(var i = 0; i < scenePrims.length; i++) {
+                        if (scenePrims._primitives[i].id === cur_id) {
+                            this.panel.currentPrims[cur_id] = scenePrims._primitives[i];
+                            if (i > 0) {
+                                this.panel.currentPrims[cur_id].show = false;
+                            } else {
+                                this.panel.currentPrims[cur_id].show = true;
+                            }
+                            break;
+                        }
+                    }
+                    if (this._.isUndefined(this.panel.currentPrims[cur_id])) {
+                        cur.getGrid().then(this._.bind(function(data){
+                            var newPrim = this.curs[this.cidx].processLines(data, false, this.panel.currentMap.viewer.scene.primitives);
+                            newPrim.id = this.curs[this.cidx].get('id');
+                            newPrim.show = false;
+                            this.panel.currentPrims[cur_id] = newPrim;
+                            resolve(newPrim);
+                        }, this)).catch(reject); //this == ctxt
+                    } else {
+                        resolve(this.panel.currentPrims[cur_id]);
+                    }
+                }, ctxt)));
             }
+            this._loadPrimitivesPromise = Promise.all(promises);
+            return this._loadPrimitivesPromise;
         },
 
         getForm: function(obj_type) {

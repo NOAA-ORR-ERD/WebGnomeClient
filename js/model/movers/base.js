@@ -7,7 +7,7 @@ define([
     'cesium',
     'localforage',
     'model/base',
-    'model/visualization/mover_appearance',
+    'model/visualization/mover_appearance'
 ], function(_, $, Backbone, ol, moment, Cesium, localforage,
             BaseModel, MoverAppearance) {
     'use strict';
@@ -17,7 +17,7 @@ define([
         requesting_centers: false,
         requested_grid: false,
         requested_centers: false,
-        data_cache : localforage.createInstance({name: 'Environment Object Data Cache',
+        data_cache : localforage.createInstance({name: 'Mover Object Data Cache',
                                                  }),
         defaults: function() {
             return {
@@ -67,42 +67,61 @@ define([
             this.requested_centers = false;
         },
 
-        getGrid: function(callback) {
-            var url = this.urlRoot + this.id + '/grid';
+        getBoundingRectangle: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                var genRect = _.bind(function(data){
+                    this._boundingRectangle = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(data.flat()));
+                    resolve(this._boundingRectangle);
+                }, this);
+                this.getGrid().then(genRect);
+            }, this));
+        },
 
-            if (!this.requesting_grid && !this.requested_grid) {
-                this.requesting_grid = true;
+        getGrid: function() {
+            if (_.isUndefined(this._getGridPromise)) {
+                this._getGridPromise = new Promise(_.bind(function(resolve, reject){
+                    this.data_cache.getItem(this.id + 'grid').then(_.bind(function(lineData){
+                        if(lineData) {
+                            console.log(this.get('name') + ' grid found in store');
+                            this.requesting = false;
+                            this.requested_grid = true;
+                            this.grid = lineData;
+                            resolve(lineData);
+                        } else {
+                            if(!this.requesting && !this.requested_grid){
+                                var ur = this.urlRoot + this.id + '/grid';
+                                this.requesting = true;
+                                $.get(ur, null, _.bind(function(grid) {
+                                    this.requesting = false;
+                                    this.requested_grid = true;
+                                    this.grid = grid;
+                                    
 
-                $.get(url, null, _.bind(function(grid) {
-                    this.requesting_grid = false;
-                    this.requested_grid = true;
-                    this.grid = grid;
+                                    // make it a closed shape if it isn't.
+                                    for (var cell = 0; cell < this.grid.length; cell++) {
+                                        if (this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] ||
+                                            this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1])
+                                        {
 
-                    // make it a closed shape if it isn't.
-                    for (var cell = 0; cell < this.grid.length; cell++) {
-                        if (this.grid[cell][0] !== this.grid[cell][this.grid[cell].length - 2] ||
-                            this.grid[cell][1] !== this.grid[cell][this.grid[cell].length - 1])
-                        {
+                                            // if the last set of coords are not the same as
+                                            // the first set copy the first set to the end
+                                            // of the array.
+                                            this.grid[cell].push(this.grid[cell][0]);
+                                            this.grid[cell].push(this.grid[cell][1]);
+                                        }
+                                    }
 
-                            // if the last set of coords are not the same as
-                            // the first set copy the first set to the end
-                            // of the array.
-                            this.grid[cell].push(this.grid[cell][0]);
-                            this.grid[cell].push(this.grid[cell][1]);
+                                    this.data_cache.setItem(this.id + 'grid', grid);
+                                    resolve(this.grid);
+                                }, this));
+                            } else {
+                                reject(new Error('Request already in progress'));
+                            }
                         }
-                    }
-
-                    if (callback) {
-                        callback(this.grid);
-                    }
-
-                    return this.grid;
+                    },this)).catch(reject);
                 }, this));
             }
-            else if (callback) {
-                callback(this.grid);
-                return this.grid;
-            }
+            return this._getGridPromise;
         },
 
         getCenters: function(callback) {
@@ -387,7 +406,7 @@ define([
 
             return new Promise(_.bind(function(resolve, reject) {
                 if (rebuild || this._linesPrimitive.length === 0) {
-                    this.getGrid(_.bind(function(data) {
+                    this.getGrid().then(_.bind(function(data) {
                         this.processLines(data, batch, this._linesPrimitive);
                         // send the batch to the gpu/cesium
 
@@ -401,8 +420,15 @@ define([
         },
 
         processLines: function(data, batch, primitiveContainer) {
+            batch = 3000;
+            var shw = this.get('_appearance').get('on');
             if (!primitiveContainer) {
+                shw = true;
                 primitiveContainer = new Cesium.PrimitiveCollection();
+            }
+            if (primitiveContainer !== this._linesPrimitive) {
+                var t = new Cesium.PrimitiveCollection();
+                primitiveContainer = primitiveContainer.add(t);
             }
 
             var appearance = this.get('_appearance');
@@ -438,12 +464,13 @@ define([
 
                 segment += batch;
 
-                primitiveContainer.add(new Cesium.Primitive({
+                var newPrim = primitiveContainer.add(new Cesium.Primitive({
                     geometryInstances: geo,
                     appearance: new Cesium.PerInstanceColorAppearance({
                         flat: true,
                         translucent: true
-                    })
+                    }),
+                    show: shw
                 }));
             }
 

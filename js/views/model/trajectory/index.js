@@ -170,13 +170,23 @@ define([
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.camera.flyTo({
-                    destination: Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())),
-                    duration: 0.25
-                });
+                this._focusOnMap();
                 this._flyTo = false;
             }
             this.trigger('requestRender');
+        },
+
+        _focusOnMap: function() {
+            if (_.isUndefined(this.viewer)) {
+                return;
+            } else {
+                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
+                    this.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0.25
+                    });
+                }, this));
+            }
         },
 
         removeLayer: function(lay) {
@@ -222,10 +232,7 @@ define([
             this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.camera.flyTo({
-                    destination: Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())),
-                    duration: 0.25
-                });
+                this._focusOnMap();
                 this._flyTo = false;
             }
         },
@@ -866,7 +873,7 @@ define([
                 }
             } else if(id !== 'none-grid'){
                 var current = webgnome.model.get('movers').findWhere({id: id});
-                current.getGrid(_.bind(function(data){
+                current.getGrid().then(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     this.grids[current.get('id')]  = [];
                     var batch = 3000;

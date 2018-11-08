@@ -67,17 +67,17 @@ define([
             var cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
             if (cartesian) {
                 var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                var long = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);
+                var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);
                 var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(8);
 
-                this.target.val(long + ', ' + lat + ',0');
+                this.target.val(lon + ', ' + lat + ',0');
                 this.target.trigger('change');
                 this.hide();
             }
         },
 
         renderGrid: function(map){
-            this.model.getGrid(_.bind(function(data){
+            this.model.getGrid().then(_.bind(function(data){
                 var primitive = new Cesium.PrimitiveCollection();
                 map.viewer.scene.primitives.add(primitive);
                 this.model.processLines(data, 3000, primitive);

@@ -4,14 +4,17 @@ define([
     'model/base',
     'ol',
     'cesium',
+    'localforage',
     'model/visualization/map_appearance'
-], function(_, $, BaseModel, ol, Cesium, MapAppearance){
+], function(_, $, BaseModel, ol, Cesium, localforage, MapAppearance){
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
         requesting: false,
         requested: false,
         geo_json: undefined,
         geographical: false,
+        map_cache : localforage.createInstance({name: 'Map Object Data Cache',
+                                                 }),
         defaults: {
             obj_type: 'gnome.map.GnomeMap',
             filename: '',
@@ -32,6 +35,10 @@ define([
 
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
+            localforage.config({
+                name: 'WebGNOME Map Cache',
+                storeName: 'map_cache'
+            });
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._mapVis = new Cesium.PrimitiveCollection({
                 show: this.get('_appearance').get('map_on'),
@@ -48,9 +55,16 @@ define([
             this._spillableVis.show = this.get('_appearance').get('sa_on');
             this._boundsVis.show = this.get('_appearance').get('bounds_on');
             this._mapVis.clampToGround = false;
-            this.genMap();
+            this.genMap(true);
             this.genAux('spillable_area');
             this.genAux('map_bounds');
+        },
+
+        getBoundingRectangle: function() {
+            return new Promise(_.bind(function(resolve, reject) {
+                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())));
+            }));
+            //return Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat()))
         },
 
         getExtent: function(){
@@ -150,118 +164,148 @@ define([
             delete this.geo_json;
         },
 
-        getGeoJSON: function(callback){
-            var url = this.urlRoot + this.get('id') + '/geojson';
-            if(!this.requesting && !this.requested && _.isUndefined(this.geo_json)){
-                console.log('request is being sent');
-                this.requesting = true;
-                $.get(url, null, _.bind(function(geo_json){
-                    this.requesting = false;
-                    this.requested = true;
-                    this.geo_json = geo_json;
-                    callback(geo_json);
+        getGeoJSON: function(){
+            if (_.isUndefined(this._getGeoJsonPromise)) {
+                this._getGeoJsonPromise = new Promise(_.bind(function(resolve, reject){
+                    this.map_cache.getItem(this.id + 'map').then(_.bind(function(geo_json){
+                        if(geo_json) {
+                            console.log(this.get('name') + ' geojson found in store');
+                            this.requesting = false;
+                            this.requested = true;
+                            this.geo_json = geo_json;
+                            resolve(this.geo_json);
+                        } else {
+                            if(!this.requesting && !this.requested){
+                                var ur = this.urlRoot + this.id + '/geojson';
+                                this.requesting = true;
+                                $.get(ur, null, _.bind(function(geo_json) {
+                                    this.requesting = false;
+                                    this.requested_grid = true;
+                                    this.geo_json = geo_json;
+                                    this.map_cache.setItem(this.id + 'map', geo_json);
+                                    resolve(this.geo_json);
+                                }, this));
+                            } else {
+                                reject(new Error('Request already in progress'));
+                            }
+                        }
+                    },this)).catch(reject);
                 }, this));
-            } else if (this.requested && this.geo_json) {
-                callback(this.geo_json);
-            } else {
-                // make it wait and try again later
-                _.delay(_.bind(this.getGeoJSON, this), 500, callback);
             }
-            return null;
+            return this._getGeoJsonPromise;
         },
 
-        genMap: function() {
+        genMap: function(rebuild) {
+            if (_.isUndefined(rebuild)){
+                rebuild = false;
+            }
             return new Promise(_.bind(function(resolve, reject) {
-                this._mapVis.removeAll();
-                this._land_primitive = new Cesium.Primitive();
-                this._lake_primitive = new Cesium.Primitive();
-                this.getGeoJSON(_.bind(function(geojson) {
-                    if (geojson.features.length > 0) {
-                        var land_polys = geojson.features[0].geometry.coordinates;
-                        var lake_polys = geojson.features[1].geometry.coordinates;
+                if (rebuild) {
+                    this.getGeoJSON().then(_.bind(function(data){
+                        this.processMap(data, rebuild, this._mapVis);
+                        resolve(this._mapVis);
+                    }, this)).catch(reject);
+                }
+                else {
+                    resolve(this._mapVis);
+                }
+            }, this));
+        },
+        processMap: function(geojson, rebuild, primitiveColl) {
+            var shw = this.get('_appearance').get('map_on');
+            if (_.isUndefined(primitiveColl)){
+                primitiveColl = this._mapVis;
+            }
+            if (primitiveColl !== this._mapVis){
+                shw = true;
+            }
+            if (geojson.features.length > 0) {
+                var land_polys = geojson.features[0].geometry.coordinates;
+                var lake_polys = geojson.features[1].geometry.coordinates;
 
-                        var transbs = {
-                            enabled : true,
-                            equationRgb : Cesium.BlendEquation.ADD,
-                            equationAlpha : Cesium.BlendEquation.ADD,
-                            functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
-                            functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
-                            functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
-                            functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
-                        };
-                        var custombs = {
-                            enabled : true,
-                            equationRgb : Cesium.BlendEquation.MAX,
-                            equationAlpha : Cesium.BlendEquation.MIN,
-                            functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
-                            functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
-                            functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
-                            functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
-                        };
-                        var land_appearance = new Cesium.PerInstanceColorAppearance({
-                            flat: true,
-                            translucent: true,
-                            renderState: {
-                                depthMask: true,
-                                blending: transbs
-                            },
-                        });
-                        var lake_appearance = new Cesium.PerInstanceColorAppearance({
-                            flat: true,
-                            translucent: false,
-                            renderState: {
-                                depthMask: true,
-                                blending: custombs
-                            },
-                        });
-                        var newGeo;
-                        var i, poly;
-                        var lake_geos = [];
-                        var land_geos = [];
-                        for (i = 0; i < land_polys.length; i++) {
-                            poly = land_polys[i];
-                                newGeo = new Cesium.GeometryInstance({
-                                geometry: new Cesium.PolygonGeometry({
-                                    polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                                    height: -2
-                                }),
-                                attributes : {
-                                    color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
-                                }
-                            });
-                            land_geos.push(newGeo);
+                var transbs = {
+                    enabled : true,
+                    equationRgb : Cesium.BlendEquation.ADD,
+                    equationAlpha : Cesium.BlendEquation.ADD,
+                    functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
+                    functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
+                    functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
+                    functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
+                };
+                var custombs = {
+                    enabled : true,
+                    equationRgb : Cesium.BlendEquation.MAX,
+                    equationAlpha : Cesium.BlendEquation.MIN,
+                    functionSourceRgb : Cesium.BlendFunction.SOURCE_ALPHA,
+                    functionSourceAlpha : Cesium.BlendFunction.SOURCE_ALPHA,
+                    functionDestinationRgb : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA,
+                    functionDestinationAlpha : Cesium.BlendFunction.ONE_MINUS_SOURCE_ALPHA
+                };
+                var land_appearance = new Cesium.PerInstanceColorAppearance({
+                    flat: true,
+                    translucent: true,
+                    renderState: {
+                        depthMask: true,
+                        blending: transbs
+                    },
+                });
+                var lake_appearance = new Cesium.PerInstanceColorAppearance({
+                    flat: true,
+                    translucent: false,
+                    renderState: {
+                        depthMask: true,
+                        blending: custombs
+                    },
+                });
+                var newGeo;
+                var i, poly;
+                var lake_geos = [];
+                var land_geos = [];
+                for (i = 0; i < land_polys.length; i++) {
+                    poly = land_polys[i];
+                        newGeo = new Cesium.GeometryInstance({
+                        geometry: new Cesium.PolygonGeometry({
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                            height: -2
+                        }),
+                        attributes : {
+                            color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
                         }
-                        for (i = 0; i < lake_polys.length; i++) {
-                            poly = lake_polys[i];
-                            newGeo = new Cesium.GeometryInstance({
-                                geometry: new Cesium.PolygonGeometry({
-                                    polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                                    height: -1
-                                }),
-                                attributes : {
-                                    color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))
-                                }
-                            });
-                            lake_geos.push(newGeo);
+                    });
+                    land_geos.push(newGeo);
+                }
+                for (i = 0; i < lake_polys.length; i++) {
+                    poly = lake_polys[i];
+                    newGeo = new Cesium.GeometryInstance({
+                        geometry: new Cesium.PolygonGeometry({
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                            height: -1
+                        }),
+                        attributes : {
+                            color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))
                         }
-                        this._land_primitive = this._mapVis.add(
-                            new Cesium.Primitive({
-                                geometryInstances: land_geos,
-                                appearance: land_appearance,
-                                asynchronous: false
-                            })
-                        );
-                        this._lake_primitive = this._mapVis.add(
-                            new Cesium.Primitive({
-                                geometryInstances: lake_geos,
-                                appearance: lake_appearance,
-                                asynchronous: false
-                            })
-                        );
-                    }
-                    this._mapVis.show = this.get('_appearance').get('map_on');
-                }, this));
-            }, this ));
+                    });
+                    lake_geos.push(newGeo);
+                }
+                primitiveColl.add(
+                    new Cesium.Primitive({
+                        geometryInstances: land_geos,
+                        appearance: land_appearance,
+                        asynchronous: false,
+                        show: shw
+                    })
+                );
+                primitiveColl.add(
+                    new Cesium.Primitive({
+                        geometryInstances: lake_geos,
+                        appearance: lake_appearance,
+                        asynchronous: false,
+                        show: shw
+                    })
+                );
+            }
+            primitiveColl.show = shw;
+            return primitiveColl;
         },
 
         updateVis: function(appearance) {
