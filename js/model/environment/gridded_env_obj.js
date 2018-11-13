@@ -7,10 +7,12 @@ define([
     'model/environment/grid',
     'moment',
     'localforage',
-    'model/visualization/vector_appearance'
-], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance){
+    'model/visualization/vector_appearance',
+    'socketio'
+], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance, io){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
+        socketRoute: '/data_socket',
         model: {
             time: Backbone.Model,
             grid: BaseGridObj,
@@ -28,13 +30,13 @@ define([
             this.on('change', this.resetRequest, this);
 
             if (!this.requested_vectors) {
-                this.getVecs(null);
                 this.getMetadata(null);
             }
 
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            //this.socketConnect();
 
         },
 
@@ -490,6 +492,112 @@ define([
                 }
             }
         },
+
+        //SOCKET & DATA MANAGEMENT STUFF BELOW HERE
+
+        socketConnect: function(){
+            console.log('Connecting to data namespace');
+            if(!this.socket){
+                this.socket = io.connect(webgnome.config.api + this.socketRoute);
+                this.socket.on('metadata', _.bind(this.metadataHandler, this));
+                this.socket.on('data', _.bind(this.dataHandler,this));
+                this.socket.on('serial', _.bind(this.serialHandler, this));
+            }
+        },
+
+        metadataHandler: function(id, md) {
+            if (id != this.get('id')) {
+                return;
+            }
+            console.log('Received metadata for: ' + this.get('id'));
+            if (_.isUndefined(this.metadata)){
+                this.metadata = md
+                this.setupDataPromises(true);
+            } else {
+                console.error('metadata should only be requested once per object instance')
+            }
+        },
+
+        setupDataPromises: function(rebuild) {
+            if (rebuild && !_.isNull(this.metadata)) {
+                var md = this.metadata
+                if (md.time_arr) {
+                    this._time_arr = md.time
+                }
+                //this._data is ALWAYS the primary data represented by this gridded environment object
+                //for a current or wind, for example, this would be the vector data
+                this._data = [];
+                for(var k=0; k < this._time_arr.length; k++) {
+                    this._data.append(this._genDataPromise(k));
+                }
+            }
+        },
+
+        _genDataPromise(index) {
+            return new Promise(_.bind(function(resolve, reject){
+                this.listenToOnce(this, 'data_'+index, _.bind(function(idx){
+                    this.stopListening(this, 'datafail_'+idx);
+                    resolve(this.env_obj_cache.getItem('data_'+idx));
+                },this));
+                this.listenToOnce(this, 'datafail_'+idx, _.bind(function(idx){
+                    this.stopListening(this, 'data_'+idx);
+                    reject();
+                },this));
+            }, this));
+        },
+
+        dataHandler: function(id, data) {
+            if (id != this.get('id')) {
+                return;
+            }
+            console.log('Received data for: ' + this.get('id'));
+        },
+
+        serialHandler: function(id, serial) {
+            if (id != this.get('id')) {
+                return;
+            }
+            console.log('Received serial for: ' + this.get('id'));
+        },
+
+        socketGet(command, args) {
+            this[command].apply(this, args)
+        },
+
+        get_metadata: function() {
+            /*
+            Returns metadata about the object on the server. In particular, it should provide
+            full usage information for get_data.
+            */
+            this.socket.emit('get_metadata', this.get('id'));
+        },
+
+        get_attribute: function(attr_name) {
+            /*
+            Use this function to retrieve a generic attribute of this object from the server.
+            Returns a promise that resolves when the attribute gets cached on the client.
+
+            Returns null if the attribute is None. Returns undefined if the attribute does not exist
+            */
+            this.socket.emit('get_attribute', this.get('id'), attr_name)
+        },
+
+        get_data: function(data_name, slices, cast_type, precision) {
+            /*
+            Use this function when requesting arrays of data that may be sliced. Unlike
+            get_attribute, this function only accepts certain data_names depending on what
+            the object on the server can handle.
+
+            Returns a promise that resolves when the data requested gets cached on the client
+            */
+            this.socket.emit('get_data', this.get('id'), data_name);
+            
+        },
+
+        get_serial: function() {
+            this.socket.emit('get_serial', this.get('id'));
+        },
+
     });
 
     return gridEnvObj;
