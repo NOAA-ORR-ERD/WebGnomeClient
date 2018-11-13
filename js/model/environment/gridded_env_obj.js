@@ -506,23 +506,23 @@ define([
         },
 
         metadataHandler: function(id, md) {
-            if (id != this.get('id')) {
+            if (id !== this.get('id')) {
                 return;
             }
             console.log('Received metadata for: ' + this.get('id'));
             if (_.isUndefined(this.metadata)){
-                this.metadata = md
+                this.metadata = md;
                 this.setupDataPromises(true);
             } else {
-                console.error('metadata should only be requested once per object instance')
+                console.error('metadata should only be requested once per object instance');
             }
         },
 
         setupDataPromises: function(rebuild) {
             if (rebuild && !_.isNull(this.metadata)) {
-                var md = this.metadata
+                var md = this.metadata;
                 if (md.time_arr) {
-                    this._time_arr = md.time
+                    this._time_arr = md.time;
                 }
                 //this._data is ALWAYS the primary data represented by this gridded environment object
                 //for a current or wind, for example, this would be the vector data
@@ -539,7 +539,7 @@ define([
                     this.stopListening(this, 'datafail_'+idx);
                     resolve(this.env_obj_cache.getItem('data_'+idx));
                 },this));
-                this.listenToOnce(this, 'datafail_'+idx, _.bind(function(idx){
+                this.listenToOnce(this, 'datafail_'+index, _.bind(function(idx){
                     this.stopListening(this, 'data_'+idx);
                     reject();
                 },this));
@@ -547,21 +547,21 @@ define([
         },
 
         dataHandler: function(id, data) {
-            if (id != this.get('id')) {
+            if (id !== this.get('id')) {
                 return;
             }
             console.log('Received data for: ' + this.get('id'));
         },
 
         serialHandler: function(id, serial) {
-            if (id != this.get('id')) {
+            if (id !== this.get('id')) {
                 return;
             }
             console.log('Received serial for: ' + this.get('id'));
         },
 
         socketGet(command, args) {
-            this[command].apply(this, args)
+            this[command].apply(this, args);
         },
 
         get_metadata: function() {
@@ -579,7 +579,7 @@ define([
 
             Returns null if the attribute is None. Returns undefined if the attribute does not exist
             */
-            this.socket.emit('get_attribute', this.get('id'), attr_name)
+            this.socket.emit('get_attribute', this.get('id'), attr_name);
         },
 
         get_data: function(data_name, slices, cast_type, precision) {
