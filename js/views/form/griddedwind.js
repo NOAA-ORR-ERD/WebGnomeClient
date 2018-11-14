@@ -91,7 +91,7 @@ define([
         },
         
         reset: function(file, err) {
-            console.err(err)
+            console.err(err);
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
