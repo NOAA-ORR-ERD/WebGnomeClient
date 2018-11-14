@@ -89,29 +89,29 @@ define([
             var t = responses.length;
 
             for (var i in responses) {
-                var modelStartTime = webgnome.model.get('start_time');
+                this.modelStartTime = moment(webgnome.model.get('start_time'));
                 var duration = webgnome.model.get('duration');
-                var responseRange = responses[i].get('active_range');
-                
-                // clip any infinite times to the model time range
-                var [startTime, endTime] = responseRange.map(function(time) {
-                    var ret;
+                this.modelEndTime = this.modelStartTime.clone().add(duration, 's');
 
+                // clip any infinite times to the model time range
+                /* jshint loopfunc: true */
+                var [startTime, endTime] = responses[i].get('active_range').map(function(time) {
                     if (time === 'inf') {
-                        ret = this.moment(this.modelStartTime).add(this.duration, 's');
+                        return this.modelEndTime;
                     }
                     else if (time === '-inf') {
-                        ret = this.moment(this.modelStartTime);
+                        return this.modelStartTime;
                     }
                     else {
                         // TODO: should we clip any non-infinite times as well?
-                        ret = this.moment(time);
+                        return moment(time);
                     }
-
-                    return ret.unix() * 1000;
-                }, this);
+                }, this).map(function(time) {
+                    return time.unix() * 1000;                    
+                });
 
                 yticks.push([t, responses[i].get('name')]);
+
                 dataset.push({
                     data: [[startTime, t, endTime, responses[i].get('id')]],
                     color: colors[responses[i].get('obj_type')],
