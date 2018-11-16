@@ -490,7 +490,7 @@ define([
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 10000);
+            }, this), 3000);
         },
 
         loaded: function(e, response) {

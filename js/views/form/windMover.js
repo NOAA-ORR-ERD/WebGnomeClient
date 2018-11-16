@@ -5,29 +5,30 @@ define([
     'views/modal/form',
     'text!templates/form/windMover.html',
     'views/form/wind'
-], function(_, $, Backbone, FormModal, FormTemplate, WindForm){
+], function(_, $, Backbone, FormModal, FormTemplate, WindForm) {
     'use strict';
 	var windMoverForm = FormModal.extend({
 		title: 'Wind Mover Settings',
 		className: 'modal form-modal wind-form',
-		events: function(){
+
+		events: function() {
 			return _.defaults({
 				'click .windObj': 'renderWindForm'
 			}, FormModal.prototype.events);
 		},
 
-		initialize: function(options, GnomeWind){
+		initialize: function(options, GnomeWind) {
 			FormModal.prototype.initialize.call(this, options);
 			this.model = GnomeWind;
 		},
 
-		render: function(options){
+		render: function(options) {
 			var start_time = this.model.get('uncertain_time_delay');
 
 			start_time = (start_time === '-inf') ? 0 : start_time;
 
 			this.body = _.template(FormTemplate, {
-				active_start: start_time,
+				active_range: [start_time, 'inf'],
 				duration: this.model.get('uncertain_duration'),
 				speed_scale: this.model.get('uncertain_speed_scale'),
 				angle_scale: this.model.get('uncertain_angle_scale')
@@ -37,14 +38,14 @@ define([
 
 			if (this.model.get('on')) {
           		this.$('input[name="active"]').prop('checked', true);
-        	} 
+          	}
 		},
 
-		renderWindForm: function(options){
+		renderWindForm: function(options) {
 			WindForm.prototype.initialize.call(this, options);
 		},
 
-		update: function(){
+		update: function() {
 			var start_time = this.$('#startTime').val();
 			this.model.set('uncertain_time_delay', start_time);
 

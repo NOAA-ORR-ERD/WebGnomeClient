@@ -105,20 +105,15 @@ define([
             }
         },
 
-        reset: function(file, immediate) {
-            if (immediate) {
+        reset: function(file, err) {
+            console.error(err);
+            setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }
-            else {
-                setTimeout(_.bind(function() {
-                    this.$('.dropzone').removeClass('dz-started');
-                    this.dropzone.removeFile(file);
-                }, this), 10000);
-            }
-        },
+            }, this), 3000);
+    },
 
-        close: function() {
+    close: function() {
             if (this.dropzone) {
                 this.dropzone.disable();
                 $('input.dz-hidden-input').remove();

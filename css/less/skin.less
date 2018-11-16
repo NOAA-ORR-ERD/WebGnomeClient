@@ -1605,6 +1605,30 @@ nav.navbar{
         }
     }
 
+    .cesium-widget-credits{
+        display: none;
+    }
+
+    .cesium-map{
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .cesium-map:-webkit-full-screen{
+        pointer-events: all;
+
+        .cesium-widget-credits{
+            display: block;
+        }
+    }
+
+    .cesium-map:-moz-full-screen{
+        pointer-events: all;
+
+        .cesium-widget-credits{
+            display: block;
+        }
+    }
 
     .panel{
         margin-bottom: 30px;

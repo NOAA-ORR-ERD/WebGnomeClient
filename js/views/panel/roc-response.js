@@ -89,21 +89,29 @@ define([
             var t = responses.length;
 
             for (var i in responses) {
-                var responseObjType = responses[i].get('obj_type').split(".");
-                
-                // FIXME: This ternary operator form is **terrible**.
-                //        It does way too many discreet things in a single
-                //        statement, making it overly complex (i.e. how can
-                //        one tell at a glance whether everything is working
-                //        properly?)
-                //        And it extends to over 220 columns.  How can you see
-                //        at a glance even the full extent of what these
-                //        statements are doing?  I understand this is
-                //        Javascript, but c'mon now, we can do better.
-                var startTime = responses[i].get('active_start') !== '-inf' ? moment(responses[i].get('active_start')).unix() * 1000 : moment(webgnome.model.get('start_time')).unix() * 1000;
-                var endTime = responses[i].get('active_stop') !== 'inf' ? moment(responses[i].get('active_stop')).unix() * 1000 : moment(webgnome.model.get('start_time')).add(webgnome.model.get('duration'), 's').unix() * 1000;
+                this.modelStartTime = moment(webgnome.model.get('start_time'));
+                var duration = webgnome.model.get('duration');
+                this.modelEndTime = this.modelStartTime.clone().add(duration, 's');
+
+                // clip any infinite times to the model time range
+                /* jshint loopfunc: true */
+                var [startTime, endTime] = responses[i].get('active_range').map(function(time) {
+                    if (time === 'inf') {
+                        return this.modelEndTime;
+                    }
+                    else if (time === '-inf') {
+                        return this.modelStartTime;
+                    }
+                    else {
+                        // TODO: should we clip any non-infinite times as well?
+                        return moment(time);
+                    }
+                }, this).map(function(time) {
+                    return time.unix() * 1000;                    
+                });
 
                 yticks.push([t, responses[i].get('name')]);
+
                 dataset.push({
                     data: [[startTime, t, endTime, responses[i].get('id')]],
                     color: colors[responses[i].get('obj_type')],
