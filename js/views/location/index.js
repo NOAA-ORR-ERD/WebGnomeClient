@@ -235,9 +235,27 @@ define([
                         this.$('.help').on('click', _.bind(this.loadHelp, this));
                     }, this));
                 }
+                this.lockCamera();
             } else {
                 this.$('.popover').hide();
+                this.unlockCamera();
             }
+        },
+
+        unlockCamera: function() {
+            this.mapView.viewer.scene.screenSpaceCameraController.enableRotate = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTranslate = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableZoom = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTilt = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableLook = true;
+        },
+
+        lockCamera: function() {
+            this.mapView.viewer.scene.screenSpaceCameraController.enableRotate = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTranslate = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableZoom = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTilt = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableLook = false;
         },
 
         dblClickPin: function(entity) {
@@ -245,6 +263,7 @@ define([
             var name = entity.name;
             if (this.$('.popover').length > 0) {
                 this.$('.popover').hide();
+                this.unlockCamera();
             }
             this.setupLocation(null, {slug: slug, name: name});
         },
@@ -279,14 +298,6 @@ define([
                 setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
             }, this);
             this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
-            //If the camera moves while the popover is open, close it
-            this.mapView.viewer.scene.camera.percentageChanged = 0.01;
-            this.cameraMoveHandler = this.mapView.viewer.scene.camera.changed.addEventListener(_.bind(function(){
-                if (this.$('.popover').length > 0) {
-                    this.$('.popover').hide();
-                }
-            }, this));
         }
 
     });
