@@ -263,7 +263,7 @@ define([
             );
             var numLengths = data[0].length;
             var lengths = data[0];
-            var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n;})) * 2);
+            var idxs = new Uint32Array((lengths.reduce(function(total, n){return total + n - 1;})) * 2 - 1);
             var scratchN = new Cesium.Cartesian3(0,0,0);
             var posx = new Float64Array(data[1].length * 3 / 2);
             var lines = data[1];
@@ -285,8 +285,8 @@ define([
                         cur_idx++;
                     }
                 }
-                idxs[cur_idx] = vert_idx;
-                cur_idx++;
+                //idxs[cur_idx] = vert_idx;
+                cur_idx--;
                 vert_idx = vert_idx + l;
             }
             //var lines = Cesium.Cartesian3.packArray(Cesium.Cartesian3.fromDegreesArray(data[1]))
