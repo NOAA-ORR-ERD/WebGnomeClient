@@ -182,7 +182,7 @@ define([
 
             var map = webgnome.model.get('map');
             if (!_.isUndefined(map) && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(data){
+                map.getGeoJSON().then(_.bind(function(data){
                     this.shorelineSource = new ol.source.Vector({
                         features: (new ol.format.GeoJSON()).readFeatures(data, {featureProjection: 'EPSG:3857'})
                     });

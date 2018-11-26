@@ -108,9 +108,10 @@ define([
             
             var layoutfn = _.debounce(_.bind(this.layout, this), 100);
             for(var child in this.children){
-                this.listenTo(this.children[child], 'render', layoutfn);
                 this.children[child].render();
+                this.listenTo(this.children[child], 'render', layoutfn);
             }
+            this.layout();
 
             this.$('.icon').tooltip({
                 placement: 'bottom'

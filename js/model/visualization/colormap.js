@@ -260,7 +260,7 @@ define([
                 if (!this.get('interpolate')) {
                     var stops = [];
                     for (i = 0; i < range.length; i++) {
-                        stops.push(i * 1/(range.length - 1));
+                        stops.push(i * 1/(range.length));
                     }
                     colors = stops.map(function(s) {return tinycolor(newScheme(s)).toHexString();});
                 } else {
@@ -271,6 +271,7 @@ define([
                 }
             }
             this.trigger('change:colorScaleRange');
+            this.trigger('changedInterpolation');
         }
     });
     return colormapModel;
