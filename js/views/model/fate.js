@@ -1849,6 +1849,7 @@ define([
                 }
 
                 var amount = spill.get('amount');
+                var on = spill.get('on');
                 var release_start = moment(spill.get('release').get('release_time')).unix();
                 var release_end = moment(spill.get('release').get('end_release_time')).unix();
                 if(release_start === release_end){
@@ -1869,7 +1870,9 @@ define([
                     release_run_time = release_duration - overlap;
                 }
 
-                total_amount += release_run_time * release_per_second;
+                if(on){
+                    total_amount += release_run_time * release_per_second;
+                }
             }, this));
             return total_amount;
         },
