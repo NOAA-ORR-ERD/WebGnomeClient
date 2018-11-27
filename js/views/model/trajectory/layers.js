@@ -533,7 +533,11 @@ define([
                 } else {
                     this.$('.env-uv, #none-uv').prop('checked', false);
                     lay.appearance.set(name, true);
-                    lay.model.genVectors().then(_.bind(function() {this.trigger('requestRender');}, this));
+                    if (lay.model.getVecs) {
+                        lay.model.getVecs().then(lay.model.genVectors().then(_.bind(function() {this.trigger('requestRender');}, this)));
+                    } else {
+                        lay.model.genVectors().then(_.bind(function() {this.trigger('requestRender');}, this));
+                    }
                 }
             }
             this.trigger('requestRender');

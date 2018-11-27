@@ -31,6 +31,7 @@ define([
             this.model = model;
             this.appearanceModel = appearanceModel;
             this.render();
+            this.listenTo(this.model, 'change:colorScaleRange', this.applySchemeBackgrounds);
             this.listenTo(this.model, 'changedInterpolation', this.rerender);
             this.listenTo(this.model, 'change:units', this.rerender);
         },
@@ -295,7 +296,7 @@ define([
 
             var options = $('li', $('.chosen-results', this.$el));
 
-            if (e.type !== 'change') {
+            if (_.isUndefined(e) || e.type !== 'change') {
                 for (var i = 0; i < options.length; i++) {
                     var name = $(options[i]).text();
                     $(options[i]).css('background', genBGString(name));
@@ -303,8 +304,7 @@ define([
 
                 $('.chosen-single', this.$el).css('background',
                                                   genBGString(this.model.get('scheme')));
-            }
-            else {
+            } else {
                 if (selected) {
                     $('.chosen-single', this.$el).css('background',
                                                       genBGString(selected.selected));
@@ -373,7 +373,7 @@ define([
                 }
             }
 
-            this.model.set('scheme', 'Custom', {silent:true});
+            this.model.set('scheme', 'Custom', {silent:false});
             this.model.set('colorScaleRange', stops);
 
             this.updateBackground();
