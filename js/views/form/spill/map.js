@@ -2,6 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'cesium',
     'module',
     'd3',
     'views/modal/form',
@@ -9,7 +10,7 @@ define([
     'text!templates/form/spill/map/controls.html',
     'views/default/cesium',
     'model/map/graticule'
-], function($, _, Backbone, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView, Graticule) {
+], function($, _, Backbone, Cesium, module, d3, FormModal, MapViewTemplate, MapControlsTemplate, CesiumView, Graticule) {
     'use strict';
     var mapSpillView = FormModal.extend({
 
@@ -65,6 +66,25 @@ define([
             this._spillPins = [];
             var positions = [this.model.get('start_position'), this.model.get('end_position')]; //future: this.model.get('positions')
             var num_pins = positions.length;
+            var textPropFuncGen = function(newPin) {
+                return new Cesium.CallbackProperty(
+                    _.bind(function(){
+                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
+                        var lon, lat;
+                        if (this.coordFormat === 'dms') {
+                            lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
+                        } else {
+                            lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
+                        }
+                        var ttstr = 'Lon: ' + ('\t' + lon) +
+                                '\nLat: ' + ('\t' + lat);
+                        return ttstr;
+                    }, newPin),
+                    true
+                );
+            };
             for (var i = 0; i < num_pins; i++) {
                 this.listenTo(this.model, 'change:' + ['start_position', 'end_position'][i] + i, _.bind(this.resetPinPickup, this));
                 var newPin = this.mapView.viewer.entities.add({
@@ -90,23 +110,7 @@ define([
                         eyeOffset : new Cesium.Cartesian3(0,0,-5),
                     }
                 });
-                newPin.label.text = new Cesium.CallbackProperty(
-                    _.bind(function(){
-                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
-                        var lon, lat;
-                        if (this.coordFormat === 'dms') {
-                            lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
-                            lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
-                        } else {
-                            lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
-                            lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
-                        }
-                        var ttstr = 'Lon: ' + ('\t' + lon) +
-                                '\nLat: ' + ('\t' + lat);
-                        return ttstr;
-                    }, newPin),
-                    true
-                );
+                newPin.label.text = textPropFuncGen(newPin);
                 this._spillPins.push(newPin);
             }
 
@@ -148,10 +152,10 @@ define([
 
 
             this.resetPinPickup(); //binds input actions
-            var samePositions = _.every(positions, function(pos) {return _.isEqual(pos, positions[0]);})
+            var samePositions = _.every(positions, function(pos) {return _.isEqual(pos, positions[0]);});
             if (!samePositions) {
                 this.enableLineMode();
-                _.each(this._spillPins, function(sp){sp.show = true});
+                _.each(this._spillPins, function(sp){sp.show = true;});
                 if (_.isEqual(positions[0], [0,0,0])) {
                     this.pickupPin(null, this._spillPins[0]);
                 }
@@ -170,7 +174,7 @@ define([
             if (_.isUndefined(ent)) {
                 var pickedObjects = this.mapView.viewer.scene.drillPick(movement.position);
                 if (pickedObjects){
-                    var pickedObj = _.find(pickedObjects, function(po){return _.contains(this._spillPins, po.id);}, this)
+                    var pickedObj = _.find(pickedObjects, function(po){return _.contains(this._spillPins, po.id);}, this);
                     if (pickedObj) {
                         ent = pickedObj.id;
                     }
@@ -201,7 +205,7 @@ define([
             //this context should always be the Form object
             var pickedObjects = this.mapView.viewer.scene.drillPick(movement.endPosition);
             if (pickedObjects.length > 0){
-                var pickedObj = _.find(pickedObjects, function(po){return _.contains(this._spillPins, po.id);}, this)
+                var pickedObj = _.find(pickedObjects, function(po){return _.contains(this._spillPins, po.id);}, this);
                 if (pickedObj) {
                     this.$('.cesium-viewer').css('cursor', 'grab');
                     pickedObj.id.label.show = true;
@@ -226,7 +230,7 @@ define([
             this.position = newPos;
             var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
             var old_coords = this.gnomeModel.get(this.model_attr); //future: this.gnomeModel.get(this.model_attr)[this.id]
-            coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), old_coords[2]]
+            coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), old_coords[2]];
             this.gnomeModel.set(this.model_attr, coords); //future: need to get old coords like in cancelPin
             this.gnomeModel.trigger('change:' + this.model_attr + this.id, this);
             this.label.show = false;
@@ -242,7 +246,7 @@ define([
                 this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
                 this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
                 this.mouseHandler.setInputAction(_.bind(this.hoverPin, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
-                this.mouseHandler.setInputAction(_.bind(this.pickupPin, this), Cesium.ScreenSpaceEventType.LEFT_CLICK)
+                this.mouseHandler.setInputAction(_.bind(this.pickupPin, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
                 var positions = [this.model.get('start_position'), this.model.get('end_position')]; //future: this.model.get('positions')
                 var oldPos = positions[ent.id];
                 oldPos = new Cesium.Cartesian3.fromDegrees(oldPos[0], oldPos[1]);
@@ -261,7 +265,7 @@ define([
                 if (this.placeMode === 'point') {
                     btn_name = '.fixed';
                     this.model.set('end_position', this.model.get('start_position'));
-                    _.each(this._spillPins, _.bind(function(sp) {sp.position = this._spillPins[0].position;}, this))
+                    _.each(this._spillPins, _.bind(function(sp) {sp.position = this._spillPins[0].position;}, this));
                 } else {
                     btn_name = '.moving';
                     var nextIdx = ent.id+1;
@@ -289,7 +293,7 @@ define([
             this.$('.moving').removeClass('on');
             this.$('.moving').tooltip('hide');
             var bt = this.$('.fixed');
-            _.each(this._spillPins, function(sp){sp.show = false});
+            _.each(this._spillPins, function(sp){sp.show = false;});
             this._spillPins[0].show = true;
             this.pickupPin(null, this._spillPins[0]);
     },
@@ -308,7 +312,7 @@ define([
         },
 
         switchCoordFormat: function(e) {
-            _.each(this._spillPins, function(p){p.coordFormat = e.currentTarget.getAttribute('value')})
+            _.each(this._spillPins, function(p){p.coordFormat = e.currentTarget.getAttribute('value');});
         },
 
         addMapControls: function(){
