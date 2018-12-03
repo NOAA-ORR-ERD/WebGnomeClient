@@ -1696,6 +1696,10 @@ nav.navbar{
     }
 }
 
+.cesium-map {
+    height: 100%;
+}
+
 .page.locations{
     padding-bottom: 30px;
     .popover{
@@ -1727,10 +1731,6 @@ nav.navbar{
 
     .tooltip-inner {
         white-space: nowrap;
-    }
-
-    .cesium-map {
-        height: 100%;
     }
 
     .popup {
@@ -3114,11 +3114,6 @@ nav.navbar{
         .glyphicon-calendar;
     }
 
-    .map{
-        height: 400px;
-        margin-bottom: 15px;
-    }
-
     ul.nav-tabs{
         margin-bottom: 15px;
     }
@@ -3430,6 +3425,12 @@ nav.navbar{
     
 
     &.continuespill-form, &.instantspill-form, &.map-modal-form {
+        
+        .map{
+            height: 400px;
+            margin-bottom: 15px;
+        }
+
         &.adios{
             .position{
                 display: none;
@@ -3523,7 +3524,7 @@ nav.navbar{
         .map {
             .spill-button, .help-button{
                 left: 0.5em;
-                top: 5em;
+                top: 3em;
                 z-index: 1;
                 position: absolute;
 
@@ -3543,17 +3544,17 @@ nav.navbar{
                     height: 2em;
                     width: 2em;
                     line-height: .4em;
-                    background-color: #7b98bc;
+                    //background-color: #7b98bc;
                     background-color: rgba(0,60,136,0.5);
                     border: none;
                     border-radius: 2px;
-        
-                    &.on{
-                        background-color: #fc3;
+
+                    &:focus{
+                        background-color: rgba(0,60,136,.5);
                     }
 
-                    &:hover{
-                        background-color: rgba(0,60,136,.7);
+                    &.on{
+                        background-color: #fc3;
                     }
 
                     &.fixed{
@@ -3565,48 +3566,6 @@ nav.navbar{
                         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RkY5MjFFQzYyNzNGMTFFNEI3Qzc5NUU3RjA3NDU4NkQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RkY5MjFFQzcyNzNGMTFFNEI3Qzc5NUU3RjA3NDU4NkQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDoyRTk2Qjc4RjI3MDkxMUU0QjdDNzk1RTdGMDc0NTg2RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDoyRTk2Qjc5MDI3MDkxMUU0QjdDNzk1RTdGMDc0NTg2RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pre/rQkAAAFJSURBVHja5NaxS8JBFMBxr0QNkqaWxpCgIIL+BTfbGpKWIFpKCGoIGoMgiNBGpyja+ztaooYaCsGhCKSGoIyigl/fR+8HPwS97odHgQ8+eMp5z/d7d4cmCIKE7zD/OckKhlFB0zpbksSwGfzEA9aQ6TQ/WsmoQyXL2Ii8v8U2jvDVqZJuxDXmYKKVdDtJGOco+E4Sxo7PJBeY8VXJDYro87G77nR3Hdp2V5xz8oh1l3PiEiU98eXfnPg/v7tSSONFX5N4xQAyeNLPDD7j3l1TuMc48qgjjRLOdE4VJ7Ye2hrcxJIuLjGtJIawgGdbkmSbAiexiHesYkLHe6jpnAN8IKtb91Kv/rY9SemzDRtUxLFjf6UvOTSi66Nfkswz2Gr5wiBGYmwkOZRvLUmuJElNf4GvmJUkpwzGPCwuj28fu6bn/604xbcAAwAdm2MHwwKuqAAAAABJRU5ErkJggg==');
                     }
                 }
-            }
-            .help-button{
-                top: 25em;
-                display: none;
-
-                button{
-                    color: white;
-
-                }
-                [role=tooltip]{
-                    display: none;
-                }
-
-                &:hover{
-                    [role=tooltip]{
-                        top: inherit;
-                    }
-                }
-            }
-
-            .spill-big-button {
-                .spill-button;
-                display: none;
-                left: 15em;
-                top: 30em;
-                font-size: 12px;
-                background-color: rgba(0,0,0,0);
-
-                button {
-                    width: 10em;
-                    height: 2em;
-                    color: white;
-                }
-
-                .fixed-big {
-                    float: left;
-                }
-
-                .moving-big {
-                    float: right;
-                }
-
             }
         }
     }
