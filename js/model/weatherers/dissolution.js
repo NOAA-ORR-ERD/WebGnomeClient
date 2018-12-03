@@ -8,11 +8,13 @@ define([
     var dissolutionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.dissolution.Dissolution',
-            'name': 'Dissolution'
+            'waves': null,
+            'wind': null,
         },
 
         model: {
-            waves: WavesModel
+            waves:  Backbone.Model,
+            wind: Backbone.Model
         },
 
         toTree: function(){

@@ -21,6 +21,7 @@ define([
                 disp_eff: 0.75,
                 _disp_eff: 75,
                 loading_type: 'simultaneous',
+                wind: null,
                 units: new Backbone.Model({
                     pass_length: 'nm',
                     transit: 'nm',
@@ -31,7 +32,8 @@ define([
         },
 
         model: {
-            platform: Platform
+            platform: Platform,
+            wind: Backbone.Model
         },
 
     	initialize: function(options) {

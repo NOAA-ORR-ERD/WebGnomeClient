@@ -52,8 +52,8 @@ define([
             }
             this.views = [];
             if(callback){ callback.apply(this, args); }
-            if(window.location.href.indexOf('trajectory') === -1 || webgnome.model.get('mode') === 'adios' ||
-                webgnome.model.get('mode') === 'roc'){
+            if((window.location.href.indexOf('trajectory') === -1 &&
+                window.location.href.indexOf('model') === -1)){
                 this.views.push(new FooterView());
             }
             if(_.isUndefined(this.logger) && window.location.hash !== ''){
@@ -111,7 +111,7 @@ define([
             if(webgnome.hasModel()){
                 this.menu('add');
                 this.views.push(new ResponseView());
-                localStorage.setItem('view', 'response');
+                //localStorage.setItem('view', 'response');
             } else {
                 this.navigate('', true);
             }
@@ -126,7 +126,7 @@ define([
                     this.trajView.show();
                 }
                 this.views.push(this.trajView);
-                localStorage.setItem('view', 'trajectory');
+                //localStorage.setItem('view', 'trajectory'); WHY??
             } else {
                 this.navigate('', true);
             }
@@ -136,7 +136,7 @@ define([
             if(webgnome.hasModel()){
                 this.menu('add');
                 this.views.push(new FateView());
-                localStorage.setItem('view', 'fate');
+                //localStorage.setItem('view', 'fate');
             } else {
                 this.navigate('', true);
             }

@@ -798,7 +798,7 @@ nav.navbar{
             background: rgba(0, 0, 0, 0.09);
             border-radius: 4px;
             border: 1px solid #afafaf;
-            width: 209px;
+            width: 261px;
             position: relative;
             color: #979797;
             box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.25);
@@ -818,13 +818,18 @@ nav.navbar{
                     .glyphicon;
                     .glyphicon-stats;
                 }
-                
+
+                &.model{
+                    .glyphicon;
+                    .glyphicon-calendar;
+                }
+
                 &.response{
                     .glyphicon;
                     .glyphicon-dashboard;
                 }
 
-                &.trajectory, &.fate, &.config, &.response{
+                &.trajectory, &.fate, &.config, &.response, &.model{
                     padding: 7px 17px 8px;
                 }
             }
@@ -868,6 +873,12 @@ nav.navbar{
                     left: 163px;
                     .glyphicon;
                     .glyphicon-dashboard;
+                    line-height:22px;
+                }
+                &.model{
+                    left: 217px;
+                    .glyphicon;
+                    .glyphicon-calendar;
                     line-height:22px;
                 }
             }
@@ -1594,6 +1605,30 @@ nav.navbar{
         }
     }
 
+    .cesium-widget-credits{
+        display: none;
+    }
+
+    .cesium-map{
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .cesium-map:-webkit-full-screen{
+        pointer-events: all;
+
+        .cesium-widget-credits{
+            display: block;
+        }
+    }
+
+    .cesium-map:-moz-full-screen{
+        pointer-events: all;
+
+        .cesium-widget-credits{
+            display: block;
+        }
+    }
 
     .panel{
         margin-bottom: 30px;
@@ -1692,6 +1727,14 @@ nav.navbar{
 
     .tooltip-inner {
         white-space: nowrap;
+    }
+
+    .cesium-map {
+        height: 100%;
+    }
+
+    .popup {
+        position: absolute;
     }
 
     .location-list{
@@ -1880,6 +1923,16 @@ nav.navbar{
         width: 1px;
         margin-left: 0px;
     }
+}
+
+.model-view{
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAY1BMVEXn5+f5+fn////y8vL09PT8/Pzk5OTg4ODx8fH39/f7+/vp6enf39/i4uLr6+vd3d3+/v74+Pjv7+/w8PDj4+P29vbz8/Pl5eXc3Nzs7Ozt7e3h4eH6+vrm5ub19fXe3t7u7u47SnheAAAAkklEQVR42q3Paw7CIBBF4eFCKaXQGegD7UPd/yqtxDTxvxv4cg6RgtKmgbat1WiM6+D7EGngQYBkQ05jmBIgmft5IajCJd7uAkBW3kqIMwDqdyhnPMwRi4E/HWmGzZ7OKoA6nS4HqwCMTA/9cZ7HdDkTtVt1SFXn2+MXN8tvz5hce/UYwn6wjbxW51V7OgD/+noDa2gLye9Jpd0AAAAASUVORK5CYII=');
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    top: 51px;
+    width: 100%;
 }
 
 .trajectory-view{

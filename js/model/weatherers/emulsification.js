@@ -8,11 +8,11 @@ define([
     var emulsificationWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.Emulsification',
-            'name': 'Emulsion'
+            'waves': null
         },
 
         model: {
-            waves: WavesModel
+            waves: Backbone.Model
         },
 
         toTree: function(){

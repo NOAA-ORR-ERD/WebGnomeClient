@@ -69,7 +69,7 @@ define([
             setTimeout(_.bind(function(){
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 10000);
+            }, this), 3000);
         },
 
         progress: function(e, percent){
@@ -86,9 +86,10 @@ define([
 
             for (var i = weathererKeys.length - 1; i >= 0; i--){
                 if (weathererKeys[i].indexOf('cleanup') !== -1 ||
-                     weathererKeys[i].indexOf('beaching') !== -1 ||
-                     weathererKeys[i].indexOf('weathering_data') !== -1 ||
-		     weathererKeys[i].indexOf('roc') !== -1){
+                    weathererKeys[i].indexOf('beaching') !== -1 ||
+                    weathererKeys[i].indexOf('weathering_data') !== -1 ||
+                    weathererKeys[i].indexOf('roc') !== -1 ||
+                    weathererKeys[i].indexOf('dissolution') !== -1){
                     weathererKeys.splice(i, 1);
                 }
             }
@@ -202,7 +203,6 @@ define([
                                 var water = model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
                                 var wind = model.get('environment').findWhere({'obj_type': 'gnome.environment.wind.Wind'});
 
-                                webgnome.model.toggleWeatherers();
                                 webgnome.model.save(null, {validate: false});
                                 webgnome.router._cleanup();
                                 webgnome.router.navigate('config', true);
@@ -210,7 +210,6 @@ define([
                             }
                         });
                     } else {
-                        webgnome.model.toggleWeatherers();
                         webgnome.router._cleanup();
                         webgnome.router.navigate('config', true);
                     }

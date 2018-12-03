@@ -170,10 +170,23 @@ define([
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._focusOnMap();
                 this._flyTo = false;
             }
             this.trigger('requestRender');
+        },
+
+        _focusOnMap: function() {
+            if (_.isUndefined(this.viewer)) {
+                return;
+            } else {
+                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
+                    this.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0.25
+                    });
+                }, this));
+            }
         },
 
         removeLayer: function(lay) {
@@ -219,7 +232,7 @@ define([
             this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._focusOnMap();
                 this._flyTo = false;
             }
         },
@@ -245,7 +258,8 @@ define([
 
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
-                selectionIndicator: false,
+                selectionIndicator : false,
+                infoBox : false,
                 baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
@@ -330,6 +344,7 @@ define([
         },
 
         addCesiumHandlers: function() {
+
             this._openCesiumObjectTooltips = {};
             var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
                 var newEntity = this.viewer.entities.add({
@@ -349,6 +364,7 @@ define([
                 return newEntity;
             }, this);
 
+            //Clears open tooltips
             this.doubleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var doubleClickHandlerFunction = _.bind(function(movement) {
                 var tts = _.values(this._openCesiumObjectTooltips);
@@ -358,6 +374,27 @@ define([
                 this._openCesiumObjectTooltips = {};
             }, this);
             this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+            this.middleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            var middleClickHandlerFunction = _.bind(function(click) {
+                var pickedPoint = this.viewer.scene.camera.pickEllipsoid(click.position, this.viewer.scene.globe.ellipsoid);
+                if (pickedPoint) {
+                    var entity;
+                    var cartographic = Cesium.Cartographic.fromCartesian(pickedPoint);
+                    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+                    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+                    entity = addNewCesiumObjectTooltip({id:cartographic.toString()}, 15, 0);
+                    entity.position = pickedPoint;
+
+                    entity.label.show = true;
+                    entity.label.text =
+                        'Lon: ' + ('   ' + longitudeString).slice(-7) + '\u00B0' +
+                        '\nLat: ' + ('   ' + latitudeString).slice(-7) + '\u00B0';
+                }
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.middleClickHandler.setInputAction(middleClickHandlerFunction, Cesium.ScreenSpaceEventType.MIDDLE_CLICK);
 
             this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var singleClickHandlerFunction = _.bind(function(movement) {
@@ -376,8 +413,8 @@ define([
                                         var dir = Number(this.dir ? this.dir : 0),
                                             mag = Number(this.mag ? this.mag : 0);
                                         dir = Cesium.Math.toDegrees(Cesium.Math.zeroToTwoPi(-dir)).toFixed(2);
-                                        return 'Mag: ' + ('   ' + mag.toFixed(2)).slice(-7) + ' m/s' +
-                                            '\nDir: ' + ('   ' + dir).slice(-7) + '\u00B0';
+                                        return 'Mag: ' + ('\t' + mag.toFixed(2)).slice(-7) + ' m/s' +
+                                            '\nDir: ' + ('\t' + dir).slice(-7) + '\u00B0';
                                     }, entity.pickedObject.primitive),
                                     true
                                 );
@@ -393,14 +430,20 @@ define([
                                 entity.label.show = true;
                                 entity.label.text = new Cesium.CallbackProperty(
                                     _.bind(function(primitive){
-                                        var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4),
-                                            loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
+                                        var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4);
+                                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
+                                        var surf_conc = Number(primitive.surface_concentration ? primitive.surface_concentration : 0).toPrecision(3);
                                             //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : 0),
                                         var lon = this.graticule.genDMSLabel('lon', loc.longitude);
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
-                                        return 'Mass: ' + ('   ' + mass).slice(-7) + ' kg' +
-                                            '\nLon: ' + ('   ' + lon)+
-                                            '\nLat: ' + ('   ' + lat);
+                                        var ttstr = 'Mass: ' + ('\t' + mass).slice(-7) + ' kg';
+                                        if (surf_conc !== 0) {
+                                            ttstr = ttstr + '\nS_Conc: \t' + surf_conc + ' kg/m^2';
+                                        }
+                                        ttstr = ttstr +
+                                            '\nLon: ' + ('\t' + lon) +
+                                            '\nLat: ' + ('\t' + lat);
+                                        return ttstr;
                                     }, this, entity.pickedObject.primitive),
                                     true
                                 );
@@ -595,6 +638,8 @@ define([
                 this.stop();
             }
             this.frame = 0;
+            var time = moment(webgnome.model.get('start_time').replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            this.$('.tooltip-inner').text(time);
             if (this.layersPanel) {
                 this.layersPanel.resetSpills();
             }
@@ -828,7 +873,7 @@ define([
                 }
             } else if(id !== 'none-grid'){
                 var current = webgnome.model.get('movers').findWhere({id: id});
-                current.getGrid(_.bind(function(data){
+                current.getGrid().then(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     this.grids[current.get('id')]  = [];
                     var batch = 3000;
@@ -1066,7 +1111,9 @@ define([
 
         close: function(){
             this.pause();
-            this.controls.pause();
+            if (this.controls) {
+                this.controls.pause();
+            }
             this.$el.hide();
             // this.remove();
         }

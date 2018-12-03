@@ -27,13 +27,8 @@ define([
             this.module = module;
             BaseSpillForm.prototype.initialize.call(this, options, spillModel);
             this.model = spillModel;
-            this.model.get('element_type').fetch({
-                success: _.bind(function(model, response, options){
-                    this.oilDetails = model;
-                    this.loaded = true;
-                    this.model.trigger('ready');
-                }, this)
-            });
+            this.loaded = true;
+            this.model.trigger('ready');
         },
 
         render: function(options){
@@ -43,7 +38,6 @@ define([
                 var amount = this.model.get('amount');
                 var duration = this.model.parseDuration();
                 var units = this.model.get('units');
-                var oil = this.oilDetails.get('substance') ? this.oilDetails.get('substance') : '';
                 var disabled = this.oilSelectDisabled();
                 var cid = this.model.cid;
                 this.body = _.template(FormTemplate, {

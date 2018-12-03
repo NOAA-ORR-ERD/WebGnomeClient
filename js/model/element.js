@@ -17,7 +17,6 @@ define([
         },
 
         defaults: {
-            'json_': 'webapi',
             'obj_type': 'gnome.spill.elements.ElementType',
             'substance': null,
             'initializers': new Backbone.Collection([

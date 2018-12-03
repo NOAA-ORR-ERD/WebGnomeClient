@@ -9,10 +9,10 @@ define([
 
         defaults: {
             'obj_type': 'gnome.outputters.geo_json.TrajectoryGeoJsonOutput',
-            'name': 'Outputter',
             'output_timestep': null,
             'output_last_step': 'true',
             'output_zero_step': 'true',
+            'name': 'TrajectoryGeoJsonOutput'
         },
 
         toTree: function(){
