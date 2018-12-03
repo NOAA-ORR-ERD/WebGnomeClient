@@ -51,22 +51,7 @@ define([
         },
 
         resetCamera: function(e) {
-            //timeout so transition to/from fullscreen can complete before recentering camera
-            setTimeout(_.bind(this._focusOnMap, this), 100);
-        },
-
-        _focusOnMap: function() {
-            if (_.isUndefined(this.minimap)) {
-                return;
-            } else {
-                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
-                    this.minimap.viewer.scene.camera.flyTo({
-                        destination: rect,
-                        duration: 0
-                    });
-                    this.minimap.viewer.scene.requestRender();
-                }, this));
-            }
+            this.minimap.resetCamera(webgnome.model.get('map'));
         },
 
         render: function(){
@@ -100,7 +85,7 @@ define([
                             }
                         }
                         this.$('#mini-locmap').append(this.minimap.$el);
-                        this.resetCamera();
+                        this.minimap.resetCamera(map);
                         this.trigger('render');
                     }, this)
                 });
