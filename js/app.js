@@ -14,11 +14,12 @@ define([
     'model/user_prefs',
     'views/default/loading',
 ], function($, _, Backbone, Router, moment, swal,
-            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, LoadingView) {
+            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs,
+            LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
-        initialize: function(){
+        initialize: function() {
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
@@ -39,12 +40,13 @@ define([
 
             swal.setDefaults({'allowOutsideClick': false});
 
-            $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr){
-                if(options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1){
+            $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
+                if (options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1) {
                     options.url = webgnome.config.api + options.url;
                     // add a little cache busting so IE doesn't cache everything...
-                    options.url += '?' + (Math.random()*10000000000000000);
-                } else {
+                    options.url += '?' + (Math.random() * 10000000000000000);
+                }
+                else {
                     // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
                     delete options.xhrFields.withCredentials;
                 }
@@ -52,15 +54,19 @@ define([
                 // monitor interation to check the status of active ajax calls.
                 this.monitor.requests.push(jqxhr);
 
-                if(_.isUndefined(this.monitor.interval)){
+                if (_.isUndefined(this.monitor.interval)) {
                     this.monitor.start_time = moment().valueOf();
-                    this.monitor.interval = setInterval(_.bind(function(){
+
+                    this.monitor.interval = setInterval(_.bind(function() {
                         var loading;
-                        if(this.monitor.requests.length > 0){
-                            this.monitor.requests = this.monitor.requests.filter(function(req){
-                                if(req.status !== undefined){
-                                    if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
-                                        if($('.modal').length === 0){
+
+                        if (this.monitor.requests.length > 0) {
+                            this.monitor.requests = this.monitor.requests.filter(function(req) {
+                                if (req.status !== undefined) {
+                                    if (req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)) {
+                                        if ($('.modal').length === 0) {
+                                            console.log(req.responseText);
+
                                             swal({
                                                 title: 'Application Error!',
                                                 text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
@@ -72,19 +78,21 @@ define([
                                 }
                                 return req.status === undefined;
                             });
-                        } else {
+                        }
+                        else {
                             clearInterval(this.monitor);
                             this.monitor.interval = undefined;
                             this.monitor.start_time = moment().valueOf();
                         }
 
                         // check if we need to display a loading message.
-                        if(moment().valueOf() - this.monitor.start_time > 300){
-                            if(_.isUndefined(this.monitor.loading)){
+                        if (moment().valueOf() - this.monitor.start_time > 300) {
+                            if (_.isUndefined(this.monitor.loading)) {
                                 this.monitor.loading = new LoadingView();
                             }
-                        } else {
-                            if(!_.isUndefined(this.monitor.loading)){
+                        }
+                        else {
+                            if (!_.isUndefined(this.monitor.loading)) {
                                 this.monitor.loading.close();
                                 this.monitor.loading = undefined;
                             }
