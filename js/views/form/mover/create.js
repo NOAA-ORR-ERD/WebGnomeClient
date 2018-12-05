@@ -106,7 +106,13 @@ define([
         },
 
         reset: function(file, err) {
-            console.error(err);
+            var errObj = JSON.parse(err);
+            console.error(errObj);
+
+            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
+                                                             ': ' +
+                                                             errObj.message);
+
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);

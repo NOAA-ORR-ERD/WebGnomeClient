@@ -65,8 +65,15 @@ define([
             formData.append('session', localStorage.getItem('session'));
         },
 
-        reset: function(file){
-            setTimeout(_.bind(function(){
+        reset: function(file, err) {
+            var errObj = JSON.parse(err);
+            console.error(errObj);
+
+            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
+                                                             ': ' +
+                                                             errObj.message);
+
+            setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
             }, this), 3000);

@@ -91,13 +91,17 @@ define([
         toast: function(message) {
             // capture the content between the '["' and the '"]'
             var re = /\[\"(.+)\"\]/g;
-            var msg = re.exec(message.message)[1];
-            var shortMsg = msg.split('\\n')[0];
 
             if (message.level.toLowerCase() === 'criti') {
+                var msg = re.exec(message.message)[1];
+                var shortMsg = msg.split('\\n')[0];
+
                 toastr.error(_.escape(shortMsg));
             }
             else if (message.level.toLowerCase() === 'warni') {
+                var msg = re.exec(message.message)[1];
+                var shortMsg = msg.split('\\n')[0];
+
                 toastr.warning(_.escape(shortMsg));
             }
         },
