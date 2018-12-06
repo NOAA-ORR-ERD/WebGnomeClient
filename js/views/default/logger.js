@@ -94,7 +94,7 @@ define([
             var re = /\[\"(.+)\"\]/g;
 
             if (message.level.toLowerCase() === 'criti') {
-                msg = re.exec(message.message)[1];
+                msg = message.message;
                 shortMsg = msg.split('\\n')[0];
 
                 toastr.error(_.escape(shortMsg));
