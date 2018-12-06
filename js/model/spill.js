@@ -43,7 +43,7 @@ define([
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
 
-            this._locVis = new Cesium.Entity();
+            this._locVis = new Cesium.EntityCollection();
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
 
@@ -81,7 +81,8 @@ define([
             this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
-
+            this._locVis = this.get('release')._visObj;
+/*
             this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),
                 id: this.get('id') + '_loc',
@@ -93,6 +94,7 @@ define([
                 description: '<table class="table"><tbody><tr><td>Amount</td><td>' + this.get('amount') + ' ' + this.get('units') + '</td></tr></tbody></table>',
                 show: this.get('_appearance').get('pin_on'),
             }));
+*/
         },
 
         resetLEs: function() {
@@ -503,8 +505,6 @@ define([
             var le_idx = 0;
             var newLE, additional_data;
 
-            // is it really necessary to use a ternary operator
-            // on such long complex expressions?
             additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
 
             if (uncertain) {
@@ -643,7 +643,9 @@ define([
                     this.colorLEs();
 
                     if ('pin_on' in changedAttrs) {
-                        this._locVis.show = appearance.get('pin_on');
+                        for (i = 0 ; i < this._locVis.values.length; i++) {
+                            this._locVis.values[i].show = appearance.get('pin_on');
+                        }
                     }
                 }
             }

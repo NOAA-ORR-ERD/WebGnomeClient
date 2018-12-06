@@ -155,6 +155,9 @@ define([
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
                 } else if (lay.parentEl === 'entity') {
                     this.layers[lay.id] = this.viewer.entities.add(lay.visObj);
+                } else if (lay.parentEl === 'entityCollection') {
+                    this.layers[lay.id] = lay.visObj;
+                    _.each(lay.visObj, _.bind(this.viewer.entities.add, this.viewer.entities));
                 } else if (lay.parentEl === 'imageryLayer') {
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
@@ -202,6 +205,12 @@ define([
                     }
                 } else if (lay.parentEl === 'entity') {
                     if(this.viewer.entities.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove entity layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'entityCollection') {
+                    if(_.all(_.each(this.layers[lay.id], _.bind(this.viewer.entities.remove, this.viewer.entities)))) {
                         this.layers[lay.id] = undefined;
                     } else {
                         console.warn('Failed to remove entity layer id: ', lay.id);
