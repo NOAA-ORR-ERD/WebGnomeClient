@@ -148,6 +148,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.GridCurrentMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
@@ -285,6 +286,7 @@ define([
         addLayer: function(e) {
             if (e.collection === webgnome.model.get('movers') &&
                 e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.ComponentMover' ||
                 e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
