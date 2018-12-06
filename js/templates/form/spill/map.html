@@ -1,4 +1,19 @@
 <div id="mapspill-{{ cid }}">
-	<p>Set spill location using the buttons on the left.</p>
-	<div id="spill-form-map-{{ cid }}" class="map"></div>
+    <div class="row">
+        <div class="col-md-9">
+            <p>Choose spill placement mode using the buttons on the left.</br>
+            <b>Left click to pick up or put down a pin.</br>
+            Right click to cancel current placement and return the pin to where it was.</br>
+            Placing OR canceling a pin in 'Moving Spill' mode will progress to next pin placement.</b></p></div>
+        <div class="col-md-3">
+            <p>Coordinate Style:<p>
+            <div class="radio">
+                <label><input type="radio" name="format" value="dms" checked> DMS</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" name="format" value="dec"> Decimal</label>
+            </div>
+        </div>
+    </div>
+    <div id="spill-form-map-{{ cid }}" class="map"></div>
 </div>

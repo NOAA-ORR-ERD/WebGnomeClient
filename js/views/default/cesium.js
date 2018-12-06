@@ -17,6 +17,8 @@ define([
             homeButton: false,
             timeline: false,
             sceneModePicker: false,
+            infoBox: false,
+            selectionIndicator : false,
             targetFrameRate: 30,
             navigationHelpButton: false,
             navigationInstructionsInitiallyVisible: false,
@@ -42,6 +44,7 @@ define([
             _.defaults(this.options, options);
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             this.viewer = new Cesium.Viewer(this.el, this.options);
+            this.viewer.scene.globe.enableLighting = false;
         },
 
         render: function(){
@@ -54,8 +57,36 @@ define([
                 this.viewer.scene.screenSpaceCameraController.enableLook = false;
             }
             */
+            //disable default focus on entity
+            this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
             BaseView.prototype.render.call(this);
-        }
+        },
+
+        resetCamera: function(model) {
+            //timeout so transition to/from fullscreen can complete before recentering camera
+            setTimeout(_.bind(function(){this._focusOn(model);}, this), 100);
+        },
+
+        _focusOn: function(obj) {
+            if (_.isUndefined(obj)){
+                return;
+            } else if (obj.getBoundingRectangle) {
+                obj.getBoundingRectangle().then(_.bind(function(rect) {
+                    this.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0
+                    });
+                    this.viewer.scene.requestRender();
+                }, this));
+            } else {
+                this.viewer.scene.camera.flyTo({
+                        destination: obj,
+                        duration: 0
+                    });
+                this.viewer.scene.requestRender();
+            }
+        },
+
     });
 
     cesiumView.viewCache = {};

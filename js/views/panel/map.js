@@ -8,9 +8,10 @@ define([
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
+    'views/form/map/map',
     'text!templates/panel/map.html',
     'views/modal/form'
-], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate, FormModal){
+], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapForm, MapPanelTemplate, FormModal){
     var mapPanel = BasePanel.extend({
         className: 'col-md-3 map object panel-view',
 
@@ -51,22 +52,7 @@ define([
         },
 
         resetCamera: function(e) {
-            //timeout so transition to/from fullscreen can complete before recentering camera
-            setTimeout(_.bind(this._focusOnMap, this), 100);
-        },
-
-        _focusOnMap: function() {
-            if (_.isUndefined(this.minimap)) {
-                return;
-            } else {
-                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
-                    this.minimap.viewer.scene.camera.flyTo({
-                        destination: rect,
-                        duration: 0
-                    });
-                    this.minimap.viewer.scene.requestRender();
-                }, this));
-            }
+            this.minimap.resetCamera(webgnome.model.get('map'));
         },
 
         render: function(){
@@ -100,7 +86,7 @@ define([
                             }
                         }
                         this.$('#mini-locmap').append(this.minimap.$el);
-                        this.resetCamera();
+                        this.minimap.resetCamera(map);
                         this.trigger('render');
                     }, this)
                 });
@@ -141,7 +127,7 @@ define([
             if(map.get('obj_type') === 'gnome.map.ParamMap'){
                 form = new ParamMapForm({map: map});
             } else {
-                form = new FormModal({title: 'Edit Map', model: map});
+                form = new MapForm({map: map});
             }
 
             form.render();

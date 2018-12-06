@@ -130,43 +130,47 @@ define([
         },
 
         genAux: function(type) {
-            var polygons = this.get(type);
+            
+            if (!_.isUndefined(this.get(type))) {
+                
+                var polygons = this.get(type);
 
-            if  (polygons[0].length === 2) {
-                polygons = [polygons];
-            }
+                if  (polygons[0].length === 2) {
+                    polygons = [polygons];
+                }
 
-            if (!_.isEqual(_.flatten(polygons),
-                           _.flatten(this.defaults[type]))) {
-                // polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
-                var vis;
+                if (!_.isEqual(_.flatten(polygons),
+                               _.flatten(this.defaults[type]))) {
+                    // polygons = [[-0.01,-0.01],[-0.01,0.01],[0.01,0.01],[0.01,-0.01]]
+                    var vis;
 
-                for(var poly in polygons) {
-                    if (type === 'spillable_area') {
-                        vis = this._spillableVis;
+                    for(var poly in polygons) {
+                        if (type === 'spillable_area') {
+                            vis = this._spillableVis;
 
-                        vis.entities.add({
-                            polygon: {
-                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
-                                material: Cesium.Color.BLUE.withAlpha(0.25),
-                                outline: true,
-                                outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
-                                height: 0,
-                            }
-                        });
-                    }
-                    else {
-                        vis = this._boundsVis;
+                            vis.entities.add({
+                                polygon: {
+                                    hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                    material: Cesium.Color.BLUE.withAlpha(0.25),
+                                    outline: true,
+                                    outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
+                                    height: 0,
+                                }
+                            });
+                        }
+                        else {
+                            vis = this._boundsVis;
 
-                        vis.entities.add({
-                            polygon: {
-                                hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
-                                material: Cesium.Color.WHITE.withAlpha(0),
-                                outline: true,
-                                outlineColor: Cesium.Color.BLUE,
-                                height: 0,
-                            }
-                        });
+                            vis.entities.add({
+                                polygon: {
+                                    hierarchy: Cesium.Cartesian3.fromDegreesArray(_.flatten(polygons[poly])),
+                                    material: Cesium.Color.WHITE.withAlpha(0),
+                                    outline: true,
+                                    outlineColor: Cesium.Color.BLUE,
+                                    height: 0,
+                                }
+                            });
+                        }
                     }
                 }
             }

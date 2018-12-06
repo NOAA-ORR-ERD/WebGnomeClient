@@ -35,6 +35,7 @@ define([
             BaseModal.prototype.render.call(this, options);
             var handler;
             if(this.type === 'cesium'){
+                this.$('.modal-body').css('height', '600px');
                 this.map = new CesiumView();
                 this.$('.modal-body').append(this.map.$el);
                 this.map.render();
@@ -83,7 +84,7 @@ define([
                 this.model.processLines(data, 3000, primitive);
                 primitive.show = true;
                 var target_ar = this.target.val().split(',');
-                var point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 100000);
+                var point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 0);
                 this.crosshair = map.viewer.entities.add({
                     position: point,
                     billboard: {
@@ -92,10 +93,12 @@ define([
                         height: 50
                     }
                 });
-                map.viewer.scene.camera.flyTo({
-                    destination: point,
-                    duration: 0.5
-                });
+                this.model.getBoundingRectangle().then(_.bind(function(rect) {
+                    map.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0.25
+                    });
+                }, this));
             }, this));
         },
 

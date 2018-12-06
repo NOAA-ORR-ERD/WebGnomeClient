@@ -13,10 +13,12 @@ define([
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
+
         requesting_grid: false,
         requesting_centers: false,
         requested_grid: false,
         requested_centers: false,
+
         data_cache : localforage.createInstance({name: 'Mover Object Data Cache',
                                                  }),
         defaults: function() {

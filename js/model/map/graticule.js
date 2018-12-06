@@ -385,7 +385,7 @@ define([
             } else {
                 hemi = radians > 0 ? 'N' : 'S';
             }
-            return deg + '&#8451; ' + hemi;
+            return ('' + deg.toFixed(4)).slice(-7) + '\xB0 ' + hemi;
         }
     };
     return Graticule;

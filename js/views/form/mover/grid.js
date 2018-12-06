@@ -33,7 +33,7 @@ define([
             this.body = _.template(FormTemplate, {
                 name: this.model.get('name'),
                 active: this.model.get('on'),
-                scale_value: this.model.get('scale_value'),
+                scale_value: this.model.get('current_scale'),
                 extrapolation_is_allowed: extrapolation_allowed
             });
 

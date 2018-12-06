@@ -124,37 +124,13 @@ define([
             var compiled = _.template(LocationsTemplate);
             this.$el.html(_.template(LocationsTemplate));
             this.$el.appendTo(this.dom_target);
-            this.mapView = new CesiumView({
-                infoBox: false,
-                selectionIndicator : false,
-            });
+            this.mapView = new CesiumView();
             this.$('#locations-map').append(this.mapView.$el);
             this.mapView.render();
-
-/*
-            this.popup = new ol.Overlay({
-                position: 'bottom-center',
-                element: this.$('.popup')[0],
-                stopEvent: true,
-                offsetX: -2,
-                offsetY: -22
-            });
-            this.tooltip = new ol.Overlay({
-                position: 'bottom-center',
-                element: this.$('.tooltip-hover')[0],
-                stopEvent: false,
-                offsetX: 0,
-                offsetY: -22
-            });
-            this.mapView.map.addOverlay(this.popup);
-            this.mapView.map.addOverlay(this.tooltip);
-            this.registerMapEvents();
-*/
         },
 
         ajax_render: function(geojson){
             this.locations = [];
-
             for (var i = 0; i < geojson.features.length; i++) {
                 var feature = geojson.features[i];
                 var content = '<button class="btn btn-primary help" data-name="' + feature.properties.title + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.properties.slug + '" data-name="' + feature.properties.title + '">Load Location</button>';

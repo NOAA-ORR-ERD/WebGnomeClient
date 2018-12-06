@@ -33,7 +33,7 @@ define([
             WindMoverModel, WindModel, NwsWind) {
     'use strict';
     var windForm = FormModal.extend({
-        title: 'Wind',
+        title: 'Point Wind',
         className: 'modal form-modal wind-form',
         sliderValue: 0,
 
@@ -81,13 +81,14 @@ define([
                 this.model = this.superModel.get('wind');
             }
 
-            if (!this.model.get('name')) {
+            if (!this.superModel.get('name')) {
                 var count = webgnome.model.get('environment').where({obj_type: this.model.get('obj_type')});
                 count = !count ? 1 : count.length + 1;
+                this.superModel.set('name', 'Wind #' + count);
                 this.model.set('name', 'Wind #' + count);
             }
             
-            this.title = this.model.get('name');
+            //this.title = this.superModel.get('name');
             this.source = new ol.source.Vector();
             this.spillSource = new ol.source.Vector();
 
@@ -163,7 +164,7 @@ define([
                                    .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
-                name: this.model.get('name'),
+                name: this.superModel.get('name'),
                 extrapolation_is_allowed: this.model.get('extrapolation_is_allowed')
             });
 
@@ -486,7 +487,14 @@ define([
             }
         },
 
-        reset: function(file) {
+        reset: function(file, err) {
+            var errObj = JSON.parse(err);
+            console.error(errObj);
+
+            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
+                                                             ': ' +
+                                                             errObj.message);
+
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
@@ -562,22 +570,19 @@ define([
                     });
                 }
 
-                if (active === 'constant') {
-                    // if the constant wind pane is active, a timeseries
-                    // needs to be generated for the values provided
-                    var dateObj = moment(this.form.constant.datetime.val(),
-                                         webgnome.config.date_format.moment);
-                    var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                // if the constant wind pane is active, a timeseries
+                // needs to be generated for the values provided
+                var dateObj = moment(this.form.constant.datetime.val(),
+                                     webgnome.config.date_format.moment);
+                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
 
-                    this.model.set('timeseries', [[date, [speed, direction]]]);
-                    this.updateConstantSlide();
-                }
-                else {
-                    this.updateVariableSlide();
-                }
+                this.model.set('timeseries', [[date, [speed, direction]]]);
+                this.updateConstantSlide();
+
 
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
                 this.model.set('name', this.$('#name').val());
+                this.superModel.set('name', this.$('#name').val());
                 
                 this.$('.additional-wind-compass').remove();
             }
@@ -587,6 +592,8 @@ define([
 
                 this.$('#' + active + ' .units').text('(' + currentUnits + ')');
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
+                this.model.set('name', this.$('#name').val());
+                this.superModel.set('name', this.$('#name').val());
             }
         },
 
@@ -1043,7 +1050,7 @@ define([
 
         save: function() {
             if (_.isUndefined(this.nws) || this.nws.fetched) {
-                this.update();
+                //this.update();
 
                 FormModal.prototype.save.call(this);
             }
