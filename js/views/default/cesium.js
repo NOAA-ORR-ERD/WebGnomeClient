@@ -49,7 +49,6 @@ define([
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
             this.viewer.entities.withLabelOpen = [];
-            this.listenTo(this, 'droppedEnt', _.bind(this.resetEntPickup, this));
         },
 
         render: function(){
@@ -153,7 +152,9 @@ define([
                     this.viewer.entities.withLabelOpen = [ent];
                 }
             } else {
-                this.$('.cesium-viewer').css('cursor', 'default');
+                var cssObject = this.$('.cesium-viewer').prop('style');
+                cssObject.removeProperty('cursor');
+                //this.$('.cesium-viewer').css('cursor', 'default');
                 _.each(this.viewer.entities.withLabelOpen, function(ent) {ent.label.show = false;});
                 this.viewer.entities.withLabelOpen = [];
             }
@@ -176,6 +177,7 @@ define([
             view.trigger('droppedEnt', this, coords);
             this.label.show = false;
             view.viewer.scene.requestRender();
+            view.resetEntPickup(this);
         },
 
         cancelEnt: function(movement, ent) {

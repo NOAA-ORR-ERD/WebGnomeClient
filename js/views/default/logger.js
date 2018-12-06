@@ -100,7 +100,7 @@ define([
                 toastr.error(_.escape(shortMsg));
             }
             else if (message.level.toLowerCase() === 'warni') {
-                msg = re.exec(message.message)[1];
+                msg = message.message;
                 shortMsg = msg.split('\\n')[0];
 
                 toastr.warning(_.escape(shortMsg));
