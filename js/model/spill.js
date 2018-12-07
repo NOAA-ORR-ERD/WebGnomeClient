@@ -199,7 +199,7 @@ define([
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
-            this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj }, this));
+            this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));
         },
 
         releaseChange: function(release) {
