@@ -173,7 +173,7 @@ define([
             var newPos = view.viewer.scene.camera.pickEllipsoid(movement.position);
             this.position = newPos;
             var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
-            coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), coords.height];
+            coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), 0]; //not coords.height (may not be correct)
             view.trigger('droppedEnt', this, coords);
             this.label.show = false;
             view.viewer.scene.requestRender();
