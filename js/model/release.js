@@ -230,7 +230,7 @@ define([
             var error = 'Start or End position are outside of supported area';
             var within = d3.polygonContains(sa.flat(), this.get('start_position'));
             if (!within) {
-                return error
+                return error;
             }
         },
 

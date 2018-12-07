@@ -222,8 +222,8 @@ define([
                             if (_.isUndefined(this.id)) {
                                 console.log('Map object has no ID to request');
                                 this.geo_json = geo_json;
-                                this.land_polys = []
-                                this.lake_polys = []
+                                this.land_polys = [];
+                                this.lake_polys = [];
                                 resolve(this.geo_json);
                             }
                             else if (this.requestStatus === this.reqStatusEnum.unrequested) {
