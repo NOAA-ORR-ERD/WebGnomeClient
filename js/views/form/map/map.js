@@ -25,6 +25,7 @@ define([
             this.body = _.template(MapTemplate, {
                 name: this.model.get('name'),
                 refloat: this.model.get('refloat_halflife'),
+                //map_bounds: this.model.get('map_bounds'),
 
             });
             FormModal.prototype.render.call(this, options);
@@ -33,9 +34,11 @@ define([
         update: function() {
             var name = this.$('#name').val();
             var refloat = this.$('#refloat').val();
-
+            //var map_bounds = this.$('#map_bounds').val();
+            
             this.model.set('name', name);
             this.model.set('refloat_halflife', refloat);
+            //this.model.set('map_bounds', map_bounds);
         }
 	});
 	
