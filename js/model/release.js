@@ -1,12 +1,12 @@
 define([
     'underscore',
     'backbone',
-    'ol',
+    'd3',
     'model/base',
     'moment',
     'cesium',
     'model/map/graticule'
-], function(_, Backbone, ol, BaseModel, moment, Cesium, Graticule) {
+], function(_, Backbone, d3, BaseModel, moment, Cesium, Graticule) {
     'use strict';
     var gnomeRelease = BaseModel.extend({
         urlRoot: '/release/',
@@ -221,34 +221,16 @@ define([
 
             if (!_.isUndefined(webgnome.model) &&
                     !_.isUndefined(webgnome.model.get('map'))) {
-                return this.isReleaseInGeom(webgnome.model.get('map').getSpillableArea());
+                return this.isReleaseValid(webgnome.model.get('map'));
             }
         },
 
-        isReleaseInGeom: function(geom) {
-            if (!_.isArray(geom)) {
-                geom = [geom];
-            }
-
-            var start = [this.get('start_position')[0], this.get('start_position')[1]];
-            var end = [this.get('end_position')[0], this.get('end_position')[1]];
+        isReleaseValid: function(map) {
+            var sa = map.get('spillable_area');
             var error = 'Start or End position are outside of supported area';
-
-            for (var p = 0; p < geom.length; p++) {
-                var source = new ol.source.Vector({
-                    features: [new ol.Feature({
-                        geometry: geom[p]
-                    })]
-                });
-
-                if (source.getFeaturesAtCoordinate(start).length > 0 &&
-                        source.getFeaturesAtCoordinate(end).length > 0) {
-                    error = false;
-                }
-            }
-
-            if (error) {
-                return error;
+            var within = d3.polygonContains(sa.flat(), this.get('start_position'));
+            if (!within) {
+                return error
             }
         },
 
@@ -262,6 +244,11 @@ define([
             }
 
             return true;
+        },
+
+        testVsSpillableArea: function(point, map) {
+            var sa = map.get('spillable_area');
+            return d3.polygonContains(sa.flat(), point);
         },
 
         validateAmount: function(attrs) {

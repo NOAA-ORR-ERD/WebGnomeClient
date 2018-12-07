@@ -214,12 +214,16 @@ define([
                             this.requestStatus = this.reqStatusEnum.requested;
 
                             this.geo_json = geo_json;
+                            this.land_polys = geo_json.features[0].geometry.coordinates;
+                            this.lake_polys = geo_json.features[1].geometry.coordinates;
                             resolve(this.geo_json);
                         }
                         else {
                             if (_.isUndefined(this.id)) {
                                 console.log('Map object has no ID to request');
                                 this.geo_json = geo_json;
+                                this.land_polys = []
+                                this.lake_polys = []
                                 resolve(this.geo_json);
                             }
                             else if (this.requestStatus === this.reqStatusEnum.unrequested) {
@@ -233,6 +237,8 @@ define([
                                     this.geo_json = geo_json;
                                     this.map_cache.setItem(this.id + 'map',
                                                            geo_json);
+                                    this.land_polys = geo_json.features[0].geometry.coordinates;
+                                    this.lake_polys = geo_json.features[1].geometry.coordinates;
                                     resolve(this.geo_json);
                                 }, this));
                             }
