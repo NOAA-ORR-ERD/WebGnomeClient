@@ -70,7 +70,7 @@ define([
             var endPin = this._visObj.spillPins[1];
             startPin.position = Cesium.Cartesian3.fromDegrees(this.get('start_position')[0], this.get('start_position')[1]);
             endPin.position = Cesium.Cartesian3.fromDegrees(this.get('end_position')[0], this.get('end_position')[1]);
-            if (startPin.position === endPin.position) {
+            if (startPin.position.equals(endPin.position)) {
                 endPin.show = false;
             } else {
                 endPin.show = true;
