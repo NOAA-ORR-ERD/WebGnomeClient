@@ -14,7 +14,6 @@ require.config({
         text: 'lib/requirejs-text/text',
         json: 'lib/requirejs-plugins/src/json',
         cesium: 'lib/cesium/Build/CesiumUnminified/Cesium',
-        ol: 'lib/openlayers/build/ol',
         bootstrap: 'lib/bootstrap/dist/js/bootstrap',
         jqueryDatetimepicker: 'lib/datetimepicker/jquery.datetimepicker',
         compassui: 'lib/compass-rose-ui/compass-rose-ui',
@@ -102,9 +101,6 @@ require.config({
         'jquery-mousewheel': ['jquery'],
         'php-date-formatter': {
             exports: 'DateFormatter'
-        },
-        ol: {
-            exports: 'ol'
         },
         cesium: {
             exports: 'Cesium'

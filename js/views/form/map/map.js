@@ -2,10 +2,9 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'ol',
     'views/modal/form',
     'text!templates/form/map.html'
-], function(_, $, Backbone, ol, FormModal, MapTemplate){
+], function(_, $, Backbone, FormModal, MapTemplate){
     'use strict';
     var mapForm = FormModal.extend({
         className: 'modal form-modal map-form',

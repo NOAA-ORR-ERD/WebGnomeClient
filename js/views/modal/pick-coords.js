@@ -4,11 +4,10 @@ define([
     'backbone',
     'cesium',
     'views/modal/base',
-    'views/default/map',
     'views/default/cesium'
 
 ], function($, _, Backbone, Cesium,
-            BaseModal, MapView, CesiumView) {
+            BaseModal, CesiumView) {
     var pickCoordsView = BaseModal.extend({
         title: 'Click to select map coordinates',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',

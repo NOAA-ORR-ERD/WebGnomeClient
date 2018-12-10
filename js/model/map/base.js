@@ -1,12 +1,11 @@
 define([
     'underscore',
     'jquery',
-    'ol',
     'cesium',
     'localforage',
     'model/base',
     'model/visualization/map_appearance'
-], function(_, $, ol, Cesium, localforage, BaseModel, MapAppearance) {
+], function(_, $, Cesium, localforage, BaseModel, MapAppearance) {
     var baseMap = BaseModel.extend({
         urlRoot: '/map/',
 
@@ -78,55 +77,6 @@ define([
             return new Promise(_.bind(function(resolve, reject) {
                 resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())));
             }));
-        },
-
-        getExtent: function() {
-            var extent;
-
-            if (!_.isUndefined(this.get('spillable_area')) &&
-                    this.get('spillable_area').length >= 1) {
-                if (this.get('spillable_area').length === 1) {
-                    extent = ol.extent.boundingExtent(this.get('spillable_area')[0]);
-                }
-                else {
-                    var areas = this.get('spillable_area');
-                    extent = ol.extent.boundingExtent([]);
-
-                    for (var i = 0; i < areas.length; i++) {
-                        var tempExtent = ol.extent.boundingExtent(areas[i]);
-                        extent = ol.extent.extend(extent, tempExtent);
-                    }
-                }
-            }
-            else {
-                extent = ol.extent.boundingExtent(this.get('map_bounds'));
-            }
-
-            return extent;
-        },
-
-        getSpillableArea: function() {
-            var boundingPolygon;
-
-            if (!_.isUndefined(this.get('spillable_area'))) {
-                if (this.get('spillable_area').length === 1) {
-                    boundingPolygon = new ol.geom.Polygon(this.get('spillable_area'));
-                }
-                else {
-                    var area = [];
-
-                    for(var a = 0; a < this.get('spillable_area').length; a++) {
-                        area.push(new ol.geom.Polygon([this.get('spillable_area')[a]]));
-                    }
-
-                    boundingPolygon = area;
-                }
-            }
-            else {
-                boundingPolygon = new ol.geom.Polygon(this.get('map_bounds'));
-            }
-
-            return boundingPolygon;
         },
 
         genAux: function(type) {
@@ -214,16 +164,12 @@ define([
                             this.requestStatus = this.reqStatusEnum.requested;
 
                             this.geo_json = geo_json;
-                            this.land_polys = geo_json.features[0].geometry.coordinates;
-                            this.lake_polys = geo_json.features[1].geometry.coordinates;
                             resolve(this.geo_json);
                         }
                         else {
                             if (_.isUndefined(this.id)) {
                                 console.log('Map object has no ID to request');
                                 this.geo_json = geo_json;
-                                this.land_polys = [];
-                                this.lake_polys = [];
                                 resolve(this.geo_json);
                             }
                             else if (this.requestStatus === this.reqStatusEnum.unrequested) {
@@ -237,8 +183,6 @@ define([
                                     this.geo_json = geo_json;
                                     this.map_cache.setItem(this.id + 'map',
                                                            geo_json);
-                                    this.land_polys = geo_json.features[0].geometry.coordinates;
-                                    this.lake_polys = geo_json.features[1].geometry.coordinates;
                                     resolve(this.geo_json);
                                 }, this));
                             }

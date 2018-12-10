@@ -1083,8 +1083,6 @@ define([
         back: function() {
             $('.xdsoft_datetimepicker:last').remove();
 
-            this.ol.close();
-
             FormModal.prototype.back.call(this);
         },
 

@@ -3,7 +3,6 @@ define([
 	'underscore',
 	'backbone',
 	'nucos',
-	'ol',
 	'moment',
     'sweetalert',
 	'views/modal/form',
@@ -17,7 +16,7 @@ define([
     'model/substance',
 	'jqueryDatetimepicker',
     'bootstrap'
-], function($, _, Backbone, nucos, ol, moment, swal,
+], function($, _, Backbone, nucos, moment, swal,
             FormModal, OilLibraryView, MapFormView, OilInfoView,
             SubstanceTemplate, SubstanceNullTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, SubstanceModel) {
