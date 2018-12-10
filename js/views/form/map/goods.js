@@ -16,7 +16,6 @@ define([
         render: function(){
             this.body = _.template(GoodsTemplate);
             FormModal.prototype.render.call(this);
-            this.map = new MapView({id: 'shoreline-goods-map'});
         },
 
         ready: function(){
