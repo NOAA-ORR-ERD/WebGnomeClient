@@ -45,6 +45,7 @@ define([
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             this.viewer = new Cesium.Viewer(this.el, this.options);
             this.viewer.scene.globe.enableLighting = false;
+            this.viewer.scene.highDynamicRange = false;
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
