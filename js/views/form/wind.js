@@ -117,7 +117,6 @@ define([
                 ]
             });
 */
-            this.title = this.model.get('name');
             this.nwsMap = new CesiumView();
 
             this.$el.on('click', _.bind(function(e) {

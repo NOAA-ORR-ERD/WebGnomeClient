@@ -11,7 +11,7 @@ define([
             PyWindMover, FormModal, UploadFolder) {
     var griddedWindEditForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
-        title: 'Create Wind (Mover Only)',
+        title: 'Gridded Wind',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>' +
                  '<button type="button" class="save" data-dismiss="modal">Save</button>',
 
