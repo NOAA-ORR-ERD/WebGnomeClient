@@ -181,10 +181,12 @@ define([
                                 this.currentPrims[currents[0].get('id')].show = true;
                                 this.resetCamera(currents[0]);
                                 this._loadPrimitives(currents.slice(1));
+                                this.resetCamera(currents[0]);
                             },this));
+                        } else {
+                            this._loadPrimitives(currents);
                         }
                         this.$('#mini-currentmap').append(this.currentMap.$el);
-                        this.resetCamera(currents[0]);
                         this.trigger('render');
                     }, this)
                 });

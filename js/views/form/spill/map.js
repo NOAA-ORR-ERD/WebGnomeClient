@@ -39,6 +39,7 @@ define([
 
             this.placeMode = 'point';
             this.heldPin = null;
+            this.invalidPinLocation = false;
             this.origModel = this.model;
         },
 
@@ -98,13 +99,26 @@ define([
 
         droppedPinHandler: function(ent, coords) {
             //this context should always be the Form object
-            this.model.set(ent.model_attr, coords); //future: need to get old coords like in cancelPin
+            var prev = this.model.get(ent.model_attr);
+            if (this.model.testVsSpillableArea(coords, webgnome.model.get('map'))) {
+                this.model.set(ent.model_attr, coords);
+                this.clearError();
+            } else {
+                this.error('Placement error! Start or End position are outside of supported area');
+                this.invalidPinLocation = true;
+            }
         },
 
         resetPinPickupHandler: function(ent) {
             //this context should always be the Form object
             var btn_name;
             if (ent) {
+                if (this.invalidPinLocation) {
+                    //pickup entity again
+                    this.invalidPinLocation = false;
+                    this.mapView.pickupEnt(null, ent);
+                    return;
+                }
                 if (this.placeMode === 'point') {
                     btn_name = '.fixed';
                     this.model.set('end_position', this.model.get('start_position'));

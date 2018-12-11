@@ -7,7 +7,6 @@ define([
     'moment',
     'toastr',
     'text!templates/model/trajectory/controls.html',
-    'views/default/map',
     'cesium',
     'model/spill',
     'views/form/spill/continue',
@@ -22,7 +21,7 @@ define([
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;

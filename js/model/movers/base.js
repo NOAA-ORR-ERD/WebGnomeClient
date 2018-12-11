@@ -2,13 +2,12 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'ol',
     'moment',
     'cesium',
     'localforage',
     'model/base',
     'model/visualization/mover_appearance'
-], function(_, $, Backbone, ol, moment, Cesium, localforage,
+], function(_, $, Backbone, moment, Cesium, localforage,
             BaseModel, MoverAppearance) {
     'use strict';
     var baseMover = BaseModel.extend({
