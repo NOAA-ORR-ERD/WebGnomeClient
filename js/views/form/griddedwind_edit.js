@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'module',
-    'text!templates/form/griddedwind_edit.html',
+    'text!templates/form/mover/edit.html',
     'model/movers/py_wind',
     'views/modal/form',
     'views/uploads/upload_folder'
@@ -28,8 +28,14 @@ define([
         },
 
         render: function(options) {
+            var extrapolation_allowed = false;
+            extrapolation_allowed = this.model.get('wind').get('extrapolation_is_allowed');
+            
             this.body = _.template(GriddedWindEditTemplate, {
-                gridded_wind_mover: this.model
+                name: this.model.get('name'),
+                active: this.model.get('on'),
+                scale_value: this.model.get('wind_scale'),
+                extrapolation_is_allowed: extrapolation_allowed,
             });
 
             FormModal.prototype.render.call(this);
