@@ -82,7 +82,8 @@ define([
                 this.model = this.superModel.get('wind');
             }
 
-            if (!this.superModel.get('name')) {
+            if (!_.isUndefined(this.superModel) &&
+                    !this.superModel.get('name')) {
                 var count = webgnome.model.get('environment').where({obj_type: this.model.get('obj_type')});
                 count = !count ? 1 : count.length + 1;
                 this.superModel.set('name', 'Wind #' + count);
@@ -133,12 +134,17 @@ define([
         },
 
         render: function(options) {
+            var superModelName = 'Not Found';
+            if (!_.isUndefined(this.superModel)) {
+                superModelName = this.superModel.get('name');
+            }
+
             this.body = _.template(WindFormTemplate, {
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
                                    .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
-                name: this.superModel.get('name'),
+                name: superModelName,
                 extrapolation_is_allowed: this.model.get('extrapolation_is_allowed')
             });
 

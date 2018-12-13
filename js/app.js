@@ -179,7 +179,7 @@ define([
 
         // is it possible to move this config step out of the app?
         // maybe using inheritance w/ base view?
-        configure: function(){
+        configure: function() {
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user
@@ -477,12 +477,15 @@ define([
             return config_obj;
         },
         
-        validModel: function(){
-            if(webgnome.hasModel()){
-                if(webgnome.model.isValid() && webgnome.model.get('outputters').length > 0 && webgnome.model.get('spills').length > 0){
+        validModel: function() {
+            if (webgnome.hasModel()) {
+                if (webgnome.model.isValid() &&
+                        webgnome.model.get('outputters').length > 0 &&
+                        webgnome.model.get('spills').length > 0) {
                     return true;
                 }
             }
+
             return false;
         },
 
@@ -509,7 +512,8 @@ define([
 
             if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
                 return navigator.msSaveOrOpenBlob(file, fileFullName);
-            } else if (typeof navigator.msSaveBlob !== 'undefined') {
+            }
+            else if (typeof navigator.msSaveBlob !== 'undefined') {
                 return navigator.msSaveBlob(file, fileFullName);
             }
 
@@ -532,8 +536,94 @@ define([
             }
 
             URL.revokeObjectURL(hyperlink.href);
-}
+        },
 
+        initSessionTimer: function(func) {
+            if (typeof(Worker) !== "undefined") {
+                // Yes! Web worker support!
+                if (typeof(webgnome.timer) === "undefined") {
+                    webgnome.idleTime = 0;
+                    webgnome.timer = new Worker("js/session_timer.js");
+                    webgnome.timer.onmessage = func;
+
+                    window.addEventListener("mousemove", this.zeroSessionTime);
+                    window.addEventListener("keydown", this.zeroSessionTime);
+                }
+            }
+            else {
+              console.warning('Sorry, web workers not supported!');
+            }
+        },
+
+        resetSessionTimer: function() {
+            if (typeof(Worker) !== "undefined") {
+                // Yes! Web worker support!
+                if (typeof(webgnome.timer) !== "undefined") {
+                    webgnome.idleTime = 0;
+                    webgnome.timer.terminate();
+                    webgnome.timer = undefined;
+
+                    window.removeEventListener("mousemove", this.zeroSessionTime);
+                    window.removeEventListener("keydown", this.zeroSessionTime);
+                }
+            }
+            else {
+              console.warning('Sorry, web workers not supported!');
+            }
+        },
+
+        zeroSessionTime: function() {
+            webgnome.idleTime = 0;
+        },
+
+        continueSession: function(event) {
+            webgnome.idleTime++;
+
+            /*jshint -W061 */  // eval is evil warning
+            if (webgnome.idleTime >= eval(webgnome.config.session_timeout)) {
+                webgnome.resetSessionTimer();
+
+                swal({
+                    title: 'Session Timed Out',
+                    text:'Would you like to continue this session?',
+                    type: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'Reset Session',
+                    confirmButtonText: 'Continue',
+                    reverseButtons: true
+                }).then(_.bind(function(isConfirm) {
+                    if (isConfirm) {
+                        // start the timer again
+                        webgnome.initSessionTimer(webgnome.continueSession);
+                    }
+                    else {
+                        localStorage.setItem('prediction', null);
+
+                        if (!_.isUndefined(webgnome.riskCalc)) {
+                            webgnome.riskCalc.destroy();
+                        }
+
+                        webgnome.riskCalc = undefined;
+
+                        if (_.has(webgnome, 'cache')) {
+                            webgnome.cache.rewind();
+                            webgnome.router._cleanup();
+                        }
+
+                        // This is from views/defaults/menu.js
+                        // Not sure if we really need this.
+                        //this.contextualize();
+
+                        webgnome.model = new GnomeModel({
+                            mode: 'gnome',
+                            name: 'Model',
+                        });
+                        webgnome.router.navigate('', true);
+
+                    }
+                }, this));
+            }
+        }
     };
 
     return app;
