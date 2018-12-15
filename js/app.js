@@ -461,19 +461,33 @@ define([
             return false;
         },
 
-        getConfig: function(){
+        getConfig: function() {
             var config_obj = JSON.parse(config);
+
             // if there isn't a domain provided just use the
             // one the client was served on.
             var domain = location.href.split(':');
             domain.pop();
             domain = domain.join(':') + ':';
-            if(config_obj.api.match(/^\d*$/)){
+
+            if (config_obj.api.match(/^\d*$/)) {
                 config_obj.api = domain + config_obj.api;
             }
-            if(config_obj.oil_api.match(/^\d*$/)){
+
+            if(config_obj.oil_api.match(/^\d*$/)) {
                 config_obj.oil_api = domain + config_obj.oil_api;
             }
+
+            if (typeof(config_obj.session_timeout) === 'string') {
+                /*jshint -W061 */  // eval is evil warning
+                config_obj.session_timeout = eval(config_obj.session_timeout)
+            }
+
+            if (typeof(config_obj.afk_timeout) === 'string') {
+                /*jshint -W061 */  // eval is evil warning
+                config_obj.afk_timeout = eval(config_obj.afk_timeout)
+            }
+
             return config_obj;
         },
         
@@ -579,50 +593,67 @@ define([
         continueSession: function(event) {
             webgnome.idleTime++;
 
-            /*jshint -W061 */  // eval is evil warning
-            if (webgnome.idleTime >= eval(webgnome.config.session_timeout)) {
+            if (webgnome.idleTime >= webgnome.config.afk_timeout) {
+                swal.close();
+                webgnome.sessionSWAL = false;
+
                 webgnome.resetSessionTimer();
-
-                swal({
-                    title: 'Session Timed Out',
-                    text:'Would you like to continue this session?',
-                    type: 'warning',
-                    showCancelButton: true,
-                    cancelButtonText: 'Reset Session',
-                    confirmButtonText: 'Continue',
-                    reverseButtons: true
-                }).then(_.bind(function(isConfirm) {
-                    if (isConfirm) {
-                        // start the timer again
-                        webgnome.initSessionTimer(webgnome.continueSession);
-                    }
-                    else {
-                        localStorage.setItem('prediction', null);
-
-                        if (!_.isUndefined(webgnome.riskCalc)) {
-                            webgnome.riskCalc.destroy();
-                        }
-
-                        webgnome.riskCalc = undefined;
-
-                        if (_.has(webgnome, 'cache')) {
-                            webgnome.cache.rewind();
-                            webgnome.router._cleanup();
-                        }
-
-                        // This is from views/defaults/menu.js
-                        // Not sure if we really need this.
-                        //this.contextualize();
-
-                        webgnome.model = new GnomeModel({
-                            mode: 'gnome',
-                            name: 'Model',
-                        });
-                        webgnome.router.navigate('', true);
-
-                    }
-                }, this));
+                webgnome.loseModelSession();
             }
+            else if (webgnome.idleTime >= webgnome.config.session_timeout) {
+                // We will keep responding to timer ticks, but  we only want to
+                // pop up our alert one time,
+                if (_.isUndefined(webgnome.sessionSWAL) ||
+                        webgnome.sessionSWAL === false) {
+                    webgnome.sessionSWAL = true;
+
+                    swal({
+                        title: 'Session Timed Out',
+                        text:'Would you like to continue this session?',
+                        type: 'warning',
+                        showCancelButton: true,
+                        cancelButtonText: 'Reset Session',
+                        confirmButtonText: 'Continue',
+                        reverseButtons: true
+                    }).then(_.bind(function(isConfirm) {
+                        webgnome.sessionSWAL = false;
+
+                        if (isConfirm) {
+                            // start the timer again
+                            webgnome.initSessionTimer(webgnome.continueSession);
+                        }
+                        else {
+                            webgnome.loseModelSession();
+                        }
+                    }, this));
+                }
+            }
+        },
+
+        loseModelSession: function() {
+            localStorage.setItem('prediction', null);
+
+            if (!_.isUndefined(webgnome.riskCalc)) {
+                webgnome.riskCalc.destroy();
+            }
+
+            webgnome.riskCalc = undefined;
+
+            if (_.has(webgnome, 'cache')) {
+                webgnome.cache.rewind();
+                webgnome.router._cleanup();
+            }
+
+            // This is from views/defaults/menu.js
+            // Not sure if we really need this.
+            //this.contextualize();
+
+            webgnome.model = new GnomeModel({
+                mode: 'gnome',
+                name: 'Model',
+            });
+
+            webgnome.router.navigate('', true);
         }
     };
 
