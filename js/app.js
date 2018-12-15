@@ -480,12 +480,12 @@ define([
 
             if (typeof(config_obj.session_timeout) === 'string') {
                 /*jshint -W061 */  // eval is evil warning
-                config_obj.session_timeout = eval(config_obj.session_timeout)
+                config_obj.session_timeout = eval(config_obj.session_timeout);
             }
 
             if (typeof(config_obj.afk_timeout) === 'string') {
                 /*jshint -W061 */  // eval is evil warning
-                config_obj.afk_timeout = eval(config_obj.afk_timeout)
+                config_obj.afk_timeout = eval(config_obj.afk_timeout);
             }
 
             return config_obj;

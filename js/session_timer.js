@@ -5,4 +5,4 @@
 // when the active browser tab is switched to something else, and the interval
 // counter would stop counting.  Web workers do not suffer from this however.
 
-setInterval(function() { postMessage('tick'); }, 1000);
+setInterval(function() { postMessage('tick'); }, 60 * 1000);

@@ -7,5 +7,7 @@
     "moment": "YYYY/M/D H:mm:ss",
     "datetimepicker": "Y/n/j G:i:s",
     "datepicker": "Y/n/j"
-  }
+  },
+  "session_timeout": "60",
+  "afk_timeout": "72 * 60"
 }
