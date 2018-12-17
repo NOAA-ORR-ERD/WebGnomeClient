@@ -609,7 +609,11 @@ define([
 
                     swal({
                         title: 'Session Timed Out',
-                        text:'Would you like to continue this session?',
+                        text: ('Your session has been inactive for more than ' +
+                               '1 hour.\n' +
+                               'The model setup will be automatically deleted\n' +
+                               'after 72 hours of no activity.\n' +
+                               'Would you like to continue working with this setup?'),
                         type: 'warning',
                         showCancelButton: true,
                         cancelButtonText: 'Reset Session',
