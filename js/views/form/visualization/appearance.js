@@ -37,7 +37,7 @@ define([
                 attrNames: attrNames,
                 ctrlNames: ctrlNames,
                 }
-            )
+            );
             this.$el.append(html);
         },
 

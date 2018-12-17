@@ -205,7 +205,7 @@ define([
                 nsr = this.get('numberScaleRange'),
                 csd = this.get('colorScaleDomain'),
                 csr = this.get('colorScaleRange');
-            if(this.get('map_type') == 'continuous') {
+            if(this.get('map_type') === 'continuous') {
                 this.set('colorScaleType', 'linear');
                 this.set('scheme', this.get('_continuousSchemes')[0]);
                 this._hardResetStops(5, 'continuous');

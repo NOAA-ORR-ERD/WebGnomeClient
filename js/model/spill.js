@@ -411,7 +411,6 @@ define([
                 min = 0.0000001;
                 max = 250000;
                 colormap.set('numberScaleType', 'log');
-                colormap.initSc
             }
             else if (data === 'Depth') {
                 min = 0;

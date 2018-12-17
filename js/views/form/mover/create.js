@@ -108,7 +108,7 @@ define([
         reset: function(file, err) {
             //var errObj = JSON.parse(err);
             console.error(err);
-            this.$('.dz-error-message span')[0].innerHTML = err
+            this.$('.dz-error-message span')[0].innerHTML = err;
             //this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
             setTimeout(_.bind(function() {

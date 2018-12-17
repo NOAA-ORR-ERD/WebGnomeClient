@@ -47,7 +47,7 @@ define([
                              model: this.model,
                              colormap: this.model.get('colormap')
                              }
-            )
+            );
 
             this.$el.append(html);
 
