@@ -19,7 +19,10 @@ define([
             'click .perm-add': 'new',
             'click .add': 'load',
             'click #mini-locmap': 'openMapModal',
-            'webkitfullscreenchange #mini-locmap': 'resetCamera'
+            'webkitfullscreenchange #mini-locmap': 'resetCamera',
+            'mozfullscreenchange #mini-locmap' : 'resetCamera',
+            'msfullscreenchange #mini-locmap' : 'resetCamera',
+            'fullscreenchange #mini-locmap' : 'resetCamera'
         },
 
         models: [
@@ -34,6 +37,7 @@ define([
             _.extend({}, BasePanel.prototype.events, this.events);
             this.listenTo(webgnome.model, 'change:map', this.rerender);
             this.listenTo(webgnome.model, 'change:map', this.setupMapListener);
+            document.addEventListener("mozfullscreenchange", _.bind(this.resetCamera, this));
             this.setupMapListener();
         },
 
@@ -47,7 +51,16 @@ define([
 
         openMapModal: function(e) {
             if(!_.isUndefined(this.minimap)){
-                this.minimap.el.webkitRequestFullScreen();
+                var element = this.minimap.el;
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
             }
         },
 
@@ -84,6 +97,11 @@ define([
                                     this.minimap.viewer.scene.primitives._primitives[i].show = true;
                                 }
                             }
+                        } else {
+                            this.minimap.viewer.scene.primitives.removeAll();
+                            map.getGeoJSON().then(_.bind(function(data){
+                                map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            }, this));
                         }
                         this.$('#mini-locmap').append(this.minimap.$el);
                         this.minimap.resetCamera(map);

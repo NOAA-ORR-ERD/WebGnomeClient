@@ -32,7 +32,7 @@ define([
             BaseAppearance.prototype.initialize.call(this, model);
 
             this.listenTo(this.get('colormap'), 'change', this.save);
-            this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
+            //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);

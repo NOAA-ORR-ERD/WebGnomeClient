@@ -30,25 +30,30 @@ define([
             this.model.setUnitConversionFunction(undefined,
                                                  this.model.get('units'));
 
+            this.colormapModel = this.model.get('colormap');
             this.render();
         },
 
         addListeners: function() {
             this.listenTo(this.model, 'change:data', this.rerender);
+            this.listenTo(this.model, 'changedMapType', this.rerender);
         },
 
         render: function() {
             BaseAppearanceForm.prototype.render.call(this);
 
-            this.$el.append(_.template(SpillAppearanceTemplate, 
+            var html = _.template(SpillAppearanceTemplate, 
                             {titles: this.model.get('_available_data'),
                              model: this.model,
                              colormap: this.model.get('colormap')
                              }
-            ));
+            )
+
+            this.$el.append(html);
 
             this.colormapForm = new ColormapForm(this.model.get('colormap'),
                                                  this.model);
+            //this.$el.append(this.colormapForm.el.innerHTML);
             this.colormapForm.$el.appendTo(this.$el);
         },
 
