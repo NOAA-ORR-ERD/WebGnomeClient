@@ -31,9 +31,10 @@ define([
             this.model = model;
             this.appearanceModel = appearanceModel;
             this.render();
-            this.listenTo(this.model, 'change:colorScaleRange', this.applySchemeBackgrounds);
-            this.listenTo(this.model, 'changedInterpolation', this.rerender);
-            this.listenTo(this.model, 'change:units', this.rerender);
+            //this.listenTo(this.model, 'change:colorScaleRange', this.applySchemeBackgrounds);
+            this.listenTo(this.model, 'changedMapType', this.rerender);
+            //this.listenTo(this.model, 'change:units', this.rerender);
+            this.listenTo(this.model, 'change', this.rerender);
         },
 
         pd: function(e) {
@@ -101,7 +102,8 @@ define([
                     var handles = $('.ui-slider-handle', this.picker);
                     this.setupSliderHandles(handles);
                 }, this),
-                slide: _.bind(this.slideHandler, this)
+                slide: _.bind(this.slideHandler, this),
+                stop: _.bind(this.slideHandler, this)
             });
         },
 
@@ -130,7 +132,7 @@ define([
             //$(handles[handles.length-1]).addClass('slider-last');
             var i;
 
-            if (this.model.get('interpolate')) {
+            if (this.model.get('map_type') === 'continuous') {
                 // each handle must have a number and color tooltip
                 for (i = 0; i < handles.length; i++) {
                     this.numberStops.push(this.createNumberTip(this.model.get('numberScaleDomain')[i], $(handles[i])));
@@ -210,13 +212,13 @@ define([
             this.updateBackground();
         },
 
-        _genBackgroundString: function(domain, colors, interpolate) {
+        _genBackgroundString: function(domain, colors, map_type) {
             //generates and returns a background linear-gradient string
             //domain is an array of numbers on a linear number scale
             var backgroundString = 'linear-gradient(to right, ';
             var i, boundary;
 
-            if (interpolate)  {
+            if (map_type === 'continuous')  {
                 for (i = 0; i < colors.length - 1; i++) {
                     boundary = (domain[i] - domain[0]) / (domain[domain.length-1] - domain[0]) * 100;
                     backgroundString += `${colors[i]} ${boundary}%, `;
@@ -246,13 +248,13 @@ define([
             var numberDomain = this.picker.slider('values');
             var colorRange = this.model.get('colorScaleRange');
             var bgString = this._genBackgroundString(numberDomain, colorRange,
-                                                     this.model.get('interpolate'));
+                                                     this.model.get('map_type'));
 
             if (colorRange.length === 1) {
                 this.colorStops[0].css('left', '50%');
             }
 
-            if (!this.model.get('interpolate')) {
+            if (this.model.get('map_type') === 'discrete') {
                 var curbounds = 0;
 
                 for (i = 0; i < colorRange.length - 1; i++) {
@@ -269,27 +271,27 @@ define([
 
         applySchemeBackgrounds: function(e, selected) {
             var genBGString = _.bind(function(name) {
-                var colors, range, interpolate;
+                var colors, range, map_type;
 
                 if ('interpolate'+name in d3) {
                     var d3scheme = d3['interpolate'+name];
                     range = _.range(0,1.1,0.1);
                     colors = range.map(d3scheme);
-                    interpolate = true;
+                    map_type = 'continuous';
                 }
                 else if ('scheme' + name in d3) {
                     colors = d3['scheme'+name];
                     range = _.range(0,colors.length+1, 1);
-                    interpolate = false;
+                    map_type = 'discrete';
                 }
                 else {
                     colors = this.model.get('_customScheme');
                     range = this.model.get('numberScaleRange');
-                    interpolate = this.model.get('interpolate');
+                    map_type = this.model.get('map_type');
                 }
 
                 var bgString = this._genBackgroundString(range, colors,
-                                                         interpolate);
+                                                         map_type);
 
                 return bgString;
             }, this);

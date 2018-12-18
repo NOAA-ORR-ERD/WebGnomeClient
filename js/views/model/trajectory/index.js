@@ -298,6 +298,7 @@ define([
                     },
                 },
             });
+            this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
