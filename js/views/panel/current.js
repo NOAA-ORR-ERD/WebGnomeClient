@@ -35,7 +35,10 @@ define([
         events: {
             'click #mini-currentmap': 'openMapModal',
             'click .single': 'changeDisplayedCurrent',
-            'webkitfullscreenchange #mini-currentmap': 'resetCamera'
+            'webkitfullscreenchange #mini-currentmap': 'resetCamera',
+            'mozfullscreenchange #mini-locmap' : 'resetCamera',
+            'msfullscreenchange #mini-locmap' : 'resetCamera',
+            'fullscreenchange #mini-locmap' : 'resetCamera'
         },
 
         initialize: function(options) {
@@ -49,6 +52,10 @@ define([
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
                           this.rerender);
+            this.mozResetCamera = _.bind(function(e){
+                this.resetCamera(e);
+                document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
+            }, this);
         },
 
         new: function() {
@@ -103,7 +110,17 @@ define([
 
         openMapModal: function(e) {
             if(!_.isUndefined(this.currentMap)){
-                this.currentMap.el.webkitRequestFullScreen();
+                var element = this.currentMap.el;
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                document.addEventListener("mozfullscreenchange", this.mozResetCamera);
             }
         },
 
@@ -181,10 +198,12 @@ define([
                                 this.currentPrims[currents[0].get('id')].show = true;
                                 this.resetCamera(currents[0]);
                                 this._loadPrimitives(currents.slice(1));
+                                this.resetCamera(currents[0]);
                             },this));
+                        } else {
+                            this._loadPrimitives(currents);
                         }
                         this.$('#mini-currentmap').append(this.currentMap.$el);
-                        this.resetCamera(currents[0]);
                         this.trigger('render');
                     }, this)
                 });

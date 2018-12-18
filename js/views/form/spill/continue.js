@@ -8,11 +8,9 @@ define([
     'text!templates/form/spill/continue.html',
     'model/spill',
     'views/form/oil/library',
-    'views/default/map',
     'jqueryDatetimepicker',
-    'jqueryui/widgets/slider',
-    'moment'
-], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView, SpillMapView){
+    'jqueryui/widgets/slider'
+], function($, _, Backbone, module, moment, BaseSpillForm, FormTemplate, SpillModel, OilLibraryView){
     'use strict';
     var continueSpillForm = BaseSpillForm.extend({
         title: 'Continuous Release',

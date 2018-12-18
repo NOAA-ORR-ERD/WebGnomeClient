@@ -3,15 +3,13 @@ define([
     'underscore',
     'backbone',
     'sweetalert',
-    'ol',
     'views/default/load',
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
-    'views/default/map',
     'views/form/oil/library',
     'model/gnome'
-], function($, _, Backbone, swal, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, OilLibraryView, GnomeModel){
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, OilLibraryView, GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',

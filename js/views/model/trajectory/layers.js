@@ -148,6 +148,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.GridCurrentMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
@@ -285,6 +286,7 @@ define([
         addLayer: function(e) {
             if (e.collection === webgnome.model.get('movers') &&
                 e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.ComponentMover' ||
                 e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
@@ -334,10 +336,10 @@ define([
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
-                    parentEl: 'entity',
+                    parentEl: 'entityCollection',
                     model: e,
                     id: e.get('id') + '_loc',
-                    visObj: e._locVis,
+                    visObj: e._locVis.values,
                     appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);
@@ -567,7 +569,7 @@ define([
             var sp = webgnome.model.get('spills').findWhere({'id': id});
             var curscale = sp.get('_appearance').get('scale');
             sp.get('_appearance').set('scale', curscale * 1.3);
-            sp._locVis.billboard.scale = 1.3;
+            //sp._locVis.billboard.scale = 1.3;
             this.trigger('requestRender');
         },
 
@@ -576,7 +578,7 @@ define([
             var sp = webgnome.model.get('spills').findWhere({'id': id});
             var curscale = sp.get('_appearance').get('scale');
             sp.get('_appearance').set('scale', curscale / 1.3);
-            sp._locVis.billboard.scale = 1.0;
+            //sp._locVis.billboard.scale = 1.0;
             this.trigger('requestRender');
         },
 

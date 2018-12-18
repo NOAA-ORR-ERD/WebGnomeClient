@@ -7,7 +7,6 @@ define([
     'moment',
     'toastr',
     'text!templates/model/trajectory/controls.html',
-    'views/default/map',
     'cesium',
     'model/spill',
     'views/form/spill/continue',
@@ -22,7 +21,7 @@ define([
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -155,6 +154,9 @@ define([
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
                 } else if (lay.parentEl === 'entity') {
                     this.layers[lay.id] = this.viewer.entities.add(lay.visObj);
+                } else if (lay.parentEl === 'entityCollection') {
+                    this.layers[lay.id] = lay.visObj;
+                    _.each(lay.visObj, _.bind(this.viewer.entities.add, this.viewer.entities));
                 } else if (lay.parentEl === 'imageryLayer') {
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
@@ -202,6 +204,12 @@ define([
                     }
                 } else if (lay.parentEl === 'entity') {
                     if(this.viewer.entities.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove entity layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'entityCollection') {
+                    if(_.all(_.each(this.layers[lay.id], _.bind(this.viewer.entities.remove, this.viewer.entities)))) {
                         this.layers[lay.id] = undefined;
                     } else {
                         console.warn('Failed to remove entity layer id: ', lay.id);
@@ -290,6 +298,8 @@ define([
                     },
                 },
             });
+            this.viewer.scene.highDynamicRange = false;
+            this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();
