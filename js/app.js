@@ -573,7 +573,7 @@ define([
             if (typeof(Worker) !== "undefined") {
                 // Yes! Web worker support!
                 if (typeof(webgnome.timer) !== "undefined") {
-                    webgnome.idleTime = 0;
+                    webgnome.lastActivity = moment().unix();
                     webgnome.timer.terminate();
                     webgnome.timer = undefined;
 
@@ -587,20 +587,21 @@ define([
         },
 
         zeroSessionTime: function() {
-            webgnome.idleTime = 0;
+            // we will track the datetime of the last detected activity
+            webgnome.lastActivity = moment().unix();
         },
 
         continueSession: function(event) {
-            webgnome.idleTime++;
+            var idleTime = (moment().unix() - webgnome.lastActivity) / 60;
 
-            if (webgnome.idleTime >= webgnome.config.afk_timeout) {
+            if (idleTime >= webgnome.config.afk_timeout) {
                 swal.close();
                 webgnome.sessionSWAL = false;
 
                 webgnome.resetSessionTimer();
                 webgnome.loseModelSession();
             }
-            else if (webgnome.idleTime >= webgnome.config.session_timeout) {
+            else if (idleTime >= webgnome.config.session_timeout) {
                 // We will keep responding to timer ticks, but  we only want to
                 // pop up our alert one time,
                 if (_.isUndefined(webgnome.sessionSWAL) ||
