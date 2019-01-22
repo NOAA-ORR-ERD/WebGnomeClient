@@ -1861,6 +1861,11 @@ nav.navbar{
 }
 
 .datavis-config{
+
+    #colormap-slider {
+        width: 100%;
+    }
+
     &.colormap {
         height: 100px;
     }
@@ -1873,24 +1878,43 @@ nav.navbar{
     .ui-slider {
         height: 30px;
         top:33%;
-        pointer-events: none;
-        z-index: 1;
+
+        .color-block {
+            position: absolute;
+            text-align: center;
+            height: 100%;
+
+            .color-label {
+                background: inherit;
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                filter: invert(1);
+                line-height: 30px;
+            }
+        }
     }
+
     .tooltip {
         opacity: 1;
         &.bottom {
-            margin-top: 9px;
-            transform: translate(-50%, 50%);
+            top: 100%;
+            transform: translate(-50%, 0%);
+            left: 50%;
         }
         &.top {
             transform: translate(-50%, -100%);
         }
     
     }
-    .ui-slider-handle {
+    .slider-handle {
         top: 0px;
-        margin-left: 0px;
         height: 100%;
+        z-index: 3;
+        pointer-events: none;
+        width: 2px;
+        background-color: gray;
+        position: absolute;
 
         &.movable {
             pointer-events:all;
@@ -1905,7 +1929,6 @@ nav.navbar{
                 width: 100%;
                 text-align: center;
                 -moz-appearance:textfield;
-                pointer-events: none;
             }
 
             &[type="color"]{
@@ -1979,6 +2002,10 @@ nav.navbar{
 
     .spill-row-name{
         vertical-align: middle;
+        text-align: center;
+        span {
+            font-size: 8pt;
+        }
     }
 
     .spill-color-bucket-label{

@@ -111,7 +111,7 @@ define([
                 if (ent.label) {
                     ent.label.show = true;
                 }
-                ent.prevPosition = Cesium.Cartesian3.clone(ent.position._value);
+                ent.prevPosition = Cesium.Cartesian3.clone(ent.position.getValue(Cesium.Iso8601.MINIMUM_VALUE));
                 this.heldEnt = ent;
                 this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
                 this.mouseHandler.setInputAction(_.partial(_.bind(this.moveEnt, ent), _, this.viewer.scene), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -165,14 +165,16 @@ define([
         moveEnt: function(movement, scene) {
             //this context should always be an entity
             var newPos = scene.camera.pickEllipsoid(movement.endPosition);
-            this.position = newPos;
+            //this.position = newPos;
+            this.position.setValue(newPos);
             scene.requestRender();
         },
 
         dropEnt: function(movement, view) {
             //this context should always be an entity
             var newPos = view.viewer.scene.camera.pickEllipsoid(movement.position);
-            this.position = newPos;
+            //this.position = newPos;
+            this.position.setValue(newPos);
             var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
             coords = [Cesium.Math.toDegrees(coords.longitude), Cesium.Math.toDegrees(coords.latitude), 0]; //not coords.height (may not be correct)
             view.trigger('droppedEnt', this, coords);
@@ -191,7 +193,7 @@ define([
                 this.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
                 this.mouseHandler.setInputAction(_.bind(this.hoverEnt, this), Cesium.ScreenSpaceEventType.MOUSE_MOVE);
                 this.mouseHandler.setInputAction(_.bind(this.pickupEnt, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
-                ent.position = Cesium.Cartesian3.clone(ent.prevPosition);
+                ent.position.setValue(Cesium.Cartesian3.clone(ent.prevPosition));
                 ent.label.show = false;
                 this.viewer.scene.requestRender();
                 this.trigger('cancelEnt', ent);

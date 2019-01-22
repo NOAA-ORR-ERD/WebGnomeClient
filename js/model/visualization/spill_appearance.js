@@ -13,7 +13,7 @@ define([
             les_on: true,
             scale: 1,
             data: 'Mass',
-            colormap: new ColorMap(),
+            colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
             ctrl_names: {title:'Spill Appearance',
                          pin_on: 'Show Pin',
@@ -79,21 +79,27 @@ define([
             var data = this.get('data');
             var spill = (webgnome.model.get('spills')
                          .findWhere({'_appearance': this}));
+            if (_.isUndefined(spill)) {
+                fromInput = function(value) {return value;};
+                toDisplay = function(value) {return value;};
+                this.get('colormap').setUnitConversionFunction(toDisplay,
+                                                           fromInput);
+                return;
+            }
 
             if (data === 'Mass') {
+                var sd = spill.get('element_type').get('standard_density')
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
 
-                    return c.Convert(value, newUnits,
-                                     spill.get('element_type').get('standard_density'),
+                    return c.Convert(value, newUnits, sd,
                                      'kg/m^3', 'kg');
                 }, this);
 
                 toDisplay = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
 
-                    return c.Convert(value, 'kg',
-                                     spill.get('element_type').get('standard_density'),
+                    return c.Convert(value, 'kg', sd,
                                      'kg/m^3', newUnits);
                 }, this);
             }
