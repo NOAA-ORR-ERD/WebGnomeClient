@@ -36,7 +36,7 @@ define([
             this.listenTo(this, 'change:scheme', this._applyScheme);
             this.listenTo(this, 'change', this.initScales);
             this.initScales();
-            this.setUnitConversionFunction(function(value) {return value;}, function(value) {return value;})
+            this.setUnitConversionFunction(function(value) {return value;}, function(value) {return value;});
         },
 
         initScales: function() {
@@ -80,20 +80,20 @@ define([
             var nsd = this.get('numberScaleDomain').slice();
             var labels = this.get('colorBlockLabels').slice();
             var stops = this.getAllNumberStops();
-            if (index == 0 && csd.length == 0) {
+            if (index === 0 && csd.length === 0) {
                 newVal = this.numScale.invert(0.5);
             } else {
                 var existingStopFrac = this.numScale(stops[index]);
                 var nextStopFrac = index > stops.length ? 1 : this.numScale(stops[index+1]);
-                var newStopFrac = existingStopFrac + ((nextStopFrac - existingStopFrac) / 2)
+                var newStopFrac = existingStopFrac + ((nextStopFrac - existingStopFrac) / 2);
                 newVal = this.numScale.invert(newStopFrac);
             }
             csd.splice(index, 0, newVal);
             labels.splice(index+1, 0, '');
             this.set('colorScaleDomain', csd);
             this.set('colorBlockLabels', labels);
-            var csr = this.get('colorScaleRange').slice()
-            csr.splice(index + 1, 0, "#FFFFFF"); 
+            var csr = this.get('colorScaleRange').slice();
+            csr.splice(index + 1, 0, "#FFFFFF");
             this.set('colorScaleRange', csr, {silent: true});
             this._saveCustomScheme();
             this._applyScheme();
@@ -130,13 +130,13 @@ define([
             var curr = domain[index],
                 next = domain[index + 1] - 0.01,
                 prev = domain[index - 1] + 0.01;
-            
+
             if (value === curr || value > next || value < prev) {
                 return false;
             } else {
                 colorDomain[index - 1] = value;
                 this.set('colorScaleDomain', colorDomain);
-                this.trigger('rerender')
+                this.trigger('rerender');
                 return true;
             }
         },
@@ -222,7 +222,7 @@ define([
         },
 
         _saveCustomScheme: function() {
-            if (this.get('scheme') === 'Custom') { 
+            if (this.get('scheme') === 'Custom') {
                 this.set('_customScheme', _.clone(this.get('colorScaleRange')));
             }
         },

@@ -82,7 +82,7 @@ define([
                 }
             }
             row.append($('<td class="spill-color-bucket" style="background-color: '+ color +'"><span>'+ label +'</span></td>'));
-            item.append(row)
+            item.append(row);
             for (var i = 1; i < numColors; i++) {
                 label = colormap.get('colorBlockLabels')[i];
                 if (label === '') { //&nbsp;
@@ -93,7 +93,7 @@ define([
                         label = label + '+';
                     }
                 }
-                color = colormap.get('colorScaleRange')[i]
+                color = colormap.get('colorScaleRange')[i];
                 item.append($('<tr><td class="spill-color-bucket" style="background-color: '+ color +'"><span>'+ label +'</span></td></tr>'));
             }
             this.listenTo(colormap, 'change', this.rerender);

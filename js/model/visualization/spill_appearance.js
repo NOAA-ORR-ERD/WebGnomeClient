@@ -72,7 +72,7 @@ define([
             if (e) {
                 if (e.changedAttributes().units) {
                     newUnits = e.changedAttributes().units;
-                }  
+                }
             }
 
             var toDisplay, fromInput;
@@ -88,7 +88,7 @@ define([
             }
 
             if (data === 'Mass') {
-                var sd = spill.get('element_type').get('standard_density')
+                var sd = spill.get('element_type').get('standard_density');
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
 

@@ -60,7 +60,7 @@ define([
             var labelBox = $('<input type=text>');
             var content = '';
             if (this.model.get('colorBlockLabels')[idx] !== '') {
-                content = this.model.get('colorBlockLabels')[idx]
+                content = this.model.get('colorBlockLabels')[idx];
             }
             labelBox.prop('value', content);
             labelBox.attr('value', content);
@@ -79,7 +79,7 @@ define([
             if (!_.isUndefined(first)){
                 this.picker.resize(_.bind(this.rerender, this));
             }
-            this.genSlider()
+            this.genSlider();
             //setTimeout(_.bind(this.genSlider, this), 200);
             //this.updateBackground();
 
@@ -128,14 +128,14 @@ define([
             for (i = 0; i < stops.length; i++) {
                 var handle = $('<div id=#handleIdx-' + i + ' class=slider-handle></div>');
                 this.handles.push(handle);
-                if (i != 0 && i != stops.length-1){
-                    handle.addClass('movable')
+                if (i !== 0 && i !== stops.length-1){
+                    handle.addClass('movable');
                 }
                 width = (this.model.numScale(stops[i+1]) - this.model.numScale(stops[i])) * this.picker.width();
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.handles[i].css('left', leftBound + 'px');
                 leftBound += width;
-                
+
                 this.numberStops.push(this.createNumberTip(stops[i], handle));
                 this.picker.append(handle);
             }
@@ -155,7 +155,7 @@ define([
             var curr = ui.values[ui.handleIndex],
                 next = ui.values[ui.handleIndex + 1] - 0.01,
                 prev = ui.values[ui.handleIndex - 1] + 0.01;
-            
+
             if (curr > next || curr < prev || !ui.handle) {
                 return false;
             }
@@ -252,7 +252,7 @@ define([
         },
 
         dragHandler: function(e, ui) {
-            var idx = this.getHandleIdx(ui.helper)
+            var idx = this.getHandleIdx(ui.helper);
             var diff = ui.position.left - ui.helper.position().left;
             var curr = ui.position.left,
                 next = this.handles[idx + 1].position().left,
@@ -274,7 +274,7 @@ define([
         },
 
         startDragHandler: function(e, ui) {
-            var idx = this.getHandleIdx(ui.helper)
+            var idx = this.getHandleIdx(ui.helper);
             this._origHandlePosition = ui.position.left;
             this._origValue = this.model.get('numberScaleDomain')[idx];
         },
@@ -446,8 +446,8 @@ define([
             e.target.remove();
         },
 
-        updateNumberTooltip: function(e, ui, idx) {
-            var idx = this.getHandleIdx(ui.helper)
+        updateNumberTooltip: function(e, ui) {
+            var idx = this.getHandleIdx(ui.helper);
             var ttc = $('.top > .tooltip-inner', $(ui.helper));
 
             if ($('input[type="number"]', ttc).length > 0) {
@@ -462,7 +462,7 @@ define([
 
             for (var i = 0; i < this.colorStops.length; i++) {
                 if ($('input', this.colorStops[i])[0] === e.currentTarget) {
-                    stops[i] = e.currentTarget.value; 
+                    stops[i] = e.currentTarget.value;
                 }
             }
 
