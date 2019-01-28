@@ -37,8 +37,12 @@ define([
             _.extend({}, BasePanel.prototype.events, this.events);
             this.listenTo(webgnome.model, 'change:map', this.rerender);
             this.listenTo(webgnome.model, 'change:map', this.setupMapListener);
-            document.addEventListener("mozfullscreenchange", _.bind(this.resetCamera, this));
+            //document.addEventListener("mozfullscreenchange", _.bind(this.resetCamera, this));
             this.setupMapListener();
+            this.mozResetCamera = _.bind(function(e){
+                this.resetCamera(e);
+                document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
+            }, this);
         },
 
         setupMapListener: function(){
@@ -61,6 +65,7 @@ define([
                 } else if(element.msRequestFullscreen) {
                     element.msRequestFullscreen();
                 }
+                document.addEventListener("mozfullscreenchange", this.mozResetCamera);
             }
         },
 

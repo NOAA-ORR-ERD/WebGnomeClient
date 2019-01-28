@@ -1958,9 +1958,12 @@ define([
         },
 
         downloadContent: function(source, filename) {
+            //webgnome.invokeSaveAsDialog(blob, this.capture_opts.name+'.'+this.capture_opts.format);
             var pom = document.createElement('a');
-            pom.setAttribute('href', source);
-            pom.setAttribute('download', filename);
+            pom.href = source;
+            pom.download = filename;
+            document.body.appendChild(pom); //required in FF, optional for Chrome
+            pom.target="_self" ; //required in FF, optional for Chrome
             pom.click();
         },
 

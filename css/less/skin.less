@@ -1861,6 +1861,11 @@ nav.navbar{
 }
 
 .datavis-config{
+
+    #colormap-slider {
+        width: 100%;
+    }
+
     &.colormap {
         height: 100px;
     }
@@ -1873,24 +1878,43 @@ nav.navbar{
     .ui-slider {
         height: 30px;
         top:33%;
-        pointer-events: none;
-        z-index: 1;
+
+        .color-block {
+            position: absolute;
+            text-align: center;
+            height: 100%;
+
+            .color-label {
+                background: inherit;
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                filter: invert(1);
+                line-height: 30px;
+            }
+        }
     }
+
     .tooltip {
         opacity: 1;
         &.bottom {
-            margin-top: 9px;
-            transform: translate(-50%, 50%);
+            top: 100%;
+            transform: translate(-50%, 0%);
+            left: 50%;
         }
         &.top {
             transform: translate(-50%, -100%);
         }
     
     }
-    .ui-slider-handle {
+    .slider-handle {
         top: 0px;
-        margin-left: 0px;
         height: 100%;
+        z-index: 3;
+        pointer-events: none;
+        width: 2px;
+        background-color: gray;
+        position: absolute;
 
         &.movable {
             pointer-events:all;
@@ -1905,7 +1929,6 @@ nav.navbar{
                 width: 100%;
                 text-align: center;
                 -moz-appearance:textfield;
-                pointer-events: none;
             }
 
             &[type="color"]{
@@ -1933,6 +1956,122 @@ nav.navbar{
     bottom: 0;
     top: 51px;
     width: 100%;
+}
+
+.legend{
+    bottom: 90px;
+    right: -300px;
+    width: 300px;
+    position: absolute;
+    z-index: 1;
+    .transition(all .2s);
+
+    &.expanded{
+        right: 0;
+    }
+
+    .legend-edit-btn{
+        span{
+            .glyphicon;
+            .glyphicon-option-horizontal;
+            padding: 1px;
+            color: #ffffff;
+        }
+        padding: 1px;
+    }
+
+    .legend-header{
+        background: rgba(255, 255, 255, .75);
+        .legend-title{
+            width:70%;
+        }
+    }
+
+    .spill-color-bucket{
+        width: 60%;
+        height: 1em;
+
+        span{
+          background: inherit;
+          background-clip: text;
+          -webkit-background-clip: text;
+          color: transparent;
+          filter: invert(1);
+        }
+    }
+
+    .spill-row-name{
+        vertical-align: middle;
+        text-align: center;
+        span {
+            font-size: 8pt;
+        }
+    }
+
+    .spill-color-bucket-label{
+        color: white;
+        mix-blend-mode: exclusion;
+    }
+
+    .panel{
+        margin-bottom: 0;
+        background: rgba(255, 255, 255, .75);
+        .panel-body{
+            background: none;
+
+            form:last-of-type{
+                margin-bottom: 0;
+            }
+        }
+
+        #general{
+            .panel-body{
+                max-height: none;
+            }
+        }
+    }
+
+    
+    form {
+        margin-bottom: 10px;
+    }
+    
+    .title{
+        background: #337ab7;
+        color: white;
+        .rotate(-90deg);
+        position: absolute;
+        left: -53px;
+        top: 28px;
+        padding: 3px 10px;
+        cursor: pointer;
+        border-radius: 4px 4px 0 0;
+        .btn-sm{
+            font-size: 10px;
+        }
+        height: 26px;
+    }
+
+    .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+        .inner{
+            max-height: 143px;
+            overflow-x: scroll;
+            margin-top: 10px;
+        }
+        .checkbox, .radio{
+            padding: 5px;
+            background: #F5F5F5;
+            border: 1px solid #E9E9E9;
+            margin-bottom: 5px;
+            overflow: hidden;
+            border-radius: 2px;
+
+            label{
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        }
+    }
 }
 
 .trajectory-view{

@@ -559,6 +559,9 @@ define([
 
             var startCoords = this.coordsParse(_.clone(start));
             var endCoords = this.coordsParse(_.clone(end));
+            if (_.some([startCoords, endCoords].flat(), function(e){return _.isNaN(e);})){
+                return;
+            }
 
             var startPosition = [startCoords[0], startCoords[1], 0];
             var endPosition = [endCoords[0], endCoords[1], 0];

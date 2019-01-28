@@ -122,7 +122,7 @@ define([
                 if (this.placeMode === 'point') {
                     btn_name = '.fixed';
                     this.model.set('end_position', this.model.get('start_position'));
-                    _.each(this._spillPins, _.bind(function(sp) {sp.position = this._spillPins[0].position;}, this));
+                    _.each(this._spillPins, _.bind(function(sp) {sp.position.setValue(this._spillPins[0].position.getValue(Cesium.Iso8601.MINIMUM_VALUE));}, this));
                 } else {
                     btn_name = '.moving';
                     var nextIdx = ent.index+1;

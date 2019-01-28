@@ -72,6 +72,7 @@ define([
 
             this._certain = [];
             this._uncertain = [];
+            this.get('_appearance').setUnitConversionFunction(undefined, this.get('units'));
         },
 
         setupVis: function(attrs) {
@@ -396,34 +397,36 @@ define([
             // of this spill
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
-            var max, min, stops;
+            var max, min, newScaleType;
+            colormap.initScales();
 
             if (data === 'Age') {
                 min = 0;
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                newScaleType = 'linear';
             }
             else if (data === 'Surface Concentration') {
                 min = 0.0001;
                 max = this.estimateMaxConcentration();
-                colormap.set('numberScaleType', 'log');
+                newScaleType = 'log';
             }
             else if (data === 'Viscosity') {
                 min = 0.0000001;
                 max = 250000;
-                colormap.set('numberScaleType', 'log');
+                newScaleType = 'log';
             }
             else if (data === 'Depth') {
                 min = 0;
                 max = 100;
-                colormap.set('numberScaleType', 'linear');
+                newScaleType = 'linear';
             }
             else {
                 min = 0;
                 max = this._per_le_mass;
-                colormap.set('numberScaleType', 'linear');
+                newScaleType = 'linear';
             }
 
-            colormap.setDomain(min, max, colormap.get('numberScaleRange'));
+            colormap.setDomain(min, max, newScaleType);
             this.setColorScales();
         },
 
@@ -479,7 +482,7 @@ define([
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
-                color = this._colorScale(this._numScale(value));
+                color = this._colorScale(value);
 
                 if (_.isUndefined(color)) {
                     color = '#FF0000';
