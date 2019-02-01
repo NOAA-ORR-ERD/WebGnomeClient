@@ -68,8 +68,8 @@ define([
         handleVisChange: function() {
             var startPin = this._visObj.spillPins[0];
             var endPin = this._visObj.spillPins[1];
-            startPin.position = Cesium.Cartesian3.fromDegrees(this.get('start_position')[0], this.get('start_position')[1]);
-            endPin.position = Cesium.Cartesian3.fromDegrees(this.get('end_position')[0], this.get('end_position')[1]);
+            startPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('start_position')[0], this.get('start_position')[1]));
+            endPin.position.setValue(Cesium.Cartesian3.fromDegrees(this.get('end_position')[0], this.get('end_position')[1]));
             if (startPin.position.equals(endPin.position)) {
                 endPin.show = false;
             } else {
@@ -110,7 +110,7 @@ define([
             };
             for (var i = 0; i < num_pins; i++) {
                 var newPin = coll.add(_.extend({
-                    position: Cesium.Cartesian3.fromDegrees(positions[i][0], positions[i][1]),
+                    position: new Cesium.ConstantPositionProperty(Cesium.Cartesian3.fromDegrees(positions[i][0], positions[i][1])),
                     billboard: {
                         image: '/img/spill-pin.png',
                         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
@@ -163,7 +163,11 @@ define([
                 //add polyline between pins
                 coll.spillLineSegments.push(coll.add({
                     polyline: {
-                        positions: spillLinePositionsCallbackGen(coll.spillPins[j], coll.spillPins[j+1]),
+                        //positions: spillLinePositionsCallbackGen(coll.spillPins[j], coll.spillPins[j+1]),
+                        //positions: new Cesium.ConstantProperty([new Cesium.CallbackProperty(_.bind(function(){return this.position.getValue();}, coll.spillPins[j]), true),
+                        //           new Cesium.CallbackProperty(_.bind(function(){return this.position.getValue();}, coll.spillPins[j+1]), true)]),
+                        //positions: new Cesium.ConstantProperty([coll.spillPins[j].position, coll.spillPins[j+1].position]),
+                        positions: new Cesium.PositionPropertyArray([coll.spillPins[j].position, coll.spillPins[j+1].position]),
                         show: spillLineShowCallbackGen(coll.spillPins[j], coll.spillPins[j+1]),
                         followSurface: true,
                         width: 8.0,

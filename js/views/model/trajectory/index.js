@@ -8,8 +8,7 @@ define([
     'toastr',
     'text!templates/model/trajectory/controls.html',
     'cesium',
-    'model/spill',
-    'views/form/spill/continue',
+    'views/default/cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
@@ -18,10 +17,14 @@ define([
     'model/map/graticule',
     'views/model/trajectory/layers',
     'views/model/trajectory/controls',
+    'views/default/legend',
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module,moment, toastr, ControlsTemplate, Cesium, CesiumView,
+            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
+            ControlsView, LegendView, gif, gifworker, whammy){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -95,6 +98,8 @@ define([
                 this.layersListeners();
                 this.layersPanel.render();
                 this.layersPanel.$el.appendTo(this.$el);
+                this.legend = new LegendView();
+                this.legend.$el.appendTo(this.$el);
             }, this), 250);
         },
 
