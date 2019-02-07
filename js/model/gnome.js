@@ -9,7 +9,7 @@ define([
     'model/map/map',
     'model/map/param',
     'model/map/bna',
-    'model/spill',
+    'model/spill/spill',
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
@@ -562,11 +562,11 @@ define([
                 });
 
                 var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
-                var element_type = this.getElementType();
+                var substance = this.getSubstance();
                 var wind = this.getDefaultWind();
 
                 if (on_weatherers.length > 0 &&
-                    element_type && element_type.get('substance') &&
+                    substance && substance.get('is_weatherable') &&
                     water && webgnome.model.get('spills').length > 0 && wind){
                     return true;
                 }
@@ -714,12 +714,13 @@ define([
             return payload;
         },
 
-        getElementType: function(){
+        getSubstance: function(){
             if(this.get('spills').length > 0){
-                return this.get('spills').at(0).get('element_type');
+                return this.get('spills').at(0).get('substance');
             } else {
                 for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.elements.element_type.ElementType'){
+                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }
