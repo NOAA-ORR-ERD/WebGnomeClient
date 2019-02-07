@@ -6,7 +6,7 @@ define([
     'moment',
     'views/form/spill/base',
     'text!templates/form/spill/instant.html',
-    'model/spill',
+    'model/spill/spill',
     'views/form/oil/library',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment,

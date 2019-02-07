@@ -5,6 +5,15 @@ define([
 ], function(_, Backbone, BaseModel){
     'use strict';
     var gnomeSubstance = BaseModel.extend({
+        urlRoot: '/element_type/',
+
+        model: {
+            
+            substance: GnomeSubstance,
+            initializers: {
+                'gnome.spill.elements.initializers.InitWindages': GnomeWindages
+            }
+        },
         url: function(){
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },

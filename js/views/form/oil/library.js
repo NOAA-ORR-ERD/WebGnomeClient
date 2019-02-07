@@ -5,7 +5,7 @@ define([
     'module',
     'chosen',
     'moment',
-    'model/substance',
+    'model/spill/substance',
     'model/oil/distinct',
     'views/modal/form',
     'views/form/oil/table',
@@ -15,8 +15,8 @@ define([
     'sweetalert',
     'jqueryui/widgets/slider'
 ], function($, _, Backbone, module, chosen, moment,
-		    SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal,
-		    SpecificOil, OilTemplate, swal) {
+            SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal,
+            SpecificOil, OilTemplate, swal) {
     'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',

@@ -1,30 +1,30 @@
 define([
-	'jquery',
-	'underscore',
-	'backbone',
-	'nucos',
-	'moment',
+    'jquery',
+    'underscore',
+    'backbone',
+    'nucos',
+    'moment',
     'sweetalert',
-	'views/modal/form',
-	'views/form/oil/library',
-	'views/form/spill/map',
+    'views/modal/form',
+    'views/form/oil/library',
+    'views/form/spill/map',
     'views/form/oil/oilinfo',
     'text!templates/form/spill/substance.html',
     'text!templates/form/spill/substance-null.html',
     'text!templates/form/spill/position_single.html',
     'text!templates/form/spill/position_double.html',
-    'model/substance',
-	'jqueryDatetimepicker',
+    'model/spill/substance',
+    'jqueryDatetimepicker',
     'bootstrap'
 ], function($, _, Backbone, nucos, moment, swal,
             FormModal, OilLibraryView, MapFormView, OilInfoView,
             SubstanceTemplate, SubstanceNullTemplate, PositionSingleTemplate,
             PositionDoubleTemplate, SubstanceModel) {
     'use strict';
-	var baseSpillForm = FormModal.extend({
+    var baseSpillForm = FormModal.extend({
 
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="delete">Delete</button><button type="button" class="save">Save</button>',
-		mapShown: false,
+        mapShown: false,
         spillToggle: false,
 
         events: function() {
@@ -67,15 +67,15 @@ define([
             return true;
         },
 
-		initialize: function(options, spillModel) {
-			FormModal.prototype.initialize.call(this, options);
+        initialize: function(options, spillModel) {
+            FormModal.prototype.initialize.call(this, options);
 
-			if (!_.isUndefined(options.model)) {
-				this.model = options.model;
-			}
-			else {
-				this.model = spillModel;
-			}
+            if (!_.isUndefined(options.model)) {
+                this.model = options.model;
+            }
+            else {
+                this.model = spillModel;
+            }
 
             this.showGeo = options.showGeo ? options.showGeo : true;
             this.showSubstance = options.showSubstance ? options.showSubstance : true;
@@ -83,9 +83,9 @@ define([
             if (this.model.get('name') === 'Spill') {
                 this.model.set('name', 'Spill #' + parseInt(webgnome.model.get('spills').length + 1, 10));
             }
-		},
+        },
 
-		render: function(options) {
+        render: function(options) {
             var units = this.model.get('units');
 
             FormModal.prototype.render.call(this, options);
@@ -98,9 +98,9 @@ define([
             this.$('#units option[value="' + units + '"]').prop('selected', 'selected');
             var map = webgnome.model.get('map').get('obj_type');
 
-			if (!this.showGeo) {
-				this.$('.map').hide();
-			}
+            if (!this.showGeo) {
+                this.$('.map').hide();
+            }
 
             this.renderPositionInfo();
 
@@ -108,7 +108,7 @@ define([
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
                 step: webgnome.config.date_format.time_step
-			});
+            });
 
             this.$('#datepick').on('click', _.bind(function() {
                 this.$('#datetime').datetimepicker('show');
@@ -130,7 +130,7 @@ define([
             this.on('show.bs.modal', _.bind(function() {
                 this.update();
             }, this));
-		},
+        },
 
         setEmulsificationOverride: function() {
             var substance = this.model.get('element_type').get('substance');
@@ -408,11 +408,11 @@ define([
             }
         },
 
-		update: function() {
+        update: function() {
             //this.emulsionUpdate();
             this.tabStatusSetter();
             // this.setCoords();
-		},
+        },
 
         setCoords: function() {
             var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
@@ -458,7 +458,7 @@ define([
             this.hide();
         },
 
-		elementSelect: function() {
+        elementSelect: function() {
             var spills = webgnome.model.get('spills');
 
             if (this.model.isNew() && spills.length === 0 ||
@@ -481,7 +481,7 @@ define([
                     }
                 }, this));
             }
-		},
+        },
 
         setSubstanceNull: function() {
             var element_type = this.model.get('element_type');
@@ -589,7 +589,7 @@ define([
 
         hideParseCoords: function(position) {
             this.$('.' + position + '-lat-parse').text('');
-            this.$('.' + position + '-lon-parse').text(''); 
+            this.$('.' + position + '-lon-parse').text('');
         },
 
         coordsParse: function(coordsArray) {
@@ -629,18 +629,18 @@ define([
             }, this));
         },
 
-		next: function() {
-			$('.xdsoft_datetimepicker:last').remove();
-			FormModal.prototype.next.call(this);
-		},
+        next: function() {
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.next.call(this);
+        },
 
-		back: function() {
-			$('.xdsoft_datetimepicker:last').remove();
-			FormModal.prototype.back.call(this);
-		},
+        back: function() {
+            $('.xdsoft_datetimepicker:last').remove();
+            FormModal.prototype.back.call(this);
+        },
 
-		close: function() {
-			$('.xdsoft_datetimepicker:last').remove();
+        close: function() {
+            $('.xdsoft_datetimepicker:last').remove();
 
             if (!_.isUndefined(this.mapModal)) {
                 this.mapModal.close();
@@ -655,9 +655,9 @@ define([
             }
 
             FormModal.prototype.close.call(this);
-		}
+        }
 
-	});
+    });
 
-	return baseSpillForm;
+    return baseSpillForm;
 });

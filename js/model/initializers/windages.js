@@ -11,7 +11,7 @@ define([
                  0.01,
                  0.04
             ],
-            'obj_type': 'gnome.spill.elements.InitWindages',
+            'obj_type': 'gnome.spill.initializers.InitWindages',
             'windage_persist': 900
         }
     });

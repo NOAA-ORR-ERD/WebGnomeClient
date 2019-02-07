@@ -5,7 +5,7 @@ define([
     'nucos',
     'moment',
     'sweetalert',
-    'model/spill',
+    'model/spill/spill',
     'text!templates/panel/spill.html',
     'views/panel/base',
     'views/form/spill/type-wizcompat',
@@ -89,7 +89,7 @@ define([
         spill_active: function(e) {
             e.stopPropagation();
 
-            var active = e.target.checked;  
+            var active = e.target.checked;
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
 
