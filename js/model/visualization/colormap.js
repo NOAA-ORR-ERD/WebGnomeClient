@@ -156,7 +156,7 @@ define([
             domain[0] = min;
             domain[1] = max;
             this.set('numberScaleDomain', domain);
-            this.set('numScaleType', newScaleType, {silent:true});
+            this.set('numberScaleType', newScaleType, {silent:true});
             this.initScales();
             var newcsd = [];
             for(i = 0; i < stops.length; i++) {

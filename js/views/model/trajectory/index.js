@@ -17,13 +17,14 @@ define([
     'model/map/graticule',
     'views/model/trajectory/layers',
     'views/model/trajectory/controls',
+    'views/model/trajectory/right_pane',
     'views/default/legend',
     'gif',
     'gifworker',
     'whammy',
 ], function($, _, Backbone, BaseView, module,moment, toastr, ControlsTemplate, Cesium, CesiumView,
             NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
-            ControlsView, LegendView, gif, gifworker, whammy){
+            ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
     'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
@@ -97,9 +98,9 @@ define([
                 this.layersPanel = new LayersView();
                 this.layersListeners();
                 this.layersPanel.render();
-                this.layersPanel.$el.appendTo(this.$el);
                 this.legend = new LegendView();
-                this.legend.$el.appendTo(this.$el);
+                this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
+                this.rightPane.$el.appendTo(this.$el);
             }, this), 250);
         },
 

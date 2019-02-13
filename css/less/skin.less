@@ -1958,122 +1958,6 @@ nav.navbar{
     width: 100%;
 }
 
-.legend{
-    bottom: 90px;
-    right: -300px;
-    width: 300px;
-    position: absolute;
-    z-index: 1;
-    .transition(all .2s);
-
-    &.expanded{
-        right: 0;
-    }
-
-    .legend-edit-btn{
-        span{
-            .glyphicon;
-            .glyphicon-option-horizontal;
-            padding: 1px;
-            color: #ffffff;
-        }
-        padding: 1px;
-    }
-
-    .legend-header{
-        background: rgba(255, 255, 255, .75);
-        .legend-title{
-            width:70%;
-        }
-    }
-
-    .spill-color-bucket{
-        width: 60%;
-        height: 1em;
-
-        span{
-          background: inherit;
-          background-clip: text;
-          -webkit-background-clip: text;
-          color: transparent;
-          filter: invert(1);
-        }
-    }
-
-    .spill-row-name{
-        vertical-align: middle;
-        text-align: center;
-        span {
-            font-size: 8pt;
-        }
-    }
-
-    .spill-color-bucket-label{
-        color: white;
-        mix-blend-mode: exclusion;
-    }
-
-    .panel{
-        margin-bottom: 0;
-        background: rgba(255, 255, 255, .75);
-        .panel-body{
-            background: none;
-
-            form:last-of-type{
-                margin-bottom: 0;
-            }
-        }
-
-        #general{
-            .panel-body{
-                max-height: none;
-            }
-        }
-    }
-
-    
-    form {
-        margin-bottom: 10px;
-    }
-    
-    .title{
-        background: #337ab7;
-        color: white;
-        .rotate(-90deg);
-        position: absolute;
-        left: -53px;
-        top: 28px;
-        padding: 3px 10px;
-        cursor: pointer;
-        border-radius: 4px 4px 0 0;
-        .btn-sm{
-            font-size: 10px;
-        }
-        height: 26px;
-    }
-
-    .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
-        .inner{
-            max-height: 143px;
-            overflow-x: scroll;
-            margin-top: 10px;
-        }
-        .checkbox, .radio{
-            padding: 5px;
-            background: #F5F5F5;
-            border: 1px solid #E9E9E9;
-            margin-bottom: 5px;
-            overflow: hidden;
-            border-radius: 2px;
-
-            label{
-                white-space: nowrap;
-                text-overflow: ellipsis;
-            }
-        }
-    }
-}
-
 .trajectory-view{
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAY1BMVEXn5+f5+fn////y8vL09PT8/Pzk5OTg4ODx8fH39/f7+/vp6enf39/i4uLr6+vd3d3+/v74+Pjv7+/w8PDj4+P29vbz8/Pl5eXc3Nzs7Ozt7e3h4eH6+vrm5ub19fXe3t7u7u47SnheAAAAkklEQVR42q3Paw7CIBBF4eFCKaXQGegD7UPd/yqtxDTxvxv4cg6RgtKmgbat1WiM6+D7EGngQYBkQ05jmBIgmft5IajCJd7uAkBW3kqIMwDqdyhnPMwRi4E/HWmGzZ7OKoA6nS4HqwCMTA/9cZ7HdDkTtVt1SFXn2+MXN8tvz5hce/UYwn6wjbxW51V7OgD/+noDa2gLye9Jpd0AAAAASUVORK5CYII=');
     overflow: hidden;
@@ -2309,80 +2193,11 @@ nav.navbar{
         }
     }
 
-    .layers{
-        top: 90px;
-        right: -300px;
-        width: 300px;
-        position: absolute;
-        z-index: 1;
-        .transition(all .2s);
-
-        &.expanded{
-            right: 0;
-        }
-
-        .panel{
-            margin-bottom: 0;
-            background: rgba(255, 255, 255, .75);
-            .panel-body{
-                background: none;
-
-                form:last-of-type{
-                    margin-bottom: 0;
-                }
-            }
-
-            #general{
-                .panel-body{
-                    max-height: none;
-                }
-            }
-        }
-
-        
-        form {
-            margin-bottom: 10px;
-        }
-        
-        .title{
-            background: #337ab7;
-            color: white;
-            .rotate(-90deg);
-            position: absolute;
-            left: -43px;
-            top: 18px;
-            padding: 3px 10px;
-            cursor: pointer;
-            border-radius: 4px 4px 0 0;
-
-        }
-
-        .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
-            .inner{
-                max-height: 143px;
-                overflow-x: scroll;
-                margin-top: 10px;
-            }
-            .checkbox, .radio{
-                padding: 5px;
-                background: #F5F5F5;
-                border: 1px solid #E9E9E9;
-                margin-bottom: 5px;
-                overflow: hidden;
-                border-radius: 2px;
-
-                label{
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                }
-            }
-        }
-    }
-
     .cesium-viewer-toolbar{
         right: 45px;
         top: 50px;
     }
+
     .cesium-infoBox{
         left: 0px;
         top: 50px;
@@ -2398,7 +2213,207 @@ nav.navbar{
             transform: translate(0, 0);
         }
     }
-}
+
+    .right-content-pane{
+        position: absolute;
+        top: 90px;
+        right: -300px;
+        width: 300px;
+        height: 26px;
+        z-index: 1;
+        .transition(all .2s);
+
+        &.expanded{
+            right: 0;
+        }
+
+        .right-tab-container{
+            .rotate(-90deg);
+            position: relative;
+            right: 163px;
+            bottom: 4px;
+            .right-tab{
+                background: #e1e1e1;
+                border-color: #337ab7;
+                border-style: solid;
+                border-width: 1px;
+                display: inline-block;
+                padding: 3px 10px;
+                cursor: pointer;
+                margin-left: 1px;
+                border-radius: 4px 4px 0 0;
+                .btn-sm{
+                    font-size: 10px;
+                }
+                &.active {
+                    background: #337ab7;
+                }
+            }
+            .right-tab:hover {
+                background: #337ab7;
+            }
+        }
+
+        .legend{
+            width: 300px;
+            z-index: 1;
+
+            .legend-edit-btn{
+                span{
+                    .glyphicon;
+                    .glyphicon-option-horizontal;
+                    padding: 1px;
+                    color: #ffffff;
+                }
+                padding: 1px;
+            }
+
+            .legend-header{
+                background: rgba(255, 255, 255, .75);
+                .legend-title{
+                    width:70%;
+                }
+            }
+
+            .spill-color-bucket{
+                width: 60%;
+                height: 1em;
+
+                span{
+                  background: inherit;
+                  background-clip: text;
+                  -webkit-background-clip: text;
+                  color: transparent;
+                  filter: invert(1);
+                }
+            }
+
+            .spill-row-name{
+                vertical-align: middle;
+                text-align: center;
+                span {
+                    font-size: 8pt;
+                }
+            }
+
+            .spill-color-bucket-label{
+                color: white;
+                mix-blend-mode: exclusion;
+            }
+        }
+
+        .layers{
+            width: 300px;
+            z-index: 1;
+            .transition(all .2s);
+
+            .panel{
+                margin-bottom: 0;
+                background: rgba(255, 255, 255, .75);
+                .panel-body{
+                    background: none;
+
+                    form:last-of-type{
+                        margin-bottom: 0;
+                    }
+                }
+
+                #general{
+                    .panel-body{
+                        max-height: none;
+                    }
+                }
+            }
+
+            
+            form {
+                margin-bottom: 10px;
+            }
+
+            .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+                .inner{
+                    max-height: 143px;
+                    overflow-x: scroll;
+                    margin-top: 10px;
+                }
+                .checkbox, .radio{
+                    padding: 5px;
+                    background: #F5F5F5;
+                    border: 1px solid #E9E9E9;
+                    margin-bottom: 5px;
+                    overflow: hidden;
+                    border-radius: 2px;
+
+                    label{
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+            
+
+                .panel{
+                    margin-bottom: 0;
+                    background: rgba(255, 255, 255, .75);
+                    .panel-body{
+                        background: none;
+
+                        form:last-of-type{
+                            margin-bottom: 0;
+                        }
+                    }
+
+                    #general{
+                        .panel-body{
+                            max-height: none;
+                        }
+                    }
+                }
+
+                
+                form {
+                    margin-bottom: 10px;
+                }
+                
+                .title{
+                    background: #337ab7;
+                    color: white;
+                    .rotate(-90deg);
+                    position: absolute;
+                    left: -45px;
+                    top: 28px;
+                    padding: 3px 10px;
+                    cursor: pointer;
+                    border-radius: 4px 4px 0 0;
+                    .btn-sm{
+                        font-size: 10px;
+                    }
+                    height: 26px;
+                }
+
+                .current-grid, .current-uv, .ice-grid, .ice-uv, .ice-tc{
+                    .inner{
+                        max-height: 143px;
+                        overflow-x: scroll;
+                        margin-top: 10px;
+                    }
+                    .checkbox, .radio{
+                        padding: 5px;
+                        background: #F5F5F5;
+                        border: 1px solid #E9E9E9;
+                        margin-bottom: 5px;
+                        overflow: hidden;
+                        border-radius: 2px;
+
+                        label{
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 .response-view{
     padding-top: 20px;
