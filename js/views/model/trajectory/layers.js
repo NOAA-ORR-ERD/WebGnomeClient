@@ -32,7 +32,7 @@ define([
             //'click .ice-tc input[type="radio"]': 'toggleIceData',
             'click .layers .title': 'toggleLayerPanel'
         },
-        id: 'layers',
+        className: 'layers',
 
         initialize: function(viewer, options){
             this.module = module;

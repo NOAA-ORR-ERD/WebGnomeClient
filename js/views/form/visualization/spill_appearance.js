@@ -19,6 +19,7 @@ define([
             'change .appearance-edit select': 'update',
             'change .datavis-config input': 'update',
             'change .datavis-config select': 'update',
+            'change .presets select': 'applyPresetScale',
             //'change .datavis-config input': 'updateCfg'
         },
 
@@ -42,8 +43,11 @@ define([
         render: function() {
             BaseAppearanceForm.prototype.render.call(this);
 
+            var presets = _.filter(this.model.get('preset_scales'), _.bind(function(p){return p.data === this.get('data')}, this.model))
+
             var html = _.template(SpillAppearanceTemplate, 
                             {titles: this.model.get('_available_data'),
+                             presets: presets,
                              model: this.model,
                              colormap: this.model.get('colormap')
                              }
@@ -62,6 +66,21 @@ define([
             delete this.colormapForm;
             this.$el.html('');
             this.render();
+        },
+
+        applyPresetScale: function(e) {
+            console.log(e);
+            var value = this.$(e.currentTarget).val();
+            var scale = _.findWhere(this.model.get('preset_scales'), {name: value});
+            var colormap = this.model.get('colormap');
+            while (colormap.get('colorScaleDomain').length < scale.csd_values.length) {
+                colormap.addStop(0);
+            }
+            colormap.setDomain(scale.nsd_values[0], scale.nsd_values[1], colormap.get('numberScaleType'))
+            colormap.set('colorScaleDomain', scale.csd_values)
+            this.model.set('units', scale.units);
+            this.model.save();
+            colormap.trigger('rerender');
         },
 
         updateCfg: function(e) {

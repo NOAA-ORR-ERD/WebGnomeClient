@@ -45,6 +45,8 @@ define([
 
             this._locVis = new Cesium.EntityCollection();
 
+            this.initializeDataVis();
+
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
 
             if (webgnome.hasModel() && webgnome.model.getElementType()) {
@@ -78,8 +80,6 @@ define([
         setupVis: function(attrs) {
             this.listenTo(this.get('_appearance'), 'change:data',
                           this.initializeDataVis);
-
-            this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
             this._locVis = this.get('release')._visObj;
