@@ -41,7 +41,6 @@ define([
                 if (tabName === name) {
                     if (tab.hasClass('active')) {
                         tab.removeClass('active');
-                        view.$el.hide();
                         this.$el.removeClass('expanded');
                     } else {
                         tab.addClass('active');
