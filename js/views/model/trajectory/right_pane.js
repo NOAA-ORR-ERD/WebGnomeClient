@@ -15,10 +15,10 @@ define([
         className: 'right-content-pane',
 
         initialize: function(views, options){
-            this.module = module
+            this.module = module;
             this.tabContainer = $('<div class="right-tab-container"></div>');
             this.$el.append(this.tabContainer);
-            this.tabs = []
+            this.tabs = [];
             for (var i = 0; i < views.length; i++) {
                 var name = views[i].className;
                 name = name.charAt(0).toUpperCase() + name.slice(1);
@@ -28,7 +28,7 @@ define([
                 this.$el.append(views[i].$el);
                 views[i].$el.hide();
             }
-            this.views = views
+            this.views = views;
         },
 
         toggleContentPane: function(e) {
@@ -54,7 +54,6 @@ define([
                 }
             }
         }
-
-    })
+    });
     return rightContentPane;
-})
+});

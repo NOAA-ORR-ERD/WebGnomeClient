@@ -43,7 +43,7 @@ define([
         render: function() {
             BaseAppearanceForm.prototype.render.call(this);
 
-            var presets = _.filter(this.model.get('preset_scales'), _.bind(function(p){return p.data === this.get('data')}, this.model))
+            var presets = _.filter(this.model.get('preset_scales'), _.bind(function(p){return p.data === this.get('data');}, this.model));
 
             var html = _.template(SpillAppearanceTemplate, 
                             {titles: this.model.get('_available_data'),
@@ -76,8 +76,8 @@ define([
             while (colormap.get('colorScaleDomain').length < scale.csd_values.length) {
                 colormap.addStop(0);
             }
-            colormap.setDomain(scale.nsd_values[0], scale.nsd_values[1], colormap.get('numberScaleType'))
-            colormap.set('colorScaleDomain', scale.csd_values)
+            colormap.setDomain(scale.nsd_values[0], scale.nsd_values[1], colormap.get('numberScaleType'));
+            colormap.set('colorScaleDomain', scale.csd_values);
             this.model.set('units', scale.units);
             this.model.save();
             colormap.trigger('rerender');
