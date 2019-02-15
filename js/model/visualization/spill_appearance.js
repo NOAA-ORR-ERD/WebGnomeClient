@@ -15,6 +15,17 @@ define([
             data: 'Mass',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
+            preset_scales: [{name: 'Response Relevant',
+                             data: 'Surface Concentration',
+                             units: 'g/m^2',
+                             nsd_values: [0.0001,0.25],
+                             csd_values: [0.05, 0.1]},
+                            {name: 'Biologically Relevant',
+                             data: 'Surface Concentration',
+                             units: 'g/m^2',
+                             nsd_values: [0.0001,0.05],
+                             csd_values: [0.001, 0.01]}
+                            ],
             ctrl_names: {title:'Spill Appearance',
                          pin_on: 'Show Pin',
                          les_on: 'Show Oil',
@@ -79,6 +90,7 @@ define([
             var data = this.get('data');
             var spill = (webgnome.model.get('spills')
                          .findWhere({'_appearance': this}));
+            var colormap = this.get('colormap');
             if (_.isUndefined(spill)) {
                 fromInput = function(value) {return value;};
                 toDisplay = function(value) {return value;};
@@ -147,7 +159,7 @@ define([
                 toDisplay = _.bind(function(value) {
                     //surf_conc->percentage
                     //value = nucos.Converters.length.Convert('kg/m^2', newUnits, value);
-                    var maxconc = spill.estimateMaxConcentration();
+                    var maxconc = colormap.get('numberScaleDomain')[1];
                     if (newUnits !== 'kg/m^2'){
                         value = value * 1000;
                         maxconc = maxconc * 1000;
@@ -171,7 +183,7 @@ define([
             var output = (webgnome.model.get('outputters')
                           .findWhere({obj_type: 'gnome.outputters.json.SpillJsonOutput'}));
 
-            if (dtype !== 'Viscosity' || dtype !== 'Surface Concentration') {
+            if (dtype.get('data') !== 'Viscosity' && dtype.get('data') !== 'Surface Concentration') {
                 this.get('colormap').set('numberScaleType', 'linear');
             }
 

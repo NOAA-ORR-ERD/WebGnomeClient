@@ -55,6 +55,15 @@ define([
             this.listenTo(webgnome.model, 'change', this.render);
         },
 
+        _toDisplayString(dispValue) {
+            if (typeof(dispValue) === 'string') {
+                return dispValue;
+            }
+            else {
+                return Number(dispValue).toPrecision(4);
+            }
+        },
+
         genSpillLegendItem(spill) {
             var item = $('<tr></tr>');
             var row = $('<tr></tr>');
@@ -66,7 +75,7 @@ define([
             if (colormap.get('map_type') === 'discrete') {
                 numColors = colormap.get('colorScaleRange').length;
             }
-            row.append($('<th class="spill-row-name" rowspan=' + numColors + '>'+ spill.get('name') +'<br><span>(' + colormap.get('units') + ')</span></th>'));
+            row.append($('<th class="spill-row-name" rowspan=' + numColors + '>'+ spill.get('name') +'<br><span>(' + appearance.get('data') + ') (' + colormap.get('units') + ')</span></th>'));
             var color = colormap.get('colorScaleRange')[0];
             var stops = _.clone(numberDomain);
             var p1, p2;
@@ -74,8 +83,8 @@ define([
             Array.prototype.splice.apply(stops, args);
             var label = colormap.get('colorBlockLabels')[0];
             if (label === '') { //&nbsp;
-                p1 = Number(colormap.toDisplayConversionFunc(stops[0])).toPrecision(4);
-                p2 = Number(colormap.toDisplayConversionFunc(stops[1])).toPrecision(4);
+                p1 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[0]));
+                p2 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[1]));
                 label = '<' + p1 + ' - ' + p2;
                 if (numColors === 1) {
                     label = label + '+';
@@ -86,8 +95,8 @@ define([
             for (var i = 1; i < numColors; i++) {
                 label = colormap.get('colorBlockLabels')[i];
                 if (label === '') { //&nbsp;
-                    p1 = Number(colormap.toDisplayConversionFunc(stops[i])).toPrecision(4);
-                    p2 = Number(colormap.toDisplayConversionFunc(stops[i+1])).toPrecision(4);
+                    p1 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[i]));
+                    p2 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[i+1]));
                     label = p1 + ' - ' + p2;
                     if (i === numColors - 1) {
                         label = label + '+';
