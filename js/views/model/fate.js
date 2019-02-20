@@ -385,7 +385,7 @@ define([
             var time = this.getXaxisLabel();
             if(_.isUndefined(wind) || wind.get('timeseries') === null){
                 wind_speed = '';
-            } else if (wind.get('timeseries').length === 1) {
+            } else if (wind.get('timeseries') && wind.get('timeseries').length === 1) {
                 wind_speed = 'Constant ' + wind.get('timeseries')[0][1][0] + ' ' + wind.get('units');
             } else {
                 wind_speed = 'Variable Speed';
