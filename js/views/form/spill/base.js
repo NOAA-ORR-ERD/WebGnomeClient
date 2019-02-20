@@ -13,13 +13,14 @@ define([
     'text!templates/form/spill/substance-null.html',
     'text!templates/form/spill/position_single.html',
     'text!templates/form/spill/position_double.html',
-    'model/spill/substance',
+    'model/spill/gnomeoil',
+    'model/spill/nonweatheringsubstance',
     'jqueryDatetimepicker',
     'bootstrap'
 ], function($, _, Backbone, nucos, moment, swal,
             FormModal, OilLibraryView, MapFormView, OilInfoView,
-            SubstanceTemplate, SubstanceNullTemplate, PositionSingleTemplate,
-            PositionDoubleTemplate, SubstanceModel) {
+            SubstanceTemplate, NonWeatheringSubstanceTemplate, PositionSingleTemplate,
+            PositionDoubleTemplate, GnomeOil, NonWeatheringSubstance) {
     'use strict';
     var baseSpillForm = FormModal.extend({
 
@@ -29,8 +30,8 @@ define([
 
         events: function() {
             return _.defaults({
-                'click .oil-select': 'elementSelect',
-                'click .null-substance': 'setSubstanceNull',
+                'click .oil-select': 'oilSelect',
+                'click .null-substance': 'setSubstanceNonWeathering',
                 'contextmenu #spill-form-map': 'update',
                 'keyup .geo-info': 'manualMapInput',
                 'keyup .input-sm': 'emulsionUpdate',
@@ -121,7 +122,7 @@ define([
             // Need to add a model if check to see if the user
             // persisted a different bullwinkle_fraction value
             // other than the default
-            if (!_.isNull(this.model.get('element_type').get('substance'))) {
+            if (!_.isNull(this.model.get('substance'))) {
                 this.setEmulsificationOverride();
             }
 
@@ -133,7 +134,7 @@ define([
         },
 
         setEmulsificationOverride: function() {
-            var substance = this.model.get('element_type').get('substance');
+            var substance = this.model.get('substance');
             var bullwinkle_fraction = substance.get('bullwinkle_fraction');
             var bullwinkle_time = substance.get('bullwinkle_time');
 
@@ -149,7 +150,7 @@ define([
 
         reloadOil: function(e) {
             //e.preventDefault();
-            var substance = this.model.get('element_type').get('substance');
+            var substance = this.model.get('substance');
 
             if (substance) {
                 this.clearError();
@@ -207,12 +208,12 @@ define([
 
                     for (var i = 0; i < cachedOils.length; i++) {
                         if (cachedOils[i].name === oilId) {
-                            substanceModel = new SubstanceModel(cachedOils[i]);
+                            substanceModel = new GnomeOil(cachedOils[i]);
                             break;
                         }
                     }
 
-                    this.model.get('element_type').set('substance', substanceModel);
+                    this.model.set('substance', substanceModel);
                     this.reloadOil();
                 }
             }, this));
@@ -221,7 +222,7 @@ define([
         convertToSubstanceModels: function(cachedObjArray) {
             for (var i = 0; i < cachedObjArray.length; i++) {
                 if (_.isUndefined(cachedObjArray[i].attributes)) {
-                    cachedObjArray[i] = new SubstanceModel(cachedObjArray[i]);
+                    cachedObjArray[i] = new GnomeOil(cachedObjArray[i]);
                 }
             }
 
@@ -269,20 +270,20 @@ define([
 
             if (_.isUndefined(cached)) {
                 if (enabled) {
-                    substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+                    substance = webgnome.model.get('spills').at(0).get('substance');
                 }
                 else {
-                    substance = this.model.get('element_type').get('substance');
+                    substance = this.model.get('substance');
                 }
             }
             else {
                 substance = cached;
             }
 
-            var cachedOilArray = this.updateCachedOils(substance);
-            var oilExists = !_.isNull(substance);
+            var oilExists = substance.get('is_weatherable');
 
             if (oilExists) {
+                var cachedOilArray = this.updateCachedOils(substance);
                 compiled = _.template(SubstanceTemplate, {
                     size: this.showGeo ? '12': '6',
                     name: substance.get('name'),
@@ -296,7 +297,7 @@ define([
                 });
             }
             else {
-                compiled = _.template(SubstanceNullTemplate, {
+                compiled = _.template(NonWeatheringSubstanceTemplate, {
                     oilCache: cachedOilArray
                 });
             }
@@ -327,13 +328,13 @@ define([
                     delay: {show: 500, hide: 100}
                 });
 
-            if (!_.isNull(this.model.get('element_type').get('substance'))) {
+            if (substance.get('is_weatherable')) {
                 this.setEmulsificationOverride();
             }
 
             if (enabled) {
-                this.model.get('element_type').set('substance', substance);
-                webgnome.model.get('spills').at(0).get('element_type').set('substance', substance);
+                this.model.set('substance', substance);
+                webgnome.model.get('spills').at(0).set('substance', substance);
             }
         },
 
@@ -393,7 +394,7 @@ define([
         },
 
         emulsionUpdate: function() {
-            var substance = this.model.get('element_type').get('substance');
+            var substance = this.model
             var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
 
             if (manualVal !== '' && !_.isUndefined(substance)) {
@@ -436,9 +437,16 @@ define([
 
         initOilLib: function() {
             if (_.isUndefined(this.oilLibraryView)) {
-                this.oilLibraryView = new OilLibraryView({}, this.model.get('element_type'));
+                var subs;
+                if (!this.model.get('substance').get('is_weatherable')) {
+                    subs = new GnomeOil();
+                } else {
+                    subs = this.model.get('substance');
+                }
+                this.oilLibraryView = new OilLibraryView({}, subs);
                 this.oilLibraryView.render();
-                this.oilLibraryView.on('hidden', _.bind(this.show, this));
+                this.oilLibraryView.on('hidden', _.bind(function(){webgnome.model.setGlobalSubstance(subs);}, this));
+                this.oilLibraryView.on('hidden', _.bind(this.show , this));
                 this.oilLibraryView.on('hidden', this.reloadOil, this);
                 this.oilLibraryView.on('hidden', this.tabStatusSetter, this);
             }
@@ -452,13 +460,14 @@ define([
         },
 
         initOilInfo: function() {
+
             this.oilInfoView = new OilInfoView({containerClass: '.oil-info'},
-                                               this.model.get('element_type').get('substance'));
+                                               this.model.get('substance'));
             this.oilInfoView.on('hidden', _.bind(this.show, this));
             this.hide();
         },
 
-        elementSelect: function() {
+        oilSelect: function() {
             var spills = webgnome.model.get('spills');
 
             if (this.model.isNew() && spills.length === 0 ||
@@ -483,10 +492,10 @@ define([
             }
         },
 
-        setSubstanceNull: function() {
-            var element_type = this.model.get('element_type');
+        setSubstanceNonWeathering: function() {
+            var substance = this.model.get('substance');
 
-            if (!_.isNull(element_type.get('substance'))) {
+            if (substance.get('is_weatherable')) {
                 swal({
                     title: "Warning!",
                     text: "Setting the substance to non-weathering will delete the currently entered substance!",
@@ -499,10 +508,11 @@ define([
                 }).then(_.bind(function(isConfirm) {
                     if (isConfirm) {
                         if (webgnome.model.get('spills').length > 0) {
-                            webgnome.model.get('spills').at(0).get('element_type').set('substance', null);
+                            webgnome.model.setGlobalSubstance(new NonWeatheringSubstance());
                         }
                         else {
-                            element_type.set('substance', null);
+                            this.model.set('substance', new NonWeatheringSubstance());
+                            this.model.save();
                         }
 
                         this.renderSubstanceInfo();

@@ -9,11 +9,11 @@ define([
     'model/base',
     'model/spill/release',
     'model/spill/nonweatheringsubstance',
-    'model/spill/gnomeoil'
+    'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
     ], function(_, $, Backbone, Cesium, moment, d3, nucos,
-            BaseModel, GnomeRelease, NonWeatheringSubstance, GnomeOil
+            BaseModel, GnomeRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
