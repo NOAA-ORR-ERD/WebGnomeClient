@@ -1,3 +1,4 @@
+/*
 define([
     'underscore',
     'backbone',
@@ -46,3 +47,4 @@ define([
     return gnomeElement;
 
 });
+*/

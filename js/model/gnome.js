@@ -10,6 +10,7 @@ define([
     'model/map/param',
     'model/map/bna',
     'model/spill/spill',
+    'model/spill/nonweatheringsubstance',
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
@@ -55,7 +56,7 @@ define([
     'model/default_objs'
 ], function($, _, Backbone, moment, swal,
     BaseModel, Cache,
-    MapModel, ParamMapModel, MapBnaModel, SpillModel,
+    MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
     RandomMover, WindMover, PyWindMover,
     CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
@@ -714,6 +715,16 @@ define([
             return payload;
         },
 
+        setGlobalSubstance: function(substance) {
+            /*
+            Because only one substance is currently permitted, this function exists to support that.
+            If substance is not weatherable, it reverts it to the NonWeatheringSubstance singleton
+            */
+            var spills = this.get('spills');
+            _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
+            this.save();
+        },
+
         getSubstance: function(){
             if(this.get('spills').length > 0){
                 return this.get('spills').at(0).get('substance');
@@ -725,7 +736,7 @@ define([
                     }
                 }
             }
-            return false;
+            return new NonWeatheringSubstance();
         },
 
         getWinds: function(){
@@ -744,3 +755,4 @@ define([
 
     return gnomeModel;
 });
+

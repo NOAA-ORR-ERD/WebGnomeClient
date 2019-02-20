@@ -1,12 +1,24 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
+    'model/base',
+    'model/initializers/windages'
+], function(_, Backbone, BaseModel, Windage){
     'use strict';
     var gnomeSubstance = BaseModel.extend({
-        url: function(){
-            return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
+        urlRoot: '/substance/',
+
+        model: {
+            initializers: Backbone.Collection
+        },
+
+        defaults: function() {
+            return {
+                'obj_type': 'gnome.spill.substance.NonWeatheringSubstance',
+                'initializers': new Backbone.Collection([new Windage()]),
+                'is_weatherable': false,
+                'standard_density': 1000,
+            };
         },
 
         parseTemperatures: function(){
@@ -54,5 +66,11 @@ define([
             return output;
         }
     });
+/*
+    var oldProto = gnomeSubstance.prototype;
+    var singleton = new gnomeSubstance();
+    gnomeSubstance = function(){console.log('accessing NWSubstanceSingleton'); return singleton;};
+    gnomeSubstance.prototype = oldProto;
+*/
     return gnomeSubstance;
 });
