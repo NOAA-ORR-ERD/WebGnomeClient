@@ -131,6 +131,18 @@ define([
         addDefaultLayers: function() {
             //Runs on first render to add layers for each existing model component.
             this.resetMap();
+
+            this.layers.sat = new LayerModel({
+                type:'cesium',
+                parentEl:'imageryLayer',
+                id: 'imagery-osm',
+                visObj: new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : '//a.tile.openstreetmap.org/',
+                })
+            });
+            this.layers.add(this.layers.sat);
+
             var model_spills = webgnome.model.get('spills');
             for (var i = 0; i < model_spills.length; i++) {
                 this.addLayer(model_spills.models[i]);
