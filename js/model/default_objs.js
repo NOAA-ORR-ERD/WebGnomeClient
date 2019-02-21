@@ -39,7 +39,6 @@ define([
             } else {
                 env_objs.map(_.bind(this.addObj,this));
             }
-            
         },
 
         addObj: function(mod) {
@@ -130,14 +129,19 @@ define([
         weatheringValid: function() {
             if (this.get('hasSubstance') &&
                 !_.isUndefined(this.get('waves')) &&
+                !_.isNull(this.get('waves')) &&
+                this.get('waves').get('on') &&
                 !_.isUndefined(this.get('water')) &&
-                !_.isUndefined(this.get('wind'))) {
+                !_.isNull(this.get('water')) &&
+                this.get('water').get('on') &&
+                !_.isUndefined(this.get('wind')) &&
+                !_.isNull(this.get('wind')) &&
+                this.get('wind').get('on')) {
                 this.trigger('weatheringOn');
             } else {
                 this.trigger('weatheringOff');
             }
         }
-
     });
     return defaultObjs;
 });

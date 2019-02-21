@@ -40,10 +40,27 @@ define([
             } else {
                 this.dom_target = 'body';
             }
-            this.render();
-            $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
-                console.log('Error retrieving location files.');
-            });
+            if(!webgnome.hasModel()){
+                if(_.has(webgnome, 'cache')){
+                    webgnome.cache.rewind();
+                }
+                webgnome.model = new GnomeModel();
+                $('body').append(this.$el);
+                webgnome.model.save(null, {
+                    validate: false,
+                    success: _.bind(function(){
+                        this.render();
+                        $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                            console.log('Error retrieving location files.');
+                        });
+                    }, this)
+                });
+            } else {
+                this.render();
+                $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                    console.log('Error retrieving location files.');
+                });
+            }
         },
 
         showHelp: function(){
