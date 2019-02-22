@@ -166,7 +166,8 @@ define([
                     }
                     var percent = (Number(value / maxconc * 100)
                                    .toPrecision(3));
-                    return percent + "%\n" + Number(value).toPrecision(3);
+                    //return percent + "%\n" + Number(value).toPrecision(3);
+                    return value//Number(value).toPrecision(3);
                 }, this);
             }
             else {

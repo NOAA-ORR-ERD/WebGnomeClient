@@ -4,18 +4,14 @@
     </div>
     <div class="panel-collapse" id="spill-legend">
         <div class="panel-body">
-            <table class="table table-sm">
-                <tbody>
-                {% if(model.get('spills').length === 0){ %}
-                    No spills available for visualization
-                {% } %}
-                {% if(model.get('spills').length !== 0){ %}
-                    {% for (var i = 0; i < model.get('spills').length; i++){ %}
-                        {{legend.genSpillLegendItem(model.get('spills').at(i))}}
-                    {% } %}
-                {% } %}
-                </tbody>
-            </table>
+        {% if(model.get('spills').length === 0){ %}
+            No spills available for visualization
+        {% } %}
+        {% if(model.get('spills').length !== 0){ %}
+            {% for (var i = 0; i < model.get('spills').length; i++){ %}
+                {{legend.genSpillLegendItem(model.get('spills').at(i))}}
+            {% } %}
+        {% } %}
         </div>
     </div>
 </div>
