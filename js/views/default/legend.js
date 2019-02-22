@@ -74,7 +74,7 @@ define([
             var entryRows = $('<div class=spill-legend-entry></div>');
             var attrCol = $('<div class=spill-attr-col><div>Total: '+spill.get('amount')+ ' ' + spill.get('units')+ '</div><div>Displaying: ' + appearance.get('data') + '</div><div>Units: ' + colormap.get('units') + '</div></div>');
             var stopCol = $('<div class=spill-stop-col></div>');
-            entryRows.append(attrCol, stopCol)
+            entryRows.append(attrCol, stopCol);
             item.append(name, substance, entryRows);
 
             var numberDomain = colormap.get('numberScaleDomain').slice();
