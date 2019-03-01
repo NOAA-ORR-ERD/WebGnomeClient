@@ -7,7 +7,8 @@ define([
     'module',
     'text!templates/default/legend.html',
     'moment',
-], function ($, _, Backbone, Cesium, BaseView, module, LegendTemplate, moment) {
+    'tinycolor'
+], function ($, _, Backbone, Cesium, BaseView, module, LegendTemplate, moment, tinycolor) {
     "use strict";
     var legendView = BaseView.extend({
         className: 'legend',
@@ -70,7 +71,13 @@ define([
 
             var item = $('<div class=spill-legend-item></div>');
             var name = $('<div class=spill-row-name>'+ spill.get('name') +'</div>');
-            var substance = $('<div class=spill-row-substance>' + spill.get('element_type').get('substance').get('name') + '</div>');
+            var sub;
+            if (spill.get('element_type').get('substance')) {
+                sub = spill.get('element_type').get('substance').get('name');
+            } else {
+                sub = 'Non Weathering Substance';
+            }
+            var substance = $('<div class=spill-row-substance>' + sub + '</div>');
             var entryRows = $('<div class=spill-legend-entry></div>');
             var attrCol = $('<div class=spill-attr-col><div>Total: '+spill.get('amount')+ ' ' + spill.get('units')+ '</div><div>Displaying: ' + appearance.get('data') + '</div><div>Units: ' + colormap.get('units') + '</div></div>');
             var stopCol = $('<div class=spill-stop-col></div>');
@@ -97,7 +104,15 @@ define([
                     label = label + '+';
                 }
             }
-            stopCol.append($('<div class="spill-color-bucket" style="background-color: '+ color +'"><div>'+ label +'</div></div>'));
+            
+            var bkt = $('<div class="spill-color-bucket" style="background-color: '+ color +'">'+ label +'</div>');
+            if (tinycolor(color).getLuminance() > 0.179){
+                bkt.css('color', 'black');
+            } else {
+                bkt.css('color', 'white');
+            }
+            stopCol.append(bkt);
+            //stopCol.append($('<div class="spill-color-bucket" style="background-color: '+ color +'"><div>'+ label +'</div></div>'));
             for (var i = 1; i < numColors; i++) {
                 label = colormap.get('colorBlockLabels')[i];
                 if (label === '') { //&nbsp;
@@ -108,8 +123,17 @@ define([
                         label = label + '+';
                     }
                 }
+
                 color = colormap.get('colorScaleRange')[i];
-                stopCol.append($('<div class="spill-color-bucket" style="background-color: '+ color +'"><div>'+ label +'</div></div>'));
+                bkt = $('<div class="spill-color-bucket" style="background-color: '+ color +'">'+ label +'</div>');
+                if (tinycolor(color).getLuminance() > 0.179){
+                    bkt.css('color', 'black');
+                } else {
+                    bkt.css('color', 'white');
+                }
+                stopCol.append(bkt);
+
+                //stopCol.append($('<div class="spill-color-bucket" style="background-color: '+ color +'"><div>'+ label +'</div></div>'));
             }
             this.listenTo(colormap, 'change', this.rerender);
             //this.listenTo(colormap, 'change:colorBlockLabels', this.rerender);

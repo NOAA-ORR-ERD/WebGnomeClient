@@ -20,6 +20,7 @@ define([
             'change .tooltip input[type="color"]': 'updateColorScale',
             //'change .tooltip input[type="number"]': 'updateScales',
             'click .top > .tooltip-inner': 'addNumInput',
+            'click .color-label': 'addLabelInput',
             'click .color-block': 'addLabelInput',
             'focusout .tooltip input[type="number"]': 'updateValue',
             'focusout .color-block input[type="text"]': 'updateLabel',
@@ -55,8 +56,14 @@ define([
         },
 
         addLabelInput: function(e) {
+            if (e.target !== e.currentTarget) {
+                return;
+            }
             e.stopImmediatePropagation();
-            var idx = parseInt(e.target.id.split('-')[2]);
+            if (e.currentTarget.className !== 'color-block'){
+                e.currentTarget = e.currentTarget.parentElement;
+            }
+            var idx = parseInt(e.currentTarget.id.split('-')[2]);
             var labelBox = $('<input type=text>');
             var content = '';
             if (this.model.get('colorBlockLabels')[idx] !== '') {
@@ -100,7 +107,16 @@ define([
             var colorDomain = this.model.get('colorScaleDomain');
             var colorRange = this.model.get('colorScaleRange');
             var leftBound = 0;
-            var width, i;
+            var width, i, pickerScale;
+            if (this.model.get('numberScaleType') === 'linear') {
+                pickerScale = d3.scaleLinear()
+                    .domain([numberDomain[0], numberDomain[1]])
+                    .range([0,this.picker.width()]);
+            } else {
+                pickerScale = d3.scaleLog()
+                    .domain([numberDomain[0], numberDomain[1]])
+                    .range([0,this.picker.width()]);
+            }
             var stops = this.model.getAllNumberStops();
             // first generate the color blocks.
             for (i = 0; i < stops.length-1; i++) {
@@ -112,7 +128,7 @@ define([
                 this.colorBlocks.push(colorBlock);
                 //set the background color and length
                 colorBlock.css('backgroundColor', colorRange[i]);
-                width = (this.model.numScale(stops[i+1]) - this.model.numScale(stops[i])) * this.picker.width();
+                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.colorBlocks[i].css('left', leftBound + 'px');
                 this.colorBlocks[i].css('width', width + 'px');
@@ -131,7 +147,7 @@ define([
                 if (i !== 0 && i !== stops.length-1){
                     handle.addClass('movable');
                 }
-                width = (this.model.numScale(stops[i+1]) - this.model.numScale(stops[i])) * this.picker.width();
+                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.handles[i].css('left', leftBound + 'px');
                 leftBound += width;
@@ -365,28 +381,14 @@ define([
 
         applySchemeBackgrounds: function(e, selected) {
             var genBGString = _.bind(function(name) {
-                var colors, range, map_type;
-
-                if ('interpolate'+name in d3) {
-                    var d3scheme = d3['interpolate'+name];
-                    range = _.range(0,1.1,0.1);
-                    colors = range.map(d3scheme);
-                    map_type = 'continuous';
-                }
-                else if ('scheme' + name in d3) {
-                    colors = d3['scheme'+name];
-                    range = _.range(0,colors.length+1, 1);
-                    map_type = 'discrete';
-                }
-                else {
+                var len = this.model.get('colorScaleRange').length;
+                var colors;
+                if (name === 'Custom') {
                     colors = this.model.get('_customScheme');
-                    range = _.range(0,1.1,1.1 / (colors.length+1));
-                    map_type = this.model.get('map_type');
+                } else {
+                    colors = this.model._getColors(name, len);
                 }
-
-                var bgString = this._genBackgroundString(range, colors,
-                                                         map_type);
-
+                var bgString = this._genBackgroundString(_.range(0, 1.0/(len)*(len+1), 1.0/(len)), colors, 'discrete');
                 return bgString;
             }, this);
 
