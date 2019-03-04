@@ -7,8 +7,9 @@ define([
     'd3',
     'chosen',
     'text!templates/form/visualization/colormap.html',
+    'tinycolor',
     'jqueryui/widgets/draggable'
-], function ($, _, Backbone, BaseForm, module, d3, chosen, ColormapTemplate) {
+], function ($, _, Backbone, BaseForm, module, d3, chosen, ColormapTemplate, tinycolor) {
     "use strict";
 
     /*
@@ -20,7 +21,6 @@ define([
             'change .tooltip input[type="color"]': 'updateColorScale',
             //'change .tooltip input[type="number"]': 'updateScales',
             'click .top > .tooltip-inner': 'addNumInput',
-            'click .color-label': 'addLabelInput',
             'click .color-block': 'addLabelInput',
             'focusout .tooltip input[type="number"]': 'updateValue',
             'focusout .color-block input[type="text"]': 'updateLabel',
@@ -63,6 +63,7 @@ define([
             if (e.currentTarget.className !== 'color-block'){
                 e.currentTarget = e.currentTarget.parentElement;
             }
+            $(e.currentTarget).css('color', 'black');
             var idx = parseInt(e.currentTarget.id.split('-')[2]);
             var labelBox = $('<input type=text>');
             var content = '';
@@ -71,7 +72,7 @@ define([
             }
             labelBox.prop('value', content);
             labelBox.attr('value', content);
-            $('.color-label', e.currentTarget).text(' ');
+            $(e.currentTarget).text(' ');
             e.currentTarget.append(labelBox[0]);
             labelBox.focus();
             labelBox.select();
@@ -124,10 +125,11 @@ define([
                     id: 'color-block-' + i,
                     class: 'color-block'
                 });
-                colorBlock.append($('<div class=color-label>'+ this.model.get('colorBlockLabels')[i] +'</div>'));
+                colorBlock.css('background-color', colorRange[i]);
+                this.updateColorBlockTextColor(colorBlock);
+                colorBlock.text(this.model.get('colorBlockLabels')[i]);
                 this.colorBlocks.push(colorBlock);
                 //set the background color and length
-                colorBlock.css('backgroundColor', colorRange[i]);
                 width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.colorBlocks[i].css('left', leftBound + 'px');
@@ -439,12 +441,23 @@ define([
             }
         },
 
+        updateColorBlockTextColor(e) {
+            var color = e.css('background-color');
+            if (tinycolor(color).getLuminance() > 0.179){
+                e.css('color', 'black');
+            } else {
+                e.css('color', 'white');
+            }
+        },
+
         updateLabel(e) {
             var idx = parseInt(e.target.parentElement.id.split('-')[2]);
             var labs = this.model.get('colorBlockLabels').slice();
             labs[idx] = e.currentTarget.value;
             this.model.set('colorBlockLabels', labs);
-            $('.color-label', e.target.parentElement).text(e.currentTarget.value);
+            var block = $(e.target.parentElement);
+            block.text(e.currentTarget.value);
+            this.updateColorBlockTextColor(block);
             e.target.remove();
         },
 
