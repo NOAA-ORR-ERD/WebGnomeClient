@@ -72,8 +72,8 @@ define([
             var item = $('<div class=spill-legend-item></div>');
             var name = $('<div class=spill-row-name>'+ spill.get('name') +'</div>');
             var sub;
-            if (spill.get('element_type').get('substance')) {
-                sub = spill.get('element_type').get('substance').get('name');
+            if (spill.get('substance')) {
+                sub = spill.get('substance').get('name');
             } else {
                 sub = 'Non Weathering Substance';
             }

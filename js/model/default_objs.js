@@ -105,8 +105,8 @@ define([
             var hasSubstance = false;
             var spills = webgnome.model.get('spills');
             if (spills.length > 0) {
-                var element_type = spills.at(0).get('element_type');
-                if (element_type && element_type.get('substance') !== null) {
+                var substance = spills.at(0).get('substance');
+                if (substance && substance.get('is_weatherable')) {
                     hasSubstance = true;
                 }
             }
@@ -130,13 +130,10 @@ define([
             if (this.get('hasSubstance') &&
                 !_.isUndefined(this.get('waves')) &&
                 !_.isNull(this.get('waves')) &&
-                this.get('waves').get('on') &&
                 !_.isUndefined(this.get('water')) &&
                 !_.isNull(this.get('water')) &&
-                this.get('water').get('on') &&
                 !_.isUndefined(this.get('wind')) &&
-                !_.isNull(this.get('wind')) &&
-                this.get('wind').get('on')) {
+                !_.isNull(this.get('wind'))) {
                 this.trigger('weatheringOn');
             } else {
                 this.trigger('weatheringOff');
