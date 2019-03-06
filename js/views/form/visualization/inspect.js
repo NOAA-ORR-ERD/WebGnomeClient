@@ -77,11 +77,24 @@ define([
             for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
                 var appearance = this.appearanceModelsUsed[i];
                 var id = appearance.get('id');
-                appearance.set(appearance.defaults);
+                appearance.set(appearance.defaults());
                 appearance.set('id', id);
+                if (this.layer.model.get('obj_type').includes('spill')){
+                    this.layer.model.setupVis();
+                }
+                appearance.save();
             }
-            this.close();
+            this.appearanceModelsUsed = [];
+            this.$el.html('');
+            this.render();
         },
+
+        save: function() {
+            for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
+                this.appearanceModelsUsed[i].save();
+            }
+            FormModal.prototype.save.call(this);
+        }
 
         
     });

@@ -247,11 +247,30 @@ define([
             //this.trigger('change');
         },
 
-        _getd3interpolator: function(name) {
-            if ('interpolate' + name in d3) {
-                return d3['interpolate'+name];
+        _getColors: function(name, length) {
+            var colors;
+            if ('scheme' + name in d3) {
+                var scheme = _.clone(d3['scheme'+name]);
+                if (length > scheme.length - 1) {
+                    //switch to interpolator
+                    var d3interp = d3['interpolate'+name];
+                    var range = _.range(0, 1.0/(length)*(length+1), 1.0/(length-1));
+                    colors = range.map(function(s) {return tinycolor(d3interp(s)).toHexString();});
+                } else if (_.isUndefined(scheme[length])){
+                    var smallestScheme;
+                    for (var i = 0; i < scheme.length; i++) {
+                        if (!_.isUndefined(scheme[i])){
+                            smallestScheme = scheme[i];
+                            break;
+                        }
+                    }
+                    colors = smallestScheme.slice(smallestScheme.length - length, smallestScheme.length);
+                } else {
+                    colors = scheme[length];
+                }
+                return colors;
             } else {
-                return name;
+                console.error('this scheme doesnt exist');
             }
         },
 
@@ -262,56 +281,20 @@ define([
             } else {
                 scheme = scheme ? scheme : this.get('scheme');
             }
-            newScheme = this._getd3interpolator(scheme);
-            if (_.isUndefined(newScheme)) { return; }
-            var i;
+            var colors, i;
             var range = this.get('colorScaleRange').slice();
-            var colors;
-            if (newScheme === scheme) {
-                if (scheme === 'Custom') {
-                    colors = this.get('_customScheme');
-                    for (i = 0; i < range.length; i++) {
-                        range[i] = colors[i] ? colors[i] : '#FFFFFF';
-                    }
-                    this.set('colorScaleRange', range);
-                } else {
-                    //categorical schemes. These have strict requirements for length and interpolation
-                    if(this.get('map_type') === 'continuous') {
-                        this._changeMapType();
-                    }
-                    newScheme = d3['scheme' + scheme];
-                    var maxLen = newScheme.length;
-                    if (range.length > maxLen) {
-                        this._hardResetStops(maxLen+1, false);
-                        return;
-                    } else if (this.get('map_type') === 'continuous') {
-                        this._hardResetStops(range.length+1, false);
-                        return;
-                    } else {
-                        for (i = 0; i < range.length; i++) {
-                            range[i] = newScheme[i];
-                        }
-                        this.set('colorScaleRange', range);
-                    }
-                }
-            } else {
-                if (this.get('map_type') === 'discrete') {
-                    var stops = [0];
-                    for (i = 1; i < range.length -1; i++) {
-                        stops.push(i * 1/(range.length));
-                    }
-                    stops.push(1.0);
-                    colors = stops.map(function(s) {return tinycolor(newScheme(s)).toHexString();});
-                } else {
-                    colors = this.get('colorScaleDomain').map(function(s) {return tinycolor(newScheme(s)).toHexString();});
-                }
+            if (scheme === 'Custom') {
+                colors = this.get('_customScheme');
                 for (i = 0; i < range.length; i++) {
-                    range[i] = colors[i];
+                    range[i] = colors[i] ? colors[i] : '#FFFFFF';
                 }
                 this.set('colorScaleRange', range);
+                return;
+            } else {
+                colors = this._getColors(scheme, range.length);
+                this.set('colorScaleRange', colors);
+                return;
             }
-            //this.trigger('change:colorScaleRange');
-            //this.trigger('changedMapType');
         }
     });
     return colormapModel;

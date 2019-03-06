@@ -1883,15 +1883,7 @@ nav.navbar{
             position: absolute;
             text-align: center;
             height: 100%;
-
-            .color-label {
-                background: inherit;
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-                filter: invert(1);
-                line-height: 30px;
-            }
+            line-height: 30px;
         }
     }
 
@@ -2260,42 +2252,45 @@ nav.navbar{
             width: 300px;
             z-index: 1;
 
-            .legend-edit-btn{
-                span{
-                    .glyphicon;
-                    .glyphicon-option-horizontal;
-                    padding: 1px;
-                    color: #ffffff;
-                }
-                padding: 1px;
-            }
-
-            .legend-header{
-                background: rgba(255, 255, 255, .75);
-                .legend-title{
-                    width:70%;
-                }
+            .spill-legend-item {
+                margin-bottom: 3px;
+                border-radius: 5px;
+                border-width: 1px;
+                border-style: solid;
+                overflow: hidden;
+                background-color: #e1e1e1;
             }
 
             .spill-color-bucket{
-                width: 60%;
-                height: 1em;
-
-                span{
-                  background: inherit;
-                  background-clip: text;
-                  -webkit-background-clip: text;
-                  color: transparent;
-                  filter: invert(1);
-                }
+                text-align: center;
             }
 
-            .spill-row-name{
+            .spill-attr-col{
+                float: left;
+                width: 50%;
+            }
+
+            .spill-stop-col{
+                float: left;
+                width: 50%;
+            }
+
+            .spill-legend-entry:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+            .spill-row-name {
                 vertical-align: middle;
                 text-align: center;
-                span {
-                    font-size: 8pt;
-                }
+                font-size: 14pt;
+                background-color: white;
+            }
+            .spill-row-substance{
+                vertical-align: middle;
+                text-align: center;
+                font-size: 10pt;
+                background-color: white;
             }
 
             .spill-color-bucket-label{

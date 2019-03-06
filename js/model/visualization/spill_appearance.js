@@ -18,14 +18,33 @@ define([
             preset_scales: [{name: 'Response Relevant',
                              data: 'Surface Concentration',
                              units: 'g/m^2',
-                             nsd_values: [0.0001,0.25],
-                             csd_values: [0.05, 0.1]},
+                             colormap: {
+                                "units": 'g/m^2',
+                                "numberScaleType": "log",
+                                "numberScaleDomain": [0.0001,0.25],
+                                "numberScaleRange": [0,1],
+                                "colorScaleType": "threshold",
+                                "colorScaleDomain": [0.05, 0.1],
+                                "colorScaleRange": ["#deebf7", "#9ecae1", "#3182bd"],
+                                "scheme": "Blues",
+                                "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
+                                },
+                            },
                             {name: 'Biologically Relevant',
                              data: 'Surface Concentration',
                              units: 'g/m^2',
-                             nsd_values: [0.0001,0.05],
-                             csd_values: [0.001, 0.01]}
-                            ],
+                             colormap: {
+                                "units": 'g/m^2',
+                                "numberScaleType": "log",
+                                "numberScaleDomain": [0.0001,0.05],
+                                "numberScaleRange": [0,1],
+                                "colorScaleType": "threshold",
+                                "colorScaleDomain": [0.001, 0.01],
+                                "colorScaleRange": ["#deebf7", "#9ecae1", "#3182bd"],
+                                "scheme": "Blues",
+                                "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
+                                },
+                            }],
             ctrl_names: {title:'Spill Appearance',
                          pin_on: 'Show Pin',
                          les_on: 'Show Oil',
@@ -166,7 +185,8 @@ define([
                     }
                     var percent = (Number(value / maxconc * 100)
                                    .toPrecision(3));
-                    return percent + "%\n" + Number(value).toPrecision(3);
+                    //return percent + "%\n" + Number(value).toPrecision(3);
+                    return value; //Number(value).toPrecision(3);
                 }, this);
             }
             else {

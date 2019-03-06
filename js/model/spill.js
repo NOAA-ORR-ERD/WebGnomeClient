@@ -398,6 +398,9 @@ define([
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
             var max, min, newScaleType;
+            var currentMin, currentMax;
+            currentMin = colormap.get('numberScaleDomain')[0];
+            currentMax = colormap.get('numberScaleDomain')[1];
             colormap.initScales();
 
             if (data === 'Age') {

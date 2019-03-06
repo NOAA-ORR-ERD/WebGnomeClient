@@ -7,8 +7,9 @@ define([
     'd3',
     'chosen',
     'text!templates/form/visualization/colormap.html',
+    'tinycolor',
     'jqueryui/widgets/draggable'
-], function ($, _, Backbone, BaseForm, module, d3, chosen, ColormapTemplate) {
+], function ($, _, Backbone, BaseForm, module, d3, chosen, ColormapTemplate, tinycolor) {
     "use strict";
 
     /*
@@ -55,8 +56,15 @@ define([
         },
 
         addLabelInput: function(e) {
+            if (e.target !== e.currentTarget) {
+                return;
+            }
             e.stopImmediatePropagation();
-            var idx = parseInt(e.target.id.split('-')[2]);
+            if (e.currentTarget.className !== 'color-block'){
+                e.currentTarget = e.currentTarget.parentElement;
+            }
+            $(e.currentTarget).css('color', 'black');
+            var idx = parseInt(e.currentTarget.id.split('-')[2]);
             var labelBox = $('<input type=text>');
             var content = '';
             if (this.model.get('colorBlockLabels')[idx] !== '') {
@@ -64,7 +72,7 @@ define([
             }
             labelBox.prop('value', content);
             labelBox.attr('value', content);
-            $('.color-label', e.currentTarget).text(' ');
+            $(e.currentTarget).text(' ');
             e.currentTarget.append(labelBox[0]);
             labelBox.focus();
             labelBox.select();
@@ -100,7 +108,16 @@ define([
             var colorDomain = this.model.get('colorScaleDomain');
             var colorRange = this.model.get('colorScaleRange');
             var leftBound = 0;
-            var width, i;
+            var width, i, pickerScale;
+            if (this.model.get('numberScaleType') === 'linear') {
+                pickerScale = d3.scaleLinear()
+                    .domain([numberDomain[0], numberDomain[1]])
+                    .range([0,this.picker.width()]);
+            } else {
+                pickerScale = d3.scaleLog()
+                    .domain([numberDomain[0], numberDomain[1]])
+                    .range([0,this.picker.width()]);
+            }
             var stops = this.model.getAllNumberStops();
             // first generate the color blocks.
             for (i = 0; i < stops.length-1; i++) {
@@ -108,11 +125,12 @@ define([
                     id: 'color-block-' + i,
                     class: 'color-block'
                 });
-                colorBlock.append($('<div class=color-label>'+ this.model.get('colorBlockLabels')[i] +'</div>'));
+                colorBlock.css('background-color', colorRange[i]);
+                this.updateColorBlockTextColor(colorBlock);
+                colorBlock.text(this.model.get('colorBlockLabels')[i]);
                 this.colorBlocks.push(colorBlock);
                 //set the background color and length
-                colorBlock.css('backgroundColor', colorRange[i]);
-                width = (this.model.numScale(stops[i+1]) - this.model.numScale(stops[i])) * this.picker.width();
+                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.colorBlocks[i].css('left', leftBound + 'px');
                 this.colorBlocks[i].css('width', width + 'px');
@@ -131,7 +149,7 @@ define([
                 if (i !== 0 && i !== stops.length-1){
                     handle.addClass('movable');
                 }
-                width = (this.model.numScale(stops[i+1]) - this.model.numScale(stops[i])) * this.picker.width();
+                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.handles[i].css('left', leftBound + 'px');
                 leftBound += width;
@@ -365,28 +383,14 @@ define([
 
         applySchemeBackgrounds: function(e, selected) {
             var genBGString = _.bind(function(name) {
-                var colors, range, map_type;
-
-                if ('interpolate'+name in d3) {
-                    var d3scheme = d3['interpolate'+name];
-                    range = _.range(0,1.1,0.1);
-                    colors = range.map(d3scheme);
-                    map_type = 'continuous';
-                }
-                else if ('scheme' + name in d3) {
-                    colors = d3['scheme'+name];
-                    range = _.range(0,colors.length+1, 1);
-                    map_type = 'discrete';
-                }
-                else {
+                var len = this.model.get('colorScaleRange').length;
+                var colors;
+                if (name === 'Custom') {
                     colors = this.model.get('_customScheme');
-                    range = _.range(0,1.1,1.1 / (colors.length+1));
-                    map_type = this.model.get('map_type');
+                } else {
+                    colors = this.model._getColors(name, len);
                 }
-
-                var bgString = this._genBackgroundString(range, colors,
-                                                         map_type);
-
+                var bgString = this._genBackgroundString(_.range(0, 1.0/(len)*(len+1), 1.0/(len)), colors, 'discrete');
                 return bgString;
             }, this);
 
@@ -437,12 +441,23 @@ define([
             }
         },
 
+        updateColorBlockTextColor(e) {
+            var color = e.css('background-color');
+            if (tinycolor(color).getLuminance() > 0.179){
+                e.css('color', 'black');
+            } else {
+                e.css('color', 'white');
+            }
+        },
+
         updateLabel(e) {
             var idx = parseInt(e.target.parentElement.id.split('-')[2]);
             var labs = this.model.get('colorBlockLabels').slice();
             labs[idx] = e.currentTarget.value;
             this.model.set('colorBlockLabels', labs);
-            $('.color-label', e.target.parentElement).text(e.currentTarget.value);
+            var block = $(e.target.parentElement);
+            block.text(e.currentTarget.value);
+            this.updateColorBlockTextColor(block);
             e.target.remove();
         },
 

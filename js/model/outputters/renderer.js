@@ -11,7 +11,7 @@ define([
             'obj_type': 'gnome.outputters.renderer.Renderer',
             'output_last_step': 'true',
             'output_zero_step': 'true',
-            'netcdf_filename': 'Model.nc',
+            'filename': 'Model.nc',
             'on': false,
             'name': 'Renderer'
         },

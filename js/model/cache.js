@@ -33,6 +33,10 @@ define([
 
         rewind: function(override){
             if(this.length > 0 || override === true){
+                if (webgnome.router.trajView) {
+                    //last minute reset of trajectory view if it exists.
+                    webgnome.router.trajView.renderVisLayers(this.inline[0]);
+                }
                 $.get('/rewind', _.bind(function(){
                     this.length = 0;
                     this.inline = [];
