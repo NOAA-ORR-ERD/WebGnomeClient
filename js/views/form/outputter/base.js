@@ -183,28 +183,32 @@ define([
 
         turnOff: function() {
             this.toggleOutputters(_.bind(function() {
-                var _href_parts = [webgnome.config.api, 'export', 'output'];
                 webgnome.cache.rewind();
 
                 this.loadingModal.hide();
                 this.removeOutputter();
 
-                if (this.model.get('obj_type') === 'gnome.outputters.netcdf.NetCDFOutput') {
-                    _href_parts.push(this.model.get('obj_type'),
-                                     this.model.get('filename'));
-                }
-                else if (this.model.get('obj_type') === 'gnome.outputters.kmz.KMZOutput') {
-                    _href_parts.push(this.model.get('obj_type'),
-                                     this.model.get('filename'));
-                }
-                else {
-                    _href_parts.push(this.model.get('obj_type'));
-                }
-
-                window.location.href = _href_parts.join('/');
+                window.location.href = this.get_output_href();
 
                 FormModal.prototype.save.call(this);
             }, this), false);
+        },
+        
+        get_output_href: function() {
+            var _href_parts = [webgnome.config.api, 'export', 'output',
+                               this.model.get('obj_type')];
+
+            if (this.model.get('obj_type') === 'gnome.outputters.netcdf.NetCDFOutput') {
+                if (webgnome.model.get('uncertain') === false) {
+                    // specific output file
+                    _href_parts.push(this.model.get('filename'));
+                }
+            }
+            else if (this.model.get('obj_type') === 'gnome.outputters.kmz.KMZOutput') {
+                _href_parts.push(this.model.get('filename'));
+            }
+
+            return _href_parts.join('/');
         },
 
         close: function() {
