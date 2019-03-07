@@ -154,12 +154,7 @@ define([
 
             if (substance) {
                 this.clearError();
-
-                substance.fetch({
-                    success: _.bind(function(model, res, options){
-                        this.renderSubstanceInfo(null, model);
-                    }, this)
-                });
+                this.renderSubstanceInfo(null, substance);
             }
         },
 
@@ -445,7 +440,7 @@ define([
                 }
                 this.oilLibraryView = new OilLibraryView({}, subs);
                 this.oilLibraryView.render();
-                this.oilLibraryView.on('hidden', _.bind(function(){webgnome.model.setGlobalSubstance(subs);}, this));
+                this.oilLibraryView.on('hidden', _.bind(function(){this.model.set('substance', subs); webgnome.model.setGlobalSubstance(subs);}, this));
                 this.oilLibraryView.on('hidden', _.bind(this.show , this));
                 this.oilLibraryView.on('hidden', this.reloadOil, this);
                 this.oilLibraryView.on('hidden', this.tabStatusSetter, this);
