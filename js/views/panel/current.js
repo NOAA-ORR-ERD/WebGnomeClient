@@ -197,6 +197,7 @@ define([
                                 //on first load, always display first current
                                 this.currentPrims[currents[0].get('id')].show = true;
                                 this.resetCamera(currents[0]);
+                                this._loadPrimitivesPromise = undefined;
                                 this._loadPrimitives(currents.slice(1));
                                 this.resetCamera(currents[0]);
                             },this));
@@ -222,45 +223,48 @@ define([
             //to both the CesiumView and this.currentPrims.
             //This function exists to initialize this panel's state in the case where it is
             //using a cached CesiumView
-            var promises = [];
-            var ctxt;
-            for (var c = 0; c < currents.length; c++) {
-                //To future me: I am so sorry for this. 
-                ctxt = {panel: this,
-                        curs: currents,
-                        cidx: c,
-                        _: _
-                        };
-                promises.push(new Promise(_.bind(function(resolve, reject){
-                    var scenePrims = this.panel.currentMap.viewer.scene.primitives;
-                    var cur_id, cur;
-                    cur = this.curs[this.cidx];
-                    cur_id = cur.get('id');
-                    for(var i = 0; i < scenePrims.length; i++) {
-                        if (scenePrims._primitives[i].id === cur_id) {
-                            this.panel.currentPrims[cur_id] = scenePrims._primitives[i];
-                            if (i > 0) {
-                                this.panel.currentPrims[cur_id].show = false;
-                            } else {
-                                this.panel.currentPrims[cur_id].show = true;
+            if (_.isUndefined(this._loadPrimitivesPromise)) {
+                var promises = [];
+                var ctxt;
+                for (var c = 0; c < currents.length; c++) {
+                    //To future me: I am so sorry for this. 
+                    ctxt = {panel: this,
+                            curs: currents,
+                            cidx: c,
+                            _: _
+                            };
+                    promises.push(new Promise(_.bind(function(resolve, reject){
+                        var scenePrims = this.panel.currentMap.viewer.scene.primitives;
+                        var cur_id, cur;
+                        cur = this.curs[this.cidx];
+                        cur_id = cur.get('id');
+                        for(var i = 0; i < scenePrims.length; i++) {
+                            if (scenePrims._primitives[i].id === cur_id) {
+                                this.panel.currentPrims[cur_id] = scenePrims._primitives[i];
+                                if (i > 0) {
+                                    this.panel.currentPrims[cur_id].show = false;
+                                } else {
+                                    this.panel.currentPrims[cur_id].show = true;
+                                }
+                                break;
                             }
-                            break;
                         }
-                    }
-                    if (this._.isUndefined(this.panel.currentPrims[cur_id])) {
-                        cur.getGrid().then(this._.bind(function(data){
-                            var newPrim = this.curs[this.cidx].processLines(data, false, this.panel.currentMap.viewer.scene.primitives);
-                            newPrim.id = this.curs[this.cidx].get('id');
-                            newPrim.show = false;
-                            this.panel.currentPrims[cur_id] = newPrim;
-                            resolve(newPrim);
-                        }, this)).catch(reject); //this == ctxt
-                    } else {
-                        resolve(this.panel.currentPrims[cur_id]);
-                    }
-                }, ctxt)));
+                        if (this._.isUndefined(this.panel.currentPrims[cur_id])) {
+                            cur.getGrid().then(this._.bind(function(data){
+                                var newPrim = this.curs[this.cidx].processLines(data, false, this.panel.currentMap.viewer.scene.primitives);
+                                newPrim.id = this.curs[this.cidx].get('id');
+                                newPrim.show = false;
+                                this.panel.currentPrims[cur_id] = newPrim;
+                                console.log(newPrim.id);
+                                resolve(newPrim);
+                            }, this)).catch(reject); //this == ctxt
+                        } else {
+                            resolve(this.panel.currentPrims[cur_id]);
+                        }
+                    }, ctxt)));
+                }
+                this._loadPrimitivesPromise = Promise.all(promises);
             }
-            this._loadPrimitivesPromise = Promise.all(promises);
             return this._loadPrimitivesPromise;
         },
 
