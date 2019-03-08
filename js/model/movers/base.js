@@ -2,21 +2,22 @@ define([
     'underscore',
     'jquery',
     'backbone',
-    'ol',
     'moment',
     'cesium',
     'localforage',
     'model/base',
     'model/visualization/mover_appearance'
-], function(_, $, Backbone, ol, moment, Cesium, localforage,
+], function(_, $, Backbone, moment, Cesium, localforage,
             BaseModel, MoverAppearance) {
     'use strict';
     var baseMover = BaseModel.extend({
         urlRoot: '/mover/',
+
         requesting_grid: false,
         requesting_centers: false,
         requested_grid: false,
         requested_centers: false,
+
         data_cache : localforage.createInstance({name: 'Mover Object Data Cache',
                                                  }),
         defaults: function() {

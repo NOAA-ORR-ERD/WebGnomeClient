@@ -1,11 +1,16 @@
 define([
     'model/movers/base',
     'model/environment/gridwind',
-    'model/environment/wind'
-], function(BaseMover, GridWind, Wind) {
+    'model/environment/wind',
+    'model/visualization/mover_appearance'
+], function(BaseMover, GridWind, Wind, MoverAppearance) {
     var componentMover = BaseMover.extend({
-        defaults: {
-            obj_type: 'gnome.movers.current_movers.ComponentMover'
+        urlRoot: '/mover/',
+        defaults: function() { 
+            return {
+                _appearance: new MoverAppearance(),
+                obj_type: 'gnome.movers.current_movers.ComponentMover'
+            };
         },
 
         model: {

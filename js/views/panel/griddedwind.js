@@ -3,15 +3,12 @@ define([
     'underscore',
     'backbone',
     'sweetalert',
-    'ol',
     'text!templates/panel/griddedwind.html',
-    'views/default/map',
     'views/form/griddedwind_edit',
     'views/panel/base',
     'views/form/griddedwind'
-], function($, _, Backbone, swal, ol,
-            GriddedWindPanelTemplate,
-            OlMapView, GridedWindEditForm, BasePanel, GriddedWindForm) {
+], function($, _, Backbone, swal,
+            GriddedWindPanelTemplate, GriddedWindEditForm, BasePanel, GriddedWindForm) {
     var griddedWindPanel = BasePanel.extend({
         className: 'col-md-3 griddedwind object panel-view',
 
@@ -50,10 +47,9 @@ define([
             var id = this.getID(e);
 
             var griddedwind = webgnome.model.get('movers').get(id);
-            var title = 'Gridded Wind: ' + griddedwind.get('name');
+            
 
-            var griddedwindView = new GridedWindEditForm({title: title,
-                                                          model: griddedwind});
+            var griddedwindView = new GriddedWindEditForm({model: griddedwind});
 
             griddedwindView.on('save', function() {
                 griddedwindView.on('hidden', griddedwindView.close);
@@ -88,14 +84,6 @@ define([
 
             if (griddedwind.length > 0) {
                 this.$('.panel-body').show();
-                this.current_layers = new ol.Collection([
-                    new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            })
-                    })
-                ]);
             }
             else {
                 this.current_extents = [];
@@ -106,6 +94,7 @@ define([
         },
 
         addWindToPanel: function(geojson) {
+/*
             if (geojson) {
                 var gridSource = new ol.source.Vector({
                     features: (new ol.format.GeoJSON()
@@ -136,6 +125,7 @@ define([
                     this.current_extents.push(extentSum);
                 }
             }
+*/
         },
 
         delete: function(e) {

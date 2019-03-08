@@ -3,15 +3,13 @@ define([
     'underscore',
     'backbone',
     'sweetalert',
-    'ol',
     'views/default/load',
     'text!templates/default/index.html',
     'views/wizard/adios',
     'views/wizard/gnome',
-    'views/default/map',
     'views/form/oil/library',
     'model/gnome'
-], function($, _, Backbone, swal, ol, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, MapView, OilLibraryView, GnomeModel){
+], function($, _, Backbone, swal, LoadView, IndexTemplate, AdiosWizard, GnomeWizard, OilLibraryView, GnomeModel){
     'use strict';
     var indexView = Backbone.View.extend({
         className: 'page home',
@@ -40,10 +38,12 @@ define([
             e.preventDefault();
             if (webgnome.hasModel()){
                 swal({
-                    title: 'Previous model setup found',
-                    text:'Click OK to continue setting up a new model or Cancel to pick up where you left off. ',
+                    title: 'Previous Model Setup Found',
+                    text:'Choose to continue with your previous scenario or start setting up a new model.',
                     type: 'warning',
                     showCancelButton: true,
+                    cancelButtonText: 'Continue Previous',
+                    confirmButtonText: 'New Model',
                     reverseButtons: true
                 }).then(_.bind(function(isConfirm){
                     if(isConfirm){                                       

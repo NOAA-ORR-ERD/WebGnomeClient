@@ -7,10 +7,8 @@ define([
     'moment',
     'toastr',
     'text!templates/model/trajectory/controls.html',
-    'views/default/map',
     'cesium',
-    'model/spill',
-    'views/form/spill/continue',
+    'views/default/cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
@@ -19,10 +17,15 @@ define([
     'model/map/graticule',
     'views/model/trajectory/layers',
     'views/model/trajectory/controls',
+    'views/model/trajectory/right_pane',
+    'views/default/legend',
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module,moment, toastr, ControlsTemplate, Cesium, CesiumView,
+            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
+            ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -95,7 +98,9 @@ define([
                 this.layersPanel = new LayersView();
                 this.layersListeners();
                 this.layersPanel.render();
-                this.layersPanel.$el.appendTo(this.$el);
+                this.legend = new LegendView();
+                this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
+                this.rightPane.$el.appendTo(this.$el);
             }, this), 250);
         },
 
@@ -155,6 +160,9 @@ define([
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
                 } else if (lay.parentEl === 'entity') {
                     this.layers[lay.id] = this.viewer.entities.add(lay.visObj);
+                } else if (lay.parentEl === 'entityCollection') {
+                    this.layers[lay.id] = lay.visObj;
+                    _.each(lay.visObj, _.bind(this.viewer.entities.add, this.viewer.entities));
                 } else if (lay.parentEl === 'imageryLayer') {
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
@@ -202,6 +210,12 @@ define([
                     }
                 } else if (lay.parentEl === 'entity') {
                     if(this.viewer.entities.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove entity layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'entityCollection') {
+                    if(_.all(_.each(this.layers[lay.id], _.bind(this.viewer.entities.remove, this.viewer.entities)))) {
                         this.layers[lay.id] = undefined;
                     } else {
                         console.warn('Failed to remove entity layer id: ', lay.id);
@@ -290,6 +304,8 @@ define([
                     },
                 },
             });
+            this.viewer.scene.highDynamicRange = false;
+            this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();

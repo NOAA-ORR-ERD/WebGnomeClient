@@ -8,9 +8,10 @@ define([
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
+    'views/form/map/map',
     'text!templates/panel/map.html',
     'views/modal/form'
-], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate, FormModal){
+], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapForm, MapPanelTemplate, FormModal){
     var mapPanel = BasePanel.extend({
         className: 'col-md-3 map object panel-view',
 
@@ -18,7 +19,10 @@ define([
             'click .perm-add': 'new',
             'click .add': 'load',
             'click #mini-locmap': 'openMapModal',
-            'webkitfullscreenchange #mini-locmap': 'resetCamera'
+            'webkitfullscreenchange #mini-locmap': 'resetCamera',
+            'mozfullscreenchange #mini-locmap' : 'resetCamera',
+            'msfullscreenchange #mini-locmap' : 'resetCamera',
+            'fullscreenchange #mini-locmap' : 'resetCamera'
         },
 
         models: [
@@ -33,7 +37,12 @@ define([
             _.extend({}, BasePanel.prototype.events, this.events);
             this.listenTo(webgnome.model, 'change:map', this.rerender);
             this.listenTo(webgnome.model, 'change:map', this.setupMapListener);
+            //document.addEventListener("mozfullscreenchange", _.bind(this.resetCamera, this));
             this.setupMapListener();
+            this.mozResetCamera = _.bind(function(e){
+                this.resetCamera(e);
+                document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
+            }, this);
         },
 
         setupMapListener: function(){
@@ -46,27 +55,22 @@ define([
 
         openMapModal: function(e) {
             if(!_.isUndefined(this.minimap)){
-                this.minimap.el.webkitRequestFullScreen();
+                var element = this.minimap.el;
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                document.addEventListener("mozfullscreenchange", this.mozResetCamera);
             }
         },
 
         resetCamera: function(e) {
-            //timeout so transition to/from fullscreen can complete before recentering camera
-            setTimeout(_.bind(this._focusOnMap, this), 100);
-        },
-
-        _focusOnMap: function() {
-            if (_.isUndefined(this.minimap)) {
-                return;
-            } else {
-                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
-                    this.minimap.viewer.scene.camera.flyTo({
-                        destination: rect,
-                        duration: 0
-                    });
-                    this.minimap.viewer.scene.requestRender();
-                }, this));
-            }
+            this.minimap.resetCamera(webgnome.model.get('map'));
         },
 
         render: function(){
@@ -98,9 +102,14 @@ define([
                                     this.minimap.viewer.scene.primitives._primitives[i].show = true;
                                 }
                             }
+                        } else {
+                            this.minimap.viewer.scene.primitives.removeAll();
+                            map.getGeoJSON().then(_.bind(function(data){
+                                map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            }, this));
                         }
                         this.$('#mini-locmap').append(this.minimap.$el);
-                        this.resetCamera();
+                        this.minimap.resetCamera(map);
                         this.trigger('render');
                     }, this)
                 });
@@ -141,7 +150,7 @@ define([
             if(map.get('obj_type') === 'gnome.map.ParamMap'){
                 form = new ParamMapForm({map: map});
             } else {
-                form = new FormModal({title: 'Edit Map', model: map});
+                form = new MapForm({map: map});
             }
 
             form.render();

@@ -32,7 +32,7 @@ define([
             //'click .ice-tc input[type="radio"]': 'toggleIceData',
             'click .layers .title': 'toggleLayerPanel'
         },
-        id: 'layers',
+        className: 'layers',
 
         initialize: function(viewer, options){
             this.module = module;
@@ -131,6 +131,18 @@ define([
         addDefaultLayers: function() {
             //Runs on first render to add layers for each existing model component.
             this.resetMap();
+
+            this.layers.sat = new LayerModel({
+                type:'cesium',
+                parentEl:'imageryLayer',
+                id: 'imagery-osm',
+                visObj: new Cesium.createOpenStreetMapImageryProvider({
+                    layers: '1',
+                    url : '//a.tile.openstreetmap.org/',
+                })
+            });
+            this.layers.add(this.layers.sat);
+
             var model_spills = webgnome.model.get('spills');
             for (var i = 0; i < model_spills.length; i++) {
                 this.addLayer(model_spills.models[i]);
@@ -148,6 +160,7 @@ define([
             var currents = webgnome.model.get('movers').filter(function(mover){
                 return [
                     'gnome.movers.current_movers.CatsMover',
+                    'gnome.movers.current_movers.ComponentMover',
                     'gnome.movers.current_movers.GridCurrentMover',
                 ].indexOf(mover.get('obj_type')) !== -1;
             });
@@ -285,6 +298,7 @@ define([
         addLayer: function(e) {
             if (e.collection === webgnome.model.get('movers') &&
                 e.get('obj_type') === 'gnome.movers.current_movers.CatsMover' ||
+                e.get('obj_type') === 'gnome.movers.current_movers.ComponentMover' ||
                 e.get('obj_type') === 'gnome.movers.current_movers.GridCurrentMover') {
                 this.layers.add({
                     type: 'cesium',
@@ -334,10 +348,10 @@ define([
                 });
                 var spillLocLayer = new LayerModel({
                     type: 'cesium',
-                    parentEl: 'entity',
+                    parentEl: 'entityCollection',
                     model: e,
                     id: e.get('id') + '_loc',
-                    visObj: e._locVis,
+                    visObj: e._locVis.values,
                     appearance: e.get('_appearance')
                 });
                 this.layers.add([ spillLayer, spillLocLayer]);
@@ -567,7 +581,7 @@ define([
             var sp = webgnome.model.get('spills').findWhere({'id': id});
             var curscale = sp.get('_appearance').get('scale');
             sp.get('_appearance').set('scale', curscale * 1.3);
-            sp._locVis.billboard.scale = 1.3;
+            //sp._locVis.billboard.scale = 1.3;
             this.trigger('requestRender');
         },
 
@@ -576,7 +590,7 @@ define([
             var sp = webgnome.model.get('spills').findWhere({'id': id});
             var curscale = sp.get('_appearance').get('scale');
             sp.get('_appearance').set('scale', curscale / 1.3);
-            sp._locVis.billboard.scale = 1.0;
+            //sp._locVis.billboard.scale = 1.0;
             this.trigger('requestRender');
         },
 
