@@ -162,7 +162,7 @@ define([
                     prim.show = true;
                     this.$('.cesium-map').show();
                     this.resetCamera();
-                }, this))
+                }, this));
             }
         },
 
@@ -212,7 +212,7 @@ define([
         _loadCurrent: function(current) {
             var cur_id = current.get('id');
             if (this.currentPromises[cur_id]) {
-                return this.currentPromises[cur_id]
+                return this.currentPromises[cur_id];
             } else {
                 this.currentPromises[cur_id] = current.getGrid().then(_.bind(function(data){
                     var newPrim = current.processLines(data, false, this.currentMap.viewer.scene.primitives);
@@ -221,7 +221,7 @@ define([
                     this.currentPrims[cur_id] = newPrim;
                     console.log(newPrim.id);
                 }, this));
-                return this.currentPromises[cur_id]
+                return this.currentPromises[cur_id];
             }
         },
 
