@@ -46,6 +46,7 @@ define([
             //_.extend({}, BasePanel.prototype.events, this.events);
             _.extend(this.events, BasePanel.prototype.events);
             this.currentPrims = {};
+            this.currentPromises = {};
             this.listenTo(webgnome.model,
                           'change:duration chage:start_time',
                           this.rerender);
@@ -144,25 +145,24 @@ define([
         },
 
         changeDisplayedCurrent: function(e) {
-            if (_.isUndefined(this._loadPrimitivesPromise)) {
-                //too early to call this function, there's no currents loaded to change to!
-                return;
-            } else {
-                this._loadPrimitivesPromise.then(_.bind(function(){
-                    this.currentPrims[this.displayedCurrent.get('id')].show = false;
-                    var curId = e.currentTarget.getAttribute('data-id');
-                    var cur = webgnome.model.get('movers').findWhere({'id': curId});
-                    if (cur) {
-                        this.displayedCurrent = cur;
-                        var prim = this.currentPrims[cur.get('id')];
-                        if (_.isUndefined(prim)){
-                            console.error('Primitive for current '+ cur.get('name') + ' not found');
-                            return;
-                        }
-                        prim.show = true;
-                        this.resetCamera();
+            this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            this.$('.cesium-map').hide();
+            this.$('.loader').show();
+            var curId = e.currentTarget.getAttribute('data-id');
+            var cur = webgnome.model.get('movers').findWhere({'id': curId});
+            if (cur) {
+                this.displayedCurrent = cur;
+                this._loadCurrent(cur).then(_.bind(function(){
+                    this.$('.loader').hide();
+                    var prim = this.currentPrims[cur.get('id')];
+                    if (_.isUndefined(prim)){
+                        console.error('Primitive for current '+ cur.get('name') + ' not found');
+                        return;
                     }
-                },this));
+                    prim.show = true;
+                    this.$('.cesium-map').show();
+                    this.resetCamera();
+                }, this))
             }
         },
 
@@ -182,7 +182,6 @@ define([
             });
 
             this.$el.html(compiled);
-
             if (currents.length > 0) {
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
                 this.$('.panel-body').show({
@@ -192,24 +191,17 @@ define([
                             this.currentMap = CesiumView.getView('currents_panel');
                             this.currentMap.render();
                             this.displayedCurrent = currents[0];
-                            var p, cur_id;
-                            this._loadPrimitives([currents[0]]).then(_.bind(function() {
-                                //on first load, always display first current
-                                this.currentPrims[currents[0].get('id')].show = true;
-                                this.resetCamera(currents[0]);
-                                this._loadPrimitivesPromise = undefined;
-                                this._loadPrimitives(currents.slice(1));
-                                this.resetCamera(currents[0]);
+                            this._loadCurrent(currents[0]).then(_.bind(function() {
+                                this.$('.loader').hide();
+                                this.$('#mini-currentmap').show();
+                                this.resetCamera();
                             },this));
-                        } else {
-                            this._loadPrimitives(currents);
-                        }
+                        } 
                         this.$('#mini-currentmap').append(this.currentMap.$el);
                         this.trigger('render');
                     }, this)
                 });
-            }
-            else {
+            } else {
                 this.current_extents = [];
                 this.$('.panel-body').hide();
             }
@@ -217,55 +209,20 @@ define([
             BasePanel.prototype.render.call(this);
         },
 
-        _loadPrimitives: function(currents) {
-            //This promise populates this.currentPrims with any existing primitives in
-            //this panel's CesiumView, and if not found, creates new Primitives and adds them
-            //to both the CesiumView and this.currentPrims.
-            //This function exists to initialize this panel's state in the case where it is
-            //using a cached CesiumView
-            if (_.isUndefined(this._loadPrimitivesPromise)) {
-                var promises = [];
-                var ctxt;
-                for (var c = 0; c < currents.length; c++) {
-                    //To future me: I am so sorry for this. 
-                    ctxt = {panel: this,
-                            curs: currents,
-                            cidx: c,
-                            _: _
-                            };
-                    promises.push(new Promise(_.bind(function(resolve, reject){
-                        var scenePrims = this.panel.currentMap.viewer.scene.primitives;
-                        var cur_id, cur;
-                        cur = this.curs[this.cidx];
-                        cur_id = cur.get('id');
-                        for(var i = 0; i < scenePrims.length; i++) {
-                            if (scenePrims._primitives[i].id === cur_id) {
-                                this.panel.currentPrims[cur_id] = scenePrims._primitives[i];
-                                if (i > 0) {
-                                    this.panel.currentPrims[cur_id].show = false;
-                                } else {
-                                    this.panel.currentPrims[cur_id].show = true;
-                                }
-                                break;
-                            }
-                        }
-                        if (this._.isUndefined(this.panel.currentPrims[cur_id])) {
-                            cur.getGrid().then(this._.bind(function(data){
-                                var newPrim = this.curs[this.cidx].processLines(data, false, this.panel.currentMap.viewer.scene.primitives);
-                                newPrim.id = this.curs[this.cidx].get('id');
-                                newPrim.show = false;
-                                this.panel.currentPrims[cur_id] = newPrim;
-                                console.log(newPrim.id);
-                                resolve(newPrim);
-                            }, this)).catch(reject); //this == ctxt
-                        } else {
-                            resolve(this.panel.currentPrims[cur_id]);
-                        }
-                    }, ctxt)));
-                }
-                this._loadPrimitivesPromise = Promise.all(promises);
+        _loadCurrent: function(current) {
+            var cur_id = current.get('id');
+            if (this.currentPromises[cur_id]) {
+                return this.currentPromises[cur_id]
+            } else {
+                this.currentPromises[cur_id] = current.getGrid().then(_.bind(function(data){
+                    var newPrim = current.processLines(data, false, this.currentMap.viewer.scene.primitives);
+                    newPrim.id = cur_id;
+                    newPrim.show = true;
+                    this.currentPrims[cur_id] = newPrim;
+                    console.log(newPrim.id);
+                }, this));
+                return this.currentPromises[cur_id]
             }
-            return this._loadPrimitivesPromise;
         },
 
         getForm: function(obj_type) {
