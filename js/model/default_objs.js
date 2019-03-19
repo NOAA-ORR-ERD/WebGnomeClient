@@ -92,7 +92,7 @@ define([
                 if(!this.get('wind')) {
                     this.set('wind', mod.get('wind'));
                 }
-                if(!this.get('wind')) {
+                if(!this.get('water')) {
                     this.set('water', mod.get('water'));
                 }
                 if (!webgnome.model.get('environment').contains(mod)) {
