@@ -25,6 +25,9 @@ define([
             var active = e.target.checked;
             var id = this.getID(e);
             var current = webgnome.model.get('movers').get(id);
+            if (_.isUndefined(current)) {
+                current = webgnome.model.get('weatherers').get(id);
+            }
             current.set('on',active);
             webgnome.model.save();
         },
