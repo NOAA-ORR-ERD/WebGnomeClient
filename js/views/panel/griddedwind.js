@@ -102,7 +102,7 @@ define([
                 this.currentMap.close();
             }
 
-            BasePanel.prototype.close.call(this);
+            CurrentPanel.prototype.close.call(this);
         }
     });
 
