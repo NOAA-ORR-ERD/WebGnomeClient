@@ -41,6 +41,10 @@ define([
             'fullscreenchange #mini-locmap' : 'resetCamera'
         },
 
+        mapName: '#mini-currentmap',
+
+        template: CurrentPanelTemplate,
+
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
             //_.extend({}, BasePanel.prototype.events, this.events);
@@ -167,17 +171,11 @@ define([
         },
 
         render: function() {
-            var currents = webgnome.model.get('movers').filter(function(mover) {
-                return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
-                    'gnome.movers.py_current_movers.PyCurrentMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover'
-                ].indexOf(mover.get('obj_type')) !== -1;
-            });
+            var currents = webgnome.model.get('movers').filter(_.bind(function(mover) {
+                return this.models.indexOf(mover.get('obj_type')) !== -1;
+            }, this));
 
-            var compiled = _.template(CurrentPanelTemplate, {
+            var compiled = _.template(this.template, {
                 currents: currents
             });
 
@@ -193,11 +191,11 @@ define([
                             this.displayedCurrent = currents[0];
                             this._loadCurrent(currents[0]).then(_.bind(function() {
                                 this.$('.loader').hide();
-                                this.$('#mini-currentmap').show();
+                                this.$(this.mapName).show();
                                 this.resetCamera();
                             },this));
                         } 
-                        this.$('#mini-currentmap').append(this.currentMap.$el);
+                        this.$(this.mapName).append(this.currentMap.$el);
                         this.trigger('render');
                     }, this)
                 });
