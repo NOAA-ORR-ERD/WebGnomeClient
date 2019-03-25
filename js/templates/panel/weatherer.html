@@ -17,6 +17,11 @@
                             <input type="checkbox" name="active" value="1" id="active"> {{ name }}
                         {% } %} </label>
                     </div>
+                    {% if(weatherers[i].get('wind')){ %}
+                    <div class="col-sm-2">
+                        <span class="label label-info">{{ weatherers[i].get('wind').get('name') }}</span>
+                    </div>
+                    {% } %}
                 </div>
             {% } %}
         </div>
