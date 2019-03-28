@@ -40,6 +40,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_environment',
                 maxFiles: 1,
+                maxFilesize: webgnome.config.upload_limits.current, // 2GB
                 acceptedFiles: '.cur, .txt',
                 dictDefaultMessage: 'Drop tide file here to upload (or click to navigate)'
             });

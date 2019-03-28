@@ -10,4 +10,11 @@
   },
   "session_timeout": "60",
   "afk_timeout": "72 * 60"
+  "upload_limits": {
+    "save": 2048,
+    "current": 1024,
+    "wind": 100,
+    "gridwind": 1024,
+    "map": 10
+  }
 }

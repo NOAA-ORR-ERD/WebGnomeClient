@@ -46,6 +46,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_model',
                 maxFiles: 1,
+                maxFilesize: webgnome.config.upload_limit.save, // 2GB
                 acceptedFiles: '.zip',
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });

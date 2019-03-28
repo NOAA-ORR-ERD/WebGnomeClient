@@ -63,7 +63,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
-                maxFilesize: 2048,  // MB
+                maxFilesize: webgnome.config.upload_limits.current,  // MB
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)'
             });
 
