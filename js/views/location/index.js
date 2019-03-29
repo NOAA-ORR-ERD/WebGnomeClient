@@ -209,7 +209,7 @@ define([
                             placement: 'top',
                             html: true,
                             title: feature.properties.title,
-                            content: content
+                            content: $(content)
                         });
                         this.$('.popup').popover('show');
                     }

@@ -5,7 +5,9 @@
         Currents
     </div>
     <div class="panel-body">
-        <div class="map" id="mini-currentmap"></div>
+        <div class="map" id="mini-currentmap">
+            <div class="loader"></div>
+        </div>
         <div class="list">
             {% for (var i = 0; i < currents.length; i++){ %}
                 <div class="single row" data-id="{{ currents[i].get('id') }}">

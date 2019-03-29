@@ -1376,7 +1376,29 @@ nav.navbar{
             height: 200px;
         }
     }
-    &.current{
+    &.current, &.griddedwind{
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            position: absolute;
+            height: 200px;
+            width: 200px;
+            left: 200px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         .map{
             height: 200px;
             margin: -15px -15px 0 -15px;

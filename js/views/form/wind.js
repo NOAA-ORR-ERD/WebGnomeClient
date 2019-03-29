@@ -476,6 +476,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_mover',
                 maxFiles: 1,
+                maxFilesize: webgnome.config.upload_limits.wind, // 2GB
                 //acceptedFiles: '.osm, .wnd, .txt, .dat',
                 dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
             });
