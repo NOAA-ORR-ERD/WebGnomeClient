@@ -230,10 +230,10 @@ define([
         },
 
         isReleaseValid: function(map) {
-            var sa = map.get('spillable_area');
             var error = 'Start or End position are outside of supported area';
-            var within = d3.polygonContains(sa.flat(), this.get('start_position'));
-            if (!within) {
+            var start_within = this.testVsSpillableArea(this.get('start_position'), map);
+            var end_within = this.testVsSpillableArea(this.get('end_position'), map);
+            if (!start_within || !end_within) {
                 return error;
             }
         },
@@ -252,7 +252,16 @@ define([
 
         testVsSpillableArea: function(point, map) {
             var sa = map.get('spillable_area');
-            return d3.polygonContains(sa.flat(), point);
+            if (sa[0].length != 2) { //multiple SA polygons
+                for (var i = 0; i < sa.length; i++) {
+                    if (d3.polygonContains(sa[i], point)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return d3.polygonContains(sa, point);
+            }
         },
 
         validateAmount: function(attrs) {
