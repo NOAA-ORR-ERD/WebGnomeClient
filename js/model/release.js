@@ -252,7 +252,7 @@ define([
 
         testVsSpillableArea: function(point, map) {
             var sa = map.get('spillable_area');
-            if (sa[0].length != 2) { //multiple SA polygons
+            if (sa[0].length !== 2) { //multiple SA polygons
                 for (var i = 0; i < sa.length; i++) {
                     if (d3.polygonContains(sa[i], point)) {
                         return true;
