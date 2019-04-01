@@ -17,12 +17,11 @@ define([
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
-    'model/element',
     'model/movers/wind',
     'views/form/wind'
 ], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView, SkimListView,
-            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, ElementModel, WindmoverModel, WindForm){
+            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindmoverModel, WindForm){
     var responseView = BaseView.extend({
         className: 'response-view',
         children: [],
@@ -255,23 +254,21 @@ define([
             waterForm.render();
         },
 
-        renderOilLibrary: function() {
-            var element_type;
-            if (webgnome.model.getElementType()){
-                element_type = webgnome.model.getElementType();
-            } else {
-                element_type = new ElementModel();
-            }
-            var oilLib = new OilLibraryView({}, element_type);
-            oilLib.on('save wizardclose', _.bind(function(){
-                if(oilLib.$el.is(':hidden')){
+        renderOilLibrary: function(e) {
+            //this will be bugged
+            var substance = new GnomeOil();
+            var oilLib = new OilLibraryView({}, substance);
+
+            oilLib.on('save wizardclose', _.bind(function() {
+                if (oilLib.$el.is(':hidden')) {
                     oilLib.close();
-                } else {
+                    webgnome.model.setGlobalSubstance(substance);
+                }
+                else {
                     oilLib.once('hidden', oilLib.close, oilLib);
                 }
-                webgnome.obj_ref[element_type.id] = element_type;
-                this.render();
             }, this));
+
             oilLib.render();
         },
 

@@ -18,7 +18,6 @@ define([
     'views/form/spill/instant',
     'views/form/spill/continue',
     'views/form/wind',
-    'model/element',
     'model/movers/wind',
     'text!templates/model/fate/buttons.html',
     'text!templates/model/fate/breakdown_item.html',
@@ -37,7 +36,7 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate,
             RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm,
-            WindForm, ElementModel, WindmoverModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
+            WindForm, WindmoverModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';
     var fateView = BaseView.extend({
         className: 'fate-view',
@@ -200,7 +199,7 @@ define([
                     this.$('.spill').addClass('missing');
                 }
 
-                if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
+                if(!webgnome.model.getSubstance()){
                     this.$('.substance').addClass('missing');
                 }
 
@@ -259,22 +258,20 @@ define([
         },
 
         renderOilLibrary: function() {
-            var element_type;
-            if (webgnome.model.getElementType()){
-                element_type = webgnome.model.getElementType();
-            } else {
-                element_type = new ElementModel();
-            }
-            var oilLib = new OilLibraryView({}, element_type);
-            oilLib.on('save wizardclose', _.bind(function(){
-                if(oilLib.$el.is(':hidden')){
+            //this will be bugged
+            var substance = new GnomeOil();
+            var oilLib = new OilLibraryView({}, substance);
+
+            oilLib.on('save wizardclose', _.bind(function() {
+                if (oilLib.$el.is(':hidden')) {
                     oilLib.close();
-                } else {
+                    webgnome.model.setGlobalSubstance(substance);
+                }
+                else {
                     oilLib.once('hidden', oilLib.close, oilLib);
                 }
-                webgnome.obj_ref[element_type.id] = element_type;
-                this.noWeathering();
             }, this));
+
             oilLib.render();
         },
 
@@ -379,7 +376,7 @@ define([
             BaseView.prototype.render.call(this);
             var compiled;
             var spills = webgnome.model.get('spills');
-            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
+            var substance = webgnome.model.get('spills').at(0).get('substance');
             var wind = webgnome.model.get('weatherers').findWhere({obj_type: 'gnome.weatherers.evaporation.Evaporation'}).get('wind');
             var wind_speed;
             var time = this.getXaxisLabel();
@@ -813,10 +810,10 @@ define([
             };
             var converter = new nucos.OilQuantityConverter();
             var spill = webgnome.model.get('spills').at(0);
-            var substance = spill.get('element_type').get('substance');
+            var substance = spill.get('substance');
             var substance_density;
 
-            substance_density = spill.get('element_type').get('standard_density');
+            substance_density = substance.get('standard_density');
 
             var from_unit = spill.get('units');
             var to_unit = display.released;
@@ -1177,8 +1174,8 @@ define([
 
         convertDataset: function(d, to_unit, single){
             var dataset = $.extend(true, [], d);
-            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var substance = webgnome.model.get('spills').at(0).get('substance');
+            var density = webgnome.model.get('spills').at(0).get('standard_density');
             var from_unit = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
             var data;
@@ -1398,8 +1395,8 @@ define([
             var from_units = webgnome.model.get('spills').at(0).get('units');
             var to_units = this.$('#ics209 .vol-units').val() === null ? from_units : this.$('#ics209 .vol-units').val();
             var converter = new nucos.OilQuantityConverter();
-            var substance = webgnome.model.get('spills').at(0).get('element_type').get('substance');
-            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var substance = webgnome.model.get('spills').at(0).get('substance');
+            var density = webgnome.model.get('spills').at(0).get('standard_density');
             var dataset = this.pluckDataset(this.dataset, ['natural_dispersion', 'amount_released', 'chem_dispersed', 'evaporated', 'floating', 'burned', 'skimmed', 'sedimentation', 'beached', 'dissolution']);
             var report = {
                 spilled: 0,
@@ -1713,7 +1710,7 @@ define([
 
             var date = moment(step.get('WeatheringOutput').time_stamp);
             var units = webgnome.model.get('spills').at(0).get('units');
-            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var density = webgnome.model.get('spills').at(0).get('substance').get('standard_density');
             var converter = new nucos.OilQuantityConverter();
             var water = webgnome.model.get('environment').findWhere({'obj_type': 'gnome.environment.water.Water'});
             var waterDensity = water.getDensity();
