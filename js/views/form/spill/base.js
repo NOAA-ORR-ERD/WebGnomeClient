@@ -154,12 +154,7 @@ define([
 
             if (substance) {
                 this.clearError();
-
-                substance.fetch({
-                    success: _.bind(function(model, res, options){
-                        this.renderSubstanceInfo(null, model);
-                    }, this)
-                });
+                this.renderSubstanceInfo(null, substance);
             }
         },
 

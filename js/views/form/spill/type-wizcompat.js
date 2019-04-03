@@ -8,6 +8,9 @@ define([
         instant: function(){
             var spill = new GnomeSpill();
             var spillForm = new InstantSpill(null, spill);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             this.on('hidden', function(){
                 spillForm.render();
             });
