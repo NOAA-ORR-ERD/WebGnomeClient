@@ -200,7 +200,7 @@ define([
                     this.$('.spill').addClass('missing');
                 }
 
-                if(!webgnome.model.getSubstance()){
+                if(!webgnome.model.getSubstance().get('is_weatherable')){
                     this.$('.substance').addClass('missing');
                 }
 
@@ -407,7 +407,7 @@ define([
 
             var templateObj;
 
-            if (!_.isNull(substance)){
+            if (substance.get('is_weatherable')){
                 var pour_point;
                 var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
                 var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;

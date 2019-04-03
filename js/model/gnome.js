@@ -723,12 +723,19 @@ define([
             var spills = this.get('spills');
             _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
             this.save();
+            webgnome.obj_ref['substance'] = substance;
+            if (spills.length == 0) {
+                this.trigger('change');
+            }
         },
 
         getSubstance: function(){
             if(this.get('spills').length > 0){
                 return this.get('spills').at(0).get('substance');
             } else {
+                if (webgnome.obj_ref['substance']) {
+                    return webgnome.obj_ref['substance'];
+                }
                 for(var i in webgnome.obj_ref){
                     if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
                        webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.GnomeOil'){
@@ -736,7 +743,8 @@ define([
                     }
                 }
             }
-            return new NonWeatheringSubstance();
+            webgnome.obj_ref['substance'] = new NonWeatheringSubstance();
+            return webgnome.obj_ref['substance'];
         },
 
         getWinds: function(){
