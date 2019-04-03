@@ -7,6 +7,7 @@ define([
     'moment',
     'nucos',
     'model/step',
+    'model/spill/gnomeoil',
     'text!templates/model/fate.html',
     'text!templates/model/ics209.html',
     'text!templates/default/export.html',
@@ -34,7 +35,7 @@ define([
     'flotneedle',
     'moment-round',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, FateTemplate, ICSTemplate, ExportTemplate,
+], function($, _, Backbone, module, BaseView, moment, nucos, GnomeStep, GnomeOil, FateTemplate, ICSTemplate, ExportTemplate,
             RiskModel, RiskFormWizard, OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm,
             WindForm, WindmoverModel, ButtonsTemplate, BreakdownTemplate, NoWeatheringTemplate, html2canvas, swal){
     'use strict';

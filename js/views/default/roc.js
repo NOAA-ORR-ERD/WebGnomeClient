@@ -11,7 +11,7 @@ define([
     'views/form/spill/continue',
     'views/form/water',
     'views/form/wind',
-    'model/element',
+    'model/spill/gnomeoil',
     'model/environment/water',
     'model/environment/wind',
     'model/weatherers/roc_skim',
@@ -22,7 +22,7 @@ define([
     'views/form/response/roc_disperse'
 ], function($, _, Backbone, moment, ROCTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm,
-        ElementType, Water, Wind,
+        GnomeOil, Water, Wind,
         RocSkimmerModel, RocBurnModel, RocDisperseModel,
         RocSkimmerForm, RocBurnForm, RocDisperseForm){
     'use strict';

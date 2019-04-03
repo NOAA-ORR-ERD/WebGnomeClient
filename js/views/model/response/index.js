@@ -18,10 +18,11 @@ define([
     'views/form/spill/instant',
     'views/form/spill/continue',
     'model/movers/wind',
+    'model/spill/gnomeoil',
     'views/form/wind'
 ], function($, _, Backbone, swal, moment, nucos, module,
             BaseView, ResponseTemplate, NoResponseTemplate, BurnResponseListView, DisperseListView, SkimListView,
-            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindmoverModel, WindForm){
+            OilLibraryView, WaterForm, SpillTypeForm, SpillInstantForm, SpillContinueForm, WindmoverModel, GnomeOil, WindForm){
     var responseView = BaseView.extend({
         className: 'response-view',
         children: [],
@@ -64,7 +65,7 @@ define([
                 this.$('.spill').addClass('missing');
             }
 
-            if(!webgnome.model.getElementType() || !webgnome.model.getElementType().get('substance')){
+            if(!webgnome.model.getSubstance().get('is_weatherable')){
                 this.$('.substance').addClass('missing');
             }
 
