@@ -117,6 +117,7 @@ define([
                 if (oilLib.$el.is(':hidden')) {
                     oilLib.close();
                     webgnome.model.setGlobalSubstance(substance);
+                    this.render();
                 }
                 else {
                     oilLib.once('hidden', oilLib.close, oilLib);
