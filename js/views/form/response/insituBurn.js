@@ -63,7 +63,7 @@ define([
             var burnDuration;
 
             if(substance.get('is_weatherable')) {
-                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
+                var waterFract = substance.get('emulsion_water_fraction_max');
                 burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
             else {

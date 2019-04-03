@@ -1,9 +1,10 @@
 define([
+    'underscore',
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
     'model/spill/spill'
-], function(SpillTypeForm, InstantSpill, ContSpill, GnomeSpill){
+], function(_,SpillTypeForm, InstantSpill, ContSpill, GnomeSpill){
     var SpillForm = SpillTypeForm.extend({
         instant: function(){
             var spill = new GnomeSpill();

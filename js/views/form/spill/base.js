@@ -276,9 +276,9 @@ define([
             }
 
             var oilExists = substance.get('is_weatherable');
-
+            var cachedOilArray;
             if (oilExists) {
-                var cachedOilArray = this.updateCachedOils(substance);
+                cachedOilArray = this.updateCachedOils(substance);
                 compiled = _.template(SubstanceTemplate, {
                     size: this.showGeo ? '12': '6',
                     name: substance.get('name'),
@@ -389,7 +389,7 @@ define([
         },
 
         emulsionUpdate: function() {
-            var substance = this.model
+            var substance = this.model;
             var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
 
             if (manualVal !== '' && !_.isUndefined(substance)) {
