@@ -46,6 +46,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_map',
                 maxFiles: 1,
+                maxFilesize: webgnome.config.upload_limits.map, // 2GB
                 //acceptedFiles: '.bna',
                 dictDefaultMessage: 'Drop <code>.bna</code> file here to upload (or click to navigate)'
             });

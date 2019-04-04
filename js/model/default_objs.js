@@ -92,7 +92,7 @@ define([
                 if(!this.get('wind')) {
                     this.set('wind', mod.get('wind'));
                 }
-                if(!this.get('wind')) {
+                if(!this.get('water')) {
                     this.set('water', mod.get('water'));
                 }
                 if (!webgnome.model.get('environment').contains(mod)) {
@@ -126,7 +126,7 @@ define([
             weatherer.save();
         },
 
-        weatheringValid: function() {
+        weatheringValid: _.debounce(function() {
             if (this.get('hasSubstance') &&
                 !_.isUndefined(this.get('waves')) &&
                 !_.isNull(this.get('waves')) &&
@@ -138,7 +138,7 @@ define([
             } else {
                 this.trigger('weatheringOff');
             }
-        }
+        }, 250, false)
     });
     return defaultObjs;
 });
