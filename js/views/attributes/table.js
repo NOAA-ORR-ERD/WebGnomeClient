@@ -63,7 +63,7 @@ define([
             if(type === 'number'){
                 value = parseFloat(value);
             } else if (type === 'array'){
-                value = JSON.parse('[' + value + ']');
+                value = value.split(',');
             }
             this.model.set(attribute, value, {silent: true});
         }
