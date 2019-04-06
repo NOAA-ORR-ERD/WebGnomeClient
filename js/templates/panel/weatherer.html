@@ -15,9 +15,11 @@
                         <input type="checkbox" name="active" value="1" id="active"> Evaporation
                     {% } %} </label>
                 </div>
+                {% if(evaporation.get('wind')){ %}
                 <div class="col-sm-2">
                     <span class="label label-info">{{ evaporation.get('wind').get('name') }}</span>
                 </div>
+                {% } %}
             </div>
             <div class="single row" data-id="{{ dispersion.get('id') }}">
                 <div class="col-sm-8">

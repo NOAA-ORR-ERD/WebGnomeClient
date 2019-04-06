@@ -28,6 +28,7 @@ define([
                 uncertain: model.get('uncertain'),
                 start_time: moment(model.get('start_time'))
                                    .format(webgnome.config.date_format.moment),
+                time_step: model.get('time_step'),
                 duration: duration
             });
 
@@ -90,6 +91,10 @@ define([
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
 
             webgnome.model.set('duration', duration);
+
+            var time_step = this.$('#time_step').val();
+            time_step = Math.min(Math.max(time_step, 1), duration);
+            webgnome.model.set('time_step', time_step);
 
             var uncertain = this.$('#uncertain:checked').val();
             webgnome.model.set('uncertain', _.isUndefined(uncertain) ? false : true);
