@@ -30,9 +30,15 @@ define([
                     'gnome.weatherers.dissolution.Dissolution',
                 ].indexOf(weatherer.get('obj_type')) !== -1;
             });
+            var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'})
+            var dispersion = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.natural_dispersion.NaturalDispersion'})
+            var emulsification = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.emulsification.Emulsification'})
 
             var compiled = _.template(WeathererPanelTemplate, {
-                weatherers: weatherers
+                weatherers: weatherers,
+                evaporation: evaporation,
+                dispersion: dispersion,
+                emulsification: emulsification
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
