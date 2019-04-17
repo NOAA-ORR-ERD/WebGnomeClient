@@ -71,7 +71,8 @@ define([
         applyPresetScale: function(e) {
             console.log(e);
             var value = this.$(e.currentTarget).val();
-            var scale = _.findWhere(this.model.get('preset_scales'), {name: value});
+            var data = this.model.get('data');
+            var scale = _.findWhere(this.model.get('preset_scales'), {name: value, data: data});
             var colormap = this.model.get('colormap');
             var newColormap = scale.colormap;
             colormap.set(scale.colormap, {silent:true});
