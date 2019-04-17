@@ -27,7 +27,7 @@ define([
                 start_time: moment(this.model.get('start_time')).format(webgnome.config.date_format.moment),
                 duration: this.model.formatDuration(),
                 uncertain: this.model.get('uncertain'),
-                time_steps: this.model.get('time_step') / 60,
+                time_step: this.model.get('time_step'),
                 name: this.model.get('name'),
                 mode: this.model.get('mode')
             });
@@ -50,6 +50,10 @@ define([
             var hours = this.$('#hours').val();
             var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
             this.model.set('duration', duration);
+
+            var time_step = this.$('#time_step').val();
+            time_step = Math.min(Math.max(time_step, 1), duration);
+            webgnome.model.set('time_step', time_step);
 
             var name = this.$('#name').val();
             this.model.set('name', name);
