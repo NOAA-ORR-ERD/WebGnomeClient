@@ -58,7 +58,7 @@ define([
             this.on('change:substance', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
 
-            this.listenTo(this, 'change', this.initializeDataVis);
+            //this.listenTo(this, 'change', this.initializeDataVis);
 
             this.addListeners();
 

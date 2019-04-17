@@ -67,7 +67,8 @@ define([
                 burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
             else {
-                burnDuration = webgnome.model.get('time_step');
+                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
+                burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
 
             this.model.set('active_range',

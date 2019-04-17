@@ -10,6 +10,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',
+            'active_range': ['-inf', 'inf'],
             'efficiency': 0.20,
             'waves': null,
         },
@@ -22,9 +23,9 @@ define([
             if (_.isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0) {
                 return 'Percent of oil sprayed must be greater than zero!';
             }
-
+           
             if (attrs.active_range[0] === attrs.active_range[1]) {
-                return 'Duration must be an input!';
+                return "Duration must be inputted!";
             }
         },
 
