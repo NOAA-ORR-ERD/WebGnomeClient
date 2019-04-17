@@ -62,7 +62,7 @@ define([
             var element_type = webgnome.model.getElementType();
             var burnDuration;
 
-            if(element_type===false) {
+            if(!element_type) {
                 burnDuration = webgnome.model.get('time_step');
             }
             else {
