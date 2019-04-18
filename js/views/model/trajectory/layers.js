@@ -228,7 +228,7 @@ define([
 
             // Before rendering HTML, save expand state of previous control groups
             var show = {panel:false, map:false, spill:false, env:false};
-            if (this.$('.expanded', this.el)[0]) {
+            if (this.$('.in', this.el)[0]) {
                 show.panel = true;
                 if (this.$('#map_display', this.el).hasClass('in')) {
                     show.map = true;
@@ -253,7 +253,7 @@ define([
 
             //Expand newly rendered control groups as necessary
             if (show.panel) {
-                this.$('.layers', this.$el).addClass('expanded');
+                this.$('.layers', this.$el).addClass('in');
             }
             if (show.map) {
                 this.$('#map_display', this.$el).collapse('show');
