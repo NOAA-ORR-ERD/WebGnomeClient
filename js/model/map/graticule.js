@@ -200,7 +200,7 @@ define([
                     this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions : Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
@@ -263,7 +263,7 @@ define([
                                     positions: Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
                                                                                   i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
                                                                                   i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
@@ -283,7 +283,7 @@ define([
                 this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions: Cesium.Cartesian3.fromDegreesArray(latLinePoints),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
