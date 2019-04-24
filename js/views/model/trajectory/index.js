@@ -305,6 +305,7 @@ define([
                 },
             });
             this.viewer.resolutionScale = window.devicePixelRatio;
+            this.viewer.scene.postProcessStages.fxaa.enabled = false;
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
@@ -314,7 +315,6 @@ define([
             this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
-            this.viewer.scene.postProcessStages.fxaa.enabled = false;
             this.viewer.scene.pickTranslucentDepth = true;
             this.load();
 /*

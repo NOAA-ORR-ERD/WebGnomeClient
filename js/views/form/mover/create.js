@@ -5,17 +5,19 @@ define([
     'views/modal/form',
     'views/uploads/upload_folder',
     'model/movers/cats',
+    'views/form/mover/cats',
     'model/movers/grid_current',
     'model/movers/py_current',
     'text!templates/form/mover/create.html',
     'text!templates/uploads/upload.html',
     'text!templates/uploads/upload_activate.html',
     'dropzone',
-    'text!templates/default/dropzone.html'
+    'text!templates/default/dropzone.html',
+    'views/default/dzone',
 ], function($, _, module, FormModal, UploadFolder,
-            CatsMover, GridCurrentMover, PyCurrentMover,
+            CatsMover, CatsMoverForm, GridCurrentMover, PyCurrentMover,
             CreateMoverTemplate, UploadTemplate, UploadActivateTemplate,
-            Dropzone, DropzoneTemplate) {
+            Dropzone, DropzoneTemplate, Dzone) {
     var createMoverForm = FormModal.extend({
         className: 'modal form-modal current-form',
         title: 'Create Current Mover',
@@ -33,6 +35,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
 
+            this.listenTo(this, 'hide', this.close);
             this.body = _.template(CreateMoverTemplate);
         },
 
@@ -49,34 +52,20 @@ define([
         },
 
         setupUpload: function(obj_type) {
+            this.obj_type = obj_type;
             this.$('#upload_form').empty();
-
-            if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate, {page: false}));
-            }
-            else {
-                this.$('#upload_form').append(_.template(UploadTemplate));
-            }
-
-            this.dropzone = new Dropzone('.dropzone', {
-                url: webgnome.config.api + '/mover/upload',
+            this.dzone = new Dzone({
                 previewTemplate: _.template(DropzoneTemplate)(),
-                paramName: 'new_mover',
-                maxFiles: 1,
+                maxFiles: 255,
                 maxFilesize: webgnome.config.upload_limits.current,  // MB
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)'
+                //autoProcessQueue: false,
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate).\n Alternatively, drop filelist.txt for enforced file ordering',
+                //gnome options
+                obj_type: obj_type,
             });
+            this.$('#upload_form').append(this.dzone.$el);
 
-            this.dropzone.on('sending', _.bind(this.sending, {obj_type: obj_type}));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
-
-            if (webgnome.config.can_persist) {
-                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
-                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
-                this.uploadFolder.render();
-            }
+            this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
         grid: function() {
@@ -91,33 +80,7 @@ define([
             this.nextStep(PyCurrentMover.prototype.defaults.obj_type);
         },
 
-        sending: function(e, xhr, formData, obj_type) {
-            formData.append('session', localStorage.getItem('session'));
-            formData.append('obj_type', this.obj_type);
-            formData.append('persist_upload',
-                            $('input#persist_upload')[0].checked);
-        },
-
-        progress: function(e, percent) {
-            if (percent === 100) {
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
-            }
-        },
-
-        reset: function(file, err) {
-            //var errObj = JSON.parse(err);
-            console.error(err);
-            this.$('.dz-error-message span')[0].innerHTML = err;
-            //this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
-
-            setTimeout(_.bind(function() {
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 3000);
-    },
-
-    close: function() {
+        close: function() {
             if (this.dropzone) {
                 this.dropzone.disable();
                 $('input.dz-hidden-input').remove();
@@ -126,31 +89,58 @@ define([
             FormModal.prototype.close.call(this);
         },
 
-        loaded: function(file, response) {
-            var json_response = JSON.parse(response);
-            var mover;
+        loaded: function(fileList) {
+            this.$.post(webgnome.config.api + '/mover/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': this.obj_type,
+                 'name': this.dzone.dropzone.files[0].name,
+                }
+            )
+            .done(_.bind(function(response) {
+                var json_response = JSON.parse(response);
+                var mover;
 
-            if (json_response && json_response.obj_type) {
-                if (json_response.obj_type === GridCurrentMover.prototype.defaults().obj_type) {
-                    mover = new GridCurrentMover(json_response, {parse: true});
-                }
-                else if (json_response.obj_type === CatsMover.prototype.defaults().obj_type) {
-                    mover = new CatsMover(json_response, {parse: true});
-                }
-                else if (json_response.obj_type === PyCurrentMover.prototype.defaults.obj_type) {
-                    mover = new PyCurrentMover(json_response, {parse: true});
+                if (json_response && json_response.obj_type) {
+                    if (json_response.obj_type === GridCurrentMover.prototype.defaults().obj_type) {
+                        mover = new GridCurrentMover(json_response, {parse: true});
+                    }
+                    else if (json_response.obj_type === CatsMover.prototype.defaults().obj_type) {
+                        mover = new CatsMover(json_response, {parse: true});
+                    }
+                    else if (json_response.obj_type === PyCurrentMover.prototype.defaults.obj_type) {
+                        mover = new PyCurrentMover(json_response, {parse: true});
+                    }
+                    else {
+                        console.error('Mover type not recognized: ', json_response.obj_type);
+                    }
+                    console.log(mover);
+                    webgnome.model.get('movers').add(mover);
+
+                    if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
+                        webgnome.model.get('environment').add(mover.get('current'));
+                    }
+
+                    webgnome.model.save(null, {validate: false}).then(_.bind(function() {
+                        if (mover.get('obj_type') === 'gnome.movers.current_movers.CatsMover') {
+                            var form = new CatsMoverForm(null, mov);
+
+                            form.on('save', function() {
+                                form.on('hidden', form.close);
+                            });
+
+                            form.on('wizardclose', form.close);
+
+                            form.render();    
+                        }
+                    }, this));
                 }
                 else {
-                    console.error('Mover type not recognized: ', json_response.obj_type);
+                    console.error('No response to file upload');
                 }
 
-                this.trigger('save', mover);
-            }
-            else {
-                console.error('No response to file upload');
-            }
-
-            this.hide();
+                this.hide();
+            }, this));
+            //this.trigger('save');
         },
 
         activateFile: function(filePath) {

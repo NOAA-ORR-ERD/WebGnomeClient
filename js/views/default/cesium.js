@@ -8,44 +8,49 @@ define([
     var cesiumView = BaseView.extend({
         className: 'cesium-map',
         id: 'cesium-map',
-        options: {
-            animation: false,
-            baseLayerPicker: false,
-            vrButton: false,
-            geocoder: false,
-            fullscreenButton: false,
-            homeButton: false,
-            timeline: false,
-            sceneModePicker: false,
-            infoBox: false,
-            selectionIndicator : false,
-            targetFrameRate: 30,
-            navigationHelpButton: false,
-            navigationInstructionsInitiallyVisible: false,
-            skyAtmosphere: false,
-            sceneMode: Cesium.SceneMode.SCENE2D,
-            mapProjection: new Cesium.WebMercatorProjection(),
-            clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
-               canAnimate: false,
-               shouldAnimate: false
-            })),
-            imageryProvider : Cesium.createOpenStreetMapImageryProvider({
-                url : 'https://a.tile.openstreetmap.org/'
-            }),
-            contextOptions: {
-                webgl:{
-                    preserveDrawingBuffer: false,
+        options: function() {
+            return {
+                animation: false,
+                baseLayerPicker: false,
+                vrButton: false,
+                geocoder: false,
+                fullscreenButton: false,
+                homeButton: false,
+                timeline: false,
+                sceneModePicker: false,
+                infoBox: false,
+                selectionIndicator : false,
+                targetFrameRate: 30,
+                navigationHelpButton: false,
+                navigationInstructionsInitiallyVisible: false,
+                skyAtmosphere: false,
+                sceneMode: Cesium.SceneMode.SCENE2D,
+                mapProjection: new Cesium.WebMercatorProjection(),
+                clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
+                   canAnimate: false,
+                   shouldAnimate: false
+                })),
+                imageryProvider : Cesium.createOpenStreetMapImageryProvider({
+                    url : 'https://a.tile.openstreetmap.org/'
+                }),
+                contextOptions: {
+                    webgl:{
+                        preserveDrawingBuffer: false,
+                    },
                 },
-            },
-            requestRenderMode: true
+                requestRenderMode: true
+            };
         },
 
         initialize: function(options){
-            _.defaults(this.options, options);
+            _.defaults(options, this.options());
+            this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
-            this.viewer = new Cesium.Viewer(this.el, this.options);
+            this.viewer = new Cesium.Viewer(this.el, options);
             this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.highDynamicRange = false;
+            this.viewer.resolutionScale = window.devicePixelRatio;
+            this.viewer.scene.postProcessStages.fxaa.enabled = false;
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
