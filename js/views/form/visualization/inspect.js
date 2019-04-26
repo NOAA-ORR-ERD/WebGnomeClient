@@ -29,7 +29,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.layer = layer;
-            this.title = 'Edit '+ layer.model.get('name') +' (' + layer.model.get('obj_type').split('.').pop() + ') Appearance';
+            this.title = 'Edit Layer Properties: '+ layer.model.get('name');
             this.appearanceModelsUsed = [];
         },
 

@@ -1,7 +1,7 @@
 <div class="form-row">
     <div class="form-group">
         <label class="col-sm-3 control-label" for="data">Data Source</label>
-        <div class="col-sm-3 appearance-edit">
+        <div class="col-sm-5 appearance-edit">
             <select class="form-control form-control-sm" name="data">
             {% for (var i = 0; i < titles.length; i++) { %}
                 <option name="data" {{titles[i] === model.get('data') ? "selected=true" : ""}}>{{titles[i]}}</option>
@@ -20,9 +20,9 @@
 <div class="form-row">
     <div class="form-group">
         <label class="col-sm-3 control-label" for="presets">Preset Scale</label>
-        <div class="col-sm-3 presets">
+        <div class="col-sm-5 presets">
             <select class="form-control form-control-sm">
-                <option class='preset_default' selected></option>
+                <option class='preset_default' selected>Choose one...</option>
                 {% for (var i = 0; i < presets.length; i++) { %}
                         <option>{{presets[i].name}}</option>
                 {% } %}
