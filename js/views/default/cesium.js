@@ -43,6 +43,9 @@ define([
         },
 
         initialize: function(options){
+            if (_.isUndefined(options)) {
+                options = {};
+            }
             _.defaults(options, this.options());
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';

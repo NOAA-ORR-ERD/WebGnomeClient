@@ -4047,7 +4047,7 @@ nav.navbar{
     }
 
     .dz-message{
-        padding: 100px 0;
+        padding: 50px 0;
         text-align: center;
         cursor: pointer;
         color: #ABABAB;
@@ -4056,7 +4056,7 @@ nav.navbar{
     .dz-preview{
         position: relative;
         text-align: center;
-        padding: 100px 0;
+        padding: 50px 0;
         border-radius: 4px;
 
         &.dz-uploaded{
@@ -4092,7 +4092,7 @@ nav.navbar{
             display: none;
 
             span{
-                padding: 100px 0;
+                padding: 50px 0;
                 display: block;
                 position: absolute;
                 top: 0;
@@ -4114,6 +4114,19 @@ nav.navbar{
         }
         .dz-size{
             display: inline-block;
+        }
+        .upload-success{
+            display: none;
+            text-align: center;
+            div {
+                .glyphicon;
+                .glyphicon-ok;
+                color: green;
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 30pt;
+            }
         }
     }
 }
@@ -4139,11 +4152,14 @@ nav.navbar{
 }
 
 .spinner {
-  margin: 100px auto;
+  top: 50%;
   width: 50px;
   height: 30px;
   text-align: center;
   font-size: 10px;
+  display: inline-block;
+  position: absolute;
+  margin: -15px -25px;
 
   > div {
     background-color: #67A2D5;

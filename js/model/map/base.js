@@ -20,22 +20,24 @@ define([
         geographical: false,
         map_cache : localforage.createInstance({name: 'Map Object Data Cache',
                                                  }),
-        defaults: {
-            obj_type: 'gnome.map.GnomeMap',
-            filename: '',
-            map_bounds: [
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ],
-            spillable_area: [[
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ]],
-            _appearance: new MapAppearance()
+        defaults: function() {
+            return {
+                obj_type: 'gnome.map.GnomeMap',
+                filename: '',
+                map_bounds: [
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ],
+                spillable_area: [[
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ]],
+                _appearance: new MapAppearance()
+            };
         },
 
         initialize: function(options) {
