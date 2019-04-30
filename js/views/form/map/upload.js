@@ -3,15 +3,10 @@ define([
     'jquery',
     'backbone',
     'views/modal/form',
-    'views/uploads/upload_folder',
-    'text!templates/uploads/upload.html',
-    'text!templates/uploads/upload_activate.html',
-    'dropzone',
-    'text!templates/default/dropzone.html',
+    'views/default/dzone',
     'model/map/bna'
-], function(_, $, Backbone, FormModal, UploadFolder,
-            UploadTemplate, UploadActivateTemplate,
-            Dropzone, DropzoneTemplate, MapBNAModel) {
+], function(_, $, Backbone, FormModal,
+            Dzone, MapBNAModel) {
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
         className: 'modal form-modal upload-form',
@@ -29,76 +24,40 @@ define([
         },
 
         initialize: function(options){
-            if (webgnome.config.can_persist) {
-                this.body = _.template(UploadActivateTemplate, {page: false});
-            } else {
-                this.body = _.template(UploadTemplate);
-            }
-
             FormModal.prototype.initialize.call(this, options);
         },
 
         render: function(){
+            this.body = _.template('<div id="upload_form"></div>')()
             FormModal.prototype.render.call(this);
 
-            this.dropzone = new Dropzone('.dropzone', {
-                url: webgnome.config.api + '/map/upload',
-                previewTemplate: _.template(DropzoneTemplate)(),
-                paramName: 'new_map',
+            this.dzone = new Dzone({
                 maxFiles: 1,
-                maxFilesize: webgnome.config.upload_limits.map, // 2GB
+                maxFilesize: webgnome.config.upload_limits.map,
+                autoProcessQueue:true,
                 //acceptedFiles: '.bna',
                 dictDefaultMessage: 'Drop <code>.bna</code> file here to upload (or click to navigate)'
             });
-            this.dropzone.on('sending', _.bind(this.sending, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
+            this.$('#upload_form').append(this.dzone.$el);
 
-            if (webgnome.config.can_persist) {
-	            this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
-                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
-	            this.uploadFolder.render();
-            }
+            this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        sending: function(e, xhr, formData){
-            formData.append('session', localStorage.getItem('session'));
-            formData.append('persist_upload',
-                            $('input#persist_upload')[0].checked);
-        },
-
-        progress: function(e, percent){
-            if(percent === 100){
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
-            }
-        },
-
-        reset: function(file, err){
-            var errObj = JSON.parse(err);
-            console.error(errObj);
-
-            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
-                                                             ': ' +
-                                                             errObj.message);
-
-            setTimeout(_.bind(function(){
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 3000);
-        },
-
-        close: function(){
-            this.dropzone.disable();
-            $('input.dz-hidden-input').remove();
-            Backbone.View.prototype.close.call(this);
-        },
-
-        loaded: function(e, response){
-            var map = new MapBNAModel(JSON.parse(response));
-            this.trigger('save', map);
-            this.hide();
+        loaded: function(fileList){
+            $.post(webgnome.config.api + '/map/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': MapBNAModel.prototype.defaults().obj_type,
+                 'name': this.dzone.dropzone.files[0].name,
+                 'session': localStorage.getItem('session')
+                }
+            ).done(_.bind(function(response) {
+                var map = new MapBNAModel(JSON.parse(response));
+                webgnome.model.set('map', map);
+                webgnome.model.save();
+                this.close();
+            }, this)).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
         },
 
         activateFile: function(filePath) {

@@ -33,13 +33,6 @@ define([
 
         new: function(){
             var windForm = new WindForm();
-            windForm.on('hidden', windForm.close);
-            windForm.on('save', _.bind(function(windMover){
-                webgnome.model.get('movers').add(windMover);
-                webgnome.model.get('environment').add(windMover.get('wind'));
-                webgnome.model.save(null, {validate: false});
-            }, this));
-            
             windForm.render();
         },
 
