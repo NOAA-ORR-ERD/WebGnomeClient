@@ -186,7 +186,7 @@ define([
                     duration: 10,
                     done: _.bind(function(){
                         if (!this.currentMap){
-                            this.currentMap = CesiumView.getView('currents_panel');
+                            this.currentMap = CesiumView.getView(this.className);
                             this.currentMap.render();
                             this.displayedCurrent = currents[0];
                             this._loadCurrent(currents[0]).then(_.bind(function() {
