@@ -127,6 +127,7 @@ define([
             
             this.direction_last_appended = 'down';
             this.heldPin = null;
+            this.listenTo(this, 'hidden.bs.modal', this.close);
         },
 
         render: function(options) {
@@ -1064,10 +1065,8 @@ define([
             }
 
             if (this.dzone) {
-                this.dzone.dropzone.disable();
+                this.dzone.close();
             }
-            
-            $('input.dz-hidden-input').remove();
 
             FormModal.prototype.close.call(this);
         },

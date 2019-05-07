@@ -25,6 +25,7 @@ define([
                 'click .cats': 'cats',
                 'click .py_grid': 'py_grid',
                 'click .save': 'proceed',
+                'click .cancel': 'close',
             }, FormModal.prototype.events);
         },
 
@@ -62,6 +63,7 @@ define([
             this.$('#upload_form').append(this.dzone.$el);
 
             this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
+            this.listenTo(this.dzone, 'activate-file', _.bind(this.loaded, this));
         },
 
         grid: function() {
@@ -83,18 +85,17 @@ define([
 
         close: function() {
             if (this.dzone) {
-                this.dzone.dropzone.disable();
-                $('input.dz-hidden-input').remove();
+                this.dzone.close();
             }
 
             FormModal.prototype.close.call(this);
         },
 
-        loaded: function(fileList) {
+        loaded: function(fileList, name) {
             $.post(webgnome.config.api + '/mover/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': this.obj_type,
-                 'name': this.dzone.dropzone.files[0].name,
+                 'name': name,
                  'session': localStorage.getItem('session')
                 }
             )

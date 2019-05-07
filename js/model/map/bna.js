@@ -1,6 +1,7 @@
 define([
+    'underscore',
     'model/map/base'
-], function(BaseMap){
+], function(_, BaseMap){
     var mapBnaModel = BaseMap.extend({
         geographical: true,
 

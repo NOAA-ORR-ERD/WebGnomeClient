@@ -29,7 +29,7 @@ define([
                 obj_type: undefined,
                 filelist: false,
                 kwargs: {},
-            }
+            };
         },
 
         initialize: function(options) {
@@ -40,7 +40,7 @@ define([
             if (options.autoProcessQueue) {
                 this.$('.confirm').hide();
             }
-            this.orderedFileList = []
+            this.orderedFileList = [];
         },
 
         render: function(options) {
@@ -56,7 +56,7 @@ define([
                 this.$el.append(_.template(UploadTemplate));
             }
 
-            this.options.params = this.sending
+            this.options.params = this.sending;
 
             this.dropzone = this.$('.dropzone').dropzone(this.options)[0].dropzone;
 
@@ -65,9 +65,10 @@ define([
             this.dropzone.on('complete', _.bind(this.complete, this));
             this.dropzone.on('error', _.bind(this.uploadError, this));
 
+
             if (webgnome.config.can_persist) {
                 this.uploadFolder = new UploadFolder({el: this.$(".upload-folder")});
-                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
+                this.listenTo(this.uploadFolder, 'activate-file', _.bind(function(filelist, name){ this.trigger('upload_complete', filelist, name);}, this));
                 this.uploadFolder.render();
             }
         },
@@ -77,7 +78,7 @@ define([
             params.action = 'upload_files';
             params.session = localStorage.getItem('session');
             params.persist_upload = $('input#persist_upload')[0].checked;
-            return params
+            return params;
         },
 
         processSuccess(file, response) {
@@ -86,13 +87,13 @@ define([
                 console.error('shouldnt happen!');
             }
             if (this.dropzone.files.length === this.dropzone.getFilesWithStatus('success').length) {
-                this.trigger('upload_complete', _.pluck(this.dropzone.files, 'serverFilename'));
+                this.trigger('upload_complete', _.pluck(this.dropzone.files, 'serverFilename'), this.dropzone.files[0].name);
             }
-            console.log(this.dropzone.getFilesWithStatus('success'))
+            console.log(this.dropzone.getFilesWithStatus('success'));
         },
 
         complete(e) {
-            var elem = e.previewElement
+            var elem = e.previewElement;
             $('.spinner', elem).hide();
             $('.upload-success', elem).show();
             console.log(e);
@@ -133,26 +134,28 @@ define([
             }
             $('.dz-progress', fileElems.first()).hide();
             $('.dz-loading', fileElems.first()).hide();
+            var message = JSON.parse(jqXHR.response);
             if (jqXHR.status === 415) {
                 //Expound on the specific error here.
                 if (errorThrown === 'Unsupported Media Type') {
                     errorThrown = 'Failed to create requested object from file';
                 }
             }
-            this.dropzone.emit('error', this.dropzone.files[0], errorThrown)
+            this.dropzone.emit('error', this.dropzone.files[0], errorThrown);
             //$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
         },
 
-        activateFile: function(filePath) {
-            if (this.$('.popover').length === 0) {
-                var thisForm = this;
-
-                $.post('/environment/activate', {'file-name': filePath})
-                 .done(function(response) {
-                    thisForm.loaded(filePath, response);
-                });
+        close:  function() {
+            if (this.uploadFolder) {
+                this.uploadFolder.close();
             }
+            if (this.dropzone) {
+                this.dropzone.disable();
+                $('input.dz-hidden-input').remove();
+            }
+
+            BaseView.prototype.close.call(this);
         },
     });
     return advancedUploadView;

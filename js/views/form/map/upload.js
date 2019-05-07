@@ -13,14 +13,17 @@ define([
         buttons: '<div class="btn btn-danger" data-dismiss="modal">Cancel</div>',
 
         events: function(){
+            /*
             var formModalHash = FormModal.prototype.events;
 
             delete formModalHash['change input'];
             delete formModalHash['keyup input'];
             formModalHash['change input:not(tbody input)'] = 'update';
             formModalHash['keyup input:not(tbody input)'] = 'update';
-
-            return _.defaults({}, formModalHash);
+            */
+            return _.defaults({
+                'click .cancel': 'close'
+            }, FormModal.prototype.events);
         },
 
         initialize: function(options){
@@ -28,7 +31,7 @@ define([
         },
 
         render: function(){
-            this.body = _.template('<div id="upload_form"></div>')()
+            this.body = _.template('<div id="upload_form"></div>')();
             FormModal.prototype.render.call(this);
 
             this.dzone = new Dzone({
@@ -58,6 +61,13 @@ define([
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
+        },
+        close: function() {
+            if (this.dzone) {
+                this.dzone.close();
+            }
+
+            FormModal.prototype.close.call(this);
         },
 
         activateFile: function(filePath) {

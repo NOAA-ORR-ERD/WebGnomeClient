@@ -16,6 +16,7 @@ define([
         events: function() {
             return _.defaults({
                 'click .gridwind': 'gridwind',
+                'click .cancel': 'close',
             }, FormModal.prototype.events);
         },
 
@@ -99,8 +100,7 @@ define([
 
         close: function() {
             if (this.dzone) {
-                this.dzone.dropzone.disable();
-                $('input.dz-hidden-input').remove();
+                this.dzone.close();
             }
 
             FormModal.prototype.close.call(this);
