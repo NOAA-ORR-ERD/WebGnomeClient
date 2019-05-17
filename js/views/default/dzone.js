@@ -117,7 +117,7 @@ define([
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeAllFiles();
-            }, this), 3000);
+            }, this), 30000);
         },
 
         reset: function(jqXHR, textStatus, errorThrown) {
@@ -134,14 +134,16 @@ define([
             }
             $('.dz-progress', fileElems.first()).hide();
             $('.dz-loading', fileElems.first()).hide();
-            var message = JSON.parse(jqXHR.response);
+            var err = JSON.parse(jqXHR.responseText);
+            var message = $('<div>');
             if (jqXHR.status === 415) {
                 //Expound on the specific error here.
                 if (errorThrown === 'Unsupported Media Type') {
-                    errorThrown = 'Failed to create requested object from file';
+                    message.append($('<div>').append('Failed to create requested object from file')[0]);
                 }
             }
-            this.dropzone.emit('error', this.dropzone.files[0], errorThrown);
+            message = message.append($('<div>').append(err.message[0]))[0]
+            this.dropzone.emit('error', this.dropzone.files[0], message.outerHTML);
             //$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
         },

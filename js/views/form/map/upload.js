@@ -22,7 +22,8 @@ define([
             formModalHash['keyup input:not(tbody input)'] = 'update';
             */
             return _.defaults({
-                'click .cancel': 'close'
+                'click .cancel': 'close',
+                'click .save': 'proceed'
             }, FormModal.prototype.events);
         },
 
@@ -46,11 +47,11 @@ define([
             this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        loaded: function(fileList){
+        loaded: function(fileList, name){
             $.post(webgnome.config.api + '/map/upload',
                 {'file_list': JSON.stringify(fileList),
                  'obj_type': MapBNAModel.prototype.defaults().obj_type,
-                 'name': this.dzone.dropzone.files[0].name,
+                 'name': name,
                  'session': localStorage.getItem('session')
                 }
             ).done(_.bind(function(response) {

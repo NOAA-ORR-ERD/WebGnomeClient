@@ -63,7 +63,6 @@ define([
             this.$('#upload_form').append(this.dzone.$el);
 
             this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
-            this.listenTo(this.dzone, 'activate-file', _.bind(this.loaded, this));
         },
 
         grid: function() {
