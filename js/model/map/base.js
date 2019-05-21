@@ -107,6 +107,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -120,6 +121,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE,
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -281,7 +283,8 @@ define([
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -2
+                            height: -2,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
@@ -295,7 +298,8 @@ define([
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -1
+                            height: -1,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))
