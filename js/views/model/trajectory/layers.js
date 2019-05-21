@@ -138,7 +138,7 @@ define([
                 id: 'imagery-osm',
                 visObj: new Cesium.createOpenStreetMapImageryProvider({
                     layers: '1',
-                    url : '//a.tile.openstreetmap.org/',
+                    url : 'https://a.tile.openstreetmap.org/',
                 })
             });
             this.layers.add(this.layers.sat);
@@ -423,7 +423,7 @@ define([
                     id: 'imagery-osm',
                     visObj: new Cesium.createOpenStreetMapImageryProvider({
                         layers: '1',
-                        url : '//a.tile.openstreetmap.org/',
+                        url : 'https://a.tile.openstreetmap.org/',
                     })
                 });
                 this.layers.add(this.layers.sat);
