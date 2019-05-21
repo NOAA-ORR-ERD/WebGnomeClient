@@ -565,8 +565,10 @@ define([
             }
             var mod = new InspectForm(null, l);
             mod.render();
+            var idx = setInterval(_.bind(function(){ this.trigger('requestRender'); }, this), 250);
             this.listenTo(mod, 'rerender', this.render);
             this.listenTo(mod, 'rerender', _.bind(function() {this.trigger('requestRender');}, this));
+            this.listenTo(mod, 'hidden', function() {clearInterval(idx);});
         },
 
         changeName: function(e) {

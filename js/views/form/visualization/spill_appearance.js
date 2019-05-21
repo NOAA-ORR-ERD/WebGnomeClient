@@ -26,18 +26,18 @@ define([
         initialize: function(model, spill) {
             this.model = model;
             this.spill = spill;
+            this.colormapModel = this.model.get('colormap');
 
             this.addListeners();
             this.model.setUnitConversionFunction(undefined,
                                                  this.model.get('units'));
-
-            this.colormapModel = this.model.get('colormap');
             this.render();
         },
 
         addListeners: function() {
             this.listenTo(this.model, 'change:data', this.rerender);
             this.listenTo(this.model, 'changedMapType', this.rerender);
+            this.listenTo(this.colormapModel, 'change', _.bind(function(){this.spill.updateVis(this.model);}, this));
         },
 
         render: function() {
