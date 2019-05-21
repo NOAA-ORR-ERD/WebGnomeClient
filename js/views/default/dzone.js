@@ -142,7 +142,7 @@ define([
                     message.append($('<div>').append('Failed to create requested object from file')[0]);
                 }
             }
-            message = message.append($('<div>').append(err.message[0]))[0]
+            message = message.append($('<div>').append(err.message[0]))[0];
             this.dropzone.emit('error', this.dropzone.files[0], message.outerHTML);
             //$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +': ' + errObj.message);
 
