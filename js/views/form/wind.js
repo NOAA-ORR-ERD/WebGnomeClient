@@ -124,10 +124,9 @@ define([
                     this.$('.popover').popover('hide');
                 }
             }, this));
-            
+
             this.direction_last_appended = 'down';
             this.heldPin = null;
-            this.listenTo(this, 'hidden.bs.modal', this.close);
         },
 
         render: function(options) {
@@ -205,7 +204,7 @@ define([
 
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
-                this.updateTooltipWidth();                
+                this.updateTooltipWidth();
             }, this), 1);
 
             //$('.modal').on('scroll', this.variableWindStickyHeader);
@@ -512,7 +511,7 @@ define([
                 });
             }
         },
-    
+
         nwsLoad: function(model) {
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
@@ -566,7 +565,7 @@ define([
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
                 this.model.set('name', this.$('#name').val());
                 this.superModel.set('name', this.$('#name').val());
-                
+
                 this.$('.additional-wind-compass').remove();
             }
 
@@ -878,7 +877,7 @@ define([
 
                 var date = moment(this.$('.input-time').val(),
                                   'YYYY/MM/DD HH:mm').format('YYYY-MM-DDTHH:mm:00');
- 
+
                 if (direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null) {
                     direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
                 }
@@ -911,7 +910,7 @@ define([
             }
 
             this.addRowHelper(e, index, nextIndex, {'interval': interval});
-            
+
         },
 
         cancelTimeseriesEntry: function(e) {
@@ -1059,7 +1058,7 @@ define([
             $('.xdsoft_datetimepicker:last').remove();
             $('.xdsoft_datetimepicker:last').remove();
             $('.modal').off('scroll', this.variableWindStickyHeader);
-            
+
             if (this.nws) {
                 this.nws.cancel();
             }
