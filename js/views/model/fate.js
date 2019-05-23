@@ -896,13 +896,13 @@ define([
                                     value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
                                 } else if (display.other === 'percent'){
                                     if (dataset[0].data[row][1]===0){
-                                    	value = 0
+                                    	value = 0;
                                     } else{
                                     	value = Math.round(value / dataset[0].data[row][1] * 100);
                                 	}
                                 } else {
                                     if (dataset[0].data[row][1]===0){
-                                    	value = 0
+                                    	value = 0;
                                     } else{
                                     	value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
                                     }
