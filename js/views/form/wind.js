@@ -496,7 +496,7 @@ define([
                     console.error('No response to file upload');
                 }
 
-                this.close();
+                this.hide();
             }, this));
             //this.trigger('save');
         },

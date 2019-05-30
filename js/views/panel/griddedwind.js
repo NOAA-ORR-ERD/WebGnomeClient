@@ -30,6 +30,7 @@ define([
 
         new: function() {
             var form = new GriddedWindForm();
+            form.on('hidden', form.close);
             form.render();
         },
 

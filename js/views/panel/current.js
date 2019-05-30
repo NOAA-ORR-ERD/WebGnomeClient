@@ -65,8 +65,8 @@ define([
 
         new: function() {
             var form = new CreateMoverForm();
-/*
             form.on('hidden', form.close);
+/*
             form.on('save', _.bind(function(mover) {
                 mover.save(null, {
                     success: _.bind(function() {
