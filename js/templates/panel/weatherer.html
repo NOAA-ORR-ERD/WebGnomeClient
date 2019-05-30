@@ -15,11 +15,6 @@
                         <input type="checkbox" name="active" value="1" id="active"> Evaporation
                     {% } %} </label>
                 </div>
-                {% if(evaporation.get('wind')){ %}
-                <div class="col-sm-2">
-                    <span class="label label-info">{{ evaporation.get('wind').get('name') }}</span>
-                </div>
-                {% } %}
             </div>
             <div class="single row" data-id="{{ dispersion.get('id') }}">
                 <div class="col-sm-8">
@@ -39,6 +34,11 @@
                     {% } else { %}
                         <input type="checkbox" name="active" value="1" id="active"> Emulsification
                     {% } %} </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <span class="label label-info">{{ wind_name }}</span>
                 </div>
             </div>
             

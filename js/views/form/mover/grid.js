@@ -18,10 +18,13 @@ define([
 
         render: function(options) {
             var extrapolation_allowed = false;
-
+            var start_time;
+            var end_time;
             var current = this.model.get('current');
             if (current) {
                 extrapolation_allowed = current.get('extrapolation_is_allowed');
+                start_time = current.get('data_start');
+                end_time = current.get('data_stop');
             }
             else {
                 // The C++ based GridCurrentMover does not have a composed
@@ -34,7 +37,9 @@ define([
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: this.model.get('current_scale'),
-                extrapolation_is_allowed: extrapolation_allowed
+                extrapolation_is_allowed: extrapolation_allowed,
+                start_time: start_time,
+                end_time: end_time
             });
 
             FormModal.prototype.render.call(this, options);

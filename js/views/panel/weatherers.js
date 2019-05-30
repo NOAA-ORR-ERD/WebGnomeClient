@@ -17,8 +17,8 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
-            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.rerender);
-            this.listenTo(webgnome.model.get('weatherers'), 'change', this.rerender);
+            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
+            this.listenTo(webgnome.model.get('weatherers'), 'change', this.render);
         },
 
         render: function(){
@@ -33,12 +33,19 @@ define([
             var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
             var dispersion = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var emulsification = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.emulsification.Emulsification'});
-
+            
+            if (_.isNull(evaporation.get('wind'))) {
+                var wind_name = 'No wind';
+            } else {
+                var wind_name = evaporation.get('wind').get('name');
+            }
+            
             var compiled = _.template(WeathererPanelTemplate, {
                 weatherers: weatherers,
                 evaporation: evaporation,
                 dispersion: dispersion,
-                emulsification: emulsification
+                emulsification: emulsification,
+                wind_name: wind_name
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
