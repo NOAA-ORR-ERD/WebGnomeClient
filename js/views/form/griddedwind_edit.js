@@ -31,10 +31,11 @@ define([
             var extrapolation_allowed = false;
             var start_time;
             var end_time;
+            //var active_range;
             extrapolation_allowed = this.model.get('wind').get('extrapolation_is_allowed');
             start_time = this.model.get('wind').get('data_start');
             end_time = this.model.get('wind').get('data_stop');
-            active_range = this.model.get('wind').get('active_range')
+            //active_range = this.model.get('wind').get('active_range');
                 
             this.body = _.template(GriddedWindEditTemplate, {
                 name: this.model.get('name'),

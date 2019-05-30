@@ -34,10 +34,11 @@ define([
             var dispersion = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var emulsification = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.emulsification.Emulsification'});
             
+            var wind_name;
             if (_.isNull(evaporation.get('wind'))) {
-                var wind_name = 'No wind';
+                wind_name = 'No wind';
             } else {
-                var wind_name = evaporation.get('wind').get('name');
+                wind_name = evaporation.get('wind').get('name');
             }
             
             var compiled = _.template(WeathererPanelTemplate, {
