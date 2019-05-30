@@ -1,4 +1,4 @@
-
+﻿
 
 A Complete Annotated Example
 ############################
@@ -155,7 +155,7 @@ Instantaneous Release
 Continuous Release
 ..................
 
-  #. Click "Instantaneous Release"
+  #. Click "Continuous Release"
 
   #. Set the duration of the release. For this example, it should be set to 5 hours.
      The default is the duration of the model run -- make sure to reset that if you
