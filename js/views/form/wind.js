@@ -490,13 +490,13 @@ define([
                     webgnome.model.get('movers').add(mover);
                     webgnome.model.get('environment').add(mover.get('wind'));
 
-                    webgnome.model.save();
+                    webgnome.model.save({},{'validate': false});
                 }
                 else {
                     console.error('No response to file upload');
                 }
 
-                this.close();
+                this.hide();
             }, this));
             //this.trigger('save');
         },

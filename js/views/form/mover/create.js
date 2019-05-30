@@ -124,12 +124,12 @@ define([
                         webgnome.model.get('environment').add(mover.get('current'));
                     }
                     if (this.$('#immediate-edit')[0].checked) {
-                        webgnome.model.save().then(_.bind(function() {
+                        webgnome.model.save({}, {'validate': false}).then(_.bind(function() {
                             var form = new editform(null, this);
                             form.render();
                         }, mover));
                     } else {
-                        webgnome.model.save();
+                        webgnome.model.save({}, {'validate': false});
                     }
                 }
                 else {

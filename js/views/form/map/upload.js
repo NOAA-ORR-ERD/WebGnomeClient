@@ -56,9 +56,8 @@ define([
                 }
             ).done(_.bind(function(response) {
                 var map = new MapBNAModel(JSON.parse(response));
-                webgnome.model.set('map', map);
-                webgnome.model.save();
-                this.close();
+                webgnome.model.save('map', map, {'validate':false});
+                this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
