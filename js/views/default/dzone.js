@@ -64,7 +64,10 @@ define([
             this.dropzone.on('success', _.bind(this.processSuccess, this));
             this.dropzone.on('complete', _.bind(this.complete, this));
             this.dropzone.on('error', _.bind(this.uploadError, this));
-
+            
+            if (!this.options.autoProcessQueue) {
+                this.$('.confirm').show();
+            }
 
             if (webgnome.config.can_persist) {
                 this.uploadFolder = new UploadFolder({el: this.$(".upload-folder")});
