@@ -80,7 +80,9 @@ define([
             var params = {};
             params.action = 'upload_files';
             params.session = localStorage.getItem('session');
-            params.persist_upload = $('input#persist_upload')[0].checked;
+            if ( $('input#persist_upload').length > 0){
+                params.persist_upload = $('input#persist_upload')[0].checked;
+            }
             return params;
         },
 
