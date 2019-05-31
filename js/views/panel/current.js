@@ -65,8 +65,8 @@ define([
 
         new: function() {
             var form = new CreateMoverForm();
-
             form.on('hidden', form.close);
+/*
             form.on('save', _.bind(function(mover) {
                 mover.save(null, {
                     success: _.bind(function() {
@@ -92,7 +92,7 @@ define([
                     }, this)
                 });
             }, this));
-
+*/
             form.render();
         },
 
@@ -186,7 +186,7 @@ define([
                     duration: 10,
                     done: _.bind(function(){
                         if (!this.currentMap){
-                            this.currentMap = CesiumView.getView('currents_panel');
+                            this.currentMap = CesiumView.getView(this.className);
                             this.currentMap.render();
                             this.displayedCurrent = currents[0];
                             this._loadCurrent(currents[0]).then(_.bind(function() {

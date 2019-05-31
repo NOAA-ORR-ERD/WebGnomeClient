@@ -11,7 +11,7 @@ test:
         - cp config-example.json config.json
         - grunt build
     tags:
-        - nodejs
+        - nodejs-11
 
 master:
     stage: build

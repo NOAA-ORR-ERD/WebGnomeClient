@@ -20,22 +20,24 @@ define([
         geographical: false,
         map_cache : localforage.createInstance({name: 'Map Object Data Cache',
                                                  }),
-        defaults: {
-            obj_type: 'gnome.map.GnomeMap',
-            filename: '',
-            map_bounds: [
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ],
-            spillable_area: [[
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ]],
-            _appearance: new MapAppearance()
+        defaults: function() {
+            return {
+                obj_type: 'gnome.map.GnomeMap',
+                filename: '',
+                map_bounds: [
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ],
+                spillable_area: [[
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ]],
+                _appearance: new MapAppearance()
+            };
         },
 
         initialize: function(options) {
@@ -105,6 +107,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -118,6 +121,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE,
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -279,7 +283,8 @@ define([
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -2
+                            height: -2,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
@@ -293,7 +298,8 @@ define([
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -1
+                            height: -1,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))

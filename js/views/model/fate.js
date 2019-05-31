@@ -836,7 +836,7 @@ define([
                 var duration = moment.duration(ts_date.unix() - m_date.unix(), 'seconds');
                 var durationAsHrs = parseInt(duration.asHours(), 10);
 
-                if(ts_date.minutes() === 0 && (duration.asHours() < 7 ||
+                if(/*ts_date.minutes() === 0 &&*/ (duration.asHours() < 7 ||
                     duration.asHours() < 25 && duration.asHours() % 3 === 0 ||
                     duration.asHours() < 49 && duration.asHours() % 6 === 0 ||
                     duration.asHours() < 121 && duration.asHours() % 12 === 0 ||
@@ -895,9 +895,17 @@ define([
                                 if(display.other === 'same'){
                                     value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
                                 } else if (display.other === 'percent'){
-                                    value = Math.round(value / dataset[0].data[row][1] * 100);
+                                    if (dataset[0].data[row][1]===0){
+                                    	value = 0;
+                                    } else{
+                                    	value = Math.round(value / dataset[0].data[row][1] * 100);
+                                	}
                                 } else {
-                                    value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
+                                    if (dataset[0].data[row][1]===0){
+                                    	value = 0;
+                                    } else{
+                                    	value = Math.round(value / dataset[0].data[row][1] * 100) / 100;
+                                    }
                                 }
                             }
                             row_html += '<td style="background: ' + color + ';">' + value + '</td>';
@@ -924,7 +932,7 @@ define([
 
                 if(top > offset.top && this.$('#budget-table .sticky').length === 0){
                     // a sticky header to the table.
-                    $('<div class="container sticky"><div class="col-md-12"><table class="table" style="table-layout: fixed">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
+                    $('<div class="container sticky"><div class="col-md-12"><table class="table" style="table-layout: fixed; min-height: 100px;">' + this.$('#budget-table table:last').html() + '</table></div></div>').insertAfter('#budget-table table');
                 } else if(top <= offset.top && this.$('#budget-table .sticky').length > 0) {
                     // remove the sticky header from the table.
                     this.$('.sticky').remove();
@@ -1889,6 +1897,9 @@ define([
                 }
 
                 if(on){
+                    if (release_run_time < 0){
+                        release_run_time = 0;
+                    }
                     total_amount += release_run_time * release_per_second;
                 }
             }, this));

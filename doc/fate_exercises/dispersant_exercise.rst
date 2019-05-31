@@ -1,4 +1,4 @@
-
+﻿
 :orphan:
 
 Chemical Dispersant Exercise
@@ -40,7 +40,7 @@ Scenario Settings
 
   #. Click Scenario Settings
   #. Give the incident a name
-  #. Set the start time: 0700 on April 4th, 2016
+  #. Set the start time: 0700 on April 4th, 2017
   #. Set the model duration to 2 days
   #. Click Save
 
@@ -82,7 +82,7 @@ Ideally, you would find a field data for water temp in the region, perhaps from 
 
 ``http://www.ndbc.noaa.gov/``
 
-As of May 9, 2017, the water temp south of Mobile is 75.6 F (station 42012).
+As of April 4, 2017, the water temp south of Mobile is 75.6 F (station 42012).
 
 Or use an approximation for the season
 
@@ -129,7 +129,7 @@ can address this issue by using the Oil Viscosity Graph.
 
  #. Click the Weathering tab to see the oil properties graphs.
  #. Click the Viscosity tab to see how the viscosity of the oil is changing with time.
- #. Notice that after about 12 hours, dispersability is restricted. The effectiveness of
+ #. Notice that after about 8 hours, dispersability is restricted. The effectiveness of
     dispersants will be questionable. Ask your SSC for further guidance.
 
 

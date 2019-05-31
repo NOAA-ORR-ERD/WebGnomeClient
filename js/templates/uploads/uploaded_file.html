@@ -1,4 +1,8 @@
-<tr>
+{% if(file.get('type') === 'd') { %}
+<tr class='upload-d'>
+{% } else { %}
+<tr class='upload-f'>
+{% } %}
     <td>
         {% if(file.get('type') === 'd') { %}
             <i class="glyphicon glyphicon-folder-close"></i>
