@@ -64,7 +64,10 @@ define([
             this.dropzone.on('success', _.bind(this.processSuccess, this));
             this.dropzone.on('complete', _.bind(this.complete, this));
             this.dropzone.on('error', _.bind(this.uploadError, this));
-
+            
+            if (!this.options.autoProcessQueue) {
+                this.$('.confirm').show();
+            }
 
             if (webgnome.config.can_persist) {
                 this.uploadFolder = new UploadFolder({el: this.$(".upload-folder")});
@@ -77,7 +80,9 @@ define([
             var params = {};
             params.action = 'upload_files';
             params.session = localStorage.getItem('session');
-            params.persist_upload = $('input#persist_upload')[0].checked;
+            if ( $('input#persist_upload').length > 0){
+                params.persist_upload = $('input#persist_upload')[0].checked;
+            }
             return params;
         },
 
