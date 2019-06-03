@@ -53,10 +53,10 @@ define([
             this.currentPromises = {};
             this.listenTo(webgnome.model,
                           'change:duration chage:start_time',
-                          this.rerender);
+                          this.render);
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
-                          this.rerender);
+                          this.render);
             this.mozResetCamera = _.bind(function(e){
                 this.resetCamera(e);
                 document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
@@ -201,6 +201,7 @@ define([
                 });
             } else {
                 this.current_extents = [];
+                this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel-body').hide();
             }
 
@@ -242,6 +243,7 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed) {
                 if (isConfirmed) {
+                    //Model changes
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
 
@@ -254,12 +256,20 @@ define([
                             }
                         }
                     }
-
                     webgnome.model.get('movers').remove(id);
-
                     webgnome.model.save(null, {
                         validate: false
                     });
+                    //Cleanup map view
+                    if(this.currentPromises[id]) {
+                        delete this.currentPromises[id];
+                    }
+                    if (this.currentPrims[id]) {
+                        this.currentMap.viewer.scene.primitives.remove(this.currentPrims[id]);
+                        delete this.currentPrims[id];
+                    }
+                    this.currentMap = undefined;
+
                 }
             }, this));
         },
