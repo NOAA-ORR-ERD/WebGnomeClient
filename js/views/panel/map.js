@@ -134,10 +134,6 @@ define([
             mapForm.on('select', _.bind(function(form){
                 mapForm.on('hidden', _.bind(function(){
                     form.on('hidden', form.close);
-                    form.on('save', _.bind(function(map){
-                        webgnome.model.set('map', map);
-                        webgnome.model.save(null, {validate: false});
-                    }, this));
                     form.render();
                 }, this));
             }, this));

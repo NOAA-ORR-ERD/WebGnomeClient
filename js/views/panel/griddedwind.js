@@ -31,17 +31,6 @@ define([
         new: function() {
             var form = new GriddedWindForm();
             form.on('hidden', form.close);
-
-            form.on('save', _.bind(function(mover) {
-                webgnome.model.get('movers').add(mover);
-
-                if (mover.attributes.obj_type === 'gnome.movers.py_wind_movers.PyWindMover') {
-                    webgnome.model.get('environment').add(mover.get('wind'));
-                }
-
-                webgnome.model.save(null, {validate: false});
-            }, this));
-
             form.render();
         },
 

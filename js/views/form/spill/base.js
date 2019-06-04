@@ -410,26 +410,6 @@ define([
             // this.setCoords();
         },
 
-        setCoords: function() {
-            var startLat = this.$('#start-lat').val() ? this.$('#start-lat').val() : '0';
-            var startLon = this.$('#start-lon').val() ? this.$('#start-lon').val() : '0';
-            var endLat = this.$('#end-lat').val() ? this.$('#end-lat').val() : null;
-            var endLon = this.$('#end-lon').val() ? this.$('#end-lon').val() : null;
-            var end_position;
-
-            var start_position = [parseFloat(startLon), parseFloat(startLat), 0];
-
-            if (_.isNull(endLat) || _.isNull(endLon)) {
-                end_position = [parseFloat(startLon), parseFloat(startLat), 0];
-            }
-            else {
-                end_position = [parseFloat(endLon), parseFloat(endLat), 0];
-            }
-
-            this.model.get('release').set('start_position', start_position);
-            this.model.get('release').set('end_position', end_position);
-        },
-
         initOilLib: function() {
             if (_.isUndefined(this.oilLibraryView)) {
                 var subs;

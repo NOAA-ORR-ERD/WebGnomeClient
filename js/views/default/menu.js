@@ -67,9 +67,7 @@ define([
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
-            
-            'click .run': 'run',
-            'click .rewind': 'rewind',
+
             // 'click .step': 'step',
             // 'click .rununtil': 'rununtil',
             

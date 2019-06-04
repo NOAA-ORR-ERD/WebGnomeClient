@@ -29,13 +29,21 @@ define([
 
         render: function(options) {
             var extrapolation_allowed = false;
+            var start_time;
+            var end_time;
+            //var active_range;
             extrapolation_allowed = this.model.get('wind').get('extrapolation_is_allowed');
-            
+            start_time = this.model.get('wind').get('data_start');
+            end_time = this.model.get('wind').get('data_stop');
+            //active_range = this.model.get('wind').get('active_range');
+                
             this.body = _.template(GriddedWindEditTemplate, {
                 name: this.model.get('name'),
                 active: this.model.get('on'),
                 scale_value: this.model.get('wind_scale'),
                 extrapolation_is_allowed: extrapolation_allowed,
+                start_time: start_time,
+                end_time: end_time                
             });
 
             FormModal.prototype.render.call(this);

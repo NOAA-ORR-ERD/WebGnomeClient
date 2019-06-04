@@ -138,7 +138,7 @@ define([
                 id: 'imagery-osm',
                 visObj: new Cesium.createOpenStreetMapImageryProvider({
                     layers: '1',
-                    url : '//a.tile.openstreetmap.org/',
+                    url : 'https://a.tile.openstreetmap.org/',
                 })
             });
             this.layers.add(this.layers.sat);
@@ -228,7 +228,7 @@ define([
 
             // Before rendering HTML, save expand state of previous control groups
             var show = {panel:false, map:false, spill:false, env:false};
-            if (this.$('.expanded', this.el)[0]) {
+            if (this.$('.in', this.el)[0]) {
                 show.panel = true;
                 if (this.$('#map_display', this.el).hasClass('in')) {
                     show.map = true;
@@ -253,7 +253,7 @@ define([
 
             //Expand newly rendered control groups as necessary
             if (show.panel) {
-                this.$('.layers', this.$el).addClass('expanded');
+                this.$('.layers', this.$el).addClass('in');
             }
             if (show.map) {
                 this.$('#map_display', this.$el).collapse('show');
@@ -423,7 +423,7 @@ define([
                     id: 'imagery-osm',
                     visObj: new Cesium.createOpenStreetMapImageryProvider({
                         layers: '1',
-                        url : '//a.tile.openstreetmap.org/',
+                        url : 'https://a.tile.openstreetmap.org/',
                     })
                 });
                 this.layers.add(this.layers.sat);
@@ -565,8 +565,10 @@ define([
             }
             var mod = new InspectForm(null, l);
             mod.render();
+            var idx = setInterval(_.bind(function(){ this.trigger('requestRender'); }, this), 250);
             this.listenTo(mod, 'rerender', this.render);
             this.listenTo(mod, 'rerender', _.bind(function() {this.trigger('requestRender');}, this));
+            this.listenTo(mod, 'hidden', function() {clearInterval(idx);});
         },
 
         changeName: function(e) {

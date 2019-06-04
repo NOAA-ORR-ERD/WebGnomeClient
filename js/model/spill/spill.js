@@ -633,22 +633,23 @@ define([
                 var bbs = this.les._billboards;
                 var newColor, i;
 
-                var changedAttrs = appearance.changedAttributes();
-                if (changedAttrs) {
-                    for (i = 0; i < bbs.length; i++) {
-                        bbs[i].scale = appearance.get('scale');
-                        bbs[i].show = appearance.get('les_on');
-                    }
-
-                    this.setColorScales();
-                    this.colorLEs();
-
-                    if ('pin_on' in changedAttrs) {
-                        for (i = 0 ; i < this._locVis.values.length; i++) {
-                            this._locVis.values[i].show = appearance.get('pin_on');
-                        }
-                    }
+                //var changedAttrs = appearance.changedAttributes();
+                //if (changedAttrs) {
+                var scale = appearance.get('scale');
+                var show = appearance.get('les_on');
+                for (i = 0; i < bbs.length; i++) {
+                    bbs[i].scale = scale;
+                    bbs[i].show = show;
                 }
+
+                this.setColorScales();
+                this.colorLEs();
+
+                    //if ('pin_on' in changedAttrs) {
+                for (i = 0 ; i < this._locVis.values.length; i++) {
+                    this._locVis.values[i].show = appearance.get('pin_on');
+                }
+                    //}
             }
         },
     });

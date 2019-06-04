@@ -66,7 +66,7 @@ define([
                 this.$(e.currentTarget).css('background-color', 'white');
                 var type = this.$(e.currentTarget).attr('type');
                 this.model.set(attribute, value, {silent: true});
-            } catch {
+            } catch (err){
                 this.$(e.currentTarget).css('background-color', 'lightpink');
             }
         }

@@ -1,4 +1,4 @@
-##################################
+﻿##################################
 Example Scenario with Manual Setup
 ##################################
 
@@ -9,7 +9,7 @@ This example will use the following files. These files were all obtained through
 GNOME Data Server :doc:`GOODS <../goods>` at http://gnome.orr.noaa.gov/goods
 
 * Map :download:`LA_shoreline.bna <LA_shoreline.bna>`
-* Winds :download:`Winds.nws <Winds.nws>`
+* Winds (Point Wind) :download:`Winds.nws <Winds.nws>`
 * Currents :download:`LA_currents.nc <LA_currents.nc>`
 
 Incident
