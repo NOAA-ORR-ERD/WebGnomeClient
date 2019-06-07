@@ -474,6 +474,10 @@ define([
                 config_obj.api = domain + config_obj.api;
             }
 
+            if (!_.has(config_obj, 'socketio')){
+                config_obj.socketio = config_obj.api;
+            }
+
             if(config_obj.oil_api.match(/^\d*$/)) {
                 config_obj.oil_api = domain + config_obj.oil_api;
             }
