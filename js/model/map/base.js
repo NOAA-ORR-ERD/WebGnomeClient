@@ -76,8 +76,9 @@ define([
         },
 
         getBoundingRectangle: function() {
+            mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce((acc, val) => acc.concat(val), []);
             return new Promise(_.bind(function(resolve, reject) {
-                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())));
+                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
             }));
         },
 
@@ -279,10 +280,10 @@ define([
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    poly = land_polys[i];
+                    polyFlat = land_polys[i][0].reduce((acc, val) => acc.concat(val), []);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
-                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
                             height: -2,
                             arcType: Cesium.ArcType.RHUMB
                         }),
@@ -294,10 +295,10 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    poly = lake_polys[i];
+                    polyFlat = lake_polys[i][0].reduce((acc, val) => acc.concat(val), []);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
-                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
                             height: -1,
                             arcType: Cesium.ArcType.RHUMB
                         }),
