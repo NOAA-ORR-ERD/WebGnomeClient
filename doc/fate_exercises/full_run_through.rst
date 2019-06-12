@@ -46,7 +46,7 @@ If there is no in-situ data available, you can use climatology to get close.
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "Weathering Only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Oil Fate Wizard" under "Weathering Only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
 Scenario Settings
 -----------------
