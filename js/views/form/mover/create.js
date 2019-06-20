@@ -136,7 +136,7 @@ define([
                     console.error('No response to file upload');
                 }
 
-                this.close();
+                this.hide();
             }, this)).fail(
                 _.bind(this.dzone.reset, this.dzone)
             );
