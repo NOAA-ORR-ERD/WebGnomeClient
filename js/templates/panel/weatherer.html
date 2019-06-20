@@ -6,6 +6,43 @@
 	</div>
 	<div class="panel-body">
         <div class="list">
+            <div class="single row" data-id="{{ evaporation.get('id') }}">
+                <div class="col-sm-8">
+                    <label>
+                    {% if(evaporation.get('on')){ %}
+                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Evaporation
+                    {% } else { %}
+                        <input type="checkbox" name="active" value="1" id="active"> Evaporation
+                    {% } %} </label>
+                </div>
+            </div>
+            <div class="single row" data-id="{{ dispersion.get('id') }}">
+                <div class="col-sm-8">
+                    <label>
+                    {% if(dispersion.get('on')){ %}
+                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Natural Dispersion
+                    {% } else { %}
+                        <input type="checkbox" name="active" value="1" id="active"> Natural Dispersion
+                    {% } %} </label>
+                </div>
+            </div>
+            <div class="single row" data-id="{{ emulsification.get('id') }}">
+                <div class="col-sm-8">
+                    <label>
+                    {% if(emulsification.get('on')){ %}
+                        <input type="checkbox" name="active" value="1" id="active" checked="checked"> Emulsification
+                    {% } else { %}
+                        <input type="checkbox" name="active" value="1" id="active"> Emulsification
+                    {% } %} </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 text-right">
+                    <span class="label label-info">{{ wind_name }}</span>
+                </div>
+            </div>
+            
+<!--
             {% for (var i = 0; i < weatherers.length; i++){ %}
                 <div class="single row" data-id="{{ weatherers[i].get('id') }}">
                     {% var name = weatherers[i].get('name'); %}
@@ -24,6 +61,7 @@
                     {% } %}
                 </div>
             {% } %}
+-->
         </div>
 	</div>
 </div>

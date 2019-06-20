@@ -430,7 +430,7 @@ img{
     .env-uv-hdr{
         span{
             .glyphicon;
-            .glyphicon-move;
+            .glyphicon-arrow-up;
         }
         width: 1%;
     }
@@ -477,7 +477,7 @@ img{
     .spill-loc-hdr{
         span{
             .glyphicon;
-            .glyphicon-pushpin;
+            .glyphicon-map-marker;
         }
         width: 1%;
     }
@@ -962,9 +962,6 @@ nav.navbar{
                     }
                 }
             }
-            .spinner{
-                margin: 24px auto;
-            }
 
         }
         .app-menu{
@@ -1118,6 +1115,11 @@ nav.navbar{
 
 .page.roc{
     
+}
+
+#fate_output_table {
+    table-layout: fixed;
+    min-height: 100px;
 }
 
 .page.faq {
@@ -1683,7 +1685,6 @@ nav.navbar{
                     }
                 }
                 .panel-body{
-                    height: 250px;
                     display: block;
                 }
             }
@@ -3045,6 +3046,9 @@ nav.navbar{
     .breadcrumb{
         margin-top: 20px;
     }
+    .active {
+        border: lightgray 1px solid;
+    }
 }
 
 .map{
@@ -4028,6 +4032,7 @@ nav.navbar{
     border: 4px dashed #D2D2D2;
     border-radius: 4px;
     overflow: hidden;
+    margin-bottom: 5px;
     .transition(all .2s);
 
     .spinner{
@@ -4049,7 +4054,7 @@ nav.navbar{
     }
 
     .dz-message{
-        padding: 100px 0;
+        padding: 50px 0;
         text-align: center;
         cursor: pointer;
         color: #ABABAB;
@@ -4058,7 +4063,7 @@ nav.navbar{
     .dz-preview{
         position: relative;
         text-align: center;
-        padding: 100px 0;
+        padding: 50px 0;
         border-radius: 4px;
 
         &.dz-uploaded{
@@ -4094,7 +4099,7 @@ nav.navbar{
             display: none;
 
             span{
-                padding: 100px 0;
+                padding: 50px 0;
                 display: block;
                 position: absolute;
                 top: 0;
@@ -4109,6 +4114,7 @@ nav.navbar{
         .dz-loading{
             display: none;
             position: absolute;
+            width: 100%;
             top: 0;
             left: 0;
             right: 0;
@@ -4116,6 +4122,19 @@ nav.navbar{
         }
         .dz-size{
             display: inline-block;
+        }
+        .upload-success{
+            display: none;
+            text-align: center;
+            div {
+                .glyphicon;
+                .glyphicon-ok;
+                color: green;
+                position: absolute;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 30pt;
+            }
         }
     }
 }
@@ -4136,16 +4155,20 @@ nav.navbar{
             float: right;
             margin-top: 4px;
             padding-top: 0 !important;
-        }
+        }       
     }
 }
 
 .spinner {
-  margin: 100px auto;
+  top: 50%;
+  left:50%;
   width: 50px;
   height: 30px;
   text-align: center;
   font-size: 10px;
+  display: inline-block;
+  position: absolute;
+  margin: -15px -25px;
 
   > div {
     background-color: #67A2D5;

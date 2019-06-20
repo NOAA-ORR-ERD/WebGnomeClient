@@ -355,7 +355,7 @@ define([
                                 geo.push(new Cesium.GeometryInstance({
                                     geometry: new Cesium.SimplePolylineGeometry({
                                         positions: Cesium.Cartesian3.fromDegreesArray(lines.slice(curOffset, curOffset + lengths[segment]*2)),
-                                        followSurface: false,
+                                        arcType: Cesium.ArcType.RHUMB,
                                     }),
                                     attributes: {
                                         color: colorAttr

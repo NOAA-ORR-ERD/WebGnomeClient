@@ -53,10 +53,10 @@ define([
             this.currentPromises = {};
             this.listenTo(webgnome.model,
                           'change:duration chage:start_time',
-                          this.rerender);
+                          this.render);
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
-                          this.rerender);
+                          this.render);
             this.mozResetCamera = _.bind(function(e){
                 this.resetCamera(e);
                 document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
@@ -65,8 +65,8 @@ define([
 
         new: function() {
             var form = new CreateMoverForm();
-
             form.on('hidden', form.close);
+/*
             form.on('save', _.bind(function(mover) {
                 mover.save(null, {
                     success: _.bind(function() {
@@ -92,7 +92,7 @@ define([
                     }, this)
                 });
             }, this));
-
+*/
             form.render();
         },
 
@@ -186,7 +186,7 @@ define([
                     duration: 10,
                     done: _.bind(function(){
                         if (!this.currentMap){
-                            this.currentMap = CesiumView.getView('currents_panel');
+                            this.currentMap = CesiumView.getView(this.className);
                             this.currentMap.render();
                             this.displayedCurrent = currents[0];
                             this._loadCurrent(currents[0]).then(_.bind(function() {
@@ -201,6 +201,7 @@ define([
                 });
             } else {
                 this.current_extents = [];
+                this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel-body').hide();
             }
 
@@ -242,6 +243,7 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed) {
                 if (isConfirmed) {
+                    //Model changes
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
 
@@ -254,12 +256,20 @@ define([
                             }
                         }
                     }
-
                     webgnome.model.get('movers').remove(id);
-
                     webgnome.model.save(null, {
                         validate: false
                     });
+                    //Cleanup map view
+                    if(this.currentPromises[id]) {
+                        delete this.currentPromises[id];
+                    }
+                    if (this.currentPrims[id]) {
+                        this.currentMap.viewer.scene.primitives.remove(this.currentPrims[id]);
+                        delete this.currentPrims[id];
+                    }
+                    this.currentMap = undefined;
+
                 }
             }, this));
         },

@@ -62,12 +62,12 @@ define([
             var element_type = webgnome.model.getElementType();
             var burnDuration;
 
-            if(element_type.get('substance')) {
-                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
-                burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
+            if(!element_type) {
+                burnDuration = webgnome.model.get('time_step');
             }
             else {
-                burnDuration = webgnome.model.get('time_step');
+                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
+                burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
 
             this.model.set('active_range',

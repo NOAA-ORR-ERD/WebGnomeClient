@@ -20,22 +20,24 @@ define([
         geographical: false,
         map_cache : localforage.createInstance({name: 'Map Object Data Cache',
                                                  }),
-        defaults: {
-            obj_type: 'gnome.map.GnomeMap',
-            filename: '',
-            map_bounds: [
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ],
-            spillable_area: [[
-                [-180,-85.06],
-                [-180,85.06],
-                [180,85.06],
-                [180,-85.06],
-            ]],
-            _appearance: new MapAppearance()
+        defaults: function() {
+            return {
+                obj_type: 'gnome.map.GnomeMap',
+                filename: '',
+                map_bounds: [
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ],
+                spillable_area: [[
+                    [-180,-85.06],
+                    [-180,85.06],
+                    [180,85.06],
+                    [180,-85.06],
+                ]],
+                _appearance: new MapAppearance()
+            };
         },
 
         initialize: function(options) {
@@ -74,8 +76,9 @@ define([
         },
 
         getBoundingRectangle: function() {
+            let mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce((acc, val) => acc.concat(val), []);
             return new Promise(_.bind(function(resolve, reject) {
-                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(webgnome.model.get('map').get('map_bounds').flat())));
+                resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
             }));
         },
 
@@ -105,6 +108,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE.withAlpha(0.75),
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -118,6 +122,7 @@ define([
                                     outline: true,
                                     outlineColor: Cesium.Color.BLUE,
                                     height: 0,
+                                    arcType: Cesium.ArcType.RHUMB
                                 }
                             });
                         }
@@ -270,16 +275,17 @@ define([
                 });
 
                 var newGeo;
-                var i, poly;
+                var i, polyFlat;
                 var lake_geos = [];
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    poly = land_polys[i];
+                    polyFlat = land_polys[i][0].reduce((acc, val) => acc.concat(val), []);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
-                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -2
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
+                            height: -2,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.KHAKI.withAlpha(0.6))
@@ -289,11 +295,12 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    poly = lake_polys[i];
+                    polyFlat = lake_polys[i][0].reduce((acc, val) => acc.concat(val), []);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
-                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(poly[0].flat())),
-                            height: -1
+                            polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
+                            height: -1,
+                            arcType: Cesium.ArcType.RHUMB
                         }),
                         attributes : {
                             color : Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.BLACK.withAlpha(1))

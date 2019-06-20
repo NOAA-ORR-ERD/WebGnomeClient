@@ -9,6 +9,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.Burn',
             'name': 'Burn',
+            'active_range': ['-inf', 'inf'],
             'area': 0,
             'thickness': 0,
             'area_units': 'm^2',

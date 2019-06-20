@@ -46,11 +46,12 @@ define([
             var sprayedOilPercent = parseInt(this.$('#oilsprayed').val(), 10);
             var dispersedOilPercent = this.$('#oildispersed').val();
             var duration = parseFloat(this.$('#duration').val());
+            var startTime = this.startTime.format('YYYY-MM-DDTHH:mm:ss');
             var endTime = this.startTime.add(duration, 'h').format('YYYY-MM-DDTHH:mm:ss');
 
             this.model.set('fraction_sprayed', sprayedOilPercent / 100);
 
-            this.model.set('active_range', [this.startTime, endTime]);
+            this.model.set('active_range', [startTime, endTime]);
         }
     });
 

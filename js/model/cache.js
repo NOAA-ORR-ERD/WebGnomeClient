@@ -87,7 +87,7 @@ define([
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to step namespace');
             if (!this.socket) {
-                this.socket = io.connect(webgnome.config.api + this.socketRoute);
+                this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
 
                 this.socket.on('step', _.bind(this.socketProcessStep, this));
                 this.socket.on('prepared', _.bind(this.begin,this));

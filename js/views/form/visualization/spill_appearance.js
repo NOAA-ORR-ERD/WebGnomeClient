@@ -26,18 +26,18 @@ define([
         initialize: function(model, spill) {
             this.model = model;
             this.spill = spill;
+            this.colormapModel = this.model.get('colormap');
 
             this.addListeners();
             this.model.setUnitConversionFunction(undefined,
                                                  this.model.get('units'));
-
-            this.colormapModel = this.model.get('colormap');
             this.render();
         },
 
         addListeners: function() {
             this.listenTo(this.model, 'change:data', this.rerender);
             this.listenTo(this.model, 'changedMapType', this.rerender);
+            this.listenTo(this.colormapModel, 'change', _.bind(function(){this.spill.updateVis(this.model);}, this));
         },
 
         render: function() {
@@ -71,7 +71,8 @@ define([
         applyPresetScale: function(e) {
             console.log(e);
             var value = this.$(e.currentTarget).val();
-            var scale = _.findWhere(this.model.get('preset_scales'), {name: value});
+            var data = this.model.get('data');
+            var scale = _.findWhere(this.model.get('preset_scales'), {name: value, data: data});
             var colormap = this.model.get('colormap');
             var newColormap = scale.colormap;
             colormap.set(scale.colormap, {silent:true});

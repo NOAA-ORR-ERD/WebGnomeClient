@@ -33,14 +33,13 @@ define([
 
         new: function(){
             var windForm = new WindForm();
-            windForm.on('hidden', windForm.close);
             windForm.on('save', _.bind(function(windMover){
                 webgnome.model.get('movers').add(windMover);
                 webgnome.model.get('environment').add(windMover.get('wind'));
                 webgnome.model.save(null, {validate: false});
             }, this));
-            
             windForm.render();
+            windForm.on('hidden', windForm.close);
         },
 
         edit: function(e){
@@ -138,7 +137,7 @@ define([
                     //     return false;
                     // });
                     var weatherers = webgnome.model.get('weatherers').where({wind: windMover.get('wind')});
-                    
+
                     webgnome.model.get('movers').remove(id);
                     webgnome.model.get('environment').remove(windMover.get('wind').get('id'));
                     webgnome.model.save(null, {
@@ -170,7 +169,7 @@ define([
                 var data = [];
                 var raw_data = [];
                 var rate = Math.round(ts.length / 24);
-               
+
 
                 for (var entry in ts){
                     var date = moment(ts[entry][0], 'YYYY-MM-DDTHH:mm:ss').unix() * 1000;
