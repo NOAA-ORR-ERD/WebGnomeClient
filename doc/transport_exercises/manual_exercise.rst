@@ -54,8 +54,7 @@ or drag it onto the form to create a map.
 Add Wind Data and Current Data
 ==============================
 
-The wind file provided is a NOAA marine point forecast. This is loaded as a "Point Wind" in WebGNOME. Once
-again clicking on the **+** sign will allow you to upload the wind data. You'll see various options that
+The wind file provided is a NOAA marine point forecast. This is loaded as a "Point Wind" in WebGNOME ("Gridded Wind" is used for loading model wind products in NetCDF format). In the Point Wind panel, clicking on the **+** sign will allow you to upload the wind data. You'll see various options that
 are available, e.g. manually entering data or automatically retrieving the most recent NWS forecast.
 But in this case, use the provided sample file by choosing Upload File.
 

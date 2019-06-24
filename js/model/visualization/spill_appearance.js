@@ -60,7 +60,7 @@ define([
                                 "colorBlockLabels": ['', '', '', '', ''],
                                 },
                             }],
-            ctrl_names: {title:'Spill Appearance',
+            ctrl_names: {
                          pin_on: 'Spill Location',
                          les_on: 'Particles',
                          scale: 'Particle Size',
