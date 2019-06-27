@@ -141,7 +141,17 @@ define([
             }
         },
 
-        loaded: function(){
+        loaded: function(fileobj, resp){
+            if (resp === 'UPDATED_MODEL'){
+                
+                swal({
+                    title: 'Old Save File Detected',
+                    text: 'Compatibility changes may hae been made. It is HIGHLY recommended to verify and re-save the model after loading',
+                    type: 'warning',
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Ok'
+                })
+            }
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(function(model, response, options){
