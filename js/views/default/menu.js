@@ -56,7 +56,7 @@ define([
             'click .setup': 'setup',
             'click .load': 'load',
              
-            'click .edit': 'editModel',
+
 
             // "Save" optional menu items
             'click .save': 'save',
@@ -200,10 +200,6 @@ define([
             }, this));
         },
 
-        editModel: function(event){
-            event.preventDefault();
-            webgnome.router.navigate('config', true);
-        },
 
         load: function(event){
             event.preventDefault();

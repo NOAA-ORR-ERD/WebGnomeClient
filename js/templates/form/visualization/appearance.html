@@ -4,8 +4,10 @@
     <div class='form-group'>
         <label class="col-sm-3 control-label" for="{{attrNames[i]}}">{{ctrlNames[i]}}</label>
         {% if (attrNames[i].includes('on')) { %}
-        <div class="col-sm-1 appearance-edit checkbox-inline">
-            <input type="checkbox" {{model.get(attrNames[i]) ? 'checked': ''}} name="{{attrNames[i]}}">
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox" {{model.get(attrNames[i]) ? 'checked': ''}} name="{{attrNames[i]}}">&nbsp
+            </label>
         </div>
         {% } else if (attrNames[i].includes('color')) { %}
         <div class="col-sm-3 appearance-edit">

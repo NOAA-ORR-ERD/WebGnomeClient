@@ -106,13 +106,12 @@ define([
         },
 
         setupLayersTooltips: function() {
-            this.$('.spill-vis-hdr').tooltip(this.createTooltipObject("Show Oil"));
-            this.$('.spill-loc-hdr').tooltip(this.createTooltipObject("Show Location"));
-            this.$('.spill-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
-            this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Grid"));
-            this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Data"));
-            this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Inspect"));
-            //this.$('.env-edit-btn').tooltip(this.createTooltipObject("Edit"));
+            this.$('.spill-vis-hdr').tooltip(this.createTooltipObject("Show Particles"));
+            this.$('.spill-loc-hdr').tooltip(this.createTooltipObject("Show Spill Location"));
+            this.$('.spill-edit-hdr').tooltip(this.createTooltipObject("Configure"));
+            this.$('.env-grid-hdr').tooltip(this.createTooltipObject("Show Model Grid"));
+            this.$('.env-uv-hdr').tooltip(this.createTooltipObject("Show Velocities"));
+            this.$('.env-edit-hdr').tooltip(this.createTooltipObject("Configure"));
             this.$('.spill-row').hover(_.bind(this.highlightLEs, this), _.bind(this.unhighlightLEs, this));
         },
 

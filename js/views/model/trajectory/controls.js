@@ -7,7 +7,10 @@ define([
     'text!templates/model/trajectory/controls.html',
     'moment',
     'mousetrap',
-], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap) {
+    'views/form/outputter/netcdf',
+    'views/form/outputter/kmz',
+    'views/form/outputter/shape',
+], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap, NetCDFForm, KMZForm, ShapeForm) {
     "use strict";
     var controlsView = BaseView.extend({
         events: {
@@ -22,6 +25,10 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
+            //export menu
+            'click .netcdf': 'netcdf',
+            'click .kmz': 'kmz',
+            'click .shape': 'shape',
         },
         initialize: function(options){
             this.module = module;
@@ -312,7 +319,45 @@ define([
 
         getSliderValue: function() {
             return this.controls.seek.slider('value');
-        }
+        },
+        
+                
+        netcdf: function(event) {
+            event.preventDefault();
+            var netCDFForm = new NetCDFForm();
+
+            netCDFForm.on('wizardclose', netCDFForm.close);
+            netCDFForm.on('save', _.bind(function(model){
+                netCDFForm.close();
+            }, this));
+
+            netCDFForm.render();
+        },
+
+        kmz: function(event) {
+            event.preventDefault();
+            var kmzForm = new KMZForm();
+            
+            kmzForm.on('wizardclose', kmzForm.close);
+            kmzForm.on('save', _.bind(function(model){
+                kmzForm.close();
+            }, this));
+
+            kmzForm.render();
+        },
+
+        shape: function(event) {
+            event.preventDefault();
+            var shapeForm = new ShapeForm();
+
+            shapeForm.on('wizardclose', shapeForm.close);
+            shapeForm.on('save', _.bind(function(model){
+                shapeForm.close();
+            }, this));
+
+            shapeForm.render();
+        },
+
     });
     return controlsView;
 });
