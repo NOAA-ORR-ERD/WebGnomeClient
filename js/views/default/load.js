@@ -150,7 +150,7 @@ define([
                     type: 'warning',
                     closeOnConfirm: true,
                     confirmButtonText: 'Ok'
-                })
+                });
             }
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({

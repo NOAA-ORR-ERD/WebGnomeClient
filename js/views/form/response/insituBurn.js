@@ -60,14 +60,14 @@ define([
             var thicknessInMeters = nucos.convert('Length', boomedThicknessUnits,
                                                   'm', boomedOilThickness);
             var substance = webgnome.model.getSubstance();
-            var burnDuration;
+            var burnDuration, waterFract;
 
             if(substance.get('is_weatherable')) {
-                var waterFract = substance.get('emulsion_water_fraction_max');
+                waterFract = substance.get('emulsion_water_fraction_max');
                 burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
             else {
-                var waterFract = element_type.get('substance').get('emulsion_water_fraction_max');
+                waterFract = substance.get('emulsion_water_fraction_max');
                 burnDuration = nucos._BurnDuration(thicknessInMeters, waterFract);
             }
 
