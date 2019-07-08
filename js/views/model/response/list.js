@@ -60,10 +60,10 @@ define([
 
         getAPI: function(){
             var api;
-            if (_.isNull(webgnome.model.get('spills').at(0).get('element_type').get('substance'))){
+            if (!webgnome.model.getSubstance().get('is_weatherable')){
                 api = 10;
             } else {
-                api = webgnome.model.get('spills').at(0).get('element_type').get('substance').get('api');
+                api = webgnome.model.getSubstance().get('api');
             }
             return api;
         },

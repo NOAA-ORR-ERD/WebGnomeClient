@@ -5,7 +5,8 @@ define([
     'nucos',
     'moment',
     'sweetalert',
-    'model/spill',
+    'model/spill/spill',
+    'model/spill/gnomeoil',
     'text!templates/panel/spill.html',
     'views/panel/base',
     'views/form/spill/type-wizcompat',
@@ -17,7 +18,7 @@ define([
     'flotresize',
     'flotstack',
 ], function($, _, Backbone, nucos, moment, swal,
-            SpillModel, SpillPanelTemplate, BasePanel,
+            SpillModel, GnomeOil, SpillPanelTemplate, BasePanel,
             SpillTypeForm, SpillContinueView, SpillInstantView,
             OilLibraryView) {
     var spillPanel = BasePanel.extend({
@@ -65,9 +66,11 @@ define([
 
         edit: function(e) {
             e.stopPropagation();
-
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
+            if (_.isUndefined(spill)) {
+                return;
+            }
             var spillView;
 
             if (spill.get('release').get('release_time') !== spill.get('release').get('end_release_time')) {
@@ -89,7 +92,7 @@ define([
         spill_active: function(e) {
             e.stopPropagation();
 
-            var active = e.target.checked;  
+            var active = e.target.checked;
             var id = this.getID(e);
             var spill = webgnome.model.get('spills').get(id);
 
@@ -110,20 +113,20 @@ define([
             var numOfTimeSteps = webgnome.model.get('num_time_steps');
             var timeStep = webgnome.model.get('time_step');
 
-            var elementType = webgnome.model.getElementType();
+            var substance = webgnome.model.getSubstance();
             var compiled;
 
-            if (elementType && !_.isNull(elementType.get('substance'))) {
+            if (substance.get('is_weatherable')) {
                 compiled = _.template(SpillPanelTemplate, {
                     spills: spills.models,
-                    substance: elementType.get('substance'),
-                    categories: elementType.get('substance').parseCategories(),
+                    substance: substance,
+                    categories: substance.parseCategories(),
                 });
             }
             else {
                 compiled = _.template(SpillPanelTemplate, {
                     spills: spills.models,
-                    substance: false,
+                    substance: substance,
                     categories: [],
                 });
             }
@@ -226,13 +229,14 @@ define([
         renderOilLibrary: function(e) {
             e.preventDefault();
             e.stopPropagation();
-
-            var element_type = webgnome.model.getElementType();
-            var oilLib = new OilLibraryView({}, element_type);
+            //this will be bugged
+            var substance = new GnomeOil();
+            var oilLib = new OilLibraryView({}, substance);
 
             oilLib.on('save wizardclose', _.bind(function() {
                 if (oilLib.$el.is(':hidden')) {
                     oilLib.close();
+                    webgnome.model.setGlobalSubstance(substance);
                 }
                 else {
                     oilLib.once('hidden', oilLib.close, oilLib);
@@ -248,8 +252,8 @@ define([
             var spills = webgnome.model.get('spills');
 
             if (spills.length > 0 &&
-                    spills.at(0).get('element_type').get('substance')) {
-                oilAPI = spills.at(0).get('element_type').get('substance').api;
+                    spills.at(0).get('substance')) {
+                oilAPI = spills.at(0).get('substance').api;
             }
 
             oilAPI = oilAPI ? oilAPI : 10;

@@ -33,7 +33,7 @@
                 {% } %}
             </div>
             <div class="option substance" >
-                <div class="icon {% if(!substance){ %}missing {% } %}"></div>
+                <div class="icon {% if(!substance.get('is_weatherable')){ %}missing {% } %}"></div>
                 <div class="title">Oil</div>
                 {% if(substance && substance.get('api')){ %}
                     <div class="info col-sm-12">

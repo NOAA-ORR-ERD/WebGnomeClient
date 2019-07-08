@@ -1,11 +1,27 @@
 define([
     'underscore',
     'backbone',
-    'model/base'
-], function(_, Backbone, BaseModel){
+    'model/base',
+    'model/initializers/windages'
+], function(_, Backbone, BaseModel, Windage){
     'use strict';
     var gnomeSubstance = BaseModel.extend({
-        url: function(){
+        urlRoot: '/substance/',
+
+        model: {
+            initializers: Backbone.Collection
+        },
+
+        defaults: function() {
+            return {
+                'obj_type': 'gnome.spill.substance.GnomeOil',
+                'initializers': new Backbone.Collection([new Windage()]),
+                'is_weatherable': true,
+                'standard_density': null,
+            };
+        },
+
+        oilLibUrl: function(){
             return webgnome.config.oil_api + '/oil/' + this.get('adios_oil_id');
         },
 
@@ -25,6 +41,14 @@ define([
                     'flash_point_max_c': flashPointC.toFixed(1),
                     'flash_point_max_f': flashPointF.toFixed(1)
                    };
+        },
+
+        fetch: function(options) {
+            if (_.isUndefined(options)){
+                options = {};
+            }
+            options.url = this.oilLibUrl();
+            return BaseModel.prototype.fetch.call(this, options);
         },
 
         validate: function(attrs, options){

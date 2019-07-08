@@ -7,12 +7,13 @@ define([
     'd3',
     'nucos',
     'model/base',
-    'model/release',
-    'model/element',
+    'model/spill/release',
+    'model/spill/nonweatheringsubstance',
+    'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
-], function(_, $, Backbone, Cesium, moment, d3, nucos,
-            BaseModel, GnomeRelease, GnomeElement,
+    ], function(_, $, Backbone, Cesium, moment, d3, nucos,
+            BaseModel, GnomeRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -23,7 +24,7 @@ define([
                 'on': true,
                 'obj_type': 'gnome.spill.spill.Spill',
                 'release': new GnomeRelease(),
-                'element_type': new GnomeElement(),
+                'substance': new NonWeatheringSubstance(),
                 'name': 'Spill',
                 'amount': 100,
                 'units': 'bbl',
@@ -33,7 +34,7 @@ define([
 
         model: {
             release: GnomeRelease,
-            element_type: GnomeElement
+            substance: NonWeatheringSubstance
         },
 
         initialize: function(options) {
@@ -49,12 +50,12 @@ define([
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
 
-            if (webgnome.hasModel() && webgnome.model.getElementType()) {
-                this.set('element_type', webgnome.model.getElementType());
+            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
+                this.set('substance', webgnome.model.getSubstance());
             }
 
             this.on('change', this.calculate, this);
-            this.on('change:element_type', this.addListeners, this);
+            this.on('change:substance', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
 
             //this.listenTo(this, 'change', this.initializeDataVis);
@@ -129,7 +130,7 @@ define([
             }
             var max_random_walk = Math.sqrt((6*diff_coef)*time_step);
             var area = Math.PI * max_random_walk * max_random_walk;
-            
+
             var release_duration = this.get('release').getDuration();
             var amt = 0;
             if (release_duration === 0) {
@@ -147,7 +148,7 @@ define([
             var oilConverter = new nucos.OilQuantityConverter();
             this._amount_si = oilConverter.Convert(this.get('amount'),
                                                    this.get('units'),
-                                                   this.get('element_type').get('standard_density'),
+                                                   this.get('substance').get('standard_density'),
                                                    'kg/m^3', 'kg');
         },
 
@@ -194,11 +195,11 @@ define([
         },
 
         addListeners: function() {
-            this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
+            this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
+            this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
             this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));
         },
@@ -207,16 +208,16 @@ define([
             this.childChange('release', release);
         },
 
-        elementTypeChange: function(element_type) {
-            this.childChange('element_type', element_type);
+        substanceChange: function(substance) {
+            this.childChange('substance', substance);
         },
 
-        getElementType: function() {
-            if (webgnome.hasModel() && webgnome.model.getElementType()) {
-                return webgnome.model.getElementType();
+        getSubstance: function() {
+            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
+                return webgnome.model.getSubstance();
             }
             else {
-                return new GnomeElement();
+                return new NonWeatheringSubstance();
             }
         },
 
@@ -269,7 +270,7 @@ define([
                 return 'A unit for amount must be selected';
             }
 
-            var substance = attrs.element_type.get('substance');
+            var substance = attrs.substance;
             if (!_.isNull(substance) && attrs.amount > 0) {
                 // if there is a substance and an amount is defined,
                 // it should be greater than 1 bbl
@@ -398,9 +399,6 @@ define([
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
             var max, min, newScaleType;
-            var currentMin, currentMax;
-            currentMin = colormap.get('numberScaleDomain')[0];
-            currentMax = colormap.get('numberScaleDomain')[1];
             colormap.initScales();
 
             if (data === 'Age') {

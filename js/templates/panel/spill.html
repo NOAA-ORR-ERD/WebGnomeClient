@@ -12,7 +12,7 @@
                 <div class="canvas"></div>
             </div>
         {% } %}
-        {% if (spills.length > 0 && substance) { %}
+        {% if (spills.length > 0 && substance.get('is_weatherable')) { %}
             <div class="row">
                 <div class="substance-info col-sm-12">
                     <div class="row">

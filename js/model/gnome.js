@@ -9,7 +9,8 @@ define([
     'model/map/map',
     'model/map/param',
     'model/map/bna',
-    'model/spill',
+    'model/spill/spill',
+    'model/spill/nonweatheringsubstance',
     'model/environment/tide',
     'model/environment/wind',
     'model/environment/water',
@@ -55,7 +56,7 @@ define([
     'model/default_objs'
 ], function($, _, Backbone, moment, swal,
     BaseModel, Cache,
-    MapModel, ParamMapModel, MapBnaModel, SpillModel,
+    MapModel, ParamMapModel, MapBnaModel, SpillModel, NonWeatheringSubstance,
     TideModel, WindModel, WaterModel, WavesModel, GridCurrentModel, GridWindModel,
     RandomMover, WindMover, PyWindMover,
     CatsMover, GridCurrentMover, PyCurrentMover, CurrentCycleMover,
@@ -562,11 +563,11 @@ define([
                 });
 
                 var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
-                var element_type = this.getElementType();
+                var substance = this.getSubstance();
                 var wind = this.getDefaultWind();
 
                 if (on_weatherers.length > 0 &&
-                    element_type && element_type.get('substance') &&
+                    substance && substance.get('is_weatherable') &&
                     water && webgnome.model.get('spills').length > 0 && wind){
                     return true;
                 }
@@ -714,17 +715,36 @@ define([
             return payload;
         },
 
-        getElementType: function(){
+        setGlobalSubstance: function(substance) {
+            /*
+            Because only one substance is currently permitted, this function exists to support that.
+            If substance is not weatherable, it reverts it to the NonWeatheringSubstance singleton
+            */
+            var spills = this.get('spills');
+            _.each(spills.models, _.bind(function(sp){sp.set('substance', substance);}, this));
+            this.save();
+            webgnome.obj_ref.substance = substance;
+            if (spills.length === 0) {
+                this.trigger('change');
+            }
+        },
+
+        getSubstance: function(){
             if(this.get('spills').length > 0){
-                return this.get('spills').at(0).get('element_type');
+                return this.get('spills').at(0).get('substance');
             } else {
+                if (webgnome.obj_ref.substance) {
+                    return webgnome.obj_ref.substance;
+                }
                 for(var i in webgnome.obj_ref){
-                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.elements.element_type.ElementType'){
+                    if(webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.NonWeatheringSubstance' ||
+                       webgnome.obj_ref[i].get('obj_type') === 'gnome.spill.substance.GnomeOil'){
                         return webgnome.obj_ref[i];
                     }
                 }
             }
-            return false;
+            webgnome.obj_ref.substance = new NonWeatheringSubstance();
+            return webgnome.obj_ref.substance;
         },
 
         getWinds: function(){
@@ -743,3 +763,4 @@ define([
 
     return gnomeModel;
 });
+

@@ -134,7 +134,7 @@ define([
             }
 
             if (data === 'Mass') {
-                var sd = spill.get('element_type').get('standard_density');
+                var sd = spill.get('substance').get('standard_density');
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
 

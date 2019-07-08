@@ -20,9 +20,9 @@ define([
         sortDnIcon: '&#9660;',
         activeIcon: null,
 
-        initialize: function(elementModel) {
+        initialize: function(substanceModel) {
             this.oilLib = new OilLib();
-            this.model = elementModel;
+            this.model = substanceModel;
             this.oilLib.once('ready', this.sortTable, this);
             this.oilLib.once('ready', this.setReady, this);
             this.on('sort', this.sortTable);
@@ -41,7 +41,7 @@ define([
 
             this.set_quality_index_colors(this.$el);
 
-            var substance = !_.isEmpty(this.model) ? this.model.get('substance') : null;
+            var substance = this.model;
             if (substance && substance.get('adios_oil_id')) {
                 this.$('tr[data-id="' + substance.get('adios_oil_id') + '"]').addClass('select');
             }
