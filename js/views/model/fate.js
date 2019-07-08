@@ -58,7 +58,7 @@ define([
 
         events: {
             'shown.bs.tab': 'renderGraphs',
-            'click a.run-risk': 'clickRisk',
+            //'click a.run-risk': 'clickRisk',
             'change #budget-table select': 'renderTableOilBudget',
             'click #budget-table .export a.download': 'downloadTableOilBudget',
             'click a.print': 'printScreen',
@@ -132,6 +132,19 @@ define([
             'emulsification': 'water_content',
             'dissolution': 'dissolution'
         },
+        
+        // nameToColorMap: {
+            // 'evaporated': 'rgb(0, 51, 153)',
+            // 'natural_dispersion': 'rgb(13, 136, 0)',            
+            // 'sedimentation': 'rgb(112, 48, 160)',
+            // 'floating': 'rgb(200,200,200)',
+            // 'chem_dispersed': 'rgb(55, 96, 146)',
+            // 'skimmed': 'rgb(0, 51, 153)',
+            // 'burned': 'rgb(90, 26, 0)',
+            // 'beached': 'rgb(154, 26, 0)',
+            // 'off_maps': 'rgb(50, 50, 50)',
+            // 'observed_beached': 'rgb(228, 108, 10)',
+        // },
 
         nameToColorMap: {
             'evaporated': 'rgb(141, 107, 7)',
@@ -508,7 +521,7 @@ define([
             return total;
         },
 
-        clickRisk: function(){
+/*         clickRisk: function(){
             var spills = webgnome.model.get('spills');
             var numOfCleanups = this.checkForCleanup();
             if (spills.length === 1 && numOfCleanups > 0){
@@ -540,7 +553,7 @@ define([
                     }
                 });
             }
-        },
+        }, */
 /*
         renderLoop: function(){
             if(_.isUndefined(this.dataset)){
@@ -1134,7 +1147,9 @@ define([
 
         renderGraphViscosity: function(dataset){
             dataset = this.pluckDataset(dataset, ['avg_viscosity', 'water_viscosity', 'dispersibility_difficult', 'dispersibility_unlikely', 'secondtime']);
+
             if (dataset.length === 5) {
+                dataset[0].label = 'Average oil viscosity';
                 dataset[0].fillArea = [{representation: 'symmetric'}, {representation: 'asymmetric'}];
                 if(_.isUndefined(this.graphViscosity)){
                     var options = $.extend(true, {}, this.defaultChartOptions);
@@ -1662,22 +1677,21 @@ define([
 
             if(_.isUndefined(this.dataset)){
                 this.dataset = [];
-                var keyOrder = [
+                var keyOrder = [ //beached and off maps are added in below
                     'amount_released',
                     'evaporated',
                     'natural_dispersion',
                     'sedimentation',
-                    'dissolution',
-                    'water_density',
-                    'water_viscosity',
-                    'dispersibility_difficult',
-                    'dispersibility_unlikely'
+                    'dissolution',   
+                    'skimmed',
+                    'burned',
+                    'chem_dispersed',
                 ];
 
                 var titles = _.clone(nominal);
 
                 if (webgnome.model.get('mode') !== 'adios' && webgnome.model.get('mode') !== 'roc'){
-                    keyOrder.splice(keyOrder.length - 2, 0, 'beached', 'off_maps');
+                    keyOrder.splice(keyOrder.length-3, 0, 'beached', 'off_maps');
                 } else {
                     delete titles.off_maps;
                     delete titles.beached;
@@ -1852,6 +1866,7 @@ define([
         },
 
         formatLabel: function(label){
+            if (label==='off_maps') { label='off_map'; }
             return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, ' ');
         },
 
