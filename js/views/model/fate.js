@@ -133,34 +133,34 @@ define([
             'dissolution': 'dissolution'
         },
         
+        nameToColorMap: {
+            'evaporated': 'rgb(78, 121, 167)',
+            'natural_dispersion': 'rgb(117, 183, 178)',            
+            'sedimentation': 'rgb(237, 201, 72)',
+            'beached': 'rgb(156, 117, 95)',
+            'observed_beached': 'rgb(156, 117, 95)',
+            'off_maps': 'rgb(50, 50, 50)',
+            'skimmed': 'rgb(255, 157, 167)',
+            'chem_dispersed': 'rgb(176, 122, 161)',           
+            'burned': 'rgb(225, 87, 89)',
+            'floating': 'rgb(186, 176, 172)',
+        },
+
         // nameToColorMap: {
-            // 'evaporated': 'rgb(0, 51, 153)',
-            // 'natural_dispersion': 'rgb(13, 136, 0)',            
+            // 'evaporated': 'rgb(141, 107, 7)',
+            // 'natural_dispersion': 'rgb(154, 26, 0)',
+            // 'dissolution': 'rgb(197, 11, 108)',
             // 'sedimentation': 'rgb(112, 48, 160)',
-            // 'floating': 'rgb(200,200,200)',
+            // 'floating': 'rgb(13, 136, 0)',
+            // 'amount_released': 'rgb(255, 255, 255)',
             // 'chem_dispersed': 'rgb(55, 96, 146)',
             // 'skimmed': 'rgb(0, 51, 153)',
-            // 'burned': 'rgb(90, 26, 0)',
-            // 'beached': 'rgb(154, 26, 0)',
-            // 'off_maps': 'rgb(50, 50, 50)',
+            // 'burned': 'rgb(49, 133, 156)',
+            // 'beached': 'rgb(228, 108, 10)',
+            // 'off_maps': 'rgb(146, 208, 80)',
             // 'observed_beached': 'rgb(228, 108, 10)',
+            // 'boomed': 'rgb(200, 200, 200)'
         // },
-
-        nameToColorMap: {
-            'evaporated': 'rgb(141, 107, 7)',
-            'natural_dispersion': 'rgb(154, 26, 0)',
-            'dissolution': 'rgb(197, 11, 108)',
-            'sedimentation': 'rgb(112, 48, 160)',
-            'floating': 'rgb(13, 136, 0)',
-            'amount_released': 'rgb(255, 255, 255)',
-            'chem_dispersed': 'rgb(55, 96, 146)',
-            'skimmed': 'rgb(0, 51, 153)',
-            'burned': 'rgb(49, 133, 156)',
-            'beached': 'rgb(228, 108, 10)',
-            'off_maps': 'rgb(146, 208, 80)',
-            'observed_beached': 'rgb(228, 108, 10)',
-            'boomed': 'rgb(200, 200, 200)'
-        },
 
         initialize: function(options){
             this.module = module;
@@ -1680,10 +1680,11 @@ define([
                     'evaporated',
                     'natural_dispersion',
                     'sedimentation',
-                    'dissolution',   
-                    'skimmed',
-                    'burned',
-                    'chem_dispersed',
+                    'dissolution', 
+                    'observed_beached',                    
+                    'skimmed',                   
+                    'chem_dispersed',  
+                    'burned',                    
                 ];
 
                 var titles = _.clone(nominal);
