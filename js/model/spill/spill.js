@@ -78,6 +78,15 @@ define([
             this.get('_appearance').setUnitConversionFunction(undefined, this.get('units'));
         },
 
+        getBoundingRectangle: function() {
+            var llcorner = this.get('release').get('start_position').map(function(e){return e - 10});
+            var rucorner = this.get('release').get('start_position').map(function(e){return e + 10})
+            var spillPinRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray([llcorner[0], llcorner[1], rucorner[0], rucorner[1]]))
+            return new Promise(_.bind(function(resolve, reject) {
+                resolve(spillPinRect);
+            }));
+        },
+
         setupVis: function(attrs) {
             this.listenTo(this.get('_appearance'), 'change:data',
                           this.initializeDataVis);

@@ -76,7 +76,7 @@ define([
         },
 
         getBoundingRectangle: function() {
-            let mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce((acc, val) => acc.concat(val), []);
+            var mapBoundsFlat = webgnome.model.get('map').get('map_bounds').reduce(function(acc, val){return acc.concat(val)}, []);
             return new Promise(_.bind(function(resolve, reject) {
                 resolve(Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray(mapBoundsFlat)));
             }));
