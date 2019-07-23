@@ -50,9 +50,9 @@ define([
         },
 
         modelListeners: function(){
-            this.listenTo(webgnome.model.get('movers'), 'change', this.render);
-            this.listenTo(webgnome.model.get('environment'), 'change', this.render);
-            this.listenTo(webgnome.model.get('spills'), 'change', this.render);
+            this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
+            this.listenTo(webgnome.model.get('spills'), 'change add remove', this.render);
             this.listenTo(webgnome.model, 'change', this.render);
         },
 
