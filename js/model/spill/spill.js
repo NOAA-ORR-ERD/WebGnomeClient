@@ -46,6 +46,7 @@ define([
 
             this._locVis = new Cesium.EntityCollection();
 
+            this.calculate();
             this.initializeDataVis();
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
@@ -61,8 +62,6 @@ define([
             //this.listenTo(this, 'change', this.initializeDataVis);
 
             this.addListeners();
-
-            this.calculate();
 
             if (!this.isNew()) {
                 if (webgnome.hasModel()) {
