@@ -389,7 +389,7 @@ define([
         },
 
         emulsionUpdate: function() {
-            var substance = this.model;
+            var substance = this.model.get('substance');
             var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
 
             if (manualVal !== '' && !_.isUndefined(substance)) {
