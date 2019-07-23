@@ -86,9 +86,13 @@ define([
                                     webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             webgnome.model.set('start_time', start_time);
 
-            var days = this.$('#days').val();
-            var hours = this.$('#hours').val();
-            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
+            var days = parseInt(this.$('#days').val(), 10);
+            var hours = parseInt(this.$('#hours').val(), 10);
+            if (days == 0 & hours == 0) {
+                hours = 1;
+                this.$('#hours').val(1);
+            }
+            var duration = (((days * 24) + hours) * 60) * 60;
 
             webgnome.model.set('duration', duration);
 
