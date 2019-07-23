@@ -174,7 +174,7 @@ define([
                         closeOnConfirm: true,
                     });}
                 }
-            )
+            );
         },
 
         reloadOil: function(e) {

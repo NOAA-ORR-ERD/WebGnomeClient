@@ -88,9 +88,9 @@ define([
 
             var days = parseInt(this.$('#days').val(), 10);
             var hours = parseInt(this.$('#hours').val(), 10);
-            if (days == 0 & hours == 0) {
-                hours = 1
-                this.$('#hours').val(1)
+            if (days === 0 & hours === 0) {
+                hours = 1;
+                this.$('#hours').val(1);
             }
             var duration = (((days * 24) + hours) * 60) * 60;
 
