@@ -16,13 +16,21 @@ define([
 
         events: function() {
             return _.defaults({
-                'click .new-tide': 'newTide'
+                'click .new-tide': 'newTide',
+                'change #scale': 'scaleHandler',
+                'change #tide': 'tideHandler'
             }, BaseMoverForm.prototype.events);
         },
 
         render: function(options) {
             this.body = this.template();
             FormModal.prototype.render.call(this, options);
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (this.model.get('scale')) {
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+            }
         },
 
         template: function() {
@@ -30,6 +38,30 @@ define([
                 model: this.model.toJSON(),
                 tides: webgnome.model.getTides()
             });
+        },
+
+        scaleHandler: function(e) {
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (e.currentTarget.value === 'true') {
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+            } else {
+                sv.prop('disabled', true);
+                srf.parent().children().prop('disabled', true);
+
+            }
+        },
+
+        tideHandler: function(e) {
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (e.currentTarget.value !== 'null'){
+                this.model.set('scale', true);
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+                this.$('#scale')[0].value = "true";
+            }
         },
 
         newTide: function() {
@@ -83,17 +115,18 @@ define([
             tide.save(null, {
                 success: _.bind(function() {
                     webgnome.model.get('environment').add(tide);
-                    webgnome.model.save();
-
                     this.model.set('tide', tide);
+                    this.model.set('scale', true);
+                    this.model.save(null, {
+                        success: _.bind(function(mod){
+                            this.render();
+                            webgnome.model.save();
+                        }, this)
+                    });
                     this.dropzone.removeAllFiles(true);
                     this.dropzone.disable();
 
-                    $('input.dz-hidden-input').remove();
-                    this.$('.form-horizontal').remove();
-                    this.$('.modal-body').prepend(this.template());
-
-                    this.sync();
+                    this.$el.html('');
                 }, this),
                 error: _.bind(function(e, response) {
                     this.error(response.responseText);

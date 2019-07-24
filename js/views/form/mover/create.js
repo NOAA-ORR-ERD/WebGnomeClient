@@ -109,6 +109,7 @@ define([
                     }
                     else if (json_response.obj_type === CatsMover.prototype.defaults().obj_type) {
                         mover = new CatsMover(json_response, {parse: true});
+                        this.$('#immediate-edit').prop('checked', true);
                         editform = CatsMoverForm;
                     }
                     else if (json_response.obj_type === PyCurrentMover.prototype.defaults.obj_type) {
@@ -126,6 +127,9 @@ define([
                     if (this.$('#immediate-edit')[0].checked) {
                         webgnome.model.save({}, {'validate': false}).then(_.bind(function() {
                             var form = new editform(null, this);
+                            form.on('save', function() {
+                                form.on('hidden', form.close);
+                            });
                             form.render();
                         }, mover));
                     } else {
