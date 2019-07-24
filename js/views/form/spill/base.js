@@ -41,6 +41,7 @@ define([
                 'show.bs.model': 'renderPositionInfo',
                 'click .oil-cache': 'clickCachedOil',
                 'click .reload-oil': 'reloadOil',
+                'click .reset-bull': 'resetBull',
                 'click .oil-info': 'initOilInfo',
                 'click .map-modal': 'initMapModal',
                 'click .add-endpoint': 'addEndpoint',
@@ -146,6 +147,34 @@ define([
                 this.$('.manual').val(bullwinkle_time);
                 this.$('#units-bullwinkle').val('time');
             }
+        },
+
+        resetBull: function(e) {
+            if (!this.model.get('substance').get('is_weatherable')) {
+                return;
+            }
+            var oilId = this.model.get('substance').get('adios_oil_id');
+            var oilName = this.model.get('substance').get('name');
+            var substance = new GnomeOil({adios_oil_id: oilId, name: oilName});
+            //re-fetch the substance from the oil library and set the bullwinkle back to default
+            substance.fetch(
+                {
+                    success: _.bind(function(model){
+                        var subs = this.model.get('substance');
+                        subs.set('bullwinkle_time', model.get('bullwinkle_time'));
+                        subs.set('bullwinkle_fraction', model.get('bullwinkle_fraction'));
+                        this.clearError();
+                        this.renderSubstanceInfo(null, subs);
+
+                    }, this),
+                    error: function() {swal({
+                        title: "Error!",
+                        text: "Unable to reset emulsification settings because oil could not be retrieved. Did you set an invalid ADIOS ID?",
+                        type: "error",
+                        closeOnConfirm: true,
+                    });}
+                }
+            );
         },
 
         reloadOil: function(e) {
@@ -389,7 +418,7 @@ define([
         },
 
         emulsionUpdate: function() {
-            var substance = this.model;
+            var substance = this.model.get('substance');
             var manualVal = !_.isNaN(parseFloat(this.$('input.manual').val())) ? parseFloat(this.$('input.manual').val()) : '';
 
             if (manualVal !== '' && !_.isUndefined(substance)) {
