@@ -20,6 +20,11 @@ define([
             tide: GnomeTide
         },
 
+        initialize: function(options) {
+            BaseMover.prototype.initialize.call(this, options);
+            console.log(this.cid)
+        },
+
         toTree: function() {
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var name = this.get('name');
