@@ -117,15 +117,17 @@ define([
                     webgnome.model.get('environment').add(tide);
                     this.model.set('tide', tide);
                     this.model.set('scale', true);
-                    this.model.save(null, {
+                    webgnome.model.save(null, {
                         success: _.bind(function(mod){
-                            this.render();
-                            webgnome.model.save();
+                            this.model.save(null, {
+                                success: _.bind(function(mod){
+                                    this.render();
+                                }, this)
+                            });
                         }, this)
                     });
                     this.dropzone.removeAllFiles(true);
                     this.dropzone.disable();
-
                     this.$el.html('');
                 }, this),
                 error: _.bind(function(e, response) {
