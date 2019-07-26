@@ -257,7 +257,7 @@ define([
                         continue;
                     }
                     for (var m = 0; m < scheme[k].length; m++){
-                        scheme[k][m] = scheme[k+1][m+1]
+                        scheme[k][m] = scheme[k+1][m+1];
                     }
                 }
 
