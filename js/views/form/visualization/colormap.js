@@ -43,14 +43,17 @@ define([
 
         addNumInput: function(e) {
             e.stopImmediatePropagation();
-            var valueBox = $('<input>', {type:'number',
-                                         class: 'numberScaleDomain',
-                                         step: 0.001});
-
-            valueBox.prop('value', parseFloat(e.currentTarget.innerText));
-            valueBox.attr('value', parseFloat(e.currentTarget.innerText));
-
-            $(e.currentTarget).text('').append(valueBox);
+            var valueBox;
+            if ($(e.currentTarget).children().length > 0) {
+                valueBox = $($(e.currentTarget).children()[0]);
+            } else {
+                valueBox = $('<input>', {type:'number',
+                class: 'numberScaleDomain',
+                step: 0.001});
+                valueBox.prop('value', parseFloat(e.currentTarget.innerText));
+                valueBox.attr('value', parseFloat(e.currentTarget.innerText));
+                $(e.currentTarget).text('').append(valueBox);
+            }
             valueBox.focus();
             valueBox.select();
         },
@@ -430,7 +433,13 @@ define([
                     break;
                 }
             }
-
+            if (e.currentTarget.value === ""){
+                $(e.currentTarget).remove();
+                $('.tooltip-inner',
+                  this.numberStops[i])
+                  .text(this._toDisplayString(this.model.get('colorScaleDomain')[i - 1]));
+                return;
+            }
             var newVal = (this.model
                           .fromInputConversionFunc(parseFloat(e.currentTarget.value)));
             if (!this.model.setStop(i, newVal)) {
@@ -508,7 +517,11 @@ define([
                 return dispValue;
             }
             else {
-                return Number(dispValue).toPrecision(4);
+                if (dispValue < 1000) {
+                    return Number(dispValue).toPrecision(4)
+                } else {
+                    return Number(dispValue).toPrecision(5);
+                }
             }
         },
 
