@@ -115,6 +115,19 @@
 			</select>
 		</div>
 	</div>
+    	<div class="form-group">
+		<label class="col-sm-4 control-label" for="name">Number of LEs:</label>
+		<div class="col-sm-3">
+			<input type="number" id="num_elements" class="form-control" value="{{ num_elements }}">
+		</div>
+        <div class="col-sm-4">
+            {% if (num_elements >= release_timesteps){ %}
+                <span id="min_LEs" class="label label-info">{{ min_LEs }}</span>
+            {% } else { %}
+                <span id="min_LEs" class="label label-danger">{{ min_LEs }}</span>
+            {% } %}
+        </div>
+	</div>
 	<div class="form-group">
         <label class="control-label col-sm-5">Confidence in Spill Amount:</label>
         <div class="col-sm-6">

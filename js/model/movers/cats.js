@@ -22,7 +22,7 @@ define([
 
         initialize: function(options) {
             BaseMover.prototype.initialize.call(this, options);
-            console.log(this.cid)
+            console.log(this.cid);
         },
 
         toTree: function() {

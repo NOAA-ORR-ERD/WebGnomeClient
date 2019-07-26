@@ -58,8 +58,8 @@ define([
             var map = webgnome.model.get('map');
             map.getGeoJSON().then(_.bind(function(data){
                 map.processMap(data, null, this.mapView.viewer.scene.primitives);
-                var sa = Cesium.clone(map._spillableVis)
-                sa.show = true
+                var sa = Cesium.clone(map._spillableVis);
+                sa.show = true;
                 this.mapView.viewer.dataSources.add(sa);
             }, this));
             this.mapView.resetCamera(map);
