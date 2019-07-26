@@ -251,6 +251,16 @@ define([
             var colors;
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
+
+                for (var k = 0; k < scheme.length-1; k++){
+                    if(_.isUndefined(scheme[k])){
+                        continue;
+                    }
+                    for (var m = 0; m < scheme[k].length; m++){
+                        scheme[k][m] = scheme[k+1][m+1]
+                    }
+                }
+
                 if (length > scheme.length - 1) {
                     //switch to interpolator
                     var d3interp = d3['interpolate'+name];
