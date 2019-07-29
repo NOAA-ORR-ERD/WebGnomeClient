@@ -58,8 +58,8 @@ define([
                 this.$('#hours').val(1);
             }
             var duration = (((days * 24) + hours) * 60) * 60;
-            this.$('#minutes_label').text((Number(time_step/60).toFixed(2)) + " minutes" )
-            this.$('#steps_label').text( duration/time_step +" steps")
+            this.$('#minutes_label').text((Number(time_step/60).toFixed(2)) + " minutes" );
+            this.$('#steps_label').text( duration/time_step +" steps");
         },
 
         update: function() {
