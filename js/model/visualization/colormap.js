@@ -252,12 +252,13 @@ define([
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
 
-                for (var k = 0; k < scheme.length-1; k++){
+                for (var k = 0; k < scheme.length; k++){
                     if(_.isUndefined(scheme[k])){
                         continue;
                     }
+                    scheme[k] = _.clone(scheme[k]);
                     for (var m = 0; m < scheme[k].length; m++){
-                        scheme[k][m] = scheme[k+1][m+1];
+                        scheme[k][m] = tinycolor(scheme[k][m]).darken(10).toString();
                     }
                 }
 

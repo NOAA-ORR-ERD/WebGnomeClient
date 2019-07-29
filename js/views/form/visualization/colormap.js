@@ -518,7 +518,7 @@ define([
             }
             else {
                 if (dispValue < 1000) {
-                    return Number(dispValue).toPrecision(4)
+                    return Number(dispValue).toPrecision(4);
                 } else {
                     return Number(dispValue).toPrecision(5);
                 }
