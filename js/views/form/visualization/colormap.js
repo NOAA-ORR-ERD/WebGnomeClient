@@ -519,8 +519,10 @@ define([
             else {
                 if (dispValue < 1000) {
                     return Number(dispValue).toPrecision(4);
+                } else if (dispValue < 10000000) {
+                    return Number.parseInt(dispValue, 10);
                 } else {
-                    return Number(dispValue).toPrecision(5);
+                    return Number(dispValue).toPrecision(4);
                 }
             }
         },

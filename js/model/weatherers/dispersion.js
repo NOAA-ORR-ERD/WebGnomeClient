@@ -20,13 +20,13 @@ define([
         },
 
         validate: function(attrs, options) {
-            if (_.isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0) {
-                return 'Percent of oil sprayed must be greater than zero!';
-            }
-           
             if (attrs.active_range[0] === attrs.active_range[1]) {
-                return "Duration must be inputted!";
+                return "Duration must be input!";
             }
+
+            if (isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0) {
+                return 'Percent of oil sprayed must be greater than zero!';
+            }           
         },
 
         resetEndTime: function() {

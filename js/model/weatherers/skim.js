@@ -25,12 +25,16 @@ define([
 
         validate: function(attrs, options){
             if (attrs.active_range[0] === attrs.active_range[1]) {
-                return "Duration must be inputted!";
+                return "Duration must be input!";
             }
             
             if (!_.isNumber(parseFloat(attrs.amount)) ||
                     isNaN(parseFloat(attrs.amount))) {
                 return "Recovery amount must be a number!";
+            }
+
+            if (attrs.amount <= 0){
+                return "Recovery amount must be greater than zero!";
             }
         }
     });
