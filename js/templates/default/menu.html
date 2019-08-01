@@ -17,48 +17,49 @@
                 <li><a href="#" class="locations" title="">Select a Location File</a></li>
                 <li><a href="#" class="adios" title="">Oil Fate Wizard</a></li>
                 <li><a href="#" class="setup" title="">Manual Setup</a></li>
-                <li><a href="#" class="load" title="">Load Save File</a></li>
-            </ul>
-        </li>
-
-
-
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><span class="glyphicon glyphicon-floppy-save"></span> Save<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" class="save" title="">Download your current model setup</a></li>
-                    {% if(can_persist) { %}
-                    <li><a href="#" class="persist" title="">Save model setup on server</a></li>
-                    {% } %}     
-                    <li><hr></li>
-                    <li><a href="#" class="netcdf">Export particles as NetCDF</a></li>
-                    <li><a href="#" class="kmz">Export particles as KMZ</a></li>
-                    <li><a href="#" class="shape">Export particles as Shapefile</a></li>
-                </ul>
-            </li>
-
-
-
-        <li class="dropdown help">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li><a href="#" class="about" title=""><span class="glyphicon glyphicon-info-sign"> </span> About WebGNOME</a></li>
-                <li><a href="#" class="doc" title="Open WebGNOME Help Pages"><span class="glyphicon glyphicon-file"> </span> User Manual</a></li>
-                <li><a href="#" class="faq" title="Search Help by Topic"><span class="glyphicon glyphicon-question-sign"> </span> Search</a></li>
-                <li><a href="#" class="hotkeys" title="Trajectory Hotkeys"><span class="glyphicon glyphicon-th-list"> </span> Hotkeys</a></li>
+                <li><a href="#" class="load" title="">Load Saved Model Setup</a></li>
             </ul>
         </li>
 
         <li class="dropdown views">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Views <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-eye-open"></span> Views<b class="caret"></b></a>
             <ul class="dropdown-menu view-toggle">
-                <li><a href="#" class="view config" title="Model configuration"><span class="glyphicon glyphicon-info-sign"> </span> Config</a></li>
-                <li><a href="#" class="view trajectory" title="Trajectory output"><span class="glyphicon glyphicon-file"> </span> Trajectory</a></li>
-                <li><a href="#" class="view fate" title="Weathering output"><span class="glyphicon glyphicon-question-sign"> </span> Fate</a></li>
-                <li><a href="#" class="view model" title="Model object relationships (adv)"><span class="glyphicon glyphicon-th-list"> </span> Model Object</a></li>
-                <li><a href="#" class="view response" title="ROC response (adv, beta)"><span class="glyphicon glyphicon-th-list"> </span> ROC</a></li>
+                <li><a href="#" class="view config" title=""><span class="glyphicon glyphicon-pencil"> </span> Setup View</a></li>
+                <li><a href="#" class="view trajectory" title=""><span class="glyphicon glyphicon-globe"> </span> Map View</a></li>
+                <li><a href="#" class="view fate" title=""><span class="glyphicon glyphicon-stats"> </span> Fate View</a></li>
+                <li><a href="#" class="view response" title=""><span class=""> </span> Response View</a></li>
+                <li><a href="#" class="view model" title=""><span class=""> </span> Model View</a></li>
+
             </ul>
         </li>
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><span class="glyphicon glyphicon-floppy-save"></span> Save<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="save" title="">Download Your Model Setup</a></li>
+                {% if(can_persist) { %}
+                <li><a href="#" class="persist" title="">Save Model Setup on Server</a></li>
+                {% } %}     
+                <li><hr></li>
+                <li><a href="#" class="netcdf">Export Particles as NetCDF</a></li>
+                <li><a href="#" class="kmz">Export Particles as KMZ</a></li>
+                <li><a href="#" class="shape">Export Particles as Shapefile</a></li>
+            </ul>
+        </li>
+
+
+
+        <li class="dropdown help">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-info-sign"></span> Help<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="about" title=""><span class="g"> </span> About WebGNOME</a></li>
+                <li><a href="#" class="doc" title=""><span class=""> </span> Open User Manual</a></li>
+                <li><a href="#" class="faq" title=""><span class=""> </span> Search by Topic</a></li>
+                <li><a href="#" class="hotkeys" title=""><span class=""> </span> Keyboard Shortcuts</a></li>
+            </ul>
+        </li>
+
+
     </ul>
 
     <div class="view-toggle">
