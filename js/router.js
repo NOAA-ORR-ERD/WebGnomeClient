@@ -211,13 +211,19 @@ define([
         _cleanup: function() {
             // Cleans up parts of the website (such as trajectory view) when necessary
             if (!_.isUndefined(webgnome.router.trajView)) {
-                this.trajView.viewer.destroy();
+                if (this.trajView.viewer) {
+                    this.trajView.viewer.destroy();
+                }
                 this.trajView.stopListening();
-                this.trajView.controls.stopListening();
-                this.trajView.layersPanel.stopListening();
+                if (this.trajView.controls) {
+                    this.trajView.controls.stopListening();
+                }
+                if (this.trajView.layersPanel){
+                    this.trajView.layersPanel.stopListening();
+                }
                 this.trajView.remove();
-                this.trajView = undefined;
             }
+            this.trajView = undefined;
         }
 
     });

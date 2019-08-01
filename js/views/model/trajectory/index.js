@@ -91,9 +91,8 @@ define([
 
             this.overlay.append(this.controls.$el);
             this.$el.append(this.overlay);
-            // add a 250ms timeout to the map render to give js time to add the compiled
-            // to the dom before trying to draw the map.
-            setTimeout(_.bind(function() {
+            // equivalent to $( document ).ready(func(){})
+            $(_.bind(function() {
                 this.renderCesiumMap();
                 this.layersPanel = new LayersView();
                 this.layersListeners();
@@ -101,7 +100,7 @@ define([
                 this.legend = new LegendView();
                 this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
                 this.rightPane.$el.appendTo(this.$el);
-            }, this), 250);
+            }, this));
         },
 
         layersListeners: function(){
