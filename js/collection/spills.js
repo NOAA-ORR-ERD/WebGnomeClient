@@ -1,7 +1,7 @@
 define([
     'underscore',
     'backbone',
-    'model/spill',
+    'model/spill/spill',
     'moment'
 ], function(_, Backbone, GnomeSpill, moment){
     'use strict';
@@ -19,7 +19,7 @@ define([
 
             return this.complied;
         },
-        
+
         earliestSpillTime: function() {
             var early = this.at(0).get('release').get('release_time');
             this.each(_.bind(function(el, i, col) {
@@ -27,7 +27,7 @@ define([
                     early = el.get('release').get('release_time');
                 }
             }, this));
-            
+
             return early;
         }
     });

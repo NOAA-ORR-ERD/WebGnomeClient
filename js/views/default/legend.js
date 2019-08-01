@@ -50,9 +50,9 @@ define([
         },
 
         modelListeners: function(){
-            this.listenTo(webgnome.model.get('movers'), 'change', this.render);
-            this.listenTo(webgnome.model.get('environment'), 'change', this.render);
-            this.listenTo(webgnome.model.get('spills'), 'change', this.render);
+            this.listenTo(webgnome.model.get('movers'), 'change add remove', this.render);
+            this.listenTo(webgnome.model.get('environment'), 'change add remove', this.render);
+            this.listenTo(webgnome.model.get('spills'), 'change add remove', this.render);
             this.listenTo(webgnome.model, 'change', this.render);
         },
 
@@ -72,8 +72,8 @@ define([
             var item = $('<div class=spill-legend-item></div>');
             var name = $('<div class=spill-row-name>'+ spill.get('name') +'</div>');
             var sub;
-            if (spill.get('element_type').get('substance')) {
-                sub = spill.get('element_type').get('substance').get('name');
+            if (spill.get('substance')) {
+                sub = spill.get('substance').get('name');
             } else {
                 sub = 'Non Weathering Substance';
             }

@@ -1,13 +1,17 @@
 define([
+    'underscore',
     'views/form/spill/type',
     'views/form/spill/instant',
     'views/form/spill/continue',
-    'model/spill'
-], function(SpillTypeForm, InstantSpill, ContSpill, GnomeSpill){
+    'model/spill/spill'
+], function(_,SpillTypeForm, SpillInstantForm, SpillContinueForm, SpillModel){
     var SpillForm = SpillTypeForm.extend({
         instant: function(){
-            var spill = new GnomeSpill();
-            var spillForm = new InstantSpill(null, spill);
+            var spill = new SpillModel();
+            var spillForm = new SpillInstantForm(null, spill);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             this.on('hidden', function(){
                 spillForm.render();
             });
@@ -15,8 +19,11 @@ define([
         },
 
         continue: function(){
-            var spill = new GnomeSpill();
-            var spillForm = new ContSpill(null, spill);
+            var spill = new SpillModel();
+            var spillForm = new SpillContinueForm(null, spill);
+            spillForm.on('save', _.bind(function(model) {
+                webgnome.model.get('spills').add(spillForm.model);
+            }, this));
             this.on('hidden', function(){
                 spillForm.render();
             });

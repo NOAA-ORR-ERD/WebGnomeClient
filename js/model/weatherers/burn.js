@@ -33,8 +33,15 @@ define([
                 return "Enter a number for boomed area!";
             }
             
+            if (attrs.area <= 0){
+                return "Boomed area must be greater than zero!";
+            }
+
             if (!_.isNumber(parseFloat(attrs.thickness)) || isNaN(parseFloat(attrs.thickness))){
                 return "Enter a number for thickness!";
+            }
+            if (attrs.thickness <= 0){
+                return "Thickness must be greater than zero!";
             }
         }
     });

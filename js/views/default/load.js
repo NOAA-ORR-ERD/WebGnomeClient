@@ -47,7 +47,7 @@ define([
                 paramName: 'new_model',
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.save, // 2GB
-                acceptedFiles: '.zip',
+                acceptedFiles: '.zip, .gnome',
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
             this.dropzone.on('sending', _.bind(this.sending, this));
@@ -141,7 +141,17 @@ define([
             }
         },
 
-        loaded: function(){
+        loaded: function(fileobj, resp){
+            if (resp === 'UPDATED_MODEL'){
+                
+                swal({
+                    title: 'Old Save File Detected',
+                    text: 'Compatibility changes may hae been made. It is HIGHLY recommended to verify and re-save the model after loading',
+                    type: 'warning',
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Ok'
+                });
+            }
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(function(model, response, options){

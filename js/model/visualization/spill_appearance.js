@@ -25,7 +25,7 @@ define([
                                 "numberScaleRange": [0,1],
                                 "colorScaleType": "threshold",
                                 "colorScaleDomain": [0.05, 0.1],
-                                "colorScaleRange": ["#fcbba1", "#fb6a4a", "#a50f15"],
+                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
                                 },
@@ -40,7 +40,7 @@ define([
                                 "numberScaleRange": [0,1],
                                 "colorScaleType": "threshold",
                                 "colorScaleDomain": [0.001, 0.01],
-                                "colorScaleRange": ["#fcbba1", "#fb6a4a", "#a50f15"],
+                                "colorScaleRange": ["#fdbea0", "#fb6b40", "#b5211c"],
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
                                 },
@@ -55,12 +55,12 @@ define([
                                 "numberScaleRange": [0,1],
                                 "colorScaleType": "threshold",
                                 "colorScaleDomain": [0.0020, 0.0150, 0.0200, 0.0300],
-                                "colorScaleRange": ["#fcbba1", "#fc9272", "#fb6a4a", "#de2d26", "#a50f15"],
+                                "colorScaleRange": ["#fdc3a7", "#fb895f", "#fa4118", "#b5211c", "#760b0f"],
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['', '', '', '', ''],
                                 },
                             }],
-            ctrl_names: {title:'Spill Appearance',
+            ctrl_names: {
                          pin_on: 'Spill Location',
                          les_on: 'Particles',
                          scale: 'Particle Size',
@@ -134,7 +134,7 @@ define([
             }
 
             if (data === 'Mass') {
-                var sd = spill.get('element_type').get('standard_density');
+                var sd = spill.get('substance').get('standard_density');
                 fromInput = _.bind(function(value) {
                     var c = new nucos.OilQuantityConverter();
 

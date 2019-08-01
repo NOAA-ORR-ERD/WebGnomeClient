@@ -55,9 +55,11 @@ define([
             }
             this.appearanceModelsUsed.forEach(
                 function(a) {
-                    var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
-                                    .text(a.get('ctrl_names').title);
-                    html.append(formLabel);
+                    if (!_.isUndefined(a.get('ctrl_names').title)) {
+                        var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
+                                        .text(a.get('ctrl_names').title);
+                        html.append(formLabel);
+                    }
                     var app = new formType(a, this.layer.model);
                     html.append(app.$el);
                 }, this

@@ -6,7 +6,7 @@ define([
     'moment',
     'views/form/spill/base',
     'text!templates/form/spill/continue.html',
-    'model/spill',
+    'model/spill/spill',
     'views/form/oil/library',
     'jqueryDatetimepicker',
     'jqueryui/widgets/slider'
@@ -38,19 +38,29 @@ define([
                 var units = this.model.get('units');
                 var disabled = this.oilSelectDisabled();
                 var cid = this.model.cid;
+                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
+                var release_timesteps = (durationObj.asSeconds()/webgnome.model.get('time_step'));
+                var num_elements = this.model.get('release').get('num_elements');
+                var min_LEs;
+                if (num_elements < release_timesteps) {
+                    min_LEs = 'Less than 1 per timestep';
+                } else {              
+                    min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
+                }
                 this.body = _.template(FormTemplate, {
                     name: this.model.get('name'),
                     amount: amount,
                     time: _.isNull(this.model.get('release').get('release_time')) ? moment(webgnome.model.get('start_time')).format('YYYY/M/D H:mm') : moment(this.model.get('release').get('release_time')).format('YYYY/M/D H:mm'),
                     'duration': duration,
+                    num_elements: num_elements,
+                    release_timesteps: release_timesteps,
+                    min_LEs: min_LEs,
                     showGeo: this.showGeo,
                     showSubstance: this.showSubstance,
                     disabled: disabled,
                     cid: cid
                 });
                 BaseSpillForm.prototype.render.call(this, options);
-
-                var durationObj = moment.duration((parseFloat(duration.days, 10) * 24) + parseFloat(duration.hours, 10), 'h');
 
                 var rate;
                 if ((this.$('#rate-units').val()).indexOf('hr') === -1){
@@ -119,14 +129,16 @@ define([
             var releaseTime = moment(this.$('#datetime').val(), 'YYYY/M/D H:mm');
             var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
             var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
-
+            var num_elements = this.$('#num_elements').val();
             var duration = (((parseInt(days, 10) * 24) + parseFloat(hours, 10)) * 60) * 60;
             release.set('release_time', releaseTime.format('YYYY-MM-DDTHH:mm:ss'));
             release.set('end_release_time', releaseTime.add(duration, 's').format('YYYY-MM-DDTHH:mm:ss'));
+            release.set('num_elements', num_elements);
             this.model.set('name', name);
             this.model.set('units', units);
             this.model.set('amount', amount);
             this.model.set('release', release);
+            
             BaseSpillForm.prototype.update.call(this);
             if (!_.isUndefined(e)) {
                 this.inputFieldUpdate(e);
@@ -139,11 +151,38 @@ define([
             var rateChanged = this.$(e.currentTarget).is('#spill-rate') || this.$(e.currentTarget).is('#rate-units');
             var amountChanged = this.$(e.currentTarget).is('#spill-amount') || this.$(e.currentTarget).is('#units');
             var durationChanged = this.$(e.currentTarget).is('#days') || this.$(e.currentTarget).is('#hours');
-
+            var LEsChanged = this.$(e.currentTarget).is('#num_elements');
+            
             if (rateChanged) {
                 this.updateAmount();
-            } else if (amountChanged || durationChanged) {
+            } else if (amountChanged) {
                 this.updateRate();
+            } else if (durationChanged) {
+                this.updateRate();
+                this.updateMinLE();
+            } else if (LEsChanged) {
+                this.updateMinLE();
+            }
+        },
+        
+        updateMinLE: function(){
+            var days = this.$('#days').val().trim() ? this.$('#days').val().trim() : 0;
+            var hours = this.$('#hours').val().trim() ? this.$('#hours').val().trim() : 0;
+            var duration = ((days * 24) + parseFloat(hours));
+            var num_elements = this.$('#num_elements').val();
+            var release_timesteps = (duration * 3600) / webgnome.model.get('time_step');
+            var min_LEs;
+            if (duration === 0) {
+                min_LEs = 'Instaneous release';
+            } else {
+                min_LEs = '~' + Math.ceil(num_elements/release_timesteps) + ' per timestep';
+            }
+            if (num_elements >= release_timesteps) {
+                this.$('#min_LEs').text(min_LEs);
+                document.getElementById("min_LEs").className = "label label-info";
+            } else {
+                this.$('#min_LEs').text('Less than 1 per timestep');
+                document.getElementById("min_LEs").className = "label label-danger";
             }
         },
 
@@ -185,15 +224,15 @@ define([
         },
 
         updateAmountSlide: function(ui){
-        	var slider_min = this.$( ".slider" ).slider( "option", "min" );
-        	var slider_max = this.$( ".slider" ).slider( "option", "max" );
+            var slider_min = this.$( ".slider" ).slider( "option", "min" );
+            var slider_max = this.$( ".slider" ).slider( "option", "max" );
             var slider_scale = slider_max - slider_min;
             var value;
 
             if(_.isUndefined(ui)){
                 value = this.$('.slider').slider('value') - slider_min;
             } else {
-            	value = ui.value - slider_min;
+                value = ui.value - slider_min;
             }
 
             if(this.model.get('amount') !== 0) {
@@ -202,7 +241,7 @@ define([
                 if(value === 0){
                     this.$('#amount-tooltip').text(amount);
                 } else {
-                	var sigma = value / slider_scale * (2.0 / 3.0) * amount;
+                    var sigma = value / slider_scale * (2.0 / 3.0) * amount;
                     var bottom = Math.round(amount - sigma);
                     var top = Math.round(amount + sigma);
 

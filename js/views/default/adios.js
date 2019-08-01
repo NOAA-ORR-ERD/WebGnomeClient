@@ -16,13 +16,13 @@ define([
     'views/form/response/insituBurn',
     'views/form/response/skim',
     'views/form/beached',
-    'model/element',
     'model/environment/water',
     'model/environment/wind',
-    'model/movers/wind'
+    'model/movers/wind',
+    'model/spill/gnomeoil'
 ], function($, _, Backbone, moment, AdiosTemplate, ModelForm,
         OilLibraryView, SpillTypeForm, SpillInstantView, SpillContinueView, WaterForm, WindForm, ResponseType, ResponseDisperseView, ResponseBurnView, ResponseSkimView,
-        BeachedView, ElementType, Water, Wind, WindMover){
+        BeachedView, Water, Wind, WindMover, GnomeOil){
     'use strict';
     var adiosView = Backbone.View.extend({
         className: 'page adios',
@@ -47,12 +47,7 @@ define([
         },
 
         render: function(){
-            var element_type = webgnome.model.getElementType();
-            var substance = false;
-
-            if(element_type){
-                substance = element_type.get('substance');
-            }
+            var substance = webgnome.model.getSubstance();
 
             var start_time = moment(webgnome.model.get('start_time')).format(webgnome.config.date_format.moment);
             var durationStr = webgnome.model.durationString("Model will run for ");
@@ -114,19 +109,20 @@ define([
         },
 
         clickSubstance: function(){
-            var spills = webgnome.model.get('spills');
-            var element_type;
-            if(webgnome.model.getElementType()){
-                element_type = webgnome.model.getElementType();
-            } else {
-                element_type = new ElementType();
-            }
-            var oilLib = new OilLibraryView({}, element_type);
-            oilLib.on('save wizardclose', _.bind(function(){
-                webgnome.obj_ref[element_type.id] = element_type;
-                this.render();
-                oilLib.close();
+            var substance = new GnomeOil();
+            var oilLib = new OilLibraryView({}, substance);
+
+            oilLib.on('save wizardclose', _.bind(function() {
+                if (oilLib.$el.is(':hidden')) {
+                    oilLib.close();
+                    webgnome.model.setGlobalSubstance(substance);
+                    this.render();
+                }
+                else {
+                    oilLib.once('hidden', oilLib.close, oilLib);
+                }
             }, this));
+
             oilLib.render();
         },
 
