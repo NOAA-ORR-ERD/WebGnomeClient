@@ -188,7 +188,7 @@ define([
                         if (!this.currentMap){
                             this.currentMap = CesiumView.getView(this.className);
                             this.currentMap.render();
-                            var prims = this.currentMap.viewer.scene.primitives
+                            var prims = this.currentMap.viewer.scene.primitives;
                             for (var i=0; i < prims._primitives.length; i++) {
                                 if (_.isUndefined(this.currentPromises[prims._primitives[i].id])){
                                     prims.remove(prims._primitives[i]);
