@@ -295,6 +295,9 @@ define([
                 this.toggleView('config');
             } else if (window.location.href.indexOf('response') !== -1){
                 this.toggleView('response');
+            } else if (window.location.href.indexOf('roc') !== -1){
+                this.disableMenuItem('view-toggle');
+                this.disableMenuItem('views');
             } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
                 this.disableMenuItem('view-toggle');
                 this.disableMenuItem('views');
