@@ -67,6 +67,7 @@ define([
             'click .hotkeys': 'hotkeys',
 
             // "Views" & slider
+            'click .view-menu .view': 'toggleView',
             'click .view-toggle .view': 'toggleView'
         },
 
@@ -285,6 +286,8 @@ define([
             }
 
             //handles switching the view-toggle slider depending on the page you're on, or disabling it if you're on load/location
+            this.enableMenuItem('views');
+            this.enableMenuItem('view-toggle');
             if(window.location.href.indexOf('trajectory') !== -1){
                 this.toggleView('trajectory');
             } else if(window.location.href.indexOf('fate') !== -1) {
@@ -295,6 +298,8 @@ define([
                 this.toggleView('config');
             } else if (window.location.href.indexOf('response') !== -1){
                 this.toggleView('response');
+            } else if (window.location.href.indexOf('model') !== -1){
+                this.toggleView('model');
             } else if (window.location.href.indexOf('roc') !== -1){
                 this.disableMenuItem('view-toggle');
                 this.disableMenuItem('views');
@@ -302,8 +307,8 @@ define([
                 this.disableMenuItem('view-toggle');
                 this.disableMenuItem('views');
             } else {
-                this.enableMenuItem('view-toggle');
                 this.enableMenuItem('views');
+                this.enableMenuItem('view-toggle');
             }
         },
 

@@ -56,7 +56,7 @@ define([
                 maxFiles: 255,
                 maxFilesize: webgnome.config.upload_limits.current,  // MB
                 autoProcessQueue: false,
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate).\n Alternatively, drop filelist.txt for enforced file ordering',
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate).',
                 //gnome options
                 obj_type: obj_type,
             });
