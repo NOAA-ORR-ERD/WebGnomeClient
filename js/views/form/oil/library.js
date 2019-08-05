@@ -5,7 +5,7 @@ define([
     'module',
     'chosen',
     'moment',
-    'model/substance',
+    'model/spill/gnomeoil',
     'model/oil/distinct',
     'views/modal/form',
     'views/form/oil/table',
@@ -15,8 +15,8 @@ define([
     'sweetalert',
     'jqueryui/widgets/slider'
 ], function($, _, Backbone, module, chosen, moment,
-		    SubstanceModel, OilDistinct, FormModal, OilTable, LoadingModal,
-		    SpecificOil, OilTemplate, swal) {
+            GnomeOil, OilDistinct, FormModal, OilTable, LoadingModal,
+            SpecificOil, OilTemplate, swal) {
     'use strict';
     var oilLibForm = FormModal.extend({
         className: 'modal form-modal oil-form',
@@ -38,11 +38,11 @@ define([
             return _.defaults(OilTable.prototype.events, formModalHash);
         },
 
-        initialize: function(options, elementModel){
+        initialize: function(options, substanceModel){
             $(this.$el).on('scroll', _.bind(this.sticky, this));
             this.module = module;
-            this.oilTable = new OilTable(elementModel);
-            this.model = elementModel;
+            this.oilTable = new OilTable(substanceModel);
+            this.model = substanceModel;
             this.oilCache = localStorage.getItem('oil_cache');
             var oilCacheJson = JSON.parse(this.oilCache);
             // Initialize and render loading modal following request to view Oil Library collection
@@ -262,24 +262,33 @@ define([
         save: function(){
             var oilName = this.$('.select').data('name');
             var oilId = this.$('.select').data('id');
-            var substance = new SubstanceModel({adios_oil_id: oilId, name: oilName});
-            substance.fetch({
+            this.model.set({adios_oil_id: oilId, name: oilName});
+            this.model.fetch({
                 success: _.bind(function(model){
-                    this.model.set('substance', substance);
+                    this.model.unset('id');
                     this.model.save(null, {
-                        success: _.bind(function(){
+                        success: _.bind(function(e){
                             this.hide();
                             this.trigger('save');
                         }, this),
-                        error: _.bind(function(){
+                        error: _.bind(function(e){
                             swal({
-                                title: 'Failed to load selected Oil',
-                                text: this.model.get('substance').get('name') + ' data quality is poor and will not work properly if applied to the model.',
+                                title: 'Error saving GnomeOil to server',
+                                text: this.model.get('name') + ' data quality is poor and will not work properly if applied to the model.',
                                 type: 'error',
                                 confirmButtonText: 'Ok',
                                 closeOnConfirm: true
                             });
                         }, this)
+                    });
+                }, this),
+                error: _.bind(function(){
+                    swal({
+                        title: 'Failed to load selected Oil',
+                        text: this.model.get('substance').get('name') + ' data quality is poor and will not work properly if applied to the model.',
+                        type: 'error',
+                        confirmButtonText: 'Ok',
+                        closeOnConfirm: true
                     });
                 }, this)
             });

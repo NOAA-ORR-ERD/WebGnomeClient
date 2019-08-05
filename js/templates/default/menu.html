@@ -1,10 +1,4 @@
 <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-main">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-    </button>
     <a class="navbar-brand" href="#" title="Return to WebGNOME startup page">
     <img class="navbar-gnome-icon" src="img/GNOME_favicon_32x32.png">WebGNOME</a>
 </div>
@@ -12,38 +6,53 @@
 <div class="collapse navbar-collapse" id="navbar-main">
     <ul class="nav navbar-nav">
         <li class="dropdown">
-            <a href="#" class="dropdown-toggle" title="Create a new model" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" title="" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> New <b class="caret"></b></a>
             <ul class="dropdown-menu">
                 <li><a href="#" class="locations" title="">Select a Location File</a></li>
                 <li><a href="#" class="adios" title="">Oil Fate Wizard</a></li>
                 <li><a href="#" class="setup" title="">Manual Setup</a></li>
-                <li><a href="#" class="load" title="">Load Save File</a></li>
+                <li><a href="#" class="load" title="">Load Saved Model Setup</a></li>
             </ul>
         </li>
 
-        <li><a href="#" class="edit" title="Edit model in Setup View"><span class="glyphicon glyphicon-pencil"></span> Edit</a></li>
+        <li class="dropdown views">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-eye-open"></span> Views <b class="caret"></b></a>
+            <ul class="dropdown-menu view-menu">
+                <li><a href="#" class="view config" title=""><span class="glyphicon glyphicon-pencil"> </span> Setup View</a></li>
+                <li><a href="#" class="view trajectory" title=""><span class="glyphicon glyphicon-globe"> </span> Map View</a></li>
+                <li><a href="#" class="view fate" title=""><span class="glyphicon glyphicon-stats"> </span> Fate View</a></li>
+                <li><a href="#" class="view response" title=""><span class=""> </span> Response View</a></li>
+                <li><a href="#" class="view model" title=""><span class=""> </span> Model View</a></li>
 
-        {% if(can_persist) { %}
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Save your current model"><span class="glyphicon glyphicon-floppy-save"></span> Save<b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" class="save" title="">Download to My Computer</a></li>
-                    <li><a href="#" class="persist" title="">Save on the Server</a></li>
-                </ul>
-            </li>
-        {% } else { %}
-            <li><a href="#" class="save" title="Save your current model"><span class="glyphicon glyphicon-floppy-save"> </span> Save</a></li>
-        {% } %}
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><span class="glyphicon glyphicon-floppy-save"></span> Save <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                <li><a href="#" class="save" title="">Download Your Model Setup</a></li>
+                {% if(can_persist) { %}
+                <li><a href="#" class="persist" title="">Save Model Setup on Server</a></li>
+                {% } %}     
+                <li><hr></li>
+                <li><a href="#" class="netcdf">Export Particles as NetCDF</a></li>
+                <li><a href="#" class="kmz">Export Particles as KMZ</a></li>
+                <li><a href="#" class="shape">Export Particles as Shapefile</a></li>
+            </ul>
+        </li>
+
 
         <li class="dropdown help">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Help <b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-info-sign"></span> Help <b class="caret"></b></a>
             <ul class="dropdown-menu">
-                <li><a href="#" class="about" title="About WebGNOME"><span class="glyphicon glyphicon-info-sign"> </span> About</a></li>
-                <li><a href="#" class="doc" title="Open WebGNOME Help Pages"><span class="glyphicon glyphicon-file"> </span> User Manual</a></li>
-                <li><a href="#" class="faq" title="Search Help by Topic"><span class="glyphicon glyphicon-question-sign"> </span> Search</a></li>
-                <li><a href="#" class="hotkeys" title="Trajectory Hotkeys"><span class="glyphicon glyphicon-th-list"> </span> Hotkeys</a></li>
+                <li><a href="#" class="about" title=""><span class="g"> </span> About WebGNOME</a></li>
+                <li><a href="#" class="doc" title=""><span class=""> </span> Open User Manual</a></li>
+                <li><a href="#" class="faq" title=""><span class=""> </span> Search by Topic</a></li>
+                <li><a href="#" class="hotkeys" title=""><span class=""> </span> Keyboard Shortcuts</a></li>
             </ul>
         </li>
+
+
     </ul>
 
     <div class="view-toggle">
@@ -51,19 +60,17 @@
             <div title='Setup View' class="view config"></div>
             <div title='Map View' class="view trajectory"></div>
             <div title='Fate View' class="view fate"></div>
-            <div title='Response View' class="view response"></div>
-            <div title='Model View' class="view model"></div>
             <div class="switch"></div>
         </div>
     </div>
 
-    <div class="btn-group menu-button export">
+<!--     <div class="btn-group menu-button export">
         <a class="btn btn-default export dropdown-toggle" data-toggle="dropdown">Export <b class="caret"></b></a>
         <ul class="dropdown-menu">
             <li><a href="#" class="netcdf">NetCDF</a></li>
             <li><a href="#" class="kmz">KMZ</a></li>
             <li><a href="#" class="shape">Shapefile</a></li>
         </ul>
-    </div>
+    </div> -->
 </div>
 

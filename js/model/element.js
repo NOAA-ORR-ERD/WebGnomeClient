@@ -1,9 +1,10 @@
+/*
 define([
     'underscore',
     'backbone',
     'model/base',
     'model/initializers/windages',
-    'model/substance'
+    'model/spill/substance'
 ], function(_, Backbone, BaseModel, GnomeWindages, GnomeSubstance){
     'use strict';
     var gnomeElement = BaseModel.extend({
@@ -23,7 +24,7 @@ define([
                 new GnomeWindages()
             ])
         },
-        
+
         validate: function(attrs, options){
             if (attrs.substance && !attrs.substance.isValid()){
                 return attrs.substance.validationError;
@@ -44,5 +45,6 @@ define([
     });
 
     return gnomeElement;
-    
+
 });
+*/

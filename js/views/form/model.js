@@ -14,6 +14,13 @@ define([
         title: 'Model Settings',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
+        events: function() {
+            return _.defaults({
+                'change #days': 'updateTimeTips',
+                'change #hours': 'updateTimeTips',
+                'change #time_step': 'updateTimeTips'
+            }, FormModal.prototype.events);
+        },
         initialize: function(options, model){
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
@@ -42,13 +49,30 @@ define([
             
         },
 
+        updateTimeTips: function(e) {
+            var days = parseInt(this.$('#days').val(), 10);
+            var hours = parseInt(this.$('#hours').val(), 10);
+            var time_step = this.$('#time_step').val();
+            if (days === 0 & hours === 0) {
+                hours = 1;
+                this.$('#hours').val(1);
+            }
+            var duration = (((days * 24) + hours) * 60) * 60;
+            this.$('#minutes_label').text((Number(time_step/60).toFixed(2)) + " minutes" );
+            this.$('#steps_label').text( duration/time_step +" steps");
+        },
+
         update: function() {
             var start_time = moment(this.$('#start_time').val(), webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
             this.model.set('start_time', start_time);
 
-            var days = this.$('#days').val();
-            var hours = this.$('#hours').val();
-            var duration = (((parseInt(days, 10) * 24) + parseInt(hours, 10)) * 60) * 60;
+            var days = parseInt(this.$('#days').val(), 10);
+            var hours = parseInt(this.$('#hours').val(), 10);
+            if (days === 0 & hours === 0) {
+                hours = 1;
+                this.$('#hours').val(1);
+            }
+            var duration = (((days * 24) + hours) * 60) * 60;
             this.model.set('duration', duration);
 
             var time_step = this.$('#time_step').val();

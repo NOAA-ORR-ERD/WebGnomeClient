@@ -186,7 +186,7 @@ define([
 
                 // dynamically add the water form to the wizard if the substance is weatherable
                 form.on('save', _.bind(function(){
-                    this.dynamicWaterListener(form.model.get('element_type').get('substance'));
+                    this.dynamicWaterListener(form.model.get('substance'));
                 }, this));
 
                 this.register(form);
@@ -223,7 +223,7 @@ define([
 
         dynamicWaterListener: function(substance){
             var waterExists = this.steps[this.steps.length - 2].className.indexOf('water-form') > -1;
-            if (!_.isNull(substance) && !waterExists){
+            if (substance.get('is_weatherable') && !waterExists){
                 var waterForm = this.addWaterForm();
                 this.steps.splice(this.steps.length - 1, 0, waterForm);
             }

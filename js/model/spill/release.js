@@ -12,13 +12,10 @@ define([
         urlRoot: '/release/',
 
         defaults: {
-            'json_': 'webapi',
             'obj_type': 'gnome.spill.release.PointLineRelease',
             'end_position': [0, 0, 0],
             'start_position': [0, 0, 0],
             'num_elements': 1000,
-            'num_released': 0,
-            'start_time_invalid': true
         },
 
         initialize: function(options) {
@@ -173,7 +170,7 @@ define([
                         width: 8.0,
                         material: new Cesium.PolylineArrowMaterialProperty(Cesium.Color.BLACK),
                         clampToGround: true
-                        
+
                     },
                 }));
             }

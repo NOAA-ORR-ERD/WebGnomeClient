@@ -105,8 +105,8 @@ define([
             var hasSubstance = false;
             var spills = webgnome.model.get('spills');
             if (spills.length > 0) {
-                var element_type = spills.at(0).get('element_type');
-                if (element_type && element_type.get('substance') !== null) {
+                var substance = spills.at(0).get('substance');
+                if (substance && substance.get('is_weatherable')) {
                     hasSubstance = true;
                 }
             }

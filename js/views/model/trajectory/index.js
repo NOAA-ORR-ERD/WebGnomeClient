@@ -91,9 +91,8 @@ define([
 
             this.overlay.append(this.controls.$el);
             this.$el.append(this.overlay);
-            // add a 250ms timeout to the map render to give js time to add the compiled
-            // to the dom before trying to draw the map.
-            setTimeout(_.bind(function() {
+            // equivalent to $( document ).ready(func(){})
+            $(_.bind(function() {
                 this.renderCesiumMap();
                 this.layersPanel = new LayersView();
                 this.layersListeners();
@@ -101,7 +100,7 @@ define([
                 this.legend = new LegendView();
                 this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
                 this.rightPane.$el.appendTo(this.$el);
-            }, this), 250);
+            }, this));
         },
 
         layersListeners: function(){
@@ -185,7 +184,15 @@ define([
         },
 
         _focusOnMap: function() {
-            if (_.isUndefined(this.viewer)) {
+            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                if (webgnome.model.get('spills').length > 0) {
+                    webgnome.model.get('spills').at(0).getBoundingRectangle().then(_.bind(function(rect) {
+                        this.viewer.scene.camera.flyTo({
+                            destination: rect,
+                            duration: 0.25
+                        });
+                    }, this));
+                }
                 return;
             } else {
                 webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
@@ -269,7 +276,15 @@ define([
                 // },
             // });
             // image_providers.unshift(default_image);
-
+            var west = -130.0;
+            var south = 20.0;
+            var east = -60.0;
+            var north = 60.0;
+            
+            var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
+            
+            Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+            Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
                 selectionIndicator : false,
@@ -1135,6 +1150,5 @@ define([
             // this.remove();
         }
     });
-
     return trajectoryView;
 });

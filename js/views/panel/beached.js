@@ -36,7 +36,7 @@ define([
                 }
                 webgnome.model.save(null, {validate: false});
             }, this));
-            if (webgnome.model.get('map').get('name') === 'GnomeMap') {
+            if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.MapFromBNA') {
                 beachedForm.render();
             } else {
                 swal({
