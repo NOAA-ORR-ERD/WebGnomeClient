@@ -1,9 +1,10 @@
 define([
+    'underscore',
     'model/movers/base',
     'model/environment/gridwind',
     'model/environment/wind',
     'model/visualization/mover_appearance'
-], function(BaseMover, GridWind, Wind, MoverAppearance) {
+], function(_, BaseMover, GridWind, Wind, MoverAppearance) {
     var componentMover = BaseMover.extend({
         urlRoot: '/mover/',
         defaults: function() { 
