@@ -811,6 +811,17 @@ define([
                 dataset = _.clone(this.dataset);
             }
 
+            var budgetRealValueFormat = function(value) {
+                if (value < 10) {
+                    value = Number(value).toFixed(2);
+                } else if (value < 100) {
+                    value = Number(value).toFixed(1);
+                } else {
+                    value = Math.round(value);
+                }
+                return value;
+            };
+
             dataset = this.pruneDataset(dataset, [
                 'avg_density',
                 'avg_viscosity',
@@ -927,10 +938,12 @@ define([
                             if (dataset[set].label === 'Amount released') {
                                  value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
                                  to_unit = ' ' + to_unit;
+                                 value = budgetRealValueFormat(value);
                             }
                             else {
                                 if (display.other === 'same') {
-                                    value = Math.round(converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit));
+                                    value = converter.Convert(value, from_unit, substance_density, 'kg/m^3', to_unit);
+                                    value = budgetRealValueFormat(value);
                                 }
                                 else if (display.other === 'percent') {
                                     if (dataset[0].data[row][1]===0) {

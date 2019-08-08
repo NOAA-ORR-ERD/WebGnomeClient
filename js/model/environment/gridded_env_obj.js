@@ -377,7 +377,6 @@ define([
                             bbs[i].color = newColor;
                         }
 
-                        bbs[i].scale = appearance.get('scale');
                         bbs[i].show = appearance.get('on');
                     }
                 }
