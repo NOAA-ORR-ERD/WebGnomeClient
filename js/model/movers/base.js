@@ -298,8 +298,7 @@ define([
                                 position: Cesium.Cartesian3.fromDegrees(centers[c][0],
                                                                         centers[c][1]),
                                 image: this._images[0],
-                                color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha')),
-                                scale: appearance.get('scale')
+                                color: Cesium.Color.fromCssColorString(appearance.get('vec_color')).withAlpha(appearance.get('vec_alpha'))
                             });
                             bb.id = 'vector'+c;
                         }
@@ -375,7 +374,6 @@ define([
                         bbs[i].color = newColor;
                     }
 
-                    bbs[i].scale = appearance.get('scale');
                     bbs[i].show = appearance.get('vec_on');
                 }
 
