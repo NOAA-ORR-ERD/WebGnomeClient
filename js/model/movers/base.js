@@ -630,7 +630,7 @@ define([
         extrapolated: function() {
             // We should probably organize the object hierarchy a bit better
             // than this, but for now the base class handles all cases.
-            if (this.attributes.hasOwnProperty('wind')) {
+            if (this.attributes.hasOwnProperty('wind') && this.get('wind')) {
                 return this.get('wind').get('extrapolation_is_allowed');
             }
             else {
