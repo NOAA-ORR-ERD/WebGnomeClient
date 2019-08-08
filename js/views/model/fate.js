@@ -146,6 +146,7 @@ define([
             'skimmed': 'rgb(255, 157, 167)',
             'chem_dispersed': 'rgb(176, 122, 161)',           
             'burned': 'rgb(225, 87, 89)',
+            'boomed': 'rgb(50, 50, 50)',
             'floating': 'rgb(186, 176, 172)',
         },
 
