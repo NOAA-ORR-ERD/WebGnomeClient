@@ -4,12 +4,13 @@ define([
     'moment',
     'model/weatherers/base',
     'model/environment/waves'
-], function(_, Backbone, moment, BaseModel, WavesModel){
+], function(_, Backbone, moment, BaseModel, WavesModel) {
     'use strict';
     var dispersionWeatherer = BaseModel.extend({
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.ChemicalDispersion',
             'name': 'Dispersion',
+            'active_range': ['-inf', 'inf'],
             'efficiency': 0.20,
             'waves': null,
         },
@@ -18,26 +19,32 @@ define([
             waves: Backbone.Model,
         },
 
-        validate: function(attrs, options){
-            if (_.isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0){
-                return 'Percent of oil sprayed must be greater than zero!';
+        validate: function(attrs, options) {
+            if (attrs.active_range[0] === attrs.active_range[1]) {
+                return "Duration must be input!";
             }
 
-            if (attrs.active_start === attrs.active_stop) {
-                return 'Duration must be a inputted!';
-            }
+            if (isNaN(attrs.fraction_sprayed) || attrs.fraction_sprayed <= 0) {
+                return 'Percent of oil sprayed must be greater than zero!';
+            }           
         },
 
         resetEndTime: function() {
             var timeStepLength;
-            if (_.has(window, 'webgnome') && _.has(webgnome, 'model') && !_.isNull(webgnome.model)){
+
+            if (_.has(window, 'webgnome') &&
+                    _.has(webgnome, 'model') &&
+                    !_.isNull(webgnome.model)) {
                 timeStepLength = parseFloat(webgnome.model.get('time_step'));
-            } else {
+            }
+            else {
                 timeStepLength = 900;
             }
-            var start_time = moment(this.get('active_start')).unix();
-            var new_end_time = moment((start_time + timeStepLength) * 1000);
-            this.set('active_stop', new_end_time.format());
+
+            var startTime = moment(this.get('active_range')[0]).unix();
+            var newEndTime = moment((startTime + timeStepLength) * 1000);
+
+            this.set('active_range', [startTime, newEndTime.format()]);
         },
 
         toTree: function(){

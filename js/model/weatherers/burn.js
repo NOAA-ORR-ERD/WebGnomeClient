@@ -9,6 +9,7 @@ define([
         defaults: {
             'obj_type': 'gnome.weatherers.cleanup.Burn',
             'name': 'Burn',
+            'active_range': ['-inf', 'inf'],
             'area': 0,
             'thickness': 0,
             'area_units': 'm^2',
@@ -32,8 +33,15 @@ define([
                 return "Enter a number for boomed area!";
             }
             
+            if (attrs.area <= 0){
+                return "Boomed area must be greater than zero!";
+            }
+
             if (!_.isNumber(parseFloat(attrs.thickness)) || isNaN(parseFloat(attrs.thickness))){
                 return "Enter a number for thickness!";
+            }
+            if (attrs.thickness <= 0){
+                return "Thickness must be greater than zero!";
             }
         }
     });

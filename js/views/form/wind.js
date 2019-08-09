@@ -4,36 +4,33 @@ define([
     'backbone',
     'module',
     'moment',
-    'ol',
+    'cesium',
     'nucos',
     'mousetrap',
     'sweetalert',
-    'dropzone',
-    'text!templates/default/dropzone.html',
+    'views/default/dzone',
     'text!templates/form/wind.html',
     'text!templates/form/wind/variable-input.html',
     'text!templates/form/wind/variable-static.html',
     'text!templates/form/wind/popover.html',
-    'text!templates/uploads/upload.html',
-    'text!templates/uploads/upload_activate.html',
-    'views/default/map',
+    'views/default/cesium',
     'views/modal/form',
     'views/uploads/upload_folder',
+    'model/map/graticule',
     'model/movers/wind',
     'model/environment/wind',
     'model/resources/nws_wind_forecast',
     'compassui',
     'jqueryui/widgets/slider',
     'jqueryDatetimepicker'
-], function($, _, Backbone, module, moment, ol, nucos, Mousetrap, swal,
-            Dropzone, DropzoneTemplate, WindFormTemplate,
+], function($, _, Backbone, module, moment, Cesium, nucos, Mousetrap, swal,
+            Dzone, WindFormTemplate,
             VarInputTemplate, VarStaticTemplate, PopoverTemplate,
-            UploadTemplate, UploadActivateTemplate,
-            OlMapView, FormModal, UploadFolder,
+            CesiumView, FormModal, UploadFolder, Graticule,
             WindMoverModel, WindModel, NwsWind) {
     'use strict';
     var windForm = FormModal.extend({
-        title: 'Wind',
+        title: 'Point Wind',
         className: 'modal form-modal wind-form',
         sliderValue: 0,
 
@@ -60,8 +57,8 @@ define([
                 'click #extrapolation-allowed': 'setExtrapolation',
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
-                'keyup #nws #lat': 'nwsSubmit',
-                'keyup #nws #lon': 'nwsSubmit',
+                'keyup #nws #lat': 'moveNWSPin',
+                'keyup #nws #lon': 'moveNWSPin',
             }, formModalHash);
         },
 
@@ -81,42 +78,14 @@ define([
                 this.model = this.superModel.get('wind');
             }
 
-            if (!this.model.get('name')) {
+            if (!_.isUndefined(this.superModel) &&
+                    !this.superModel.get('name')) {
                 var count = webgnome.model.get('environment').where({obj_type: this.model.get('obj_type')});
                 count = !count ? 1 : count.length + 1;
+                this.superModel.set('name', 'Wind #' + count);
                 this.model.set('name', 'Wind #' + count);
             }
-            
-            this.title = this.model.get('name');
-            this.source = new ol.source.Vector();
-            this.spillSource = new ol.source.Vector();
-
-            this.windLayer = new ol.layer.Vector({
-                source: this.source,
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1.0],
-                        src: '/img/map-pin.png',
-                        size: [32, 40]
-                    })
-                })
-            });
-
-            this.spillLayer = new ol.layer.Vector({
-                source: this.spillSource,
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                    anchor: [0.5, 1.0],
-                    src: '/img/spill-pin.png',
-                    size: [32, 40]
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: '#3399CC',
-                        width: 1.25
-                    })
-                })
-            });
-
+/*
             this.ol = new OlMapView({
                 id: 'wind-form-map',
                 zoom: 7,
@@ -144,6 +113,8 @@ define([
                     this.spillLayer
                 ]
             });
+*/
+            this.nwsMap = new CesiumView();
 
             this.$el.on('click', _.bind(function(e) {
                 var $clicked = this.$(e.target);
@@ -153,17 +124,23 @@ define([
                     this.$('.popover').popover('hide');
                 }
             }, this));
-            
+
             this.direction_last_appended = 'down';
+            this.heldPin = null;
         },
 
         render: function(options) {
+            var superModelName = 'Not Found';
+            if (!_.isUndefined(this.superModel)) {
+                superModelName = this.superModel.get('name');
+            }
+
             this.body = _.template(WindFormTemplate, {
                 constant_datetime: moment(this.model.get('timeseries')[0][0])
                                    .format(webgnome.config.date_format.moment),
                 timeseries: this.model.get('timeseries'),
                 unit: this.model.get('units'),
-                name: this.model.get('name'),
+                name: superModelName,
                 extrapolation_is_allowed: this.model.get('extrapolation_is_allowed')
             });
 
@@ -216,7 +193,7 @@ define([
                     max: 5,
                     value: 0,
                     create: _.bind(function() {
-                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + this.model.get('speed_uncertainty_scale') * 5.0 + ' %</div></div>');
+                        this.$('#variable .ui-slider-handle').html('<div class="tooltip top slider-tip"><div class="tooltip-arrow"></div><div class="tooltip-inner">+/- ' + (this.model.get('speed_uncertainty_scale') * (50.0)).toFixed(1) + ' %</div></div>');
                     }, this),
                     slide: _.bind(function(e, ui) {
                         this.updateVariableSlide(ui);
@@ -227,13 +204,13 @@ define([
 
                 this.$('#variable .slider').slider("option", "value", this.model.get('speed_uncertainty_scale') * (50.0 / 3));
                 this.renderTimeseries();
-                this.updateTooltipWidth();                
+                this.updateTooltipWidth();
             }, this), 1);
 
             //$('.modal').on('scroll', this.variableWindStickyHeader);
             $('.table-wrapper').on('scroll', this.variableWindStickyHeader);
 
-            this.setupUpload();
+            this.setupUpload(WindMoverModel.prototype.defaults.obj_type);
             this.rendered();
             this.populateDateTime();
         },
@@ -281,20 +258,24 @@ define([
             }
             else if (e.target.hash === '#nws') {
                 if (this.$('#wind-form-map canvas').length === 0) {
-                    this.ol.render();
-                    this.ol.setMapOrientation();
-                    this.ol.map.on('click', _.bind(this.updateNWSMap, this));
+                    this.$('#wind-form-map').append(this.nwsMap.$el);
+                    this.nwsMap.render();
 
-                    var spill = webgnome.model.get('spills').at(0);
-                    if (spill) {
-                        var lat = spill.get('release').get('start_position')[1];
-                        var lon = spill.get('release').get('start_position')[0];
+                    //add map polygons
+                    var map = webgnome.model.get('map');
+                    map.getGeoJSON().then(_.bind(function(data){
+                        map.processMap(data, null, this.nwsMap.viewer.scene.primitives);
+                    }, this));
+                    this.nwsMap.resetCamera(map);
 
-                        this.$('#nws #lat').val(lat);
-                        this.$('#nws #lon').val(lon);
+                    //add release pins
+                    var spills = webgnome.model.get('spills');
+                    for (var s = 0; s < webgnome.model.get('spills').length; s++) {
+                        spills.models[s].get('release').generateVis(this.nwsMap.viewer.entities);
                     }
 
-                    this.renderSpills();
+                    this.setupCustomCesiumViewHandlers();
+                    //this.renderSpills();
 
                     this.$('#nws input[name="lat"]').tooltip({
                         trigger: 'focus',
@@ -321,6 +302,117 @@ define([
             this.populateDateTime();
         },
 
+        setupCustomCesiumViewHandlers: function() {
+            var textPropFuncGen = function(newPin) {
+                return new Cesium.CallbackProperty(
+                    _.bind(function(){
+                        var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(this.position._value);
+                        var lon, lat;
+                        if (this.coordFormat === 'dms') {
+                            lon = Graticule.prototype.genDMSLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDMSLabel('lat', loc.latitude);
+                        } else {
+                            lon = Graticule.prototype.genDegLabel('lon', loc.longitude);
+                            lat = Graticule.prototype.genDegLabel('lat', loc.latitude);
+                        }
+                        var ttstr = 'Lon: ' + ('\t' + lon) +
+                                '\nLat: ' + ('\t' + lat);
+                        return ttstr;
+                    }, newPin),
+                    true
+                );
+            };
+            //add crosshair and forecast pin
+            this.nwsCrosshair = this.nwsMap.viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(0,0),
+                billboard: {
+                    image: '/img/crosshair.png',
+                    verticalOrigin: Cesium.VerticalOrigin.CENTER,
+                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+                    width: 30,
+                    height: 30,
+                },
+                show: true,
+                coordFormat: 'dms',
+                movable: true,
+                hoverable: true,
+                label : {
+                    show : true,
+                    showBackground : true,
+                    backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
+                    font : '14px monospace',
+                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                    verticalOrigin : Cesium.VerticalOrigin.TOP,
+                    pixelOffset : new Cesium.Cartesian2(2, 0),
+                    eyeOffset : new Cesium.Cartesian3(0,0,-5),
+                }
+            });
+            this.nwsCrosshair.label.text = textPropFuncGen(this.nwsCrosshair);
+            this.nwsPin = this.nwsMap.viewer.entities.add({
+                position: Cesium.Cartesian3.fromDegrees(0,0),
+                billboard: {
+                    image: '/img/map-pin.png',
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                },
+                show: false,
+                coordFormat: 'dms',
+                movable: false,
+                hoverable: true,
+                label : {
+                    show : true,
+                    showBackground : true,
+                    backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.7),
+                    font : '14px monospace',
+                    horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
+                    verticalOrigin : Cesium.VerticalOrigin.TOP,
+                    pixelOffset : new Cesium.Cartesian2(2, 0),
+                    eyeOffset : new Cesium.Cartesian3(0,0,-5),
+                }
+            });
+            this.nwsPin.label.text = textPropFuncGen(this.nwsPin);
+
+            //alter viewer mouse events to trap the crosshair
+            this.nwsMap.pickupEnt(null, this.nwsCrosshair);
+            this.nwsMap.mouseHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+            this.nwsMap.mouseHandler.setInputAction(_.partial(_.bind(this.pickLocation, this.nwsPin), _, this), Cesium.ScreenSpaceEventType.LEFT_CLICK);
+        },
+
+        pickLocation: function(movement, view) {
+            //this context should always be an entity
+            var newPos = view.nwsMap.viewer.scene.camera.pickEllipsoid(movement.position);
+            this.position = newPos;
+            this.show = true;
+            this.label.show = true;
+            var coords = Cesium.Ellipsoid.WGS84.cartesianToCartographic(newPos);
+            coords = {lon: Cesium.Math.toDegrees(coords.longitude),
+                      lat: Cesium.Math.toDegrees(coords.latitude)};
+            view.$('#nws #lat').val(coords.lat);
+            view.$('#nws #lon').val(coords.lon);
+            view.nwsFetch(coords);
+            view.trigger('newNWS', this, coords);
+            view.nwsMap.viewer.scene.requestRender();
+        },
+
+        moveNWSPin: function(e) {
+            var coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
+            coords = this.coordsParse(_.clone(coords));
+
+            if (_.isNaN(coords[0])) {
+                coords[0] = 0;
+            }
+
+            if (_.isNaN(coords[1])) {
+                coords[1] = 0;
+            }
+            coords = {lon: coords[0], lat: coords[1]};
+
+            this.nwsPin.position = Cesium.Cartesian3.fromDegrees(coords.lon, coords.lat);
+            this.nwsPin.show = true;
+            this.nwsMap.viewer.scene.requestRender();
+            this.nwsFetch(coords);
+        },
+
         showParsedCoords: function(coords) {
             this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
             this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
@@ -341,87 +433,11 @@ define([
             return coordsArray;
         },
 
-        updateNWSMap: function(e) {
-            var coordinate, feature, coords;
-
-            if (_.has(e, 'coordinate')) {
-                coordinate = new ol.geom.Point(e.coordinate);
-                feature = new ol.Feature(coordinate);
-                coords = new ol.proj.transform(e.coordinate, 'EPSG:3857', 'EPSG:4326');
-
-                this.$('#nws #lat').val(coords[1]);
-                this.$('#nws #lon').val(coords[0]);
-            }
-            else {
-                coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
-                coords = this.coordsParse(_.clone(coords));
-
-                if (_.isNaN(coords[0])) {
-                    coords[0] = 0;
-                }
-
-                if (_.isNaN(coords[1])) {
-                    coords[1] = 0;
-                }
-
-                coordinate = new ol.geom.Point(coords);
-
-                var proj_coords = new ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-                feature = new ol.Feature(new ol.geom.Point(proj_coords));
-                this.showParsedCoords(coords);
-            }
-
-            this.clearError();
-
-            this.source.forEachFeature(function(feature) {
-                if (feature.name !== 'spill') {
-                    this.source.removeFeature(feature);
-                }
-            }, this);
-
-            this.source.addFeature(feature);
-
-            var coordObj = {lat: coords[1], lon: coords[0]};
-
-            this.nwsFetch(coordObj);
-            this.populateDateTime();
-        },
-
         populateDateTime: function() {
             var timeseries = this.model.get('timeseries');
             var starting_time = timeseries[timeseries.length - 1][0];
 
             this.$('#variable-datetime').val(moment(starting_time).format(webgnome.config.date_format.moment));
-        },
-
-        renderSpills: function() {
-            var spills = webgnome.model.get('spills');
-            spills.forEach(function(spill) {
-                var start_position = spill.get('release').get('start_position');
-                var end_position = spill.get('release').get('end_position');
-                var geom;
-
-                if (start_position.length > 2 &&
-                        start_position[0] === end_position[0] &&
-                        start_position[1] === end_position[1]) {
-                    start_position = [start_position[0], start_position[1]];
-                    geom = new ol.geom.Point(ol.proj.transform(start_position,
-                                                               'EPSG:4326',
-                                                               this.ol.map.getView().getProjection()));
-                }
-                else {
-                    start_position = [start_position[0], start_position[1]];
-                    end_position = [end_position[0], end_position[1]];
-                    geom = new ol.geom.LineString([ol.proj.transform(start_position, 'EPSG:4326', this.ol.map.getView().getProjection()), ol.proj.transform(end_position, 'EPSG:4326', this.ol.map.getView().getProjection())]);
-                }
-
-                var feature = new ol.Feature({
-                    geometry: geom,
-                    spill: spill.get('id')
-                });
-
-                this.spillSource.addFeature(feature);
-            }, this);
         },
 
         nwsSubmit: function(e) {
@@ -437,78 +453,52 @@ define([
         },
 
         setupUpload: function(obj_type) {
+            this.obj_type = obj_type;
             this.$('#upload_form').empty();
-
-            if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate,
-                                              {page: false}));
-            }
-            else {
-                this.$('#upload_form').append(_.template(UploadTemplate));
-            }
-
-            if (!obj_type) {
-                obj_type = WindMoverModel.prototype.defaults.obj_type;
-            }
-
-            this.dropzone = new Dropzone('.dropzone', {
-                url: webgnome.config.api + '/mover/upload',
-                previewTemplate: _.template(DropzoneTemplate)(),
-                paramName: 'new_mover',
+            this.dzone = new Dzone({
                 maxFiles: 1,
-                //acceptedFiles: '.osm, .wnd, .txt, .dat',
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all' //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
+                maxFilesize: webgnome.config.upload_limits.wind,  // MB
+                autoProcessQueue: true,
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all', //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
+                //gnome options
+                obj_type: obj_type,
             });
+            this.$('#upload_form').append(this.dzone.$el);
 
-            this.dropzone.on('sending', _.bind(this.sending,  {obj_type: obj_type}));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
-
-            if (webgnome.config.can_persist) {
-                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
-                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
-                this.uploadFolder.render();
-            }
+            this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        sending: function(e, xhr, formData, obj_type) {
-            formData.append('session', localStorage.getItem('session'));
-            formData.append('obj_type', this.obj_type);
-            formData.append('persist_upload',
-                            $('input#persist_upload')[0].checked);
-        },
-
-        progress: function(e, percent) {
-            if (percent === 100) {
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
-            }
-        },
-
-        reset: function(file) {
-            setTimeout(_.bind(function() {
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 10000);
-        },
-
-        loaded: function(e, response) {
-            var json_response = JSON.parse(response);
-            var mover;
-
-            if (json_response && json_response.obj_type) {
-                if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
-                    mover = new WindMoverModel(json_response, {parse: true});
-                    //this.model = json_response['wind'];
+        loaded: function(fileList) {
+            $.post(webgnome.config.api + '/mover/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': this.obj_type,
+                 'name': this.dzone.dropzone.files[0].name,
+                 'session': localStorage.getItem('session')
                 }
-                this.trigger('save', mover);
-            }
-            else {
-                console.error('No response to file upload');
-            }
+            )
+            .done(_.bind(function(response) {
+                var json_response = JSON.parse(response);
+                var mover, editform;
 
-            this.hide();
+                if (json_response && json_response.obj_type) {
+                    if (json_response.obj_type === WindMoverModel.prototype.defaults.obj_type) {
+                        mover = new WindMoverModel(json_response, {parse: true});
+                    }
+                    else {
+                        console.error('Mover type not recognized: ', json_response.obj_type);
+                    }
+                    webgnome.model.get('movers').add(mover);
+                    webgnome.model.get('environment').add(mover.get('wind'));
+
+                    webgnome.model.save({},{'validate': false});
+                }
+                else {
+                    console.error('No response to file upload');
+                }
+
+                this.hide();
+            }, this));
+            //this.trigger('save');
         },
 
         activateFile: function(filePath) {
@@ -521,7 +511,7 @@ define([
                 });
             }
         },
-    
+
         nwsLoad: function(model) {
             this.model.set('timeseries', model.get('timeseries'));
             this.model.set('units', model.get('units'));
@@ -562,23 +552,20 @@ define([
                     });
                 }
 
-                if (active === 'constant') {
-                    // if the constant wind pane is active, a timeseries
-                    // needs to be generated for the values provided
-                    var dateObj = moment(this.form.constant.datetime.val(),
-                                         webgnome.config.date_format.moment);
-                    var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
+                // if the constant wind pane is active, a timeseries
+                // needs to be generated for the values provided
+                var dateObj = moment(this.form.constant.datetime.val(),
+                                     webgnome.config.date_format.moment);
+                var date = dateObj.format('YYYY-MM-DDTHH:mm:00');
 
-                    this.model.set('timeseries', [[date, [speed, direction]]]);
-                    this.updateConstantSlide();
-                }
-                else {
-                    this.updateVariableSlide();
-                }
+                this.model.set('timeseries', [[date, [speed, direction]]]);
+                this.updateConstantSlide();
+
 
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
                 this.model.set('name', this.$('#name').val());
-                
+                this.superModel.set('name', this.$('#name').val());
+
                 this.$('.additional-wind-compass').remove();
             }
 
@@ -587,6 +574,8 @@ define([
 
                 this.$('#' + active + ' .units').text('(' + currentUnits + ')');
                 this.model.set('units', this.$('#' + active + ' select[name="units"]').val());
+                this.model.set('name', this.$('#name').val());
+                this.superModel.set('name', this.$('#name').val());
             }
         },
 
@@ -888,7 +877,7 @@ define([
 
                 var date = moment(this.$('.input-time').val(),
                                   'YYYY/MM/DD HH:mm').format('YYYY-MM-DDTHH:mm:00');
- 
+
                 if (direction.match(/[s|S]|[w|W]|[e|E]|[n|N]/) !== null) {
                     direction = this.$('.additional-wind-compass')[0].settings['cardinal-angle'](direction);
                 }
@@ -921,7 +910,7 @@ define([
             }
 
             this.addRowHelper(e, index, nextIndex, {'interval': interval});
-            
+
         },
 
         cancelTimeseriesEntry: function(e) {
@@ -1043,7 +1032,7 @@ define([
 
         save: function() {
             if (_.isUndefined(this.nws) || this.nws.fetched) {
-                this.update();
+                //this.update();
 
                 FormModal.prototype.save.call(this);
             }
@@ -1062,8 +1051,6 @@ define([
         back: function() {
             $('.xdsoft_datetimepicker:last').remove();
 
-            this.ol.close();
-
             FormModal.prototype.back.call(this);
         },
 
@@ -1071,18 +1058,15 @@ define([
             $('.xdsoft_datetimepicker:last').remove();
             $('.xdsoft_datetimepicker:last').remove();
             $('.modal').off('scroll', this.variableWindStickyHeader);
-            
+
             if (this.nws) {
                 this.nws.cancel();
             }
 
-            if (this.dropzone) {
-                this.dropzone.disable();
+            if (this.dzone) {
+                this.dzone.close();
             }
-            
-            $('input.dz-hidden-input').remove();
 
-            this.ol.close();
             FormModal.prototype.close.call(this);
         },
     });

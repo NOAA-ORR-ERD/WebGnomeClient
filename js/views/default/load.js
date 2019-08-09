@@ -46,7 +46,8 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_model',
                 maxFiles: 1,
-                acceptedFiles: '.zip',
+                maxFilesize: webgnome.config.upload_limits.save, // 2GB
+                acceptedFiles: '.zip, .gnome',
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
             this.dropzone.on('sending', _.bind(this.sending, this));
@@ -65,11 +66,18 @@ define([
             formData.append('session', localStorage.getItem('session'));
         },
 
-        reset: function(file){
-            setTimeout(_.bind(function(){
+        reset: function(file, err) {
+            var errObj = JSON.parse(err);
+            console.error(errObj);
+
+            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
+                                                             ': ' +
+                                                             errObj.message);
+
+            setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 10000);
+            }, this), 3000);
         },
 
         progress: function(e, percent){
@@ -86,9 +94,10 @@ define([
 
             for (var i = weathererKeys.length - 1; i >= 0; i--){
                 if (weathererKeys[i].indexOf('cleanup') !== -1 ||
-                     weathererKeys[i].indexOf('beaching') !== -1 ||
-                     weathererKeys[i].indexOf('weathering_data') !== -1 ||
-		     weathererKeys[i].indexOf('roc') !== -1){
+                    weathererKeys[i].indexOf('beaching') !== -1 ||
+                    weathererKeys[i].indexOf('weathering_data') !== -1 ||
+                    weathererKeys[i].indexOf('roc') !== -1 ||
+                    weathererKeys[i].indexOf('dissolution') !== -1){
                     weathererKeys.splice(i, 1);
                 }
             }
@@ -132,7 +141,17 @@ define([
             }
         },
 
-        loaded: function(){
+        loaded: function(fileobj, resp){
+            if (resp === 'UPDATED_MODEL'){
+                
+                swal({
+                    title: 'Old Save File Detected',
+                    text: 'Compatibility changes may hae been made. It is HIGHLY recommended to verify and re-save the model after loading',
+                    type: 'warning',
+                    closeOnConfirm: true,
+                    confirmButtonText: 'Ok'
+                });
+            }
             webgnome.model = new GnomeModel();
             webgnome.model.fetch({
                 success: _.bind(function(model, response, options){

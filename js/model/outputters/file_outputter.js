@@ -3,7 +3,7 @@ define([
     'backbone',
     'moment',
     'model/base'
-], function(_, Backbone, moment, BaseModel){
+], function(_, Backbone, moment, BaseModel) {
     'use strict';
     var fileOutputter = BaseModel.extend({
         urlRoot: '/outputter/',

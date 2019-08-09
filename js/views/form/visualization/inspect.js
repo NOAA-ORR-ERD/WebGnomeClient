@@ -29,7 +29,7 @@ define([
             this.module = module;
             FormModal.prototype.initialize.call(this, options);
             this.layer = layer;
-            this.title = 'Edit '+ layer.model.get('name') +' (' + layer.model.get('obj_type').split('.').pop() + ') Appearance';
+            this.title = 'Edit Layer Properties: '+ layer.model.get('name');
             this.appearanceModelsUsed = [];
         },
 
@@ -55,9 +55,11 @@ define([
             }
             this.appearanceModelsUsed.forEach(
                 function(a) {
-                    var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
-                                    .text(a.get('ctrl_names').title);
-                    html.append(formLabel);
+                    if (!_.isUndefined(a.get('ctrl_names').title)) {
+                        var formLabel = $('<label></label>', {class:"form-label", 'for':a.get('id')})
+                                        .text(a.get('ctrl_names').title);
+                        html.append(formLabel);
+                    }
                     var app = new formType(a, this.layer.model);
                     html.append(app.$el);
                 }, this
@@ -77,11 +79,24 @@ define([
             for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
                 var appearance = this.appearanceModelsUsed[i];
                 var id = appearance.get('id');
-                appearance.set(appearance.defaults);
+                appearance.set(appearance.defaults());
                 appearance.set('id', id);
+                if (this.layer.model.get('obj_type').includes('spill')){
+                    this.layer.model.setupVis();
+                }
+                appearance.save();
             }
-            this.close();
+            this.appearanceModelsUsed = [];
+            this.$el.html('');
+            this.render();
         },
+
+        save: function() {
+            for (var i = 0; i < this.appearanceModelsUsed.length; i++) {
+                this.appearanceModelsUsed[i].save();
+            }
+            FormModal.prototype.save.call(this);
+        }
 
         
     });

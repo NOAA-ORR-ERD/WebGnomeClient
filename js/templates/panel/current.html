@@ -5,11 +5,13 @@
         Currents
     </div>
     <div class="panel-body">
-        <div class="map" id="mini-currentmap"></div>
+        <div class="map" id="mini-currentmap">
+            <div class="loader"></div>
+        </div>
         <div class="list">
             {% for (var i = 0; i < currents.length; i++){ %}
                 <div class="single row" data-id="{{ currents[i].get('id') }}">
-                        <div class="col-sm-6">
+                        <div class="col-sm-8">
                         <label>
                         {% if(currents[i].get('on')){ %}
                             <input type="checkbox" name="active" value="1" id="active" checked="checked"> {{ currents[i].get('name') }}
@@ -18,7 +20,7 @@
                         {% } %} </label>
                         </div>
 
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <span class="trash delete" title="Remove {{ currents[i].get('name') }}"></span>
                         <span class="edit" title="Edit {{ currents[i].get('name') }}"></span>
                         <span class="time_check {{ currents[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>

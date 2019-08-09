@@ -101,7 +101,7 @@ define([
 
         formatData: function(){
             var dataset = [];
-            var density = webgnome.model.get('spills').at(0).get('element_type').get('standard_density');
+            var density = webgnome.model.get('spills').at(0).get('substance').get('standard_density');
             var units = webgnome.model.get('spills').at(0).get('units');
             var converter = new nucos.OilQuantityConverter();
 

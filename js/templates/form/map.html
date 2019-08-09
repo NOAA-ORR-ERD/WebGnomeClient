@@ -1,65 +1,27 @@
-<div class="panel-group" id="accordion" data-toggle="false">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <input type="radio" name="map" value="EmptyMap.bna" checked="checked">
-                <a href="#empty" data-toggle="collapse" data-parent="#accordion">Empty</a>
-            </h4>
-        </div>
-        <div id="empty" class="panel-collapse collapse">
-            <div class="panel-body">
-                An empty map without any shoreline or collisionable areas.
-            </div>
+<form class="form-horizontal" role="form">
+	<div class="form-group">
+        <label class="col-sm-5 control-label" for="name">Name:</label>
+        <div class="col-sm-5">
+            <input type="text" id="name" class="form-control" value="{{ name }}">           
         </div>
     </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <input type="radio" name="map" value="" class="upload">
-                <a href="#upload" data-toggle="collapse" data-parent="#accordion">Upload</a>
-            </h4>
-        </div>
-        <div id="upload" class="panel-collapse collapse">
-            <div class="panel-body">
-                <p>Upload a GeoJSON or BNA file. If you don't have one you can use <a href="http://gnome.orr.noaa.gov/goods/tools/coast_subset" target="_blank">GOODS</a> to generate one.</p>
-                <img src="/img/loading.gif" class="loading" />
-                <div class="file">
-                    <p>Drag &amp; drop the file here.</p>
-                    <input type="file">
-                </div>
-            </div>
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="name">Refloat Halflife (hrs):</label>
+        <div class="col-sm-5">
+            <input type="text" id="refloat" class="form-control" value="{{ refloat }}">           
         </div>
     </div>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <input type="radio" name="map" value="coast">
-                <a href="#coast" data-toggle="collapse" data-parent="#accordion">Coast Line</a> <span class="label label-danger">incomplete</span>
-            </h4>
-        </div>
-        <div id="coast" class="panel-collapse collapse">
-            <div class="panel-body">
-                <p>Use the map below to highlight the shoreline you would like to use in your model.</p>
-                <div class="map" id="map-form-coast-map"></div>
-            </div>
+    
+    <!--
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="map_bounds">Map Bounds:</label>
+        <div class="col-sm-5">
+           <div class="input-group">
+                <input type="text" data-type="array" id="map_bounds" class="form-control" name="map_bounds">
+            </div>     
         </div>
     </div>
+    -->
+    
+</form>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h4 class="panel-title">
-                <input type="radio" name="map" value="draw">
-                <a href="#draw" data-toggle="collapse" data-parent="#accordion">Draw</a> <span class="label label-danger">incomplete</span>
-            </h4>
-        </div>
-        <div id="draw" class="panel-collapse collapse">
-            <div class="panel-body">
-                <p>Use the area below to draw the shape you would like to use in your model.</p>
-                <div class="map" id="map-form-draw-map"></div>
-            </div>
-        </div>
-    </div>
-
-</div>

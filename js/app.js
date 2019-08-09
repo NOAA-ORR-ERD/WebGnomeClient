@@ -14,11 +14,12 @@ define([
     'model/user_prefs',
     'views/default/loading',
 ], function($, _, Backbone, Router, moment, swal,
-            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs, LoadingView) {
+            config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs,
+            LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
-        initialize: function(){
+        initialize: function() {
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
@@ -39,12 +40,13 @@ define([
 
             swal.setDefaults({'allowOutsideClick': false});
 
-            $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr){
-                if(options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1){
+            $.ajaxPrefilter(_.bind(function(options, originalOptions, jqxhr) {
+                if (options.url.indexOf('http://') === -1 && options.url.indexOf('https://') === -1) {
                     options.url = webgnome.config.api + options.url;
                     // add a little cache busting so IE doesn't cache everything...
-                    options.url += '?' + (Math.random()*10000000000000000);
-                } else {
+                    options.url += '?' + (Math.random() * 10000000000000000);
+                }
+                else {
                     // if this request is going somewhere other than the webgnome api we shouldn't enforce credentials.
                     delete options.xhrFields.withCredentials;
                 }
@@ -52,15 +54,19 @@ define([
                 // monitor interation to check the status of active ajax calls.
                 this.monitor.requests.push(jqxhr);
 
-                if(_.isUndefined(this.monitor.interval)){
+                if (_.isUndefined(this.monitor.interval)) {
                     this.monitor.start_time = moment().valueOf();
-                    this.monitor.interval = setInterval(_.bind(function(){
+
+                    this.monitor.interval = setInterval(_.bind(function() {
                         var loading;
-                        if(this.monitor.requests.length > 0){
-                            this.monitor.requests = this.monitor.requests.filter(function(req){
-                                if(req.status !== undefined){
-                                    if(req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)){
-                                        if($('.modal').length === 0){
+
+                        if (this.monitor.requests.length > 0) {
+                            this.monitor.requests = this.monitor.requests.filter(function(req) {
+                                if (req.status !== undefined) {
+                                    if (req.status !== 404 && req.status.toString().match(/5\d\d|4\d\d/)) {
+                                        if ($('.modal').length === 0) {
+                                            console.log(req.responseText);
+
                                             swal({
                                                 title: 'Application Error!',
                                                 text: 'An error in the application has occured, if this problem persists please contact support: <a href="mailto:webgnome.help@noaa.gov">webgnome.help@noaa.gov</a><br /><br /><code>' + req.responseText + '</code>',
@@ -72,19 +78,21 @@ define([
                                 }
                                 return req.status === undefined;
                             });
-                        } else {
+                        }
+                        else {
                             clearInterval(this.monitor);
                             this.monitor.interval = undefined;
                             this.monitor.start_time = moment().valueOf();
                         }
 
                         // check if we need to display a loading message.
-                        if(moment().valueOf() - this.monitor.start_time > 300){
-                            if(_.isUndefined(this.monitor.loading)){
+                        if (moment().valueOf() - this.monitor.start_time > 300) {
+                            if (_.isUndefined(this.monitor.loading)) {
                                 this.monitor.loading = new LoadingView();
                             }
-                        } else {
-                            if(!_.isUndefined(this.monitor.loading)){
+                        }
+                        else {
+                            if (!_.isUndefined(this.monitor.loading)) {
                                 this.monitor.loading.close();
                                 this.monitor.loading = undefined;
                             }
@@ -171,7 +179,7 @@ define([
 
         // is it possible to move this config step out of the app?
         // maybe using inheritance w/ base view?
-        configure: function(){
+        configure: function() {
             // Use Django-style templates semantics with Underscore's _.template.
             _.templateSettings = {
                 // {{- variable_name }} -- Escapes unsafe output (e.g. user
@@ -453,28 +461,49 @@ define([
             return false;
         },
 
-        getConfig: function(){
+        getConfig: function() {
             var config_obj = JSON.parse(config);
+
             // if there isn't a domain provided just use the
             // one the client was served on.
             var domain = location.href.split(':');
             domain.pop();
             domain = domain.join(':') + ':';
-            if(config_obj.api.match(/^\d*$/)){
+
+            if (config_obj.api.match(/^\d*$/)) {
                 config_obj.api = domain + config_obj.api;
             }
-            if(config_obj.oil_api.match(/^\d*$/)){
+
+            if (!_.has(config_obj, 'socketio')){
+                config_obj.socketio = config_obj.api;
+            }
+
+            if(config_obj.oil_api.match(/^\d*$/)) {
                 config_obj.oil_api = domain + config_obj.oil_api;
             }
+
+            if (typeof(config_obj.session_timeout) === 'string') {
+                /*jshint -W061 */  // eval is evil warning
+                config_obj.session_timeout = eval(config_obj.session_timeout);
+            }
+
+            if (typeof(config_obj.afk_timeout) === 'string') {
+                /*jshint -W061 */  // eval is evil warning
+                config_obj.afk_timeout = eval(config_obj.afk_timeout);
+            }
+
             return config_obj;
         },
         
-        validModel: function(){
-            if(webgnome.hasModel()){
-                if(webgnome.model.isValid() && webgnome.model.get('outputters').length > 0 && webgnome.model.get('spills').length > 0){
+        validModel: function() {
+            if (webgnome.hasModel()) {
+                if (webgnome.model.isValid() &&
+                        webgnome.model.get('outputters').length > 0 &&
+                        webgnome.model.get('spills').length > 0) {
                     return true;
                 }
             }
+
             return false;
         },
 
@@ -501,7 +530,8 @@ define([
 
             if (typeof navigator.msSaveOrOpenBlob !== 'undefined') {
                 return navigator.msSaveOrOpenBlob(file, fileFullName);
-            } else if (typeof navigator.msSaveBlob !== 'undefined') {
+            }
+            else if (typeof navigator.msSaveBlob !== 'undefined') {
                 return navigator.msSaveBlob(file, fileFullName);
             }
 
@@ -524,8 +554,116 @@ define([
             }
 
             URL.revokeObjectURL(hyperlink.href);
-}
+        },
 
+        initSessionTimer: function(func) {
+            if (typeof(Worker) !== "undefined") {
+                // Yes! Web worker support!
+                if (typeof(webgnome.timer) === "undefined") {
+                    webgnome.idleTime = 0;
+                    webgnome.timer = new Worker("js/session_timer.js");
+                    webgnome.timer.onmessage = func;
+
+                    window.addEventListener("mousemove", this.zeroSessionTime);
+                    window.addEventListener("keydown", this.zeroSessionTime);
+                }
+            }
+            else {
+              console.warning('Sorry, web workers not supported!');
+            }
+        },
+
+        resetSessionTimer: function() {
+            if (typeof(Worker) !== "undefined") {
+                // Yes! Web worker support!
+                if (typeof(webgnome.timer) !== "undefined") {
+                    webgnome.lastActivity = moment().unix();
+                    webgnome.timer.terminate();
+                    webgnome.timer = undefined;
+
+                    window.removeEventListener("mousemove", this.zeroSessionTime);
+                    window.removeEventListener("keydown", this.zeroSessionTime);
+                }
+            }
+            else {
+              console.warning('Sorry, web workers not supported!');
+            }
+        },
+
+        zeroSessionTime: function() {
+            // we will track the datetime of the last detected activity
+            webgnome.lastActivity = moment().unix();
+        },
+
+        continueSession: function(event) {
+            var idleTime = (moment().unix() - webgnome.lastActivity) / 60;
+
+            if (idleTime >= webgnome.config.afk_timeout) {
+                swal.close();
+                webgnome.sessionSWAL = false;
+
+                webgnome.resetSessionTimer();
+                webgnome.loseModelSession();
+            }
+            else if (idleTime >= webgnome.config.session_timeout) {
+                // We will keep responding to timer ticks, but  we only want to
+                // pop up our alert one time,
+                if (_.isUndefined(webgnome.sessionSWAL) ||
+                        webgnome.sessionSWAL === false) {
+                    webgnome.sessionSWAL = true;
+
+                    swal({
+                        title: 'Session Timed Out',
+                        text: ('Your session has been inactive for more than ' +
+                               '1 hour.\n' +
+                               'The model setup will be automatically deleted\n' +
+                               'after 72 hours of no activity.\n' +
+                               'Would you like to continue working with this setup?'),
+                        type: 'warning',
+                        showCancelButton: true,
+                        cancelButtonText: 'Reset Session',
+                        confirmButtonText: 'Continue',
+                        reverseButtons: true
+                    }).then(_.bind(function(isConfirm) {
+                        webgnome.sessionSWAL = false;
+
+                        if (isConfirm) {
+                            // start the timer again
+                            webgnome.initSessionTimer(webgnome.continueSession);
+                        }
+                        else {
+                            webgnome.loseModelSession();
+                        }
+                    }, this));
+                }
+            }
+        },
+
+        loseModelSession: function() {
+            localStorage.setItem('prediction', null);
+
+            if (!_.isUndefined(webgnome.riskCalc)) {
+                webgnome.riskCalc.destroy();
+            }
+
+            webgnome.riskCalc = undefined;
+
+            if (_.has(webgnome, 'cache')) {
+                webgnome.cache.rewind();
+                webgnome.router._cleanup();
+            }
+
+            // This is from views/defaults/menu.js
+            // Not sure if we really need this.
+            //this.contextualize();
+
+            webgnome.model = new GnomeModel({
+                mode: 'gnome',
+                name: 'Model',
+            });
+
+            webgnome.router.navigate('', true);
+        }
     };
 
     return app;

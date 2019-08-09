@@ -14,11 +14,16 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="upload">
                     <div class="dropzone"></div>
-                    <div>
-                        <label>
-                            <input type="checkbox" id="persist_upload">
-                            save file for later
-                        </label>
+                    <div style="margin-top: 10px;">
+                        <div class="col-md-9">
+                            <label>
+                                <input type="checkbox" id="persist_upload">
+                                save file for later
+                            </label>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="confirm save" hidden>Confirm Upload</button>
+                        </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="use_uploaded">

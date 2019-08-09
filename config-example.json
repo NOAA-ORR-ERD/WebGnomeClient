@@ -2,9 +2,19 @@
   "port": "8080",
   "api": "http://0.0.0.0:9899",
   "oil_api": "http://0.0.0.0:9898",
+  "goods_api": "https://gnome.orr.noaa.gov/goods",
   "date_format": {
     "moment": "YYYY/M/D H:mm:ss",
     "datetimepicker": "Y/n/j G:i:s",
     "datepicker": "Y/n/j"
+  },
+  "session_timeout": "60",
+  "afk_timeout": "72 * 60",
+  "upload_limits": {
+    "save": 2048,
+    "current": 1024,
+    "wind": 100,
+    "gridwind": 1024,
+    "map": 10
   }
 }

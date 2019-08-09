@@ -16,13 +16,21 @@ define([
 
         events: function() {
             return _.defaults({
-                'click .new-tide': 'newTide'
+                'click .new-tide': 'newTide',
+                'change #scale': 'scaleHandler',
+                'change #tide': 'tideHandler'
             }, BaseMoverForm.prototype.events);
         },
 
         render: function(options) {
             this.body = this.template();
             FormModal.prototype.render.call(this, options);
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (this.model.get('scale')) {
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+            }
         },
 
         template: function() {
@@ -30,6 +38,30 @@ define([
                 model: this.model.toJSON(),
                 tides: webgnome.model.getTides()
             });
+        },
+
+        scaleHandler: function(e) {
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (e.currentTarget.value === 'true') {
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+            } else {
+                sv.prop('disabled', true);
+                srf.parent().children().prop('disabled', true);
+
+            }
+        },
+
+        tideHandler: function(e) {
+            var sv = this.$('#Scale');
+            var srf = this.$('#scale_refpoint');
+            if (e.currentTarget.value !== 'null'){
+                this.model.set('scale', true);
+                sv.prop('disabled', false);
+                srf.parent().children().prop('disabled', false);
+                this.$('#scale')[0].value = "true";
+            }
         },
 
         newTide: function() {
@@ -40,6 +72,7 @@ define([
                 previewTemplate: _.template(DropzoneTemplate)(),
                 paramName: 'new_environment',
                 maxFiles: 1,
+                maxFilesize: webgnome.config.upload_limits.current, // 2GB
                 acceptedFiles: '.cur, .txt',
                 dictDefaultMessage: 'Drop tide file here to upload (or click to navigate)'
             });
@@ -62,11 +95,18 @@ define([
             }
         },
 
-        reset: function(file) {
+        reset: function(file, err) {
+            var errObj = JSON.parse(err);
+            console.error(errObj);
+
+            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
+                                                             ': ' +
+                                                             errObj.message);
+
             setTimeout(_.bind(function() {
                 this.$('.dropzone').removeClass('dz-started');
                 this.dropzone.removeFile(file);
-            }, this), 10000);
+            }, this), 3000);
         },
 
         loaded: function(e, response) {
@@ -75,17 +115,20 @@ define([
             tide.save(null, {
                 success: _.bind(function() {
                     webgnome.model.get('environment').add(tide);
-                    webgnome.model.save();
-
                     this.model.set('tide', tide);
+                    this.model.set('scale', true);
+                    webgnome.model.save(null, {
+                        success: _.bind(function(mod){
+                            this.model.save(null, {
+                                success: _.bind(function(mod){
+                                    this.render();
+                                }, this)
+                            });
+                        }, this)
+                    });
                     this.dropzone.removeAllFiles(true);
                     this.dropzone.disable();
-
-                    $('input.dz-hidden-input').remove();
-                    this.$('.form-horizontal').remove();
-                    this.$('.modal-body').prepend(this.template());
-
-                    this.sync();
+                    this.$el.html('');
                 }, this),
                 error: _.bind(function(e, response) {
                     this.error(response.responseText);

@@ -18,7 +18,10 @@ define([
                 'click .open-folder': 'openFolder',
                 'click .new-folder': 'createNewFolderView',
                 'click .breadcrumb li': 'useBreadcrumbFolder',
-                'click .delete-file': 'deleteFile'
+                'click .delete-file': 'deleteFile',
+                'click .upload-d': 'selectRow',
+                'click .upload-f': 'selectRow',
+                'click .save': 'submitSelections'
             };
         },
 
@@ -191,6 +194,76 @@ define([
                 this.model.subFolders.length = $(e.target).index();
                 this.model.fetch({reset: true});
             }
+        },
+
+        selectRow: function(e) {
+            var clickedRow = $(e.currentTarget);
+            var oldActive = $('tr.active');
+            var selected = $('.info');
+            var all = $('.upload-f');
+            if (clickedRow.is(oldActive)) {
+                if (e.shiftKey) {
+                    return;
+                }
+                if (e.ctrlKey) {
+                    clickedRow.toggleClass('info');
+                    return;
+                } else {
+                    selected.removeClass('info');
+                    clickedRow.addClass('info');
+                    return;
+                }
+            } else {
+                oldActive.removeClass('active');
+                clickedRow.addClass('active');
+                if (e.shiftKey) {
+                    var oldActiveIdx = all.index(oldActive);
+                    var clickedRowIdx = all.index(clickedRow);
+                    if (!e.ctrlKey) {
+                        //if ctrl key is not down, current selection is wiped before new rows added
+                        selected.not(oldActive).removeClass('info');
+                        oldActive.addClass('info');
+                    }
+                    if (clickedRowIdx < oldActiveIdx) {
+                        $('.upload-f:gt(' + (clickedRowIdx-1) + ').upload-f:lt(' + oldActiveIdx + ')').addClass('info');
+                    } else {
+                        $('.upload-f:gt(' + (oldActiveIdx) + ').upload-f:lt(' + (clickedRowIdx) + ')').addClass('info');
+                    }
+                } else if (e.ctrlKey) {
+                    clickedRow.toggleClass('info');
+                } else {
+                    selected.removeClass('info');
+                    clickedRow.addClass('info');
+                }
+            }
+        },
+
+        submitSelections: function(e) {
+            var selected = $('.upload-f.info');
+            if (selected.length === 0) {
+                selected = $('.upload-d.info');
+                if (selected.length === 0) {
+                    return;
+                } else {
+                    e.target = $('span.open-folder', selected)[0];
+                    this.openFolder(e);
+                    return;
+                }
+            }
+            var names = selected.map(function() {return this.children[0].innerHTML.trim();}).get();
+            var sf = this.model.subFolders;
+            var paths = names.map(function(n) {
+                return sf.concat(n).join('/');
+            });
+            $.post(webgnome.config.api + '/uploads',
+                {
+                    'action': 'activate_file',
+                    'filelist': JSON.stringify(paths),
+                    'session': localStorage.getItem('session')
+                }
+            ).done(_.bind(function(fileList) {
+                this.trigger('activate-file', JSON.parse(fileList), names[0]);
+            }, this));
         }
 
     });

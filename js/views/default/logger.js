@@ -3,9 +3,9 @@ define([
     'underscore',
     'backbone',
     'socketio',
-    'text!templates/default/logger/index.html',
-    'toastr'
-], function($, _, Backbone, io, LoggerTemplate, toastr){
+    'toastr',
+    'text!templates/default/logger/index.html'
+], function($, _, Backbone, io, toastr, LoggerTemplate) {
     'use strict';
     var loggerView = Backbone.View.extend({
         className: 'logger',
@@ -14,6 +14,7 @@ define([
         count: 0,
         limit: 250,
         log_item_height: 20,
+
         events: {
             'click .toggle': 'toggle',
             'mousewheel': 'scroll',
@@ -21,14 +22,14 @@ define([
             'click .clear': 'clearMessages'
         },
 
-        initialize: function(){
+        initialize: function() {
             this.setupToasts();
             this.render();
             this.socketConnect();
         },
 
-        setupToasts: function(){
-            toastr.options.preventDuplicates = false;
+        setupToasts: function() {
+            toastr.options.preventDuplicates = true;
             toastr.options.closeButton = true;
             toastr.options.newestOnTop = false;
             toastr.options.positionClass = 'toast-bottom-left';
@@ -40,56 +41,73 @@ define([
             this.listenTo(webgnome.model, 'sync', this.clearToasts);
         },
 
-        render: function(){
+        render: function() {
             var compiled = _.template(LoggerTemplate);
             this.$el.append(LoggerTemplate);
+
             $('body').append(this.$el);
-            if(localStorage.getItem('logger') != 'null' && !_.isNull(localStorage.getItem('logger'))){
+
+            if (localStorage.getItem('logger') != 'null' &&
+                    !_.isNull(localStorage.getItem('logger'))) {
                 this.toggle();
             }
         },
 
-        toggle: function(e){
+        toggle: function(e) {
             $('body').toggleClass('logger-open');
             this.$el.toggleClass('open');
 
-            if(e){
-                if(localStorage.getItem('logger') != 'null'){
+            if (e) {
+                if (localStorage.getItem('logger') != 'null') {
                     localStorage.setItem('logger', null);
-                } else {
+                }
+                else {
                     localStorage.setItem('logger', true);
                     this.windowScrollCheck(true);
                 }
             }
         },
 
-        socketConnect: function(){
+        socketConnect: function() {
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to logger namespace');
-            this.socket = io.connect(webgnome.config.api + this.socketRoute);
+
+            this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
+
             this.socket.on('log', _.bind(this.socketLog, this));
             this.socket.on('logger_started', _.bind(this.loggerStarted,this));
             this.socket.emit('start_logger');
         },
 
-        loggerStarted: function(event){
+        loggerStarted: function(event) {
             console.log('logger started on api');
         },
 
-        socketLog: function(event){
+        socketLog: function(event) {
             this.log(event); 
             this.toast(event);
         },
 
-        toast: function(message){
-            if(message.level.toLowerCase() === 'criti'){
-                toastr.error(_.escape(message.message));
-            } else if(message.level.toLowerCase() === 'warni') {
-                toastr.warning(_.escape(message.message));
+        toast: function(message) {
+            // capture the content between the '["' and the '"]'
+            var msg, shortMsg;
+            var re = /\[\"(.+)\"\]/g;
+
+            if (message.level.toLowerCase() === 'criti') {
+                msg = message.message;
+                shortMsg = msg.split('\\n')[0];
+
+                toastr.error(_.escape(shortMsg));
+            }
+            else if (message.level.toLowerCase() === 'warni') {
+                msg = message.message;
+                shortMsg = msg.split('\\n')[0];
+
+                toastr.warning(_.escape(shortMsg));
             }
         },
 
-        clearToasts: function(){
+        clearToasts: function() {
             toastr.clear();
         },
 
@@ -97,28 +115,31 @@ define([
          * Print a log message to the window
          * @param  {Object or String}
          */
-        log: function(message){
-            if(_.isString(message)){
+        log: function(message) {
+            if (_.isString(message)) {
                 this.$('.window .logs').append('<tr><td class="misc">' + message + '</td></tr>');
                 this.count++;
             }
 
-            if(_.isObject(message)){
+            if (_.isObject(message)) {
                 if (! _.isUndefined(message.name)) {
                     var source = message.name.replace('[', '').split('.')[0];
-                    if(source !== 'gnome' && source !== 'webgnome_api'){
+
+                    if (source !== 'gnome' && source !== 'webgnome_api') {
                         source = 'misc';
                     }
+
                     var ts = message.time + ' ' + message.date;
                     this.$('.window .logs').append('<tr><td class="' + message.level.toLowerCase() + ' ' + source + '"><strong class="' + message.level.toLowerCase() +'">' + message.name + '</strong> ' + _.escape(message.message) + ' <div class="pull-right ' + message.level.toLowerCase() + '">' + ts + '</div></td></tr>');
-                } else {
+                }
+                else {
                     this.$('.window .logs').append('<tr><td class="misc">' + message.message + '</td></tr>');
                 }
-                
+
                 this.count++;
             }
 
-            if(this.count > this.limit){
+            if (this.count > this.limit) {
                 this.$('.window .logs tr:first').remove();
                 this.count--;
             }
@@ -127,47 +148,50 @@ define([
             this.windowScrollCheck();
         },
 
-        windowScrollCheck: function(force){
+        windowScrollCheck: function(force) {
             force = force ? true : false;
             var win = this.$('.window')[0];
-            if(this.$el.hasClass('open') || force){
-                if((((this.count * this.log_item_height) + 25) - win.scrollTop) - win.clientHeight < 25 || force){
+
+            if (this.$el.hasClass('open') || force) {
+                if (this.count * this.log_item_height + 25 - win.scrollTop - win.clientHeight < 25 || force) {
                     win.scrollTop = win.scrollHeight;
                 }
-            }
-            
+            }            
         },
 
-        evalLogs: function(){
+        evalLogs: function() {
             var errors = this.$('td.error, td.criti').length;
             var warnings = this.$('td.warni').length;
 
-            if(errors > 0){
+            if (errors > 0) {
                 this.$el.addClass('error');
                 this.$('.info .error .count').text(errors);
-            } else {
+            }
+            else {
                 this.$el.removeClass('error');
                 this.$('.info .error .count').text('');
             }
 
-            if(warnings > 0){
+            if (warnings > 0) {
                 this.$el.addClass('warning');
                 this.$('.info .warning .count').text(warnings);
-            } else {
+            }
+            else {
                 this.$el.removeClass('warning');
                 this.$('.info .warning .count').text('');
             }
         },
 
-        scroll: function(e, d){
+        scroll: function(e, d) {
             var win = this.$('.window')[0];
             
-            if((win.scrollTop === (win.scrollHeight - win.clientHeight) && d < 0) || (win.scrollTop === 0 && d > 0)) {
+            if ((win.scrollTop === (win.scrollHeight - win.clientHeight) && d < 0) ||
+                    (win.scrollTop === 0 && d > 0)) {
                 e.preventDefault();
             }
         },
 
-        toggleViewable: function(e){
+        toggleViewable: function(e) {
             e.preventDefault();
 
             var a = this.$(e.target);
@@ -179,7 +203,7 @@ define([
             this.windowScrollCheck();
         },
 
-        clearMessages: function(e){
+        clearMessages: function(e) {
             e.preventDefault();
             
             this.$('.window .logs').html('');
@@ -187,7 +211,7 @@ define([
             this.windowScrollCheck();
         },
 
-        close: function(){
+        close: function() {
             this.clearToasts();
             Backbone.View.prototype.close.call(this);
         }

@@ -10,7 +10,7 @@ define([
             grid_on: false,
             vec_color: '#9370DB', //MEDIUMPURPLE,
             vec_alpha: 0.7,
-            grid_color: '#FFC0CB', //PINK
+            grid_color: '#585858', //dark gray
             grid_alpha: 0.3,
             alpha: 0.7,
             scale: 1,

@@ -200,7 +200,7 @@ define([
                     this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions : Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
@@ -263,7 +263,7 @@ define([
                                     positions: Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
                                                                                   i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
                                                                                   i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
@@ -283,7 +283,7 @@ define([
                 this.linegeo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions: Cesium.Cartesian3.fromDegreesArray(latLinePoints),
-                                    followSurface: false
+                                    arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
                                     color: this.color
@@ -295,7 +295,7 @@ define([
                             geometryInstances: this.linegeo,
                             appearance: new Cesium.PerInstanceColorAppearance({
                                 flat: true,
-                                translucent: true
+                                translucent: false
                             })
                         });
             this.scene.primitives.add(this.lines);
@@ -385,7 +385,7 @@ define([
             } else {
                 hemi = radians > 0 ? 'N' : 'S';
             }
-            return deg + '&#8451; ' + hemi;
+            return ('' + deg.toFixed(4)).slice(-7) + '\xB0 ' + hemi;
         }
     };
     return Graticule;

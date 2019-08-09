@@ -1,38 +1,46 @@
+stages:
+    - test
+    - build
+
 test:
+    stage: test
     script:
         - npm install
+        - npm install -g grunt
         - grunt install
         - cp config-example.json config.json
         - grunt build
     tags:
-        - test
-        - nodejs
+        - nodejs-11
 
 master:
+    stage: build
     script:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
     tags:
-        - docker
+        - shell
         - build
     only:
         - master
 develop:
+    stage: build
     script:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:develop
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:develop
     tags:
-        - docker
+        - shell
         - build
     only:
         - develop
 
 production:
+    stage: build
     script:
         - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:production
         - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:production
     tags:
-        - docker
+        - shell
         - build
     only:
         - production

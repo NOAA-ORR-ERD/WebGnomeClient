@@ -1,7 +1,7 @@
 <div class="form-row">
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="data">Data Source</label>
-        <div class="col-sm-3 appearance-edit">
+        <label class="col-sm-3 control-label" for="data">Display</label>
+        <div class="col-sm-5 appearance-edit">
             <select class="form-control form-control-sm" name="data">
             {% for (var i = 0; i < titles.length; i++) { %}
                 <option name="data" {{titles[i] === model.get('data') ? "selected=true" : ""}}>{{titles[i]}}</option>
@@ -16,30 +16,46 @@
         </div>
     </div>
 </div>
+{% if (presets.length > 0) { %}
 <div class="form-row">
     <div class="form-group">
-        <label class="col-sm-3 control-label" for="data">Units</label>
+        <label class="col-sm-3 control-label" for="presets">Preset Scale</label>
+        <div class="col-sm-5 presets">
+            <select class="form-control form-control-sm">
+                <option class='preset_default' selected>Choose one...</option>
+                {% for (var i = 0; i < presets.length; i++) { %}
+                        <option>{{presets[i].name}}</option>
+                {% } %}
+            </select>
+        </div>
+    </div>
+</div>
+{% } %}
+<div class="form-row">
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="units">Display Units</label>
         <div class="col-sm-3 appearance-edit">
             <select class="form-control form-control-sm" name="units">
                 {% if (model.get('data') === 'Mass') { %}
-                    <option value="m³" {{'m³' === model.get('units') ? "selected" : ""}}>cubic meters</option>
-                    <option value="gal" {{'gal' === model.get('units') ? "selected" : ""}}>gallons</option>
-                    <option value="bbl" {{'bbl' === model.get('units') ? "selected" : ""}}>barrels</option>
-                    <option value="ton" {{'ton' === model.get('units') ? "selected" : ""}}>tons</option>
-                    <option value="mt" {{'mt' === model.get('units') ? "selected" : ""}}>metric tons</option>
-                    <option value="kg" {{'kg' === model.get('units') ? "selected" : ""}}>kilograms</option>
+                    <option value="m³" {{'m³' === model.get('units') ? "selected=true" : ""}}>cubic meters</option>
+                    <option value="gal" {{'gal' === model.get('units') ? "selected=true" : ""}}>gallons</option>
+                    <option value="bbl" {{'bbl' === model.get('units') ? "selected=true" : ""}}>barrels</option>
+                    <option value="ton" {{'ton' === model.get('units') ? "selected=true" : ""}}>tons</option>
+                    <option value="mt" {{'mt' === model.get('units') ? "selected=true" : ""}}>metric tons</option>
+                    <option value="kg" {{'kg' === model.get('units') ? "selected=true" : ""}}>kilograms</option>
                 {% } else if (model.get('data') === 'Surface Concentration') { %}
-                    <option value="kg/m^2" {{'%' === model.get('units') ? "selected" : ""}}>kg/m^2</option>
+                    <option value="g/m^2" {{'g/m^2' === model.get('units') ? "selected=true" : ""}}>g/m^2</option>
+                    <option value="kg/m^2" {{'kg/m^2' === model.get('units') ? "selected=true" : ""}}>kg/m^2</option>
                 {% } else if (model.get('data') === 'Age') { %}
-                    <option value='hr' {{'hr' === model.get('units') ? "selected" : ""}}>hours</option>
-                    <option value='sec' {{'sec' === model.get('units') ? "selected" : ""}}>seconds</option>
-                    <option value='min' {{'min' === model.get('units') ? "selected" : ""}}>minutes</option>
-                    <option value='days' {{'days' === model.get('units') ? "selected" : ""}}>days</option>
+                    <option value='hr' {{'hr' === model.get('units') ? "selected=true" : ""}}>hours</option>
+                    <option value='sec' {{'sec' === model.get('units') ? "selected=true" : ""}}>seconds</option>
+                    <option value='min' {{'min' === model.get('units') ? "selected=true" : ""}}>minutes</option>
+                    <option value='days' {{'days' === model.get('units') ? "selected=true" : ""}}>days</option>
                 {% } else if (model.get('data') === 'Viscosity') { %}
-                    <option value='cSt' {{'cst' === model.get('units') ? "selected" : ""}}>centistokes</option>
+                    <option value='cSt' {{'cst' === model.get('units') ? "selected=true" : ""}}>centistokes</option>
                 {% } else if (model.get('data') === 'Depth') { %}
-                    <option value='m' {{'m' === model.get('units') ? "selected" : ""}}>meters</option>
-                    <option value='ft' {{'ft' === model.get('units') ? "selected" : ""}}>feet</option>
+                    <option value='m' {{'m' === model.get('units') ? "selected=true" : ""}}>meters</option>
+                    <option value='ft' {{'ft' === model.get('units') ? "selected=true" : ""}}>feet</option>
                 {% } %}
             </select>
         </div>

@@ -5,3 +5,4 @@
 #       So this is a way to use conda to install node.
 
 nodejs
+grunt

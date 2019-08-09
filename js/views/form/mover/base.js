@@ -9,7 +9,7 @@ define([
     'use strict';
     var BaseMoverForm = FormModal.extend({
         className: 'modal form-modal model-form',
-        title: 'Edit Current Attributes ',
+        title: 'Gridded Currents ',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
         
         initialize: function(options, model){

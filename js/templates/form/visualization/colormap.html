@@ -1,7 +1,14 @@
 <div class="form-row">
     <div class="form-group datavis-config">
-        <label class="col-sm-3 control-label" for="interpolate">Interpolate</label>
-        <input type="checkbox" name="colormap:interpolate" {{model.get('interpolate') ? 'checked=true' : ''}} {{model.get('numberScaleDomain').length === 2 ? 'disabled' : ''}}>
+        <label class="col-sm-3 control-label" for="interpolate">Colormap</label>
+        <div class="col-sm-3">
+            <div class="radio">
+                <label><input type="radio" name="colormap:map_type" value="discrete" {{model.get('map_type') === 'discrete' ? 'checked=true' : ''}}> Discrete</label>
+            </div>
+            <div class="radio">
+                <label><input disabled type="radio" name="colormap:map_type" value="continuous" {{model.get('map_type') === 'continuous' ? 'checked=true' : ''}}> Continuous</label>
+            </div>
+        </div>
     </div>
 </div>
 <div class="form-row">
@@ -9,8 +16,14 @@
         <label class="col-sm-3 control-label" for="interpolate">Color Scheme</label>
         <div class="col-sm-8 datavis-config">
             <select class="chosen-select" id="scheme-picker">
-            {% for (var i = 0; i < model.get('_allSchemes').length; i++) { %}
-                <option value='{{model.get('_allSchemes')[i]}}' {{model.get('scheme') === model.get('_allSchemes')[i] ? "selected=true" : ""}}>{{model.get('_allSchemes')[i]}}</option>
+            {% if (model.get('map_type') === 'discrete') { %}
+                {% for (var i = 0; i < model.get("_discreteSchemes").length; i++) { %}
+                    <option value='{{model.get('_discreteSchemes')[i]}}' {{model.get('scheme') === model.get('_discreteSchemes')[i] ? "selected=true" : ""}}>{{model.get('_discreteSchemes')[i]}}</option>
+                {% } %}
+            {% } else { %}
+                {% for (var i = 0; i < model.get("_continuousSchemes").length; i++) { %}
+                    <option value='{{model.get('_continuousSchemes')[i]}}' {{model.get('scheme') === model.get('_continuousSchemes')[i] ? "selected=true" : ""}}>{{model.get('_continuousSchemes')[i]}}</option>
+                {% } %}
             {% } %}
             </select>
         </div>
@@ -20,13 +33,13 @@
     <div class="form-group datavis-config">
         <label class="col-sm-3 control-label" for="interpolate">Add/remove</label>
         <input type="button" class="add", value="+">
-        <input type="button" class="remove", value="-" {{model.get('numberScaleDomain').length === 2 ? 'disabled' : ''}}>
+        <input type="button" class="remove", value="-" {{model.get('colorScaleDomain').length === 0 ? 'disabled' : ''}}>
     </div>
 </div>
 <div class="form-row">
     <div class="form-group">
         <div class="col-sm-10 col-sm-offset-1 datavis-config colormap">
-            <div id="colormap-slider">
+            <div id="colormap-slider" class="ui-slider">
             </div>
         </div>
     </div>

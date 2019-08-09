@@ -20,32 +20,46 @@ define([
             tide: GnomeTide
         },
 
+        initialize: function(options) {
+            BaseMover.prototype.initialize.call(this, options);
+            console.log(this.cid);
+        },
+
         toTree: function() {
             var tree = Backbone.Model.prototype.toTree.call(this, false);
             var name = this.get('name');
             var active = this.get('on');
             var uncertEddyDiff = this.get('uncertain_eddy_diffusion') + ' cm^2 / s';
-            var activeStart = this.get('active_start');
-            var activeStop = this.get('active_stop');
             var attrs = [];
 
-            activeStart = activeStart === '-inf' ? '-infinity' : activeStart;
-            activeStop = activeStop === 'inf' ? 'infinity' : activeStop;
+            var activeRange = this.get('active_range').map(function(time) {
+                if (time === 'inf') {
+                    return 'infinity';
+                }
+                else if (time === '-inf') {
+                    return '-infinity';
+                }
+                else {
+                    return time;
+                }
+            });
 
             attrs.push({title: 'Name: ' + name, key: 'Name',
-                         obj_type: this.get('name'), action: 'edit', object: this});
+                        obj_type: this.get('name'), action: 'edit', object: this});
 
             attrs.push({title: 'On: ' + active, key: 'On',
-                         obj_type: this.get('on'), action: 'edit', object: this});
+                        obj_type: this.get('on'), action: 'edit', object: this});
 
-            attrs.push({title: 'Uncertain Eddy Diffusion: ' + uncertEddyDiff, key: 'Uncertain Eddy Diffusion',
-                         obj_type: this.get('uncertain_eddy_diffusion'), action: 'edit', object: this});
+            attrs.push({title: 'Uncertain Eddy Diffusion: ' + uncertEddyDiff,
+                        key: 'Uncertain Eddy Diffusion',
+                        obj_type: this.get('uncertain_eddy_diffusion'),
+                        action: 'edit', object: this});
 
-            attrs.push({title: 'Active Start: ' + activeStart, key: 'Active Start',
-                         obj_type: this.get('active_start'), action: 'edit', object: this});
-
-            attrs.push({title: 'Active Stop: ' + activeStop, key: 'Active Stop',
-                         obj_type: this.get('active_stop'), action: 'edit', object: this});
+            attrs.push({title: 'Active Range: ' + activeRange,
+                        key: 'Active Range',
+                        obj_type: this.get('active_range'),
+                        action: 'edit', object: this
+            });
 
             tree = attrs.concat(tree);
 

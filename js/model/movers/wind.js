@@ -9,8 +9,7 @@ define([
         defaults: {
             obj_type: 'gnome.movers.wind_movers.WindMover',
             //name: 'WindMover',
-            active_start: '-inf',
-            active_stop: 'inf'
+            active_range: ['-inf', 'inf']
         },
 
         model: {
@@ -76,17 +75,22 @@ define([
 
             var on = this.get('on');
             var name = this.get('name');
-            var activeStart = this.get('active_start');
-            var activeStop = this.get('active_stop');
             var uncertAngle = this.get('uncertain_angle_scale');
             var uncertDuration = this.get('uncertain_duration');
             var uncertTimeDelay = this.get('uncertain_time_delay');
             var attrs = [];
 
-            // Parse active start and stop into more human readable forms
-            // if they are returned as infinity values
-            activeStart = (activeStart === "-inf") ? "-infinity" : activeStart;
-            activeStop = (activeStop === "inf") ? "infinity" : activeStop;
+            var activeRange = this.get('active_range').map(function(time) {
+                if (time === 'inf') {
+                    return 'infinity';
+                }
+                else if (time === '-inf') {
+                    return '-infinity';
+                }
+                else {
+                    return time;
+                }
+            });
 
             // Add time units to the returned attributes uncertain_duration
             // and uncertain_time_delay
@@ -101,15 +105,9 @@ define([
                         obj_type: this.get('on'), action: 'edit',
                         object: this});
 
-            attrs.push({title: 'Active Start: ' + activeStart,
-                        key: 'Active Start',
-                        obj_type: this.get('active_start'),
-                        action: 'edit',
-                        object: this});
-
-            attrs.push({title: 'Active Stop: ' + activeStop,
-                        key: 'Active Stop',
-                        obj_type: this.get('active_stop'),
+            attrs.push({title: 'Active Range: ' + activeRange,
+                        key: 'Active Range',
+                        obj_type: this.get('active_range'),
                         action: 'edit',
                         object: this});
 

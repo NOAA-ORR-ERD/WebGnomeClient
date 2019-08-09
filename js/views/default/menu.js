@@ -44,81 +44,38 @@ define([
         },
 
         events: {
-            //'click .new': 'newModel',
-            //'click .gnome': 'gnome',
-            'click a.debugView': 'debugView',
-            
             'click .navbar-brand': 'home',
             
-            // "new" menu
+            // "New" menu
             'click .locations': 'locations',
             'click .adios': 'adios',
             'click .setup': 'setup',
             'click .load': 'load',
              
-            'click .edit': 'editModel',
-
             // "Save" optional menu items
             'click .save': 'save',
             'click .persist': 'persist_modal',
+                //export menu
+                'click .netcdf': 'netcdf',
+                'click .kmz': 'kmz',
+                'click .shape': 'shape',
 
-            //"help" menu
+            // "Help" menu
             'click .about': 'about',
             'click .doc': 'doc',
             'click .faq': 'faq',
             'click .hotkeys': 'hotkeys',
-            
-            'click .run': 'run',
-            'click .rewind': 'rewind',
-            // 'click .step': 'step',
-            // 'click .rununtil': 'rununtil',
-            
-            //export menu
-            'click .netcdf': 'netcdf',
-            'click .kmz': 'kmz',
-            'click .shape': 'shape',
 
-            'click .app-menu-link': 'openAppMenu',
-            'click .app-menu-close': 'closeAppMenu',
-
+            // "Views" & slider
+            'click .view-menu .view': 'toggleView',
             'click .view-toggle .view': 'toggleView'
-        },
-
-        toggleView: function(e){
-            var view;
-            if(_.isObject(e)){
-                view = this.$(e.target).attr('class').replace('view ', '');
-                this.$('.view-toggle .switch').attr('class', 'switch ' + view);
-
-                webgnome.router.navigate(view, true);
-            } else {
-                view = e;
-                this.$('.view-toggle .switch').attr('class', 'switch ' + e);
-            }
-            this.$('.view-toggle .switch').attr('data-original-title', this.$('.view-toggle .' + view).data('original-title'));
-        },
-
-        openAppMenu: function(event){
-            event.preventDefault();
-            this.$('.app-menu').addClass('open');
-            this.$('.app-menu-close').addClass('open');
-            this.$('.app-menu').focus();
-        },
-
-        closeAppMenu: function(){
-            this.$('.app-menu').removeClass('open');
-            this.$('.app-menu-close').removeClass('open');
-        },
-
-        gnome: function(event){
-            event.preventDefault();
-            webgnome.router.navigate('gnome/', true);
         },
 
         nothing: function(event){
             event.preventDefault();
         },
 
+        // WebGNOME Logo
         home: function(event){
             event.preventDefault();
             this.resetModel(function(){
@@ -130,90 +87,7 @@ define([
                 });
         },
 
-        run: function(){
-            localStorage.setItem('autorun', true);
-            var view = localStorage.getItem('view');
-            webgnome.router.navigate(view, true);
-        },
-
-        rewind: function(){
-            webgnome.cache.rewind();
-        },
-
-        netcdf: function(event) {
-            event.preventDefault();
-            var netCDFForm = new NetCDFForm();
-
-            netCDFForm.on('wizardclose', netCDFForm.close);
-            netCDFForm.on('save', _.bind(function(model){
-                netCDFForm.close();
-            }, this));
-
-            netCDFForm.render();
-        },
-
-        kmz: function(event) {
-            event.preventDefault();
-            var kmzForm = new KMZForm();
-            
-            kmzForm.on('wizardclose', kmzForm.close);
-            kmzForm.on('save', _.bind(function(model){
-                kmzForm.close();
-            }, this));
-
-            kmzForm.render();
-        },
-
-        shape: function(event) {
-            event.preventDefault();
-            var shapeForm = new ShapeForm();
-
-            shapeForm.on('wizardclose', shapeForm.close);
-            shapeForm.on('save', _.bind(function(model){
-                shapeForm.close();
-            }, this));
-
-            shapeForm.render();
-        },
-
-        resetModel: function(cb){
-            swal({
-                title: 'Create New Model?',
-                text:'This action will delete all data related to any previous model setup.',
-                type: 'warning',
-                showCancelButton: true,
-                reverseButtons: true
-            }).then(_.bind(function(isConfirm){
-                if(isConfirm){
-                    localStorage.setItem('prediction', null);
-                    if (!_.isUndefined(webgnome.riskCalc)) {
-                        webgnome.riskCalc.destroy();
-                    }
-                    webgnome.riskCalc = undefined;
-
-                    if(_.has(webgnome, 'cache')){
-                        webgnome.cache.rewind();
-                        webgnome.router._cleanup();
-
-                    }                    
-                    this.contextualize();
-                    cb();                                                 
-                }
-            }, this));
-        },
-
-        editModel: function(event){
-            event.preventDefault();
-            webgnome.router.navigate('config', true);
-        },
-
-        load: function(event){
-            event.preventDefault();
-            this.resetModel(function(){
-                webgnome.router.navigate('load', true);
-            });
-        },
-
+        // begin 'New' menu
         locations: function(event){
             event.preventDefault();
             this.resetModel(function(){
@@ -267,6 +141,41 @@ define([
             });
         },
 
+        load: function(event){
+            event.preventDefault();
+            this.resetModel(function(){
+                webgnome.router.navigate('load', true);
+            });
+        },
+
+        resetModel: function(cb){
+            swal({
+                title: 'Create New Model?',
+                text:'This action will delete all data related to any previous model setup.',
+                type: 'warning',
+                showCancelButton: true,
+                reverseButtons: true
+            }).then(_.bind(function(isConfirm){
+                if(isConfirm){
+                    localStorage.setItem('prediction', null);
+                    if (!_.isUndefined(webgnome.riskCalc)) {
+                        webgnome.riskCalc.destroy();
+                    }
+                    webgnome.riskCalc = undefined;
+
+                    if(_.has(webgnome, 'cache')){
+                        webgnome.cache.rewind();
+                        webgnome.router._cleanup();
+
+                    }                    
+                    this.contextualize();
+                    cb();                                                 
+                }
+            }, this));
+        },
+        // end 'New' menu
+
+        // begin Save menu
         save: function(event){
             event.preventDefault();
             webgnome.cache.rewind();
@@ -298,18 +207,44 @@ define([
             });
         },
 
-        debugView: function(event){
+        netcdf: function(event) {
             event.preventDefault();
-            var checkbox = this.$('input[type="checkbox"]');
-            if (checkbox.prop('checked')) {
-                checkbox.prop('checked', false);
-            } else {
-                checkbox.prop('checked', true);
-                //this.trigger('debugTreeOn');
-            }
-            this.trigger('debugTreeToggle');
+            var netCDFForm = new NetCDFForm();
+
+            netCDFForm.on('wizardclose', netCDFForm.close);
+            netCDFForm.on('save', _.bind(function(model){
+                netCDFForm.close();
+            }, this));
+
+            netCDFForm.render();
         },
 
+        kmz: function(event) {
+            event.preventDefault();
+            var kmzForm = new KMZForm();
+            
+            kmzForm.on('wizardclose', kmzForm.close);
+            kmzForm.on('save', _.bind(function(model){
+                kmzForm.close();
+            }, this));
+
+            kmzForm.render();
+        },
+
+        shape: function(event) {
+            event.preventDefault();
+            var shapeForm = new ShapeForm();
+
+            shapeForm.on('wizardclose', shapeForm.close);
+            shapeForm.on('save', _.bind(function(model){
+                shapeForm.close();
+            }, this));
+
+            shapeForm.render();
+        },
+        // end Save menu
+
+        // begin Help menu
         about: function(event){
             event.preventDefault();
             new AboutModal().render();
@@ -330,6 +265,7 @@ define([
             event.preventDefault();
             new HotkeysModal().render();
         },
+        //end Help menu
 
         enableMenuItem: function(item){
             this.$el.find('.' + item).show();
@@ -349,40 +285,46 @@ define([
                 this.disableMenuItem('rewind');
             }
 
+            //handles switching the view-toggle slider depending on the page you're on, or disabling it if you're on load/location
+            this.enableMenuItem('views');
+            this.enableMenuItem('view-toggle');
             if(window.location.href.indexOf('trajectory') !== -1){
-                this.disableMenuItem('run');
-                this.disableMenuItem('rewind');
                 this.toggleView('trajectory');
             } else if(window.location.href.indexOf('fate') !== -1) {
-                this.disableMenuItem('run');
-                this.disableMenuItem('rewind');
-            } else {
-                this.enableMenuItem('run');
-            }
-
-            if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
-                this.disableMenuItem('run');
+                this.toggleView('fate');
+            } else if (window.location.href.indexOf('config') !== -1) {
+                this.toggleView('config');
+            } else if(window.location.href.indexOf('adios') !== -1){
+                this.toggleView('config');
+            } else if (window.location.href.indexOf('response') !== -1){
+                this.toggleView('response');
+            } else if (window.location.href.indexOf('model') !== -1){
+                this.toggleView('model');
+            } else if (window.location.href.indexOf('roc') !== -1){
                 this.disableMenuItem('view-toggle');
+                this.disableMenuItem('views');
+            } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
+                this.disableMenuItem('view-toggle');
+                this.disableMenuItem('views');
             } else {
+                this.enableMenuItem('views');
                 this.enableMenuItem('view-toggle');
             }
+        },
 
-            if(window.location.href.indexOf('fate') !== -1){
-                this.toggleView('fate');
-            }
+        toggleView: function(e){
+            var view;
+            if(_.isObject(e)){
+                e.preventDefault();
+                view = this.$(e.target).attr('class').replace('view ', '');
+                this.$('.view-toggle .switch').attr('class', 'switch ' + view);
 
-            if (window.location.href.indexOf('config') !== -1) {
-                this.toggleView('config');
+                webgnome.router.navigate(view, true);
+            } else {
+                view = e;
+                this.$('.view-toggle .switch').attr('class', 'switch ' + e);
             }
-
-            if(window.location.href.indexOf('adios') !== -1){
-                this.toggleView('config');
-            }
-
-            if (window.location.href.indexOf('response') !== -1){
-                this.toggleView('response');
-            }
-            
+            this.$('.view-toggle .switch').attr('data-original-title', this.$('.view-toggle .' + view).data('original-title'));
         },
 
         render: function(){

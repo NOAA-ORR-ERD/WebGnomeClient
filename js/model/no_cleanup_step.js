@@ -2,7 +2,7 @@ define([
     'underscore',
     'backbone',
     'model/step'
-], function(_, Backbone, StepModel){
+], function(_, Backbone, StepModel) {
     'use strict';
     var gnomeStep = StepModel.extend({
         url: '/full_run',
@@ -11,5 +11,6 @@ define([
             'response_on': true
         }
     });
+
     return gnomeStep;
 });

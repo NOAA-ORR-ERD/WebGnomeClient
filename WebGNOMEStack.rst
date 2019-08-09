@@ -280,8 +280,8 @@ Then you can test it with::
     pytest
 
 
-WebGNOME Client
----------------
+webgnomeapi
+-----------
 
 As we move along, this will start to feel familiar...
 
@@ -308,14 +308,17 @@ The client is getting to new ground -- it is a javascript app, deployed with the
 
 To install and "build" the requirements and code:
 
+Install all of the applications dependencies described in ``package.json``. Calls `grunt install` upon completion::
 
+  npm install
 
+NOTE: npm should have been installed with the nodejs conda package (or with node installed any other way).
 
+There are a couple ways to setup and run the app::
 
+  grunt develop
 
-
-
-
+Sets up a working development environment by reinstalling client side dependancies, compiling less files, starting a http server on port 8080, and setting up a watch task for the less to recompile on change.
 
 Linux Server
 ============

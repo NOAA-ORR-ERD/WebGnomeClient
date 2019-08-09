@@ -2,18 +2,19 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/base',
-    'model/base',
     'module',
-    'model/cache',
-    'views/model/trajectory/index',
-    'views/model/fate',
     'sweetalert',
     'cytoscape',
     'cosebilkent',
     'cytoscapeklay',
-    'klayjs'
-], function($, _, Backbone, BaseView, BaseModel, module, Cache, TrajectoryView, FateView, swal, cytoscape, cosebilkent, cytoscapeklay, klay){
+    'klayjs',
+    'model/base',
+    'model/cache',
+    'views/base',
+    'views/model/trajectory/index',
+    'views/model/fate'
+], function($, _, Backbone, module, swal, cytoscape, cosebilkent, cytoscapeklay, klay,
+            BaseModel, Cache, BaseView, TrajectoryView, FateView) {
     'use strict';
     cosebilkent(cytoscape);
     cytoscapeklay(cytoscape);

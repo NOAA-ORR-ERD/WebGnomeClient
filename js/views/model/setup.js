@@ -13,6 +13,7 @@ define([
     'views/panel/model',
     'views/panel/wind',
     'views/panel/water',
+    'views/panel/weatherers',
     'views/panel/map',
     'views/panel/diffusion-h',
     'views/panel/griddedwind',
@@ -24,7 +25,7 @@ define([
     'views/default/timeline',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, BaseView, module, moment, Masonry, AdiosSetupTemplate, FormModal, GnomeModel, GnomeForm, ModelPanel,
-    WindPanel, WaterPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
+    WindPanel, WaterPanel, WeathererPanel, MapPanel, DiffusionPanel, CurrentPanel, GriddedWindPanel, SpillPanel, ResponsePanel, RocResponsePanel, BeachedPanel, TimelineView){
     'use strict';
     var adiosSetupView = BaseView.extend({
         className: 'page setup',
@@ -71,6 +72,7 @@ define([
                 this.modelpanel = new ModelPanel(),
                 this.wind = new WindPanel(),
                 this.water = new WaterPanel(),
+                this.weatherers = new WeathererPanel(),
                 this.map = new MapPanel(),
                 this.diffusion = new DiffusionPanel(),
                 this.griddedwind = new GriddedWindPanel(),
@@ -85,6 +87,7 @@ define([
                 this.modelpanel.$el,
                 this.wind.$el,
                 this.water.$el,
+                this.weatherers.$el,
                 this.map.$el,
                 this.diffusion.$el,
                 this.griddedwind.$el,
@@ -108,9 +111,10 @@ define([
             
             var layoutfn = _.debounce(_.bind(this.layout, this), 100);
             for(var child in this.children){
-                this.listenTo(this.children[child], 'render', layoutfn);
                 this.children[child].render();
+                this.listenTo(this.children[child], 'render', layoutfn);
             }
+            this.layout();
 
             this.$('.icon').tooltip({
                 placement: 'bottom'

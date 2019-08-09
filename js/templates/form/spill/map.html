@@ -1,4 +1,20 @@
 <div id="mapspill-{{ cid }}">
-	<p>Set spill location using the buttons on the left.</p>
-	<div id="spill-form-map-{{ cid }}" class="map"></div>
+    <div class="row">
+        <div class="col-md-9">
+            <p>Choose <b>Point Spill</b> or <b>Line Spill</b> using the buttons on the left. For detailed instructions on setting spill locations, click the <span class="glyphicon glyphicon-question-sign gnome-help-icon"></span> at the top of this form.</p> 
+            A few hints:
+            <ul><li>Left click once to pick up or put down a pin. (Don't hold down the button.)</li>
+            <li>Right click to cancel current placement and return the pin to where it was.</li>
+        </div>
+        <div class="col-md-3">
+            <p>Coordinate Style:<p>
+            <div class="radio">
+                <label><input type="radio" name="format" value="dms" checked> Deg/Min/Sec</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" name="format" value="dec"> Decimal Deg</label>
+            </div>
+        </div>
+    </div>
+    <div id="spill-form-map-{{ cid }}" class="map"></div>
 </div>

@@ -137,6 +137,9 @@ module.exports = function(grunt){
                 "globals": {
                     "console": true,
                     "alert": true,
+                    "confirm": true,
+                    "Worker": true,
+                    "postMessage": true,
                     "webgnome": true,
                     "define": true,
                     "localStorage": true,
@@ -147,6 +150,7 @@ module.exports = function(grunt){
                     "window" : true,
                     "document": true,
                     "module": true,
+                    "moment": true,
                     "require": true,
                     "Promise": true,
                     "Uint8Array": true,

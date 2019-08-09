@@ -72,7 +72,8 @@ define([
                 });
             });
 
-            webgnome.model.get('weatherers').forEach(function(weatherer) {
+/*             webgnome.model.get('weatherers').forEach(function(weatherer) {
+                // Amy: this wasn't working due to active range refactoring I think
                 // right now we are only concerned with putting the cleanup
                 // option weatherers on the timeline.
                 if ((weatherer.get('obj_type').indexOf('cleanup') !== -1) ||
@@ -96,9 +97,11 @@ define([
                         fillColor: '#ffd970'
                     });
                 }
-            });
+            }); */
 
             webgnome.model.get('movers').forEach(function(mover) {
+                var tmp = mover.dataActiveTimeRange({ignore_extrapolation: true});
+
                 var [start, end] = mover.dataActiveTimeRange({ignore_extrapolation: true})
                 .map(function(secs) {
                     return secs * 1000;  // milliseconds

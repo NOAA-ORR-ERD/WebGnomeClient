@@ -4,11 +4,10 @@ define([
     'backbone',
     'cesium',
     'views/modal/base',
-    'views/default/map',
     'views/default/cesium'
 
 ], function($, _, Backbone, Cesium,
-            BaseModal, MapView, CesiumView) {
+            BaseModal, CesiumView) {
     var pickCoordsView = BaseModal.extend({
         title: 'Click to select map coordinates',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
@@ -35,6 +34,7 @@ define([
             BaseModal.prototype.render.call(this, options);
             var handler;
             if(this.type === 'cesium'){
+                this.$('.modal-body').css('height', '600px');
                 this.map = new CesiumView();
                 this.$('.modal-body').append(this.map.$el);
                 this.map.render();
@@ -67,23 +67,23 @@ define([
             var cartesian = viewer.camera.pickEllipsoid(mousePosition, ellipsoid);
             if (cartesian) {
                 var cartographic = ellipsoid.cartesianToCartographic(cartesian);
-                var long = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);
+                var lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(8);
                 var lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(8);
 
-                this.target.val(long + ', ' + lat + ',0');
+                this.target.val(lon + ', ' + lat + ',0');
                 this.target.trigger('change');
                 this.hide();
             }
         },
 
         renderGrid: function(map){
-            this.model.getGrid(_.bind(function(data){
+            this.model.getGrid().then(_.bind(function(data){
                 var primitive = new Cesium.PrimitiveCollection();
                 map.viewer.scene.primitives.add(primitive);
                 this.model.processLines(data, 3000, primitive);
                 primitive.show = true;
                 var target_ar = this.target.val().split(',');
-                var point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 100000);
+                var point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 0);
                 this.crosshair = map.viewer.entities.add({
                     position: point,
                     billboard: {
@@ -92,10 +92,12 @@ define([
                         height: 50
                     }
                 });
-                map.viewer.scene.camera.flyTo({
-                    destination: point,
-                    duration: 0.5
-                });
+                this.model.getBoundingRectangle().then(_.bind(function(rect) {
+                    map.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0.25
+                    });
+                }, this));
             }, this));
         },
 

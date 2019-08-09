@@ -51,6 +51,8 @@ define([
                     } else if(_.isArray(value)){
                         type = 'array';
                     }
+                    value = _.escape(JSON.stringify(value));
+
                     this.$el.append(_.template(RowTemplate, {name: attr, value: value, type: type}));
                 }
             }
@@ -58,14 +60,15 @@ define([
 
         update: function(e){
             var attribute = this.$(e.currentTarget).data('attribute');
-            var value = this.$(e.currentTarget).val();
-            var type = this.$(e.currentTarget).attr('type');
-            if(type === 'number'){
-                value = parseFloat(value);
-            } else if (type === 'array'){
-                value = JSON.parse('[' + value + ']');
+            var value;
+            try {
+                value = JSON.parse(this.$(e.currentTarget).val());
+                this.$(e.currentTarget).css('background-color', 'white');
+                var type = this.$(e.currentTarget).attr('type');
+                this.model.set(attribute, value, {silent: true});
+            } catch (err){
+                this.$(e.currentTarget).css('background-color', 'lightpink');
             }
-            this.model.set(attribute, value, {silent: true});
         }
     });
     return attributesTable;

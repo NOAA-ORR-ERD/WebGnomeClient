@@ -1,0 +1,17 @@
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a role="button" data-toggle="collapse" href="#spill-legend">Spills</a>
+    </div>
+    <div class="panel-collapse" id="spill-legend">
+        <div class="panel-body">
+        {% if(model.get('spills').length === 0){ %}
+            No spills available for visualization
+        {% } %}
+        {% if(model.get('spills').length !== 0){ %}
+            {% for (var i = 0; i < model.get('spills').length; i++){ %}
+                {{legend.genSpillLegendItem(model.get('spills').at(i))}}
+            {% } %}
+        {% } %}
+        </div>
+    </div>
+</div>

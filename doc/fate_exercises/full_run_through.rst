@@ -1,4 +1,4 @@
-
+﻿
 
 A Complete Annotated Example
 ############################
@@ -46,7 +46,7 @@ If there is no in-situ data available, you can use climatology to get close.
 Model Input
 ===========
 
-Begin on the home page by clicking "Fate Wizard" under "Weathering Only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
+Begin on the home page by clicking "Oil Fate Wizard" under "Weathering Only". Or, if you have a previous setup of the model, click the "New" menu and select "Oil Fate Wizard"
 
 Scenario Settings
 -----------------
@@ -155,7 +155,7 @@ Instantaneous Release
 Continuous Release
 ..................
 
-  #. Click "Instantaneous Release"
+  #. Click "Continuous Release"
 
   #. Set the duration of the release. For this example, it should be set to 5 hours.
      The default is the duration of the model run -- make sure to reset that if you

@@ -2,25 +2,21 @@ define([
     'jquery',
     'underscore',
     'module',
-    'dropzone',
-    'text!templates/default/dropzone.html',
+    'views/default/dzone',
     'text!templates/form/griddedwind.html',
-    'text!templates/uploads/upload.html',
-    'text!templates/uploads/upload_activate.html',
     'model/movers/py_wind',
+    'views/form/griddedwind_edit',
     'views/modal/form',
-    'views/uploads/upload_folder'
-], function($, _, module, Dropzone, DropzoneTemplate,
-            GriddedWindTemplate, UploadTemplate, UploadActivateTemplate,
-            PyWindMover, FormModal, UploadFolder) {
+], function($, _, module, Dzone, GriddedWindTemplate, PyWindMover, PyWindEditForm, FormModal) {
     var griddedWindForm = FormModal.extend({
         className: 'modal form-modal griddedwind-form',
-        title: 'Create Wind (Mover Only)',
+        title: 'Create Gridded Wind (Upload Only)',
         buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button>',
 
         events: function() {
             return _.defaults({
                 'click .gridwind': 'gridwind',
+                'click .cancel': 'close',
             }, FormModal.prototype.events);
         },
 
@@ -46,89 +42,65 @@ define([
         },
 
         setupUpload: function(obj_type) {
+            this.obj_type = obj_type;
             this.$('#upload_form').empty();
-            if (webgnome.config.can_persist) {
-                this.$('#upload_form').append(_.template(UploadActivateTemplate, {page: false}));
-            }
-            else {
-                this.$('#upload_form').append(_.template(UploadTemplate));
-            }
-
-            this.dropzone = new Dropzone('.dropzone', {
-                url: webgnome.config.api + '/mover/upload',
-                previewTemplate: _.template(DropzoneTemplate)(),
-                paramName: 'new_mover',
-                maxFiles: 1,
-                maxFilesize: 2048, // 2GB
-                //acceptedFiles: '.nc, .cur',
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)' //<code>.nc, .cur, etc</code> 
+            this.dzone = new Dzone({
+                maxFilesize: webgnome.config.upload_limits.griddedwind,  // MB
+                autoProcessQueue: true,
+                dictDefaultMessage: 'Drop file here to upload (or click to navigate).',
+                //gnome options
+                obj_type: obj_type,
             });
+            this.$('#upload_form').append(this.dzone.$el);
 
-            this.dropzone.on('sending', _.bind(this.sending, {obj_type: obj_type}));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
-
-            if (webgnome.config.can_persist) {
-                this.uploadFolder = new UploadFolder({el: $(".upload-folder")});
-                this.uploadFolder.on("activate-file", _.bind(this.activateFile, this));
-                this.uploadFolder.render();
-            }
+            this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
         },
 
-        sending: function(e, xhr, formData) {
-            formData.append('session', localStorage.getItem('session'));
-            formData.append('obj_type', this.obj_type);
-            formData.append('persist_upload',
-                            $('input#persist_upload')[0].checked);
-        },
+        loaded: function(fileList) {
+            $.post(webgnome.config.api + '/mover/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': this.obj_type,
+                 'name': this.dzone.dropzone.files[0].name,
+                 'session': localStorage.getItem('session')
+                }
+            )
+            .done(_.bind(function(response) {
+                var json_response = JSON.parse(response);
+                var mover, editform;
 
-        progress: function(e, percent) {
-            if (percent === 100) {
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
-            }
-        },
-        
-        reset: function(file, immediate) {
-            if (immediate) {
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }
-            else {
-                setTimeout(_.bind(function() {
-                    this.$('.dropzone').removeClass('dz-started');
-                    this.dropzone.removeFile(file);
-                }, this), 10000);
-            }
-        },
-
-        loaded: function(file, response) {
-            var json_response = JSON.parse(response);
-            var mover;
-
-            if (json_response && json_response.obj_type) {
-                if (json_response.obj_type === PyWindMover.prototype.defaults.obj_type) {
-                    mover = new PyWindMover(json_response, {parse: true});
+                if (json_response && json_response.obj_type) {
+                    if (json_response.obj_type === PyWindMover.prototype.defaults.obj_type) {
+                        mover = new PyWindMover(json_response, {parse: true});
+                        editform = PyWindEditForm;
+                    }
+                    else {
+                        console.error('Mover type not recognized: ', json_response.obj_type);
+                    }
+                    webgnome.model.get('movers').add(mover);
+                    webgnome.model.get('environment').add(mover.get('wind'));
+                    
+                    if (this.$('#immediate-edit')[0].checked) {
+                        webgnome.model.save({},{'validate': false}).then(_.bind(function() {
+                            var form = new editform(null, this);
+                            form.render();
+                        }, mover));
+                    } else {
+                        webgnome.model.save({},{'validate': false});
+                    }
                 }
                 else {
-                    console.error('Mover type not recognized: ',
-                                  json_response.obj_type);
+                    console.error('No response to file upload');
                 }
 
-                this.trigger('save', mover);
-            }
-            else {
-                console.error('No response to file upload');
-            }
-
-            this.hide();
+                this.hide();
+            }, this)).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
         },
 
         close: function() {
-            if (this.dropzone) {
-                this.dropzone.disable();
-                $('input.dz-hidden-input').remove();
+            if (this.dzone) {
+                this.dzone.close();
             }
 
             FormModal.prototype.close.call(this);
@@ -137,17 +109,6 @@ define([
         gridwind: function() {
             this.nextStep(PyWindMover.prototype.defaults.obj_type);
         },
-        
-        activateFile: function(filePath) {
-            if (this.$('.popover').length === 0) {
-                var thisForm = this;
-
-                $.post('/environment/activate', {'file-name': filePath})
-                .done(function(response) {
-                    thisForm.loaded(filePath, response);
-                });
-            }
-        }
     });
 
     return griddedWindForm;

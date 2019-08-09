@@ -33,6 +33,10 @@ define([
 
         rewind: function(override){
             if(this.length > 0 || override === true){
+                if (webgnome.router.trajView) {
+                    //last minute reset of trajectory view if it exists.
+                    webgnome.router.trajView.renderVisLayers(this.inline[0]);
+                }
                 $.get('/rewind', _.bind(function(){
                     this.length = 0;
                     this.inline = [];
@@ -79,11 +83,12 @@ define([
             }
         },
 
-        socketConnect: function(){
+        socketConnect: function() {
             //console.log('Attaching logger socket routes...');
             console.log('Connecting to step namespace');
-                if(!this.socket){
-                this.socket = io.connect(webgnome.config.api + this.socketRoute);
+            if (!this.socket) {
+                this.socket = io.connect(webgnome.config.socketio + this.socketRoute);
+
                 this.socket.on('step', _.bind(this.socketProcessStep, this));
                 this.socket.on('prepared', _.bind(this.begin,this));
                 this.socket.on('sync_step', _.bind(this.syncClient, this));
@@ -93,21 +98,25 @@ define([
                 this.socket.on('runtimeError', _.bind(this.runtimeError, this));
             }
         },
-        stepStarted: function(event){
+
+        stepStarted: function(event) {
             console.log('step namespace started on api');
         },
-        socketProcessStep: function(step){
-            if(this.streaming) {
+
+        socketProcessStep: function(step) {
+            if (this.streaming) {
                 var sm = new StepModel(step);
                 this.inline.push(sm);
                 this.length++;
                 this.trigger('step:buffered');
                 this.trigger('step:received', sm);
-                if(!this.isAsync){
+ 
+                if (!this.isAsync) {
                     this.sendStepAck(step);
                 }
             }
         },
+
         begin: function() {
             // this is this.socket.connected in socket.io v1.0+
             if(!this.streaming && !this.isDead){
@@ -202,15 +211,19 @@ define([
 
         runtimeError: function(msg) {
             this.trigger('step:failed');
-            if(this.length >= 0) {
+
+            if (this.length >= 0) {
                 this.isDead = true;
             }
+
             this.streaming = false;
             this.isHalted = false;
             this.socket.disconnect();
-            if(msg){
+
+            if (msg) {
                 console.error(msg);
-            } else {
+            }
+            else {
                 console.error('Model runtime error');
             }
         },

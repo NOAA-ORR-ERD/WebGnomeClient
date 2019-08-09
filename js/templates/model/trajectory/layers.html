@@ -1,150 +1,149 @@
-<div class="layers">
-    <div class="title">Layers</div>
-    
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#imagery">Imagery</a>
-        </div>
-        <div id="imagery" class="panel-collapse collapse in">
-            <div class="panel-body">
-                <form role="form" class="form-horizontal checkboxes imagery_layers">
-                    <div class="radio">
-                        <label for="imagery-no_image"><input type="radio" name="imagery" id="imagery-no_image" checked>No imagery</label>
-                    </div>
-                    <div class="radio">
-                        <label for="imagery-noaanavcharts"><input type="radio" name="imagery" id="imagery-noaanavcharts">NOAA Navigational Charts</label>
-                    </div>
-                    <div class="radio">
-                        <label for="imagery-bing_aerial"><input type="radio" name="imagery" id="imagery-bing_aerial">Bing Maps Aerial</label>
-                    </div>
-                    <div class="radio">
-                        <label for="imagery-open_street_map"><input type="radio" name="imagery" id="imagery-open_street_map">Open Street Map</label>
-                    </div>
-                </form>
-            </div>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a role="button" data-toggle="collapse" href="#imagery">Imagery</a>
+    </div>
+    <div id="imagery" class="panel-collapse collapse">
+        <div class="panel-body">
+            <form role="form" class="form-horizontal checkboxes imagery_layers">
+                <div class="radio">
+                    <label for="imagery-no_image"><input type="radio" name="imagery" id="imagery-no_image">No imagery</label>
+                </div>
+                <div class="radio">
+                    <label for="imagery-noaanavcharts"><input type="radio" name="imagery" id="imagery-noaanavcharts">NOAA Navigational Charts</label>
+                </div>
+                <div class="radio">
+                    <label for="imagery-bing_aerial"><input type="radio" name="imagery" id="imagery-bing_aerial">Bing Maps Aerial</label>
+                </div>
+                <div class="radio">
+                    <label for="imagery-open_street_map"><input type="radio" name="imagery" id="imagery-open_street_map" checked>Open Street Map</label>
+                </div>
+            </form>
         </div>
     </div>
-    
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#map_display">Model Map</a>
-        </div>
-        <div id="map_display" class="panel-collapse collapse">
-            <div class="panel-body">
-                <form role="form" class="form-horizontal checkboxes map_layers">
-                    <div class="checkbox">
-                        <label for="map-modelMap"><input type="checkbox" name='map_on' id="map-modelMap">Coastlines</label>
-                    </div>
+</div>
 
-                    <div class="checkbox">
-                        <label for="map-spillableArea"><input type="checkbox" name='sa_on' id="map-spillableArea">Spillable Area</label>
-                    </div>
-                    <div class="checkbox">
-                        <label for="map-mapBounds"><input type="checkbox" name='bounds_on' id="map-mapBounds">Map Bounds</label>
-                    </div>
-                    <div class="checkbox">
-                        <label for="map-graticule"><input type="checkbox" name='graticule' checked="checked" id="map-graticule">Graticule</label>
-                    </div>
-                </form>
-            </div>
-        </div>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a role="button" data-toggle="collapse" href="#map_display">Model Map</a>
+    </div>
+    <div id="map_display" class="panel-collapse collapse">
+        <div class="panel-body">
+            <form role="form" class="form-horizontal checkboxes map_layers">
+                <div class="checkbox">
+                    <label for="map-modelMap"><input type="checkbox" name='map_on' id="map-modelMap">Coastlines</label>
+                </div>
 
-
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#spills">Spills</a>
-        </div>
-        <div class="panel-collapse collapse" id="spills">
-            <div class="panel-body">
-                <form>
-                    <table class="table table-sm table-hover spills">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="spill-vis-hdr"><span></span></th>
-                                <th scope="col" class="spill-loc-hdr"><span></span></th>
-                                <th scope="col" class="spill-edit-hdr"><span></span></th>
-                                <th scope="col" class="spill-name">Name</th>
-                            </tr>
-                        </thead>
-                        {% if(model_spills.length === 0){ %}
-                            No spills available for visualization
-                        {% } %}
-                        <tbody>
-                            {% if(model_spills.length !== 0){ %}
-                                {% for (var i = 0; i < model_spills.length; i++){ %}
-                                <tr class='spill-row' name="{{ model_spills.models[i].get('name') }}">
-                                    <td class="spill-vis"><input id="vis-{{ model_spills.models[i].get('id') }}" name="les_on" type="checkbox"></td>
-                                    <td class="spill-loc"><input id="loc-{{ model_spills.models[i].get('id') }}" name="pin_on" type="checkbox"></td>
-                                    <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{ model_spills.models[i].get('id') }}"><span></span></button></td>
-                                    <td class='spill-name' id="name-{{ model_spills.models[i].get('id') }}">{{ model_spills.models[i].get('name') }}</td>
-                                </tr>
-                                {% } %}
-                            {% } %}
-                        </tbody>
-                    </table>
-                </form>
-            </div>
-        </div>
-    
-    <div class="panel panel-primary" id='accor'>
-        <div class="panel-heading">
-            <a role="button" data-toggle="collapse" href="#env_objs">Environmental Data</a>
-        </div>
-        <div class="panel-collapse collapse" id="env_objs">
-            <div class="panel-body">
-                <form>
-                    <table class="table table-sm table-hover env_objs">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="env-uv-hdr"><span></span></th>
-                                <th scope="col" class="env-grid-hdr"><span></span></th>
-                                <th scope="col" class="env-edit-hdr"><span></span></th>
-                                <th scope="col" class="env-name">Name</th>
-                            </tr>
-                        </thead>
-                        {% if(env_objs.length !== 0 || currents.length !== 0){ %}
-                        <tfoot name="None">
-                            <td class="env-uv"><input type="checkbox" id="none-uv" checked></td>
-                            <td class="env-grid"><input type="checkbox" id="none-grid" checked></td>
-                            <td></td>
-                            <td>None</td>
-                        </tfoot>
-                        {% } %}
-                        {% if(env_objs.length === 0 && currents.length === 0){ %}
-                            No environment data available for visualization
-                        {% } %}
-                        <tbody>
-                            {% if(env_objs.length !== 0){ %}
-                                {% for (var i = 0; i < env_objs.length; i++){ %}
-                                <tr name="{{ env_objs[i].get('name') }}">
-                                    <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" name="on" type="checkbox"></td>
-                                    {% if (env_objs[i].has('grid')) { %}
-                                        <td class="env-grid"><input class="grid-{{ env_objs[i].get('grid').get('id') }} grid" name="on" type="checkbox"></td>
-                                    {% } else { %}
-                                        <td></td>
-                                    {% } %}
-                                    <td><button type="button" class="btn btn-sm btn-link env-edit-btn" id="attr-{{ env_objs[i].get('id') }}"><span></span></button></td>
-                                    <td class='env-name' id="name-{{ env_objs[i].get('id') }}">{{ env_objs[i].get('name') }}</td>
-                                </tr>
-                                {% } %}
-                            {% } %}
-                            {% if(currents.length !== 0){ %}
-                                {% for ( var i = 0; i < currents.length; i++){ %}
-                                <tr name="{{ currents[i].get('name') }}">
-                                    <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" name="vec_on" type="checkbox"></td>
-                                    {% if (currents[i].get('obj_type') === "gnome.movers.current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.current_movers.GridCurrentMover") {%}
-                                        <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" name="grid_on" type="checkbox"></td>
-                                    {% } else { %}
-                                        <td></td>
-                                    {% } %}
-                                    <td><button type="button" class="btn btn-sm btn-link curr-edit-btn" id="attr-{{ currents[i].get('id') }}"><span></span></button></td>
-                                    <td class='curr-name' id="name-{{ currents[i].get('id') }}">{{ currents[i].get('name') }}</td>
-                                </tr>
-                                {% } %}
-                            {% } %}
-                        </tbody>
-                    </table>
-                </form>
-            </div>
+                <div class="checkbox">
+                    <label for="map-spillableArea"><input type="checkbox" name='sa_on' id="map-spillableArea">Spillable Area</label>
+                </div>
+                <div class="checkbox">
+                    <label for="map-mapBounds"><input type="checkbox" name='bounds_on' id="map-mapBounds">Map Bounds</label>
+                </div>
+                <div class="checkbox">
+                    <label for="map-graticule"><input type="checkbox" name='graticule' checked="checked" id="map-graticule">Graticule</label>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a role="button" data-toggle="collapse" href="#spills">Spills</a>
+    </div>
+    <div class="panel-collapse collapse" id="spills">
+        <div class="panel-body">
+            <form>
+                <table class="table table-sm table-hover spills">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="spill-vis-hdr"><span></span></th>
+                            <th scope="col" class="spill-loc-hdr"><span></span></th>
+                            <th scope="col" class="spill-edit-hdr"><span></span></th>
+                            <th scope="col" class="spill-name">Name</th>
+                        </tr>
+                    </thead>
+                    {% if(model_spills.length === 0){ %}
+                        No spills available for visualization
+                    {% } %}
+                    <tbody>
+                        {% if(model_spills.length !== 0){ %}
+                            {% for (var i = 0; i < model_spills.length; i++){ %}
+                            <tr class='spill-row' name="{{ model_spills.models[i].get('name') }}">
+                                <td class="spill-vis"><input id="vis-{{ model_spills.models[i].get('id') }}" name="les_on" type="checkbox"></td>
+                                <td class="spill-loc"><input id="loc-{{ model_spills.models[i].get('id') }}" name="pin_on" type="checkbox"></td>
+                                <td><button type="button" class="btn btn-sm btn-link spill-edit-btn" id="attr-{{ model_spills.models[i].get('id') }}"><span></span></button></td>
+                                <td class='spill-name' id="name-{{ model_spills.models[i].get('id') }}">{{ model_spills.models[i].get('name') }}</td>
+                            </tr>
+                            {% } %}
+                        {% } %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-primary" id='accor'>
+    <div class="panel-heading">
+        <a role="button" data-toggle="collapse" href="#env_objs">Environmental Data</a>
+    </div>
+    <div class="panel-collapse collapse" id="env_objs">
+        <div class="panel-body">
+            <form>
+                <table class="table table-sm table-hover env_objs">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="env-uv-hdr"><span></span></th>
+                            <th scope="col" class="env-grid-hdr"><span></span></th>
+                            <th scope="col" class="env-edit-hdr"><span></span></th>
+                            <th scope="col" class="env-name">Name</th>
+                        </tr>
+                    </thead>
+                    {% if(env_objs.length !== 0 || currents.length !== 0){ %}
+                    <tfoot name="None">
+                        <td class="env-uv"><input type="checkbox" id="none-uv" checked></td>
+                        <td class="env-grid"><input type="checkbox" id="none-grid" checked></td>
+                        <td></td>
+                        <td>None</td>
+                    </tfoot>
+                    {% } %}
+                    {% if(env_objs.length === 0 && currents.length === 0){ %}
+                        No environment data available for visualization
+                    {% } %}
+                    <tbody>
+                        {% if(env_objs.length !== 0){ %}
+                            {% for (var i = 0; i < env_objs.length; i++){ %}
+                            <tr name="{{ env_objs[i].get('name') }}">
+                                <td class="env-uv"><input class="uv" id="uv-{{ env_objs[i].get('id') }}" name="on" type="checkbox"></td>
+                                {% if (env_objs[i].has('grid')) { %}
+                                    <td class="env-grid"><input class="grid-{{ env_objs[i].get('grid').get('id') }} grid" name="on" type="checkbox"></td>
+                                {% } else { %}
+                                    <td></td>
+                                {% } %}
+                                <td><button type="button" class="btn btn-sm btn-link env-edit-btn" id="attr-{{ env_objs[i].get('id') }}"><span></span></button></td>
+                                <td class='env-name' id="name-{{ env_objs[i].get('id') }}">{{ env_objs[i].get('name') }}</td>
+                            </tr>
+                            {% } %}
+                        {% } %}
+                        {% if(currents.length !== 0){ %}
+                            {% for ( var i = 0; i < currents.length; i++){ %}
+                            <tr name="{{ currents[i].get('name') }}">
+                                <td class="curr-uv"><input class="uv" id="uv-{{ currents[i].get('id') }}" name="vec_on" type="checkbox"></td>
+                                {% if (currents[i].get('obj_type') === "gnome.movers.current_movers.CatsMover" || currents[i].get('obj_type') === "gnome.movers.current_movers.GridCurrentMover" || currents[i].get('obj_type') === "gnome.movers.current_movers.ComponentMover") {%}
+                                    <td class="curr-grid"><input class="grid-{{ currents[i].get('id') }} grid" name="grid_on" type="checkbox"></td>
+                                {% } else { %}
+                                    <td></td>
+                                {% } %}
+                                <td><button type="button" class="btn btn-sm btn-link curr-edit-btn" id="attr-{{ currents[i].get('id') }}"><span></span></button></td>
+                                <td class='curr-name' id="name-{{ currents[i].get('id') }}">{{ currents[i].get('name') }}</td>
+                            </tr>
+                            {% } %}
+                        {% } %}
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>

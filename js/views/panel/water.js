@@ -55,6 +55,7 @@ define([
             waterForm.on('hidden', waterForm.close);
             waterForm.on('save', _.bind(function(){
                 webgnome.model.get('environment').add(water, {merge:true});
+                webgnome.model.save(null, {validate: false});
             }, this));
             waterForm.render();
         }

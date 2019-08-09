@@ -1,29 +1,27 @@
-<form class="form-horizontal appearance-edit role="form">
-
-    {% for (var i = 0; i < attrNames.length; i++) { %}
-    <div class="form-row">
-        <div class="form-group">
-            {% if (attrNames[i].includes('title')){ continue; } %}
-            <label class="col-sm-3 control-label" for="{{attrNames[i]}}">{{ctrlNames[i]}}</label>
-            {% if (attrNames[i].includes('on')) { %}
-            <div class="col-sm-1">
-                <input type="checkbox" {{model.get(attrNames[i]) ? 'checked': ''}} name="{{attrNames[i]}}">
-            </div>
-            {% } else if (attrNames[i].includes('color')) { %}
-            <div class="col-sm-3">
-                <input type="color" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}">
-            </div>
-            {% } else if (attrNames[i].includes('alpha') || attrNames[i].includes('scale')) { %}
-            <div class="col-sm-3">
-                <input type="number" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}" min="0" max="1" step="0.01">
-            </div>
-            {% } else if (attrNames[i].includes('name')) { %}
-            <div class="col-sm-3">
-                <input type="text" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}">
-            </div>
-            {% } %}
+{% for (var i = 0; i < attrNames.length; i++) { %}
+        {% if (attrNames[i].includes('title')){ continue; } %}
+<div class='form-row'>
+    <div class='form-group'>
+        <label class="col-sm-3 control-label" for="{{attrNames[i]}}">{{ctrlNames[i]}}</label>
+        {% if (attrNames[i].includes('on')) { %}
+        <div class="col-sm-3 appearance-edit">
+            <label class="checkbox-inline">
+                <input type="checkbox" {{model.get(attrNames[i]) ? 'checked': ''}} name="{{attrNames[i]}}">&nbsp
+            </label>
         </div>
+        {% } else if (attrNames[i].includes('color')) { %}
+        <div class="col-sm-3 appearance-edit">
+            <input type="color" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}">
+        </div>
+        {% } else if (attrNames[i].includes('alpha') || attrNames[i].includes('scale')) { %}
+        <div class="col-sm-3 appearance-edit">
+            <input type="number" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}" min="0" max="1" step="0.01">
+        </div>
+        {% } else if (attrNames[i].includes('name')) { %}
+        <div class="col-sm-3 appearance-edit">
+            <input type="text" class="form-control" value="{{model.get(attrNames[i])}}" name="{{attrNames[i]}}">
+        </div>
+        {% } %}
     </div>
-    {% } %}
-
-</form>
+</div>
+{% } %}

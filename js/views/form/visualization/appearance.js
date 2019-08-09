@@ -2,14 +2,14 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'views/form/base',
+    'views/base',
     'module',
     'model/visualization/appearance',
     'd3',
     'text!templates/form/visualization/appearance.html'
-], function ($, _, Backbone, BaseForm, module, Appearance, DDD, AppearanceFormTemplate) {
+], function ($, _, Backbone, BaseView, module, Appearance, DDD, AppearanceFormTemplate) {
     "use strict";
-    var appearanceForm = BaseForm.extend({
+    var appearanceForm = BaseView.extend({
 
         events: {
             'change .appearance-edit input': 'update',
@@ -27,17 +27,18 @@ define([
         },
 
         render() {
-            var html = $('<form></form>',{ 'class': 'form-horizontal appearance-edit', 'role': 'form', 'id': this.model.get('id')});
+            BaseView.prototype.render.call(this);
             var attrNames = _.keys(this.model.get('ctrl_names'));
             var ctrlNames = _.values(this.model.get('ctrl_names'));
             var attrValues = _.values(this.model.attributes);
-            this.$el.html(_.template( AppearanceFormTemplate,
+            var html = _.template( AppearanceFormTemplate,
                 {
                 model: this.model,
                 attrNames: attrNames,
                 ctrlNames: ctrlNames,
                 }
-            ));
+            );
+            this.$el.append(html);
         },
 
         update: function(e){

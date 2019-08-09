@@ -7,10 +7,12 @@ define([
     'model/environment/grid',
     'moment',
     'localforage',
-    'model/visualization/vector_appearance'
-], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance){
+    'model/visualization/vector_appearance',
+    'socketio'
+], function(_, $, Backbone, Cesium, EnvBaseModel, BaseGridObj, moment, localforage, VectorAppearance, io){
     'use strict';
     var gridEnvObj = EnvBaseModel.extend({
+        socketRoute: '/data_socket',
         model: {
             time: Backbone.Model,
             grid: BaseGridObj,
@@ -28,13 +30,13 @@ define([
             this.on('change', this.resetRequest, this);
 
             if (!this.requested_vectors) {
-                this.getVecs(null);
                 this.getMetadata(null);
             }
 
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            //this.socketConnect();
 
         },
 
@@ -77,110 +79,113 @@ define([
         },
 
         getVecs: function() {
-            return new Promise(_.bind(function(resolve, reject) {
-                this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
-                    if (value) {
-                        console.log(this.id + ' vectors found in store');
-                        var dtype = Float32Array;
-                        var dtl = dtype.BYTES_PER_ELEMENT;
+            if (_.isUndefined(this._getVecsPromise)) {
+                this._getVecsPromise = new Promise(_.bind(function(resolve, reject) {
+                    this.env_obj_cache.getItem(this.id + 'vectors').then(_.bind(function(value){
+                        if (value) {
+                            console.log(this.id + ' vectors found in store');
+                            var dtype = Float32Array;
+                            var dtl = dtype.BYTES_PER_ELEMENT;
 
-                        this.requesting = false;
-                        this.requested_vectors = true;
-                        this.vec_data = value[0];
+                            this.requesting = false;
+                            this.requested_vectors = true;
+                            this.vec_data = value[0];
 
-                        var shape = value[1];
+                            var shape = value[1];
 
-                        this.num_times = parseInt(shape[1]);
-                        this.num_vecs = parseInt(shape[2]);
-                        this.time_axis = [];
+                            this.num_times = parseInt(shape[1]);
+                            this.num_vecs = parseInt(shape[2]);
+                            this.time_axis = [];
 
-                        var timeData = this.get('time').data;
-                        if (_.isUndefined(timeData)) {
-                            // We must be dealing with a
-                            // Backbone.Model type.  This seems to
-                            // change with context depending on
-                            // who is creating the GriddedWind mover.
-                            timeData = this.get('time').get('data');
-                        }
+                            var timeData = this.get('time').data;
+                            if (_.isUndefined(timeData)) {
+                                // We must be dealing with a
+                                // Backbone.Model type.  This seems to
+                                // change with context depending on
+                                // who is creating the GriddedWind mover.
+                                timeData = this.get('time').get('data');
+                            }
 
-                        for (var i = 0; i < timeData.length; i++) {
-                            var t = timeData[i];
-                            this.time_axis.push(webgnome.timeStringToSeconds(t));
-                        }
+                            for (var i = 0; i < timeData.length; i++) {
+                                var t = timeData[i];
+                                this.time_axis.push(webgnome.timeStringToSeconds(t));
+                            }
 
-                        this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                        this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                        this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                            this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                            this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                            this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
 
-                        resolve(this.vec_data);
-                    }
-                    else {
-                        if (!this.requesting && !this.requested_vectors) {
-                            this.requesting = true;
-                            var ur = this.urlRoot + this.id + '/vectors';
-
-                            $.ajax({
-                                url: ur,
-                                type: "GET",
-                                dataType: "binary",
-                                responseType:"arraybuffer",
-                                processData:"false",
-                                headers: {
-                                    'Accept' : 'application/octet-stream',
-                                    'Access-Control-Allow-Request-Method': 'GET',
-                                    'Content-Type': 'binary',
-                                },
-                                xhrFields: {
-                                    withCredentials: true
-                                },
-                                success: _.bind(function(uv_data, sts, response) {
-                                    this.requesting = false;
-                                    this.requested_vectors = true;
-
-                                    var dtype = Float32Array;
-                                    var dtl = dtype.BYTES_PER_ELEMENT;
-                                    var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
-                                    var num_times = parseInt(shape[1]);
-                                    var num_vecs = parseInt(shape[2]);
-
-                                    var datalen = num_times * num_vecs * dtl;
-
-                                    this.vec_data = new Float32Array(uv_data);
-                                    this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
-
-                                    this.num_times = num_times;
-                                    this.num_vecs = num_vecs;
-                                    this.time_axis = [];
-
-                                    var timeData = this.get('time').data;
-                                    if (_.isUndefined(timeData)) {
-                                        // We must be dealing with a
-                                        // Backbone.Model type.  This seems to
-                                        // change with context depending on
-                                        // who is creating the GriddedWind mover.
-                                        timeData = this.get('time').get('data');
-                                    }
-
-                                    for (var i = 0; i < timeData.length; i++) {
-                                        var t = timeData[i];
-                                        this.time_axis.push(webgnome.timeStringToSeconds(t));
-                                    }
-
-                                    this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                                    this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-                                    this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
-
-                                },this),
-
-                                error: function(jqXHR, sts, err){reject(err);},
-                            });
+                            resolve(this.vec_data);
                         }
                         else {
-                            reject(new Error('Request already in progress'));
+                            if (!this.requesting && !this.requested_vectors) {
+                                this.requesting = true;
+                                var ur = this.urlRoot + this.id + '/vectors';
+
+                                $.ajax({
+                                    url: ur,
+                                    type: "GET",
+                                    dataType: "binary",
+                                    responseType:"arraybuffer",
+                                    processData:"false",
+                                    headers: {
+                                        'Accept' : 'application/octet-stream',
+                                        'Access-Control-Allow-Request-Method': 'GET',
+                                        'Content-Type': 'binary',
+                                    },
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    success: _.bind(function(uv_data, sts, response) {
+                                        this.requesting = false;
+                                        this.requested_vectors = true;
+
+                                        var dtype = Float32Array;
+                                        var dtl = dtype.BYTES_PER_ELEMENT;
+                                        var shape = response.getResponseHeader('shape').replace(/[L()]/g, '').split(',');
+                                        var num_times = parseInt(shape[1]);
+                                        var num_vecs = parseInt(shape[2]);
+
+                                        var datalen = num_times * num_vecs * dtl;
+
+                                        this.vec_data = new Float32Array(uv_data);
+                                        this.env_obj_cache.setItem(this.id + 'vectors', [this.vec_data, shape]);
+
+                                        this.num_times = num_times;
+                                        this.num_vecs = num_vecs;
+                                        this.time_axis = [];
+
+                                        var timeData = this.get('time').data;
+                                        if (_.isUndefined(timeData)) {
+                                            // We must be dealing with a
+                                            // Backbone.Model type.  This seems to
+                                            // change with context depending on
+                                            // who is creating the GriddedWind mover.
+                                            timeData = this.get('time').get('data');
+                                        }
+
+                                        for (var i = 0; i < timeData.length; i++) {
+                                            var t = timeData[i];
+                                            this.time_axis.push(webgnome.timeStringToSeconds(t));
+                                        }
+
+                                        this.mag_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                                        this.dir_data = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+                                        this._temp = new Float32Array(new ArrayBuffer(this.num_vecs * dtl));
+
+                                    },this),
+
+                                    error: function(jqXHR, sts, err){reject(err);},
+                                });
+                            }
+                            else {
+                                reject(new Error('Request already in progress'));
+                            }
                         }
-                    }
-                }, this)).catch(reject);
-            }, this));
+                    }, this)).catch(reject);
+                }, this));
+            }
+            return this._getVecsPromise;
         },
 
         genVecImages: function(maxSpeed, numSteps) {
@@ -294,60 +299,65 @@ define([
             to produce a representation of this data. Instances of this class hold on to this
             graphics object, and control updates for it*/
             //rebuild currently broken
-            return new Promise(_.bind(function(resolve, reject) {
-                if (rebuild || this._vectors.length < 100) {
-                    var addVecsToLayer = _.bind(function(centers) {
-                        if (!this._images) {
-                            this.genVecImages();
+            if (_.isUndefined(this._genVectorsPromise)) {
+                this._genVectorsPromise = new Promise(_.bind(function(resolve, reject) {
+                    if (rebuild || this._vectors.length < 100) {
+                        var addVecsToLayer = _.bind(function(centers) {
+                            if (!this._images) {
+                                this.genVecImages();
+                            }
+
+                            var existing_length = this._vectors.length;
+                            var appearance = this.get('_appearance');
+
+                            for (var existing = 0; existing < existing_length; existing++) {
+                                this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
+                                this._vectors.get(existing).show = true;
+                                this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
+                                this._vectors.get(existing).id = 'vector'+existing;
+                                this._vectors.get(existing).image = this._images[this.getImageIdx(0)];
+                            }
+
+                            var create_length = centers.length / 2;
+                            var bb;
+                            for (var c = existing; c < create_length; c++) {
+                                bb = this._vectors.add({
+                                    show: true,
+                                    position: Cesium.Cartesian3.fromDegrees(centers[c * 2], centers[c * 2 + 1]),
+                                    image: this._images[0],
+                                    color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
+                                    scale: this.get('_appearance').get('scale')
+                                });
+                                bb.id = 'vector'+c;
+                            }
+                            resolve(this._vectors);
+                            this._genVectorsPromise = undefined;
+                        }, this);
+
+                        if ('nodes'.includes(this.data_location)) {
+                            this.get('grid').getNodes()
+                                .then(addVecsToLayer)
+                                .catch(function(err) {
+                                    console.log(err);
+                                    reject(err);
+                                });
                         }
-
-                        var existing_length = this._vectors.length;
-                        var appearance = this.get('_appearance');
-
-                        for (var existing = 0; existing < existing_length; existing++) {
-                            this._vectors.get(existing).position = Cesium.Cartesian3.fromDegrees(centers[existing*2], centers[existing*2+1]);
-                            this._vectors.get(existing).show = true;
-                            this._vectors.get(existing).color = Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha'));
-                            this._vectors.get(existing).id = 'vector'+existing;
+                        else {
+                            this.get('grid').getCenters()
+                                .then(addVecsToLayer)
+                                .catch(function(err) {
+                                    console.log(err);
+                                    reject(err);
+                                });
                         }
-
-                        var create_length = centers.length / 2;
-                        var bb;
-                        for (var c = existing; c < create_length; c++) {
-                            bb = this._vectors.add({
-                                show: true,
-                                position: Cesium.Cartesian3.fromDegrees(centers[c * 2], centers[c * 2 + 1]),
-                                image: this._images[0],
-                                color: Cesium.Color.fromCssColorString(appearance.get('color')).withAlpha(appearance.get('alpha')),
-                                scale: this.get('_appearance').get('scale')
-                            });
-                            bb.id = 'vector'+c;
-                        }
-
-                        resolve(this._vectors);
-                    }, this);
-
-                    if ('nodes'.includes(this.data_location)) {
-                        this.get('grid').getNodes()
-                            .then(addVecsToLayer)
-                            .catch(function(err) {
-                                console.log(err);
-                                reject(err);
-                            });
                     }
                     else {
-                        this.get('grid').getCenters()
-                            .then(addVecsToLayer)
-                            .catch(function(err) {
-                                console.log(err);
-                                reject(err);
-                            });
+                        resolve(this._vectors);
+                        this._genVectorsPromise = undefined;
                     }
-                }
-                else {
-                    resolve(this._vectors);
-                }
-            }, this));
+                }, this));
+            }
+            return this._genVectorsPromise;
         },
 
         updateVis: function(options) {
@@ -367,7 +377,6 @@ define([
                             bbs[i].color = newColor;
                         }
 
-                        bbs[i].scale = appearance.get('scale');
                         bbs[i].show = appearance.get('on');
                     }
                 }
@@ -482,6 +491,112 @@ define([
                 }
             }
         },
+
+        //SOCKET & DATA MANAGEMENT STUFF BELOW HERE
+
+        socketConnect: function(){
+            console.log('Connecting to data namespace');
+            if(!this.socket){
+                this.socket = io.connect(webgnome.config.api + this.socketRoute);
+                this.socket.on('metadata', _.bind(this.metadataHandler, this));
+                this.socket.on('data', _.bind(this.dataHandler,this));
+                this.socket.on('serial', _.bind(this.serialHandler, this));
+            }
+        },
+
+        metadataHandler: function(id, md) {
+            if (id !== this.get('id')) {
+                return;
+            }
+            console.log('Received metadata for: ' + this.get('id'));
+            if (_.isUndefined(this.metadata)){
+                this.metadata = md;
+                this.setupDataPromises(true);
+            } else {
+                console.error('metadata should only be requested once per object instance');
+            }
+        },
+
+        setupDataPromises: function(rebuild) {
+            if (rebuild && !_.isNull(this.metadata)) {
+                var md = this.metadata;
+                if (md.time_arr) {
+                    this._time_arr = md.time;
+                }
+                //this._data is ALWAYS the primary data represented by this gridded environment object
+                //for a current or wind, for example, this would be the vector data
+                this._data = [];
+                for(var k=0; k < this._time_arr.length; k++) {
+                    this._data.append(this._genDataPromise(k));
+                }
+            }
+        },
+
+        _genDataPromise(index) {
+            return new Promise(_.bind(function(resolve, reject){
+                this.listenToOnce(this, 'data_'+index, _.bind(function(idx){
+                    this.stopListening(this, 'datafail_'+idx);
+                    resolve(this.env_obj_cache.getItem('data_'+idx));
+                },this));
+                this.listenToOnce(this, 'datafail_'+index, _.bind(function(idx){
+                    this.stopListening(this, 'data_'+idx);
+                    reject();
+                },this));
+            }, this));
+        },
+
+        dataHandler: function(id, data) {
+            if (id !== this.get('id')) {
+                return;
+            }
+            console.log('Received data for: ' + this.get('id'));
+        },
+
+        serialHandler: function(id, serial) {
+            if (id !== this.get('id')) {
+                return;
+            }
+            console.log('Received serial for: ' + this.get('id'));
+        },
+
+        socketGet(command, args) {
+            this[command].apply(this, args);
+        },
+
+        get_metadata: function() {
+            /*
+            Returns metadata about the object on the server. In particular, it should provide
+            full usage information for get_data.
+            */
+            this.socket.emit('get_metadata', this.get('id'));
+        },
+
+        get_attribute: function(attr_name) {
+            /*
+            Use this function to retrieve a generic attribute of this object from the server.
+            Returns a promise that resolves when the attribute gets cached on the client.
+
+            Returns null if the attribute is None. Returns undefined if the attribute does not exist
+            */
+            this.socket.emit('get_attribute', this.get('id'), attr_name);
+        },
+
+        get_data: function(data_name, slices, cast_type, precision) {
+            /*
+            Use this function when requesting arrays of data that may be sliced. Unlike
+            get_attribute, this function only accepts certain data_names depending on what
+            the object on the server can handle.
+
+            Returns a promise that resolves when the data requested gets cached on the client
+            */
+            this.socket.emit('get_data', this.get('id'), data_name);
+            
+        },
+
+        get_serial: function() {
+            this.socket.emit('get_serial', this.get('id'));
+        },
+
     });
 
     return gridEnvObj;

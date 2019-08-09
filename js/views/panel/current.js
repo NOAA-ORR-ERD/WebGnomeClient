@@ -2,20 +2,21 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'cesium',
     'sweetalert',
-    'ol',
     'text!templates/panel/current.html',
-    'views/default/map',
+    'views/default/cesium',
     'views/panel/base',
     'views/form/mover/create',
     'views/form/mover/grid',
     'views/form/mover/cats',
     'views/form/mover/component',
+    'views/modal/base',
     'views/modal/form'
-], function($, _, Backbone, swal, ol,
-            CurrentPanelTemplate, OlMapView, BasePanel,
+], function($, _, Backbone, Cesium, swal,
+            CurrentPanelTemplate, CesiumView, BasePanel,
             CreateMoverForm, GridMoverForm, CatsMoverForm, ComponentMoverForm,
-            FormModal) {
+            BaseModal, FormModal) {
     var currentPanel = BasePanel.extend({
         className: 'col-md-3 current object panel-view',
 
@@ -31,22 +32,41 @@ define([
             'gnome.movers.current_movers.CatsMover': CatsMoverForm,
             'gnome.movers.current_movers.ComponentMover': ComponentMoverForm
         },
+        events: {
+            'click #mini-currentmap': 'openMapModal',
+            'click .single': 'changeDisplayedCurrent',
+            'webkitfullscreenchange #mini-currentmap': 'resetCamera',
+            'mozfullscreenchange #mini-locmap' : 'resetCamera',
+            'msfullscreenchange #mini-locmap' : 'resetCamera',
+            'fullscreenchange #mini-locmap' : 'resetCamera'
+        },
+
+        mapName: '#mini-currentmap',
+
+        template: CurrentPanelTemplate,
 
         initialize: function(options) {
             BasePanel.prototype.initialize.call(this, options);
-
+            //_.extend({}, BasePanel.prototype.events, this.events);
+            _.extend(this.events, BasePanel.prototype.events);
+            this.currentPrims = {};
+            this.currentPromises = {};
             this.listenTo(webgnome.model,
                           'change:duration chage:start_time',
-                          this.rerender);
+                          this.render);
             this.listenTo(webgnome.model.get('movers'),
                           'add change remove',
-                          this.rerender);
+                          this.render);
+            this.mozResetCamera = _.bind(function(e){
+                this.resetCamera(e);
+                document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
+            }, this);
         },
 
         new: function() {
             var form = new CreateMoverForm();
-
             form.on('hidden', form.close);
+/*
             form.on('save', _.bind(function(mover) {
                 mover.save(null, {
                     success: _.bind(function() {
@@ -72,7 +92,7 @@ define([
                     }, this)
                 });
             }, this));
-
+*/
             form.render();
         },
 
@@ -93,100 +113,120 @@ define([
             currentForm.render();
         },
 
-        render: function() {
-            var currents = webgnome.model.get('movers').filter(function(mover) {
-                return [
-                    'gnome.movers.current_movers.CatsMover',
-                    'gnome.movers.current_movers.GridCurrentMover',
-                    'gnome.movers.py_current_movers.PyCurrentMover',
-                    'gnome.movers.current_movers.ComponentMover',
-                    'gnome.movers.current_movers.CurrentCycleMover'
-                ].indexOf(mover.get('obj_type')) !== -1;
-            });
+        openMapModal: function(e) {
+            if(!_.isUndefined(this.currentMap)){
+                var element = this.currentMap.el;
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                document.addEventListener("mozfullscreenchange", this.mozResetCamera);
+            }
+        },
 
-            var compiled = _.template(CurrentPanelTemplate, {
+        resetCamera: function(e) {
+            //timeout so transition to/from fullscreen can complete before recentering camera
+            setTimeout(_.bind(function(){this._focusOnCurrent(this.displayedCurrent);}, this), 100);
+        },
+
+        _focusOnCurrent: function(cur) {
+            if (_.isUndefined(this.currentMap)) {
+                return;
+            } else {
+                cur.getBoundingRectangle().then(_.bind(function(rect) {
+                    this.currentMap.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0
+                    });
+                    this.currentMap.viewer.scene.requestRender();
+                }, this));
+            }
+        },
+
+        changeDisplayedCurrent: function(e) {
+            this.currentPrims[this.displayedCurrent.get('id')].show = false;
+            this.$('.cesium-map').hide();
+            this.$('.loader').show();
+            var curId = e.currentTarget.getAttribute('data-id');
+            var cur = webgnome.model.get('movers').findWhere({'id': curId});
+            if (cur) {
+                this.displayedCurrent = cur;
+                this._loadCurrent(cur).then(_.bind(function(){
+                    this.$('.loader').hide();
+                    var prim = this.currentPrims[cur.get('id')];
+                    if (_.isUndefined(prim)){
+                        console.error('Primitive for current '+ cur.get('name') + ' not found');
+                        return;
+                    }
+                    prim.show = true;
+                    this.$('.cesium-map').show();
+                    this.resetCamera();
+                }, this));
+            }
+        },
+
+        render: function() {
+            var currents = webgnome.model.get('movers').filter(_.bind(function(mover) {
+                return this.models.indexOf(mover.get('obj_type')) !== -1;
+            }, this));
+
+            var compiled = _.template(this.template, {
                 currents: currents
             });
 
             this.$el.html(compiled);
-
             if (currents.length > 0) {
                 this.$el.removeClass('col-md-3').addClass('col-md-6');
-                this.$('.panel-body').show();
-
-                this.current_layers = new ol.Collection([
-                    new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            })
-                    })
-                ]);
-
-                this.currentMap = new OlMapView({
-                    el: this.$('#mini-currentmap'),
-                    controls: [],
-                    layers: this.current_layers,
-                    interactions: ol.interaction.defaults({
-                        mouseWheelZoom: false,
-                        dragPan: false,
-                        doubleClickZoom: false
-                    }),
+                this.$('.panel-body').show({
+                    duration: 10,
+                    done: _.bind(function(){
+                        if (!this.currentMap){
+                            this.currentMap = CesiumView.getView(this.className);
+                            this.currentMap.render();
+                            var prims = this.currentMap.viewer.scene.primitives;
+                            for (var i=0; i < prims._primitives.length; i++) {
+                                if (_.isUndefined(this.currentPromises[prims._primitives[i].id])){
+                                    prims.remove(prims._primitives[i]);
+                                }
+                            }
+                            this.displayedCurrent = currents[0];
+                            this._loadCurrent(currents[0]).then(_.bind(function() {
+                                this.$('.loader').hide();
+                                this.$(this.mapName).show();
+                                this.resetCamera();
+                            },this));
+                        } 
+                        this.$(this.mapName).append(this.currentMap.$el);
+                        this.trigger('render');
+                    }, this)
                 });
-
-                this.currentMap.render();
+            } else {
                 this.current_extents = [];
-
-                for (var c = 0; c < currents.length; c++) {
-                    // currents[c].getGrid(_.bind(this.addCurrentToPanel, this));
-                }
-
-                this.currentMap.map.on('postcompose', _.bind(function() {
-                    if (webgnome.model.get('map')) {
-                        if (webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap') {
-                            var extent = ol.extent.applyTransform(webgnome.model.get('map').getExtent(),
-                                                                  ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-                            this.currentMap.map.getView().fit(extent, this.currentMap.map.getSize());
-                        }
-                        else {
-                            this.currentMap.map.getView().setZoom(3);
-                        }
-                    }
-                }, this));
-            }
-            else {
-                this.current_extents = [];
+                this.$el.removeClass('col-md-6').addClass('col-md-3');
                 this.$('.panel-body').hide();
             }
 
             BasePanel.prototype.render.call(this);
         },
 
-        addCurrentToPanel: function(geojson) {
-            if (geojson) {
-                var gridSource = new ol.source.Vector({
-                    features: (new ol.format.GeoJSON()).readFeatures(geojson,
-                                                                     {featureProjection: 'EPSG:3857'}),
-                });
-                var extentSum = gridSource.getExtent().reduce(function(prev, cur) {return prev + cur;});
-
-                var gridLayer = new ol.layer.Image({
-                    name: 'modelcurrent',
-                    source: new ol.source.ImageVector({
-                        source: gridSource,
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                color: [171, 37, 184, 0.75],
-                                width: 1
-                            })
-                        })
-                    })
-                });
-
-                if (!_.contains(this.current_extents, extentSum)) {
-                    this.current_layers.push(gridLayer);
-                    this.current_extents.push(extentSum);
-                }
+        _loadCurrent: function(current) {
+            var cur_id = current.get('id');
+            if (this.currentPromises[cur_id]) {
+                return this.currentPromises[cur_id];
+            } else {
+                this.currentPromises[cur_id] = current.getGrid().then(_.bind(function(data){
+                    var newPrim = current.processLines(data, false, this.currentMap.viewer.scene.primitives);
+                    newPrim.id = cur_id;
+                    newPrim.show = true;
+                    this.currentPrims[cur_id] = newPrim;
+                    console.log(newPrim.id);
+                }, this));
+                return this.currentPromises[cur_id];
             }
         },
 
@@ -209,6 +249,7 @@ define([
                 showCancelButton: true
             }).then(_.bind(function(isConfirmed) {
                 if (isConfirmed) {
+                    //Model changes
                     var mov = webgnome.model.get('movers').get(id);
                     var envs = webgnome.model.get('environment');
 
@@ -221,12 +262,20 @@ define([
                             }
                         }
                     }
-
                     webgnome.model.get('movers').remove(id);
-
                     webgnome.model.save(null, {
                         validate: false
                     });
+                    //Cleanup map view
+                    if(this.currentPromises[id]) {
+                        delete this.currentPromises[id];
+                    }
+                    if (this.currentPrims[id]) {
+                        this.currentMap.viewer.scene.primitives.remove(this.currentPrims[id]);
+                        delete this.currentPrims[id];
+                    }
+                    this.currentMap = undefined;
+
                 }
             }, this));
         },

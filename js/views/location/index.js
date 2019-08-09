@@ -4,8 +4,8 @@ define([
     'backbone',
     'views/base',
     'module',
-    'ol',
-    'views/default/map',
+    'cesium',
+    'views/default/cesium',
     'model/location',
     'model/gnome',
     'sweetalert',
@@ -14,7 +14,7 @@ define([
     'views/wizard/location',
     'views/default/help',
     'views/modal/help'
-], function($, _, Backbone, BaseView, module, ol, OlMapView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
+], function($, _, Backbone, BaseView, module, Cesium, CesiumView, GnomeLocation, GnomeModel, swal, LocationsTemplate, ListTemplate, LocationWizard, HelpView, HelpModal){
     'use strict';
     var locationsView = BaseView.extend({
         className: 'page locations',
@@ -40,57 +40,27 @@ define([
             } else {
                 this.dom_target = 'body';
             }
-
-            this.mapView = new OlMapView({
-                controls: [],
-                id: 'locations-map',
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            })
-                    })
-                ]
-            });
-            this.render();
-            $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
-                console.log('Error retrieving location files.');
-            });
-        },
-
-        clickPin: function(feature){
-            this.popup.setPosition(feature.getGeometry().getCoordinates());
-            var content = '<button class="btn btn-primary help" data-name="' + feature.get('title') + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.get('slug') + '" data-name="' + feature.get('title') + '">Load Location</button>';
-            this.$('.popup').popover({
-                placement: 'top',
-                html: true,
-                title: feature.get('title'),
-                content: content
-            });
-            this.$('.popup').popover('show');
-
-            this.$('.popup').one('shown.bs.popover', _.bind(function(){
-
-                this.$('.load').on('click', _.bind(function(){
-                    var slug = this.$('.load').data('slug');
-                    var name = this.$('.load').data('name');
-                    webgnome.model.resetLocation(_.bind(function(){
-                        this.load({slug: slug, name: name});
-                        this.$('.popup').popover('destroy');
-                    }, this));
-                }, this));
-
-                this.$('.setup').on('click', _.bind(this.setupLocation, this));
-
-                this.$('.help').on('click', _.bind(this.loadHelp, this));
-            }, this));
-
-            this.$('.popup').one('hide.bs.popover', _.bind(function(){
-                this.$('.load').off('click');
-                this.$('.setup').off('click');
-                this.$('.help').off('click');
-            }, this));
+            if(!webgnome.hasModel()){
+                if(_.has(webgnome, 'cache')){
+                    webgnome.cache.rewind();
+                }
+                webgnome.model = new GnomeModel();
+                $('body').append(this.$el);
+                webgnome.model.save(null, {
+                    validate: false,
+                    success: _.bind(function(){
+                        this.render();
+                        $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                            console.log('Error retrieving location files.');
+                        });
+                    }, this)
+                });
+            } else {
+                this.render();
+                $.ajax(webgnome.config.api + '/location').success(_.bind(this.ajax_render, this)).error(function(){
+                    console.log('Error retrieving location files.');
+                });
+            }
         },
 
         showHelp: function(){
@@ -124,30 +94,6 @@ define([
         doc: function(e){
             e.preventDefault();
             window.open("doc/location_files.html");
-        },
-
-        dblClickPin: function(feature) {
-            var slug = feature.get('slug');
-            var name = feature.get('title');
-
-            this.$('.popup').popover('destroy');
-            this.setupLocation(null, {slug: slug, name: name});
-        },
-
-        hoverTooltip: function(feature) {
-            this.tooltip.setPosition(feature.getGeometry().getCoordinates());
-            var element = this.tooltip.getElement();
-            if (this.$('.tooltip').length !== 0) {
-                this.$('.tooltip-inner').text(feature.get('title'));
-            } else {
-                this.$(element).attr('data-toggle', 'tooltip');
-                this.$(element).attr('data-placement', 'right');
-                this.$(element).attr('title', feature.get('title'));
-                this.$(element).one('hide.bs.tooltip', _.bind(function(){
-                    this.$(element).tooltip('destroy');
-                }, this));
-                this.$(element).tooltip('show');
-            }
         },
 
         setupLocation: function(e, options){
@@ -190,54 +136,35 @@ define([
             });
         },
 
-        wizard: function(options){
-            this.trigger('load');
-            this.wizard_ = new LocationWizard(options);
-        },
-
         render: function(){
-            var compiled = _.template(LocationsTemplate);
-            $(this.dom_target).append(this.$el.html(compiled));
             BaseView.prototype.render.call(this);
-
+            var compiled = _.template(LocationsTemplate);
+            this.$el.html(_.template(LocationsTemplate));
+            this.$el.appendTo(this.dom_target);
+            this.mapView = new CesiumView();
+            this.$('#locations-map').append(this.mapView.$el);
             this.mapView.render();
-            this.popup = new ol.Overlay({
-                position: 'bottom-center',
-                element: this.$('.popup')[0],
-                stopEvent: true,
-                offsetX: -2,
-                offsetY: -22
-            });
-            this.tooltip = new ol.Overlay({
-                position: 'bottom-center',
-                element: this.$('.tooltip-hover')[0],
-                stopEvent: false,
-                offsetX: 0,
-                offsetY: -22
-            });
-            this.mapView.map.addOverlay(this.popup);
-            this.mapView.map.addOverlay(this.tooltip);
-            this.registerMapEvents();
         },
 
         ajax_render: function(geojson){
-             this.layer = new ol.layer.Vector({
-                source: new ol.source.Vector({
-                    features: (new ol.format.GeoJSON()).readFeatures(geojson,  {featureProjection: 'EPSG:3857'}),
-                    wrapX: false
-                }),
-                style: new ol.style.Style({
-                    image: new ol.style.Icon({
-                        anchor: [0.5, 1.0],
-                        src: '/img/map-pin.png',
-                        size: [32, 40]
-                    })
-                })
-            });
-            this.features = this.layer.getSource().getFeatures();
-
-            this.mapView.map.addLayer(this.layer);
-
+            this.locations = [];
+            for (var i = 0; i < geojson.features.length; i++) {
+                var feature = geojson.features[i];
+                var content = '<button class="btn btn-primary help" data-name="' + feature.properties.title + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.properties.slug + '" data-name="' + feature.properties.title + '">Load Location</button>';
+                this.locations.push(this.mapView.viewer.entities.add({
+                    name: feature.properties.title,
+                    id: feature.properties.slug,
+                    description: content,
+                    position: new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]),
+                    billboard: {
+                        image: '/img/spill-pin.png',
+                        verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                        horizontalOrigin: Cesium.HorizontalOrigin.CENTER
+                    },
+                    show: true,
+                    feature: feature,
+                }));
+            }
             var sortedLocations = geojson.features.sort(function(a, b) {
                 var textA = a.properties.title.toUpperCase();
                 var textB = b.properties.title.toUpperCase();
@@ -248,109 +175,124 @@ define([
                 locations: sortedLocations
             });
             this.$('.location-list').append(list);
+            this.addCesiumHandlers();
 
-        },
-
-        registerMapEvents: function(){
-            // change mouse to pointer when hovering over a feature.
-
-            this.mapView.map.on('pointermove', _.bind(function(e){
-                var pointer = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                    return true;
-                });
-                if(pointer){
-                    this.mapView.map.getViewport().style.cursor = 'pointer';
-                } else {
-                    this.mapView.map.getViewport().style.cursor = '';
-                }
-                this.mapHoverEvent(e);
-            }, this));
-
-            // clicking a location creates a popover with it's related information displayed
-            this.mapView.map.on('click', this.mapClickEvent, this);
-            this.mapView.map.on('dblclick', this.mapDblClickEvent, this);
-        },
-
-        findFeature: function(slug) {
-            return _.find(this.features, function(el) { return el.get('slug') === slug; });
         },
 
         highlightLoc: function(e){
             var loc = e.currentTarget;
             var coords = $(loc).data('coords').split(',');
-            coords = ol.proj.transform([parseFloat(coords[0]), parseFloat(coords[1])], 'EPSG:4326', 'EPSG:3857');
-            this.mapView.map.getView().setCenter(coords);
-            this.mapView.map.getView().setZoom(24);
-
-            var slug = $(loc).children().data('slug');
-            var feature = this.findFeature(slug);
-
+            coords = [parseFloat(coords[0]), parseFloat(coords[1])];
+            var slug = $('.btn',e.currentTarget)[0].getAttribute('data-slug');
+            var entity = this.mapView.viewer.entities.getById(slug);
+            this.mapView.viewer.flyTo(entity, {duration: 0.1, offset: new Cesium.HeadingPitchRange(0, 0, 150000)});
             setTimeout(_.bind(function(){
-                e.pixel = this.mapView.map.getPixelFromCoordinate(coords);
-                this.mapClickEvent(e, feature);
+                this.triggerPopover({id: entity});
             }, this), 200);
         },
 
-        mapHoverEvent: function(e) {
-            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                return feature;
-            });
-            if (feature && this.$('.popover').length === 0){
-                if (this.$('.tooltip').length === 0) {
-                    this.hoverTooltip(feature);
-                } else {
-                    this.$('.tooltip-hover').one('hidden.bs.tooltip', _.bind(function(){
-                    setTimeout(_.bind(function(){
-                        this.hoverTooltip(feature);
-                        }, this), 1);
+        triggerPopover: function(pickedObject) {
+            if (pickedObject) {
+                if (!_.isUndefined(pickedObject.id) && pickedObject.id instanceof Cesium.Entity) {
+                    var feature = pickedObject.id.feature;
+                    var coords = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.mapView.viewer.scene, new Cesium.Cartesian3.fromDegrees(feature.geometry.coordinates[0], feature.geometry.coordinates[1]));
+                    this.$('.popup').off('shown.bs.popover');
+                    this.$('.popup').css("top", coords.y + "px");
+                    this.$('.popup').css("left", coords.x + 15 + "px"); //15 to offset the col-md-12 padding
+                    var content = '<button class="btn btn-primary help" data-name="' + feature.properties.title + '">About</button><button class="btn btn-primary setup" data-slug="' + feature.properties.slug + '" data-name="' + feature.properties.title + '">Load Location</button>';
+                    if (this.$('.popover').length > 0) {
+                        this.$('.popup').popover('show'); //relocates the popover, but also resets the content
+                        this.$('.popover-title').html(feature.properties.title); // set new content
+                        this.$('.popover-content').html(content); // set new content
+                    } else {
+                        this.$('.popup').popover({
+                            placement: 'top',
+                            html: true,
+                            title: feature.properties.title,
+                            content: $(content)
+                        });
+                        this.$('.popup').popover('show');
+                    }
+                    this.$('.popup').one('shown.bs.popover', _.bind(function(){
+                        this.$('.load').on('click', _.bind(function(){
+                            var slug = this.$('.load').data('slug');
+                            var name = this.$('.load').data('name');
+                            webgnome.model.resetLocation(_.bind(function(){
+                                this.load({slug: slug, name: name});
+                                this.$('.popup').popover('destroy');
+                            }, this));
+                        }, this));
+
+                        this.$('.setup').on('click', _.bind(this.setupLocation, this));
+
+                        this.$('.help').on('click', _.bind(this.loadHelp, this));
                     }, this));
-                    this.$('.tooltip-hover').tooltip('hide');
                 }
+                this.lockCamera();
             } else {
-                this.$('.tooltip-hover').tooltip('hide');
+                this.$('.popover').hide();
+                this.unlockCamera();
             }
         },
 
-        mapClickEvent: function(e, feature_param){
-            var feature;
-            if (_.isUndefined(feature_param)) {
-                feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                    return feature;
-                });
-            } else {
-                feature = feature_param;
-            }
-
-            if(feature){
-                if(this.$('.popover').length === 0){
-                    this.clickPin(feature);
-                } else {
-                    this.$('.popup').one('hidden.bs.popover', _.bind(function(){
-                        setTimeout(_.bind(function(){
-                            this.clickPin(feature);
-                        }, this), 1);
-                    }, this));
-                    this.$('.popup').popover('destroy');
-                }
-            } else {
-                this.$('.popup').popover('destroy');
-            }
+        unlockCamera: function() {
+            this.mapView.viewer.scene.screenSpaceCameraController.enableRotate = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTranslate = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableZoom = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTilt = true;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableLook = true;
         },
 
-        mapDblClickEvent: function(e) {
-            var feature = this.mapView.map.forEachFeatureAtPixel(e.pixel, function(feature){
-                return feature;
-            });
-
-            if (feature && ($('.loading').length === 0 && $('.modal').length === 0)) {
-                this.dblClickPin(feature);
-            }
+        lockCamera: function() {
+            this.mapView.viewer.scene.screenSpaceCameraController.enableRotate = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTranslate = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableZoom = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableTilt = false;
+            this.mapView.viewer.scene.screenSpaceCameraController.enableLook = false;
         },
 
-        close: function(){
-            this.mapView.close();
-            Backbone.View.prototype.close.call(this);
+        dblClickPin: function(entity) {
+            var slug = entity.id;
+            var name = entity.name;
+            if (this.$('.popover').length > 0) {
+                this.$('.popover').hide();
+                this.unlockCamera();
+            }
+            this.setupLocation(null, {slug: slug, name: name});
+        },
+
+        wizard: function(options){
+            this.trigger('load');
+            this.wizard_ = new LocationWizard(options);
+        },
+
+        addCesiumHandlers: function() {
+
+            //disable default cesium focus-on-doubleclick
+            this.mapView.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+            //single click on pin toggles popover
+            this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.mapView.viewer.scene.canvas);
+            var singleClickHandlerFunction = _.bind(function(movement){
+                var pickedObject = this.mapView.viewer.scene.pick(movement.position);
+                this.triggerPopover(pickedObject);
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.singleClickHandler.setInputAction(singleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+            //double click goes straight to opening the wizard
+            this.doubleClickHandler = new Cesium.ScreenSpaceEventHandler(this.mapView.viewer.scene.canvas);
+            var doubleClickHandlerFunction = _.bind(function(movement){
+                var pickedObject = this.mapView.viewer.scene.pick(movement.position);
+                this.mapView.viewer.flyTo(pickedObject.id, {duration: 0.1, offset: new Cesium.HeadingPitchRange(0, 0, 150000)});
+                this.dblClickPin(pickedObject.id);
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
         }
+
     });
 
     return locationsView;

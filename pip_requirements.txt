@@ -1,0 +1,7 @@
+# requirements that are available via pip, but not conda
+# note are really the requirments of webgnomeAPI, not the client
+
+pyramid_log
+-e git+https://github.com/NOAA-ORR-ERD/gevent-socketio.git#egg=gevent-socketio
+pyramid-redis-sessions
+pygtail

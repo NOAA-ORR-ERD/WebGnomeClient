@@ -7,12 +7,13 @@ define([
     'd3',
     'nucos',
     'model/base',
-    'model/release',
-    'model/element',
+    'model/spill/release',
+    'model/spill/nonweatheringsubstance',
+    'model/spill/gnomeoil',
     'model/visualization/appearance',
     'model/visualization/spill_appearance'
-], function(_, $, Backbone, Cesium, moment, d3, nucos,
-            BaseModel, GnomeRelease, GnomeElement,
+    ], function(_, $, Backbone, Cesium, moment, d3, nucos,
+            BaseModel, GnomeRelease, NonWeatheringSubstance, GnomeOil,
             Appearance, SpillAppearance) {
     'use strict';
     var gnomeSpill = BaseModel.extend({
@@ -23,7 +24,7 @@ define([
                 'on': true,
                 'obj_type': 'gnome.spill.spill.Spill',
                 'release': new GnomeRelease(),
-                'element_type': new GnomeElement(),
+                'substance': new NonWeatheringSubstance(),
                 'name': 'Spill',
                 'amount': 100,
                 'units': 'bbl',
@@ -33,7 +34,7 @@ define([
 
         model: {
             release: GnomeRelease,
-            element_type: GnomeElement
+            substance: NonWeatheringSubstance
         },
 
         initialize: function(options) {
@@ -43,23 +44,24 @@ define([
                 blendOption: Cesium.BlendOption.TRANSLUCENT,
             });
 
-            this._locVis = new Cesium.Entity();
+            this._locVis = new Cesium.EntityCollection();
+
+            this.calculate();
+            this.initializeDataVis();
 
             this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
 
-            if (webgnome.hasModel() && webgnome.model.getElementType()) {
-                this.set('element_type', webgnome.model.getElementType());
+            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
+                this.set('substance', webgnome.model.getSubstance());
             }
 
             this.on('change', this.calculate, this);
-            this.on('change:element_type', this.addListeners, this);
+            this.on('change:substance', this.addListeners, this);
             this.on('change:release', this.addListeners, this);
 
-            this.listenTo(this, 'change', this.initializeDataVis);
+            //this.listenTo(this, 'change', this.initializeDataVis);
 
             this.addListeners();
-
-            this.calculate();
 
             if (!this.isNew()) {
                 if (webgnome.hasModel()) {
@@ -72,16 +74,26 @@ define([
 
             this._certain = [];
             this._uncertain = [];
+            this.get('_appearance').setUnitConversionFunction(undefined, this.get('units'));
+        },
+
+        getBoundingRectangle: function() {
+            var llcorner = this.get('release').get('start_position').map(function(e){return e - 10;});
+            var rucorner = this.get('release').get('start_position').map(function(e){return e + 10;});
+            var spillPinRect = Cesium.Rectangle.fromCartesianArray(Cesium.Cartesian3.fromDegreesArray([llcorner[0], llcorner[1], rucorner[0], rucorner[1]]));
+
+            return new Promise(_.bind(function(resolve, reject) {
+                resolve(spillPinRect);
+            }));
         },
 
         setupVis: function(attrs) {
             this.listenTo(this.get('_appearance'), 'change:data',
                           this.initializeDataVis);
-
-            this.initializeDataVis();
             this.setColorScales();
             this.genLEImages();
-
+            this._locVis = this.get('release')._visObj;
+/*
             this._locVis.merge(new Cesium.Entity({
                 name: this.get('name'),
                 id: this.get('id') + '_loc',
@@ -93,6 +105,7 @@ define([
                 description: '<table class="table"><tbody><tr><td>Amount</td><td>' + this.get('amount') + ' ' + this.get('units') + '</td></tr></tbody></table>',
                 show: this.get('_appearance').get('pin_on'),
             }));
+*/
         },
 
         resetLEs: function() {
@@ -126,7 +139,7 @@ define([
             }
             var max_random_walk = Math.sqrt((6*diff_coef)*time_step);
             var area = Math.PI * max_random_walk * max_random_walk;
-            
+
             var release_duration = this.get('release').getDuration();
             var amt = 0;
             if (release_duration === 0) {
@@ -144,7 +157,7 @@ define([
             var oilConverter = new nucos.OilQuantityConverter();
             this._amount_si = oilConverter.Convert(this.get('amount'),
                                                    this.get('units'),
-                                                   this.get('element_type').get('standard_density'),
+                                                   this.get('substance').get('standard_density'),
                                                    'kg/m^3', 'kg');
         },
 
@@ -191,32 +204,29 @@ define([
         },
 
         addListeners: function() {
-            this.listenTo(this.get('element_type'), 'change', this.elementTypeChange);
+            this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-            this.listenTo(this.get('release'), 'change', _.bind(function() {
-                this._locVis.position = new Cesium.Cartesian3.fromDegrees(this.get('release').get('start_position')[0],
-                                                                          this.get('release').get('start_position')[1]);
-            },this));
-            this.listenTo(this.get('element_type'), 'change', this.initializeDataVis);
+            this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
             this.listenTo(this.get('release'), 'change', this.initializeDataVis);
+            this.listenTo(this, 'change:release', _.bind(function(){ this._locVis = this.get('release')._visObj; }, this));
         },
 
         releaseChange: function(release) {
             this.childChange('release', release);
         },
 
-        elementTypeChange: function(element_type) {
-            this.childChange('element_type', element_type);
+        substanceChange: function(substance) {
+            this.childChange('substance', substance);
         },
 
-        getElementType: function() {
-            if (webgnome.hasModel() && webgnome.model.getElementType()) {
-                return webgnome.model.getElementType();
+        getSubstance: function() {
+            if (webgnome.hasModel() && webgnome.model.getSubstance()) {
+                return webgnome.model.getSubstance();
             }
             else {
-                return new GnomeElement();
+                return new NonWeatheringSubstance();
             }
         },
 
@@ -269,7 +279,7 @@ define([
                 return 'A unit for amount must be selected';
             }
 
-            var substance = attrs.element_type.get('substance');
+            var substance = attrs.substance;
             if (!_.isNull(substance) && attrs.amount > 0) {
                 // if there is a substance and an amount is defined,
                 // it should be greater than 1 bbl
@@ -397,34 +407,36 @@ define([
             // of this spill
             var data = this.get('_appearance').get('data');
             var colormap = this.get('_appearance').get('colormap');
-            var max, min, stops;
+            var max, min, newScaleType;
+            colormap.initScales();
 
             if (data === 'Age') {
                 min = 0;
                 max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                newScaleType = 'linear';
             }
             else if (data === 'Surface Concentration') {
                 min = 0.0001;
                 max = this.estimateMaxConcentration();
-                colormap.set('numberScaleType', 'log');
+                newScaleType = 'log';
             }
             else if (data === 'Viscosity') {
                 min = 0.0000001;
                 max = 250000;
-                colormap.set('numberScaleType', 'log');
+                newScaleType = 'log';
             }
             else if (data === 'Depth') {
                 min = 0;
                 max = 100;
-                colormap.set('numberScaleType', 'linear');
+                newScaleType = 'linear';
             }
             else {
                 min = 0;
                 max = this._per_le_mass;
-                colormap.set('numberScaleType', 'linear');
+                newScaleType = 'linear';
             }
 
-            colormap.setDomain(min, max, colormap.get('numberScaleRange'));
+            colormap.setDomain(min, max, newScaleType);
             this.setColorScales();
         },
 
@@ -480,7 +492,7 @@ define([
 
             for (i = 0; i < this._certain.length; i++) {
                 value = this._certain[i][datatype];
-                color = this._colorScale(this._numScale(value));
+                color = this._colorScale(value);
 
                 if (_.isUndefined(color)) {
                     color = '#FF0000';
@@ -503,8 +515,6 @@ define([
             var le_idx = 0;
             var newLE, additional_data;
 
-            // is it really necessary to use a ternary operator
-            // on such long complex expressions?
             additional_data = this.get('_appearance').get('data') === 'Mass' ? undefined : this.get('_appearance').get('data').toLowerCase().replace(/ /g,'_');
 
             if (uncertain) {
@@ -632,20 +642,23 @@ define([
                 var bbs = this.les._billboards;
                 var newColor, i;
 
-                var changedAttrs = appearance.changedAttributes();
-                if (changedAttrs) {
-                    for (i = 0; i < bbs.length; i++) {
-                        bbs[i].scale = appearance.get('scale');
-                        bbs[i].show = appearance.get('les_on');
-                    }
-
-                    this.setColorScales();
-                    this.colorLEs();
-
-                    if ('pin_on' in changedAttrs) {
-                        this._locVis.show = appearance.get('pin_on');
-                    }
+                //var changedAttrs = appearance.changedAttributes();
+                //if (changedAttrs) {
+                var scale = appearance.get('scale');
+                var show = appearance.get('les_on');
+                for (i = 0; i < bbs.length; i++) {
+                    bbs[i].scale = scale;
+                    bbs[i].show = show;
                 }
+
+                this.setColorScales();
+                this.colorLEs();
+
+                    //if ('pin_on' in changedAttrs) {
+                for (i = 0 ; i < this._locVis.values.length; i++) {
+                    this._locVis.values[i].show = appearance.get('pin_on');
+                }
+                    //}
             }
         },
     });

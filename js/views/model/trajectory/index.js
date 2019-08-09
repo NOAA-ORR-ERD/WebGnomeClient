@@ -7,10 +7,8 @@ define([
     'moment',
     'toastr',
     'text!templates/model/trajectory/controls.html',
-    'views/default/map',
     'cesium',
-    'model/spill',
-    'views/form/spill/continue',
+    'views/default/cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
@@ -19,10 +17,15 @@ define([
     'model/map/graticule',
     'views/model/trajectory/layers',
     'views/model/trajectory/controls',
+    'views/model/trajectory/right_pane',
+    'views/default/legend',
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module, moment, toastr, ControlsTemplate, OlMapView, Cesium, GnomeSpill, SpillForm, NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView, ControlsView){    'use strict';
+], function($, _, Backbone, BaseView, module,moment, toastr, ControlsTemplate, Cesium, CesiumView,
+            NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
+            ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
+    'use strict';
     var trajectoryView = BaseView.extend({
         className: function() {
             var str;
@@ -88,15 +91,16 @@ define([
 
             this.overlay.append(this.controls.$el);
             this.$el.append(this.overlay);
-            // add a 250ms timeout to the map render to give js time to add the compiled
-            // to the dom before trying to draw the map.
-            setTimeout(_.bind(function() {
+            // equivalent to $( document ).ready(func(){})
+            $(_.bind(function() {
                 this.renderCesiumMap();
                 this.layersPanel = new LayersView();
                 this.layersListeners();
                 this.layersPanel.render();
-                this.layersPanel.$el.appendTo(this.$el);
-            }, this), 250);
+                this.legend = new LegendView();
+                this.rightPane = new RightPaneView([this.legend, this.layersPanel, ]);
+                this.rightPane.$el.appendTo(this.$el);
+            }, this));
         },
 
         layersListeners: function(){
@@ -155,6 +159,9 @@ define([
                     this.layers[lay.id] = this.viewer.scene.primitives.add(lay.visObj);
                 } else if (lay.parentEl === 'entity') {
                     this.layers[lay.id] = this.viewer.entities.add(lay.visObj);
+                } else if (lay.parentEl === 'entityCollection') {
+                    this.layers[lay.id] = lay.visObj;
+                    _.each(lay.visObj, _.bind(this.viewer.entities.add, this.viewer.entities));
                 } else if (lay.parentEl === 'imageryLayer') {
                     this.layers[lay.id] = this.viewer.imageryLayers.addImageryProvider(lay.visObj);
                 } else if (lay.parentEl === 'dataSource') {
@@ -170,10 +177,31 @@ define([
             if (lay.id === webgnome.model.get('map').get('id')) {
                 this._flyTo = true;
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._focusOnMap();
                 this._flyTo = false;
             }
             this.trigger('requestRender');
+        },
+
+        _focusOnMap: function() {
+            if (_.isUndefined(this.viewer) | webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
+                if (webgnome.model.get('spills').length > 0) {
+                    webgnome.model.get('spills').at(0).getBoundingRectangle().then(_.bind(function(rect) {
+                        this.viewer.scene.camera.flyTo({
+                            destination: rect,
+                            duration: 0.25
+                        });
+                    }, this));
+                }
+                return;
+            } else {
+                webgnome.model.get('map').getBoundingRectangle().then(_.bind(function(rect) {
+                    this.viewer.scene.camera.flyTo({
+                        destination: rect,
+                        duration: 0.25
+                    });
+                }, this));
+            }
         },
 
         removeLayer: function(lay) {
@@ -189,6 +217,12 @@ define([
                     }
                 } else if (lay.parentEl === 'entity') {
                     if(this.viewer.entities.remove(this.layers[lay.id])) {
+                        this.layers[lay.id] = undefined;
+                    } else {
+                        console.warn('Failed to remove entity layer id: ', lay.id);
+                    }
+                } else if (lay.parentEl === 'entityCollection') {
+                    if(_.all(_.each(this.layers[lay.id], _.bind(this.viewer.entities.remove, this.viewer.entities)))) {
                         this.layers[lay.id] = undefined;
                     } else {
                         console.warn('Failed to remove entity layer id: ', lay.id);
@@ -219,7 +253,7 @@ define([
             this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
-                this.viewer.flyTo(this.layers[map_id], {duration: 0.25});
+                this._focusOnMap();
                 this._flyTo = false;
             }
         },
@@ -242,10 +276,19 @@ define([
                 // },
             // });
             // image_providers.unshift(default_image);
-
+            var west = -130.0;
+            var south = 20.0;
+            var east = -60.0;
+            var north = 60.0;
+            
+            var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
+            
+            Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+            Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
             this.viewer = new Cesium.Viewer('map', {
                 animation: false,
-                selectionIndicator: false,
+                selectionIndicator : false,
+                infoBox : false,
                 baseLayerPicker: false,
                 vrButton: false,
                 geocoder: false,
@@ -276,6 +319,10 @@ define([
                     },
                 },
             });
+            this.viewer.resolutionScale = window.devicePixelRatio;
+            this.viewer.scene.postProcessStages.fxaa.enabled = false;
+            this.viewer.scene.highDynamicRange = false;
+            this.viewer.scene.globe.enableLighting = false;
             this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();
@@ -283,7 +330,6 @@ define([
             this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
-            this.viewer.scene.fxaa = false;
             this.viewer.scene.pickTranslucentDepth = true;
             this.load();
 /*
@@ -330,6 +376,7 @@ define([
         },
 
         addCesiumHandlers: function() {
+
             this._openCesiumObjectTooltips = {};
             var addNewCesiumObjectTooltip = _.bind(function(pickedObject, horizOffset, vertOffset) {
                 var newEntity = this.viewer.entities.add({
@@ -349,6 +396,7 @@ define([
                 return newEntity;
             }, this);
 
+            //Clears open tooltips
             this.doubleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var doubleClickHandlerFunction = _.bind(function(movement) {
                 var tts = _.values(this._openCesiumObjectTooltips);
@@ -358,6 +406,27 @@ define([
                 this._openCesiumObjectTooltips = {};
             }, this);
             this.doubleClickHandler.setInputAction(doubleClickHandlerFunction, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+            this.middleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+            var middleClickHandlerFunction = _.bind(function(click) {
+                var pickedPoint = this.viewer.scene.camera.pickEllipsoid(click.position, this.viewer.scene.globe.ellipsoid);
+                if (pickedPoint) {
+                    var entity;
+                    var cartographic = Cesium.Cartographic.fromCartesian(pickedPoint);
+                    var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
+                    var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
+                    entity = addNewCesiumObjectTooltip({id:cartographic.toString()}, 15, 0);
+                    entity.position = pickedPoint;
+
+                    entity.label.show = true;
+                    entity.label.text =
+                        'Lon: ' + ('   ' + longitudeString).slice(-7) + '\u00B0' +
+                        '\nLat: ' + ('   ' + latitudeString).slice(-7) + '\u00B0';
+                }
+                this.trigger('requestRender');
+                setTimeout(_.bind(this.trigger, this), 50, 'requestRender');
+            }, this);
+            this.middleClickHandler.setInputAction(middleClickHandlerFunction, Cesium.ScreenSpaceEventType.MIDDLE_CLICK);
 
             this.singleClickHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             var singleClickHandlerFunction = _.bind(function(movement) {
@@ -601,6 +670,8 @@ define([
                 this.stop();
             }
             this.frame = 0;
+            var time = moment(webgnome.model.get('start_time').replace('T', ' ')).format('MM/DD/YYYY HH:mm');
+            this.$('.tooltip-inner').text(time);
             if (this.layersPanel) {
                 this.layersPanel.resetSpills();
             }
@@ -834,7 +905,7 @@ define([
                 }
             } else if(id !== 'none-grid'){
                 var current = webgnome.model.get('movers').findWhere({id: id});
-                current.getGrid(_.bind(function(data){
+                current.getGrid().then(_.bind(function(data){
                     var color = Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.PINK.withAlpha(0.3));
                     this.grids[current.get('id')]  = [];
                     var batch = 3000;
@@ -1079,6 +1150,5 @@ define([
             // this.remove();
         }
     });
-
     return trajectoryView;
 });

@@ -16,6 +16,18 @@ define([
 
             env.set('extrapolation_is_allowed', trueFalse);
             env.save();
+        },
+
+        getBoundingRectangle: function() {
+            return this.get('wind').get('grid').getBoundingRectangle();
+        },
+        
+        getGrid: function() {
+            return this.get('wind').get('grid').getLines();
+        },
+
+        processLines: function(data, rebuild, primitiveContainer) {
+            return this.get('wind').get('grid').processLines(data, rebuild, primitiveContainer);
         }
     });
 

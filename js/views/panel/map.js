@@ -2,21 +2,27 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'ol',
+    'cesium',
     'views/panel/base',
-    'views/default/map',
+    'views/default/cesium',
     'model/map/map',
     'views/form/map/type',
     'views/form/map/param',
+    'views/form/map/map',
     'text!templates/panel/map.html',
     'views/modal/form'
-], function($, _, Backbone, ol, BasePanel, OlMapView, MapModel, MapTypeForm, ParamMapForm, MapPanelTemplate, FormModal){
+], function($, _, Backbone, Cesium, BasePanel, CesiumView, MapModel, MapTypeForm, ParamMapForm, MapForm, MapPanelTemplate, FormModal){
     var mapPanel = BasePanel.extend({
         className: 'col-md-3 map object panel-view',
 
         events:{
             'click .perm-add': 'new',
             'click .add': 'load',
+            'click #mini-locmap': 'openMapModal',
+            'webkitfullscreenchange #mini-locmap': 'resetCamera',
+            'mozfullscreenchange #mini-locmap' : 'resetCamera',
+            'msfullscreenchange #mini-locmap' : 'resetCamera',
+            'fullscreenchange #mini-locmap' : 'resetCamera'
         },
 
         models: [
@@ -28,9 +34,15 @@ define([
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
+            _.extend({}, BasePanel.prototype.events, this.events);
             this.listenTo(webgnome.model, 'change:map', this.rerender);
             this.listenTo(webgnome.model, 'change:map', this.setupMapListener);
+            //document.addEventListener("mozfullscreenchange", _.bind(this.resetCamera, this));
             this.setupMapListener();
+            this.mozResetCamera = _.bind(function(e){
+                this.resetCamera(e);
+                document.removeEventListener("mozfullscreenchange", this.mozResetCamera);
+            }, this);
         },
 
         setupMapListener: function(){
@@ -41,65 +53,66 @@ define([
             this.render();
         },
 
+        openMapModal: function(e) {
+            if(!_.isUndefined(this.minimap)){
+                var element = this.minimap.el;
+                if(element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if(element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if(element.webkitRequestFullscreen) {
+                    element.webkitRequestFullscreen();
+                } else if(element.msRequestFullscreen) {
+                    element.msRequestFullscreen();
+                }
+                document.addEventListener("mozfullscreenchange", this.mozResetCamera);
+            }
+        },
+
+        resetCamera: function(e) {
+            this.minimap.resetCamera(webgnome.model.get('map'));
+        },
+
         render: function(){
             var map = webgnome.model.get('map');
 
             if(map && map.get('obj_type') !== 'gnome.map.GnomeMap'){
-                map.getGeoJSON(_.bind(function(geojson){
-                    this.$el.html(_.template(MapPanelTemplate, {
-                        map: true
-                    }));
+                this.$el.html(_.template(MapPanelTemplate, {
+                    map: true
+                }));
 
-                    this.$('.panel').addClass('complete');
-                    this.$('.panel-body').removeClass('text');
-                    this.$('.panel-body').addClass('map').show();
-
-                    var shorelineSource = new ol.source.Vector({
-                        features: (new ol.format.GeoJSON()).readFeatures(geojson, {featureProjection: 'EPSG:3857'}),
-                    });
-
-                    var shorelineLayer = new ol.layer.Image({
-                        name: 'modelmap',
-                        source: new ol.source.ImageVector({
-                            source: shorelineSource,
-                            style: new ol.style.Style({
-                                fill: new ol.style.Fill({
-                                    color: [228, 195, 140, 0.6]
-                                }),
-                                stroke: new ol.style.Stroke({
-                                    color: [228, 195, 140, 0.75],
-                                    width: 1
-                                })
-                            })
-                        }),
-                    });
-                    this.locationMap = new OlMapView({
-                        el: this.$('#mini-locmap'),
-                        controls: [],
-                        layers: [
-                            new ol.layer.Tile({
-                                source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            }),
-                                visible: webgnome.model.get('map').geographical
-                            }),
-                            shorelineLayer
-                        ],
-                        interactions: ol.interaction.defaults({
-                            mouseWheelZoom: false,
-                            dragPan: false,
-                            doubleClickZoom: false
-                        }),
-                    });
-                    
-                    this.locationMap.render();
-                    this.locationMap.map.on('postcompose', _.bind(function(){
-                        var extent = shorelineSource.getExtent();
-                        this.locationMap.map.getView().fit(extent, this.locationMap.map.getSize());
-                    }, this));
-                    this.trigger('render');
-                }, this));
+                this.$('.panel').addClass('complete');
+                this.$('.panel-body').removeClass('text');
+                this.$('.panel-body').addClass('map').show({
+                    duration: 10,
+                    done: _.bind(function(){
+                        if (!this.minimap){
+                            var new_view = true;
+                            if (CesiumView.viewCache[map.get('id')]) {
+                                new_view = false;
+                            }
+                            this.minimap = CesiumView.getView(map.get('id'));
+                            this.minimap.render();
+                            if (new_view) {
+                                map.getGeoJSON().then(_.bind(function(data){
+                                    map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                                }, this));
+                            } else {
+                                for (var i = 0; i < this.minimap.viewer.scene.primitives.length; i++) {
+                                    this.minimap.viewer.scene.primitives._primitives[i].show = true;
+                                }
+                            }
+                        } else {
+                            this.minimap.viewer.scene.primitives.removeAll();
+                            map.getGeoJSON().then(_.bind(function(data){
+                                map.processMap(data, null, this.minimap.viewer.scene.primitives);
+                            }, this));
+                        }
+                        this.$('#mini-locmap').append(this.minimap.$el);
+                        this.minimap.resetCamera(map);
+                        this.trigger('render');
+                    }, this)
+                });
             } else {
                 this.$el.html(_.template(MapPanelTemplate, {
                     map: false
@@ -121,10 +134,6 @@ define([
             mapForm.on('select', _.bind(function(form){
                 mapForm.on('hidden', _.bind(function(){
                     form.on('hidden', form.close);
-                    form.on('save', _.bind(function(map){
-                        webgnome.model.set('map', map);
-                        webgnome.model.save(null, {validate: false});
-                    }, this));
                     form.render();
                 }, this));
             }, this));
@@ -137,7 +146,7 @@ define([
             if(map.get('obj_type') === 'gnome.map.ParamMap'){
                 form = new ParamMapForm({map: map});
             } else {
-                form = new FormModal({title: 'Edit Map', model: map});
+                form = new MapForm({map: map});
             }
 
             form.render();
@@ -146,8 +155,8 @@ define([
         },
 
         close: function(){
-            if (this.locationMap) {
-                this.locationMap.close();
+            if (this.minimap) {
+                this.minimap.close();
             }
             BasePanel.prototype.close.call(this);
         }

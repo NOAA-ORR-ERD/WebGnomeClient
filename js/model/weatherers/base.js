@@ -31,18 +31,20 @@ define([
                     start_time = moment();
                 }
             }
+
             BaseModel.prototype.initialize.call(this);
+
             if (!_.isUndefined(webgnome.model)) {
                 this.addListeners(webgnome.model);
             }
         },
 
         addListeners: function(model) {
-            if (this.get('id')){
+            if (this.get('id')) {
                 this.listenTo(
                     // model should be the webgnome.model
                     model.default_env_refs, 'change',
-                    _.bind(function(w){
+                    _.bind(function(w) {
                         var keys = _.keys(w.changed);
                         for (var i = 0; i < keys.length; i++) {
                             if (!_.isUndefined(this.get(keys[i]))) {
@@ -55,12 +57,14 @@ define([
                         }
                     }, this)
                 );
-                this.listenTo(model.default_env_refs, 'weatheringOff', _.bind(function(){
+
+                this.listenTo(model.default_env_refs, 'weatheringOff', _.bind(function() {
                     if (this.get('on')) {
                         this.save({'on': false});
                     }
                 }, this));
-                this.listenTo(model.default_env_refs, 'weatheringOn', _.bind(function(){
+
+                this.listenTo(model.default_env_refs, 'weatheringOn', _.bind(function() {
                     if (!this.get('on')) {
                         this.save({'on': true});
                     }
@@ -93,8 +97,9 @@ define([
         },
 
         activeTimeRange: function() {
-            return [webgnome.timeStringToSeconds(this.get('active_start')),
-                    webgnome.timeStringToSeconds(this.get('active_stop'))];
+            return this.get('active_range').map(function(time) {
+                return webgnome.timeStringToSeconds(time);
+            });
         },
 
         dataActiveTimeRange: function() {

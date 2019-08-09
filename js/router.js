@@ -45,129 +45,154 @@ define([
             '*actions': 'notfound'
         },
 
-        execute: function(callback, args){
-            for(var view in this.views){
+        execute: function(callback, args) {
+            for (var view in this.views) {
                 $('.tooltip').not('.slider-tip').remove();
                 this.views[view].close();
             }
+
             this.views = [];
-            if(callback){ callback.apply(this, args); }
-            if((window.location.href.indexOf('trajectory') === -1 &&
-                window.location.href.indexOf('model') === -1)){
+
+            if (callback) { callback.apply(this, args); }
+
+            if (window.location.href.indexOf('trajectory') === -1 &&
+                    window.location.href.indexOf('model') === -1) {
                 this.views.push(new FooterView());
             }
-            if(_.isUndefined(this.logger) && window.location.hash !== ''){
+
+            if (_.isUndefined(this.logger) && window.location.hash !== '') {
                 this.logger = new LoggerView();
-            } else if(this.logger && window.location.hash === ''){
+            }
+            else if (this.logger && window.location.hash === '') {
                 this.logger.close();
                 this.logger = undefined;
             }
+
             ga('send', 'pageview', location.hash);
         },
 
-        index: function(){
+        index: function() {
             this.menu('remove');
             this.views.push(new IndexView());
+            webgnome.resetSessionTimer();
         },
 
-        config: function(){
+        config: function() {
             this.menu('add');
             this.views.push(new SetupView());
+            webgnome.initSessionTimer(webgnome.continueSession);
         },
 
-        locations: function(){
+        locations: function() {
             this.menu('add');
             this.views.push(new LocationsView());
         },
 
-        adios: function(){
-            if(webgnome.hasModel()){
+        adios: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
                 this.views.push(new AdiosView());
-            } else {
+            }
+            else {
                 this.navigate('', true);
             }
         },
         
-        roc: function(){
-            if(webgnome.hasModel()){
+        roc: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
                 this.views.push(new RocView());
-            } else {
+            }
+            else {
                 this.navigate('', true);
             }
+
+            webgnome.initSessionTimer(webgnome.continueSession);
         },
 
-        model: function(){
-            if(webgnome.hasModel()){
+        model: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
                 this.views.push(new ModelView());
-            } else {
+            }
+            else {
                 this.navigate('', true);
             }
         },
 
-        response: function(){
-            if(webgnome.hasModel()){
+        response: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
                 this.views.push(new ResponseView());
-                localStorage.setItem('view', 'response');
-            } else {
+                //localStorage.setItem('view', 'response');
+            }
+            else {
                 this.navigate('', true);
             }
         },
 
-        trajectory: function(){
-            if(webgnome.hasModel()){
+        trajectory: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
-                if(_.isUndefined(this.trajView)){
+
+                if (_.isUndefined(this.trajView)) {
                     this.trajView = new TrajectoryView();
-                } else {
+                }
+                else {
                     this.trajView.show();
                 }
+
                 this.views.push(this.trajView);
-                localStorage.setItem('view', 'trajectory');
-            } else {
+                //localStorage.setItem('view', 'trajectory'); WHY??
+            }
+            else {
                 this.navigate('', true);
             }
+
+            webgnome.initSessionTimer(webgnome.continueSession);
         },
 
-        fate: function(){
-            if(webgnome.hasModel()){
+        fate: function() {
+            if (webgnome.hasModel()) {
                 this.menu('add');
                 this.views.push(new FateView());
-                localStorage.setItem('view', 'fate');
-            } else {
+                //localStorage.setItem('view', 'fate');
+            }
+            else {
                 this.navigate('', true);
             }
+
+            webgnome.initSessionTimer(webgnome.continueSession);
         },
 
-        overview: function(){
+        overview: function() {
             this.menu('add');
             this.views.push(new OverviewView());
         },
 
-        faq: function(title){
+        faq: function(title) {
             this.menu('remove');
-            if (!_.isUndefined(title)){
+
+            if (!_.isUndefined(title)) {
                 this.views.push(new FAQView({topic: title}));
-            } else {
+            }
+            else {
                 this.views.push(new FAQView());
             }
         },
 
-        load: function(){
+        load: function() {
             this.menu('add');
             this.views.push(new LoadView());
         },
 
-        notfound: function(actions){
+        notfound: function(actions) {
             this.menu('add');
             this.views.push(new NotFoundView());
             console.log('Not found:', actions);
         },
 
-        menu: function(action){
+        menu: function(action) {
             switch (action){
                 case 'add':
                     if (!this.menuView) {
@@ -186,13 +211,19 @@ define([
         _cleanup: function() {
             // Cleans up parts of the website (such as trajectory view) when necessary
             if (!_.isUndefined(webgnome.router.trajView)) {
-                this.trajView.viewer.destroy();
+                if (this.trajView.viewer) {
+                    this.trajView.viewer.destroy();
+                }
                 this.trajView.stopListening();
-                this.trajView.controls.stopListening();
-                this.trajView.layersPanel.stopListening();
+                if (this.trajView.controls) {
+                    this.trajView.controls.stopListening();
+                }
+                if (this.trajView.layersPanel){
+                    this.trajView.layersPanel.stopListening();
+                }
                 this.trajView.remove();
-                this.trajView = undefined;
             }
+            this.trajView = undefined;
         }
 
     });
