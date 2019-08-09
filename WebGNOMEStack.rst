@@ -5,7 +5,7 @@ The WebGNOME Stack
 
 The WebGNOME stack is a complete system for running a Web-based client-server oil spill fate and transport model. It consists of a number of components that all work together, and they all need to be installed and configured properly in order to work together. All the server-side components are written in Python, and the client is written in Javascript
 
-All componments are available on the NOAA-ORR-ERD organiztion on gitHub:
+All components are available on the NOAA-ORR-ERD organization on gitHub:
 
 https://github.com/NOAA-ORR-ERD
 
@@ -13,7 +13,7 @@ Or perhaps you are working with the source from elsewhere )(like inside NOAA). I
 
 You will need to download the source (or clone the repo) for all components to the machine you want to run it on.
 
-The entire stack is developed, tested, and should run on Windows, OS-X and linux Systems.
+The entire stack is developed, tested, and should run on Windows, OS-X and Linux Systems.
 
 
 Server Side
@@ -64,7 +64,7 @@ https://github.com/NOAA-ORR-ERD/WebGnomeClient
 redis
 -----
 
-Redis is an open source (BSD licensed), in-memory data structure store, used as a data store for session data by the WebGNOMEAPI And OilLibraryAPI. It is not maintined or distributed by NOAA, but you must have a Redis server running in order run the WebGNOME stack:
+Redis is an open source (BSD licensed), in-memory data structure store, used as a data store for session data by the WebGNOMEAPI And OilLibraryAPI. It is not maintained or distributed by NOAA, but you must have a Redis server running in order run the WebGNOME stack:
 
 https://redis.io/
 
@@ -72,27 +72,27 @@ https://redis.io/
 Installation / Deployment
 =========================
 
-You have a number of options to deploy the system. All five components need to be installed and run, but you can run the WebGNOME API, OilLibraryAPI, and WebGNOME Client all on one machine, or on separate machines (or multiple instance in a cloud service).
+You have a number of options to deploy the system. All five components need to be installed and run, but you can run the WebGNOME API, OilLibraryAPI, and WebGNOME Client all on one machine, or on separate machines, or separate Docker images (or multiple instance in a cloud service).
 
 Local System
-============
+------------
 
 Running it all on one machine for local access (your own laptop for instance).
 
 
 Dependencies
-------------
+............
 
 PyGNOME, in particular, is a complex system with many dependencies on various scientific packages. AMy of the dependencies are available through the pip package manager, but some need to be complied for your system. You are free to satisfy the dependencies in whatever way works for you, but we use conda to manage it in our development and deployment work, and that is the best supported option.
 
 Dependencies with conda
-------------------------
+.......................
 
 We recommend that you use the `conda <https://conda.io/docs/>`_ package management system to satisfy the dependencies. You probably want to set up a conda environment in which to run the system.
 
-Each component has a conda_requirements file that specifies the packages needed for that component. In addition, the webgnomeclient source code (probably where you are reading this) has requirements files for the entire stack. Setting up an environment for the entire stack:
+Each component has a conda_requirements file that specifies the packages needed for that component.
 
-1) Install `miniconda <https://conda.io/miniconda.html>`_ or the `Anaconda <https://www.anaconda.com/distribution/>`_ distribution. Any 64 bit version will do, but WebGNOME is built with Python 2.7, so if you dont need Python 3 for other projects, it's a bit easier to use the Py2.7 conda. (Note, you can install an environment with any supported version of python with any miniconda version)
+1) Install `miniconda <https://conda.io/miniconda.html>`_ or the `Anaconda <https://www.anaconda.com/distribution/>`_ distribution. Any 64 bit version will do, but WebGNOME is built with Python 2.7, so if you don't need Python 3 for other projects, it's a bit easier to use the Py2.7 conda. (Note, you can install an environment with any supported version of python with any miniconda version)
 
 The rest of these steps assume a version of conda is installed, and you have access to a command line. The steps should be the same on all platforms except where noted.
 
@@ -140,7 +140,18 @@ In that order -- the order is important
 
 4) Create an environment for webGNOME::
 
-    conda create -n webgnome --file webgnome_requirements.txt
+It is most stable to install all the requirements for all the components at once. If you have the repositories for all the components "next to each other" you should be able to do this::
+
+    conda install --yes \
+      --file OilLibrary/conda_requirements.txt \
+      --file oillibraryapi/conda_requirements.txt \
+      --file webgnomeapi/conda_requirements.txt \
+      --file pygnome/conda_requirements.txt \
+      --file webgnomeclient/conda_requirements.txt
+
+or all on one line::
+
+    conda install --yes --file OilLibrary/conda_requirements.txt --file oillibraryapi/conda_requirements.txt --file webgnomeapi/conda_requirements.txt --file pygnome/conda_requirements.txt --file webgnomeclient/conda_requirements.txt
 
 5) Activate that environment::
 
@@ -148,10 +159,11 @@ In that order -- the order is important
 
 6) Install the pip requirements: Some of WebGNOME's requirements are not (yet) available as conda packages. You can use pip to install these::
 
+
+    cd  webgnomeapi
     pip install -r pip_requirements.txt
 
-(make sure that you are in the activated environment before you do that)
-
+(make sure that you are in the activated environment before you do any of that)
 
 This should have set up a complete conda environment that can run all the pieces of the WebGNOME Stack. Do make sure that you have activated the environment before running any of the components.
 
@@ -165,9 +177,26 @@ PyGNOME
 WebGNOME API
 Oil Library API
 
-Once you have the two APIs running, you need the client:
+Here are the commands::
 
-The client is a Javascript app, deployed via node.js. It can be installed according to the directions in its README.
+cd OilLibrary
+python setup.py cleanall
+python setup.py develop
+
+cd pygnome/py_gnome
+
+# for the mac: ./build_anaconda.sh cleanall
+# for the mac: ./build_anaconda.sh develop
+python setup.py cleanall
+python setup.py develop
+
+cd webgnomeapi
+python setup.py develop
+
+
+cd oillibraryapi/
+python setup.py develop
+
 
 **NOTE:** if you are going to doing development on any of the components, or updating to newer code via git, then you should install in "develop" mode::
 
@@ -178,6 +207,10 @@ rather than::
     python setup.py install
 
 "develop" puts a link into python pointing back the source of the package -- so as you change it, it "takes" right away. "install" copies everything into the Python system, so you need to re-install if anything changes.
+
+Once you have the two APIs running, you need the client:
+
+The client is a Javascript app, deployed via node.js. It can be installed according to the directions in its README.
 
 OilLibrary
 ----------
@@ -275,7 +308,7 @@ The client is getting to new ground -- it is a javascript app, deployed with the
 
 To install and "build" the requirements and code:
 
-TODO!!
+
 
 
 

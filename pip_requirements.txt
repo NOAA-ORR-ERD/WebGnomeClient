@@ -1,6 +1,0 @@
-# requirements that are available via pip, but not conda
-
-pyramid_log
--e git+https://github.com/NOAA-ORR-ERD/gevent-socketio.git#egg=gevent-socketio
-pyramid-redis-sessions
-pygtail
