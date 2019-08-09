@@ -46,18 +46,6 @@ define([
         className: 'fate-view',
         frame: 0,
         rendered: false,
-        colors: [
-            'rgb(203,75,75)',
-            'rgb(237,194,64)',
-            'rgb(75, 135, 181)',
-            'rgb(77,167,77)',
-            'rgb(148,64,237)',
-            'rgb(189,155,51)',
-            'rgb(140,172,198)',
-            'rgb(207,124,30)',
-            'rgb(119,169,252)',
-            'rgb(63,40,87)'
-        ],
 
         events: {
             'shown.bs.tab': 'renderGraphs',
@@ -190,7 +178,7 @@ define([
                     colors.push(color);
                 }
                 else {
-                    colors.push(this.colors[1]);
+                    colors.push('rgb(0,0,0)');
                 }
             }, this));
 
@@ -1139,7 +1127,7 @@ define([
                     var options = $.extend(true, {}, this.defaultChartOptions);
                     options.yaxis.ticks = 4;
                     options.yaxis.tickDecimals = 2;
-
+                    options.colors = ["rgb(0,0,0)", "rgb(78,121,167)", "rgb(0,0,0)"];
                     this.graphDensity = $.plot('#density .timeline .chart .canvas', dataset, options);
                 }
                 else {
@@ -1217,7 +1205,7 @@ define([
                     if (_.isUndefined(this.graphEmulsification)) {
                         delete options.yaxis;
                         options.yaxes = [{}, { position: 'right'}];
-
+                        options.colors = ["rgb(0,0,0)", "rgb(78,121,167)", "rgb(0,0,0)"];
                         this.graphEmulsification = $.plot('#emulsification .timeline .chart .canvas', dataset, options);
                     }
                     else {
@@ -1256,7 +1244,7 @@ define([
                         },
                         tickDecimals: 0
                     };
-
+                    options.colors = ["rgb(0,0,0)", "rgb(78,121,167)", "rgb(242,142,43)", "rgb(225,87,89)", "rgb(0,0,0)"];
                     this.graphViscosity = $.plot('#viscosity .timeline .chart .canvas', dataset, options);
                 }
                 else {
