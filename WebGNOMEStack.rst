@@ -68,6 +68,8 @@ Redis is an open source (BSD licensed), in-memory data structure store, used as 
 
 https://redis.io/
 
+(it can be optionally installed with conda, too -- see below)
+
 
 Installation / Deployment
 =========================
@@ -152,6 +154,11 @@ It is most stable to install all the requirements for all the components at once
 or all on one line::
 
     conda install --yes --file OilLibrary/conda_requirements.txt --file oillibraryapi/conda_requirements.txt --file webgnomeapi/conda_requirements.txt --file pygnome/conda_requirements.txt --file webgnomeclient/conda_requirements.txt
+
+If you don't have a redis server installed on your system another way, you can use conda for that as well::
+
+    conda install redis
+
 
 5) Activate that environment::
 
