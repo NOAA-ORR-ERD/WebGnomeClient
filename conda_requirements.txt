@@ -1,0 +1,7 @@
+# conda requirements for WebGNOME client
+#
+# Note: webgnome client is a JS system, deployed by
+#       node.js
+#       So this is a way to use conda to install node.
+
+nodejs
