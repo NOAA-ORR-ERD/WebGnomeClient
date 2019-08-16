@@ -172,34 +172,32 @@
             <div class="col-sm-3 col-sm-offset-1 slider-label"><sup>Uncertain</sup></div>
         </div>
     </div>
+    
     <div class="tab-pane" id="nws">
         <p>Retrieve forecasted wind data from the National Weather Service (NWS). Select an area of ocean between any U.S. coastline and approximately 40-60 nm out to sea.</p>
         <div id="wind-form-map" class="map"></div>
-        <div class="form-horizontal">
+
+        <form class="form-vertical">
+        
             <div class="form-group">
-                <div class="col-sm-2">
-                    <label for="lon" class="control-label">Longitude:</label>                    
-                </div>
+                <label for="lon" class="col-sm-2 control-label">Longitude:</label>                  
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="lon" id="lon" title="165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)"/>  
-                </div>
-                <div class="col-sm-2">
-                    <sup class="lon-parse"> </sup>
+                    <input type="text" class="form-control lat_lon" name="lon" id="lon" title="165.4064W<br/>(decimal degrees)<br/>165 24.384W<br/>(degrees decimal minutes)<br/>165 24 23.04W<br/>(degrees minutes seconds)"/> 
+                    <sup class="lon-parse"> </sup>                    
                 </div>
             </div>
+            
             <div class="form-group">
-                <div class="col-sm-2">
-                    <label for="lat" class="control-label">Latitude:</label>
-                </div>
+                <label for="lat" class="col-sm-2 control-label">Latitude:</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="lat" id="lat" title="64.5011N<br/>(decimal degrees)<br/>64 30.066N<br/>(degrees decimal minutes) <br/>64 30 3.96N<br/>(degrees minutes seconds)"/>                  
+                    <input type="text" class="form-control lat_lon" name="lat" id="lat" title="64.5011N<br/>(decimal degrees)<br/>64 30.066N<br/>(degrees decimal minutes) <br/>64 30 3.96N<br/>(degrees minutes seconds)"/>
+                    <sup class="lat-parse"> </sup>                    
                 </div>
-                <div class="col-sm-2">
-                    <sup class="lat-parse"> </sup>
-                </div>
-            </div>
-        </div>
+            </div>           
+        </form>
+        <div>&nbsp;</div>
     </div>
+    
     <div class="tab-pane" id="upload_form">
         <div class="dropzone"></div>
         <div>
