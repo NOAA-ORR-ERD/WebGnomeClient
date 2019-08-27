@@ -300,7 +300,7 @@ define([
                 navigationInstructionsInitiallyVisible: false,
                 skyAtmosphere: false,
                 sceneMode: Cesium.SceneMode.SCENE2D,
-                mapProjection: new Cesium.WebMercatorProjection(),
+                mapProjection: new Cesium.GeographicProjection(),
                 //selectedImageryProviderViewModel: default_image,
                 //imageryProviderViewModels: image_providers,
                 imageryProvider : new Cesium.SingleTileImageryProvider({
