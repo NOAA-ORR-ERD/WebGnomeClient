@@ -5,7 +5,7 @@
 
 .. _ropme_sea_area_tech:
 
-About the Regional Organization for the Protection of the Marine Environment (ROPME) sea area
+About the Regional Organization for the Protection of the Marine Environment (ROPME) Sea Area
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The Regional Organization for the Protection of the Marine Environment (ROPME) Sea Area is located in the northwest corner of the Indian Ocean and is known for its oil production. Bahrain, Iran, Iraq, Kuwait, Qatar, Saudi Arabia, and the United Arab Emirates (UAE) produced 27% of the world's oil in 1998. The area also holds 64% of the world's oil reserves. The Strait of Hormuz transports 15.4 million barrels of oil per day (1998 estimate) and is the world's most important "chokepoint" for oil transportation (U.S. Energy Information Administration 1999).
@@ -58,15 +58,22 @@ Please contact any of the following for wind forecasts and historical data:
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
 
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
 
 **General Information**
 
 
-.. _Marine Emergency Mutual Aid Centre (MEMAC): http://www.memac-rsa.org/
+|memac_link|
 
-`Marine Emergency Mutual Aid Centre (MEMAC)`_
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+
+.. |memac_link| raw:: html
+
+   <a href="http://www.memac-rsa.org" target="_blank">Marine Emergency Mutual Aid Centre (MEMAC)</a>
+
+

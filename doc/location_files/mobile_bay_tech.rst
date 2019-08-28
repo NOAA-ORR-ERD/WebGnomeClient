@@ -87,31 +87,38 @@ Wiseman, W. J. Jr., W. W. Schroeder, and S. P. Dinnel (1988). Shelf-Estuarine Wa
 
 **Weather and On-Line Information**
 
-.. _U.S. Geological Survey (USGS) Alabama Current Streamflow Conditions: http://waterdata.usgs.gov/al/nwis/rt
-
-`U.S. Geological Survey (USGS) Alabama Current Streamflow Conditions`_
+|usgs_link|
 
 Streamflow conditions for the major river systems in Alabama, including the Lower Alabama, Mobile, and Tombigbee Rivers.
 
-
-.. _National Data Buoy Center Station Information, NWS Forecast: http://www.ndbc.noaa.gov/data/Forecasts/FZUS54.KLIX.html
-
-`National Data Buoy Center Station Information, NWS Forecast`_
+|ndbc_link|
 
 Marine weather forecast for the Pascagoula to Atchafalaya River region (out 60 nm).
 
-
-.. _Mobile, Alabama: http://www.wunderground.com/US/AL/Mobile.html
-
-The Weather Underground, Inc.: `Mobile, Alabama`_
+The Weather Underground, Inc.: |weather_underground_link|
 
 Weather forecast for Mobile, AL.
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |usgs_link| raw:: html
+
+   <a href="http://waterdata.usgs.gov/al/nwis/rt" target="_blank">U.S. Geological Survey (USGS) Alabama Current Streamflow Conditions</a>
+
+.. |ndbc_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/data/Forecasts/FZUS54.KLIX.html" target="_blank">National Data Buoy Center Station Information, NWS Forecast</a>
+
+.. |weather_underground_link| raw:: html
+
+   <a href="http://www.wunderground.com/US/AL/Mobile.html" target="_blank">Mobile, Alabama</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

@@ -124,43 +124,55 @@ Holbrook, J. R., R. D. Muench, D. G. Kachel, and C. Wright, 1980b. Circulation i
 
 Masson, D. and P. F. Cummins, 1999. Numerical Simulations of a Buoyancy- Driven Coastal Countercurrent off Vancouver Island, *Journal of Physical Oceanography*, **29**, pp. 418-435.
 
-U. S. Coast Guard Marine Safety Office Puget Sound On-Scene Coordinator's Report, Major Oil Spill Clean Up, T/V Arco Anchorage at Port Angeles, Washington, 21 December 1985 - 28 April 1986.
+U.S. Coast Guard Marine Safety Office Puget Sound On-Scene Coordinator's Report, Major Oil Spill Clean Up, T/V Arco Anchorage at Port Angeles, Washington, 21 December 1985 - 28 April 1986.
+
 
 **Weather and Online Information**
 
 
-.. _Western Washington: http://www.ndbc.noaa.gov/data/Forecasts/FZUS56.KSEW.html
-
-National Data Buoy Center Station Information: `Western Washington`_
+National Data Buoy Center Station Information: |ndbc_forecast_link|
 
 The latest National Weather Service marine forecast for coastal and inland waters of western Washington.
 
 
-.. _National Data Buoy Center U. S. Northwest Regional Map: http://www.ndbc.noaa.gov/maps/Northwest.shtml
-
-`National Data Buoy Center U. S. Northwest Regional Map`_
+|ndbc_link|
 
 Map of moored buoy and C-MAN stations in the U.S. Northwest. Click a station on the map (TTIW1, for example, at Tatoosh Island, WA) to view current conditions at that station.
 
 
-.. _The Weather Underground, Inc. weather page: http://www.wunderground.com/US/WA/
-
-`The Weather Underground, Inc. weather page`_
+|weather_underground_link|
 
 Weather conditions for cities in Washington State
 
 
-.. _University of Washington Land-Margin Ecosystem Research Project (LMER): http://depts.washington.edu/cretmweb/frasflow.html
-
-`University of Washington Land-Margin Ecosystem Research Project (LMER)`_
+|uw_ecosystem_project_link|
 
 Ten-year flow rates for the Fraser River at Hope, B.C.
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |ndbc_forecast_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/data/Forecasts/FZUS56.KSEW.html" target="_blank">Western Washington</a>
+
+.. |ndbc_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/maps/Northwest.shtml" target="_blank">National Data Buoy Center U. S. Northwest Regional Map</a>
+
+.. |weather_underground_link| raw:: html
+
+   <a href="http://www.wunderground.com/US/WA" target="_blank">The Weather Underground, Inc. weather page</a>
+
+.. |uw_ecosystem_project_link| raw:: html
+
+   <a href="http://depts.washington.edu/cretmweb/frasflow.html" target="_blank">University of Washington Land-Margin Ecosystem Research Project (LMER)</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Script to copy the rst friles from for the location tech docs from the webapi repo
+Script to copy the rst files for the location tech docs from the webapi repo
 
 This duplicates the files, but we can maintain them in one place.
 
@@ -16,7 +16,7 @@ right at the top of this script
 import os
 
 # hard-coded to be relative to here
-WEBGNOMEAPI_REPO = "../../../webgnomeapi"
+WEBGNOMEAPI_REPO = "../../../gnome2_api"
 
 tech_files_location = os.path.join(WEBGNOMEAPI_REPO, "help/views/model/locations/")
 
