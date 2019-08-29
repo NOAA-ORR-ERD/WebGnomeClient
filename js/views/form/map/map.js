@@ -34,12 +34,12 @@ define([
         update: function() {
             var name = this.$('#name').val();
             var refloat = this.$('#refloat_halflife').val();
-            var raster_size = this.$('#raster_size').val() * 1024 * 1024
+            var raster_size = this.$('#raster_size').val() * 1024 * 1024;
             //var map_bounds = this.$('#map_bounds').val();
             
             this.model.set('name', name);
             this.model.set('refloat_halflife', refloat);
-            this.model.set('raster_size', raster_size)
+            this.model.set('raster_size', raster_size);
             //this.model.set('map_bounds', map_bounds);
         }
 	});
