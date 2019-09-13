@@ -4,7 +4,7 @@ define([
     'backbone',
     'module',
     'views/modal/form',
-    'text!templates/form/map.html'
+    'text!templates/form/map/map.html'
 ], function(_, $, Backbone, module, FormModal, MapTemplate){
     'use strict';
     var mapForm = FormModal.extend({
