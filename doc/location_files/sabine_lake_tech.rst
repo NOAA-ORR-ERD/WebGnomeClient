@@ -58,31 +58,43 @@ Wyman, B.C. 1989. A Risk Model For Hazardous Material Transportation Spills in C
 **Wind and Weather**
 
 
-.. _Texas State Information: http://www.nws.noaa.gov/view/states.php?state=tx&map=on
-
-Interactive Weather Information Network (IWIN): `Texas State Information`_
+Interactive Weather Information Network (IWIN): |iwin_link|
 
 Click "KBPT" in the southeast section of the map to view current weather conditions at Beaumont/Port Arthur, Southeast Texas Regional Airport. Click "KRPE" to view current conditions at Sabine Pass, Texas.
 
 
 .. _Louisiana Weather: http://weather.noaa.gov/weather/LA_cc_us.html
 
-National Weather Service, Internet Weather Source (IWS): `Louisiana Weather`_
+National Weather Service, Internet Weather Source (IWS): |iws_link|
 
 Select a location from the appropriate menu for current weather conditions or forecasts for locations throughout Louisiana.
 
 
-.. _National Weather Service Forecast Office, Lake Charles, LA: http://www.srh.noaa.gov/lch/
-
-`National Weather Service Forecast Office, Lake Charles, LA`_
+|nws_lch_link|
 
 Forecasts, warnings, and observations for Lake Charles area locations. Click a location on the interactive map to obtain a forecast.
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |iwin_link| raw:: html
+
+   <a href="http://www.nws.noaa.gov/view/states.php?state=tx&map=on" target="_blank">Texas State Information</a>
+
+.. |iws_link| raw:: html
+
+   <a href="http://weather.noaa.gov/weather/LA_cc_us.html" target="_blank">Louisiana Weather</a>
+
+.. |nws_lch_link| raw:: html
+
+   <a href="http://www.srh.noaa.gov/lch" target="_blank">National Weather Service Forecast Office, Lake Charles, LA</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+
+

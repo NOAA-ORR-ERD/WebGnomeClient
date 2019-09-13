@@ -100,6 +100,7 @@ define([
             this._map_layer = this.layers.findWhere({id: map.id});
             this._sa_layer = this.layers.findWhere({id: map.id + '_sa'});
             this._bounds_layer = this.layers.findWhere({id: map.id + '_bounds'});
+            this._raster_layer = this.layers.findWhere({id: map.id + '_raster'});
             if(webgnome.router.trajView) {
                 webgnome.router.trajView._flyTo = true;
             }
@@ -453,6 +454,30 @@ define([
                     webgnome.router.trajView.graticule.activate();
                 } else {
                     webgnome.router.trajView.graticule.deactivate();
+                }
+            } else if (name === 'raster_on'){
+                layer = this.layers.findWhere({id: mapid + '_raster'});
+                if (e.target.checked && _.isUndefined(layer)) {
+                    var map = webgnome.model.get('map');
+                    map.getRaster().then(_.bind( function(raster) {
+                        layer = 
+                        {
+                            type: 'cesium',
+                            parentEl: 'entity',
+                            model: map,
+                            id: map.id + '_raster',
+                            visObj: map.processRaster(raster),
+                            appearance: map.get('_appearance')
+                        };
+                        layer.appearance.set(name, e.currentTarget.checked);
+                        layer.visObj.show = e.currentTarget.checked;
+                        this.layers.add(layer);
+                        this._raster_layer = layer;
+                        this.trigger('requestRender');
+                    }, this));
+                } else {
+                    layer.appearance.set(name, e.currentTarget.checked);
+                    layer.visObj.show = e.currentTarget.checked;
                 }
             } else {
                 layer.appearance.set(name, e.currentTarget.checked);

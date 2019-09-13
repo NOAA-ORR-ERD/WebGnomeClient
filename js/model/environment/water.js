@@ -73,8 +73,11 @@ define([
 
         getDensity: function(){
             var temp = this.get('temperature');
+            var units = this.get('units').temperature;
             var salinity = this.get('salinity');
-
+            if (units === 'F') {
+                temp = nucos.convert('temperature','F','C',temp);
+            }
             return nucos.waterDensity().calcDensity(temp, salinity);
         }
 

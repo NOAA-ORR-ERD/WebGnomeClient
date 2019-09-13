@@ -46,43 +46,56 @@ Eldredge, L.G. 1983. Summary of Environmental and Fishing Information on Guam an
 
 **Wind and Weather**
 
-.. _National Weather Service (NWS) Telecommunications Center: http://w1.weather.gov/obhistory/PGUM.html
-
-`National Weather Service (NWS) Telecommunications Center`_
+|nws_telecommunications_link|
 
 Current weather conditions at Guam International Airport.
 
-.. _National Weather Service (NWS) Forecast Office - Tiyan, Guam: http://www.prh.noaa.gov/guam/
-
-`National Weather Service (NWS) Forecast Office - Tiyan, Guam`_
+|nws_tiyan_link|
 
 Forecasts and current conditions for Guam and the Northern Marianas Islands.
 
 
-.. _National Data Buoy Center - Station 52009: http://www.ndbc.noaa.gov/station_page.php?station=52009
-
-`National Data Buoy Center - Station 52009`_
+|ndbc_link|
 
 Historical data for a disestablished buoy near Guam can be viewed by year, searched by threshold conditions, or viewed as a climatic summary table (e.g., wind speed, wind gust, etc.)
 
 
-.. _The Weather Underground, Inc.: http://www.wunderground.com/MAR/PM/151.html
-
-`The Weather Underground, Inc.`_
+|weather_underground_link|
 
 Marine Weather for PM 151
 
 
-.. _University of Guam Marine Laboratory: http://guammarinelab.org/
-
-`University of Guam Marine Laboratory`_
+|guam_marine_lab_link|
 
 Offers monthly tide predictions and lunar data for Guam.
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |nws_telecommunications_link| raw:: html
+
+   <a href="http://w1.weather.gov/obhistory/PGUM.html" target="_blank">National Weather Service (NWS) Telecommunications Center</a>
+
+.. |nws_tiyan_link| raw:: html
+
+   <a href="https://www.weather.gov/gum" target="_blank">National Weather Service (NWS) Forecast Office - Tiyan, Guam</a>
+
+.. |ndbc_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/station_page.php?station=52009" target="_blank">National Data Buoy Center - Station 52009</a>
+
+.. |weather_underground_link| raw:: html
+
+   <a href="http://www.wunderground.com/MAR/PM/151.html" target="_blank">The Weather Underground, Inc.</a>
+
+.. |guam_marine_lab_link| raw:: html
+
+   <a href="https://www.uog.edu/ml" target="_blank">University of Guam Marine Laboratory</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

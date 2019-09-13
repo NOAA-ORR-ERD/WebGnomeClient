@@ -101,9 +101,6 @@ define([
                 this.beached.$el
             );
 
-/*             if (webgnome.model.get('map').get('obj_type') === 'gnome.map.GnomeMap') {
-                this.$('.response-objects').append(this.beached.$el);
-            } */
 
             this.initMason();
 

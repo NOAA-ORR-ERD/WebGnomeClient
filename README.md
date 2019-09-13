@@ -44,3 +44,25 @@ Javascript client that uses the WebGnomeAPI to create and run py_gnome models. I
 
 `grunt test:demos`
 > Similar to `grunt test` but only runs use case specific demo tests.
+
+## Running the Client
+
+This set of commands will set up and run teh whole thing (from the CI configuration)
+
+
+`RUN cd /webgnomeclient && npm install && npm install -g grunt`
+
+Installs the needed npm packages listed in package.json and installs the grunt package globally so that it can be used as a command (something that can't be done with the local dependency list in package.json)
+
+`RUN cd /webgnomeclient && grunt install`
+
+Runs the grunt install command that's configured in gruntfile.js
+
+`RUN cp /webgnomeclient/config-example.json /config/config.json`
+
+Copies the example config file to the config directory and renames it. /config is noted as a docker volume so that when running the container you can provide your own config instead if the default isn't what you want.
+
+`RUN ln -s /config/config.json /webgnomeclient/config.json`
+
+This symlink is so that the replaceable (through a docker volume) config file can be used by the application.
+

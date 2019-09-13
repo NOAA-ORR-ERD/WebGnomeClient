@@ -9,12 +9,10 @@ define([
             on: false,
             color: '#9370DB', //MEDIUMPURPLE,
             alpha: 0.7,
-            scale: 1,
             ctrl_names: {title: 'Vector Appearance',
                          on: 'Show',
                          color: 'Arrow Color',
-                         alpha: 'Alpha',
-                         scale: 'Scale'
+                         alpha: 'Alpha'
                         },
         },
     });

@@ -449,10 +449,15 @@ define([
                 }
                 this.oilLibraryView = new OilLibraryView({}, subs);
                 this.oilLibraryView.render();
-                this.oilLibraryView.on('hidden', _.bind(function(){this.model.set('substance', subs); webgnome.model.setGlobalSubstance(subs);}, this));
-                this.oilLibraryView.on('hidden', _.bind(this.show , this));
-                this.oilLibraryView.on('hidden', this.reloadOil, this);
-                this.oilLibraryView.on('hidden', this.tabStatusSetter, this);
+                this.oilLibraryView.on('hidden', _.bind(function(){
+                    if (!_.isUndefined(subs.get('name'))){
+                        this.model.set('substance', subs);
+                        webgnome.model.setGlobalSubstance(subs);
+                    }
+                    this.show();
+                    this.reloadOil();
+                    this.tabStatusSetter();
+                }, this));
             }
             else {
                 this.once('hidden',

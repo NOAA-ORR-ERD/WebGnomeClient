@@ -45,46 +45,59 @@ U.S. Department of Commerce, National Oceanic and Atmospheric Administration (NO
 
 **Wind and Weather**
 
-.. _Fort Lauderdale, FL: http://forecast.weather.gov/MapClick.php?lat=44.90618742200047&lon=-66.98997651399964
-
-National Weather Service (NWS) – `Fort Lauderdale, FL`_
+National Weather Service (NWS) – |nws_ft_lauderdale_link|
 
 Current conditions and forecast for Fort Lauderdale, Florida.
 
 
-.. _Miami-South Florida: http://www.srh.noaa.gov/mfl/
-
-National Weather Service Forecast Office – `Miami-South Florida`_
+National Weather Service Forecast Office – |nws_miami_link|
 
 Weather forecasts, observations, and warnings for the Miami/South Florida area.
 
 
-.. _Current Conditions, Forecasts, Watches and Warnings for Broward Metropolitan, FL: http://weather.noaa.gov/cgi-bin/iwszone?Sites=:flz072#t0?Sites=:flz072
+.. National Weather Service - |nws_broward_link|
 
-National Weather Service - Telecommunication Operations Center
+.. Current Conditions, Forecasts, Watches and Warnings for Broward Metropolitan, FL
 
-`Current Conditions, Forecasts, Watches and Warnings for Broward Metropolitan, FL`_
-
-Zone forecasts for South Florida.
+.. Zone forecasts for South Florida.
 
 
-.. _Station Information for Station LKWF1: http://www.ndbc.noaa.gov/station_page.php?station=lkwf1
-
-National Data Buoy Center - `Station Information for Station LKWF1`_
+National Data Buoy Center - |ndbc_link|
 
 Observations and marine forecast for Station LKWF1, Lake Worth, Florida.
 
-.. _Interactive Weather Information Network (IWIN): http://iwin.nws.noaa.gov/iwin/fl/zone.html
-
-`Interactive Weather Information Network (IWIN)`_
+|iwin_link|
 
 Text only version of zone forecast for Florida.
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |nws_ft_lauderdale_link| raw:: html
+
+   <a href="http://forecast.weather.gov/MapClick.php?lat=26.1425&lon=-80.1395" target="_blank">Fort Lauderdale, FL</a>
+
+.. |nws_miami_link| raw:: html
+
+   <a href="https://www.weather.gov/mfl" target="_blank">Miami-South Florida</a>
+
+.. .. |nws_broward_link| raw:: html
+
+..   <a href="http://weather.noaa.gov/cgi-bin/iwszone?Sites=:flz072#t0?Sites=:flz072" target="_blank">Telecommunication Operations Center</a>
+
+.. |ndbc_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/station_page.php?station=lkwf1" target="_blank">Station Information for Station LKWF1</a>
+
+.. |iwin_link| raw:: html
+
+   <a href="http://iwin.nws.noaa.gov/iwin/fl/zone.html" target="_blank">Interactive Weather Information Network (IWIN)</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+
