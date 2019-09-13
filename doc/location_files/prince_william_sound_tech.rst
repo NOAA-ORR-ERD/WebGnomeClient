@@ -53,9 +53,7 @@ Royer, T.C. (1982). Coastal fresh water discharge in the northeast Pacific. Jour
 **Wind and Weather**
 
 
-.. _NOAA National Weather Service (NWS): http://www.weather.gov/
-
-`NOAA National Weather Service (NWS)`_
+|nws_link|
 
 Current weather observations, forecasts, and warnings for the entire U.S.
 
@@ -63,8 +61,15 @@ Current weather observations, forecasts, and warnings for the entire U.S.
 **Oil Spill Response**
 
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |nws_link| raw:: html
+
+   <a href="http://www.weather.gov" target="_blank">NOAA National Weather Service (NWS)</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

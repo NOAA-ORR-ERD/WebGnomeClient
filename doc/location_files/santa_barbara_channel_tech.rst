@@ -147,31 +147,38 @@ Lynn, R. J. and J. J. Simpson (1987). The California Current System: The seasona
 **Wind and Weather**
 
 
-.. _Scripps Institution of Oceanography (SIO): http://meteora.ucsd.edu/weather.html
-
-`Scripps Institution of Oceanography (SIO)`_
+|scripps_link|
 
 An informative weather-related web site. Offers local and regional weather reports, forecasts, and related links.
 
-
-.. _Center for Coastal Studies: http://coastalstudies.org/
-
-`Center for Coastal Studies`_
+|coastal_studies_link|
 
 Provides recent and archived wind and current data for the California Bight, including Santa Barbara Channel.
 
-
-.. _NOAA National Weather Service (NWS): http://www.weather.gov/
-
-`NOAA National Weather Service (NWS)`_
+|nws_link|
 
 Current weather observations, forecasts, and warnings for the entire U.S.
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |scripps_link| raw:: html
+
+   <a href="http://meteora.ucsd.edu/weather.html" target="_blank">Scripps Institution of Oceanography (SIO)</a>
+
+.. |coastal_studies_link| raw:: html
+
+   <a href="http://coastalstudies.org" target="_blank">Center for Coastal Studies</a>
+
+.. |nws_link| raw:: html
+
+   <a href="http://www.weather.gov" target="_blank">NOAA National Weather Service (NWS)</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

@@ -44,9 +44,7 @@ Gordon, R. B., and M. L. Spaulding, 1987: Numerical simulations of the tidal- an
 Hicks, S.D., 1959: The physical oceanography of Narragansett Bay. Limnol. Oceanogr., **11**, 316-327.
 
 
-.. _NOAA National Weather Service (NWS) Rhode Island tides: http://www.tidesandcurrents.noaa.gov/tide_predictions.html?gid=1411#listing
-
-`NOAA National Weather Service (NWS) Rhode Island tides`_
+|tides_currents_link|
 
 Tide data for Rhode Island.
 
@@ -59,16 +57,12 @@ Weisberg, R. H., and W. Sturges, 1976: Velocity observations in the West Passage
 **Weather and Online Information**
 
 
-.. _NOAA National Weather Service (NWS): http://www.weather.gov
-
-`NOAA National Weather Service (NWS)`_
+|nws_link|
 
 Current weather observations, forecasts, and warnings for the entire U.S.
 
 
-.. _Interactive Weather Information Network--National Weather Service (NWS): http://iwin.nws.noaa.gov/iwin/iwdspg1.html
-
-`Interactive Weather Information Network--National Weather Service (NWS)`_
+|iwin_link|
 
 Click RI on the map for Rhode Island weather reports and forecasts.
 
@@ -76,17 +70,32 @@ Click RI on the map for Rhode Island weather reports and forecasts.
 **General Information**
 
 
-.. _U.S. Environmental Protection Agency (EPA) Watershed Profile - Narragansett Bay: http://www.epa.gov/surf3/hucs/01090004/
-
-`U.S. Environmental Protection Agency (EPA) Watershed Profile - Narragansett Bay`_
+|epa_link|
 
 Environmental profile and watershed information focused on rivers, streams, lakes, and land characteristics.
 
 
-**Oil Spill Response**
-
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |tides_currents_link| raw:: html
+
+   <a href="http://www.tidesandcurrents.noaa.gov/tide_predictions.html?gid=1411#listing" target="_blank">NOAA National Weather Service (NWS) Rhode Island tides</a>
+
+.. |iwin_link| raw:: html
+
+   <a href="http://iwin.nws.noaa.gov/iwin/iwdspg1.html" target="_blank">Interactive Weather Information Network--National Weather Service (NWS)</a>
+
+.. |nws_link| raw:: html
+
+   <a href="http://www.weather.gov" target="_blank">NOAA National Weather Service (NWS)</a>
+
+.. |epa_link| raw:: html
+
+   <a href="http://www.epa.gov/surf3/hucs/01090004" target="_blank">U.S. Environmental Protection Agency (EPA) Watershed Profile - Narragansett Bay</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

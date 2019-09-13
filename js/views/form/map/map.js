@@ -4,7 +4,7 @@ define([
     'backbone',
     'module',
     'views/modal/form',
-    'text!templates/form/map.html'
+    'text!templates/form/map/map.html'
 ], function(_, $, Backbone, module, FormModal, MapTemplate){
     'use strict';
     var mapForm = FormModal.extend({
@@ -24,8 +24,7 @@ define([
         
         render: function(options) {
             this.body = _.template(MapTemplate, {
-                name: this.model.get('name'),
-                refloat: this.model.get('refloat_halflife'),
+                model: this.model
                 //map_bounds: this.model.get('map_bounds'),
 
             });
@@ -34,11 +33,13 @@ define([
 
         update: function() {
             var name = this.$('#name').val();
-            var refloat = this.$('#refloat').val();
+            var refloat = this.$('#refloat_halflife').val();
+            var raster_size = this.$('#raster_size').val() * 1024 * 1024;
             //var map_bounds = this.$('#map_bounds').val();
             
             this.model.set('name', name);
             this.model.set('refloat_halflife', refloat);
+            this.model.set('raster_size', raster_size);
             //this.model.set('map_bounds', map_bounds);
         }
 	});

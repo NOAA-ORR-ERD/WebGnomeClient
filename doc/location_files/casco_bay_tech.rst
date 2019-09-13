@@ -8,9 +8,7 @@
 About Casco Bay
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. _The Port of Portland, Maine: http://www.portofportlandmaine.org
-
-Casco Bay is a popular tourist and recreation area. It is also home port to more than 150 fishing vessels and is New England's third largest fishing port in terms of dollar value. Portland Harbor, in the western section of Casco Bay, is the most important port on the coast of Maine and is a popular cruise ship port of call. This ice-free harbor offers safe anchorage for vessel traffic carrying petroleum, electronics, paper products, and other goods, and is the Atlantic terminus for petroleum product pipeline shipments to Canada (`The Port of Portland, Maine`_, http://www.portofportlandmaine.org).
+Casco Bay is a popular tourist and recreation area. It is also home port to more than 150 fishing vessels and is New England's third largest fishing port in terms of dollar value. Portland Harbor, in the western section of Casco Bay, is the most important port on the coast of Maine and is a popular cruise ship port of call. This ice-free harbor offers safe anchorage for vessel traffic carrying petroleum, electronics, paper products, and other goods, and is the Atlantic terminus for petroleum product pipeline shipments to Canada (The Port of Portland, Maine : |portland_link|).
 
 
 Background
@@ -23,6 +21,11 @@ The main channel entrance to Portland Harbor lies between Cushing Island and the
 The Casco Bay region has extensive mudflats, particularly in the areas of the Fore River, the Presumpscot River, Back Cove, Mackworth Island, Little and Great Diamond Islands, Little and Great Chebeague Islands, Cousins and Littlejohn Islands, and Mussel Cove. Mudflats are typically exposed at low tide and submerged at high tide. GNOME does not model currents in these regions; only diffusion and wind move oil across mudflats to shoreline.
 
 The Bath Iron Works (BIW) Dry-Dock is in northeast Portland Harbor and is indicated as a rectangular island on the Location File map. This dry-dock--9 barges lashed together--is due to be removed in 2001. It will be replaced by a cruise ship terminal at a later date. The Casco Bay Location File models currents going around the dry-dock.
+
+.. |portland_link| raw:: html
+
+   <a href="http://www.portofportlandmaine.org" target="_blank">http://www.portofportlandmaine.org</a>
+
 
 
 Current Patterns
@@ -50,28 +53,37 @@ Xue, H., F. Chai, and N. R. Pettigrew, 2000. A Model Study of the Seasonal Circu
 **Wind and Weather Information**
 
 
-.. _National Data Buoy Center, Portland Buoy: http://www.ndbc.noaa.gov/station_page.php?station=44007
-
-`National Data Buoy Center, Portland Buoy`_
+|ndbc_link|
 
 Current offshore meteorological conditions at a buoy 12 nautical miles southeast of Portland, ME.
 
 
-.. _Current and forecast weather for Portland, Maine: http://www.wunderground.com/US/ME/Portland.html
-
-The Weather Underground, Inc. - `Current and forecast weather for Portland, Maine`_
+The Weather Underground, Inc. - |wu_portland_link|
 
 Current and forecast weather for Portland, Maine
 
-.. _Marine forecast for Eastport, ME to Stonington, ME: http://www.wunderground.com/MAR/AN/150.html
-
-The Weather Underground, Inc. - `Marine forecast for Eastport, ME to Stonington, ME`_
+The Weather Underground, Inc. - |wu_stonington_link|
 
 
 **Oil Spill Response**
 
-.. _NOAA's Emergency Response Division (ERD): http://response.restoration.noaa.gov
-
-`NOAA's Emergency Response Division (ERD)`_
+|erd_link|
 
 Tools and information for emergency responders and planners, and others concerned about the effects of oil and hazardous chemicals in our waters and along our coasts.
+
+.. |ndbc_link| raw:: html
+
+   <a href="http://www.ndbc.noaa.gov/station_page.php?station=44007" target="_blank">National Data Buoy Center, Portland Buoy</a>
+
+.. |wu_portland_link| raw:: html
+
+   <a href="http://www.wunderground.com/US/ME/Portland.html" target="_blank">Current and forecast weather for Portland, Maine</a>
+
+.. |wu_stonington_link| raw:: html
+
+   <a href="http://www.wunderground.com/MAR/AN/150.html" target="_blank">Marine forecast for Eastport, ME to Stonington, ME</a>
+
+.. |erd_link| raw:: html
+
+   <a href="http://response.restoration.noaa.gov" target="_blank">NOAA's Emergency Response Division (ERD)</a>
+

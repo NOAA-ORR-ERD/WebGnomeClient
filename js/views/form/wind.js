@@ -57,8 +57,7 @@ define([
                 'click #extrapolation-allowed': 'setExtrapolation',
                 'ready': 'rendered',
                 'click .clear-winds': 'clearTimeseries',
-                'keyup #nws #lat': 'moveNWSPin',
-                'keyup #nws #lon': 'moveNWSPin',
+                'keyup .lat_lon': 'moveNWSPin',
             }, formModalHash);
         },
 
@@ -85,35 +84,7 @@ define([
                 this.superModel.set('name', 'Wind #' + count);
                 this.model.set('name', 'Wind #' + count);
             }
-/*
-            this.ol = new OlMapView({
-                id: 'wind-form-map',
-                zoom: 7,
-                center: ol.proj.transform([-137.49, 47.97], 'EPSG:4326', 'EPSG:3857'),
-                layers: [
-                    new ol.layer.Tile({
-                        source: new ol.source.TileWMS({
-                                url: 'http://basemap.nationalmap.gov/arcgis/services/USGSTopo/MapServer/WMSServer',
-                                params: {'LAYERS': '0', 'TILED': true}
-                            })
-                    }),
-                    new ol.layer.Vector({
-                        source: new ol.source.Vector({
-                            format: new ol.format.GeoJSON(),
-                            url: '/resource/nws_coast.json',
-                        }),
-                        style: new ol.style.Style({
-                            stroke: new ol.style.Stroke({
-                                width: 2,
-                                color: '#428bca'
-                            })
-                        })
-                    }),
-                    this.windLayer,
-                    this.spillLayer
-                ]
-            });
-*/
+
             this.nwsMap = new CesiumView();
 
             this.$el.on('click', _.bind(function(e) {
@@ -392,12 +363,14 @@ define([
             view.nwsFetch(coords);
             view.trigger('newNWS', this, coords);
             view.nwsMap.viewer.scene.requestRender();
+            view.hideParsedCoords();
         },
 
         moveNWSPin: function(e) {
             var coords = [this.$('#nws #lon').val(),this.$('#nws #lat').val()];
             coords = this.coordsParse(_.clone(coords));
-
+            this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
+            this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
             if (_.isNaN(coords[0])) {
                 coords[0] = 0;
             }
@@ -406,16 +379,16 @@ define([
                 coords[1] = 0;
             }
             coords = {lon: coords[0], lat: coords[1]};
-
             this.nwsPin.position = Cesium.Cartesian3.fromDegrees(coords.lon, coords.lat);
             this.nwsPin.show = true;
             this.nwsMap.viewer.scene.requestRender();
             this.nwsFetch(coords);
         },
 
-        showParsedCoords: function(coords) {
-            this.$('.lat-parse').text('(' + coords[1].toFixed(4) + ')');
-            this.$('.lon-parse').text('(' + coords[0].toFixed(4) + ')');
+       
+        hideParsedCoords: function(e) {
+            this.$('.lat-parse').text('');
+            this.$('.lon-parse').text('');
         },
 
         coordsParse: function(coordsArray) {
