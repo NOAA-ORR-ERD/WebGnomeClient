@@ -2,24 +2,33 @@ define([
     'backbone',
     'jquery',
     'underscore',
+    'module',
     'dropzone',
     'text!templates/default/dropzone.html',
     'text!templates/form/mover/cats.html',
-    'views/form/mover/base',
     'views/modal/form',
     'model/environment/tide'
-], function(Backbone, $, _, Dropzone,
-            DropzoneTemplate, FormTemplate,
-            BaseMoverForm, FormModal, TideModel) {
-    var catsForm = BaseMoverForm.extend({
-        title: 'Edit CATS Mover',
+], function(Backbone, $, _, module, Dropzone, DropzoneTemplate, FormTemplate, FormModal, TideModel) {
+    'use strict';                
+    var catsForm = FormModal.extend({
+            
+        className: 'modal form-modal model-form',
+        title: 'CATS Mover',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        
+        initialize: function(options, model){
+            this.module = module;
+            FormModal.prototype.initialize.call(this, options);
+            this.model = model;
+        },
+
 
         events: function() {
             return _.defaults({
                 'click .new-tide': 'newTide',
                 'change #scale': 'scaleHandler',
                 'change #tide': 'tideHandler'
-            }, BaseMoverForm.prototype.events);
+            }, FormModal.prototype.events);
         },
 
         render: function(options) {
