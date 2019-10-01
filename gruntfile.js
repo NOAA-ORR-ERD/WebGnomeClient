@@ -69,7 +69,8 @@ module.exports = function(grunt){
                     'img/*',
                     'css/images/*',
                     'resource/*',
-                    'js/lib/federated-analytics/federated-analytics.js'
+                    'js/lib/federated-analytics/federated-analytics.js',
+                    'js/session_timer.js'
                 ],
                 dest: 'dist/build/'
             },
