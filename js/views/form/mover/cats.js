@@ -146,6 +146,17 @@ define([
             });
         },
 
+        save: function() {
+            if (this.model.get('scale'))
+            var srf = this.$('#scale_refpoint');
+            if (srf[0].value == '') {
+                this.error('Error! Need to set a scale reference point');
+            }
+            else {
+                FormModal.prototype.save.call(this);
+            }
+        },
+
         close: function() {
             if (this.dropzone) {
                 this.dropzone.disable();

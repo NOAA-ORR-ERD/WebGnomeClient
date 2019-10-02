@@ -119,18 +119,22 @@ define([
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
                     }
-                    webgnome.model.get('movers').add(mover);
-
                     if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         webgnome.model.get('environment').add(mover.get('current'));
                     }
                     
-                    webgnome.model.save();
-                    
                     if (this.$('#immediate-edit')[0].checked) {
                             var form = new editform(null, mover);
-                            form.render();
-                    } 
+                            form.on('hidden', form.close);
+                            form.on('save', _.bind(function(){
+                                webgnome.model.get('movers').add(mover);
+                                webgnome.model.save();
+                            }, this));
+                            form.render();  
+                    } else {
+                        webgnome.model.get('movers').add(mover);
+                        webgnome.model.save();
+                    }
                 }
                 else {
                     console.error('No response to file upload');
