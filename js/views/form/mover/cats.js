@@ -151,8 +151,9 @@ define([
                 var srf = this.$('#scale_refpoint');
                 if (srf[0].value === '') {
                     this.error('Error! Need to set a scale reference point');
+                } else {
+                    FormModal.prototype.save.call(this);
                 }
-                FormModal.prototype.save.call(this);
             } else {
                 FormModal.prototype.save.call(this);
             }
