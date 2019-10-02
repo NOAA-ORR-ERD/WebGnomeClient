@@ -152,6 +152,7 @@ define([
                 if (srf[0].value === '') {
                     this.error('Error! Need to set a scale reference point');
                 }
+                FormModal.prototype.save.call(this);
             } else {
                 FormModal.prototype.save.call(this);
             }
