@@ -124,12 +124,13 @@ define([
                     if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         webgnome.model.get('environment').add(mover.get('current'));
                     }
+                    
+                    webgnome.model.save();
+                    
                     if (this.$('#immediate-edit')[0].checked) {
                             var form = new editform(null, mover);
                             form.render();
-                    } else {
-                        webgnome.model.save();
-                    }
+                    } 
                 }
                 else {
                     console.error('No response to file upload');
