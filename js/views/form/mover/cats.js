@@ -34,48 +34,80 @@ define([
         render: function(options) {
             this.body = this.template();
             FormModal.prototype.render.call(this, options);
-            var sv = this.$('#Scale');
+            var sv = this.$('#scale_value');
             var srf = this.$('#scale_refpoint');
+            var tide = this.$('#tide');
             if (this.model.get('scale')) {
                 sv.prop('disabled', false);
                 srf.parent().children().prop('disabled', false);
+            }
+            if (_.isUndefined(this.model.get('tide')) || this.model.get('tide') === null) {
+                tide[0].value = 'null';
             }
         },
 
         template: function() {
             return _.template(FormTemplate, {
-                model: this.model.toJSON(),
+                model: this.model,
                 tides: webgnome.model.getTides()
             });
         },
 
         scaleHandler: function(e) {
-            var sv = this.$('#Scale');
+            var sv = this.$('#scale_value');
             var srf = this.$('#scale_refpoint');
             var tide = this.$('#tide');
             if (e.currentTarget.value === 'true') {
                 sv.prop('disabled', false);
                 srf.parent().children().prop('disabled', false);
             } else {
-                sv.prop('disabled', true);
-                srf[0].value = '';
-                this.model.set('scale', false);
-                this.model.set('scale_refpoint', [-.000999,-.000999,-.000999]);
-                srf.parent().children().prop('disabled', true);
-                tide[0].value = 'null'
-                this.model.set('tide', null);
-
+                this.disableScaling();
             }
         },
 
+        disableScaling: function() {
+            var s = this.$('#scale');
+            var sv = this.$('#scale_value');
+            var srf = this.$('#scale_refpoint');
+            var tide = this.$('#tide');
+
+            sv.prop('disabled', true);
+            srf[0].value = '';
+            this.model.set('scale', false);
+            s[0].value = 'false';
+            this.model.set('scale_refpoint', [-0.000999,-0.000999,-0.000999]);
+            this.model.set('scale_value', 1);
+            sv[0].value = 1; 
+            srf.parent().children().prop('disabled', true);
+            tide[0].value = 'null';
+            this.model.set('tide', null);
+            this.$('#scale_value_label')[0].innerText ='Reference point value in m/s:';
+        },
+
         tideHandler: function(e) {
-            var sv = this.$('#Scale');
+            var s = this.$('#scale');
+            var sv = this.$('#scale_value');
             var srf = this.$('#scale_refpoint');
             if (e.currentTarget.value !== 'null'){
+                var tide = webgnome.obj_ref[e.currentTarget.value];
+                this.model.set('tide', tide);
                 this.model.set('scale', true);
-                sv.prop('disabled', false);
-                srf.parent().children().prop('disabled', false);
-                this.$('#scale')[0].value = "true";
+                webgnome.model.save(null, {
+                    success: _.bind(function(mod){
+                        this.model.save(null, {
+                            success: _.bind(function(mod){
+                                this.render();
+                            }, this)
+                        });
+                    }, this)
+                });
+                if (this.dropzone){
+                    this.dropzone.removeAllFiles(true);
+                    this.dropzone.disable();
+                }
+                this.$el.html('');
+            } else {
+                this.disableScaling();
             }
         },
 
