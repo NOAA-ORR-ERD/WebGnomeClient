@@ -52,12 +52,18 @@ define([
         scaleHandler: function(e) {
             var sv = this.$('#Scale');
             var srf = this.$('#scale_refpoint');
+            var tide = this.$('#tide');
             if (e.currentTarget.value === 'true') {
                 sv.prop('disabled', false);
                 srf.parent().children().prop('disabled', false);
             } else {
                 sv.prop('disabled', true);
+                srf[0].value = '';
+                this.model.set('scale', false);
+                this.model.set('scale_refpoint', [-.000999,-.000999,-.000999]);
                 srf.parent().children().prop('disabled', true);
+                tide[0].value = 'null'
+                this.model.set('tide', null);
 
             }
         },
@@ -147,7 +153,12 @@ define([
         },
 
         save: function() {
-            if (this.model.get('scale')) {
+            var scaling_on = this.model.get('scale');
+            if (scaling_on === 'false'){
+                this.model.set('scale', false);
+                scaling_on = false;
+            }
+            if (scaling_on) {
                 var srf = this.$('#scale_refpoint');
                 if (srf[0].value === '') {
                     this.error('Error! Need to set a scale reference point');
@@ -156,6 +167,10 @@ define([
                 }
             } else {
                 FormModal.prototype.save.call(this);
+            }
+            if (!scaling_on) {
+                // because scale_refpoint needs to be set to a special value to 'unset' it on the server
+                this.model.unset('scale_refpoint');
             }
         },
 
