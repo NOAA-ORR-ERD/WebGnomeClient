@@ -88,7 +88,7 @@ define([
                         duration: 0.25
                     });
                     var target_ar, point;
-                    if (this.target.val() == '') {
+                    if (this.target.val() === '') {
                         point = Cesium.Rectangle.center(rect);
                         point = Cesium.Cartographic.toCartesian(point);
                     } else {
