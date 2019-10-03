@@ -72,7 +72,7 @@ define([
 
                 this.target.val(lon + ', ' + lat + ',0');
                 this.target.trigger('change');
-                this.hide();
+                this.close();
             }
         },
 
@@ -82,20 +82,26 @@ define([
                 map.viewer.scene.primitives.add(primitive);
                 this.model.processLines(data, 3000, primitive);
                 primitive.show = true;
-                var target_ar = this.target.val().split(',');
-                var point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 0);
-                this.crosshair = map.viewer.entities.add({
-                    position: point,
-                    billboard: {
-                        image : '/img/crosshair.png',
-                        width: 50,
-                        height: 50
-                    }
-                });
                 this.model.getBoundingRectangle().then(_.bind(function(rect) {
                     map.viewer.scene.camera.flyTo({
                         destination: rect,
                         duration: 0.25
+                    });
+                    var target_ar, point;
+                    if (this.target.val() == '') {
+                        point = Cesium.Rectangle.center(rect);
+                        point = Cesium.Cartographic.toCartesian(point);
+                    } else {
+                        target_ar = this.target.val().split(',');
+                        point = Cesium.Cartesian3.fromDegrees(parseFloat(target_ar[0]), parseFloat(target_ar[1]), 0);
+                    }
+                    this.crosshair = map.viewer.entities.add({
+                        position: point,
+                        billboard: {
+                            image : '/img/crosshair.png',
+                            width: 50,
+                            height: 50
+                        }
                     });
                 }, this));
             }, this));
