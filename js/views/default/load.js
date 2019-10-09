@@ -48,6 +48,7 @@ define([
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.save, // 2GB
                 acceptedFiles: '.zip, .gnome',
+                timeout: 300000,
                 dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
             });
             this.dropzone.on('sending', _.bind(this.sending, this));

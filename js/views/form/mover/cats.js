@@ -121,6 +121,7 @@ define([
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.current, // 2GB
                 acceptedFiles: '.cur, .txt',
+                timeout: 300000,
                 dictDefaultMessage: 'Drop tide file here to upload (or click to navigate)'
             });
 
