@@ -28,6 +28,7 @@ define([
                 //GNOME / API options
                 obj_type: undefined,
                 filelist: false,
+                timeout: 300000,
                 kwargs: {},
             };
         },
