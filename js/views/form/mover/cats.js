@@ -4,7 +4,7 @@ define([
     'underscore',
     'module',
     'dropzone',
-    'text!templates/default/dropzone.html',
+    'text!templates/default/dzone.html',
     'text!templates/form/mover/cats.html',
     'views/modal/form',
     'model/environment/tide'
@@ -122,7 +122,7 @@ define([
                 maxFilesize: webgnome.config.upload_limits.current, // 2GB
                 acceptedFiles: '.cur, .txt',
                 timeout: 300000,
-                dictDefaultMessage: 'Drop tide file here to upload (or click to navigate)'
+                dictDefaultMessage: 'Drop file here to add (or click to navigate).<br> Click the help icon for details on supported file formats.',
             });
 
             this.dropzone.on('sending', _.bind(this.sending, this));

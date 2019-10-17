@@ -50,13 +50,18 @@ define([
         },
 
         setupUpload: function(obj_type) {
+            var max_files = 1;
+            var autoProcess = true;
+            if (obj_type === "gnome.movers.py_current_movers.PyCurrentMover") {
+                max_files = 255;
+                autoProcess = false;
+            }
             this.obj_type = obj_type;
             this.$('#upload_form').empty();
             this.dzone = new Dzone({
-                maxFiles: 255,
+                maxFiles: max_files,
                 maxFilesize: webgnome.config.upload_limits.current,  // MB
-                autoProcessQueue: false,
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate).',
+                autoProcessQueue: autoProcess,
                 //gnome options
                 obj_type: obj_type,
             });

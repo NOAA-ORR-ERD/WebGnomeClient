@@ -9,7 +9,7 @@ define([
     'text!templates/default/load.html',
     'text!templates/uploads/upload.html',
     'text!templates/uploads/upload_activate.html',
-    'text!templates/default/dropzone.html'
+    'text!templates/default/dzone.html'
 ], function($, _, Backbone, Dropzone, swal,
             GnomeModel, UploadFolder,
             LoadTemplate, UploadTemplate, UploadActivateTemplate,
@@ -49,7 +49,7 @@ define([
                 maxFilesize: webgnome.config.upload_limits.save, // 2GB
                 acceptedFiles: '.zip, .gnome',
                 timeout: 300000,
-                dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
+                dictDefaultMessage: 'Drop file here <br> (or click to navigate)'
             });
             this.dropzone.on('sending', _.bind(this.sending, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));

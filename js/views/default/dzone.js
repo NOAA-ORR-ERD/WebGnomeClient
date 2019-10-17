@@ -24,7 +24,7 @@ define([
                 maxFiles: 255,
                 autoProcessQueue: false,
                 parallelUploads: 255,
-                dictDefaultMessage: 'Drop file here to add (or click to navigate).',
+                dictDefaultMessage: 'Drop file here to add (or click to navigate).<br> Click the help icon for details on supported file formats.',
                 //GNOME / API options
                 obj_type: undefined,
                 filelist: false,
