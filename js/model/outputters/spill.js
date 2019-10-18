@@ -32,7 +32,6 @@ define([
         _updateRequestedDataTypes: function(dtype) {
             var spills = webgnome.model.get('spills');
             var _req_data = [];
-            this.set('surface_conc', null);
             for (var i = 0; i < spills.length; i++) {
                 var datum = spills.at(i).get('_appearance').get('data').toLowerCase();
                 if (datum !== 'mass') {
@@ -41,9 +40,10 @@ define([
                 } 
                 if (datum === 'surface_concentration') {
                     this.set('surface_conc', 'kde');
-                } else {
-                    this.set('surface_conc', null);
                 }
+            }
+            if (_.indexOf(_req_data, 'surface_concentration') === -1) {
+                this.set('surface_conc', '');
             }
             _req_data = _req_data.length > 0 ? _.uniq(_req_data) : _req_data;
             console.log(_req_data);
