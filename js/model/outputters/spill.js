@@ -41,6 +41,8 @@ define([
                 } 
                 if (datum === 'surface_concentration') {
                     this.set('surface_conc', 'kde');
+                } else {
+                    this.set('surface_conc', null);
                 }
             }
             _req_data = _req_data.length > 0 ? _.uniq(_req_data) : _req_data;
