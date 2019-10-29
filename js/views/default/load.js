@@ -168,12 +168,12 @@ define([
                             spills[i].get('release').durationShift(model.get('start_time'));
                             //invalidSpills.push(spills[i].get('name'));
                         } else if (spills[i].get('release').get('end_position')[0] === 0 && spills[i].get('release').get('end_position')[1] === 0) {
- 							if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0) {
- 							}
- 							else {
-                            	var start_position = spills[i].get('release').get('start_position');
-                            	spills[i].get('release').set('end_position', start_position);
-                            	invalidSpills.push(spills[i].get('name'));
+                            if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0) {
+                            }
+                            else {
+                                var start_position = spills[i].get('release').get('start_position');
+                                spills[i].get('release').set('end_position', start_position);
+                                invalidSpills.push(spills[i].get('name'));
                             }
                         }
 
