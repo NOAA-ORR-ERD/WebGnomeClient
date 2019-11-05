@@ -43,7 +43,7 @@ define([
                 }
             }
             if (_.indexOf(_req_data, 'surface_concentration') === -1) {
-                this.set('surface_conc', '');
+                this.set('surface_conc', null);
             }
             _req_data = _req_data.length > 0 ? _.uniq(_req_data) : _req_data;
             console.log(_req_data);

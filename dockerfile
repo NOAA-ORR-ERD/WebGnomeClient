@@ -1,4 +1,4 @@
-FROM gitlab.orr.noaa.gov:5002/centos:latest
+FROM gitlab.orr.noaa.gov:5002/centos-conda:latest
 
 RUN yum update -y && yum -y install node npm
 
