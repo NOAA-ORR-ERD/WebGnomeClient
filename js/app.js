@@ -621,8 +621,8 @@ define([
                                'Would you like to continue working with this setup?'),
                         type: 'warning',
                         showCancelButton: true,
-                        cancelButtonText: 'Reset Session',
-                        confirmButtonText: 'Continue',
+                        cancelButtonText: 'Start Over',
+                        confirmButtonText: 'Continue Previous',
                         reverseButtons: true
                     }).then(_.bind(function(isConfirm) {
                         webgnome.sessionSWAL = false;
