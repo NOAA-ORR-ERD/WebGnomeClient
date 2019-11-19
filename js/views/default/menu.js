@@ -324,6 +324,9 @@ define([
                 view = e;
                 this.$('.view-toggle .switch').attr('class', 'switch ' + e);
             }
+            if (view !== 'trajectory' && !_.isUndefined(webgnome.router.trajView)) {
+                webgnome.router.trajView.$el.hide();
+            }
             this.$('.view-toggle .switch').attr('data-original-title', this.$('.view-toggle .' + view).data('original-title'));
         },
 

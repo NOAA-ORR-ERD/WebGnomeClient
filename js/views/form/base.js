@@ -107,9 +107,6 @@ define([
                 model: _.has(this, 'model') ? this.model : null
             });
 
-            modal.on('hidden', _.bind(this.show, this));
-
-            this.hide();
             modal.render();
         },
 

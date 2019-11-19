@@ -3,17 +3,26 @@ define([
     'underscore',
     'backbone',
     'module',
-    'views/form/mover/base',
     'text!templates/form/mover/edit.html',
     'views/modal/form'
-], function($, _, Backbone, module, BaseMoverForm, FormTemplate, FormModal) {
+], function($, _, Backbone, module, FormTemplate, FormModal) {
     'use strict';
-    var modelForm = BaseMoverForm.extend({
+    var currentForm = FormModal.extend({
+            
+        className: 'modal form-modal model-form',
+        title: 'Gridded Currents ',
+        buttons: '<button type="button" class="cancel" data-dismiss="modal">Cancel</button><button type="button" class="save">Save</button>',
+        
+        initialize: function(options, model){
+            this.module = module;
+            FormModal.prototype.initialize.call(this, options);
+            this.model = model;
+        },
 
         events: function() {
             return _.defaults({
                 'click div :checkbox': 'setExtrapolation',
-            }, BaseMoverForm.prototype.events);
+            }, FormModal.prototype.events);
         },
 
         render: function(options) {
@@ -31,6 +40,8 @@ define([
                 // GridCurrent object, so we need to make this exceptional
                 // case.
                 extrapolation_allowed = this.model.get('extrapolate');
+                start_time = this.model.get('data_start');
+                end_time = this.model.get('data_stop');
             }
 
             this.body = _.template(FormTemplate, {
@@ -62,5 +73,5 @@ define([
         },
     });
 
-    return modelForm;
+    return currentForm;
 });

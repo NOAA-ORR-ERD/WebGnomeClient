@@ -131,15 +131,18 @@ define([
 
         viewGnomeMode: function() {
             webgnome.model.set('mode', 'gnome');
+            this.modelMode = 'gnome';
             webgnome.model.save(null, {
                 success: function(){
                     webgnome.router.navigate('config', true);
+                    webgnome.router._cleanup();
                 }
             });
         },
 
         viewWeathering: function() {
             webgnome.router.navigate('fate', true);
+            this.hide();
         },
 
         createTooltipObject: function(title) {
@@ -250,6 +253,9 @@ define([
 
         show: function() {
             this.$el.show();
+            if (this.modelMode === 'adios') {
+                return;
+            }
             this.controls.contextualize();
             if (this._flyTo) {
                 var map_id = webgnome.model.get('map').id;
@@ -300,7 +306,8 @@ define([
                 navigationInstructionsInitiallyVisible: false,
                 skyAtmosphere: false,
                 sceneMode: Cesium.SceneMode.SCENE2D,
-                mapProjection: new Cesium.GeographicProjection(),
+                mapProjection: new Cesium.WebMercatorProjection(),
+                //mapProjection: new Cesium.GeographicProjection(),
                 //selectedImageryProviderViewModel: default_image,
                 //imageryProviderViewModels: image_providers,
                 imageryProvider : new Cesium.SingleTileImageryProvider({
@@ -327,7 +334,7 @@ define([
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
             $('.cesium-widget-credits').hide();
             this.graticuleContainer = $('.overlay');
-            this.graticule = new Graticule(true, this.viewer.scene, 10, this.graticuleContainer);
+            this.graticule = new Graticule(false, this.viewer.scene, 10, this.graticuleContainer);
             this.graticule.activate();
             this.viewer.scene.fog.enabled = false;
             this.viewer.scene.pickTranslucentDepth = true;

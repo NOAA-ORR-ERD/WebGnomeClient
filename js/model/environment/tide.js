@@ -6,8 +6,10 @@ define([
     'use strict';
     var tideModel = BaseModel.extend({
         urlRoot: '/environment/',
-        defaults: {
-        	obj_type: 'gnome.environment.tide.Tide'
+        defaults: function() {
+            return {
+                obj_type: 'gnome.environment.tide.Tide'
+            };
         },
 
         toTree: function(){
