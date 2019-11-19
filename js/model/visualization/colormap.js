@@ -252,11 +252,11 @@ define([
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
                 if (_.isString(scheme[0])) {
-                    var ns = [undefined]
-                    for (var i = 1; i < 10; i++) {
-                        ns[i] = scheme.slice(0,i)
+                    var ns = [undefined];
+                    for (var j = 1; j < 10; j++) {
+                        ns[j] = scheme.slice(0,j);
                     }
-                    scheme = ns
+                    scheme = ns;
                 } else {
                     for (var k = 0; k < scheme.length; k++){
                         if(_.isUndefined(scheme[k])){
