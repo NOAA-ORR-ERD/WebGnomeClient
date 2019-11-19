@@ -24,7 +24,7 @@ define([
                 "colorBlockLabels": ['',],
                 "_customScheme": ['#000000'],
                 //add new discrete schemes as arrays of hex strings
-                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr'],
+                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr','Dark2'],
                 "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool']
             };
         },
@@ -251,14 +251,21 @@ define([
             var colors;
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
-
-                for (var k = 0; k < scheme.length; k++){
-                    if(_.isUndefined(scheme[k])){
-                        continue;
+                if (_.isString(scheme[0])) {
+                    var ns = [undefined]
+                    for (var i = 1; i < 10; i++) {
+                        ns[i] = scheme.slice(0,i)
                     }
-                    scheme[k] = _.clone(scheme[k]);
-                    for (var m = 0; m < scheme[k].length; m++){
-                        scheme[k][m] = tinycolor(scheme[k][m]).darken(10).toString();
+                    scheme = ns
+                } else {
+                    for (var k = 0; k < scheme.length; k++){
+                        if(_.isUndefined(scheme[k])){
+                            continue;
+                        }
+                        scheme[k] = _.clone(scheme[k]);
+                        for (var m = 0; m < scheme[k].length; m++){
+                            scheme[k][m] = tinycolor(scheme[k][m]).darken(10).toString();
+                        }
                     }
                 }
 
