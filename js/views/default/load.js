@@ -9,7 +9,7 @@ define([
     'text!templates/default/load.html',
     'text!templates/uploads/upload.html',
     'text!templates/uploads/upload_activate.html',
-    'text!templates/default/dropzone.html'
+    'text!templates/default/dzone.html'
 ], function($, _, Backbone, Dropzone, swal,
             GnomeModel, UploadFolder,
             LoadTemplate, UploadTemplate, UploadActivateTemplate,
@@ -48,7 +48,8 @@ define([
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.save, // 2GB
                 acceptedFiles: '.zip, .gnome',
-                dictDefaultMessage: 'Drop model zip file here to load (or click to navigate)'
+                timeout: 300000,
+                dictDefaultMessage: 'Drop file here <br> (or click to navigate)'
             });
             this.dropzone.on('sending', _.bind(this.sending, this));
             this.dropzone.on('uploadprogress', _.bind(this.progress, this));
@@ -165,11 +166,15 @@ define([
 
                         if (model.get('mode') === 'adios') {
                             spills[i].get('release').durationShift(model.get('start_time'));
-                            invalidSpills.push(spills[i].get('name'));
+                            //invalidSpills.push(spills[i].get('name'));
                         } else if (spills[i].get('release').get('end_position')[0] === 0 && spills[i].get('release').get('end_position')[1] === 0) {
-                            var start_position = spills[i].get('release').get('start_position');
-                            spills[i].get('release').set('end_position', start_position);
-                            invalidSpills.push(spills[i].get('name'));
+                            if (spills[i].get('release').get('start_position')[0] === 0 && spills[i].get('release').get('start_position')[1] === 0) {
+                            }
+                            else {
+                                var start_position = spills[i].get('release').get('start_position');
+                                spills[i].get('release').set('end_position', start_position);
+                                invalidSpills.push(spills[i].get('name'));
+                            }
                         }
 
                         if (_.isNull(spills[i].get('release').get('end_release_time'))){

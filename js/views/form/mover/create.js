@@ -50,13 +50,18 @@ define([
         },
 
         setupUpload: function(obj_type) {
+            var max_files = 1;
+            var autoProcess = true;
+            if (obj_type === "gnome.movers.py_current_movers.PyCurrentMover") {
+                max_files = 255;
+                autoProcess = false;
+            }
             this.obj_type = obj_type;
             this.$('#upload_form').empty();
             this.dzone = new Dzone({
-                maxFiles: 255,
+                maxFiles: max_files,
                 maxFilesize: webgnome.config.upload_limits.current,  // MB
-                autoProcessQueue: false,
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate).',
+                autoProcessQueue: autoProcess,
                 //gnome options
                 obj_type: obj_type,
             });
@@ -119,15 +124,20 @@ define([
                     else {
                         console.error('Mover type not recognized: ', json_response.obj_type);
                     }
-                    webgnome.model.get('movers').add(mover);
-
                     if (mover.get('obj_type') === 'gnome.movers.py_current_movers.PyCurrentMover') {
                         webgnome.model.get('environment').add(mover.get('current'));
                     }
+                    
                     if (this.$('#immediate-edit')[0].checked) {
                             var form = new editform(null, mover);
-                            form.render();
+                            form.on('hidden', form.close);
+                            form.on('save', _.bind(function(){
+                                webgnome.model.get('movers').add(mover);
+                                webgnome.model.save();
+                            }, this));
+                            form.render();  
                     } else {
+                        webgnome.model.get('movers').add(mover);
                         webgnome.model.save();
                     }
                 }

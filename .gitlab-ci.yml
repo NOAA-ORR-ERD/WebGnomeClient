@@ -16,8 +16,8 @@ test:
 master:
     stage: build
     script:
-        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient
-        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient
+        - docker build -f dockerfile . -t gitlab.orr.noaa.gov:5002/webgnomeclient:master
+        - docker push gitlab.orr.noaa.gov:5002/webgnomeclient:master
     tags:
         - shell
         - build
