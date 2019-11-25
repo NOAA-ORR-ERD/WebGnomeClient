@@ -122,13 +122,14 @@ define([
             var domain = this.getAllNumberStops();
             if (index === 0 || index === domain.length - 1){
                 //changing domain bounds compresses domain if applicable
+                var nextVal, i;
                 if (index === 0) {
                     if (value >= domain[domain.length - 1] - 0.00001) {
                         return false;
                     }
                     numberDomain[0] = value;
-                    var nextVal = value + 0.00001;
-                    for (var i = 0; i < colorDomain.length - 1; i++) {
+                    nextVal = value + 0.00001;
+                    for (i = 0; i < colorDomain.length - 1; i++) {
                         if (colorDomain[i] < nextVal) {
                             colorDomain[i] = nextVal;
                             nextVal += 0.00001;
@@ -139,8 +140,8 @@ define([
                         return false;
                     }
                     numberDomain[1] = value;
-                    var nextVal = value - 0.00001;
-                    for (var i = colorDomain.length - 1; i >= 0; i--) {
+                    nextVal = value - 0.00001;
+                    for (i = colorDomain.length - 1; i >= 0; i--) {
                         if (colorDomain[i] > nextVal) {
                             colorDomain[i] = nextVal;
                             nextVal -= 0.00001;

@@ -103,7 +103,7 @@ define([
                     id: 'color-block-' + i,
                     class: 'color-block'
                 });
-                var spn = $('<span></span>')
+                var spn = $('<span></span>');
                 colorBlock.append(spn);
                 colorBlock.css('z-index', i);
                 colorBlock.css('background-color', colorRange[i]);
@@ -188,9 +188,13 @@ define([
                     overlap = !(
                         hdlRect.right < neighborRect.left || 
                         hdlRect.left > neighborRect.right
-                    )
-                    if(overlap && i != j) {
-                        j < i ? hdlToolTip._left++ : hdlToolTip._right++;
+                    );
+                    if(overlap && i !== j) {
+                        if (j < i) {
+                            hdlToolTip._left++;
+                        } else {
+                            hdlToolTip._right++;
+                        }
                     }
                 }
             }
@@ -208,7 +212,7 @@ define([
                         if (j < tooltips.length) {
                             stop = j - tooltips[j]._left;
                             for (k = j - 1; k >= stop; k--) {
-                                tooltips[j]._left--
+                                tooltips[j]._left--;
                                 tooltips[k]._right--;
                             }
                         }
@@ -225,10 +229,10 @@ define([
                 //}
                 maxTier = Math.max(maxTier, tooltips[i]._tier);
                 if (tooltips[i].hasClass('top')){
-                    tooltips[i].css('height', 28 * tooltips[i]._tier)
-                    $('.tooltip-line', tooltips[i]).css('height', 30 + 28 * (tooltips[i]._tier - 1))
+                    tooltips[i].css('height', 28 * tooltips[i]._tier);
+                    $('.tooltip-line', tooltips[i]).css('height', 30 + 28 * (tooltips[i]._tier - 1));
                 } else {
-                    tooltips[i].css('margin-top', 3 + 36 * (tooltips[i]._tier - 1))
+                    tooltips[i].css('margin-top', 3 + 36 * (tooltips[i]._tier - 1));
                 }
             }
             return maxTier;
@@ -452,7 +456,7 @@ define([
             e.stopImmediatePropagation();
             var spn = $(e.currentTarget);
             spn.hide();
-            var inner = spn.parent()
+            var inner = spn.parent();
             var valueBox;
             if ($('input', inner).length > 0) {
                 valueBox = $('input', inner)[0];
@@ -461,7 +465,9 @@ define([
                     class: 'numberScaleDomain',
                     step: 0.001});
                 valueBox.on('keyup', function(e){
-                    if (e.which == 13) this.blur();
+                    if (e.which === 13){
+                        this.blur();
+                    }
                 });
                 valueBox.prop('value', parseFloat(spn.text()));
                 valueBox.attr('value', parseFloat(spn.text()));
@@ -479,7 +485,7 @@ define([
             var cbox = $(e.currentTarget);
             var spn = $('span', cbox);
             var labelBox = $('<input type=text>');
-            spn.hide()
+            spn.hide();
 
             labelBox.prop('value', spn.text());
             labelBox.attr('value', spn.text());
@@ -512,7 +518,7 @@ define([
 
         updateColorBlockTextColor(e) {
             var bgcolor = e.css('background-color');
-            var spn = $('span',e)
+            var spn = $('span',e);
             if (tinycolor(bgcolor).getLuminance() > 0.179){
                 spn.css('color', 'black');
             } else {
@@ -521,7 +527,7 @@ define([
         },
 
         updateLabel(e) {
-            var inputBox = $(e.currentTarget)
+            var inputBox = $(e.currentTarget);
             var cbox = inputBox.parent();
             var spn = $('span', cbox);
             var idx = parseInt(cbox.prop('id').split('-')[2]);
