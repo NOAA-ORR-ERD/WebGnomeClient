@@ -120,31 +120,38 @@ define([
             var colorDomain = this.get('colorScaleDomain').slice();
             var numberDomain = this.get('numberScaleDomain').slice();
             var domain = this.getAllNumberStops();
+            var minInc = 0.00001;
             if (index === 0 || index === domain.length - 1){
                 //changing domain bounds compresses domain if applicable
                 var nextVal, i;
                 if (index === 0) {
-                    if (value >= domain[domain.length - 1] - 0.00001) {
+                    if (value >= domain[domain.length - 1] - minInc) {
                         return false;
                     }
+                    if (this.get('numberScaleType') === 'log' && value < minInc) {
+                        value = minInc;
+                    }
+                    if (value < 0) {
+                        value = 0;
+                    }
                     numberDomain[0] = value;
-                    nextVal = value + 0.00001;
+                    nextVal = value + minInc;
                     for (i = 0; i < colorDomain.length - 1; i++) {
                         if (colorDomain[i] < nextVal) {
                             colorDomain[i] = nextVal;
-                            nextVal += 0.00001;
+                            nextVal += minInc;
                         }
                     }
                 } else {
-                    if (value <= domain[0] + 0.00001) {
+                    if (value <= domain[0] + minInc) {
                         return false;
                     }
                     numberDomain[1] = value;
-                    nextVal = value - 0.00001;
+                    nextVal = value - minInc;
                     for (i = colorDomain.length - 1; i >= 0; i--) {
                         if (colorDomain[i] > nextVal) {
                             colorDomain[i] = nextVal;
-                            nextVal -= 0.00001;
+                            nextVal -= minInc;
                         }
                     }
                 }
