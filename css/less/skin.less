@@ -1901,61 +1901,128 @@ nav.navbar{
 
     .ui-slider {
         height: 30px;
-        top:33%;
 
         .color-block {
             position: absolute;
             text-align: center;
             height: 100%;
             line-height: 30px;
+            span {
+                cursor: text;
+            }
+            &.alt {
+                .tooltip{
+                    .tooltip-inner {
+                        background-color: #444444;
+                    }
+                    .tooltip-arrow {
+                        border-top-color: #444444;
+                    }
+                    .tooltip-line{
+                        background-color: #444444;
+                    }
+                }
+            }
+        }
+        .color-block:hover {
+            z-index: 99 !important;
+            cursor: pointer;
+            span {
+                background-color:inherit;
+            }
+        }
+        .slider-handle:hover {
+            z-index: 99 !important;
         }
     }
 
     .tooltip {
         opacity: 1;
+        pointer-events: none;
+        .tooltip-inner{
+            width: 5em;
+            pointer-events: auto;
+            span {
+                cursor: text;
+            }
+            input {
+                background-color: black;
+                border: none;
+                &[type="number"] {
+                    width: 100%;
+                    text-align: center;
+                    -moz-appearance:textfield;
+                }
+    
+                &[type="color"]{
+                    pointer-events: all;
+                    width:100%;
+                    cursor: pointer;
+                }
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
         &.bottom {
             top: 100%;
             transform: translate(-50%, 0%);
             left: 50%;
+            .tooltip-inner {
+                padding: 2px 2px;
+                min-width: 2em;
+                cursor: auto;
+            }
         }
         &.top {
             transform: translate(-50%, -100%);
+            padding: unset;
+            margin-top: unset;
+            cursor: grab;
+            .tooltip-arrow {
+                pointer-events: auto;
+                bottom: unset;
+                top: 23px;
+                margin-left: -4px;
+            }
+            .tooltip-line {
+                pointer-events: auto;
+                height:35px;
+                top: 27px;
+                width: 2px;
+                left: 50%;
+                position: absolute;
+                background: black;
+            }
         }
-    
     }
+
     .slider-handle {
         top: 0px;
         height: 100%;
-        z-index: 3;
         pointer-events: none;
         width: 2px;
-        background-color: gray;
+        background-color: black;
         position: absolute;
 
         &.movable {
-            pointer-events:all;
+            pointer-events: auto;
         }
-    }
-    .tooltip-inner{
-        width: 5em;
-        input {
-            background-color: black;
-            border: none;
-            &[type="number"] {
-                width: 100%;
-                text-align: center;
-                -moz-appearance:textfield;
+        &.alt {
+            background-color: #444444;
+            .tooltip{
+                .tooltip-inner {
+                    background-color: #444444;
+                }
+                .tooltip-arrow {
+                    border-top-color: #444444;
+                }
+                .tooltip-line{
+                    background-color: #444444;
+                }
             }
-
-            &[type="color"]{
-                pointer-events: all;
-                width:100%;
-            }
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
     }
     .ui-slider-handle {

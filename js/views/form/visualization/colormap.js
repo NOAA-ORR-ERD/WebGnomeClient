@@ -20,7 +20,7 @@ define([
         events: {
             'change .tooltip input[type="color"]': 'updateColorScale',
             //'change .tooltip input[type="number"]': 'updateScales',
-            'click .top > .tooltip-inner': 'addNumInput',
+            'click .top > .tooltip-inner > span': 'addNumInput',
             'click .color-block': 'addLabelInput',
             'focusout .tooltip input[type="number"]': 'updateValue',
             'focusout .color-block input[type="text"]': 'updateLabel',
@@ -39,46 +39,21 @@ define([
             this.listenTo(this.model, 'change:units', this.rerender);
             this.listenTo(this.model, 'rerender', this.rerender);
             this.listenTo(this.model, 'change:colorScaleRange', this.rerender);
+            this.topTierSize = 1;
+            this.bottomTierSize = 1;
         },
 
-        addNumInput: function(e) {
-            e.stopImmediatePropagation();
-            var valueBox;
-            if ($(e.currentTarget).children().length > 0) {
-                valueBox = $($(e.currentTarget).children()[0]);
-            } else {
-                valueBox = $('<input>', {type:'number',
-                class: 'numberScaleDomain',
-                step: 0.001});
-                valueBox.prop('value', parseFloat(e.currentTarget.innerText));
-                valueBox.attr('value', parseFloat(e.currentTarget.innerText));
-                $(e.currentTarget).text('').append(valueBox);
-            }
-            valueBox.focus();
-            valueBox.select();
+        computeOverallHeight: function() {
+            //computes the overall height of the colormap div given the top and bottom tiers, and margins
+            // colorbarheight + 3 + 3 (margins) + 30 * (topTier + bottomTier)
+            return (30 + 6 + 28 * this.topTierSize + 36 * this.bottomTierSize);
         },
 
-        addLabelInput: function(e) {
-            if (e.target !== e.currentTarget) {
-                return;
-            }
-            e.stopImmediatePropagation();
-            if (e.currentTarget.className !== 'color-block'){
-                e.currentTarget = e.currentTarget.parentElement;
-            }
-            $(e.currentTarget).css('color', 'black');
-            var idx = parseInt(e.currentTarget.id.split('-')[2]);
-            var labelBox = $('<input type=text>');
-            var content = '';
-            if (this.model.get('colorBlockLabels')[idx] !== '') {
-                content = this.model.get('colorBlockLabels')[idx];
-            }
-            labelBox.prop('value', content);
-            labelBox.attr('value', content);
-            $(e.currentTarget).text(' ');
-            e.currentTarget.append(labelBox[0]);
-            labelBox.focus();
-            labelBox.select();
+        resizeOverall: function() {
+            //resizes the colormap container
+            var colormap = $('.colormap', this.$el);
+            colormap.css('height', this.computeOverallHeight());
+            $('#colormap-slider', colormap).css('margin-top', this.topTierSize * 28);
         },
 
         render: function(first) {
@@ -128,12 +103,15 @@ define([
                     id: 'color-block-' + i,
                     class: 'color-block'
                 });
+                var spn = $('<span></span>')
+                colorBlock.append(spn);
+                colorBlock.css('z-index', i);
                 colorBlock.css('background-color', colorRange[i]);
                 this.updateColorBlockTextColor(colorBlock);
-                colorBlock.text(this.model.get('colorBlockLabels')[i]);
+                spn.text(this.model.get('colorBlockLabels')[i]);
                 this.colorBlocks.push(colorBlock);
                 //set the background color and length
-                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
+                width = Math.round(pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.colorBlocks[i].css('left', leftBound + 'px');
                 this.colorBlocks[i].css('width', width + 'px');
@@ -142,17 +120,22 @@ define([
                 this.colorStops.push(this.createColorTip(colorRange[i], colorBlock));
 
                 this.picker.append(colorBlock);
+                $('.tooltip-inner', this.colorBlocks[i]).css('width', this.colorBlocks[i].width()*0.667);
             }
 
             leftBound = 0;
             //generate the handles, and set them up using setupSliderHandles
             for (i = 0; i < stops.length; i++) {
                 var handle = $('<div id=#handleIdx-' + i + ' class=slider-handle></div>');
+                handle.css('z-index', i + this.colorBlocks.length);
                 this.handles.push(handle);
                 if (i !== 0 && i !== stops.length-1){
                     handle.addClass('movable');
                 }
-                width = (pickerScale(stops[i+1]) - pickerScale(stops[i]));
+                if (i % 2 !== 0) {
+                    handle.addClass('alt');
+                }
+                width = Math.round(pickerScale(stops[i+1]) - pickerScale(stops[i]));
                 //boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
                 this.handles[i].css('left', leftBound + 'px');
                 leftBound += width;
@@ -160,6 +143,9 @@ define([
                 this.numberStops.push(this.createNumberTip(stops[i], handle));
                 this.picker.append(handle);
             }
+
+            this.bottomTierSize = this.tierizeHandles(this.colorBlocks);
+            this.topTierSize = this.tierizeHandles(this.handles);
 
             this.$('.slider-handle').draggable({
                 containment: 'parent',
@@ -169,75 +155,101 @@ define([
                 stop: _.bind(this.stopDragHandler, this),
                 drag: _.bind(this.dragHandler, this)
             }).css('position', '');
-
-        },
-/*
-        slideHandler: function(e, ui) {
-            var curr = ui.values[ui.handleIndex],
-                next = ui.values[ui.handleIndex + 1] - 0.01,
-                prev = ui.values[ui.handleIndex - 1] + 0.01;
-
-            if (curr > next || curr < prev || !ui.handle) {
-                return false;
-            }
-
-            this.model.setValue('numberScaleDomain', ui.handleIndex,
-                                this.model.numScale.invert(curr));
-            this.updateNumberTooltip(e, ui);
-            this.updateBackground();
-
-            return true;
+            this.resizeOverall();
         },
 
-        setupSliderHandles: function(handles) {
-            this.sliderHandles = handles;
-            this.numberStops = [];
-            this.colorStops = [];
-            this.colorBlocks = [];
-            //$(handles[0]).addClass('slider-first');
-            //$(handles[handles.length-1]).addClass('slider-last');
-            var i;
+        tierizeHandles: function(handles) {
+            //Alters a list of handle tooltips through css to avoid overlapping.
+            //Assumptions: list of handles must be ASCENDING ORDER. 
+            //Algorithm is as follows:
+            // 1. For each tooltip rect, find the # overlap to the left (L), and # overlap to the right(R), and store
+            //  1a. Overlap means i+1 right <= i left
+            // 2. For each i, boost next R rects up one tier (T), set R to 0
+            //  2a. Boosting a rect reduces its L by 1, and increases it's T by 1
+            //  2b. If rect i+R+1 exists, then Rect i + R has it's R reduced by 1, and i+R+1 has L reduced by 1
 
-            if (this.model.get('map_type') === 'continuous') {
-                // each handle must have a number and color tooltip
-                for (i = 0; i < handles.length; i++) {
-                    this.numberStops.push(this.createNumberTip(this.model.get('numberScaleDomain')[i], $(handles[i])));
-                    this.colorStops.push(this.createColorTip(this.model.get('colorScaleRange')[i], $(handles[i])));
-                }
-            }
-            else {
-                // each handle must have a number tooltip,
-                // but the color tooltips are on the slider between the handles
-                for (i = 0; i < handles.length; i++) {
-                    this.numberStops.push(this.createNumberTip(this.model.get('numberScaleDomain')[i], $(handles[i])));
-                }
+            // Alter CSS as necessary given a handle's tier
 
-                for (i = 0; i < handles.length -1; i++) {
-                    var colorBlock = $('<div class="color-block"><span>&nbsp</span></div>');
-                    this.colorBlocks.push(colorBlock);
-                    this.colorStops.push(this.createColorTip(this.model.get('colorScaleRange')[i], colorBlock   ));
-                    this.picker.append(colorBlock);
+            //Jay Hennen 11/22/19: Try implementing this through recursion and tier-by-tier collision detection
+            
+            var hdlToolTip, hdlRect, neighborRect, overlap;
+            var tooltips = []; //Apply the CSS to these
+            var i, j, k;
+            for (i = 0; i < handles.length; i++) {
+                hdlToolTip = $('.tooltip', handles[i]);
+                hdlToolTip._left = 0;
+                hdlToolTip._right = 0;
+                hdlToolTip._tier = 1;
+                tooltips.push(hdlToolTip);
+                hdlRect = $('.tooltip-inner', handles[i])[0].getBoundingClientRect();
+
+                for (j = 0; j < handles.length; j++) {
+                    neighborRect = $('.tooltip-inner', handles[j])[0].getBoundingClientRect();
+                    overlap = !(
+                        hdlRect.right < neighborRect.left || 
+                        hdlRect.left > neighborRect.right
+                    )
+                    if(overlap && i != j) {
+                        j < i ? hdlToolTip._left++ : hdlToolTip._right++;
+                    }
                 }
             }
 
-            for (i = 1; i < handles.length-1; i++) {
-                $(handles[i]).addClass('movable');
+            var tt, stop, f, fstop;
+            for (i = 0; i < tooltips.length; i++) {
+                tt = tooltips[i];
+                if (tt._right > 0){
+                    if (tt._right >= tooltips[i+1]._left) {
+                        for (j = i + 1; j < i + tt._right + 1; j++) {
+                            tooltips[j]._tier = (tt._tier + 1); //boost the tier
+                            tooltips[j]._left--;
+                        }
+                        tt._right = 0;
+                        if (j < tooltips.length) {
+                            stop = j - tooltips[j]._left;
+                            for (k = j - 1; k >= stop; k--) {
+                                tooltips[j]._left--
+                                tooltips[k]._right--;
+                            }
+                        }
+                    } else {
+                        tt._right = 0;
+                        tooltips[i+1]._left = 0;
+                    }
+                }
             }
+            var maxTier = 0;
+            for (i = 0; i < tooltips.length; i++) {
+                //if (tooltips[i]._left !== 0 || tooltips[i]._right !== 0) {
+                //    console.error('tiering went wrong!!')
+                //}
+                maxTier = Math.max(maxTier, tooltips[i]._tier);
+                if (tooltips[i].hasClass('top')){
+                    tooltips[i].css('height', 28 * tooltips[i]._tier)
+                    $('.tooltip-line', tooltips[i]).css('height', 30 + 28 * (tooltips[i]._tier - 1))
+                } else {
+                    tooltips[i].css('margin-top', 3 + 36 * (tooltips[i]._tier - 1))
+                }
+            }
+            return maxTier;
         },
-*/
+
         createNumberTip: function(value, parentElem) {
-            var valueToolTip, arrow, inner, valueBox;
+            var valueToolTip, arrow, line, inner, spn;
             valueToolTip = $('<div></div>',{class: "tooltip top slider-tip"});
 
             arrow = $('<div></div>',{class: "tooltip-arrow"});
+            line = $('<div></div>', {class: "tooltip-line"});
             inner = $('<div></div>',{class: "tooltip-inner"});
+            spn = $('<span></span>');
 
             var dispValue = this._toDisplayString(value);
 
-            inner.text(dispValue);
+            spn.text(dispValue);
+            inner.append(spn);
             valueToolTip.append(arrow);
+            valueToolTip.append(line);
             valueToolTip.append(inner);
-            inner.append(valueBox);
 
             parentElem.append(valueToolTip);
 
@@ -255,6 +267,7 @@ define([
                                     value: color});
 
             colorToolTip.append(arrow);
+            //colorToolTip.append(line);
             colorToolTip.append(inner);
             inner.append(colorBox);
 /*
@@ -274,7 +287,7 @@ define([
 
         dragHandler: function(e, ui) {
             var idx = this.getHandleIdx(ui.helper);
-            var diff = ui.position.left - ui.helper.position().left;
+            var diff = Math.round(ui.position.left - ui.helper.position().left);
             var curr = ui.position.left,
                 next = this.handles[idx + 1].position().left,
                 prev = this.handles[idx - 1].position().left;
@@ -284,8 +297,10 @@ define([
             var leftBlock = this.colorBlocks[idx-1];
             var rightBlock = this.colorBlocks[idx];
             $(leftBlock).css('width', leftBlock.width() + diff + 'px');
-            $(rightBlock).css('left', ui.position.left + 'px');
+            $('.tooltip-inner', leftBlock).css('width', leftBlock.width()*0.667);
+            $(rightBlock).css('left', Math.round(ui.position.left) + 'px');
             $(rightBlock).css('width', rightBlock.width() - diff + 'px');
+            $('.tooltip-inner', rightBlock).css('width', rightBlock.width()*0.667);
 
             var frac = ui.position.left / this.picker.width();
             var csd = this.model.get('colorScaleDomain').slice();
@@ -296,12 +311,18 @@ define([
 
         startDragHandler: function(e, ui) {
             var idx = this.getHandleIdx(ui.helper);
+            if (idx === 0 || idx === this.handles.length - 1) {
+                e.stopPropagation();
+                return false;
+            }
             this._origHandlePosition = ui.position.left;
             this._origValue = this.model.get('numberScaleDomain')[idx];
         },
 
         stopDragHandler: function(e, ui) {
-            console.log(ui);
+            this.bottomTierSize = this.tierizeHandles(this.colorBlocks);
+            this.topTierSize = this.tierizeHandles(this.handles);
+            this.resizeOverall();
         },
 
         updateAllTooltips: function(e) {
@@ -368,7 +389,7 @@ define([
                 var curbounds = 0;
 
                 for (i = 0; i < colorRange.length - 1; i++) {
-                    boundary = (numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100;
+                    boundary = Math.round((numberDomain[i+1] - numberDomain[0]) / (numberDomain[numberDomain.length-1] - numberDomain[0]) * 100);
                     this.colorBlocks[i].css('left', curbounds + '%');
                     this.colorBlocks[i].css('width', boundary - curbounds + '%');
                     //this.colorBlocks[i].css('left', ((boundary - curbounds) / 2 + curbounds) + '%');
@@ -376,8 +397,8 @@ define([
                 }
 
                 //this.colorBlocks[i].css('left', ((100 - curbounds) / 2   + curbounds) + '%');
-                    this.colorBlocks[i].css('left', curbounds + '%');
-                    this.colorBlocks[i].css('width', 100 - curbounds + '%');
+                this.colorBlocks[i].css('left', curbounds + '%');
+                this.colorBlocks[i].css('width', 100 - curbounds + '%');
 
             }
 
@@ -427,47 +448,90 @@ define([
             console.log(e);
         },
 
+        addNumInput: function(e) {
+            e.stopImmediatePropagation();
+            var spn = $(e.currentTarget);
+            spn.hide();
+            var inner = spn.parent()
+            var valueBox;
+            if ($('input', inner).length > 0) {
+                valueBox = $('input', inner)[0];
+            } else {
+                valueBox = $('<input>', {type:'number',
+                    class: 'numberScaleDomain',
+                    step: 0.001});
+                valueBox.on('keyup', function(e){
+                    if (e.which == 13) this.blur();
+                });
+                valueBox.prop('value', parseFloat(spn.text()));
+                valueBox.attr('value', parseFloat(spn.text()));
+                inner.append(valueBox);
+            }
+            valueBox.focus();
+            valueBox.select();
+        },
+
+        addLabelInput: function(e) {
+            if ($(e.target).hasClass('tooltip')) {
+                return;
+            }
+            e.stopImmediatePropagation();
+            var cbox = $(e.currentTarget);
+            var spn = $('span', cbox);
+            var labelBox = $('<input type=text>');
+            spn.hide()
+
+            labelBox.prop('value', spn.text());
+            labelBox.attr('value', spn.text());
+            cbox.append(labelBox);
+            labelBox.focus();
+            labelBox.select();
+        },
+
         updateValue(e) {
+            //this gets the index (i). dirty but effective enough.
             for (var i = 0; i < this.numberStops.length; i++) {
                 if (this.numberStops[i].has(e.currentTarget).length > 0) {
                     break;
                 }
             }
-            if (e.currentTarget.value === ""){
-                $(e.currentTarget).remove();
-                $('.tooltip-inner',
-                  this.numberStops[i])
-                  .text(this._toDisplayString(this.model.get('colorScaleDomain')[i - 1]));
-                return;
+            var inputBox = $(e.currentTarget);
+            var inner = inputBox.parent();
+            var spn = $('span', inner);
+            if (inputBox.val() !== ""){
+                var newVal = this.model.fromInputConversionFunc(parseFloat(inputBox.val()));
+                if (this.model.setStop(i, newVal)) {
+                    return;
+                }
             }
-            var newVal = (this.model
-                          .fromInputConversionFunc(parseFloat(e.currentTarget.value)));
-            if (!this.model.setStop(i, newVal)) {
-                $(e.currentTarget).remove();
-                $('.tooltip-inner',
-                  this.numberStops[i])
-                  .text(this._toDisplayString(this.model.get('colorScaleDomain')[i - 1]));
-            }
+            inputBox.remove();
+            spn.text(this._toDisplayString(this.model.getAllNumberStops()[i]));
+            spn.show();
+            return;
         },
 
         updateColorBlockTextColor(e) {
-            var color = e.css('background-color');
-            if (tinycolor(color).getLuminance() > 0.179){
-                e.css('color', 'black');
+            var bgcolor = e.css('background-color');
+            var spn = $('span',e)
+            if (tinycolor(bgcolor).getLuminance() > 0.179){
+                spn.css('color', 'black');
             } else {
-                e.css('color', 'white');
+                spn.css('color', 'white');
             }
         },
 
         updateLabel(e) {
-            var idx = parseInt(e.target.parentElement.id.split('-')[2]);
+            var inputBox = $(e.currentTarget)
+            var cbox = inputBox.parent();
+            var spn = $('span', cbox);
+            var idx = parseInt(cbox.prop('id').split('-')[2]);
             var labs = this.model.get('colorBlockLabels').slice();
-            labs[idx] = e.currentTarget.value;
+            labs[idx] = inputBox.val();
             this.model.set('colorBlockLabels', labs);
-            var block = $(e.target.parentElement);
-            block.text(e.currentTarget.value);
-            this.updateColorBlockTextColor(block);
-            e.target.remove();
+            spn.text(inputBox.val());
+            this.updateColorBlockTextColor(cbox);
+            inputBox.remove();
+            spn.show();
         },
 
         updateNumberTooltip: function(e, ui) {
@@ -476,9 +540,10 @@ define([
 
             if ($('input[type="number"]', ttc).length > 0) {
                 $('input[type="number"]', ttc).remove();
+                $('span', ttc).show();
             }
 
-            ttc.text(this._toDisplayString(this.model.get('colorScaleDomain')[idx -1]));
+            $('span', ttc).text(this._toDisplayString(this.model.get('colorScaleDomain')[idx -1]));
         },
 
         updateColorScale: function(e) {
