@@ -56,15 +56,6 @@ define([
             this.listenTo(webgnome.model, 'change', this.render);
         },
 
-        _toDisplayString(dispValue) {
-            if (typeof(dispValue) === 'string') {
-                return dispValue;
-            }
-            else {
-                return Number(dispValue).toPrecision(2);
-            }
-        },
-
         genSpillLegendItem(spill) {
             var appearance = spill.get('_appearance');
             var colormap = appearance.get('colormap');
@@ -97,8 +88,8 @@ define([
             Array.prototype.splice.apply(stops, args);
             var label = colormap.get('colorBlockLabels')[0];
             if (label === '') { //&nbsp;
-                p1 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[0]));
-                p2 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[1]));
+                p1 = this._toDisplayString(stops[i], colormap);
+                p2 = this._toDisplayString(stops[i+1], colormap);
                 label = '<' + p1 + ' - ' + p2;
                 if (numColors === 1) {
                     label = label + '+';
@@ -116,8 +107,8 @@ define([
             for (var i = 1; i < numColors; i++) {
                 label = colormap.get('colorBlockLabels')[i];
                 if (label === '') { //&nbsp;
-                    p1 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[i]));
-                    p2 = this._toDisplayString(colormap.toDisplayConversionFunc(stops[i+1]));
+                    p1 = this._toDisplayString(stops[i], colormap);
+                    p2 = this._toDisplayString(stops[i+1], colormap);
                     label = p1 + ' - ' + p2;
                     if (i === numColors - 1) {
                         label = label + '+';
@@ -142,6 +133,24 @@ define([
             //this.listenTo
             this.listedItems.push(colormap);
             return item[0].outerHTML;
+        },
+
+        _toDisplayString(value, colormap) {
+            //from the colormap form
+            var dispValue = colormap.toDisplayConversionFunc(value);
+
+            if (typeof(dispValue) === 'string') {
+                return dispValue;
+            }
+            else {
+                if (dispValue < 1000) {
+                    return Number(dispValue).toPrecision(4);
+                } else if (dispValue < 10000000) {
+                    return Number.parseInt(dispValue, 10);
+                } else {
+                    return Number(dispValue).toPrecision(4);
+                }
+            }
         },
 /*
         genSpillLegendItem(spill) {

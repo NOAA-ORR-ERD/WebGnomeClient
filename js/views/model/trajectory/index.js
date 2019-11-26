@@ -422,7 +422,7 @@ define([
                     var cartographic = Cesium.Cartographic.fromCartesian(pickedPoint);
                     var longitudeString = Cesium.Math.toDegrees(cartographic.longitude).toFixed(2);
                     var latitudeString = Cesium.Math.toDegrees(cartographic.latitude).toFixed(2);
-                    entity = addNewCesiumObjectTooltip({id:cartographic.toString()}, 15, 0);
+                    entity = addNewCesiumObjectTooltip({id:_.values(this._openCesiumObjectTooltips).length}, 15, 0);
                     entity.position = pickedPoint;
 
                     entity.label.show = true;
@@ -471,13 +471,21 @@ define([
                                     _.bind(function(primitive){
                                         var mass = Number(primitive.mass ? primitive.mass : 0).toPrecision(4);
                                         var loc = Cesium.Ellipsoid.WGS84.cartesianToCartographic(primitive.position);
-                                        var surf_conc = Number(primitive.surface_concentration ? primitive.surface_concentration : 0).toPrecision(3);
+                                        var surf_conc = Number(primitive.surface_concentration ? primitive.surface_concentration * 1000 : 0); //kg/m2 -> g/m2
+                                        var viscosity = Number(primitive.viscosity ? primitive.viscosity * 1000000 : 0); //m2/s to cSt
+                                        var density = Number(primitive.density ? primitive.density : 0);
                                             //data = Number(this.pickedObject.primitive.mag ? this.pickedObject.primitive.mag : 0),
                                         var lon = this.graticule.genDMSLabel('lon', loc.longitude);
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
                                         var ttstr = 'Mass: ' + ('\t' + mass).slice(-7) + ' kg';
                                         if (surf_conc !== 0) {
-                                            ttstr = ttstr + '\nS_Conc: \t' + surf_conc + ' kg/m^2';
+                                            ttstr = ttstr + '\nS_Conc: \t' + surf_conc.toPrecision(3) + ' g/m^2';
+                                        }
+                                        if (viscosity !== 0) {
+                                            ttstr = ttstr + '\nViscosity: \t' + viscosity.toPrecision(3) + ' cSt';
+                                        }
+                                        if (density !== 0) {
+                                            ttstr = ttstr + '\nDensity: \t' + density.toPrecision(3) + ' kg/m^3';
                                         }
                                         ttstr = ttstr +
                                             '\nLon: ' + ('\t' + lon) +

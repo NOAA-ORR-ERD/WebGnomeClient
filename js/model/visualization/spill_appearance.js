@@ -68,8 +68,8 @@ define([
             _available_data: ['Mass',
                               'Surface Concentration',
                               'Age',
-                              'Viscosity',
-                              'Depth']
+                              'Viscosity']
+                              //Depth
             };
         },
 
