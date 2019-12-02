@@ -113,13 +113,6 @@ define([
             this._applyScheme();
         },
 
-        setValue(name, index, value) {
-            var a = 1/0;
-            this.get(name)[index] = value;
-            //this.trigger('change:'+name, {name: this.get(name)});
-            //this.trigger('change', {name: this.get(name)});
-        },
-
         setStop: function(index, value) {
             //sets the colorScaleDomain value at index to the value specified.
             //returns true if successful, returns false and does not change the value otherwise
@@ -127,17 +120,60 @@ define([
             var colorDomain = this.get('colorScaleDomain').slice();
             var numberDomain = this.get('numberScaleDomain').slice();
             var domain = this.getAllNumberStops();
-            var curr = domain[index],
-                next = domain[index + 1] - 0.01,
-                prev = domain[index - 1] + 0.01;
-
-            if (value === curr || value > next || value < prev) {
-                return false;
-            } else {
-                colorDomain[index - 1] = value;
+            var minInc = 0.00001;
+            if (index === 0 || index === domain.length - 1){
+                //changing domain bounds compresses domain if applicable
+                var nextVal, i;
+                if (index === 0) {
+                    if (value >= domain[domain.length - 1] - minInc) {
+                        return false;
+                    }
+                    if (this.get('numberScaleType') === 'log' && value < minInc) {
+                        value = minInc;
+                    }
+                    if (value < 0) {
+                        value = 0;
+                    }
+                    numberDomain[0] = value;
+                    nextVal = value + minInc;
+                    for (i = 0; i < colorDomain.length - 1; i++) {
+                        if (colorDomain[i] < nextVal) {
+                            colorDomain[i] = nextVal;
+                            nextVal += minInc;
+                        }
+                    }
+                } else {
+                    if (value <= domain[0] + minInc) {
+                        return false;
+                    }
+                    numberDomain[1] = value;
+                    nextVal = value - minInc;
+                    for (i = colorDomain.length - 1; i >= 0; i--) {
+                        if (colorDomain[i] > nextVal) {
+                            colorDomain[i] = nextVal;
+                            nextVal -= minInc;
+                        }
+                    }
+                }
+                this.set('numberScaleDomain', numberDomain);
                 this.set('colorScaleDomain', colorDomain);
+                this.initScales();
                 this.trigger('rerender');
                 return true;
+
+            } else {
+                var curr = domain[index],
+                    next = domain[index + 1] - 0.00001,
+                    prev = domain[index - 1] + 0.00001;
+
+                if (value === curr || value > next || value < prev) {
+                    return false;
+                } else {
+                    colorDomain[index - 1] = value;
+                    this.set('colorScaleDomain', colorDomain);
+                    this.trigger('rerender');
+                    return true;
+                }
             }
         },
 
