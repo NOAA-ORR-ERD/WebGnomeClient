@@ -34,7 +34,8 @@ define([
 
         model: {
             release: GnomeRelease,
-            substance: NonWeatheringSubstance
+            substance: NonWeatheringSubstance,
+            _appearance: SpillAppearance
         },
 
         initialize: function(options) {
@@ -48,8 +49,7 @@ define([
 
             this.calculate();
             this.initializeDataVis();
-
-            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            this.setupVis();
 
             if (webgnome.hasModel() && webgnome.model.getSubstance()) {
                 this.set('substance', webgnome.model.getSubstance());

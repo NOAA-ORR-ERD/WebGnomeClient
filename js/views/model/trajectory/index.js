@@ -1,14 +1,12 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'views/base',
+    'views/default/cesium',
     'module',
     'moment',
     'toastr',
     'text!templates/model/trajectory/controls.html',
     'cesium',
-    'views/default/cesium',
     'text!templates/model/trajectory/trajectory_no_map.html',
     'model/step',
     'mousetrap',
@@ -22,11 +20,11 @@ define([
     'gif',
     'gifworker',
     'whammy',
-], function($, _, Backbone, BaseView, module,moment, toastr, ControlsTemplate, Cesium, CesiumView,
+], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
             NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
             ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
     'use strict';
-    var trajectoryView = BaseView.extend({
+    var trajectoryView = CesiumView.extend({
         className: function() {
             var str;
             if (webgnome.model.get('mode') !== 'adios') {
@@ -52,8 +50,8 @@ define([
         rframe: 0,
 
         initialize: function(options){
-            this.module = module;
-            BaseView.prototype.initialize.call(this, options);
+            CesiumView.prototype.initialize.call(this, options);
+            //this.module = module;
             if (webgnome.model.get('mode') !== 'adios'){
                 this.listenTo(webgnome.cache, 'rewind', this.rewind);
                 this.modelMode = 'gnome';
@@ -72,7 +70,7 @@ define([
         },
 
         render: function(){
-            BaseView.prototype.render.call(this);
+            CesiumView.prototype.render.call(this);
             if (this.modelMode !== 'adios') {
                 this.renderTrajectory();
             } else {
@@ -90,7 +88,7 @@ define([
             this.controlsListeners();
 
             this.overlay.append(this.controls.$el);
-            this.$el.append(this.overlay);
+            this.$el.prepend(this.overlay);
             // equivalent to $( document ).ready(func(){})
             $(_.bind(function() {
                 this.renderCesiumMap();
@@ -127,17 +125,6 @@ define([
 
         spillListeners: function(){
             this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
-        },
-
-        viewGnomeMode: function() {
-            webgnome.model.set('mode', 'gnome');
-            this.modelMode = 'gnome';
-            webgnome.model.save(null, {
-                success: function(){
-                    webgnome.router.navigate('config', true);
-                    webgnome.router._cleanup();
-                }
-            });
         },
 
         viewWeathering: function() {
@@ -268,70 +255,7 @@ define([
             if(!this.layers){
                 this.layers = {};
             }
-
-            // Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
-            // var image_providers = Cesium.createDefaultImageryProviderViewModels();
-            // var default_image = new Cesium.ProviderViewModel({
-                // name: 'No imagery selected',
-                // tooltip: '',
-                // iconUrl: '/img/no_basemap.png',
-                // creationFunction: function(){
-                    // return new Cesium.SingleTileImageryProvider({
-                        // url: '/img/globe.png'
-                    // });
-                // },
-            // });
-            // image_providers.unshift(default_image);
-            var west = -130.0;
-            var south = 20.0;
-            var east = -60.0;
-            var north = 60.0;
-            
-            var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
-            
-            Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
-            Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
-            this.viewer = new Cesium.Viewer('map', {
-                animation: false,
-                selectionIndicator : false,
-                infoBox : false,
-                baseLayerPicker: false,
-                vrButton: false,
-                geocoder: false,
-                homeButton: false,
-                timeline: false,
-                sceneModePicker: false,
-                targetFrameRate: 60,
-                navigationHelpButton: false,
-                navigationInstructionsInitiallyVisible: false,
-                skyAtmosphere: false,
-                sceneMode: Cesium.SceneMode.SCENE2D,
-                mapProjection: new Cesium.WebMercatorProjection(),
-                //mapProjection: new Cesium.GeographicProjection(),
-                //selectedImageryProviderViewModel: default_image,
-                //imageryProviderViewModels: image_providers,
-                imageryProvider : new Cesium.SingleTileImageryProvider({
-                    url: '/img/globe.png'
-                }),
-                creditContainer: 'map',
-                clockViewModel: new Cesium.ClockViewModel(new Cesium.Clock({
-                   canAnimate: false,
-                  shouldAnimate: false
-                })),
-                requestRenderMode : true,
-                maximumRenderTimeChange : Infinity,
-                contextOptions: {
-                    webgl:{
-                        preserveDrawingBuffer:true,
-                    },
-                },
-            });
-            this.viewer.resolutionScale = window.devicePixelRatio;
-            this.viewer.scene.postProcessStages.fxaa.enabled = false;
-            this.viewer.scene.highDynamicRange = false;
-            this.viewer.scene.globe.enableLighting = false;
-            this.viewer.scene.postRender.addEventListener(_.bind(function(s,t) {this._canRun = true;}, this));
-            this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
+            this.listenTo(this, 'requestRender', this.requestRender);
             $('.cesium-widget-credits').hide();
             this.graticuleContainer = $('.overlay');
             this.graticule = new Graticule(false, this.viewer.scene, 10, this.graticuleContainer);
@@ -339,33 +263,6 @@ define([
             this.viewer.scene.fog.enabled = false;
             this.viewer.scene.pickTranslucentDepth = true;
             this.load();
-/*
-            this.renderSpills();
-
-            this.layers.map = new Cesium.GeoJsonDataSource();
-            this.layers.map.clampToGround = false;
-            webgnome.model.get('map').getGeoJSON(_.bind(function(geojson){
-                var loading = this.viewer.dataSources.add(this.layers.map.load(geojson, {
-                    strokeWidth: 0,
-                    stroke: Cesium.Color.WHITE.withAlpha(0),
-                    //fill: Cesium.Color.GREEN.withAlpha(0.4)
-                }));
-                var bounds;
-                if(webgnome.model.get('map').get('obj_type') !== 'gnome.map.GnomeMap'){
-                    bounds = webgnome.model.get('map').get('map_bounds');
-                    this.viewer.flyTo(loading, {
-                        duration: 0.25
-                    });
-                    this.load();
-                } else {
-                    // fly to a gridded current instead
-                    bounds = webgnome.model.get('map').get('map_bounds');
-                    this.viewer.flyTo(loading, {
-                        duration: 0.25
-                    });
-                }
-            }, this));
-*/
         },
 
         load: function(){
@@ -519,48 +416,7 @@ define([
                 this.run();
             }
         },
-        /*
-        loop: function(){
-            if(this.state === 'playing' && this.frame < webgnome.model.get('num_time_steps') - 1 ||
-               this.state === 'next' && this.frame < webgnome.model.get('num_time_steps') - 1){
-                if (webgnome.cache.length > this.controls.getSliderValue() && webgnome.cache.length !== 0){
-                    // the cache has the step, just render it
-                        this.rframe = setTimeout(
-                            _.bind(this.renderStep, this),
-                            1000/this.getDefaultFPS(),
-                            {step:this.controls.getSliderValue()}
-                        );
-                } else  {
-                        ;
-                    if(webgnome.cache.isHalted){
-                        webgnome.cache.resume();
-                    }
-                    if (webgnome.cache.length === this.controls.getSliderValue()) {
-                        this.listenToOnce(webgnome.cache, 'step:received', this.renderStep);
-                        //webgnome.cache.on('step:received', this.renderStep, this);
-                    }
-                    if (!webgnome.cache.streaming) {
-                        webgnome.cache.getSteps();
-                    } else {
-                        this.rframe = setTimeout(
-                            _.bind(this.renderStep, this),
-                            1000/this.getDefaultFPS(),
-                            {step:this.controls.getSliderValue()}
-                        );
-                    }
-                }
-                if(this.state === 'next'){
-                    this.pause();
-                }
-            } else {
-                this.pause();
-                    if (webgnome.cache.length === this.controls.getSliderValue()) {
-                        this.listenToOnce(webgnome.cache, 'step:received', this.renderStep);
-                        //webgnome.cache.on('step:received', this.renderStep, this);
-                    }
-            }
-        },
-*/
+
         getCaptureOpts: function() {
             var paramObj = {format: 'gif',
                             framerate:6,
@@ -833,72 +689,6 @@ define([
 
         uvImage: function(magnitude, id){
             return this.current_arrow[id][Math.round(Math.abs(magnitude)*10)/10];
-        },
-
-        // renderIceImage: function(step){
-        //     var source;
-        //     var ice_data = this.$('.ice-tc input[type="radio"]:checked').val();
-
-        //     if(step && step.get('IceImageOutput') && this.tc_ice && this.tc_ice.length > 0){
-        //         var image = step.get('IceImageOutput')[ice_data + '_image'];
-        //         var bb = step.get('IceImageOutput').bounding_box;
-        //         var coords = [[bb[0], [bb[0][0], bb[1][1]], bb[1], [bb[1][0], bb[0][1]]]];
-        //         var poly = new ol.geom.Polygon(coords).transform('EPSG:4326', 'EPSG:3857');
-        //         source = new ol.source.ImageStatic({
-        //             url: image,
-        //             imageSize: [1000, 1000],
-        //             imageExtent: poly.getExtent(),
-        //             projection: step.get('IceImageOutput').projection,
-        //             imageLoadFunction: function(imageTile, src){
-        //                 var imageElement = imageTile.getImage();
-        //                 imageElement.src = src;
-        //             }
-        //         });
-        //     } else {
-        //         source = new ol.source.ImageStatic({
-        //             url: 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
-        //             imageSize: [1, 1],
-        //             imageExtent: [-20000000000, -2000000000, 2000000000, 20000000],
-        //             imageLoadFunction: function(imageTile, src){
-        //                 var imageElement = imageTile.getImage();
-        //                 imageElement.src = src;
-        //             }
-        //         });
-        //     }
-
-        //     this.IceImageLayer.setSource(source);
-        // },
-
-        renderIce: function(step){
-            var outputter = webgnome.model.get('outputters').findWhere({obj_type: 'gnome.outputters.json.IceJsonOutput'});
-            if(step && step.get('IceJsonOutput') && outputter.get('ice_movers').length > 0 && this.ice_grid){
-                var mover = outputter.get('ice_movers').at(0);
-                var data = step.get('IceJsonOutput').data[mover.get('id')];
-                if(!data){ return null; }
-
-                var vis = $('.ice-tc input[type="radio"]:checked').val();
-                var colorBuffer = new Uint8Array(4);
-                colorBuffer[2] = 255;
-
-                if(data[vis].length > 0){
-                    // update existing grid with color data
-                    for(var cell = data[vis].length; cell--;){
-                        this.iceValueToAlpha(vis, data[vis][cell], colorBuffer);
-                        if(colorBuffer[3] !== this.ice_grid[cell].color[3]){
-                            this.ice_grid[cell].color[3] = colorBuffer[3];
-                            this.ice_grid[cell].color = this.ice_grid[cell].color;
-                        }
-                    }
-                }
-            }
-        },
-
-        iceValueToAlpha: function(name, value, colorBuffer){
-            if(name[0] === 'c'){
-                colorBuffer[3] = ~~(value * 255);
-            } else {
-                colorBuffer[3] = ~~((value * 0.1666666667) * 255);
-            }
         },
 
         toggleGrid: function(e){

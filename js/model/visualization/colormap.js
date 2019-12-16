@@ -3,10 +3,11 @@ define([
     'jquery',
     'backbone',
     'd3',
-    'tinycolor'
-], function(_, $, Backbone, d3, tinycolor){
+    'tinycolor',
+    'model/visualization/appearance'
+], function(_, $, Backbone, d3, tinycolor, AppearanceModel){
     'use strict';
-    var colormapModel = Backbone.Model.extend({
+    var colormapModel = AppearanceModel.extend({
         defaults: function() {
             return {
                 "alphaType": "mass",
@@ -25,12 +26,13 @@ define([
                 "_customScheme": ['#000000'],
                 //add new discrete schemes as arrays of hex strings
                 "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr','Dark2'],
-                "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool']
+                "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool'],
+                "obj_type": 'gnome.utilities.appearance.Colormap'
             };
         },
 
         initialize: function(attrs, options) {
-            Backbone.Model.prototype.initialize.call(this, attrs, options);
+            AppearanceModel.prototype.initialize.call(this, attrs, options);
             this.listenTo(this, 'change:colorScaleRange', this._saveCustomScheme);
             this.listenTo(this, 'change:map_type', this._changeMapType);
             this.listenTo(this, 'change:scheme', this._applyScheme);
@@ -40,16 +42,18 @@ define([
         },
 
         initScales: function() {
+            var ns;
             var domain = this.get('numberScaleDomain');
             if (this.get('numberScaleType') === 'linear') {
-                this.numScale = d3.scaleLinear()
+                ns = d3.scaleLinear()
                     .domain([domain[0], domain[1]])
                     .range([0,1]);
             } else {
-                this.numScale = d3.scaleLog()
+                ns = d3.scaleLog()
                     .domain([domain[0], domain[1]])
                     .range([0,1]);
             }
+            this.numScale = ns
         },
 
         syncRanges: function(silent) {

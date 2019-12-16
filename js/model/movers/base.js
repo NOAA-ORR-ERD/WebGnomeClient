@@ -26,6 +26,10 @@ define([
             };
         },
 
+        model: {
+            _appearance: MoverAppearance
+        },
+
         vec_max: 4.0,
         n_vecs: 40,
 
@@ -55,11 +59,9 @@ define([
                 });
 
                 this._linesPrimitive = new Cesium.PrimitiveCollection();
+                this.setupVis();
+                this.listenTo(this.get('_appearance'), 'change', this.updateVis);
 
-                this.get('_appearance').fetch().then(_.bind(function() {
-                    this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-                    this.setupVis();
-                }, this));
             }
         },
 

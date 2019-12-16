@@ -8,7 +8,13 @@ define([
     'use strict';
 
     var SpillAppearanceModel = BaseAppearance.extend({
+
+        model: {
+            colormap: ColorMap
+        },
+
         defaults: function() { return {
+            obj_type: 'gnome.utilities.appearance.SpillAppearance',
             pin_on: true,
             les_on: true,
             scale: 1,
@@ -76,7 +82,7 @@ define([
         initialize: function(model) {
             BaseAppearance.prototype.initialize.call(this, model);
 
-            this.listenTo(this.get('colormap'), 'change', this.save);
+            //this.listenTo(this.get('colormap'), 'change', this.save);
             //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
@@ -223,36 +229,6 @@ define([
             }
 
             output._updateRequestedDataTypes(dtype);
-        },
-
-        save: function(attrs, options) {
-            if (this.get('id')) {
-                var json = this.toJSON();
-                json.colormap = this.get('colormap').toJSON();
-
-                this.appearance_cache.setItem(this.get('id') + '_appearance',
-                                              json);
-            }
-        },
-
-        fetch: function(options) {
-            return new Promise(_.bind(function(resolve, reject) {
-                this.appearance_cache.getItem(this.get('id') + '_appearance').then(
-                    _.bind(function(attrs) {
-                        if (attrs && attrs.colormap) {
-                            this.get('colormap').set(attrs.colormap);
-
-                            attrs.colormap = this.get('colormap');
-                            this.set(attrs);
-
-                            resolve(attrs);
-                        }
-                        else {
-                            resolve(attrs);
-                        }
-                    }, this)
-                );
-            }, this));
         }
     });
 
