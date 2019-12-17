@@ -39,6 +39,10 @@ define([
         },
 
         initialize: function(options) {
+            var oldsavetrigger = false;
+            if (_.has(options, 'id') && !_.has(options,'_appearance')) {
+                oldsavetrigger = true;
+            }
             BaseModel.prototype.initialize.call(this, options);
 
             this.les = new Cesium.BillboardCollection({
@@ -75,6 +79,9 @@ define([
             this._certain = [];
             this._uncertain = [];
             this.get('_appearance').setUnitConversionFunction(undefined, this.get('units'));
+            if (oldsavetrigger) {
+                this.save();
+            }
         },
 
         getBoundingRectangle: function() {
@@ -273,6 +280,7 @@ define([
         addListeners: function() {
             this.listenTo(this.get('substance'), 'change', this.substanceChange);
             this.listenTo(this.get('release'), 'change', this.releaseChange);
+            this.listenTo(this.get('_appearance'), 'change', this._appearanceChange);
             this.listenTo(this.get('_appearance').get('colormap'), 'change', this.setColorScales);
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this.listenTo(this.get('substance'), 'change', this.initializeDataVis);
@@ -286,6 +294,10 @@ define([
 
         substanceChange: function(substance) {
             this.childChange('substance', substance);
+        },
+
+        _appearanceChange: function(_appearance) {
+            this.childChange('_appearance', _appearance);
         },
 
         getSubstance: function() {
