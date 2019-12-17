@@ -48,7 +48,7 @@ define([
             this._locVis = new Cesium.EntityCollection();
 
             this.calculate();
-            this.initializeDataVis();
+            this.initializeDataVis(options);
             this.setupVis();
 
             if (webgnome.hasModel() && webgnome.model.getSubstance()) {
@@ -87,8 +87,75 @@ define([
             }));
         },
 
+        initializeDataVis: function(options) {
+            // Contextualizing the default appearance for the properties
+            // of this spill
+            var data = this.get('_appearance').get('data');
+            var colormap = this.get('_appearance').get('colormap');
+            var max, min, newScaleType;
+            colormap.initScales();
+
+            if (!options || !_.has(options, '_appearance')) {
+                if (data === 'Age') {
+                    min = 0;
+                    max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
+                    newScaleType = 'linear';
+                }
+                else if (data === 'Surface Concentration') {
+                    min = 0.0001;
+                    max = this.estimateMaxConcentration();
+                    newScaleType = 'log';
+                }
+                else if (data === 'Viscosity') {
+                    min = 0.0000001;
+                    max = 250000;
+                    newScaleType = 'log';
+                }
+                else if (data === 'Depth') {
+                    min = 0;
+                    max = 100;
+                    newScaleType = 'linear';
+                }
+                else {
+                    min = 0;
+                    max = this._per_le_mass;
+                    newScaleType = 'linear';
+                }
+                colormap.setDomain(min, max, newScaleType);
+            }
+            this.setColorScales();
+        },
+
+        setColorScales: function() {
+            // Call this function to reconfigure the scales used to convert
+            // a data value into a color to be applied
+            var colormap = this.get('_appearance').get('colormap');
+
+            if (colormap.get('numberScaleType') === 'linear') {
+                this._numScale = d3.scaleLinear();
+            }
+            else if (colormap.get('numberScaleType') === 'log') {
+                this._numScale = d3.scaleLog();
+            }
+
+            this._numScale.domain(colormap.get('numberScaleDomain'))
+                .range(colormap.get('numberScaleRange'));
+
+            if (colormap.get('colorScaleType') === 'threshold') {
+                this._colorScale = d3.scaleThreshold();
+            }
+            else if (colormap.get('colorScaleType') === 'linear') {
+                this._colorScale = d3.scaleLinear();
+            }
+
+            this._colorScale.domain(colormap.get('colorScaleDomain'))
+                .range(colormap.get('colorScaleRange'));
+        },
+
         setupVis: function(attrs) {
             this.listenTo(this.get('_appearance'), 'change:data',
+                          this.initializeDataVis);
+            this.listenTo(this.get('_appearance'), 'resetToDefault',
                           this.initializeDataVis);
             this.setColorScales();
             this.genLEImages();
@@ -400,70 +467,6 @@ define([
             context2D.stroke();
 
             this._les_beached_image = this.les.add({image: canvas, show: false}).image;
-        },
-
-        initializeDataVis: function() {
-            // Contextualizing the default appearance for the properties
-            // of this spill
-            var data = this.get('_appearance').get('data');
-            var colormap = this.get('_appearance').get('colormap');
-            var max, min, newScaleType;
-            colormap.initScales();
-
-            if (data === 'Age') {
-                min = 0;
-                max = webgnome.model.get('num_time_steps') * webgnome.model.get('time_step');
-                newScaleType = 'linear';
-            }
-            else if (data === 'Surface Concentration') {
-                min = 0.0001;
-                max = this.estimateMaxConcentration();
-                newScaleType = 'log';
-            }
-            else if (data === 'Viscosity') {
-                min = 0.0000001;
-                max = 250000;
-                newScaleType = 'log';
-            }
-            else if (data === 'Depth') {
-                min = 0;
-                max = 100;
-                newScaleType = 'linear';
-            }
-            else {
-                min = 0;
-                max = this._per_le_mass;
-                newScaleType = 'linear';
-            }
-
-            colormap.setDomain(min, max, newScaleType);
-            this.setColorScales();
-        },
-
-        setColorScales: function() {
-            // Call this function to reconfigure the scales used to convert
-            // a data value into a color to be applied
-            var colormap = this.get('_appearance').get('colormap');
-
-            if (colormap.get('numberScaleType') === 'linear') {
-                this._numScale = d3.scaleLinear();
-            }
-            else if (colormap.get('numberScaleType') === 'log') {
-                this._numScale = d3.scaleLog();
-            }
-
-            this._numScale.domain(colormap.get('numberScaleDomain'))
-                .range(colormap.get('numberScaleRange'));
-
-            if (colormap.get('colorScaleType') === 'threshold') {
-                this._colorScale = d3.scaleThreshold();
-            }
-            else if (colormap.get('colorScaleType') === 'linear') {
-                this._colorScale = d3.scaleLinear();
-            }
-
-            this._colorScale.domain(colormap.get('colorScaleDomain'))
-                .range(colormap.get('colorScaleRange'));
         },
 
         colorLEs: function() {

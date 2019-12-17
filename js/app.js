@@ -142,6 +142,21 @@ define([
             });
         },
 
+        largeNumberFormatter(dispValue) {
+            if (typeof(dispValue) === 'string') {
+                return dispValue;
+            }
+            else {
+                if (dispValue < 1000) {
+                    return Number(dispValue).toPrecision(4);
+                } else if (dispValue < 10000000) {
+                    return Number.parseInt(dispValue, 10);
+                } else {
+                    return Number(dispValue).toPrecision(4);
+                }
+            }
+        },
+
         timeStringToSeconds: function(timeAttr) {
             // We would like to be consistent in how we represent time in
             // our model, and all other objects that implement a notion of

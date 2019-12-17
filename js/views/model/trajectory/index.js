@@ -293,7 +293,7 @@ define([
                         horizontalOrigin : Cesium.HorizontalOrigin.LEFT,
                         verticalOrigin : Cesium.VerticalOrigin.TOP,
                         pixelOffset : new Cesium.Cartesian2(horizOffset, vertOffset),
-                        eyeOffset : new Cesium.Cartesian3(0,0,-2),
+                        eyeOffset : new Cesium.Cartesian3(0,0,-5),
                     }
                 });
                 this._openCesiumObjectTooltips[pickedObject.id] = newEntity;
@@ -376,13 +376,13 @@ define([
                                         var lat = this.graticule.genDMSLabel('lat', loc.latitude);
                                         var ttstr = 'Mass: ' + ('\t' + mass).slice(-7) + ' kg';
                                         if (surf_conc !== 0) {
-                                            ttstr = ttstr + '\nS_Conc: \t' + surf_conc.toPrecision(3) + ' g/m^2';
+                                            ttstr = ttstr + '\nS_Conc: \t' + webgnome.largeNumberFormatter(surf_conc) + ' g/m^2';
                                         }
                                         if (viscosity !== 0) {
-                                            ttstr = ttstr + '\nViscosity: \t' + viscosity.toPrecision(3) + ' cSt';
+                                            ttstr = ttstr + '\nViscosity: \t' + webgnome.largeNumberFormatter(viscosity) + ' cSt';
                                         }
                                         if (density !== 0) {
-                                            ttstr = ttstr + '\nDensity: \t' + density.toPrecision(3) + ' kg/m^3';
+                                            ttstr = ttstr + '\nDensity: \t' + webgnome.largeNumberFormatter(density) + ' kg/m^3';
                                         }
                                         ttstr = ttstr +
                                             '\nLon: ' + ('\t' + lon) +

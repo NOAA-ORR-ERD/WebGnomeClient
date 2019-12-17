@@ -65,6 +65,21 @@ define([
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['', '', '', '', ''],
                                 },
+                            },
+                            {name: 'Detailed',
+                             data: 'Viscosity',
+                             units: 'cst',
+                             colormap: {
+                                "units": 'cst',
+                                "numberScaleType": "log",
+                                "numberScaleDomain": [0.0001,0.1000],
+                                "numberScaleRange": [0,1],
+                                "colorScaleType": "threshold",
+                                "colorScaleDomain": [0.0020, 0.0050, 0.0075, 0.0100, 0.0150, 0.0200],
+                                "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#9467bd","#d62728", "#000000"],
+                                "scheme": "Custom",
+                                "colorBlockLabels": ['', '', '', '', '', '', '', ''],
+                                },
                             }],
             ctrl_names: {
                          pin_on: 'Spill Location',
@@ -79,11 +94,12 @@ define([
             };
         },
 
-        initialize: function(model) {
-            BaseAppearance.prototype.initialize.call(this, model);
+        initialize: function(attrs, options) {
+            BaseAppearance.prototype.initialize.call(this, attrs, options);
 
             //this.listenTo(this.get('colormap'), 'change', this.save);
             //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
+            this.listenTo(this, 'change', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);

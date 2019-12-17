@@ -53,7 +53,7 @@ define([
                     .domain([domain[0], domain[1]])
                     .range([0,1]);
             }
-            this.numScale = ns
+            this.numScale = ns;
         },
 
         syncRanges: function(silent) {
