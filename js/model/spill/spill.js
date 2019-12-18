@@ -40,7 +40,7 @@ define([
 
         initialize: function(options) {
             var oldsavetrigger = false;
-            if (_.has(options, 'id') && !_.has(options,'_appearance')) {
+            if (options && _.has(options, 'id') && !_.has(options,'_appearance')) {
                 oldsavetrigger = true;
             }
             BaseModel.prototype.initialize.call(this, options);
