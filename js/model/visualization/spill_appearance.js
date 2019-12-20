@@ -51,7 +51,7 @@ define([
                                 "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
                                 },
                             },
-                            {name: 'Response Relevant',
+/*                             {name: 'Response Relevant',
                              data: 'Viscosity',
                              units: 'cst',
                              colormap: {
@@ -65,8 +65,8 @@ define([
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['', '', '', '', ''],
                                 },
-                            },
-                            {name: 'Detailed',
+                            }, */
+                            {name: 'Response Relevant',
                              data: 'Viscosity',
                              units: 'cst',
                              colormap: {
