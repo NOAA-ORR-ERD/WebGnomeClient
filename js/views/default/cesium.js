@@ -50,10 +50,11 @@ define([
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
             this.viewer = new Cesium.Viewer(this.el, options);
-            this.viewer.scene.globe.enableLighting = false;
-            this.viewer.scene.highDynamicRange = false;
             this.viewer.resolutionScale = window.devicePixelRatio;
             this.viewer.scene.postProcessStages.fxaa.enabled = false;
+            this.viewer.scene.highDynamicRange = false;
+            this.viewer.scene.globe.enableLighting = false;
+            this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
@@ -74,6 +75,10 @@ define([
             this.viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
             this.resetEntPickup(null); //attaches correct mouse handlers
             BaseView.prototype.render.call(this);
+        },
+
+        requestRender: function() {
+            this.viewer.scene.requestRender();
         },
 
         resetCamera: function(model) {

@@ -40,6 +40,10 @@ define([
             };
         },
 
+        model: {
+            _appearance: MapAppearance
+        },
+
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             
@@ -59,9 +63,7 @@ define([
 
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
-
-            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
-            
+            this.setupVis();
         },
 
         setupVis: function(attrs) {

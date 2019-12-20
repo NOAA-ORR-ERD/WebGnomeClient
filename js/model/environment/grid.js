@@ -19,6 +19,10 @@ define([
             };
         },
 
+        model: {
+            _appearance: GridAppearance
+        },
+
         initialize: function(attrs, options) {
             BaseModel.prototype.initialize.call(this, attrs, options);
             this.on('change', this.resetRequest, this);
@@ -29,7 +33,7 @@ define([
             this.getMetadata();
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._linesPrimitive = new Cesium.PrimitiveCollection();
-            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            this.setupVis();
         },
 
         setupVis: function(attrs) {

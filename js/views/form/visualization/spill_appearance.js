@@ -149,7 +149,7 @@ define([
             else {
                 this.model.get(name[0]).set(name[1], value);
             }
-        },
+        }
     });
 
     return spillAppearanceForm;

@@ -16,7 +16,8 @@ define([
         model: {
             time: Backbone.Model,
             grid: BaseGridObj,
-            variables: Backbone.Collection
+            variables: Backbone.Collection,
+            _appearance: VectorAppearance
         },
         defaults: function() {
             return {
@@ -35,7 +36,7 @@ define([
 
             this.listenTo(this.get('_appearance'), 'change', this.updateVis);
             this._vectors = new Cesium.BillboardCollection({blendOption: Cesium.BlendOption.TRANSLUCENT});
-            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
+            this.setupVis();
             //this.socketConnect();
 
         },
