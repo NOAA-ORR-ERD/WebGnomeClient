@@ -6,6 +6,7 @@ define([
     'router',
     'moment',
     'sweetalert',
+    'cesium',
     'text!../config.json',
     'model/cache',
     'model/session',
@@ -13,13 +14,22 @@ define([
     'model/risk/risk',
     'model/user_prefs',
     'views/default/loading',
-], function($, _, Backbone, Router, moment, swal,
+], function($, _, Backbone, Router, moment, swal, Cesium,
             config, Cache, SessionModel, GnomeModel, RiskModel, UserPrefs,
             LoadingView) {
     'use strict';
     var app = {
         obj_ref: {},
         initialize: function() {
+            
+            //Set Cesium default view rectangle
+            var west = -130.0;
+            var south = 20.0;
+            var east = -60.0;
+            var north = 60.0;
+            var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
+            Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
+            Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
             // Ask jQuery to add a cache-buster to AJAX requests, so that
             // IE's aggressive caching doesn't break everything.
             $.ajaxSetup({
@@ -130,6 +140,21 @@ define([
                     silent: true
                 });
             });
+        },
+
+        largeNumberFormatter(dispValue) {
+            if (typeof(dispValue) === 'string') {
+                return dispValue;
+            }
+            else {
+                if (dispValue < 1000) {
+                    return Number(dispValue).toPrecision(4);
+                } else if (dispValue < 10000000) {
+                    return Number.parseInt(dispValue, 10);
+                } else {
+                    return Number(dispValue).toPrecision(4);
+                }
+            }
         },
 
         timeStringToSeconds: function(timeAttr) {

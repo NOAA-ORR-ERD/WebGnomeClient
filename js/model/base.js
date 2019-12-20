@@ -1,39 +1,13 @@
 define([
     'underscore',
-    'backbone',
-    'model/visualization/appearance',
-    'collection/appearances',
-], function(_, Backbone, Appearance, AppearanceCollection){
+    'backbone'
+], function(_, Backbone){
     'use strict';
     var baseModel = Backbone.Model.extend({
 
         initialize: function(attrs, options){
             Backbone.Model.prototype.initialize.call(this, attrs, options);
             this.on('sync', this.rewindModel, this);
-
-            if(this.default_appearances) {
-                var apps = [];
-                for (var i = 0; i < this.default_appearances.length; i++) {
-                    options = {default: this.default_appearances[i]};
-                    if(this.id) {
-                        options.id = this.id + '_' + this.default_appearances[i].id;
-                    } else {
-                        options.id = this.default_appearances[i].id;
-                    }
-                    apps.push(new Appearance(this.default_appearances[i], options));
-                }
-                this.set('_appearance', new AppearanceCollection(apps, {id:this.id}));
-            } else if(this.default_appearance) {
-                this.set('_appearance', new Appearance({id: this.id},{default: this.default_appearance}));
-            }
-            if(this.get('_appearance')) {
-                if (this.get('id')) {
-                    this.get('_appearance').set('id', this.get('id'), {silent:true});
-                }
-                this.listenTo(this, 'change:id', _.bind(function(id) {
-                    this.get('_appearance').id = this.id;
-                }, this));
-            }
         },
 
         rewindModel: function(){
@@ -135,14 +109,6 @@ define([
             }
             this.changed[attr][child.get('id')] = child.changed;
             this.trigger('change', this);
-        },
-
-        toJSON: function(options){
-            var rv = Backbone.Model.prototype.toJSON.call(this, options);
-            if (rv._appearance){
-                delete rv._appearance;
-            }
-            return rv;
         },
     });
 

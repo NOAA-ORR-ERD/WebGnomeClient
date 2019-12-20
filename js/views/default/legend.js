@@ -58,6 +58,7 @@ define([
 
         genSpillLegendItem(spill) {
             var appearance = spill.get('_appearance');
+            appearance.setUnitConversionFunction(undefined, appearance.get('units'));
             var colormap = appearance.get('colormap');
 
             var item = $('<div class=spill-legend-item></div>');

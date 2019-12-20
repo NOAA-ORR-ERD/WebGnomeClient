@@ -6,6 +6,7 @@ define([
     'use strict';
     var vectorAppearanceModel = BaseAppearance.extend({
         defaults: {
+            obj_type: 'gnome.utilities.appearance.VectorAppearance',
             on: false,
             color: '#9370DB', //MEDIUMPURPLE,
             alpha: 0.7,

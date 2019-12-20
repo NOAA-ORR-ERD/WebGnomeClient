@@ -6,6 +6,7 @@ define([
     'use strict';
     var mapAppearanceModel = BaseAppearance.extend({
         defaults: {
+            obj_type: 'gnome.utilities.appearance.MapAppearance',
             map_on: true,
             sa_on: false,
             bounds_on: false,
