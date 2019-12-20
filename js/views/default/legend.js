@@ -78,7 +78,7 @@ define([
 
             var numColors = 1;
             numColors = colormap.get('colorScaleRange').length;
-            var stops = colormap.getAllNumberStops()
+            var stops = colormap.getAllNumberStops();
             var color = colormap.get('colorScaleRange')[0];
             var p1, p2;
             var label = colormap.get('colorBlockLabels')[0];
