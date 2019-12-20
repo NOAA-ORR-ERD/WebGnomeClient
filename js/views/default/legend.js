@@ -76,21 +76,15 @@ define([
             entryRows.append(attrCol, stopCol);
             item.append(name, substance, entryRows);
 
-            var numberDomain = colormap.get('numberScaleDomain').slice();
-            var colorDomain = colormap.get('colorScaleDomain').slice();
             var numColors = 1;
-            if (colormap.get('map_type') === 'discrete') {
-                numColors = colormap.get('colorScaleRange').length;
-            }
+            numColors = colormap.get('colorScaleRange').length;
+            var stops = colormap.getAllNumberStops()
             var color = colormap.get('colorScaleRange')[0];
-            var stops = _.clone(numberDomain);
             var p1, p2;
-            var args = [1, 0].concat(colorDomain);
-            Array.prototype.splice.apply(stops, args);
             var label = colormap.get('colorBlockLabels')[0];
             if (label === '') { //&nbsp;
-                p1 = this._toDisplayString(stops[i], colormap);
-                p2 = this._toDisplayString(stops[i+1], colormap);
+                p1 = this._toDisplayString(stops[0], colormap);
+                p2 = this._toDisplayString(stops[1], colormap);
                 label = '<' + p1 + ' - ' + p2;
                 if (numColors === 1) {
                     label = label + '+';
