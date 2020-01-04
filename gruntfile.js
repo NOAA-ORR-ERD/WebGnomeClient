@@ -15,45 +15,38 @@ module.exports = function(grunt){
         requirejs: {
             build: {
                 options: {
-                    baseUrl: 'js',
+                    appdir: 'js',
+                    baseUrl: 'node_modules',
                     mainConfigFile: 'js/main.js',
                     paths: {
-                        requireLib: 'lib/requirejs/require',
-                        boot: 'boot'
+                        requireLib: 'requirejs/require',
+                        boot: '../js/boot'
                     },
                     include: ['requireLib', 'boot'],
-                    name: 'main',
+                    //name: 'main',
+                    //name: 'boot',
                     out: 'dist/build/build.js',
                     optimize: 'none'
-                }
-            }
-        },
-        bower: {
-            install: {
-                options: {
-                    cleanTargetDir: true,
-                    copy: false,
-                    targetDir: './js/lib'
                 }
             }
         },
         connect: {
             start:{
                 options: {
-                    port: 8080,
+                    port: 8079,
                     hostname: '*'
                 }
             },
             keepalive: {
                 options:{
-                    port: 8080,
+                    port: 8079,
                     hostname: '*',
                     keepalive: true
                 }
             },
             build: {
                 options:{
-                    port: 8080,
+                    port: 8079,
                     hostname: '*',
                     keepalive: true,
                     base: 'dist/build/'
@@ -69,7 +62,9 @@ module.exports = function(grunt){
                     'img/*',
                     'css/images/*',
                     'resource/*',
-                    'js/lib/federated-analytics/federated-analytics.js',
+                    'node_modules/federated-analytics/federated-analytics.js',
+                    'node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js',
+                    'node_modules/@google-web-components/google-chart/index.html',
                     'js/session_timer.js'
                 ],
                 dest: 'dist/build/'
@@ -77,18 +72,18 @@ module.exports = function(grunt){
             cesium: {
                 expand: true,
                 src: [
-                    'js/lib/cesium/Build/Cesium/ThirdParty/**',
-                    'js/lib/cesium/Build/Cesium/Assets/**',
-                    'js/lib/cesium/Build/Cesium/Widgets/**',
-                    'js/lib/cesium/Build/Cesium/Workers/**',
-                    'js/lib/cesium/Build/Documentation/images/**'
+                    'node_modules/cesium/Build/Cesium/ThirdParty/**',
+                    'node_modules/cesium/Build/Cesium/Assets/**',
+                    'node_modules/cesium/Build/Cesium/Widgets/**',
+                    'node_modules/cesium/Build/Cesium/Workers/**',
+                    'node_modules/cesium/Build/Documentation/images/**'
                 ],
                 dest: 'dist/build/'
             },
             ccapture: {
                 expand: true,
                 src:[
-                    'js/lib/ccapture.js/src/gif.worker.js'
+                    'node_modules/ccapture.js/src/gif.worker.js'
                 ],
                 dest:'dist/build/'
             }

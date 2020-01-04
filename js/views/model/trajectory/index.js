@@ -18,11 +18,10 @@ define([
     'views/model/trajectory/right_pane',
     'views/default/legend',
     'gif',
-    'gifworker',
-    'whammy',
+    'gifworker'
 ], function($, _, CesiumView, module,moment, toastr, ControlsTemplate, Cesium,
             NoTrajMapTemplate, GnomeStep, Mousetrap, html2canvas, CCapture, Graticule, LayersView,
-            ControlsView, RightPaneView, LegendView, gif, gifworker, whammy){
+            ControlsView, RightPaneView, LegendView, gif, gifworker){
     'use strict';
     var trajectoryView = CesiumView.extend({
         className: function() {
