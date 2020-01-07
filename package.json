@@ -24,7 +24,7 @@
     "d3": "5.14.2",
     "dropzone": "5.5.1",
     "federated-analytics": "https://gitlab.orr.noaa.gov/erd/federated-analytics.git",
-    "flot": "4.1.1",
+    "jquery.flot": "0.8.3",
     "flotdirection": "https://github.com/NOAA-ORR-ERD/jquery-flot-direction.git",
     "flotextents": "https://github.com/NOAA-ORR-ERD/flot-extents.git",
     "flotfillarea": "https://github.com/analoureiro99/flot-fillArea-plugin.git",
