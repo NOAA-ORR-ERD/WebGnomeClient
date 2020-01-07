@@ -522,6 +522,7 @@ define([
                 //webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'paused';
                 clearInterval(this.rframe);
+                this._canRun = true;
             }
         },
 
