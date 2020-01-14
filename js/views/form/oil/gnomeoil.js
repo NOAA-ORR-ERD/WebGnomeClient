@@ -140,6 +140,7 @@ define([
 
 		    this.parseGroupAnalysis(parentObj, key);
 
+		    var i = 0;
 		    if (parentObj[key] === null) {
             	// When value of oil attribute is null
                 parentObj[key] = "--";
@@ -161,24 +162,24 @@ define([
             	parentObj[key] = parentObj[key].toFixed(2);
             }
             else if (key === 'density_ref_temps') {
-                var ref_temps_c = [];
-                var ref_temps_f = [];
-                for (var i = 0; i < parentObj[key].length; i++) {
-                    ref_temps_c[i] = this.kToC(parentObj[key][i]);
-                    ref_temps_f[i] = this.kToF(parentObj[key][i]);
+                var dens_ref_temps_c = [];
+                var dens_ref_temps_f = [];
+                for (i = 0; i < parentObj[key].length; i++) {
+                    dens_ref_temps_c[i] = this.kToC(parentObj[key][i]);
+                    dens_ref_temps_f[i] = this.kToF(parentObj[key][i]);
                 }
-                parentObj['density_ref_temps_c'] = ref_temps_c;
-                parentObj['density_ref_temps_f'] = ref_temps_f;
+                parentObj.density_ref_temps_c = dens_ref_temps_c;
+                parentObj.density_ref_temps_f = dens_ref_temps_f;
             }
             else if (key === 'kvis_ref_temps') {
-                var ref_temps_c = [];
-                var ref_temps_f = [];
-                for (var i = 0; i < parentObj[key].length; i++) {
-                    ref_temps_c[i] = this.kToC(parentObj[key][i]);
-                    ref_temps_f[i] = this.kToF(parentObj[key][i]);
+                var kvis_ref_temps_c = [];
+                var kvis_ref_temps_f = [];
+                for (i = 0; i < parentObj[key].length; i++) {
+                    kvis_ref_temps_c[i] = this.kToC(parentObj[key][i]);
+                    kvis_ref_temps_f[i] = this.kToF(parentObj[key][i]);
                 }
-                parentObj['kvis_ref_temps_c'] = ref_temps_c;
-                parentObj['kvis_ref_temps_f'] = ref_temps_f;
+                parentObj.kvis_ref_temps_c = kvis_ref_temps_c;
+                parentObj.kvis_ref_temps_f = kvis_ref_temps_f;
             }
             else if (key === 'kg_m_3') {
             	parentObj[key] = parentObj[key].toFixed(2);
@@ -187,29 +188,29 @@ define([
                 var saturate_fraction = 0;
                 var aromatic_fraction = 0;
                 var resin_fraction = 0;
-                var asphaltene_fraction = 0;
-                for (var i = 0; i < parentObj[key].length; i++) {
+                var asph_fraction = 0;
+                for (i = 0; i < parentObj[key].length; i++) {
                     var mass_fraction = parentObj[key][i];
-                    if (parentObj['sara_type'][i] === 'Saturates') { 
+                    if (parentObj.sara_type[i] === 'Saturates') {
                         saturate_fraction = saturate_fraction + mass_fraction;
                     }
-                    else if (parentObj['sara_type'][i] === 'Aromatics') { 
+                    else if (parentObj.sara_type[i] === 'Aromatics') {
                         aromatic_fraction = aromatic_fraction + mass_fraction;
                     }
-                    else if (parentObj['sara_type'][i] === 'Resins') { 
+                    else if (parentObj.sara_type[i] === 'Resins') {
                         resin_fraction = resin_fraction + mass_fraction;
                     }
-                    else if (parentObj['sara_type'][i] === 'Asphaltenes') { 
-                        asphaltene_fraction = asphaltene_fraction + mass_fraction;
+                    else if (parentObj.sara_type[i] === 'Asphaltenes') {
+                        asph_fraction = asph_fraction + mass_fraction;
                     }
                 }
-                parentObj['saturate_fraction'] = saturate_fraction.toFixed(2);
-                parentObj['aromatic_fraction'] = aromatic_fraction.toFixed(2);
-                parentObj['resin_fraction'] = resin_fraction.toFixed(2);
-                parentObj['asphaltene_fraction'] = asphaltene_fraction.toFixed(2);
+                parentObj.saturate_fraction = saturate_fraction.toFixed(2);
+                parentObj.aromatic_fraction = aromatic_fraction.toFixed(2);
+                parentObj.resin_fraction = resin_fraction.toFixed(2);
+                parentObj.asphaltene_fraction = asph_fraction.toFixed(2);
             }
             else if (key === 'categories') {
-                for (var i = 0; i < parentObj[key].length; i++) {
+                for (i = 0; i < parentObj[key].length; i++) {
                     var parentCategory = parentObj[key][i].parent.name;
                     var childCategory = parentObj[key][i].name;
                     parentObj[key][i] = parentCategory + '-' + childCategory;
