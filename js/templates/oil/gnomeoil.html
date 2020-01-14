@@ -1,0 +1,230 @@
+<div id="gnomeOilContainer">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>{{ data.name }}</h4>
+        </div>
+    </div>
+    <div>
+        <div class="pull-right estimated">
+            <code>Some values are estimated</code>
+        </div>
+    	<ul class="nav nav-tabs" id="oiltabs">
+    	    <li class="generalinfo active">
+    	        <a href="#generalinfo-oil_{{ viewName }}" data-toggle="tab">General Info</a>
+    	    </li>
+    	    <li class="properties">
+    	        <a href="#properties_{{ viewName }}" data-toggle="tab">Properties</a>
+    	    </li>
+    	    <li class="distillation">
+    	        <a href="#distillation_{{ viewName }}" data-toggle="tab">Components</a>
+    	    </li>
+    	</ul>
+
+    	<div class="tab-content">
+    		<div class="tab-pane active" id="generalinfo-oil_{{ viewName }}">
+    			<div class="row">
+    				<div class="col-md-12">
+    					<div><label>Adios Oil ID:</label> {{ data.adios_oil_id }}</div>
+    				</div>
+    			</div>
+    		</div>
+
+    		<div class="tab-pane" id="properties_{{ viewName }}">
+    			<div class="row">
+    				<div class="col-md-6">
+    					<div>
+    					    <label class="info" title="The American Petroleum Institute gravity, or API gravity, is a measure of how heavy or light a petroleum liquid is compared to fresh water: if its API gravity is greater than 10, it is lighter and floats on water; if less than 10, it is heavier and sinks.">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+    					        API:
+    					    </label>
+    					    {{ data.api }}
+    					</div>
+    				</div>
+    				<div class="col-md-6">
+                        <label class="info" title="Pour point is the lowest temperature at which an oil will flow under specified conditions. It is roughly equivalent to melting point for pure substances, but because oil is a mixture of compounds, pour point is difficult to measure precisely, and may vary somewhat from sample to sample.">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            Pour Point &deg;F (&deg;C):
+                        </label>
+                        {% var pour_point_c = (data.pour_point - 273).toFixed(1); %}
+                        {% var pour_point_f = ((pour_point_c * 9.0 / 5.0) + 32.0).toFixed(1); %}
+                        {{ pour_point_f }} <b>(</b> {{pour_point_c }} <b>)</b>
+    				</div>
+                    <div class="col-md-6">
+                        <label class="info" title="A flash point is defined as the minimum temperature at which an oil or fuel product will ignite on application of an ignition source.  This is different than the fire point of an oil, which is the temperature at which the vapor produced by an oil will continue to burn for at least 5 seconds after ignition.">
+                            <span class="glyphicon glyphicon-info-sign"></span>
+                            Flash Point  &deg;F (&deg;C):
+                        </label>
+                        {% var flash_point_c = (data.flash_point - 273.15).toFixed(1); %}
+                        {% var flash_point_f = ((flash_point_c * 9.0 / 5.0) + 32.0).toFixed(1); %}
+                        {{ flash_point_f }} <b>(</b> {{flash_point_c }} <b>)</b>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="info" title="Some oils will only form a stable emulsion when a certain fraction of the oil has evaporated. The emulsion constant is the fraction of the oil that must evaporate before the oil emulsifies.">
+                            <span class="glyphicon glyphicon-info-sign"></span> Emulsification Constant:
+                        </label>
+                        {{ data.bullwinkle_fraction }}
+                    </div>
+    				<div class="col-md-6">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+    					       <span class="info" title="A measure of a fluid's resistance to flow. Water has a kinematic viscosity of 1 centistoke (cSt) Oil viscosities are generally larger.">
+    					           Kinematic Viscosity
+    					           <span class="glyphicon glyphicon-info-sign"></span>
+    					       </span>
+                            </div>
+                            <div class="panel-body">
+            					{% if (!data.kvis){ %}
+            						<div>No Viscosity Data on Record.</div>
+            					{% } else { %}
+            						<table class="table">
+            							<tr>
+            								<th>Centistokes (cSt)</th>
+            								<th>Reference Temperature &deg;F (&deg;C)</th>
+            								<th>
+            									<label class="info" title="Weathering of zero indicates fresh oil">
+            								    	Weathering (%)
+             								    	<span class="glyphicon glyphicon-info-sign"></span>
+            									</label>
+            								</th>
+            							</tr>
+            						{% for (var i = 0; i < data.kvis.length; i++){ %}
+            							{% var centiStokes = parseFloat(data.kvis[i] * 1000000).toFixed(2); %}
+            							{% var viscosityWeather = (data.kvis_weathering[i] * 100).toFixed(1); %}
+            							<tr>
+            								<td>{{ centiStokes }}</td>
+            								<td>{{ data.kvis_ref_temps_f[i] }} <b>(</b> {{ data.kvis_ref_temps_c[i] }} <b>)</b> </td>
+            								<td>{{ viscosityWeather }}</td>
+            							</tr>
+            						{% } %}
+            						</table>
+            					{% } %}
+                            </div>
+                        </div>
+    				</div>
+                    <div class="col-md-6">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+                                <span class="info" title="The density of a substance is its mass per unit volume.  Buoyant oils have a density less than that of water (approximately 1000 kg/m^3 for fresh, and 1030 kg/m^3 for salt water)">
+                                    Density
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                </span>
+                            </div>
+                            <div class="panel-body">
+                                {% if (!data.densities){ %}
+                                    <div>No Density Data on Record.</div>
+                                {% } else { %}
+                                    <table class="table">
+                                        <tr>
+                                            <th>Density (g/cm^3)</th>
+                                            <th>Reference Temperature &deg;F (&deg;C)</th>
+            								<th>
+            									<label class="info" title="Weathering of zero indicates fresh oil">
+            								    	Weathering (%)
+             								    	<span class="glyphicon glyphicon-info-sign"></span>
+            									</label>
+            								</th>
+                                        </tr>
+                                    {% for (var i = 0; i < data.densities.length; i++){ %}
+                                        {% var density_g_cm_3 = (data.densities[i] / 1000).toFixed(3); %}
+                                        {% var densityWeather = (data.density_weathering[i] * 100).toFixed(1); %}
+                                        <tr>
+                                            <td>{{ density_g_cm_3 }}</td>
+            								<td>{{ data.density_ref_temps_f[i] }} <b>(</b> {{ data.density_ref_temps_c[i] }} <b>)</b> </td>
+                                            <td>{{ densityWeather }}</td>
+                                        </tr>
+                                    {% } %}
+                                    </table>
+                                {% } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel complete panel-default">
+                            <div class="panel-heading">
+                                Group Analysis (weight %)
+                            </div>
+                            <div class="panel-body">
+                                {% var total_mass = 0 %}
+                                {% for (var i = 0; i < data.mass_fraction.length; i++){ %}
+                                    {% total_mass = (data.mass_fraction[i]).toFixed(3); %}
+                                {% } %}
+                                <div class="col-md-6">
+                                    <label class="info" title="Nonpolar oil molecules without double bonds that including linear, branched, and cyclic saturated hydrocarbons.">
+                                        <span class="glyphicon glyphicon-info-sign"></span> Saturates:
+                                    </label>
+                                    {{ data.saturate_fraction }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Hydrocarbon molecules that contain one or more benzene rings.">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        Aromatics:
+                                    </label>
+                                    {{ data.aromatic_fraction }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Large hydrocarbon molecules with one to three sulfur, oxygen, or nitrogen atoms per molecule. Resin can dissolve in oil.">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        Resins:
+                                    </label>
+                                    {{ data.resin_fraction }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="info" title="Very large hydrocarbon molecules  that  have one to three sulfur, oxygen, or nitrogen atoms per molecule and  do not dissolve in oil by themselves.">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        Asphaltenes:
+                                    </label>
+                                    {{ data.asphaltene_fraction }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    			</div>
+    		</div>
+    		<div class="tab-pane" id="distillation_{{ viewName }}">
+    			<div class="row">
+                    <div class="col-md-12">
+        				<h4 class="info pull-left" title="Oil is a mixture of molecules that boil at different temperatures and pressures.  The table displays the cumulative mass fraction of the oil that boils off at atmospheric pressure for a specific liquid temperature of the oil and its corresponding produced vapor temperature.">Pseudo Components <span class="glyphicon glyphicon-info-sign"></span></h4>
+                        {% var tempCuts = null; %}
+                        {% if (data.mass_fraction) { %}
+                        {%     tempCuts = data.mass_fraction; %}
+                        {% } else if (data.mass_fraction) { %}
+                        {%     tempCuts = data.mass_fraction; %}
+                        {% } %}
+                        {% if (!tempCuts) { %}
+                            <div>No Pseudo Components on Record.</div>
+                        {% } else { %}
+                            <table class="table">
+                                <tr>
+                                    <th>Mass Fraction (%)</th>
+                                    <th>Boiling Point &deg;F (&deg;C)</th>
+                                    <th>Molecular Weight (g/mol) </th>
+                                    <th>Density (kg/m^3)</th>
+                                    <th>Sara Type</th>
+                                </tr>
+                            {% for (var i = 0; i < tempCuts.length; i++){ %}
+                                {% var count = i + 1; %}
+                                {% var percentCut = (tempCuts[i] * 100).toFixed(1); %}
+                                {% var molecular_weight = data.molecular_weight[i].toFixed(1); %}
+                                {% var boiling_point_c = (data.boiling_point[i] - 273).toFixed(1); %}
+                                {% var boiling_point_f = ((boiling_point_c * 9.0 / 5.0) + 32.0).toFixed(1); %}
+                                {% var component_density = (data.component_density[i] / 1000.).toFixed(3); %}
+                                <tr>
+                                    <td>{{ percentCut }}</td>
+                                    {% if (data.boiling_point[i]  == "--") { %}
+                                        <td> -- </td>
+                                    {% } else { %}
+                                        <td>{{ boiling_point_c }} <b>(</b> {{ boiling_point_f }} <b>)</b> </td>
+                                    {% } %}
+                                    <td>{{ molecular_weight }}</td>
+                                    <td>{{ component_density }}</td>
+                                    <td>{{ data.sara_type[i] }}</td>
+                                </tr>
+                            {% } %}
+                            </table>
+                        {% } %}
+                    </div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+</div>
