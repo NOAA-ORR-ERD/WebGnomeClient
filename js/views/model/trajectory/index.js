@@ -127,6 +127,17 @@ define([
             this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
         },
 
+        viewGnomeMode: function() {
+            webgnome.model.set('mode', 'gnome');
+            this.modelMode = 'gnome';
+            webgnome.model.save(null, {
+                success: function(){
+                    webgnome.router.navigate('config', true);
+                    webgnome.router._cleanup();
+                }
+            });
+        },
+
         viewWeathering: function() {
             webgnome.router.navigate('fate', true);
             this.hide();
