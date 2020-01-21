@@ -70,8 +70,8 @@ define([
         },
 
         render: function(){
-            CesiumView.prototype.render.call(this);
             if (this.modelMode !== 'adios') {
+                CesiumView.prototype.render.call(this);
                 this.renderTrajectory();
             } else {
                 this.renderNoTrajectory();
@@ -79,6 +79,10 @@ define([
         },
 
         renderNoTrajectory: function() {
+            if (this.viewer) {
+                this.viewer.destroy();
+                this.viewer = null;
+            }
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 

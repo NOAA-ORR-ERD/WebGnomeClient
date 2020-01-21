@@ -22,7 +22,7 @@ define([
         },
 
         url: function() {
-            return webgnome.config.oil_api + '/oil';
+            return webgnome.config.oil_api + '/gnome_oil';
         },
 
         fetchOil: function(id, cb) {
