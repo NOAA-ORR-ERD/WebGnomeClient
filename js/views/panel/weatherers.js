@@ -14,6 +14,9 @@ define([
             'gnome.weatherers.natural_dispersion.NaturalDispersion',
             'gnome.weatherers.dissolution.Dissolution',
         ],
+        events: {
+            'click input[type="checkbox"]': 'updateModel'
+        },
 
         initialize: function(options){
             BasePanel.prototype.initialize.call(this, options);
@@ -22,6 +25,7 @@ define([
         },
 
         render: function(){
+            BasePanel.prototype.render.call(this);
             var weatherers = webgnome.model.get('weatherers').filter(function(weatherer) {
                 return [
                     'gnome.weatherers.evaporation.Evaporation',
@@ -33,7 +37,10 @@ define([
             var evaporation = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.evaporation.Evaporation'});
             var dispersion = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.natural_dispersion.NaturalDispersion'});
             var emulsification = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.emulsification.Emulsification'});
-            
+            this.evaporation = evaporation;
+            this.dispersion = dispersion;
+            this.emulsification = emulsification;
+
             var wind_name;
             if (_.isNull(evaporation.get('wind'))) {
                 wind_name = 'No wind';
@@ -51,7 +58,31 @@ define([
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
             this.$('.panel-body').show();
-            BasePanel.prototype.render.call(this);
+        },
+
+        updateModel: function(e) {
+            var n = e.currentTarget.parentElement.getAttribute('name');
+            var tgts, name;
+            if (n === 'evap') {
+                tgts = [this.evaporation,];
+                name = '#evap';
+            } else if (n === 'disp') {
+                tgts = [this.dispersion,];
+                name = '#disp';
+            } else if (n === 'emul') {
+                tgts = [this.emulsification,];
+                name = '#emul';
+            }
+
+            var lock, w_on, w;
+            for (var i = 0; i < tgts.length; i++) {
+                w = tgts[i];
+                lock = this.$( name + '_lock')[0].checked;
+                w_on = this.$( name + '_on')[0].checked;
+                tgts[i].set('on_lock', lock);
+                tgts[i].set('on', w_on);
+            }
+            webgnome.model.save();
         }
     });
 
