@@ -26,9 +26,9 @@ define([
                 return webgnome.config.oil_api + '/gnome_oil/' + this.get('adios_oil_id');
             }
             else{
-                return webgnome.config.oil_api + '/oil';
+                return;
             }
-            //eturn webgnome.config.oil_api + '/gnome_oil/' + this.get('adios_oil_id');
+            //return webgnome.config.oil_api + '/gnome_oil/' + this.get('adios_oil_id');
         },
 
         parseTemperatures: function(){
