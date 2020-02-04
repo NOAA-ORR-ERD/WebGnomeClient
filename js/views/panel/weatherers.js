@@ -116,6 +116,7 @@ define([
         new: function(){
             var weathererForm = new WeatherersForm(null, webgnome.model);
             weathererForm.on('hidden', weathererForm.close);
+            weathererForm.on('save', _.bind(webgnome.model.default_env_refs.weatheringTrigger, webgnome.model.default_env_refs));
             weathererForm.render();
         }
     });
