@@ -1253,13 +1253,32 @@ nav.navbar{
 }
 
 .weatherer-view{
-    .active-header {
-        .glyphicon;
-        .glyphicon-off;
+
+    .attached-wind{
+        float: right;
     }
-    .lock-header {
-        .glyphicon;
-        .glyphicon-lock;
+    
+    .panel-heading {
+        .valid-check{
+            .glyphicon;
+            .glyphicon-time;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+            &.valid {
+                color: green;
+            }
+            &.semivalid {
+                color: yellow;
+            }
+            &.invalid {
+                color: red;
+            }
+    
+        }
+
     }
 }
 
@@ -1302,9 +1321,6 @@ nav.navbar{
 
         &:hover{
             .panel-heading{
-                > div{
-                    color: #a1a1a1;
-                }
                 
                 .add{
                     color: #337ab7;
@@ -1419,7 +1435,7 @@ nav.navbar{
         }
     }
 
-    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind{
+    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind {
         .panel{
             cursor: default;
 
@@ -1529,7 +1545,7 @@ nav.navbar{
                     float:right;
                 }
                 
-                .time_check{
+                .time-check{
                     .glyphicon;
                     .glyphicon-time;
                     color: green;

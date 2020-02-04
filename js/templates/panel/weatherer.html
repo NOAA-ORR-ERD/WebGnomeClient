@@ -1,18 +1,12 @@
 <div class="panel panel-default">
-	<div class="panel-heading">
-	    <div class="add"></div>
-	    <div class="state"></div>
-	    Weatherers
-	</div>
-	<div class="panel-body">
+    <div class="panel-heading">
+        <div class="add" title="Edit Weatherers"></div>
+        <div class="valid-check {{valid_check}}" title="{{weathering_status}}"></div>
+        Weatherers
+    </div>
+    <div class="panel-body">
         <div class="list">
-            <div class="single row">
-                <div class="col-sm-9">
-                    <div class="active-header"></div>
-                    <div class="lock-header"></div>
-                </div>
-            </div>
-            <div class="single row" data-id="{{ evaporation.get('id') }}">
+            <div class="row" data-id="{{ evaporation.get('id') }}">
                 <div class="col-sm-9">
                     <label name="evap">
                     {% if(evaporation.get('on')){ %}
@@ -20,51 +14,34 @@
                     {% } else { %}
                         <input type="checkbox" id="evap_on">
                     {% } %}
-                    {% if(evaporation.get('on_lock')){ %}
-                        <input type="checkbox" id="evap_lock" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="evap_lock">
-                    {% } %}
                          Evaporation
                     </label>
                 </div>
             </div>
-            <div class="single row" data-id="{{ dispersion.get('id') }}">
+            <div class="row" data-id="{{ dispersion.get('id') }}">
                 <div class="col-sm-9">
                     <label name="disp" >
                     {% if(dispersion.get('on')){ %}
                         <input type="checkbox" id="disp_on" checked="checked">
                     {% } else { %}
                         <input type="checkbox" id="disp_on">
-                    {% } %}
-                    {% if(dispersion.get('on_lock')){ %}
-                        <input type="checkbox" id="disp_lock" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="disp_lock">
                     {% } %} Natural Dispersion
                     </label>
                 </div>
             </div>
-            <div class="single row" data-id="{{ emulsification.get('id') }}">
+            <div class="row" data-id="{{ emulsification.get('id') }}">
                 <div class="col-sm-9">
                     <label name="emul" >
                     {% if(emulsification.get('on')){ %}
                         <input type="checkbox" id="emul_on" checked="checked">
                     {% } else { %}
                         <input type="checkbox" id="emul_on">
-                    {% } %}
-                    {% if(emulsification.get('on_lock')){ %}
-                        <input type="checkbox" id="emul_lock" checked="checked">
-                    {% } else { %}
-                        <input type="checkbox" id="emul_lock">
                     {% } %} Emulsification
                     </label>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-12 text-right">
-                    <span class="label label-info">{{ wind_name }}</span>
-                </div>
+                <span class="label label-info attached-wind">{{ wind_name }}</span>
             </div>
             
 <!--
