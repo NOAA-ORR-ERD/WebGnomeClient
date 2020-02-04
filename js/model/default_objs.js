@@ -133,7 +133,7 @@ define([
             !_.isUndefined(this.get('water')) &&
             !_.isNull(this.get('water')) &&
             !_.isUndefined(this.get('wind')) &&
-            !_.isNull(this.get('wind')))
+            !_.isNull(this.get('wind')));
         },
 
         weatheringTrigger: _.debounce(function() {

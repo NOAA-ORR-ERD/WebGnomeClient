@@ -20,12 +20,12 @@ define([
             if (!_.isUndefined(gnomeModel)){
                 this.model = gnomeModel;
             } else {
-                this.model = webgnome.model
+                this.model = webgnome.model;
             }
         },
 
         render: function(options) {
-            this.body = _.template(WeatherersFormTemplate, {model:this.model})
+            this.body = _.template(WeatherersFormTemplate, {model:this.model});
             FormModal.prototype.render.call(this, options);
         },
 
@@ -35,7 +35,7 @@ define([
             if (e.currentTarget.type === "checkbox") {
                 val = e.currentTarget.checked;
             } else {
-                val = this.$(e.currentTarget).val()
+                val = this.$(e.currentTarget).val();
             }
             this.model.set(name, val);
         }

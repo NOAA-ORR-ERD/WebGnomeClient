@@ -54,7 +54,7 @@ define([
             var valid_check = webgnome.model.default_env_refs.weatheringValid() ? 'valid' : 'invalid';
             if (valid_check === 'valid') {
                 if (webgnome.model.get('manual_weathering')) {
-                    valid_check = 'semivalid'
+                    valid_check = 'semivalid';
                 }
             }
             var weathering_status = {
