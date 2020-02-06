@@ -12,11 +12,12 @@ define([
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
     'views/form/outputter/shape',
+    'views/form/outputter/binary',
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
-             LocationForm, NetCDFForm, KMZForm, ShapeForm, GnomeModel) {
+             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -59,6 +60,7 @@ define([
                 'click .netcdf': 'netcdf',
                 'click .kmz': 'kmz',
                 'click .shape': 'shape',
+                'click .binary': 'binary',
 
             // "Help" menu
             'click .about': 'about',
@@ -241,6 +243,18 @@ define([
             }, this));
 
             shapeForm.render();
+        },
+
+        binary: function(event) {
+            event.preventDefault();
+            var binaryForm = new BinaryForm();
+
+            binaryForm.on('wizardclose', binaryForm.close);
+            binaryForm.on('save', _.bind(function(model){
+                binaryForm.close();
+            }, this));
+
+            binaryForm.render();
         },
         // end Save menu
 
