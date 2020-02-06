@@ -3,10 +3,11 @@ define([
     'jquery',
     'backbone',
     'views/panel/base',
+    'views/form/weatherers',
     'text!templates/panel/weatherer.html'
-], function(_, $, Backbone, BasePanel, WeathererPanelTemplate){
+], function(_, $, Backbone, BasePanel, WeatherersForm, WeathererPanelTemplate){
     var weathererPanel = BasePanel.extend({
-        className: 'col-md-3 water object weatherer-view',
+        className: 'col-md-3 water object panel-view weatherer-view',
 
         models: [
             'gnome.weatherers.evaporation.Evaporation',
@@ -14,8 +15,11 @@ define([
             'gnome.weatherers.natural_dispersion.NaturalDispersion',
             'gnome.weatherers.dissolution.Dissolution',
         ],
-        events: {
-            'click input[type="checkbox"]': 'updateModel'
+
+		events: function() {
+            return _.defaults({
+                'click input[type="checkbox"]': 'updateModel'
+            }, BasePanel.prototype.events);
         },
 
         initialize: function(options){
@@ -25,7 +29,6 @@ define([
         },
 
         render: function(){
-            BasePanel.prototype.render.call(this);
             var weatherers = webgnome.model.get('weatherers').filter(function(weatherer) {
                 return [
                     'gnome.weatherers.evaporation.Evaporation',
@@ -47,17 +50,32 @@ define([
             } else {
                 wind_name = evaporation.get('wind').get('name');
             }
+
+            var valid_check = webgnome.model.default_env_refs.weatheringValid() ? 'valid' : 'invalid';
+            if (valid_check === 'valid') {
+                if (webgnome.model.get('manual_weathering')) {
+                    valid_check = 'semivalid';
+                }
+            }
+            var weathering_status = {
+                'valid': 'Weathering is activated and managed by the model',
+                'semivalid': 'Weathering is possible but activation is controlled manually',
+                'invalid': 'Model does not have required components to activate weathering'
+            }[valid_check];
             
             var compiled = _.template(WeathererPanelTemplate, {
                 weatherers: weatherers,
                 evaporation: evaporation,
                 dispersion: dispersion,
                 emulsification: emulsification,
-                wind_name: wind_name
+                wind_name: wind_name,
+                valid_check: valid_check,
+                weathering_status: weathering_status
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
             this.$('.panel-body').show();
+            BasePanel.prototype.render.call(this);
         },
 
         updateModel: function(e) {
@@ -74,15 +92,32 @@ define([
                 name = '#emul';
             }
 
-            var lock, w_on, w;
+            var w_on;
             for (var i = 0; i < tgts.length; i++) {
-                w = tgts[i];
-                lock = this.$( name + '_lock')[0].checked;
                 w_on = this.$( name + '_on')[0].checked;
-                tgts[i].set('on_lock', lock);
                 tgts[i].set('on', w_on);
             }
             webgnome.model.save();
+        },
+
+        setupTooltips: function(){
+            BasePanel.prototype.setupTooltips.call(this);
+            var delay = {
+                show: 500,
+                hide: 100
+            };
+
+            this.$('.valid-check').tooltip({
+                delay: delay,
+                container: 'body'
+            });
+        },
+
+        new: function(){
+            var weathererForm = new WeatherersForm(null, webgnome.model);
+            weathererForm.on('hidden', weathererForm.close);
+            weathererForm.on('save', _.bind(webgnome.model.default_env_refs.weatheringTrigger, webgnome.model.default_env_refs));
+            weathererForm.render();
         }
     });
 

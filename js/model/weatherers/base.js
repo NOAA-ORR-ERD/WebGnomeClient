@@ -9,8 +9,7 @@ define([
 		urlRoot: '/weatherer/',
 
         defaults: {
-            'obj_type': 'gnome.weatherers.Weathering',
-            'on_lock': false
+            'obj_type': 'gnome.weatherers.Weathering'
         },
 
         cleanupMap: {
@@ -60,13 +59,13 @@ define([
                 );
 
                 this.listenTo(model.default_env_refs, 'weatheringOff', _.bind(function() {
-                    if (this.get('on') && !this.get('on_lock')) {
+                    if (this.get('on') && !webgnome.model.get('manual_weathering')) {
                         this.save({'on': false});
                     }
                 }, this));
 
                 this.listenTo(model.default_env_refs, 'weatheringOn', _.bind(function() {
-                    if (!this.get('on') && !this.get('on_lock')) {
+                    if (!this.get('on') && !webgnome.model.get('manual_weathering')) {
                         this.save({'on': true});
                     }
                 }, this));
