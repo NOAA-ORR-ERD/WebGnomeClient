@@ -50,8 +50,8 @@ define([
         rframe: 0,
 
         initialize: function(options){
+            this.module = module;
             CesiumView.prototype.initialize.call(this, options);
-            //this.module = module;
             if (webgnome.model.get('mode') !== 'adios'){
                 this.listenTo(webgnome.cache, 'rewind', this.rewind);
                 this.modelMode = 'gnome';
