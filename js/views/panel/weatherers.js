@@ -109,7 +109,7 @@ define([
                 hide: 100
             };
 
-            this.$('.valid-check').tooltip({
+            this.$('.valid-weathering, .weathering-control').tooltip({
                 delay: delay,
                 container: 'body'
             });
