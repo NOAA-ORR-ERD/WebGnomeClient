@@ -1,7 +1,12 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="add" title="Edit Weatherers"></div>
-        <div class="valid-check {{valid_check}}" title="{{weathering_status}}"></div>
+        {% if (valid_check == 'invalid') { %}
+            <div class="valid-weathering invalid" title="Model does not have all required components (wind/water/oil) to activate weathering"></div>
+        {% } %}
+        {% if (manual_on) { %}
+            <div class="weathering-control manual" title="Turning weathering on/off is under manual control"></div>
+        {% } %}
         Weatherers
     </div>
     <div class="panel-body">
