@@ -1259,24 +1259,34 @@ nav.navbar{
     }
     
     .panel-heading {
-        .valid-check{
+        .valid-weathering{
             .glyphicon;
-            .glyphicon-off;
+            .glyphicon-alert;
             color: green;
             padding: 2px;
             float:right;
             
             margin-right: 10px;
-            &.valid {
-                color: green;
-            }
-            &.semivalid {
-                color: yellow;
-            }
-            &.invalid {
+        
+        &.invalid {
                 color: red;
             }
-    
+                
+        }
+        
+        .weathering-control{
+            .glyphicon;
+            .glyphicon-lock;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+        
+        &.manual {
+                color: #BEBEBE;
+            }
+                
         }
 
     }

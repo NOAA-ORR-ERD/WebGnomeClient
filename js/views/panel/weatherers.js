@@ -50,18 +50,20 @@ define([
             } else {
                 wind_name = evaporation.get('wind').get('name');
             }
-
-            var valid_check = webgnome.model.default_env_refs.weatheringValid() ? 'valid' : 'invalid';
-            if (valid_check === 'valid') {
-                if (webgnome.model.get('manual_weathering')) {
-                    valid_check = 'semivalid';
-                }
-            }
-            var weathering_status = {
-                'valid': 'Weathering is activated and managed by the model',
-                'semivalid': 'Weathering is possible but activation is controlled manually',
-                'invalid': 'Model does not have required components to activate weathering'
-            }[valid_check];
+            
+            var weathering_on = (evaporation.get('on')  || dispersion.get('on') || emulsification.get('on'));
+            
+            var valid_check = 'valid';
+            if (weathering_on) {
+                valid_check = webgnome.model.default_env_refs.weatheringValid() ? 'valid' : 'invalid';
+                // if (valid_check === 'valid') {
+                    // if (webgnome.model.get('manual_weathering')) {
+                        // valid_check = 'semivalid';
+                    // }
+                // }                
+            } 
+            
+            var manual_on = (webgnome.model.get('manual_weathering'));
             
             var compiled = _.template(WeathererPanelTemplate, {
                 weatherers: weatherers,
@@ -70,7 +72,7 @@ define([
                 emulsification: emulsification,
                 wind_name: wind_name,
                 valid_check: valid_check,
-                weathering_status: weathering_status
+                manual_on: manual_on,
             });
             this.$el.html(compiled);
             this.$('.panel').addClass('complete');
