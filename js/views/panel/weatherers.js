@@ -64,7 +64,7 @@ define([
             } 
             
             var manual_on = (webgnome.model.get('manual_weathering'));
-            
+           
             var compiled = _.template(WeathererPanelTemplate, {
                 weatherers: weatherers,
                 evaporation: evaporation,
