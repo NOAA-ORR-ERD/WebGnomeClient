@@ -35,6 +35,7 @@ define([
     'model/outputters/netcdf',
     'model/outputters/kmz',
     'model/outputters/shape',
+    'model/outputters/binary',
     'model/weatherers/evaporation',
     'model/weatherers/dispersion',
     'model/weatherers/natural_dispersion',
@@ -63,7 +64,7 @@ define([
     IceMover, ComponentMover,
     TrajectoryOutputter, SpillOutputter, WeatheringOutputter,
     CurrentOutputter, IceOutputter, IceImageOutputter,
-    NetCDFOutputter, KMZOutputter, ShapeOutputter,
+    NetCDFOutputter, KMZOutputter, ShapeOutputter, BinaryOutputter,
     EvaporationWeatherer, DispersionWeatherer, NaturalDispersionWeatherer,
     EmulsificationWeatherer, DissolutionWeatherer,
     FayGravityViscous, Langmuir, WeatheringData,
@@ -79,6 +80,7 @@ define([
             'gnome.outputters.netcdf.NetCDFOutput',
             'gnome.outputters.shape.ShapeOutput',
             'gnome.outputters.kmz.KMZOutput',
+            'gnome.outputters.binary.BinaryOutput',
             'gnome.outputters.image.IceImageOutput',
             'gnome.outputters.geo_json.TrajectoryGeoJsonOutput'
         ],
@@ -119,7 +121,8 @@ define([
                 'gnome.outputters.image.IceImageOutput': IceImageOutputter,
                 'gnome.outputters.kmz.KMZOutput': KMZOutputter,
                 'gnome.outputters.netcdf.NetCDFOutput': NetCDFOutputter,
-                'gnome.outputters.shape.ShapeOutput': ShapeOutputter
+                'gnome.outputters.shape.ShapeOutput': ShapeOutputter,
+                'gnome.outputters.binary.BinaryOutput': BinaryOutputter
             },
             weatherers: {
                 'gnome.weatherers.evaporation.Evaporation': EvaporationWeatherer,
@@ -551,29 +554,6 @@ define([
         },
 
         isValidAdios: function() {
-            return false;
-        },
-
-        validWeathering: function() {
-            // if (this.get('weathering')){
-                // global flag is turned on for the model to be weathering
-                // make sure there is at least one weatherer turned on.
-                var on_weatherers = this.get('weatherers').filter(function(model){
-                    return model.get('on');
-                });
-
-                var water = this.get('environment').findWhere({obj_type: 'gnome.environment.water.Water'});
-                var substance = this.getSubstance();
-                var wind = this.getDefaultWind();
-
-                if (on_weatherers.length > 0 &&
-                    substance && substance.get('is_weatherable') &&
-                    water && webgnome.model.get('spills').length > 0 && wind){
-                    return true;
-                }
-
-            // }
-
             return false;
         },
 

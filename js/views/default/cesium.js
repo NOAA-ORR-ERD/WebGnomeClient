@@ -46,6 +46,7 @@ define([
             if (_.isUndefined(options)) {
                 options = {};
             }
+            BaseView.prototype.initialize.call(this, options);
             _.defaults(options, this.options());
             this.options = options;
             Cesium.BingMapsApi.defaultKey = 'Ai5E0iDKsjSUSXE9TvrdWXsQ3OJCVkh-qEck9iPsEt5Dao8Ug8nsQRBJ41RBlOXM';
@@ -54,11 +55,11 @@ define([
             this.viewer.scene.postProcessStages.fxaa.enabled = false;
             this.viewer.scene.highDynamicRange = false;
             this.viewer.scene.globe.enableLighting = false;
+            this.viewer.entities.withLabelOpen = [];
             this.listenTo(this, 'requestRender', _.bind(function() {this.viewer.scene.requestRender();}, this));
 
             this.mouseHandler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
             this.heldEnt = null;
-            this.viewer.entities.withLabelOpen = [];
         },
 
         render: function(){

@@ -11,17 +11,19 @@ define([
     'model/outputters/kmz',
     'model/outputters/netcdf',
     'model/outputters/shape',
+    'model/outputters/binary',
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment,
             OutputTemplate,
             FormModal, LoadingModal,
-            NoCleanUpModel, KMZModel, NetCDFModel, ShapeModel) {
+            NoCleanUpModel, KMZModel, NetCDFModel, ShapeModel, BinaryModel) {
     'use strict';
     var outputForm = FormModal.extend({
         models: {
             'gnome.outputters.netcdf.NetCDFOutput': NetCDFModel,
             'gnome.outputters.kmz.KMZOutput': KMZModel,
-            'gnome.outputters.shape.ShapeOutput': ShapeModel
+            'gnome.outputters.shape.ShapeOutput': ShapeModel,
+            'gnome.outputters.binary.BinaryOutput': BinaryModel
         },
 
         initialize: function(options, model) {
@@ -47,6 +49,9 @@ define([
             }
             else if (this.title === 'Shapefile Output') {
                 obj_type = 'gnome.outputters.shape.ShapeOutput';
+            }
+            else if (this.title === 'Binary Output') {
+                obj_type = 'gnome.outputters.binary.BinaryOutput';
             }
 
             model = webgnome.model.get('outputters').findWhere({'obj_type': obj_type});

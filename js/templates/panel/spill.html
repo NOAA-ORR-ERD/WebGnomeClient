@@ -32,7 +32,7 @@
                             <label>API: </label>
                             {{ substance.get('api').toFixed(1) }}
                         </div>
-                        <div class="col-sm-6 substance-data">
+<!--                        <div class="col-sm-6 substance-data">
                             <label>Categories: </label>
                             {% for(c in categories){ %}
                                 <div class="label label-warning">{{ categories[c] }}</div>
@@ -40,7 +40,7 @@
                             {% if (categories.length === 0){ %}
                                 <div class="label label-warning">None</div>
                             {% } %}
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -111,7 +111,7 @@
                 <div class="col-sm-3">
                     <span class="trash delete" title="Remove {{ spills[i].get('name') }}"></span>
                     <span class="edit" title="Edit {{ spills[i].get('name') }}"></span>
-                    <span class="time_check {{ spills[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
+                    <span class="time-check {{ spills[i].get('time_compliance') }}" title="Data compatibility with model run period"></span>
                 </div>
             </div>
         {% } %}

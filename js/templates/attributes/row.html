@@ -8,7 +8,7 @@
         {% } else if (type === 'boolean') { %}
             <select data-attribute="{{ name }}" class="form-control input-sm">
                 <option>{{ value }}</option>
-                <option>{{ value ? 'false' : 'true' }}</option>
+                <option>{{ value === 'true' ? 'false' : 'true' }}</option>
             </select>
         {% } else if(type === 'array'){ %}
             <input type="{{ type }}" data-attribute="{{ name }}" class="form-control input-sm" value="{{ value }}" />

@@ -10,7 +10,8 @@ define([
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
     'views/form/outputter/shape',
-], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap, NetCDFForm, KMZForm, ShapeForm) {
+    'views/form/outputter/binary',
+], function ($, _, Backbone, BaseView, module, ControlsTemplate, moment, Mousetrap, NetCDFForm, KMZForm, ShapeForm, BinaryForm) {
     "use strict";
     var controlsView = BaseView.extend({
         events: {
@@ -29,6 +30,7 @@ define([
             'click .netcdf': 'netcdf',
             'click .kmz': 'kmz',
             'click .shape': 'shape',
+            'click .binary': 'binary',
         },
         initialize: function(options){
             this.module = module;
@@ -356,6 +358,18 @@ define([
             }, this));
 
             shapeForm.render();
+        },
+
+        binary: function(event) {
+            event.preventDefault();
+            var binaryForm = new BinaryForm();
+
+            binaryForm.on('wizardclose', binaryForm.close);
+            binaryForm.on('save', _.bind(function(model){
+                binaryForm.close();
+            }, this));
+
+            binaryForm.render();
         },
 
     });

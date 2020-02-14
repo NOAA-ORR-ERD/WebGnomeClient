@@ -22,8 +22,8 @@ define([
         },
 
         parseTemperatures: function(){
-            var flashPointK = this.get('flash_point_max_k');
-            var pourPointK = this.get('pour_point_max_k');
+            var flashPointK = this.get('flash_point');
+            var pourPointK = this.get('pour_point');
 
             var flashPointC = flashPointK - 273.15;
             var flashPointF = (flashPointC * (9 / 5)) + 32;
