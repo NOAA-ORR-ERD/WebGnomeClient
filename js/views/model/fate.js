@@ -145,7 +145,7 @@ define([
             if (!webgnome.hasModel()) {
                 webgnome.router.navigate('', true);
             }
-            else if (webgnome.model.validWeathering()) {
+            else if (webgnome.model.default_env_refs.weatheringValid()) {
                 this.$el.appendTo('body');
                 this.renderWeathering(options);
             }
@@ -186,7 +186,7 @@ define([
         },
 
         noWeathering: function(options) {
-            if (webgnome.model.validWeathering()) {
+            if (webgnome.model.default_env_refs.weatheringValid()) {
                 this.$el.html('');
                 this.renderWeathering();
             }
@@ -426,18 +426,19 @@ define([
 
             if (substance.get('is_weatherable')) {
                 var pour_point;
-                var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
-                var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
+                pour_point = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point')) * 100) / 100;
+                //var pp_min = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_min_k')) * 100) / 100;
+                //var pp_max = Math.round(nucos.convert('Temperature', 'k', 'c', substance.get('pour_point_max_k')) * 100) / 100;
 
-                if (pp_min === pp_max) {
-                    pour_point = pp_min;
-                }
-                else if (pp_min && pp_max) {
-                    pour_point = pp_min + ' - ' + pp_max;
-                }
-                else {
-                    pour_point = pp_min + pp_max;
-                }
+                //if (pp_min === pp_max) {
+                    //pour_point = pp_min;
+                //}
+                //else if (pp_min && pp_max) {
+                    //pour_point = pp_min + ' - ' + pp_max;
+                //}
+                //else {
+                    //pour_point = pp_min + pp_max;
+                //}
 
                 templateObj = {
                     name: substance.get('name'),

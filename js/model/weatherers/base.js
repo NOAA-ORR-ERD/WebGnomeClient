@@ -59,13 +59,13 @@ define([
                 );
 
                 this.listenTo(model.default_env_refs, 'weatheringOff', _.bind(function() {
-                    if (this.get('on')) {
+                    if (this.get('on') && !webgnome.model.get('manual_weathering')) {
                         this.save({'on': false});
                     }
                 }, this));
 
                 this.listenTo(model.default_env_refs, 'weatheringOn', _.bind(function() {
-                    if (!this.get('on')) {
+                    if (!this.get('on') && !webgnome.model.get('manual_weathering')) {
                         this.save({'on': true});
                     }
                 }, this));

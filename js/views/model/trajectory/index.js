@@ -50,8 +50,8 @@ define([
         rframe: 0,
 
         initialize: function(options){
+            this.module = module;
             CesiumView.prototype.initialize.call(this, options);
-            //this.module = module;
             if (webgnome.model.get('mode') !== 'adios'){
                 this.listenTo(webgnome.cache, 'rewind', this.rewind);
                 this.modelMode = 'gnome';
@@ -70,8 +70,8 @@ define([
         },
 
         render: function(){
-            CesiumView.prototype.render.call(this);
             if (this.modelMode !== 'adios') {
+                CesiumView.prototype.render.call(this);
                 this.renderTrajectory();
             } else {
                 this.renderNoTrajectory();
@@ -79,6 +79,10 @@ define([
         },
 
         renderNoTrajectory: function() {
+            if (this.viewer) {
+                this.viewer.destroy();
+                this.viewer = null;
+            }
             this.$el.html(_.template(NoTrajMapTemplate));
         },
 
@@ -125,6 +129,17 @@ define([
 
         spillListeners: function(){
             this.listenTo(webgnome.model.get('spills'), 'add change remove', this.resetSpills);
+        },
+
+        viewGnomeMode: function() {
+            webgnome.model.set('mode', 'gnome');
+            this.modelMode = 'gnome';
+            webgnome.model.save(null, {
+                success: function(){
+                    webgnome.router.navigate('config', true);
+                    webgnome.router._cleanup();
+                }
+            });
         },
 
         viewWeathering: function() {
@@ -522,6 +537,7 @@ define([
                 //webgnome.cache.off('step:received', this.renderStep, this);
                 this.state = 'paused';
                 clearInterval(this.rframe);
+                this._canRun = true;
             }
         },
 

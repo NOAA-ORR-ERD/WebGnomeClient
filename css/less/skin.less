@@ -1253,6 +1253,46 @@ nav.navbar{
 
 }
 
+.weatherer-view{
+
+    .attached-wind{
+        float: right;
+    }
+    
+    .panel-heading {
+        .valid-weathering{
+            .glyphicon;
+            .glyphicon-alert;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+        
+        &.invalid {
+                color: red;
+            }
+                
+        }
+        
+        .weathering-control{
+            .glyphicon;
+            .glyphicon-lock;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+        
+        &.manual {
+                color: #BEBEBE;
+            }
+                
+        }
+
+    }
+}
+
 .panel-view{
     .panel{
         border: 0;
@@ -1292,9 +1332,6 @@ nav.navbar{
 
         &:hover{
             .panel-heading{
-                > div{
-                    color: #a1a1a1;
-                }
                 
                 .add{
                     color: #337ab7;
@@ -1409,7 +1446,7 @@ nav.navbar{
         }
     }
 
-    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind{
+    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind {
         .panel{
             cursor: default;
 
@@ -1519,7 +1556,7 @@ nav.navbar{
                     float:right;
                 }
                 
-                .time_check{
+                .time-check{
                     .glyphicon;
                     .glyphicon-time;
                     color: green;
