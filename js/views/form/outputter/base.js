@@ -6,8 +6,8 @@ define([
     'moment',
     'text!templates/form/outputter/base.html',
     'views/modal/form',
-    'views/modal/loading',
-    'model/no_cleanup_step',
+    'views/modal/progressmodal',
+    'model/cache',
     'model/outputters/kmz',
     'model/outputters/netcdf',
     'model/outputters/shape',
@@ -15,8 +15,8 @@ define([
     'jqueryDatetimepicker'
 ], function($, _, Backbone, module, moment,
             OutputTemplate,
-            FormModal, LoadingModal,
-            NoCleanUpModel, KMZModel, NetCDFModel, ShapeModel, BinaryModel) {
+            FormModal, ProgressModal,
+            CacheModel, KMZModel, NetCDFModel, ShapeModel, BinaryModel) {
     'use strict';
     var outputForm = FormModal.extend({
         models: {
@@ -25,6 +25,8 @@ define([
             'gnome.outputters.shape.ShapeOutput': ShapeModel,
             'gnome.outputters.binary.BinaryOutput': BinaryModel
         },
+
+        urlRoot : '/full_run_api/',
 
         initialize: function(options, model) {
             if (!_.isUndefined(model)) {
@@ -60,12 +62,6 @@ define([
                 model = new this.models[obj_type]();
                 model.setOutputterName();
                 model.setStartTime();
-
-                model.save(null, {
-                    success: function() {
-                        webgnome.model.get('outputters').add(model, {'merge': true});
-                    }
-                });
             }
             else {
                 model.setOutputterName();
@@ -140,50 +136,14 @@ define([
             }
         },
 
-        toggleOutputters: function(cb, on) {
-            webgnome.model.get('outputters').each(_.bind(function(el, i, arr) {
-                if (el.get('obj_type') === this.model.get('obj_type')) {
-                    el.set('on', on);
-                }
-                else {
-                    el.set('on', !on);
-                }
-            }, this));
+        setupProgressScreen: function(options) {
 
-            webgnome.model.save(null, {
-                success: cb,
-                silent: true
-            });
         },
 
         save: function(options) {
-            if (!this.model.isValid()) {
-                this.error("Error! ", this.model.validationError);
-            }
-            else {
-                this.toggleOutputters(_.bind(function() {
-                    var full_run = new NoCleanUpModel({'response_on': true});
-
-                    full_run.save(null, {
-                        success: _.bind(this.turnOff, this),
-                        error: function(model, response, options) {
-                            console.log(response);
-                        }
-                    });
-
-                    this.hide();
-                    this.loadingModal = new LoadingModal({title: "Running Model..."});
-                    this.loadingModal.on('hidden.bs.modal', this.loadingModal.close, this.loadingModal);
-                    this.loadingModal.render();
-                }, this), true);
-            }
-        },
-
-        removeOutputter: function() {
-            var model = this.model;
-
-            webgnome.model.get('outputters').remove(model);
-            webgnome.model.save();
+            this.progressModal = new ProgressModal({title: "Running Model..."});
+            this.progressModal.render();
+            this.close();
         },
 
         turnOff: function() {
