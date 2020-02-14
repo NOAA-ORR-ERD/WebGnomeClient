@@ -559,7 +559,7 @@ define([
 
         validResponse: function(){
             var skim, burn, disperse;
-            if(this.validWeathering()){
+            if(this.default_env_refs.weatheringValid()){
                 skim = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Skim'});
                 burn = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Burn'});
                 disperse = webgnome.model.get('weatherers').findWhere({'obj_type': 'gnome.weatherers.roc.Disperse'});
