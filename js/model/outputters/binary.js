@@ -12,7 +12,7 @@ define([
                 'obj_type': 'gnome.outputters.binary.BinaryOutput',
                 'filename': 'Model.zip',
                 'output_timestep': 3600,
-                'zip_output': false,
+                'zip_output': true,
                 'name': 'BinaryOutput'
             }, FileOutputterModel.prototype.defaults);
         },

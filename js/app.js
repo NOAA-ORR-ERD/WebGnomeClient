@@ -142,6 +142,10 @@ define([
             });
         },
 
+        filenameSanitizeString(s) {
+            return s.replace(/[^a-z0-9_-]/gi, '_');
+        },
+
         largeNumberFormatter(dispValue) {
             if (typeof(dispValue) === 'string') {
                 return dispValue;

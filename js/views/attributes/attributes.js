@@ -10,6 +10,7 @@ define([
         className: 'attributes',
 
         events: {
+            'click input': 'selectContents',
             'click .panel-heading': 'expand'
         },
 
@@ -56,6 +57,15 @@ define([
                         name: name
                     }).$el);
                 }
+            }
+        },
+
+        selectContents: function(e) {
+            var type = this.$(e.target).attr('type');
+
+            if (type === 'number' || type === 'text') {
+                e.preventDefault();
+                this.$(e.target).select();
             }
         },
 
