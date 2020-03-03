@@ -22,11 +22,6 @@ define([
             'slide .seek > div': 'seek',
             'slidechange .seek > div': 'loop',
             'slidestop .seek > div': 'blur',
-            //export menu
-            'click .netcdf': 'netcdf',
-            'click .kmz': 'kmz',
-            'click .shape': 'shape',
-            'click .binary': 'binary',
         },
         initialize: function(options){
             this.module = module;
