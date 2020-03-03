@@ -462,6 +462,7 @@ define([
             if (this.controls.getSliderValue() < webgnome.cache.length && webgnome.cache.length !== 0){
                 // the cache has the step, just render it
                     this.renderStep({step:this.controls.getSliderValue()});
+                    this._canRun = true;
             }  else  {
                 if(webgnome.cache.isHalted){
                     webgnome.cache.resume();

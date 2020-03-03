@@ -11,7 +11,6 @@ define([
             AlertDangerTemplate, BaseView, AttributesView, PickCoordsView) {
     var formView = BaseView.extend({
         events: {
-            'click input:(.attributes input)': 'selectContents',
             'change input:not(.attributes input)': 'update',
             'change select:not(.attributes select)': 'update',
             'keyup input:not(.attributes select)': 'update',
@@ -23,6 +22,9 @@ define([
         },
 
         update: function(e) {
+            if (!this.model) {
+                return;
+            }
             var name = this.$(e.currentTarget).attr('name');
             var value = this.$(e.currentTarget).val();
 
@@ -39,6 +41,10 @@ define([
 
             if ($(e.target).attr('type') === 'number') {
                 value = parseFloat(value);
+            }
+
+            if ($(e.target).attr('type') === 'checkbox') {
+                value = e.target.checked;
             }
 
             var type = $(e.target).data('type');
@@ -116,11 +122,6 @@ define([
                     val.match(/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d$/) !== null) {
                 el.val(moment(val).format(webgnome.config.date_format.moment));
             }
-            else if (el.is('textarea') ||
-                     el.is('input[type="number"]') ||
-                     el.is('input[type="text"]')) {
-                el.val(val);
-            }
             else if (el.is('input[type="radio"]')) {
                 for (var r = 0; r < el.length; r++) {
                     if ($(el[r]).attr('value') === val) {
@@ -138,15 +139,6 @@ define([
                 else {
                     el.val(val);
                 }
-            }
-        },
-
-        selectContents: function(e) {
-            var type = this.$(e.target).attr('type');
-
-            if (type === 'number' || type === 'text') {
-                e.preventDefault();
-                this.$(e.target).select();
             }
         },
 
