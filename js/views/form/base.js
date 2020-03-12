@@ -129,6 +129,11 @@ define([
                     }
                 }
             }
+            else if (el.is('textarea') ||
+                     el.is('input[type="number"]') ||
+                     el.is('input[type="text"]')) {
+                el.val(val);
+            }
             else if (el.is('select')) {
                 if (_.isObject(val)) {
                     el.val(val.id);
