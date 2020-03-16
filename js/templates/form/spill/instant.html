@@ -64,12 +64,19 @@
         <!-- <div class="col-sm-2 col-sm-offset-5 slider-label"><sup>Certain</sup></div> -->
         <!-- <div class="col-sm-2 col-sm-offset-2 slider-label" style="text-align:right"><sup>Uncertain</sup></div> -->
     <!-- </div> -->
+
     <div class="row">
         {% if(showGeo){ %}
-        <div id="oilInfo" class="col-md-6"></div>
-        <div id="positionInfo" class="col-md-6 position"></div>
+            <div id="oilInfo" class="col-md-6"></div>
+            <div class="col-md-6 position">
+                <div id="positionInfo"></div>
+                &nbsp;
+                <div id="windageInfo"></div>
+            </div>
         {% } else { %}
-        <div id="oilInfo" class="col-md-12"></div>
+            <div id="oilInfo" class="col-md-12"></div>
         {% } %}
+
     </div>
+    
 </form>

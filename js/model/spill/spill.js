@@ -308,6 +308,19 @@ define([
                 return new NonWeatheringSubstance();
             }
         },
+        
+        getWindageInitializer: function() {
+            
+            var initializers = this.getSubstance().get('initializers').models           
+            var index = 0
+            while (index < initializers.length) {
+                if (initializers[index].get('obj_type') == "gnome.spill.initializers.InitWindages") {
+                    return initializers[index];
+                }
+                index++;
+            }
+            
+        },
 
         validate: function(attrs, options) {
             if ($.trim(attrs.name) === '') {

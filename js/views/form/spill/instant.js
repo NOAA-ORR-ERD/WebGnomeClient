@@ -112,9 +112,7 @@ define([
             BaseSpillForm.prototype.update.call(this);
 
             this.updateConstantSlide();
-
             var value = this.$('.slider').slider('value');
-
             this.model.set('amount_uncertainty_scale', value / 5.0);
         },
 

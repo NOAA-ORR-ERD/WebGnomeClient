@@ -396,6 +396,13 @@ define([
         },
 
         validate: function(attrs, options) {
+            var active_range = attrs["active_range"];
+            
+            if (active_range[0] !== "-inf" && active_range[1] !== "inf"){
+                if (active_range[0] >= active_range[1]) {
+                    return 'Active range invalid: stop must be greater than start';
+                }
+            }
             // TODO: Consult with Caitlin about the values that need to be
             //       calculated "on the fly" i.e. unscaled val at ref point
         },
