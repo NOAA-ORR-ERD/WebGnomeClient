@@ -52,7 +52,7 @@ define([
 
             FormModal.prototype.render.call(this);
             
-            if (JSON.stringify(active_range) == JSON.stringify(["-inf","inf"])) {
+            if (JSON.stringify(active_range) === JSON.stringify(["-inf","inf"])) {
                 this.$('#set_active_range').val("infinite");              
             } else {
                 this.$('#set_active_range').val("data_range");
@@ -65,8 +65,8 @@ define([
             var name = this.$('#mover_name').val();
             this.model.set('name', name);
             
-            var active_start = this.$('#active_start').val()
-            var active_stop = this.$('#active_stop').val()   
+            var active_start = this.$('#active_start').val();
+            var active_stop = this.$('#active_stop').val();   
             
             // if (active_start != '-inf') {
                 // active_start = moment(active_start, webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
@@ -91,12 +91,12 @@ define([
             
             var value = e.currentTarget.value;
             
-            if (value == 'data_range') {
+            if (value === 'data_range') {
                 this.$(e.currentTarget).parent().siblings('.hide').removeClass('hide');
                 this.model.set('active_range',[this.model.get('data_start'),this.model.get('data_stop')]);
             } else {
                 this.$(e.currentTarget).parent().siblings('.active_range').addClass('hide');
-                this.model.set('active_range',["-inf","inf"])
+                this.model.set('active_range',["-inf","inf"]);
             }
             
             this.$('#active_start').val(this.model.get('active_range')[0]);

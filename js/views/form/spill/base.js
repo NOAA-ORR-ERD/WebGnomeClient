@@ -440,9 +440,9 @@ define([
 
             var windage_init = this.model.getWindageInitializer();
             
-            var windage_low = this.$('#windage_low').val()
-            var windage_high = this.$('#windage_high').val()
-            var windage_persist = this.$('#windage_persist').val()
+            var windage_low = this.$('#windage_low').val();
+            var windage_high = this.$('#windage_high').val();
+            var windage_persist = this.$('#windage_persist').val();
             
             windage_init.set("windage_range",[windage_low,windage_high]);
             windage_init.set("windage_persist",windage_persist);

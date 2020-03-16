@@ -396,7 +396,7 @@ define([
         },
 
         validate: function(attrs, options) {
-            var active_range = attrs["active_range"];
+            var active_range = attrs.get('active_range');
             
             if (active_range[0] !== "-inf" && active_range[1] !== "inf"){
                 if (active_range[0] >= active_range[1]) {

@@ -311,10 +311,10 @@ define([
         
         getWindageInitializer: function() {
             
-            var initializers = this.getSubstance().get('initializers').models           
-            var index = 0
+            var initializers = this.getSubstance().get('initializers').models;          
+            var index = 0;
             while (index < initializers.length) {
-                if (initializers[index].get('obj_type') == "gnome.spill.initializers.InitWindages") {
+                if (initializers[index].get('obj_type') === "gnome.spill.initializers.InitWindages") {
                     return initializers[index];
                 }
                 index++;
