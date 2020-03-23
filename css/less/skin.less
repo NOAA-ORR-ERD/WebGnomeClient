@@ -1252,6 +1252,46 @@ nav.navbar{
 
 }
 
+.weatherer-view{
+
+    .attached-wind{
+        float: right;
+    }
+    
+    .panel-heading {
+        .valid-weathering{
+            .glyphicon;
+            .glyphicon-alert;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+        
+        &.invalid {
+                color: red;
+            }
+                
+        }
+        
+        .weathering-control{
+            .glyphicon;
+            .glyphicon-lock;
+            color: green;
+            padding: 2px;
+            float:right;
+            
+            margin-right: 10px;
+        
+        &.manual {
+                color: #BEBEBE;
+            }
+                
+        }
+
+    }
+}
+
 .panel-view{
     .panel{
         border: 0;
@@ -1291,9 +1331,6 @@ nav.navbar{
 
         &:hover{
             .panel-heading{
-                > div{
-                    color: #a1a1a1;
-                }
                 
                 .add{
                     color: #337ab7;
@@ -1408,7 +1445,7 @@ nav.navbar{
         }
     }
 
-    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind{
+    &.spill, &.response, &.diffusion, &.current, &.griddedwind, &.wind {
         .panel{
             cursor: default;
 
@@ -1518,7 +1555,7 @@ nav.navbar{
                     float:right;
                 }
                 
-                .time_check{
+                .time-check{
                     .glyphicon;
                     .glyphicon-time;
                     color: green;
@@ -1901,61 +1938,128 @@ nav.navbar{
 
     .ui-slider {
         height: 30px;
-        top:33%;
 
         .color-block {
             position: absolute;
             text-align: center;
             height: 100%;
             line-height: 30px;
+            span {
+                cursor: text;
+            }
+            &.alt {
+                .tooltip{
+                    .tooltip-inner {
+                        background-color: #444444;
+                    }
+                    .tooltip-arrow {
+                        border-top-color: #444444;
+                    }
+                    .tooltip-line{
+                        background-color: #444444;
+                    }
+                }
+            }
+        }
+        .color-block:hover {
+            z-index: 99 !important;
+            cursor: pointer;
+            span {
+                background-color:inherit;
+            }
+        }
+        .slider-handle:hover {
+            z-index: 99 !important;
         }
     }
 
     .tooltip {
         opacity: 1;
+        pointer-events: none;
+        .tooltip-inner{
+            width: 5em;
+            pointer-events: auto;
+            span {
+                cursor: text;
+            }
+            input {
+                background-color: black;
+                border: none;
+                &[type="number"] {
+                    width: 100%;
+                    text-align: center;
+                    -moz-appearance:textfield;
+                }
+    
+                &[type="color"]{
+                    pointer-events: all;
+                    width:100%;
+                    cursor: pointer;
+                }
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+        }
         &.bottom {
             top: 100%;
             transform: translate(-50%, 0%);
             left: 50%;
+            .tooltip-inner {
+                padding: 2px 2px;
+                min-width: 2em;
+                cursor: auto;
+            }
         }
         &.top {
             transform: translate(-50%, -100%);
+            padding: unset;
+            margin-top: unset;
+            cursor: grab;
+            .tooltip-arrow {
+                pointer-events: auto;
+                bottom: unset;
+                top: 23px;
+                margin-left: -4px;
+            }
+            .tooltip-line {
+                pointer-events: auto;
+                height:35px;
+                top: 27px;
+                width: 2px;
+                left: 50%;
+                position: absolute;
+                background: black;
+            }
         }
-    
     }
+
     .slider-handle {
         top: 0px;
         height: 100%;
-        z-index: 3;
         pointer-events: none;
         width: 2px;
-        background-color: gray;
+        background-color: black;
         position: absolute;
 
         &.movable {
-            pointer-events:all;
+            pointer-events: auto;
         }
-    }
-    .tooltip-inner{
-        width: 5em;
-        input {
-            background-color: black;
-            border: none;
-            &[type="number"] {
-                width: 100%;
-                text-align: center;
-                -moz-appearance:textfield;
+        &.alt {
+            background-color: #444444;
+            .tooltip{
+                .tooltip-inner {
+                    background-color: #444444;
+                }
+                .tooltip-arrow {
+                    border-top-color: #444444;
+                }
+                .tooltip-line{
+                    background-color: #444444;
+                }
             }
-
-            &[type="color"]{
-                pointer-events: all;
-                width:100%;
-            }
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
         }
     }
     .ui-slider-handle {
@@ -3081,6 +3185,12 @@ nav.navbar{
         }
     }
 
+    .progress-modal{
+        .progress {
+            margin-bottom: 0px;
+        }
+    }
+
     .help-content{
         .close{
             color: #000;
@@ -3200,6 +3310,10 @@ nav.navbar{
             border-radius: 0;
             padding-right: 10px;
             background: #efefef;
+
+            &.collapse-form-header {
+                background-color: #337ab7;
+            }
 
             .locked {
                 .pull-right;
@@ -4063,7 +4177,7 @@ nav.navbar{
     .dz-preview{
         position: relative;
         text-align: center;
-        padding: 50px 0;
+        padding: 20px 0;
         border-radius: 4px;
 
         &.dz-uploaded{
@@ -4093,6 +4207,7 @@ nav.navbar{
         &.dz-error{
             .dz-error-message{
                 display: block;
+                padding: 50px 0px;
             }
         }
         .dz-error-message{

@@ -7,6 +7,7 @@ define([
     var gridAppearanceModel = BaseAppearance.extend({
         defaults: {
             on: false,
+            obj_type: 'gnome.utilities.appearance.GridAppearance',
             color: '#585858', //dark gray
             alpha: 0.3,
             ctrl_names: {title: 'Grid Appearance',

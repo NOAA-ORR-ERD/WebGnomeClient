@@ -41,6 +41,9 @@ define([
         initialize: function(options, substanceModel){
             $(this.$el).on('scroll', _.bind(this.sticky, this));
             this.module = module;
+            if (_.isUndefined(substanceModel)) {
+                substanceModel = new GnomeOil();
+            }
             this.oilTable = new OilTable(substanceModel);
             this.model = substanceModel;
             this.oilCache = localStorage.getItem('oil_cache');

@@ -432,7 +432,6 @@ define([
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.wind,  // MB
                 autoProcessQueue: true,
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate)<br>Supported formats: all', //<code>.wnd</code>, <code>.osm</code>, <code>.txt</code>, <code>.dat</code>'
                 //gnome options
                 obj_type: obj_type,
             });

@@ -81,6 +81,7 @@ define([
                 var id = appearance.get('id');
                 appearance.set(appearance.defaults());
                 appearance.set('id', id);
+                appearance.trigger('resetToDefault');
                 if (this.layer.model.get('obj_type').includes('spill')){
                     this.layer.model.setupVis();
                 }

@@ -8,14 +8,35 @@ define([
     'use strict';
 
     var SpillAppearanceModel = BaseAppearance.extend({
+
+        model: {
+            colormap: ColorMap
+        },
+
         defaults: function() { return {
+            obj_type: 'gnome.utilities.appearance.SpillAppearance',
             pin_on: true,
             les_on: true,
             scale: 1,
             data: 'Mass',
             colormap: new ColorMap({units: 'kg'}),
             units: 'kg',
-            preset_scales: [{name: 'Response Relevant',
+            preset_scales: [{name: 'Bonn Agreement Appearance',
+                             data: 'Surface Concentration',
+                             units: 'g/m^2',
+                             colormap: {
+                                "units": 'g/m^2',
+                                "numberScaleType": "log",
+                                "numberScaleDomain": [0.0001,0.25],
+                                "numberScaleRange": [0,1],
+                                "colorScaleType": "threshold",
+                                "colorScaleDomain": [0.001, 0.005, 0.01, 0.025, 0.05, 0.1],
+                                "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#d62728", "#654321", "#000000"],
+                                "scheme": "Custom",
+                                "colorBlockLabels": ['Silver (<1)','Rainbow (<5)','Metallic (<10)','Metallic (<25)','Metallic (<50)','Dark (<100)','Dark (>100)'],
+                                },
+                            },
+                            {name: 'Response Relevant',
                              data: 'Surface Concentration',
                              units: 'g/m^2',
                              colormap: {
@@ -45,7 +66,7 @@ define([
                                 "colorBlockLabels": ['Light', 'Medium', 'Heavy'],
                                 },
                             },
-                            {name: 'Response Relevant',
+/*                             {name: 'Response Relevant',
                              data: 'Viscosity',
                              units: 'cst',
                              colormap: {
@@ -59,6 +80,21 @@ define([
                                 "scheme": "Reds",
                                 "colorBlockLabels": ['', '', '', '', ''],
                                 },
+                            }, */
+                            {name: 'Response Relevant',
+                             data: 'Viscosity',
+                             units: 'cst',
+                             colormap: {
+                                "units": 'cst',
+                                "numberScaleType": "log",
+                                "numberScaleDomain": [0.0001,0.1000],
+                                "numberScaleRange": [0,1],
+                                "colorScaleType": "threshold",
+                                "colorScaleDomain": [0.0020, 0.0050, 0.0075, 0.0100, 0.0150, 0.0200],
+                                "colorScaleRange": ["#1f77b4", "#2ca02c", "#bcbd22", "#ff7f0e", "#9467bd","#d62728", "#000000"],
+                                "scheme": "Custom",
+                                "colorBlockLabels": ['', '', '', '', '', '', '', ''],
+                                },
                             }],
             ctrl_names: {
                          pin_on: 'Spill Location',
@@ -68,16 +104,17 @@ define([
             _available_data: ['Mass',
                               'Surface Concentration',
                               'Age',
-                              'Viscosity',
-                              'Depth']
+                              'Viscosity']
+                              //Depth
             };
         },
 
-        initialize: function(model) {
-            BaseAppearance.prototype.initialize.call(this, model);
+        initialize: function(attrs, options) {
+            BaseAppearance.prototype.initialize.call(this, attrs, options);
 
-            this.listenTo(this.get('colormap'), 'change', this.save);
+            //this.listenTo(this.get('colormap'), 'change', this.save);
             //this.listenTo(this.get('colormap'), 'change', function(v){this.trigger('change', this);});
+            this.listenTo(this, 'change', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.updateSpillJsonOutputter);
             this.listenTo(this, 'change:data', this.setDefaultUnits);
             this.listenTo(this, 'change:units', this.setUnitConversionFunction);
@@ -223,36 +260,6 @@ define([
             }
 
             output._updateRequestedDataTypes(dtype);
-        },
-
-        save: function(attrs, options) {
-            if (this.get('id')) {
-                var json = this.toJSON();
-                json.colormap = this.get('colormap').toJSON();
-
-                this.appearance_cache.setItem(this.get('id') + '_appearance',
-                                              json);
-            }
-        },
-
-        fetch: function(options) {
-            return new Promise(_.bind(function(resolve, reject) {
-                this.appearance_cache.getItem(this.get('id') + '_appearance').then(
-                    _.bind(function(attrs) {
-                        if (attrs && attrs.colormap) {
-                            this.get('colormap').set(attrs.colormap);
-
-                            attrs.colormap = this.get('colormap');
-                            this.set(attrs);
-
-                            resolve(attrs);
-                        }
-                        else {
-                            resolve(attrs);
-                        }
-                    }, this)
-                );
-            }, this));
         }
     });
 

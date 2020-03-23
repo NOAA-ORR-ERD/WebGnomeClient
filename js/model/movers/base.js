@@ -26,6 +26,10 @@ define([
             };
         },
 
+        model: {
+            _appearance: MoverAppearance
+        },
+
         vec_max: 4.0,
         n_vecs: 40,
 
@@ -55,11 +59,9 @@ define([
                 });
 
                 this._linesPrimitive = new Cesium.PrimitiveCollection();
+                this.setupVis();
+                this.listenTo(this.get('_appearance'), 'change', this.updateVis);
 
-                this.get('_appearance').fetch().then(_.bind(function() {
-                    this.listenTo(this.get('_appearance'), 'change', this.updateVis);
-                    this.setupVis();
-                }, this));
             }
         },
 
@@ -394,6 +396,13 @@ define([
         },
 
         validate: function(attrs, options) {
+            var active_range = attrs.get('active_range');
+            
+            if (active_range[0] !== "-inf" && active_range[1] !== "inf"){
+                if (active_range[0] >= active_range[1]) {
+                    return 'Active range invalid: stop must be greater than start';
+                }
+            }
             // TODO: Consult with Caitlin about the values that need to be
             //       calculated "on the fly" i.e. unscaled val at ref point
         },

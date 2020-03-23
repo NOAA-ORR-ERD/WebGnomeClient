@@ -6,6 +6,7 @@ define([
     'use strict';
     var moverAppearanceModel = BaseAppearance.extend({
         defaults: {
+            obj_type: 'gnome.utilities.appearance.MoverAppearance',
             vec_on: false,
             vec_color: '#9370DB', //MEDIUMPURPLE,
             vec_alpha: 0.7,

@@ -3,10 +3,11 @@ define([
     'jquery',
     'backbone',
     'd3',
-    'tinycolor'
-], function(_, $, Backbone, d3, tinycolor){
+    'tinycolor',
+    'model/visualization/appearance'
+], function(_, $, Backbone, d3, tinycolor, AppearanceModel){
     'use strict';
-    var colormapModel = Backbone.Model.extend({
+    var colormapModel = AppearanceModel.extend({
         defaults: function() {
             return {
                 "alphaType": "mass",
@@ -24,13 +25,14 @@ define([
                 "colorBlockLabels": ['',],
                 "_customScheme": ['#000000'],
                 //add new discrete schemes as arrays of hex strings
-                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr'],
-                "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool']
+                "_discreteSchemes": ['Custom', 'Greys', 'Reds', 'Blues', 'Purples', 'YlOrBr','Dark2'],
+                "_continuousSchemes": ['Viridis', 'Inferno', 'Magma', 'Plasma', 'Warm', 'Cool'],
+                "obj_type": 'gnome.utilities.appearance.Colormap'
             };
         },
 
         initialize: function(attrs, options) {
-            Backbone.Model.prototype.initialize.call(this, attrs, options);
+            AppearanceModel.prototype.initialize.call(this, attrs, options);
             this.listenTo(this, 'change:colorScaleRange', this._saveCustomScheme);
             this.listenTo(this, 'change:map_type', this._changeMapType);
             this.listenTo(this, 'change:scheme', this._applyScheme);
@@ -40,16 +42,18 @@ define([
         },
 
         initScales: function() {
+            var ns;
             var domain = this.get('numberScaleDomain');
             if (this.get('numberScaleType') === 'linear') {
-                this.numScale = d3.scaleLinear()
+                ns = d3.scaleLinear()
                     .domain([domain[0], domain[1]])
                     .range([0,1]);
             } else {
-                this.numScale = d3.scaleLog()
+                ns = d3.scaleLog()
                     .domain([domain[0], domain[1]])
                     .range([0,1]);
             }
+            this.numScale = ns;
         },
 
         syncRanges: function(silent) {
@@ -113,13 +117,6 @@ define([
             this._applyScheme();
         },
 
-        setValue(name, index, value) {
-            var a = 1/0;
-            this.get(name)[index] = value;
-            //this.trigger('change:'+name, {name: this.get(name)});
-            //this.trigger('change', {name: this.get(name)});
-        },
-
         setStop: function(index, value) {
             //sets the colorScaleDomain value at index to the value specified.
             //returns true if successful, returns false and does not change the value otherwise
@@ -127,17 +124,60 @@ define([
             var colorDomain = this.get('colorScaleDomain').slice();
             var numberDomain = this.get('numberScaleDomain').slice();
             var domain = this.getAllNumberStops();
-            var curr = domain[index],
-                next = domain[index + 1] - 0.01,
-                prev = domain[index - 1] + 0.01;
-
-            if (value === curr || value > next || value < prev) {
-                return false;
-            } else {
-                colorDomain[index - 1] = value;
+            var minInc = 0.00001;
+            if (index === 0 || index === domain.length - 1){
+                //changing domain bounds compresses domain if applicable
+                var nextVal, i;
+                if (index === 0) {
+                    if (value >= domain[domain.length - 1] - minInc) {
+                        return false;
+                    }
+                    if (this.get('numberScaleType') === 'log' && value < minInc) {
+                        value = minInc;
+                    }
+                    if (value < 0) {
+                        value = 0;
+                    }
+                    numberDomain[0] = value;
+                    nextVal = value + minInc;
+                    for (i = 0; i < colorDomain.length - 1; i++) {
+                        if (colorDomain[i] < nextVal) {
+                            colorDomain[i] = nextVal;
+                            nextVal += minInc;
+                        }
+                    }
+                } else {
+                    if (value <= domain[0] + minInc) {
+                        return false;
+                    }
+                    numberDomain[1] = value;
+                    nextVal = value - minInc;
+                    for (i = colorDomain.length - 1; i >= 0; i--) {
+                        if (colorDomain[i] > nextVal) {
+                            colorDomain[i] = nextVal;
+                            nextVal -= minInc;
+                        }
+                    }
+                }
+                this.set('numberScaleDomain', numberDomain);
                 this.set('colorScaleDomain', colorDomain);
+                this.initScales();
                 this.trigger('rerender');
                 return true;
+
+            } else {
+                var curr = domain[index],
+                    next = domain[index + 1] - 0.00001,
+                    prev = domain[index - 1] + 0.00001;
+
+                if (value === curr || value > next || value < prev) {
+                    return false;
+                } else {
+                    colorDomain[index - 1] = value;
+                    this.set('colorScaleDomain', colorDomain);
+                    this.trigger('rerender');
+                    return true;
+                }
             }
         },
 
@@ -251,14 +291,21 @@ define([
             var colors;
             if ('scheme' + name in d3) {
                 var scheme = _.clone(d3['scheme'+name]);
-
-                for (var k = 0; k < scheme.length; k++){
-                    if(_.isUndefined(scheme[k])){
-                        continue;
+                if (_.isString(scheme[0])) {
+                    var ns = [undefined];
+                    for (var j = 1; j < 10; j++) {
+                        ns[j] = scheme.slice(0,j);
                     }
-                    scheme[k] = _.clone(scheme[k]);
-                    for (var m = 0; m < scheme[k].length; m++){
-                        scheme[k][m] = tinycolor(scheme[k][m]).darken(10).toString();
+                    scheme = ns;
+                } else {
+                    for (var k = 0; k < scheme.length; k++){
+                        if(_.isUndefined(scheme[k])){
+                            continue;
+                        }
+                        scheme[k] = _.clone(scheme[k]);
+                        for (var m = 0; m < scheme[k].length; m++){
+                            scheme[k][m] = tinycolor(scheme[k][m]).darken(10).toString();
+                        }
                     }
                 }
 

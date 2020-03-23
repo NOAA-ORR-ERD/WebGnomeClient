@@ -47,7 +47,6 @@ define([
             this.dzone = new Dzone({
                 maxFilesize: webgnome.config.upload_limits.griddedwind,  // MB
                 autoProcessQueue: true,
-                dictDefaultMessage: 'Drop file here to upload (or click to navigate).',
                 //gnome options
                 obj_type: obj_type,
             });

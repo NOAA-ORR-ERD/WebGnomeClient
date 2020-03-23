@@ -1,11 +1,12 @@
 define([
     'underscore',
+    'module',
     'jquery',
     'backbone',
     'views/modal/form',
     'views/default/dzone',
     'model/map/bna'
-], function(_, $, Backbone, FormModal,
+], function(_, module, $, Backbone, FormModal,
             Dzone, MapBNAModel) {
     var mapUploadForm = FormModal.extend({
         title: 'Upload Shoreline File',
@@ -28,6 +29,7 @@ define([
         },
 
         initialize: function(options){
+            this.module = module;
             FormModal.prototype.initialize.call(this, options);
         },
 
@@ -39,8 +41,6 @@ define([
                 maxFiles: 1,
                 maxFilesize: webgnome.config.upload_limits.map,
                 autoProcessQueue:true,
-                //acceptedFiles: '.bna',
-                dictDefaultMessage: 'Drop <code>.bna</code> file here to upload (or click to navigate)'
             });
             this.$('#upload_form').append(this.dzone.$el);
 

@@ -19,9 +19,9 @@
     <div class="form-group">
         <label class="col-sm-5 control-label" for="scale_value" id="scale_value_label">
             {% if(model.get('tide')){ %}
-                Value in tide file multiplied by:
+                Tide File Value Multiplied By:
             {% } else { %}
-                Reference point value in m/s:
+                Reference Point Value (m/s):
             {%  } %}
         </label>
         <div class="col-sm-5">
@@ -53,5 +53,5 @@
             </div>
         </div>
     </div>
-    <div class="tide-upload dropzone hidden"></div>
+    <div class="tide-upload hidden"></div>
 </form>

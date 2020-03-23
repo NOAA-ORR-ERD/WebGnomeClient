@@ -10,9 +10,9 @@ define([
         defaults: function() {
             return _.defaults({
                 'obj_type': 'gnome.outputters.shape.ShapeOutput',
-                'filename': 'Model.shp',
+                'filename': 'Model.zip',
                 'output_timestep': 3600,
-                'zip_output': false,
+                'zip_output': true,
                 'name': 'ShapeOutput'
             }, FileOutputterModel.prototype.defaults);
         },

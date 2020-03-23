@@ -40,6 +40,10 @@ define([
             };
         },
 
+        model: {
+            _appearance: MapAppearance
+        },
+
         initialize: function(options) {
             BaseModel.prototype.initialize.call(this, options);
             
@@ -59,9 +63,7 @@ define([
 
             this._spillableVis = new Cesium.CustomDataSource('Spillable Area');
             this._boundsVis = new Cesium.CustomDataSource('Map Bounds');
-
-            this.get('_appearance').fetch().then(_.bind(this.setupVis, this));
-            
+            this.setupVis();
         },
 
         setupVis: function(attrs) {
@@ -281,7 +283,7 @@ define([
                 var land_geos = [];
 
                 for (i = 0; i < land_polys.length; i++) {
-                    polyFlat = land_polys[i][0].reduce((acc, val) => acc.concat(val), []);
+                    polyFlat = _.flatten(land_polys[i]);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),
@@ -296,7 +298,7 @@ define([
                 }
 
                 for (i = 0; i < lake_polys.length; i++) {
-                    polyFlat = lake_polys[i][0].reduce((acc, val) => acc.concat(val), []);
+                    polyFlat = _.flatten(lake_polys[i]);
                     newGeo = new Cesium.GeometryInstance({
                         geometry: new Cesium.PolygonGeometry({
                             polygonHierarchy: new Cesium.PolygonHierarchy(Cesium.Cartesian3.fromDegreesArray(polyFlat)),

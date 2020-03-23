@@ -3,12 +3,11 @@ define([
     'jquery',
     'underscore',
     'module',
-    'dropzone',
-    'text!templates/default/dropzone.html',
+    'views/default/dzone',
     'text!templates/form/mover/cats.html',
     'views/modal/form',
     'model/environment/tide'
-], function(Backbone, $, _, module, Dropzone, DropzoneTemplate, FormTemplate, FormModal, TideModel) {
+], function(Backbone, $, _, module, Dzone, FormTemplate, FormModal, TideModel) {
     'use strict';                
     var catsForm = FormModal.extend({
             
@@ -101,10 +100,6 @@ define([
                         });
                     }, this)
                 });
-                if (this.dropzone){
-                    this.dropzone.removeAllFiles(true);
-                    this.dropzone.disable();
-                }
                 this.$el.html('');
             } else {
                 this.disableScaling();
@@ -112,76 +107,46 @@ define([
         },
 
         newTide: function() {
-            this.$('.tide-upload').removeClass('hidden');
+            if (this.$('.tide-upload').hasClass('hidden')) {
+                this.$('.tide-upload').removeClass('hidden');
 
-            this.dropzone = new Dropzone('.tide-upload', {
-                url: webgnome.config.api + '/environment/upload',
-                previewTemplate: _.template(DropzoneTemplate)(),
-                paramName: 'new_environment',
-                maxFiles: 1,
-                maxFilesize: webgnome.config.upload_limits.current, // 2GB
-                acceptedFiles: '.cur, .txt',
-                dictDefaultMessage: 'Drop tide file here to upload (or click to navigate)'
-            });
-
-            this.dropzone.on('sending', _.bind(this.sending, this));
-            this.dropzone.on('uploadprogress', _.bind(this.progress, this));
-            this.dropzone.on('error', _.bind(this.reset, this));
-            this.dropzone.on('success', _.bind(this.loaded, this));
-        },
-
-        sending: function(e, xhr, formData, obj_type) {
-            formData.append('session', localStorage.getItem('session'));
-            formData.append('obj_type', this.obj_type);
-        },
-
-        progress: function(e, percent) {
-            if (percent === 100) {
-                this.$('.dz-preview').addClass('dz-uploaded');
-                this.$('.dz-loading').fadeIn();
+                this.dzone = new Dzone({
+                    maxFiles: 1,
+                    maxFilesize: webgnome.config.upload_limits.current, // 2GB
+                    acceptedFiles: '.cur, .txt',
+                    autoProcessQueue:true,
+                    dictDefaultMessage: 'Drop file here to add (or click to navigate).<br> Click the help icon for details on supported file formats.',
+                });
+                this.$('.tide-upload').append(this.dzone.$el);
+                this.listenTo(this.dzone, 'upload_complete', _.bind(this.loaded, this));
             }
         },
 
-        reset: function(file, err) {
-            var errObj = JSON.parse(err);
-            console.error(errObj);
-
-            this.$('.dz-error-message span')[0].innerHTML = (errObj.exc_type +
-                                                             ': ' +
-                                                             errObj.message);
-
-            setTimeout(_.bind(function() {
-                this.$('.dropzone').removeClass('dz-started');
-                this.dropzone.removeFile(file);
-            }, this), 3000);
-        },
-
-        loaded: function(e, response) {
-            var tide = new TideModel(JSON.parse(response), {parse: true});
-
-            tide.save(null, {
-                success: _.bind(function() {
-                    webgnome.model.get('environment').add(tide);
-                    this.model.set('tide', tide);
-                    this.model.set('scale', true);
-                    webgnome.model.save(null, {
-                        success: _.bind(function(mod){
-                            this.model.save(null, {
-                                success: _.bind(function(mod){
-                                    this.render();
-                                }, this)
-                            });
-                        }, this)
-                    });
-                    this.dropzone.removeAllFiles(true);
-                    this.dropzone.disable();
-                    this.$el.html('');
-                }, this),
-                error: _.bind(function(e, response) {
-                    this.error(response.responseText);
-                    this.dropzone.removeAllFiles(true);
-                }, this)
-            });
+        loaded: function(fileList, name){
+            $.post(webgnome.config.api + '/environment/upload',
+                {'file_list': JSON.stringify(fileList),
+                 'obj_type': TideModel.prototype.defaults().obj_type,
+                 'name': name,
+                 'session': localStorage.getItem('session')
+                }
+            ).done(_.bind(function(response) {
+                var tide = new TideModel(JSON.parse(response), {parse: true});
+                webgnome.model.get('environment').add(tide);
+                webgnome.model.save(null, {
+                    success: _.bind(function(mod){
+                        this.model.set('tide', tide);
+                        this.model.set('scale', true);
+                        this.model.save(null, {
+                            success: _.bind(function(mod){
+                                this.render();
+                            }, this)
+                        });
+                    }, this)
+                });
+                this.$el.html('');
+            }, this)).fail(
+                _.bind(this.dzone.reset, this.dzone)
+            );
         },
 
         save: function() {
@@ -207,9 +172,8 @@ define([
         },
 
         close: function() {
-            if (this.dropzone) {
-                this.dropzone.disable();
-                $('input.dz-hidden-input').remove();    
+            if (this.dzone) {
+                this.dzone.close();
             }
 
             FormModal.prototype.close.call(this);

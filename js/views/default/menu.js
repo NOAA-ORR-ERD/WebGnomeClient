@@ -12,11 +12,13 @@ define([
     'views/form/outputter/netcdf',
     'views/form/outputter/kmz',
     'views/form/outputter/shape',
+    'views/form/outputter/binary',
+    'views/form/outputter/export',
     'model/gnome',
     'bootstrap'
  ], function($, _, Backbone, swal, toastr,
              MenuTemplate, AboutModal, HotkeysModal, PersistModelModal,
-             LocationForm, NetCDFForm, KMZForm, ShapeForm, GnomeModel) {
+             LocationForm, NetCDFForm, KMZForm, ShapeForm, BinaryForm, ExportModal, GnomeModel) {
     'use strict';
     /*
         `MenuView` handles the drop-down menus on the top of the page. The object
@@ -56,9 +58,7 @@ define([
             'click .save': 'save',
             'click .persist': 'persist_modal',
                 //export menu
-                'click .netcdf': 'netcdf',
-                'click .kmz': 'kmz',
-                'click .shape': 'shape',
+                'click .export': 'export',
 
             // "Help" menu
             'click .about': 'about',
@@ -207,40 +207,14 @@ define([
             });
         },
 
-        netcdf: function(event) {
+        export: function(event) {
             event.preventDefault();
-            var netCDFForm = new NetCDFForm();
+            var exportForm = new ExportModal();
+            exportForm.render();
 
-            netCDFForm.on('wizardclose', netCDFForm.close);
-            netCDFForm.on('save', _.bind(function(model){
-                netCDFForm.close();
+            exportForm.on('hide', _.bind(function(model){
+                exportForm.close();
             }, this));
-
-            netCDFForm.render();
-        },
-
-        kmz: function(event) {
-            event.preventDefault();
-            var kmzForm = new KMZForm();
-            
-            kmzForm.on('wizardclose', kmzForm.close);
-            kmzForm.on('save', _.bind(function(model){
-                kmzForm.close();
-            }, this));
-
-            kmzForm.render();
-        },
-
-        shape: function(event) {
-            event.preventDefault();
-            var shapeForm = new ShapeForm();
-
-            shapeForm.on('wizardclose', shapeForm.close);
-            shapeForm.on('save', _.bind(function(model){
-                shapeForm.close();
-            }, this));
-
-            shapeForm.render();
         },
         // end Save menu
 
@@ -323,6 +297,9 @@ define([
             } else {
                 view = e;
                 this.$('.view-toggle .switch').attr('class', 'switch ' + e);
+            }
+            if (view !== 'trajectory' && !_.isUndefined(webgnome.router.trajView)) {
+                webgnome.router.trajView.$el.hide();
             }
             this.$('.view-toggle .switch').attr('data-original-title', this.$('.view-toggle .' + view).data('original-title'));
         },

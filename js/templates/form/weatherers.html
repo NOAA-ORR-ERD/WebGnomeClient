@@ -1,0 +1,17 @@
+<form class="form-horizontal" role="form">
+    
+    <div class="form-group">
+        <label class="col-sm-5 control-label" for="manual_weathering">Manual Mode:</label>
+        <div class="col-sm-5">
+            <label class="checkbox-inline">
+            {% if(model.get('manual_weathering')){ %}
+                <input type="checkbox" name="manual_weathering" checked="checked">&nbsp;
+            {% } else { %}
+                <input type="checkbox" name="manual_weathering">&nbsp;
+            {% } %}
+            </label>
+        </div>
+    </div>
+    
+
+</form>
