@@ -6,7 +6,7 @@
 Stefansson Sound Example Problems
 =================================
 
-**FIXE** This may have been superceded by the north slope location
+**FIXME** This may have been superceded by the north slope location
 
 Try out these examples to learn the basics of modeling oil spills in
 Stefansson Sound, a region of the Beaufort Sea located off the North
@@ -17,7 +17,7 @@ overcome by considering both the "Best Guess" and the "Minimum Regret"
 (Uncertainty) solutions. This knowledge will help you in designing your
 own GNOME model runs.
 
-**The following conditions hold for each of the examples: **
+**The following conditions hold for each of the examples:**
 
 Wind: Constant at 0 knot, unless otherwise specified.
 
@@ -31,7 +31,7 @@ Uncertainty: Not included, unless specified.
 
 **Use GNOME's Standard Mode and the Stefansson Sound Location File to
 answer the following questions. Be sure to carefully read and enter all
-the information in each problem. **
+the information in each problem.**
 
 Example 1.
 ----------
@@ -146,7 +146,7 @@ with the "Minimum Regret" solution turned on.
 
 **"Zoom in" to the spill area and briefly discuss the difference between
 the "Best Guess" (black) and "Minimum Regret" (red) trajectories. Why do
-you think this type of information would be useful? **
+you think this type of information would be useful?**
 
     **Hint:** To include the Minimum Regret (Uncertainty) solution,
     click the box labeled "Include the Minimum Regret solution" under

@@ -3,8 +3,8 @@
 
 .. _sandiego_examples:
 
-Sandiego Example Problems
-=========================
+San Diego Bay Example Problems
+==============================
 
 
 Try out these examples to learn the basics of modeling oil spills in San
@@ -66,8 +66,6 @@ two spills?**
     Start Time to 1500. GNOME will then prompt you to change the model
     start time to match the spill start time. Click Change.
 
-    **
-    **
 
     **Answer:** When the spill starts just before the flood tide, the
     entrance channel to San Diego Bay receives heavy beach impacts. When
