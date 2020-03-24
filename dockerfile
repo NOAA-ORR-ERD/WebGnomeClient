@@ -1,6 +1,6 @@
-FROM registry.orr.noaa.gov/erd/centos-conda:latest
+FROM node:13-alpine
 
-RUN yum update -y && yum -y install node npm
+RUN apk add python3 py3-pip git
 
 COPY ./ /webgnomeclient/
 
@@ -9,7 +9,7 @@ RUN cp /webgnomeclient/config-example.json /config/config.json
 RUN ln -s /config/config.json /webgnomeclient/config.json
 RUN cd /webgnomeclient && npm install && npm install -g grunt 
 RUN cd /webgnomeclient && grunt install 
-RUN cd /webgnomeclient && pip install -r requirements.txt
+RUN cd /webgnomeclient && pip3 install -r requirements.txt
 RUN cd /webgnomeclient/doc/ && sphinx-build -b html ./ ../dist/build/doc
 
 VOLUME /config
