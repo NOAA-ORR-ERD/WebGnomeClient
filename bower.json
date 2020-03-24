@@ -29,7 +29,7 @@
     "flotextents": "git://github.com/NOAA-ORR-ERD/flot-extents.git",
     "JUMFlot": "https://github.com/jumjum123/JUMFlot.git",
     "masonry": "3.3.2",
-    "nucos": "1.*.*",
+    "nucos": "1.2.10",
     "dropzone": "5.*.*",
     "socket.io-client": "0.9.*",
     "localforage": "~1.2.3",
