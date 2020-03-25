@@ -268,22 +268,27 @@ define([
                 this.toggleView('fate');
             } else if (window.location.href.indexOf('config') !== -1) {
                 this.toggleView('config');
-            } else if(window.location.href.indexOf('adios') !== -1){
+            } else if(window.location.href.indexOf('adios') !== -1 || window.location.href.indexOf('roc') !== -1){
                 this.toggleView('config');
-            } else if (window.location.href.indexOf('response') !== -1){
-                this.toggleView('response');
-            } else if (window.location.href.indexOf('model') !== -1){
-                this.toggleView('model');
-            } else if (window.location.href.indexOf('roc') !== -1){
-                this.disableMenuItem('view-toggle');
-                this.disableMenuItem('views');
-            } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
-                this.disableMenuItem('view-toggle');
-                this.disableMenuItem('views');
+            // } else if (window.location.href.indexOf('response') !== -1){
+                // this.toggleView('response');
+            // } else if (window.location.href.indexOf('model') !== -1){
+                // this.toggleView('model');
             } else {
-                this.enableMenuItem('views');
-                this.enableMenuItem('view-toggle');
+                this.toggleView('model'); 
+                //this is a punt as the "model" switch is no longer visible, should update the CSS for a more robust fix
             }
+            
+            // } else if (window.location.href.indexOf('roc') !== -1){
+                // this.disableMenuItem('view-toggle');
+                // this.disableMenuItem('views');
+            // } else if(window.location.href.indexOf('load') !== -1 || window.location.href.indexOf('location') !== -1){
+                // this.disableMenuItem('view-toggle');
+                // this.disableMenuItem('views');
+            // } else {
+                // this.enableMenuItem('views');
+                // this.enableMenuItem('view-toggle');
+            //}
         },
 
         toggleView: function(e){
