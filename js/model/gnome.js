@@ -384,6 +384,11 @@ define([
             else {
                 return 'Time step values should be numbers only.';
             }
+            
+            if (!moment(attrs.start_time).isAfter('1970-01-10')) {
+                return 'Model start time must be after 1970.';
+            }
+            
 
             if (this.validateSpills() !== ''){
                 return this.validateSpills();

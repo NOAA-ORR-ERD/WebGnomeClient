@@ -7,7 +7,6 @@ define([
     'text!templates/panel/model.html',
     'views/panel/base',
     'views/form/model',
-    'jqueryDatetimepicker'
 ], function(_, $, Backbone, swal, moment,
             ModelPanelTemplate, BasePanel, ModelFormView) {
     'use strict';
@@ -83,8 +82,12 @@ define([
             webgnome.model.set('name', name);
 
             var start_time = moment(this.$('.datetime').val(),
-                                    webgnome.config.date_format.moment).format('YYYY-MM-DDTHH:mm:ss');
-            webgnome.model.set('start_time', start_time);
+                                    webgnome.config.date_format.moment);
+            if (start_time.isAfter('1970-01-01')) {
+                webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
+            } else {
+                this.edit()
+            }
 
             var days = parseInt(this.$('#days').val(), 10);
             var hours = parseInt(this.$('#hours').val(), 10);
