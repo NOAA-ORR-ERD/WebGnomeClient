@@ -15,6 +15,12 @@ define([
             _.defaults(def, BaseMap.prototype.defaults());
             return def;
         },
+        
+        validate: function(attrs, options){
+            if (attrs.raster_size > 134217728) {
+                return "Raster cannot be larger than 128 MB.";
+            }            
+        },
 
         getRaster: function() {
             /*
