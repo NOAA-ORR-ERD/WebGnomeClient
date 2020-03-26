@@ -86,7 +86,7 @@ define([
             if (start_time.isAfter('1970-01-01')) {
                 webgnome.model.set('start_time', start_time.format('YYYY-MM-DDTHH:mm:ss'));
             } else {
-                this.edit()
+                this.edit();
             }
 
             var days = parseInt(this.$('#days').val(), 10);
