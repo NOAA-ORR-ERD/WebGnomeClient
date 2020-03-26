@@ -385,7 +385,7 @@ define([
                 return 'Time step values should be numbers only.';
             }
             
-            if (!moment(attrs.start_time).isAfter('1970-01-10')) {
+            if (!moment(attrs.start_time).isAfter('1969-12-31')) {
                 return 'Model start time must be after 1970.';
             }
             

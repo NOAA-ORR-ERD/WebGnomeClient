@@ -204,7 +204,7 @@ define([
                 return this.validateLocation(attrs);
             }
             
-            if (!moment(attrs.release_time).isAfter('1970-01-10')) {
+            if (!moment(attrs.release_time).isAfter('1969-12-31')) {
                 return 'Spill start time must be after 1970.';
             }
                 

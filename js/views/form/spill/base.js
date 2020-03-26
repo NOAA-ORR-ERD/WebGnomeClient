@@ -111,7 +111,9 @@ define([
             this.$('#datetime').datetimepicker({
                 format: webgnome.config.date_format.datetimepicker,
                 allowTimes: webgnome.config.date_format.half_hour_times,
-                step: webgnome.config.date_format.time_step
+                step: webgnome.config.date_format.time_step,
+                minDate:  "1970/01/01",
+                yearStart: "1970",
             });
 
             this.$('#datepick').on('click', _.bind(function() {
