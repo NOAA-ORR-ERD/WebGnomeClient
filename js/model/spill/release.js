@@ -268,7 +268,7 @@ define([
 
         validateAmount: function(attrs) {
             if (moment(attrs.release_time).isAfter(attrs.end_release_time)) {
-                return 'Duration must be a positive value';
+                return 'Duration must be a positive value.';
             }
         },
 
