@@ -412,7 +412,7 @@ define([
                         url: '/img/globe.png'
                     })
                 });
-                this.layers.add(this.layers.sat)
+                this.layers.add(this.layers.sat);
             } else if (name === 'bing_aerial') {
                 this.layers.sat = new LayerModel({
                     type:'cesium',
