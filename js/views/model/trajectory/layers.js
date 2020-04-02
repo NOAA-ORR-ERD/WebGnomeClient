@@ -403,7 +403,17 @@ define([
                 this.layers.remove(this.layers.sat);
                 this.layers.sat = undefined;
             }
-            if (name === 'bing_aerial') {
+            if (name === 'no_image') {
+                this.layers.sat = new LayerModel({
+                    type: 'cesium',
+                    parentEl: 'imageryLayer',
+                    id: 'imagery-none',
+                    visObj: new Cesium.SingleTileImageryProvider({
+                        url: '/img/globe.png'
+                    })
+                });
+                this.layers.add(this.layers.sat)
+            } else if (name === 'bing_aerial') {
                 this.layers.sat = new LayerModel({
                     type:'cesium',
                     parentEl:'imageryLayer',
