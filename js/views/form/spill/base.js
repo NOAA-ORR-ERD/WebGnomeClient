@@ -484,7 +484,9 @@ define([
         update: function() {
             //this.emulsionUpdate();
             this.tabStatusSetter();
-            this.updateWindageInfo();
+            if (webgnome.model.get('mode') === 'gnome') {
+                this.updateWindageInfo();
+            }
             // this.setCoords();
         },
 
