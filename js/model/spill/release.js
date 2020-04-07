@@ -191,8 +191,15 @@ define([
             var startObj = moment(startTime);
             this.set('release_time', startTime);
 
-            var endTime = startObj.add(duration, 's').format();
-            this.set('end_release_time', endTime);
+            if (duration>0) {
+                var endTime = startObj.add(duration, 's').format();
+                this.set('end_release_time', endTime);
+            }
+            else {
+                var endTime = startTime;
+                this.set('end_release_time', endTime);
+            }
+
         },
 
         validate: function(attrs, options) {
