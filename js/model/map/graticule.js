@@ -91,18 +91,15 @@ define([
             this.on = true;
             this.scene.postRender.addEventListener(this.refreshGraticule, this);
             this.dirty=true;
+            if (!this.scene.primitives.contains(this.lines)){
+                this.scene.primitives.add(this.lines);
+            }
             this.refreshGraticule();
         },
         deactivate: function() {
             this.on = false;
             $('.graticule-label').hide();
             this.lines.show = false;
-            var i = 0;
-            /*if(this.lines) {
-                for(i = 0; i < this.linePoolSize; i++) {
-                    this.lines.get(i).show = false;
-                }
-            }*/
             this.scene.postRender.removeEventListener(this.refreshGraticule, this);
         },
 
@@ -195,19 +192,7 @@ define([
 
         initLines: function() {
             if (!this.lines) {
-                this.linegeo = [];
-                for(var i=0; i < this.linePoolSize; i++) {
-                    this.linegeo.push(new Cesium.GeometryInstance({
-                                geometry: new Cesium.SimplePolylineGeometry({
-                                    positions : Cesium.Cartesian3.fromDegreesArray([i,i,i+1,i+1]),
-                                    arcType: Cesium.ArcType.RHUMB
-                                }),
-                                attributes: {
-                                    color: this.color
-                                },
-                                allowPicking: false
-                            }));
-                }
+                this.lines = new Cesium.PrimitiveCollection();
             }
         },
 
@@ -228,6 +213,7 @@ define([
         },
 
         setupLines: function() {
+
             var frustum = this.scene.camera.frustum;
             var center = this.scene.camera.position;
             var offsetPoint = new Cesium.Cartesian3(center.x - frustum.right, center.y - frustum.top, 0);
@@ -250,19 +236,19 @@ define([
                 this.prevOffLon = offLon;
                 this.prevOffLat = offLat;
             }
+            this.lines.removeAll();
 
             var topDist = Math.min((this.lat_lines + 9) * ciLat, 90-offLat);
-            var rightDist = (this.lon_lines + 9) * ciLon;
-            if (this.lines){
-                this.scene.primitives.remove(this.lines);
-            }
-            this.linegeo=[];
+            this.lon_geo=[];
+            var pts;
             for( var i=0; i < (this.lon_lines + 10); i++ ) {
-                this.linegeo.push(new Cesium.GeometryInstance({
+                pts = [i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
+                    i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
+                    i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)
+                ];
+                this.lon_geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
-                                    positions: Cesium.Cartesian3.fromDegreesArray([i * ciLon + offLon, Math.max(Math.min(offLat, 89),-89),
-                                                                                  i * ciLon + offLon, Math.max(Math.min(offLat + topDist/2, 89),-89),
-                                                                                  i * ciLon + offLon, Math.max(Math.min(topDist + offLat, 89),-89)]),
+                                    positions: Cesium.Cartesian3.fromDegreesArray(pts),
                                     arcType: Cesium.ArcType.RHUMB
                                 }),
                                 attributes: {
@@ -271,16 +257,23 @@ define([
                                 allowPicking: false
                             }));
             }
+            this.lon_prim = this.lines.add(new Cesium.Primitive({
+                geometryInstances: this.lon_geo,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat: true,
+                    translucent: false
+                })
+            }));
+            // adds the latitude lines (south to north)
+            this.lat_geo = [];
             for( var j=0;j < (this.lat_lines + 10); j++ ) {
                 if (j * ciLat + offLat > 90) {
+                    //stop if you pass the pole
                     break;
                 }
-                var latLinePoints = [];
-                for( var p=0; p < 2*(this.lon_lines+10); p++ ) {
-                    latLinePoints[2*p] = offLon + p * rightDist/(2*(this.lon_lines+10));
-                    latLinePoints[2*p+1] = Math.max(Math.min(j * ciLat + offLat, 89),-89);
-                }
-                this.linegeo.push(new Cesium.GeometryInstance({
+                var linelat = Math.max(Math.min(j * ciLat + offLat, 89),-89);
+                var latLinePoints = [-180, linelat, 0, linelat, 180, linelat];
+                this.lat_geo.push(new Cesium.GeometryInstance({
                                 geometry: new Cesium.SimplePolylineGeometry({
                                     positions: Cesium.Cartesian3.fromDegreesArray(latLinePoints),
                                     arcType: Cesium.ArcType.RHUMB
@@ -291,14 +284,13 @@ define([
                                 allowPicking: false
                             }));
             }
-            this.lines = new Cesium.Primitive({
-                            geometryInstances: this.linegeo,
-                            appearance: new Cesium.PerInstanceColorAppearance({
-                                flat: true,
-                                translucent: false
-                            })
-                        });
-            this.scene.primitives.add(this.lines);
+            this.lat_prim = this.lines.add(new Cesium.Primitive({
+                geometryInstances: this.lat_geo,
+                appearance: new Cesium.PerInstanceColorAppearance({
+                    flat: true,
+                    translucent: false
+                })
+            }));
         },
 
         refreshGraticule: _.throttle(function() {
@@ -306,6 +298,8 @@ define([
                 this.refresh_scale();
                 this.setupLines();
                 this.setupLabels();
+                this.lines.raiseToTop(this.lat_prim);
+                this.lines.raiseToTop(this.lon_prim);
                 this.scene.primitives.raiseToTop(this.lines);
                 //this.scene.primitives.raiseToTop(this.labels);
                 this._prevCamPos = this.scene.camera.position.clone();
@@ -322,7 +316,7 @@ define([
             var genLabel = this.DMS ? this.genDMSLabel : this.genDegLabel;
             var line, label, linePos, labelPosition;
             for(var i=0; i < (this.lon_lines + 10); i++) {
-                line = this.linegeo[i].geometry;
+                line = this.lon_geo[i].geometry;
                 label = this.labels[i];
                 linePos = line._positions[0];
                 var lineLon = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).longitude;
@@ -336,12 +330,12 @@ define([
                 }
             }
             i--;
-            for(var j=i;j < this.linegeo.length; j++) {
+            for(var j=0;j < this.lat_geo.length; j++) {
                 //if (!this.linegeo[j]) {
                     //console.trace();
                 //}
-                line = this.linegeo[j].geometry;
-                label = this.labels[j];
+                line = this.lat_geo[j].geometry;
+                label = this.labels[i+j];
                 linePos = line._positions[0];
                 var lineLat = Cesium.Ellipsoid.WGS84.cartesianToCartographic(line._positions[0]).latitude;
                 labelPosition = Cesium.SceneTransforms.wgs84ToWindowCoordinates(this.scene, linePos);
@@ -354,7 +348,7 @@ define([
                 }
             }
             j--;
-            for (var k = j; k < this.linePoolSize; k++) {
+            for (var k = j + i; k < this.linePoolSize; k++) {
                 this.labels[k].hide();
             }
         },
