@@ -196,8 +196,7 @@ define([
                 this.set('end_release_time', endTime);
             }
             else {
-                var endTime = startTime;
-                this.set('end_release_time', endTime);
+                this.set('end_release_time', startTime);
             }
 
         },
