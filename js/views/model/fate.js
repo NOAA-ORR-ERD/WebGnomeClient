@@ -1695,6 +1695,15 @@ define([
             if (!_.isUndefined(datasetName)) {
                 dataUnits = this.$('.tab-pane.active .yaxisLabel').html();
                 dataset = this.pluckDataset(webgnome.mass_balance, [datasetName])[0];
+                if (datasetName === 'avg_density') {
+                    dataUnits = "kg/m^3";
+                }
+                else if (datasetName === 'avg_viscosity') {
+                    dataUnits = "cSt";
+                }
+                else if (datasetName === 'water_content') {
+                    dataUnits = "%";
+                }
                 var dataArr = dataset.data;
 
                 header = "datetime,nominal(" + dataUnits + "),high(" + dataUnits + "),low(" + dataUnits + ")";
