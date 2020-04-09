@@ -37,6 +37,37 @@ define([
         initialize: function(options, model) {
             FormModal.prototype.initialize.call(this, options);
             this.subForms = {};
+            this.applyContextualizedLockouts();
+        },
+
+        applyContextualizedLockouts: function() {
+            //Because this sets up a special model run through the common cache, it interferes with trajectory and fate views
+            //this function applies the appropriate pre-run changes to the underlying parent page to get this to run smoothly.
+            //The 'liftContextualizedLockouts' function here and in modal/progressModal should undo the effects.
+            var views = webgnome.router.views
+            for (var i = 0; i < views.length; i++) {
+                if (views[i].module && views[i].module.id) {
+                    if (views[i].module.id === 'views/model/fate') {
+                        webgnome.cache.rewind(true);
+                        views[i].autorun(false);
+                        views[i].stopListening(webgnome.cache, 'step:received');
+                    } else if (views[i].module.id === 'views/model/trajectory/index') {
+                        webgnome.cache.rewind(true);
+                    }
+                }
+                
+            }
+        },
+
+        liftContextualLockouts: function() {
+            var views = webgnome.router.views
+            for (var i = 0; i < views.length; i++) {
+                if (views[i].module && views[i].module.id) {
+                    if (views[i].module.id === 'views/model/fate') {
+                        views[i].autorun(true);
+                    }
+                }
+            }
         },
 
         render: function(options) {
@@ -137,6 +168,10 @@ define([
             this.progressModal = new ProgressModal({
                 title: "Running Model...",
             }, payload);
+
+            this.listenTo(this.progressModal, 'hide', _.bind(function(){
+                this.close();
+            }, this));
 
             this.$el.on('hidden.bs.modal', _.bind(function(model){
                 this.progressModal.render();

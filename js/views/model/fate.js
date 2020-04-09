@@ -155,6 +155,7 @@ define([
                 this.listenTo(webgnome.model.get('spills'), 'change add remove', this.noWeathering);
                 this.noWeathering();
             }
+            this._autorun = true;
         },
 
         renderWeathering: function(options) {
@@ -342,7 +343,21 @@ define([
             return 'Time (' + this.getUserTimePrefs() + ')';
         },
 
+        autorun: function(val) {
+            //manipulates the autorun on this page.
+            if (!val) {
+                this._autorun = false;
+            } else {
+                this._autorun = true;
+                setTimeout(_.bind(this.load, this), 1000);
+            }
+        },
+
         load: function() {
+            if (!this._autorun) {
+                return;
+                this.stopListening(webgnome.cache, 'step:received');
+            }
             if (webgnome.cache.length > 0) {
                 // incase trajectory triggered a /step but it hasn't returned yet
                 // and the user just toggled the switch to fate view

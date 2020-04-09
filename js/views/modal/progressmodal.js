@@ -14,8 +14,7 @@ define([
         buttons: '<button type="button" class="cancel">Cancel</button>',
 
         events: {
-            'click .cancel': 'cancelRun',
-            'click .cut-short': 'cutShort'
+            'click .cancel': 'cancelRun'
         },
 
         initialize: function(options, payload) {
@@ -23,6 +22,7 @@ define([
             this.percent = 0;
             this.setupListeners();
             this.payload=payload;
+            this.cancelling = false;
         },
 
         setupListeners: function() {
@@ -78,17 +78,36 @@ define([
         },
 
         cancelRun: function(e) {
-            e.preventDefault();
-            console.log(e);
+            if (!_.isUndefined(e)) {
+                e.preventDefault();
+                console.log(e);
+                this.$(e.currentTarget).text("Canceling...");
+                this.$(e.currentTarget).addClass('disabled');
+            }
+
+            if (this.cancelling) {
+                return;
+            }
+            this.cancelling = true;
             var to = setTimeout(this.hide, 3000);
             this.listenToOnce(webgnome.cache, 'rewind', _.bind(function() {
                 clearTimeout(to);
                 this.hide();
             }, this));
+            this.liftContextualLockouts();
             webgnome.cache.rewind(true);
-            this.$(e.currentTarget).text("Canceling...");
-            this.$(e.currentTarget).addClass('disabled');
-        }
+        },
+
+        liftContextualLockouts: function() {
+            var views = webgnome.router.views
+            for (var i = 0; i < views.length; i++) {
+                if (views[i].module && views[i].module.id) {
+                    if (views[i].module.id === 'views/model/fate') {
+                        views[i].autorun(true);
+                    }
+                }
+            }
+        },
 
 
     });
