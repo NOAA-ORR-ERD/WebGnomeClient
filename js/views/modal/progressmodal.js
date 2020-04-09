@@ -99,7 +99,7 @@ define([
         },
 
         liftContextualLockouts: function() {
-            var views = webgnome.router.views
+            var views = webgnome.router.views;
             for (var i = 0; i < views.length; i++) {
                 if (views[i].module && views[i].module.id) {
                     if (views[i].module.id === 'views/model/fate') {

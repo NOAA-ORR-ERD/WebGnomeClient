@@ -44,7 +44,7 @@ define([
             //Because this sets up a special model run through the common cache, it interferes with trajectory and fate views
             //this function applies the appropriate pre-run changes to the underlying parent page to get this to run smoothly.
             //The 'liftContextualizedLockouts' function here and in modal/progressModal should undo the effects.
-            var views = webgnome.router.views
+            var views = webgnome.router.views;
             for (var i = 0; i < views.length; i++) {
                 if (views[i].module && views[i].module.id) {
                     if (views[i].module.id === 'views/model/fate') {
@@ -60,7 +60,7 @@ define([
         },
 
         liftContextualLockouts: function() {
-            var views = webgnome.router.views
+            var views = webgnome.router.views;
             for (var i = 0; i < views.length; i++) {
                 if (views[i].module && views[i].module.id) {
                     if (views[i].module.id === 'views/model/fate') {

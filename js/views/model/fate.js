@@ -356,7 +356,6 @@ define([
         load: function() {
             if (!this._autorun) {
                 return;
-                this.stopListening(webgnome.cache, 'step:received');
             }
             if (webgnome.cache.length > 0) {
                 // incase trajectory triggered a /step but it hasn't returned yet
