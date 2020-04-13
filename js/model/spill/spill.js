@@ -354,12 +354,12 @@ define([
         
         validateWindage: function(attrs) {
             var init = this.getWindageInitializer();
-            var windage_range
+            var windage_range;
       
             if (!_.isUndefined(init)) {
                 windage_range = init.get('windage_range');
             } else {                
-                windage_range = [0.01,0.04]
+                windage_range = [0.01,0.04];
             }
             
             if (isNaN(windage_range[0]) | isNaN(windage_range[1])) {
